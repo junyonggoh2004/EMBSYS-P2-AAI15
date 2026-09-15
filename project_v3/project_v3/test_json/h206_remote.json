@@ -1,0 +1,23 @@
+{
+  "configs": [
+    {
+      "name": "REMOTE_H206",
+      "proto": "mqtt",
+      "mode": "poll",
+      "freq_hz": 1,
+      "remote_node": "pico-002",
+      "remote_source": "XYC_H206"
+    }
+  ],
+  "rules": [
+    {
+      "name": "REMOTE_H206_BREAK",
+      "source": "REMOTE_H206",
+      "calc": [
+        "state=u8(0)"
+      ],
+      "when": "state == 1",
+      "action": "cfg.to:pico-002:{configs:[{name:XYC_H206,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:26,mode:digital,pull:up,invert:1,debounce_ms:20}}]}"
+    }
+  ]
+}

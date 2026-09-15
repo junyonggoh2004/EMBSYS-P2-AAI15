@@ -1,0 +1,38 @@
+{
+  "configs": [
+    {
+      "name": "GY511_ACC",
+      "proto": "i2c",
+      "mode": "poll",
+      "freq_hz": "5",
+      "i2c": {
+        "sda": "4",
+        "scl": "5",
+        "addr": "0x1E",
+        "pre": ["0x00", "0x10", "0x02", "0x00"],
+        "post_delay_ms": "2",
+        "reg": "0x03",
+        "reg_size": "1",
+        "read_len": "6",
+        "restart": "1"
+      }
+    }
+  ],
+  "rules": [
+    {
+      "name": "GY511_MOTION",
+      "source": "GY511_ACC",
+      "calc": [
+        "mx=s16be(0)",
+        "mz=s16be(2)",
+        "my=s16be(4)",
+        "dx=mx-mx_prev",
+        "dy=my-my_prev",
+        "dz=mz-mz_prev",
+        "motion=sqrt(dx*dx+dy*dy+dz*dz)"
+      ],
+      "when": "motion>120",
+      "action": "log:motion detected"
+    }
+  ]
+}

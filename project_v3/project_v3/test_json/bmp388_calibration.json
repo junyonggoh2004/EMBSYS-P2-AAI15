@@ -1,0 +1,53 @@
+{
+  "configs": [
+    {
+      "name": "BMP388_CAL",
+      "proto": "i2c",
+      "mode": "poll",
+      "freq_hz": 1,
+      "i2c": {
+        "sda": 4,
+        "scl": 5,
+        "addr": "0x77",       
+        "reg": "0x31",       
+        "reg_size": 1,
+        "read_len": 21,       
+        "restart": 0,
+        "post_delay_ms": 1
+      }
+    }
+  ],
+  "rules": [
+    {
+      "name": "BMP388_CAL_MAIN",
+      "source": "BMP388_CAL",
+      "calc": [
+        "T1=u16le(0)",   
+        "T2=s16le(2)",   
+        "T3=s8(4)",      
+
+        "P1=s16le(5)",   
+        "P2=s16le(7)",   
+        "P3=s8(9)",      
+        "P4=s8(10)",    
+
+        "P5=u16le(11)",  
+        "P6=u16le(13)"
+    
+      ],
+      "when": "1",
+      "action": "log:BMP388_CAL T1=$T1 T2=$T2 T3=$T3 P1=$P1 P2=$P2 P3=$P3 P4=$P4 P5=$P5 P6=$P6"
+    },
+    {
+      "name": "BMP388_CAL_EXTRA",
+      "source": "BMP388_CAL",
+      "calc": [
+        "P9=s16le(17)",  
+        "P10=s8(19)",    
+        "P11=s8(20)"     
+      ],
+      "when": "1",
+      "action": "log:BMP388_CAL_EXTRA P9=$P9 P10=$P10 P11=$P11"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "configs": [
+    {
+      "name": "XYC_H206",
+      "proto": "gpio",
+      "mode": "poll",
+      "freq_hz": 20,
+      "gpio": {
+        "pin": 16,
+        "pull": "up",
+        "mode": "digital",
+        "invert": 1,
+        "debounce_ms": 20
+      }
+    }
+  ],
+  "rules": [
+    {
+      "name": "XYC_H206_STATE",
+      "source": "XYC_H206",
+      "calc": [
+        "state=u8(0)"        
+      ],
+      "when": "1",
+      "action": "log:XYC_H206 local state=$state"
+    }
+  ]
+}

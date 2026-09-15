@@ -1,0 +1,41 @@
+{
+  "configs": [
+    {
+      "name": "GY511_ACC",
+      "proto": "i2c",
+      "mode": "poll",
+      "freq_hz": "2",
+      "i2c": {
+        "sda": "0",
+        "scl": "1",
+        "addr": "0x19",
+        "pre": [
+          "0x20",
+          "0x57"
+        ],
+        "post_delay_ms": "2",
+        "reg": "0xA8",
+        "reg_size": "1",
+        "read_len": "6",
+        "restart": 1
+      }
+    }
+  ],
+  "rules": [
+    {
+      "name": "GY511_ANOMALY",
+      "source": "GY511_ACC",
+      "calc": [
+        "mx=s16le(0) / 16384",
+        "my=s16le(2) / 16384",
+        "mz=s16le(4) / 16384",
+        "mag=sqrt(mx*mx + my*my + mz*mz)",
+        "m_avg=mean(mag, 5)",
+        "m_std=std(mag, 5)",
+        "m_min=min(mag, 5)",
+        "m_max=max(mag, 5)"
+      ],
+      "action": "batch: infer.set:8:$m_avg | infer.set:9:$m_std | infer.set:10:$m_min | infer.set:11:$m_max | infer.run:log:ANOMALY! MSE=$value"
+    }
+  ]
+}
