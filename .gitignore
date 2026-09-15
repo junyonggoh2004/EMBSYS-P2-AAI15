@@ -1,0 +1,30 @@
+# Build artifacts
+build/
+bin/
+obj/
+*.elf
+*.uf2
+*.bin
+*.map
+*.hex
+
+# VS Code
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+
+# Local Secrets
+project_v3/include/wifi_credentials.h
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+CMakeSettings.json
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+
+# OS files
+.DS_Store
+Thumbs.db
