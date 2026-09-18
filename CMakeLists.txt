@@ -77,6 +77,7 @@ target_link_libraries(project_v3
     pico_stdlib
     hardware_i2c
     hardware_uart
+    hardware_adc
     hardware_gpio
     hardware_timer
     hardware_pwm
@@ -113,4 +114,41 @@ target_compile_definitions(jsmn PUBLIC
 )
 
 pico_add_extra_outputs(project_v3)
+
+# Standalone USB-serial monitor for a digital-output light sensor. This target
+# deliberately has no Wi-Fi, MQTT, or TFLite dependency at runtime.
+add_executable(digital_light_sensor
+    project_v3/digital_light_sensor.c
+)
+
+target_link_libraries(digital_light_sensor
+    pico_stdlib
+    hardware_i2c
+    hardware_gpio
+    m
+)
+
+pico_set_program_name(digital_light_sensor "digital_light_sensor")
+pico_set_program_version(digital_light_sensor "1.0")
+pico_enable_stdio_uart(digital_light_sensor 0)
+pico_enable_stdio_usb(digital_light_sensor 1)
+pico_add_extra_outputs(digital_light_sensor)
+
+# One USB-serial firmware image that reads all three requested sensors.
+add_executable(multi_sensor_monitor
+    project_v3/multi_sensor_monitor.c
+)
+
+target_link_libraries(multi_sensor_monitor
+    pico_stdlib
+    hardware_i2c
+    hardware_gpio
+    m
+)
+
+pico_set_program_name(multi_sensor_monitor "multi_sensor_monitor")
+pico_set_program_version(multi_sensor_monitor "1.0")
+pico_enable_stdio_uart(multi_sensor_monitor 0)
+pico_enable_stdio_usb(multi_sensor_monitor 1)
+pico_add_extra_outputs(multi_sensor_monitor)
 

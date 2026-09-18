@@ -4,6 +4,7 @@
 #include "pico/stdlib.h"
 #include "pico/time.h"
 #include "hardware/gpio.h"
+#include "hardware/adc.h"
 
 #include "bus/bus_common.h"
 #include "bus/bus_if.h"
@@ -256,6 +257,19 @@ static int gpio_init_cfg(const sensor_cfg_t *scfg, void **ctx_out)
     if (ctx->g.gpio_trig_us <= 0)          ctx->g.gpio_trig_us          = 10;
     if (ctx->g.gpio_pulse_timeout_us <= 0) ctx->g.gpio_pulse_timeout_us = 30000;
 
+    // Analogue input on the external Pico ADC pins; emit a 12-bit sample.
+    if (strcmp(ctx->g.gpio_mode, "analog") == 0) {
+        if (ctx->g.gpio_pin < 26 || ctx->g.gpio_pin > 28) {
+            free(ctx);
+            return -3;
+        }
+        adc_init();
+        adc_gpio_init((uint)ctx->g.gpio_pin);
+        ctx->inited = true;
+        *ctx_out = ctx;
+        return 0;
+    }
+
     // --------- GPIO init according to mode ----------
     if (mode_is_digital(ctx) || mode_is_counter(ctx)) {
         gpio_init((uint)ctx->g.gpio_pin);
@@ -359,6 +373,15 @@ static int gpio_poll_once(void *ctx_, uint8_t *buf, size_t cap)
 {
     gpio_ctx_t *ctx = (gpio_ctx_t*)ctx_;
     if (!ctx || !ctx->inited || !buf || cap == 0) return -1;
+
+    if (strcmp(get_gpio_method(ctx), "analog") == 0) {
+        if (cap < 2) return -2;
+        adc_select_input((uint)(ctx->g.gpio_pin - 26));
+        uint16_t sample = adc_read();
+        buf[0] = (uint8_t)(sample & 0xff);
+        buf[1] = (uint8_t)(sample >> 8);
+        return 2;
+    }
 
     if (mode_is_digital(ctx)) {
         if (cap < 3) return -2;

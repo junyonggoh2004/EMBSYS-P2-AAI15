@@ -152,7 +152,9 @@ void cfg_parse_line(const char *line_in, app_cfg_t *cfg) {
         v[sizeof(v) - 1] = 0;
         str_lower(v);
 
-        if (!strcmp(v, "pulse")) {
+        if (!strcmp(v, "analog")) {
+            cfg->gpio_mode = "analog";
+        } else if (!strcmp(v, "pulse")) {
             cfg->gpio_mode = "pulse";
         } else if (!strcmp(v, "onewire")) {
             cfg->gpio_mode = "onewire";
