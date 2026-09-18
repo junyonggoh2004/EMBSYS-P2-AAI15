@@ -70,6 +70,9 @@ typedef struct {
     int            gpio_echo;
     int            gpio_trig_us;
     int            gpio_pulse_timeout_us;
+    bool           gpio_pin_specified;
+    bool           gpio_trig_specified;
+    bool           gpio_echo_specified;
 
     // -------- MQTT --------
     char      remote_node[32];   // node to follow

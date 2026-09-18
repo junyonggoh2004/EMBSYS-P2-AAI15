@@ -45,6 +45,7 @@ add_executable(project_v3
     project_v3/application/config_parser.c
     project_v3/application/scheduler.c
     project_v3/application/output_format.c
+    project_v3/application/board_profile.c
 
     project_v3/mqtt/mqtt_config_parser.c
     project_v3/mqtt/mqtt_json_parser.c
@@ -113,4 +114,3 @@ target_compile_definitions(jsmn PUBLIC
 )
 
 pico_add_extra_outputs(project_v3)
-

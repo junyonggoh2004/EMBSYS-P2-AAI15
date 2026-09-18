@@ -109,6 +109,9 @@ void repl_init_defaults(app_cfg_t *cfg) {
     cfg->uart_tx=0; cfg->uart_rx=1; cfg->uart_baud=9600;
     cfg->uart_bits=8; cfg->uart_parity='N'; cfg->uart_stop=1; cfg->uart_read_len=64;
     cfg->gpio_pin=2; cfg->gpio_trig=14; cfg->gpio_echo=15; cfg->gpio_pulse_timeout_us=30000;
+    cfg->gpio_pin_specified = false;
+    cfg->gpio_trig_specified = false;
+    cfg->gpio_echo_specified = false;
 }
 
 void repl_show_help(void) {
@@ -171,11 +174,12 @@ void repl_poll(app_cfg_t *unused, bool *running, bool *cfg_ready) {
                             free(between);
 
                             int idx = scheduler_add_config(&s_tmp_cfg);
-                            if (idx >= 0)
+                            if (idx >= 0) {
                                 printf("CFG: ok (added #%d: %s)\n", idx, s_tmp_cfg.name);
-                            else
+                                *cfg_ready = true;
+                            } else {
                                 printf("CFG: add failed (%d)\n", idx);
-                            *cfg_ready = true;
+                            }
                         }
                     }
                     line_len = 0;
@@ -258,11 +262,12 @@ void repl_poll(app_cfg_t *unused, bool *running, bool *cfg_ready) {
                     cfg_parse_end(&s_tmp_cfg);
                     s_state = RS_IDLE;
                     int idx = scheduler_add_config(&s_tmp_cfg);
-                    if (idx >= 0)
+                    if (idx >= 0) {
                         printf("CFG: ok (added #%d: %s)\n", idx, s_tmp_cfg.name);
-                    else
+                        *cfg_ready = true;
+                    } else {
                         printf("CFG: add failed\n");
-                    *cfg_ready = true;
+                    }
                 } else {
                     cfg_parse_line(line, &s_tmp_cfg);
                 }

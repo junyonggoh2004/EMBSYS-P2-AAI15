@@ -4,6 +4,7 @@
 #include "pico/stdlib.h"
 #include "pico/time.h"
 #include "application/output_format.h"
+#include "application/board_profile.h"
 #include "bus/bus_common.h"
 #include "bus/bus_if.h"
 #include "mqtt/mqtt_telemetry.h"
@@ -35,6 +36,28 @@ typedef struct {
 
 static active_sensor_t g_sensors[MAX_ACTIVE];
 
+static bool config_uses_gpio_pin(const app_cfg_t *cfg, int pin) {
+    if (!cfg || cfg->proto != proto_gpio) return false;
+    const char *mode = cfg->gpio_mode ? cfg->gpio_mode : "digital";
+    if (!strcmp(mode, "pulse"))
+        return (cfg->gpio_trig_specified && cfg->gpio_trig == pin) ||
+               (cfg->gpio_echo_specified && cfg->gpio_echo == pin);
+    return cfg->gpio_pin_specified && cfg->gpio_pin == pin;
+}
+
+static bool conflicts_with_active_gpio(const app_cfg_t *cfg, int *pin_out) {
+    for (int pin = 0; pin <= 28; ++pin) {
+        if (!config_uses_gpio_pin(cfg, pin)) continue;
+        for (int i = 0; i < MAX_ACTIVE; ++i) {
+            if (g_sensors[i].in_use && config_uses_gpio_pin(&g_sensors[i].cfg_copy, pin)) {
+                if (pin_out) *pin_out = pin;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 /* Map enum -> name used by bus_lookup */
 static inline const char* proto_name(proto_t p) {
     return (p==proto_i2c) ? "i2c" : (p==proto_uart) ? "uart" : (p==proto_mqtt) ? "mqtt": "gpio";
@@ -65,6 +88,18 @@ void scheduler_dump(void) {
 }
 /* Add one config block as a new active sensor */
 int scheduler_add_config(const app_cfg_t *cfg_in) {
+    char validation_error[128];
+    if (!board_profile_validate_config(cfg_in, validation_error, sizeof(validation_error))) {
+        printf("[SCHED] add rejected: %s\n", validation_error);
+        return -11;
+    }
+
+    int conflicting_pin;
+    if (conflicts_with_active_gpio(cfg_in, &conflicting_pin)) {
+        printf("[SCHED] add rejected: GPIO%d is already assigned to an active sensor\n", conflicting_pin);
+        return -12;
+    }
+
     for (int i = 0; i < MAX_ACTIVE; i++) {
         if (!g_sensors[i].in_use) {
             active_sensor_t *S = &g_sensors[i];

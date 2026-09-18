@@ -129,15 +129,72 @@ mosquitto_pub -h <IP_ADDRESS> -t "pico/<Node_Number>/config" -m "BEGINCFG|name=G
 | | `i2c.restart` | 1=Repeated Start, 0=Stop then Start | `i2c.restart=1` |
 | *Optional I2C* | `i2c .pre` | Pre byte sent to wake sensor | `i2c.pre=0xA5, 0x01` |
 | | `i2c.post_delay_ms` | Sleep time after sending pre bytes | `i2c.post_delay_ms=50` |
-| **GPIO (Digital)** | `gpio.pin` | Pin to read | `gpio.pin=15` |
-| | `gpio.pull` | 1=Up, 2=Down 0=Off/Floating | `gpio.pull=1` |
+| **GPIO (Digital)** | `gpio.pin` | Pin to read | `gpio.pin=6` |
+| | `gpio.pull` | Input pull: `up`, `down`, or `off` | `gpio.pull=off` |
 | | `gpio.mode` | digital/pulse/onewire/counter | `gpio.mode=digital` |
-| | `gpio.invert` | Logic inversion: 1=True, 0=False | `gpio.mode=0` |
+| | `gpio.invert` | Logic inversion: 1=True, 0=False | `gpio.invert=0` |
 | | `gpio.debounce_ms` | Debouncing time | `gpio.debounce_ms=100` |
 | **GPIO (Pulse)** | `gpio.trig` | Output pin connected to sensor trig pin | `gpio.trig=16` |
 | | `gpio.echo` | Input pin connected to Echo | `gpio.trig=17` |
 | | `gpio.trig_us` | How long to hold trigger pin to initiate reading (microseconds) | `gpio.trig_us=10` |
 | | `gpio.pulse_timeout_us` | Timeout (microseconds) | `gpio.pulse_timeout_us=25000` |
+
+### Maker Pi Pico people-flow setup
+
+This project is built for a Raspberry Pi Pico 2 W mounted on a Cytron Maker Pi
+Pico carrier. The current configuration profile reserves carrier GPIOs that are
+connected to onboard hardware and validates every GPIO sensor before it is
+initialised.
+
+| Component | Maker Pi Pico connection | Firmware configuration |
+| :--- | :--- | :--- |
+| HC-SR04 A | Grove 2: GP2 TRIG, GP3 ECHO | `gpio.mode=pulse`, `gpio.trig=2`, `gpio.echo=3` |
+| HC-SR04 B | Grove 3: GP4 TRIG, GP5 ECHO | `gpio.mode=pulse`, `gpio.trig=4`, `gpio.echo=5` |
+| IR obstacle | GP6 | `gpio.mode=digital`, `gpio.pin=6` |
+| IR line | GP7 | `gpio.mode=digital`, `gpio.pin=7` |
+| DHT / AM2302 | Grove 5: GP8 DATA | `gpio.mode=onewire`, `gpio.pin=8` |
+
+GPIO10–15 (microSD), GPIO16–17 (ESP-01 socket), GPIO18–19 (audio), GPIO20–22
+(buttons), and GPIO28 (RGB LED) are unavailable to sensor configurations.
+The scheduler also rejects a GPIO that has already been assigned to another
+active GPIO sensor.
+
+Each HC-SR04 needs a separate 5 V to 3.3 V level shifter or voltage divider on
+its ECHO line before it reaches GP3 or GP5. Do not connect the ECHO output
+directly to the Pico. Supply the HC-SR04 from 5 V and share its ground with the
+Pico. The IR and DHT sensors use 3.3 V logic.
+
+Grove Port 4 exposes both GP6 and GP7. Connect the two IR sensor outputs
+separately: a normal Grove splitter connects the outputs together and cannot be
+used for this arrangement.
+
+#### Test each ultrasonic sensor first
+
+Connect and verify one HC-SR04 before configuring the rest of the hardware.
+Send the following through the USB serial REPL, then send `RUN` on a separate
+line:
+
+```ini
+BEGINCFG|name=ULTRA_A|proto=gpio|mode=poll|freq_hz=1|gpio.mode=pulse|gpio.trig=2|gpio.echo=3|gpio.trig_us=10|gpio.pulse_timeout_us=30000|ENDCFG
+```
+
+A valid sample is printed as three bytes: pulse width in microseconds as a
+little-endian 16-bit integer followed by `01`. Convert it with
+`distance_cm = pulse_us / 58`. A single `00` byte means the ECHO pulse timed
+out. Use `STOP` and `CLEAR` before changing a sensor configuration.
+
+The complete current configuration is provided in
+[`project_v3/test_json/maker_pi_pico_people_flow.json`](project_v3/test_json/maker_pi_pico_people_flow.json).
+Publish it to the Pico after the individual tests:
+
+```bash
+mosquitto_pub -h <BROKER_IP> -t pico/pico-001/config \
+  -f project_v3/test_json/maker_pi_pico_people_flow.json
+```
+
+The current pulse driver triggers ultrasonic sensors independently. Do not run
+both HC-SR04 modules in the same physical area until trigger staggering is
+implemented, since their echoes can interfere.
 
 ### 2. JSON File-Based Configuration (MQTT Only)
 You can send a JSON payload to `pico/<node_id>/config -f <filepath_of_json>` to configure sensors programmatically.

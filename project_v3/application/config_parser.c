@@ -138,12 +138,15 @@ void cfg_parse_line(const char *line_in, app_cfg_t *cfg) {
      /* gpio.* */
     else if (!strcmp(key, "gpio.pin")) {
         cfg->gpio_pin = (int)parse_u32(val);
+        cfg->gpio_pin_specified = true;
     }
     else if (!strcmp(key, "gpio.trig")) {
         cfg->gpio_trig = (int)parse_u32(val);
+        cfg->gpio_trig_specified = true;
     }
     else if (!strcmp(key, "gpio.echo")) {
         cfg->gpio_echo = (int)parse_u32(val);
+        cfg->gpio_echo_specified = true;
     }
     else if (!strcmp(key, "gpio.mode") || !strcmp(key, "gpio.method")) {
         // Treat gpio.mode and gpio.method as the same thing

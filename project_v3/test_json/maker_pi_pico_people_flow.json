@@ -1,0 +1,53 @@
+{
+  "configs": [
+    {
+      "name": "ULTRA_A",
+      "proto": "gpio",
+      "mode": "poll",
+      "freq_hz": 1,
+      "gpio": {
+        "mode": "pulse", "trig": 2, "echo": 3,
+        "trig_us": 10, "pulse_timeout_us": 30000
+      }
+    },
+    {
+      "name": "ULTRA_B",
+      "proto": "gpio",
+      "mode": "poll",
+      "freq_hz": 1,
+      "gpio": {
+        "mode": "pulse", "trig": 4, "echo": 5,
+        "trig_us": 10, "pulse_timeout_us": 30000
+      }
+    },
+    {
+      "name": "IR_OBS",
+      "proto": "gpio",
+      "mode": "poll",
+      "freq_hz": 5,
+      "gpio": {
+        "mode": "digital", "pin": 6,
+        "pull": "off", "invert": 0, "debounce_ms": 20
+      }
+    },
+    {
+      "name": "IR_LINE",
+      "proto": "gpio",
+      "mode": "poll",
+      "freq_hz": 5,
+      "gpio": {
+        "mode": "digital", "pin": 7,
+        "pull": "off", "invert": 0, "debounce_ms": 20
+      }
+    },
+    {
+      "name": "DHT22",
+      "proto": "gpio",
+      "mode": "poll",
+      "freq_hz": 0.5,
+      "gpio": {
+        "mode": "onewire", "pin": 8
+      }
+    }
+  ]
+}
