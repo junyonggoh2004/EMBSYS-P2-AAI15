@@ -7,7 +7,7 @@
       "freq_hz": 1,
       "gpio": {
         "mode": "pulse", "trig": 2, "echo": 3,
-        "trig_us": 10, "pulse_timeout_us": 30000
+        "trig_us": 10, "pulse_timeout_us": 30000, "pulse_guard_ms": 60
       }
     },
     {
@@ -17,7 +17,7 @@
       "freq_hz": 1,
       "gpio": {
         "mode": "pulse", "trig": 4, "echo": 5,
-        "trig_us": 10, "pulse_timeout_us": 30000
+        "trig_us": 10, "pulse_timeout_us": 30000, "pulse_guard_ms": 60
       }
     },
     {

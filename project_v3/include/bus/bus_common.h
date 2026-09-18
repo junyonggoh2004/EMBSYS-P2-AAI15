@@ -70,6 +70,7 @@ typedef struct {
     int            gpio_echo;
     int            gpio_trig_us;
     int            gpio_pulse_timeout_us;
+    int            gpio_pulse_guard_ms;
     bool           gpio_pin_specified;
     bool           gpio_trig_specified;
     bool           gpio_echo_specified;

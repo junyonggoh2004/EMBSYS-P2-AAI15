@@ -138,6 +138,7 @@ mosquitto_pub -h <IP_ADDRESS> -t "pico/<Node_Number>/config" -m "BEGINCFG|name=G
 | | `gpio.echo` | Input pin connected to Echo | `gpio.trig=17` |
 | | `gpio.trig_us` | How long to hold trigger pin to initiate reading (microseconds) | `gpio.trig_us=10` |
 | | `gpio.pulse_timeout_us` | Timeout (microseconds) | `gpio.pulse_timeout_us=25000` |
+| | `gpio.pulse_guard_ms` | Minimum gap before another ultrasonic trigger | `gpio.pulse_guard_ms=60` |
 
 ### Maker Pi Pico people-flow setup
 
@@ -192,9 +193,10 @@ mosquitto_pub -h <BROKER_IP> -t pico/pico-001/config \
   -f project_v3/test_json/maker_pi_pico_people_flow.json
 ```
 
-The current pulse driver triggers ultrasonic sensors independently. Do not run
-both HC-SR04 modules in the same physical area until trigger staggering is
-implemented, since their echoes can interfere.
+The scheduler permits only one ultrasonic trigger every 60 ms across all pulse
+sensors. Increase `gpio.pulse_guard_ms` when the sensor placement needs a
+larger separation. The main loop runs every 10 ms, allowing the IR inputs to
+poll at their configured 5 Hz rate.
 
 ### 2. JSON File-Based Configuration (MQTT Only)
 You can send a JSON payload to `pico/<node_id>/config -f <filepath_of_json>` to configure sensors programmatically.

@@ -43,8 +43,12 @@ bool board_profile_validate_config(const app_cfg_t *cfg, char *reason, size_t re
     if (!strcmp(mode, "pulse")) {
         if (!cfg->gpio_trig_specified || !cfg->gpio_echo_specified)
             return fail(reason, reason_size, "pulse mode requires gpio.trig and gpio.echo");
+        if (cfg->mode != sample_mode_poll)
+            return fail(reason, reason_size, "pulse mode must use mode=poll");
         if (cfg->gpio_trig == cfg->gpio_echo)
             return fail(reason, reason_size, "gpio.trig and gpio.echo must use different pins");
+        if (cfg->gpio_pulse_guard_ms && cfg->gpio_pulse_guard_ms < 60)
+            return fail(reason, reason_size, "gpio.pulse_guard_ms must be at least 60");
         if (!pin_is_available(cfg->gpio_trig, reason, reason_size)) return false;
         return pin_is_available(cfg->gpio_echo, reason, reason_size);
     }

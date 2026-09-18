@@ -12,7 +12,7 @@
 
 /* ===================== Debug logging ===================== */
 #ifndef SCHED_DEBUG
-#define SCHED_DEBUG 1
+#define SCHED_DEBUG 0
 #endif
 
 #if SCHED_DEBUG
@@ -35,6 +35,12 @@ typedef struct {
 } active_sensor_t;
 
 static active_sensor_t g_sensors[MAX_ACTIVE];
+static absolute_time_t g_next_ultrasonic_trigger;
+
+static bool config_is_ultrasonic(const app_cfg_t *cfg) {
+    return cfg && cfg->proto == proto_gpio && cfg->gpio_mode &&
+           strcmp(cfg->gpio_mode, "pulse") == 0;
+}
 
 static bool config_uses_gpio_pin(const app_cfg_t *cfg, int pin) {
     if (!cfg || cfg->proto != proto_gpio) return false;
@@ -72,6 +78,7 @@ int scheduler_count(void) {
 /* Initialize scheduler */
 void scheduler_reset(void) {
     memset(g_sensors, 0, sizeof(g_sensors));
+    g_next_ultrasonic_trigger = nil_time;
     SLOG("reset: cleared %d slots", (int)MAX_ACTIVE);
 }
 void scheduler_dump(void) {
@@ -83,6 +90,8 @@ void scheduler_dump(void) {
                    proto_name(c->proto),
                    (c->mode==sample_mode_stream)?"stream":"poll",
                    c->freq_hz);
+            if (config_is_ultrasonic(c))
+                printf("[SCHED]    ultrasonic guard=%dms\n", c->gpio_pulse_guard_ms);
         }
     }
 }
@@ -256,8 +265,18 @@ void scheduler_run_all(bool running) {
 if (cfg->mode == sample_mode_poll) {
     int64_t dt_us = absolute_time_diff_us(now, S->next_run); // to - from
     if (dt_us <= 0) {
+        if (config_is_ultrasonic(cfg) && !is_nil_time(g_next_ultrasonic_trigger) &&
+            absolute_time_diff_us(now, g_next_ultrasonic_trigger) > 0) {
+            continue;
+        }
         did_poll = true;
         n = S->bus->poll_once ? S->bus->poll_once(S->ctx, buf, sizeof(buf)) : -1;
+
+        if (config_is_ultrasonic(cfg)) {
+            uint32_t guard_ms = cfg->gpio_pulse_guard_ms > 0 ?
+                                (uint32_t)cfg->gpio_pulse_guard_ms : 60u;
+            g_next_ultrasonic_trigger = delayed_by_ms(get_absolute_time(), guard_ms);
+        }
 
         // ---- float-aware period_ms ----
         float f = cfg->freq_hz;

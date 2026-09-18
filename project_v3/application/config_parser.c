@@ -193,6 +193,9 @@ void cfg_parse_line(const char *line_in, app_cfg_t *cfg) {
     else if (!strcmp(key, "gpio.pulse_timeout_us")) {
         cfg->gpio_pulse_timeout_us = (int)parse_u32(val);
     }
+    else if (!strcmp(key, "gpio.pulse_guard_ms")) {
+        cfg->gpio_pulse_guard_ms = (int)parse_u32(val);
+    }
 return;
 }
 

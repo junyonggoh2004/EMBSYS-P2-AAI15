@@ -14,6 +14,7 @@
 typedef struct {
     app_cfg_t      g;           // full parsed config snapshot for this sensor
     absolute_time_t last_change;
+    absolute_time_t raw_change;
     uint8_t        last_state;  // debounced state (for digital/counter)
     uint8_t        last_raw;    // last raw GPIO value
     uint32_t       counter;     // edge counter (for "counter" mode)
@@ -33,7 +34,7 @@ static inline uint8_t read_input(uint pin, bool invert) {
     return invert ? (uint8_t)(!v) : v;
 }
 
-/* Debounce: return stable state, update last_change when it toggles */
+/* Debounce only after the raw input has held its candidate state for db ms. */
 static uint8_t debounce_read(gpio_ctx_t *c) {
     const uint32_t db = (c->g.gpio_debounce_ms > 0) ? (uint32_t)c->g.gpio_debounce_ms : 0;
     const uint8_t  cur = read_input((uint)c->g.gpio_pin, c->g.gpio_invert != 0);
@@ -47,14 +48,18 @@ static uint8_t debounce_read(gpio_ctx_t *c) {
         return c->last_state;
     }
 
-    if (cur != c->last_state) {
-        // change detected; only accept if duration >= debounce window
+    if (cur != c->last_raw) {
+        c->last_raw = cur;
+        c->raw_change = get_absolute_time();
+    }
+
+    if (c->last_raw != c->last_state) {
         const uint32_t elapsed = (uint32_t)(
             to_ms_since_boot(get_absolute_time()) -
-            to_ms_since_boot(c->last_change)
+            to_ms_since_boot(c->raw_change)
         );
         if (elapsed >= db) {
-            c->last_state  = cur;
+            c->last_state  = c->last_raw;
             c->last_change = get_absolute_time();
         }
     }
@@ -268,6 +273,7 @@ static int gpio_init_cfg(const sensor_cfg_t *scfg, void **ctx_out)
         ctx->last_raw    = raw;
         ctx->last_state  = raw;
         ctx->last_change = get_absolute_time();
+        ctx->raw_change  = ctx->last_change;
         ctx->counter     = 0;
         ctx->inited      = true;
 
@@ -301,6 +307,7 @@ static int gpio_init_cfg(const sensor_cfg_t *scfg, void **ctx_out)
         ctx->last_raw    = raw;
         ctx->last_state  = raw;
         ctx->last_change = get_absolute_time();
+        ctx->raw_change  = ctx->last_change;
         ctx->counter     = 0;
         ctx->inited      = true;
     }

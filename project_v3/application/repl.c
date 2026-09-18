@@ -109,6 +109,7 @@ void repl_init_defaults(app_cfg_t *cfg) {
     cfg->uart_tx=0; cfg->uart_rx=1; cfg->uart_baud=9600;
     cfg->uart_bits=8; cfg->uart_parity='N'; cfg->uart_stop=1; cfg->uart_read_len=64;
     cfg->gpio_pin=2; cfg->gpio_trig=14; cfg->gpio_echo=15; cfg->gpio_pulse_timeout_us=30000;
+    cfg->gpio_pulse_guard_ms=60;
     cfg->gpio_pin_specified = false;
     cfg->gpio_trig_specified = false;
     cfg->gpio_echo_specified = false;

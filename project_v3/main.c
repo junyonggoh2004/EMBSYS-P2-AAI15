@@ -73,7 +73,8 @@ int main(void) {
             next_hb = make_timeout_time_ms(10000);
         }
 
-        sleep_ms(1000);
+        // Keep USB, MQTT, and the scheduler responsive to configured rates.
+        sleep_ms(10);
     }
     return 0;
 }
