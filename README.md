@@ -1,6 +1,17 @@
-# Pico-v3: Pico W Distributed IoT Edge Node
+# Pico-v3: Pico 2 W Distributed IoT Edge Node
 
-**Pico-v3** is a modular, configuration-driven sensor node framework for the Raspberry Pi Pico W. It allows for dynamic runtime configuration of sensors (UART, I2C, GPIO), local data processing using a Reverse Polish Notation (RPN) rule engine, and real-time telemetry via MQTT.
+**Pico-v3** is a modular, configuration-driven sensor node framework for the Raspberry Pi Pico 2 W (RP2350). It allows runtime configuration of sensors (UART, I2C, GPIO), local processing with a Reverse Polish Notation (RPN) rule engine, and telemetry via MQTT. The build target in `CMakeLists.txt` is `pico2_w`; this firmware is not built for the original Pico W.
+
+## This branch: hardware and setup
+
+Follow [SETUP.md](SETUP.md) to install the Pico SDK and Arm toolchain, build `project_v3.uf2`, flash the Pico 2 W, and verify USB serial output. The board pinout images supplied for this project are listed in [context_resources/README.md](context_resources/README.md).
+
+| Hardware | Current result |
+| --- | --- |
+| Pico 2 W and HLK-LD2450 radar | The Pico firmware ran and USB serial showed 32-byte `LD2450` UART frames. This verifies that bytes arrived from the radar; it does not by itself validate target tracking or application rules. |
+| ESP32-S3 Super Mini and 76×284 ST7789P3 TFT | The ESP32-S3 colour test ran and controlled the backlight, but the screen remained white. A separate Pico 2 W colour test also ran and left the screen white. Graphics output remains unverified; inspect the TFT header and signal connections or test with another display. |
+
+The main firmware in this repository targets the Pico 2 W. The ESP32-S3/TFT tests were temporary diagnostics; this branch does not contain a working display integration. The Pico and ESP32-S3 firmware images are separate and must be flashed to their respective boards.
 
 ---
 
@@ -94,13 +105,13 @@ Terminal should be set to CRLF
 
 **REPL Config Structure (TERMINAL)**
 ```ini
-BEGINCFG|name=GY511_ACC|proto=i2c|mode=poll|freq_hz=5|i2c.sda=0|i2c.scl=1|i2c.addr=0x1E|i2c.pre=0x00 0x10 0x02 0x00|i2c.post_delay_ms=2|i2c.reg=0x03|i2c.reg_size=1|i2c.read_len=6|i2c.restart=1|ENDCFG
+BEGINCFG|name=GY511_ACC|proto=i2c|mode=poll|freq_hz=5|i2c.sda=4|i2c.scl=5|i2c.addr=0x1E|i2c.pre=0x00 0x10 0x02 0x00|i2c.post_delay_ms=2|i2c.reg=0x03|i2c.reg_size=1|i2c.read_len=6|i2c.restart=1|ENDCFG
 ```
 `-m` is for inline
 
 **MQTT In-line Config Structure**
 ```
-mosquitto_pub -h <IP_ADDRESS> -t "pico/<Node_Number>/config" -m "BEGINCFG|name=GY511_ACC|proto=i2c|mode=poll|freq_hz=5|i2c.sda=0|i2c.scl=1|i2c.addr=0x1E|i2c.pre=0x00 0x10 0x02 0x00|i2c.post_delay_ms=2|i2c.reg=0x03|i2c.reg_size=1|i2c.read_len=6|i2c.restart=1|ENDCFG"
+mosquitto_pub -h <IP_ADDRESS> -t "pico/<Node_Number>/config" -m "BEGINCFG|name=GY511_ACC|proto=i2c|mode=poll|freq_hz=5|i2c.sda=4|i2c.scl=5|i2c.addr=0x1E|i2c.pre=0x00 0x10 0x02 0x00|i2c.post_delay_ms=2|i2c.reg=0x03|i2c.reg_size=1|i2c.read_len=6|i2c.restart=1|ENDCFG"
 ```
 
 #### Protocol Specific Settings
@@ -109,8 +120,8 @@ mosquitto_pub -h <IP_ADDRESS> -t "pico/<Node_Number>/config" -m "BEGINCFG|name=G
 | :--- | :--- | :--- | :--- |
 | **Common** | `name` | Unique ID for the sensor | `name=temp_sensor` |
 | | `proto` | Bus protocol Used | `proto=uart` |
-| | `mode` | Polling or Streaming | `freq_hz=10` |
-| | `freq_hz` | Polling frequency | `mode=poll` |
+| | `mode` | Polling or streaming | `mode=poll` |
+| | `freq_hz` | Polling frequency | `freq_hz=10` |
 | **UART** | `uart.tx`, `uart.rx` | GPIO TX/RX pins | `uart.tx=0` |
 | | `uart.baud` | Baud rate | `uart.baud=115200` |
 | | `uart.bits` | Number of sensor bits | `uart.bits=8` |
@@ -118,7 +129,7 @@ mosquitto_pub -h <IP_ADDRESS> -t "pico/<Node_Number>/config" -m "BEGINCFG|name=G
 | | `uart.stop` | Number of stop bit | `uart.stop=1` |
 | | `uart.line_mode` | 0=Raw byte mode, 1=wait for /n | `uart.line_mode=0` |
 | | `uart.read_len` | Read per cycle | `uart.read_len=128` |
-| *Optional UART* | `uart .pre` | Pre byte sent to wake sensor | `uart.pre=0xA5, 0x01` |
+| *Optional UART* | `uart.pre` | Bytes sent to wake sensor | `uart.pre=0xA5, 0x01` |
 | | `uart.post_delay_ms` | Sleep time after sending pre bytes | `uart.post_delay_ms=50` |
 | **I2C** | `i2c.sda`, `i2c.scl` | GPIO pins | `i2c.sda=4` |
 | | `i2c.baud` | Baud rate | `i2c.baud=400000` |
@@ -127,15 +138,15 @@ mosquitto_pub -h <IP_ADDRESS> -t "pico/<Node_Number>/config" -m "BEGINCFG|name=G
 | | `i2c.reg_size` | Size of register | `i2c.reg_size=1` |
 | | `i2c.read_len` | Bytes to read | `i2c.read_len=6` |
 | | `i2c.restart` | 1=Repeated Start, 0=Stop then Start | `i2c.restart=1` |
-| *Optional I2C* | `i2c .pre` | Pre byte sent to wake sensor | `i2c.pre=0xA5, 0x01` |
+| *Optional I2C* | `i2c.pre` | Bytes sent before reading | `i2c.pre=0xA5, 0x01` |
 | | `i2c.post_delay_ms` | Sleep time after sending pre bytes | `i2c.post_delay_ms=50` |
 | **GPIO (Digital)** | `gpio.pin` | Pin to read | `gpio.pin=15` |
 | | `gpio.pull` | 1=Up, 2=Down 0=Off/Floating | `gpio.pull=1` |
 | | `gpio.mode` | digital/pulse/onewire/counter | `gpio.mode=digital` |
-| | `gpio.invert` | Logic inversion: 1=True, 0=False | `gpio.mode=0` |
+| | `gpio.invert` | Logic inversion: 1=True, 0=False | `gpio.invert=0` |
 | | `gpio.debounce_ms` | Debouncing time | `gpio.debounce_ms=100` |
 | **GPIO (Pulse)** | `gpio.trig` | Output pin connected to sensor trig pin | `gpio.trig=16` |
-| | `gpio.echo` | Input pin connected to Echo | `gpio.trig=17` |
+| | `gpio.echo` | Input pin connected to Echo | `gpio.echo=17` |
 | | `gpio.trig_us` | How long to hold trigger pin to initiate reading (microseconds) | `gpio.trig_us=10` |
 | | `gpio.pulse_timeout_us` | Timeout (microseconds) | `gpio.pulse_timeout_us=25000` |
 

@@ -2,7 +2,7 @@
 
 This is the complete guide for getting the existing sensor node firmware running on your own hardware, from an empty machine to a board that is confirmed working. It covers what to install, what to wire, how to build, how to flash, and — critically — how to actually prove each stage worked rather than just assuming it did. Read it in order the first time through.
 
-Verified end to end on macOS (Apple Silicon) on 2026-09-18. Windows and Linux notes are marked wherever a step differs.
+The configure and build steps were verified on Windows with the versions listed in section 9 on 2026-09-18. The guide also includes macOS and Linux instructions; flashing and serial communication still require a connected board.
 
 ## 0. What you are building, and on what hardware
 
@@ -14,7 +14,7 @@ The board target is fixed in `CMakeLists.txt` (`PICO_BOARD=pico2_w`): this firmw
 
 At minimum: one Raspberry Pi Pico 2 W, and a USB cable that carries data (some phone-charger-only cables don't; if the board never enumerates as a USB device, try a different cable first).
 
-To test an actual sensor rather than just confirming the board boots, you additionally need one of the sensors the team has already collected: the HC-SR04 ultrasonic sensor, or the small I2C breakout (GY-511 candidate). Wiring for both is given in section 5.
+To test an actual sensor rather than just confirming the board boots, you additionally need one of the sensors the team has already collected: the HC-SR04 ultrasonic sensor, or the small I2C breakout (GY-511 candidate). Wiring is in section 3. No sensor wiring is needed to build, flash, or test the USB serial commands.
 
 ## 2. Pico 2 W pinout reference
 
@@ -43,7 +43,7 @@ Power and ground pins used below: **3V3(OUT)** supplies 3.3 V for sensors, **GND
 
 ## 3. Wire up a sensor
 
-Do this now so you have something concrete to test against once the firmware is flashed. If you only want to confirm the board itself boots first, skip to section 6 and come back here afterwards.
+Do this when you are ready to test a sensor. To confirm the board boots first, continue with section 4 and return here later.
 
 ### I2C sensor (GY-511 or similar breakout)
 
@@ -54,18 +54,18 @@ The existing test configs in `project_v3/test_json/gy511.json` and `bmp388.json`
 - Sensor SDA to Pico **GP4**
 - Sensor SCL to Pico **GP5**
 
-Most small I2C breakouts run natively at 3.3 V, so no level shifting is needed here.
+Confirm the breakout's exact part number and supply and logic voltage requirements before wiring it. The team's small I2C breakout has not yet been identified.
 
 ### HC-SR04 ultrasonic sensor
 
 `README.md` documents a GPIO pulse mode built specifically for this sensor, using `gpio.trig` and `gpio.echo`. Wire it as:
 
-- Sensor VCC to Pico **3V3(OUT)** (see the warning below before using 5 V)
+- Sensor VCC to Pico **VBUS (5 V from USB)**, if the exact sensor module specifies 5 V operation
 - Sensor GND to Pico **GND**
 - Sensor Trig to Pico **GP16**
-- Sensor Echo to Pico **GP17**
+- Sensor Echo to a **3.3 V logic level shifter or suitable resistor divider**, then to Pico **GP17**
 
-**Voltage warning:** the classic HC-SR04 is a 5 V module. If you power it from 5 V (VBUS), its Echo pin will also output roughly 5 V, and the RP2350's GPIO pins are only rated for 3.3 V — connecting Echo directly at 5 V risks damaging the pin over repeated use. Your team's materials list still has a logic level shifter as "to purchase." Until that arrives, either power the HC-SR04 from **3V3(OUT)** instead of 5 V (it will usually still work, with somewhat reduced maximum range), or put a simple resistor divider on the Echo line (for example 1 kΩ in series from Echo to the Pico pin, and 2 kΩ from that same Pico pin to GND, which brings 5 V down to about 3.3 V). Don't wire Echo straight from a 5 V-powered sensor into a GPIO pin.
+**Voltage warning:** a standard HC-SR04 specifies a 5 V supply and outputs a 5 V Echo signal. Do not connect that Echo signal directly to the Pico's 3.3 V GPIO. If you do not yet have a level shifter, a divider with 1 kΩ from Echo to GP17 and 2 kΩ from GP17 to GND reduces 5 V to about 3.3 V. Keep the grounds connected. Do not assume your module operates correctly from 3.3 V unless its own datasheet says so.
 
 ### UART sensor module
 
@@ -84,7 +84,7 @@ You need:
 - **Git**, to clone this repository and the Pico SDK.
 - **CMake**, version 3.13 or later, which generates the build files.
 - **Python 3**, used by the Pico SDK's build tooling.
-- **GNU Make**. On macOS, Apple's bundled `make` is an old BSD version that doesn't behave correctly for this build; install a current one via Homebrew (`brew install make`) and make sure its `gnubin` directory comes before `/usr/bin` on your PATH.
+- **GNU Make or Ninja**. On Windows, use Ninja. On macOS, Apple's bundled `make` is an old BSD version that doesn't behave correctly for this build; install a current GNU Make via Homebrew (`brew install make`) and make sure its `gnubin` directory comes before `/usr/bin` on your PATH.
 - **The Arm GNU Toolchain, version 14.2.Rel1 specifically.** Not "whatever `arm-none-eabi-gcc` your package manager gives you" — see section 8 for exactly why this matters. Installed separately in section 8, not here, so do the rest of the setup first.
 
 ## 5. Get the Pico SDK
@@ -97,9 +97,9 @@ cd ~/pico/pico-sdk
 git submodule update --init
 ```
 
-You need SDK version 2.x or later — version 1.5.x has no definition for the `pico2_w` board and CMake will fail immediately. Check what you have with `git -C ~/pico/pico-sdk describe --tags`.
+You need SDK version 2.x or later — version 1.5.x has no definition for the `pico2_w` board and CMake will fail immediately. This repository's Pico VS Code CMake configuration pins SDK 2.2.0, so install that version for a reproducible build. Check what you have with `git -C ~/pico/pico-sdk describe --tags`.
 
-Point CMake at it by setting an environment variable. Add this to your shell profile (`~/.zshrc` or `~/.bashrc` on macOS/Linux; a permanent system environment variable on Windows) and open a new terminal:
+Point CMake at it by setting an environment variable. Add this to your shell profile (`~/.zshrc` or `~/.bashrc` on macOS/Linux; a persistent user environment variable on Windows) and open a new terminal:
 
 ```
 export PICO_SDK_PATH=$HOME/pico/pico-sdk
@@ -110,11 +110,11 @@ export PICO_SDK_PATH=$HOME/pico/pico-sdk
 ```
 git clone <this repo's URL>
 cd EMBSYS-P2-AAI15
-git checkout dev-hasif
+git checkout dev-brend
 git submodule update --init
 ```
 
-`dev-hasif` already has two fixes applied on top of the original `Pico_Sample` branch: a restored TFLite Micro submodule reference, and this document. If you're on `Pico_Sample` directly and `git submodule update --init` reports nothing to do, you'll hit the missing-library error described in section 8 and need to add the submodule yourself:
+`dev-brend` and `dev-hasif` both include the restored TFLite Micro submodule reference and this document. If you're on the older `Pico_Sample` branch directly and `git submodule update --init` reports nothing to do, you'll hit the missing-library error described in section 10 and need to add the submodule yourself:
 
 ```
 git submodule add https://github.com/raspberrypi/pico-tflmicro.git project_v3/third_party/pico-tflmicro
@@ -174,7 +174,17 @@ cmake -DCMAKE_BUILD_TYPE=Release \
 
 Adjust the three paths to wherever you extracted the toolchain, and to your platform's executable suffix (`arm-none-eabi-gcc.exe` on Windows). If `arm-none-eabi-gcc --version` already reported 14.x systemwide in section 8, drop all three flags and just run `cmake -DCMAKE_BUILD_TYPE=Release ..`.
 
-Expect this near the end of the output:
+On Windows, from the repository root in a new PowerShell terminal, use the Pico VS Code extension's local tool installations if present. The example below matches a setup with SDK 2.2.0, CMake 3.28.6, Ninja 1.13.2, and Arm toolchain 14.2.Rel1 installed under `%USERPROFILE%\.pico-sdk`:
+
+```powershell
+$base = Join-Path $env:USERPROFILE '.pico-sdk'
+$env:PICO_SDK_PATH = Join-Path $base 'sdk\2.2.0'
+& (Join-Path $base 'cmake\v3.28.6\bin\cmake.exe') -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+```
+
+Check `build/CMakeCache.txt` to confirm `PICO_BOARD=pico2_w` and that `CMAKE_C_COMPILER` points to the 14.2 toolchain. This Windows example uses Ninja and does not require GNU Make.
+
+Expect this near the end of the configure output:
 
 ```
 -- Configuring done
@@ -192,20 +202,26 @@ If configure fails with an error mentioning `PICO_BOARD` or an unrecognized boar
 make -j$(sysctl -n hw.ncpu)
 ```
 
-On Linux, use `make -j$(nproc)`. On Windows with the Ninja generator (`cmake -G Ninja ...`), run `ninja` instead of `make`.
+On Linux, use `make -j$(nproc)`. On Windows, from the repository root in the same PowerShell terminal used in section 9, run:
 
-A successful build ends with:
+```powershell
+& (Join-Path $base 'cmake\v3.28.6\bin\cmake.exe') --build build --parallel 4
+```
+
+A successful GNU Make build ends with output similar to:
 
 ```
 [100%] Linking CXX executable project_v3.elf
 [100%] Built target project_v3
 ```
 
-Confirm the flashable file exists:
+With Ninja, the final line may instead be `Linking CXX executable project_v3.elf`. In either case, confirm the flashable file exists:
 
 ```
 ls -lh project_v3.uf2
 ```
+
+On Windows PowerShell, check `Get-Item build\project_v3.uf2` from the repository root. If the project-built `picotool.exe` is available, `build\_deps\picotool\picotool.exe info -a build\project_v3.uf2` should report target chip `RP2350` and `pico_board: pico2_w`.
 
 If the build instead fails with errors inside `project_v3/third_party/pico-tflmicro/src/third_party/flatbuffers/...` mentioning `PushElement` or "no matching function," you're building with GCC 15 rather than the pinned 14.2 toolchain — go back to section 9 and make sure the `-DCMAKE_C_COMPILER` flags actually point at the 14.2 binaries, then delete the `build` directory and reconfigure from scratch (CMake caches the compiler choice on first configure and won't pick up a change otherwise).
 
@@ -213,7 +229,7 @@ If the build fails with `add_library` given no source files for `pico-tflmicro`,
 
 ## 11. Flash the board
 
-Hold the BOOTSEL button on the Pico 2 W module itself (next to the USB connector, not any carrier board button) while plugging it into your computer, then release it. The board mounts as a USB mass storage drive (named something like `RP2350`). Drag `build/project_v3.uf2` onto that drive. The board unmounts and reboots on its own once the copy finishes — this is normal and means the flash succeeded.
+Hold the BOOTSEL button on the Pico 2 W module itself (next to the USB connector, not any carrier board button) while plugging it into your computer, then release it. The board mounts as a USB mass storage drive named `RP2350`. On Windows, copy `build\project_v3.uf2` from the repository to the root of that drive. The board unmounts and reboots on its own once the copy finishes — this is normal.
 
 If no drive appears: hold BOOTSEL, plug in, and don't release it until after the drive shows up in your file browser; timing is a bit fussy on some machines. If it still doesn't appear, try a different USB cable — many are power-only and carry no data.
 
@@ -235,9 +251,24 @@ On Windows, open Device Manager and look under "Ports (COM & LPT)" for a new COM
 screen /dev/tty.usbmodemXXXX 115200
 ```
 
-(Baud rate is ignored by USB CDC serial, but `screen` requires you to specify one.) On Windows, use PuTTY, TeraTerm, or the Arduino IDE's Serial Monitor, set to CRLF, connected to the COM port found above.
+(Baud rate is ignored by USB CDC serial, but `screen` requires you to specify one.) On Windows, use PuTTY, TeraTerm, or the Arduino IDE's Serial Monitor, set to CRLF, connected to the COM port found above. You can also check the port without installing a terminal. Replace `COM4` with the COM port that appears when your board is plugged in normally, without BOOTSEL:
 
-**Check 1 — the board boots and attempts WiFi.** Within a couple of seconds of connecting, you should see one of:
+```powershell
+[System.IO.Ports.SerialPort]::GetPortNames()
+$port = [System.IO.Ports.SerialPort]::new('COM4', 115200)
+$port.NewLine = "`r`n"
+$port.DtrEnable = $true
+try {
+    $port.Open()
+    $port.WriteLine('SHOW')
+    Start-Sleep -Seconds 2
+    $port.ReadExisting()
+} finally {
+    if ($port.IsOpen) { $port.Close() }
+}
+```
+
+**Check 1 — the board boots and attempts WiFi.** After connecting the serial terminal, reset the board if you missed its startup messages. Allow at least 10 seconds for the WiFi connection attempt; you should see one of:
 
 ```
 WiFi connected
@@ -278,7 +309,6 @@ BEGINCFG|name=GY511_ACC|proto=i2c|mode=poll|freq_hz=5|i2c.sda=4|i2c.scl=5|i2c.ad
 Expect:
 
 ```
-CFG: begin
 CFG: ok (added #0: GY511_ACC)
 [SCHED] added: GY511_ACC on i2c
 ```
@@ -286,8 +316,10 @@ CFG: ok (added #0: GY511_ACC)
 For the HC-SR04 from section 3, use a pulse-mode config instead:
 
 ```
-BEGINCFG|name=HCSR04|proto=gpio|mode=poll|freq_hz=2|gpio.trig=16|gpio.echo=17|gpio.trig_us=10|gpio.pulse_timeout_us=25000|ENDCFG
+BEGINCFG|name=HCSR04|proto=gpio|gpio.mode=pulse|mode=poll|freq_hz=2|gpio.trig=16|gpio.echo=17|gpio.trig_us=10|gpio.pulse_timeout_us=25000|ENDCFG
 ```
+
+`gpio.mode=pulse` is required; without it, the GPIO driver defaults to digital input and does not trigger the ultrasonic sensor.
 
 Then type `RUN`. Within a second you should start seeing lines like:
 
@@ -295,7 +327,7 @@ Then type `RUN`. Within a second you should start seeing lines like:
 proto=i2c src=GY511_ACC len=6 ts=12345 : 00 12 FF EA 00 33
 ```
 
-with new lines arriving repeatedly at roughly the configured `freq_hz`, and the hex bytes changing when you move the sensor. That live, changing output is the real end-to-end proof: firmware built correctly, flashed correctly, the specific sensor is wired to the pins you told the config about, and the bus driver for that protocol is reading real data. Type `STOP` when done.
+with new lines arriving repeatedly and the hex bytes changing when you move the sensor. The current `main.c` sleeps for 1,000 ms on every loop, so a `freq_hz=5` configuration will still produce readings roughly once per second until the loop timing is changed. That live, changing output is the real end-to-end proof: firmware built correctly, flashed correctly, the specific sensor is wired to the pins you told the config about, and the bus driver for that protocol is reading real data. Type `STOP` when done.
 
 If you send the config and get `[SCHED] no free slots` or an `ERR:` line instead, re-check the syntax against `README.md`; if you get `[SCHED] added:` but never see any data lines after `RUN`, re-check the physical wiring from section 3 before assuming the firmware is broken.
 
@@ -305,4 +337,4 @@ If you send the config and get `[SCHED] no free slots` or an `ERR:` line instead
 
 If your assigned board turns out to be an original Pico W (RP2040) rather than a Pico 2 W, this firmware will not run on it as currently configured — flag this to the team rather than assuming your hardware matches.
 
-The HC-SR04 voltage situation in section 3 is a workaround, not a fix. Once the team's logic level shifter arrives, rewire the HC-SR04 through it at full 5 V rather than continuing to run it at 3.3 V or through a resistor divider.
+If the team's logic level shifter arrives, it can replace the Echo resistor divider in section 3. Keep the Pico GPIO side at 3.3 V logic and follow the exact sensor module's supply specification.
