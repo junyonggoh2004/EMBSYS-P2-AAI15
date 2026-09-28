@@ -17,6 +17,9 @@ obj/
 # Local Secrets
 project_v3/include/wifi_credentials.h
 
+# clangd index (Cursor code intelligence)
+.cache/
+
 # CMake
 CMakeCache.txt
 CMakeFiles/
