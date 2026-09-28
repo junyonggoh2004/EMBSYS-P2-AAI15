@@ -9,7 +9,6 @@
 The project is designed with a layered architecture to separate hardware abstraction, scheduling logic, and data distribution.
 
 ### System Data Flow
-
 ```mermaid
 graph TD
     subgraph Hardware
@@ -19,20 +18,21 @@ graph TD
     end
 
     subgraph "Bus Layer (Drivers)"
-        Bus_UART[bus/uart.c]
-        Bus_I2C[bus/i2c.c]
-        Bus_GPIO[bus/gpio.c]
+        Bus_UART["bus/uart.c"]
+        Bus_I2C["bus/i2c.c"]
+        Bus_GPIO["bus/gpio.c"]
     end
 
     subgraph "Application Layer"
-        Sched[Scheduler (scheduler.c)]
-        Output[Output Hub (output_format.c)]
+        Sched["Scheduler (scheduler.c)"]
+        Output["Output Hub (output_format.c)"]
     end
 
-    subgraph "Logic & Comms"
-        Rules[Rule Engine (rules.c)]
-        MQTT[MQTT Telemetry (mqtt_telemetry.c)]
-        Console[Serial REPL]
+    subgraph "Logic & Edge AI"
+        Rules["Rule Engine (rules.c)"]
+        Inference["Inference Mgr (TFLite)"]
+        Flash[(Flash Memory)]
+        MQTT[MQTT Comms]
     end
 
     %% Connections
@@ -40,17 +40,23 @@ graph TD
     S_I2C --> Bus_I2C
     S_GPIO --> Bus_GPIO
 
-    Bus_UART -->|Raw Bytes| Sched
-    Bus_I2C -->|Raw Bytes| Sched
-    Bus_GPIO -->|Raw Bytes| Sched
+    Bus_UART --> Sched
+    Bus_I2C --> Sched
+    Bus_GPIO --> Sched
 
     Sched -->|Data Frame| Output
 
-    Output -->|1. Print| Console
-    Output -->|2. Evaluate| Rules
-    Output -->|3. Publish| MQTT
+    Output -->|1. Evaluate| Rules
+    Output -->|2. Publish| MQTT
 
-    Rules -->|Trigger| Actions[Actions: GPIO / Log]
+    Rules -->|Action: infer.set/run| Inference
+    Inference -->|Anomaly Loss| Rules
+    
+    MQTT -->|OTA Binary| OTA[OTA Receiver]
+    OTA -->|Write| Flash
+    Flash -->|XIP Map| Inference
+
+    Rules -->|Trigger| Actions["Actions: GPIO / Log / Remote"]
 ```
 
 ### Layer Descriptions
@@ -158,7 +164,78 @@ You can send a JSON payload to `pico/<node_id>/config -f <filepath_of_json>` to 
 
 ---
 
-## 🧠 Rule Engine Guide
+## 🧠 Edge AI & TFLite Inference Engine
+
+Pico-v3 features a fully dynamic Edge AI pipeline powered by TensorFlow Lite for Microcontrollers (TFLite Micro). It allows you to perform real-time, on-device anomaly detection and classification without needing to recompile the firmware.
+
+### 1. The Inference Pipeline
+
+The ML pipeline operates independently from the main rule engine but can be seamlessly triggered by it:
+1. **Model Loader:** `.tflite` models and normalization parameters are transferred over MQTT and stored in Flash memory.
+2. **Inference Manager:** A wrapper around TFLite Micro that handles input normalization, quantized (INT8)/Float tensor mapping, and executing math.
+3. **Sensor Fusion Slots:** Up to 16 input features can be injected asynchronously by multiple sensors before running an inference pass.
+4. **Dynamic Thresholding:** Supports different thresholds based on which combination of sensors is currently active (Bitmasking).
+
+### 2. Uploading a Model
+
+Models and normalization parameters are uploaded via the `send_model.py` script. 
+
+**Format Requirements:**
+- Model: A standard flatbuffer `.tflite` file (INT8 or FP32). Arena size is capped at 64KB.
+- Parameters: A JSON file (`norm_stats.json`) containing `means`, `stds`, and optionally `thresholds_by_mask` and `score_mode`.
+
+**Example Upload:**
+```bash
+python send_model.py --broker 192.168.50.192 --model autoencoder_int8.tflite --norm norm_stats.json
+```
+*Note: The script uses a 3-phase chunky-transfer protocol over MQTT to safely write the model to the Pico's dedicated flash sector.*
+
+### 3. Using Inference in Rules
+
+You control the inference engine using standard rule actions.
+
+#### Injecting Data (`infer.set`)
+Use `infer.set:<slot_index>:<value>` to inject raw sensor values. The engine automatically applies the appropriate mean/std normalization.
+```ini
+action=infer.set:0:$ax | infer.set:1:$ay
+```
+
+#### Running Math (`infer.run`)
+Use `infer.run` to evaluate the model against the current slot inputs. It computes an Anomaly Loss based on the configured "Score Mode" (see below).
+```ini
+action=infer.run:log:ANOMALY DETECTED!
+```
+*If an anomaly is detected (loss > threshold), the chained action (e.g., `log:...` or `gpio:...`) is executed.*
+
+#### Efficiency (`batch:`)
+Because injecting 10+ features individually is verbose, you can use the `batch:` action modifier to execute multiple injection commands smoothly:
+```ini
+action=batch: infer.set:0:$f0 | infer.set:1:$f1 | infer.set:2:$f2 | infer.run:gpio:15=HIGH
+```
+
+### 4. Configuration & Profiling
+
+#### Score Modes
+You can configure how the Anomaly Loss is calculated from the model outputs:
+*   **MSE (Autoencoder)**: Calculates the Mean Squared Error between the inputs and outputs (reconstruction loss). *(Default)*
+*   **DISTANCE (SVDD)**: Calculates the L2-Norm (magnitude) of the output latent vector.
+*   *Configuring:* Add `"score_mode": "distance"` to your norm JSON before uploading, or send a live MQTT command: `mosquitto_pub -t "pico/<node>/cmd" -m "infer.mode distance"`
+
+#### Profiling and Verification
+You can enable verbose tensor dumping to verify normalizations and view execution limits:
+*   **Command:** `mosquitto_pub -t "pico/<node>/cmd" -m "debug.infer on"`
+*   **Console Output:**
+    ```text
+    [INFER] invoke=1290us | DIST=0.8300 mask=1010 thresh=1.2790 OK
+    [INFER VERBOSE] Inputs  : -2.586 0.000 1.441 ...
+    [INFER VERBOSE] Outputs : 0.000 -1.135 1.135 ...
+    ```
+    *   `invoke=XXXus`: The hardware timer latency for the TFLite math.
+    *   `mask`: The active sensor bitmask (e.g. `1010` means slots 0 and 2 have fresh data).
+
+---
+
+## ⚙️ Rule Engine Guide
 
 The Rule Engine allows the Pico to process data locally. Rules are defined using **Reverse Polish Notation (RPN)**.
 
@@ -281,8 +358,7 @@ What to do when the condition is met.
 **1. Control Flow (Pico 001 --> Pico 002)**
 
 **Scenario**: Pico 001 detects a local event and activates a sensor on Pico 002
-
-```
+```mermaid
 sequenceDiagram
     participant P1_Rule as Pico 001 Rule Engine
     participant P1_MQTT as Pico 001 MQTT Client
@@ -347,7 +423,7 @@ Use this to control the state of the scheduler on a remote node.
 **2. Bridging Data Flow (Pico 002 --> Pico 001)**
 
 **Scenario**: Pico 002 is now running its sensor. Pico 001 subscribes to that data to make decisions.
-```
+```mermaid
 sequenceDiagram
     participant P2_HW as Pico 002 Hardware
     participant P2_MQTT as Pico 002 MQTT Client

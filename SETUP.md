@@ -6,7 +6,7 @@ Verified end to end on macOS (Apple Silicon) on 2026-09-18. Windows and Linux no
 
 ## 0. What you are building, and on what hardware
 
-`project_v3` is the FlexiEdgePico firmware: a configuration-driven sensor node that reads UART, I2C, or GPIO sensors, evaluates rules on the data locally, and can publish over MQTT. Full behaviour and configuration syntax is documented in the top-level `README.md`; this document only covers getting it built and onto a board.
+`project_v3` is the FlexiEdgePico firmware: a configuration-driven sensor node that reads UART, I2C, or GPIO sensors, evaluates rules on the data locally, and can publish over MQTT. Full behaviour and configuration syntax is documented in `project_v3/README.md`; this document only covers getting it built and onto a board. The D1 porting checklist is in the top-level `README.md`.
 
 The board target is fixed in `CMakeLists.txt` (`PICO_BOARD=pico2_w`): this firmware is built for the **Raspberry Pi Pico 2 W**, which uses the RP2350 chip. It will not run on the original Pico W (RP2040) — the two are different microcontrollers and a binary built for one will not boot on the other. If your team's materials list has plain "Pico W" and not "Pico 2 W", confirm which one you actually have before going further.
 
@@ -18,7 +18,7 @@ To test an actual sensor rather than just confirming the board boots, you additi
 
 ## 2. Pico 2 W pinout reference
 
-The pin numbers below are what the configuration keys in `README.md` (`i2c.sda`, `gpio.trig`, `uart.tx`, and so on) refer to — they are GPIO numbers, not the physical pin position on the board edge. This table is the general-purpose pin layout, which is identical between the Pico 2 and the Pico 2 W since both use the same RP2350 chip; the difference between them is the wireless chip and antenna, and the onboard LED, which is not wired to a plain GPIO on the "W" variant. Ignore the LED pin for this project.
+The pin numbers below are what the configuration keys in `project_v3/README.md` (`i2c.sda`, `gpio.trig`, `uart.tx`, and so on) refer to — they are GPIO numbers, not the physical pin position on the board edge. This table is the general-purpose pin layout, which is identical between the Pico 2 and the Pico 2 W since both use the same RP2350 chip; the difference between them is the wireless chip and antenna, and the onboard LED, which is not wired to a plain GPIO on the "W" variant. Ignore the LED pin for this project.
 
 | GPIO | Common alt functions | GPIO | Common alt functions |
 |---|---|---|---|
@@ -54,18 +54,18 @@ The existing test configs in `project_v3/test_json/gy511.json` and `bmp388.json`
 - Sensor SDA to Pico **GP4**
 - Sensor SCL to Pico **GP5**
 
-Most small I2C breakouts run natively at 3.3 V, so no level shifting is needed here.
+Check the breakout's supply and logic voltage from its markings or datasheet before wiring. If it runs at 3.3 V it connects directly as shown; if it needs 5 V logic, its SDA and SCL lines need level shifting.
 
 ### HC-SR04 ultrasonic sensor
 
-`README.md` documents a GPIO pulse mode built specifically for this sensor, using `gpio.trig` and `gpio.echo`. Wire it as:
+`project_v3/README.md` documents a GPIO pulse mode built specifically for this sensor, using `gpio.trig` and `gpio.echo`. A standard HC-SR04 needs a 5 V supply and drives its Echo pin at 5 V, but the Pico's GPIO pins are only rated for 3.3 V. Power the sensor from 5 V and bring Echo down to 3.3 V with a resistor divider, or a logic level shifter if you have one:
 
-- Sensor VCC to Pico **3V3(OUT)** (see the warning below before using 5 V)
+- Sensor VCC to Pico **VBUS** (5 V from USB, physical pin 40)
 - Sensor GND to Pico **GND**
-- Sensor Trig to Pico **GP16**
-- Sensor Echo to Pico **GP17**
+- Sensor Trig to Pico **GP16** (a 3.3 V trigger pulse is enough for the HC-SR04)
+- Sensor Echo through the divider to Pico **GP17**: a 1 kΩ resistor from Echo to GP17, and a 2 kΩ resistor from GP17 to GND. This brings the 5 V echo down to about 3.3 V.
 
-**Voltage warning:** the classic HC-SR04 is a 5 V module. If you power it from 5 V (VBUS), its Echo pin will also output roughly 5 V, and the RP2350's GPIO pins are only rated for 3.3 V — connecting Echo directly at 5 V risks damaging the pin over repeated use. Your team's materials list still has a logic level shifter as "to purchase." Until that arrives, either power the HC-SR04 from **3V3(OUT)** instead of 5 V (it will usually still work, with somewhat reduced maximum range), or put a simple resistor divider on the Echo line (for example 1 kΩ in series from Echo to the Pico pin, and 2 kΩ from that same Pico pin to GND, which brings 5 V down to about 3.3 V). Don't wire Echo straight from a 5 V-powered sensor into a GPIO pin.
+**Voltage warning:** do not connect Echo directly to a GPIO pin while the sensor is powered from 5 V, since repeated 5 V signals can damage the pin. Do not power a standard HC-SR04 from 3V3(OUT) either: most units are specified for 5 V and give unreliable readings or none at 3.3 V. Only use 3.3 V if your specific module's datasheet says it supports it.
 
 ### UART sensor module
 
@@ -110,15 +110,11 @@ export PICO_SDK_PATH=$HOME/pico/pico-sdk
 ```
 git clone <this repo's URL>
 cd EMBSYS-P2-AAI15
-git checkout dev-hasif
+git checkout s3-port
 git submodule update --init
 ```
 
-`dev-hasif` already has two fixes applied on top of the original `Pico_Sample` branch: a restored TFLite Micro submodule reference, and this document. If you're on `Pico_Sample` directly and `git submodule update --init` reports nothing to do, you'll hit the missing-library error described in section 8 and need to add the submodule yourself:
-
-```
-git submodule add https://github.com/raspberrypi/pico-tflmicro.git project_v3/third_party/pico-tflmicro
-```
+`s3-port` is the D1 branch. It starts from the supplied `Pico_Sample` code and adds the TFLite Micro submodule reference that was missing from it, plus this document. `git submodule update --init` downloads that library; if you skip it, the build fails with the missing-library error described in section 10.
 
 ## 7. Create your WiFi and MQTT credentials file
 
@@ -229,13 +225,21 @@ ls /dev/tty.usbmodem* 2>/dev/null || ls /dev/ttyACM* 2>/dev/null
 
 On Windows, open Device Manager and look under "Ports (COM & LPT)" for a new COM port after plugging the board in.
 
-**Open a serial terminal to it,** with line endings set to CRLF (the REPL parser expects it). On macOS/Linux:
+**Open a serial terminal to it.** The firmware does not echo what you type, so use a terminal that shows your own input. On macOS/Linux, pySerial's miniterm does this:
 
 ```
-screen /dev/tty.usbmodemXXXX 115200
+python3 -m serial.tools.miniterm /dev/tty.usbmodemXXXX 115200 --echo
 ```
 
-(Baud rate is ignored by USB CDC serial, but `screen` requires you to specify one.) On Windows, use PuTTY, TeraTerm, or the Arduino IDE's Serial Monitor, set to CRLF, connected to the COM port found above.
+If `pyserial` is missing, install it with `pip3 install pyserial`. On a Homebrew Python this is refused as an "externally-managed environment"; use `pip3 install --user --break-system-packages pyserial` instead. Exit miniterm with `Ctrl-]`. The baud rate is ignored by USB CDC serial but must be given. On Windows, use PuTTY, TeraTerm, or the Arduino IDE's Serial Monitor connected to the COM port found above, with local echo on.
+
+Avoid `screen` here: it shows nothing as you type, and a `screen` session left detached in the background keeps the port open, so every later connection fails with "Resource busy". If that happens, `screen -ls` lists the stale session and `screen -X -S <name> quit` closes it.
+
+Three rules for typing into the REPL:
+
+1. Line endings must end in LF: CRLF or LF works, CR alone does not. miniterm sends CRLF by default.
+2. **Never correct a typo with Backspace or the arrow keys.** The REPL has no line editing, so those keys are stored as invisible characters inside the command and it comes back as `Unknown:`. If you mistype, press Enter, ignore the `Unknown:` reply, and type the whole line again.
+3. Paste long `BEGINCFG` lines in one go rather than typing them.
 
 **Check 1 — the board boots and attempts WiFi.** Within a couple of seconds of connecting, you should see one of:
 
@@ -247,7 +251,7 @@ or
 WiFi connect failed
 ```
 
-Either is fine for this check — it proves the firmware is actually running, not just that the board powered on. If you see nothing at all, press the board's reset (or unplug/replug), since the serial terminal may have connected after the boot messages already printed.
+Either is fine for this check — it proves the firmware is actually running, not just that the board powered on. The boot messages print only once, so if your terminal connected afterwards you won't see them. Instead you will see the running firmware's heartbeat: a `[SCHED …] run_all: running=0` line every second, and with placeholder WiFi credentials a `[MQTT] Status: Disconnected, Broker: 0.0.0.0` line every few seconds. Both are normal and prove the firmware is running just as well. If you see nothing at all, unplug and replug the board and reconnect.
 
 **Check 2 — the REPL responds to commands.** Type `SHOW` and press Enter. Expect:
 
@@ -275,18 +279,13 @@ If you get these exact responses, the REPL, scheduler, and USB serial stack are 
 BEGINCFG|name=GY511_ACC|proto=i2c|mode=poll|freq_hz=5|i2c.sda=4|i2c.scl=5|i2c.addr=0x1E|i2c.pre=0x00 0x10 0x02 0x00|i2c.post_delay_ms=2|i2c.reg=0x03|i2c.reg_size=1|i2c.read_len=6|i2c.restart=1|ENDCFG
 ```
 
-Expect:
+Expect, in this order (the timestamps will differ):
 
 ```
-CFG: begin
-CFG: ok (added #0: GY511_ACC)
+OK: Config applied (inline, delim='|')
+[SCHED    962940ms] add[0]: GY511_ACC on i2c freq=5.000Hz mode=poll I2C(sda=4,scl=5,addr=0x1E,reg=0x3,len=6)
 [SCHED] added: GY511_ACC on i2c
-```
-
-For the HC-SR04 from section 3, use a pulse-mode config instead:
-
-```
-BEGINCFG|name=HCSR04|proto=gpio|mode=poll|freq_hz=2|gpio.trig=16|gpio.echo=17|gpio.trig_us=10|gpio.pulse_timeout_us=25000|ENDCFG
+CFG: ok (added #0: GY511_ACC)
 ```
 
 Then type `RUN`. Within a second you should start seeing lines like:
@@ -295,9 +294,25 @@ Then type `RUN`. Within a second you should start seeing lines like:
 proto=i2c src=GY511_ACC len=6 ts=12345 : 00 12 FF EA 00 33
 ```
 
-with new lines arriving repeatedly at roughly the configured `freq_hz`, and the hex bytes changing when you move the sensor. That live, changing output is the real end-to-end proof: firmware built correctly, flashed correctly, the specific sensor is wired to the pins you told the config about, and the bus driver for that protocol is reading real data. Type `STOP` when done.
+For the HC-SR04 from section 3, use a pulse-mode config instead:
 
-If you send the config and get `[SCHED] no free slots` or an `ERR:` line instead, re-check the syntax against `README.md`; if you get `[SCHED] added:` but never see any data lines after `RUN`, re-check the physical wiring from section 3 before assuming the firmware is broken.
+```
+BEGINCFG|name=HCSR04|proto=gpio|gpio.mode=pulse|mode=poll|freq_hz=2|gpio.trig=16|gpio.echo=17|gpio.trig_us=10|gpio.pulse_timeout_us=25000|ENDCFG
+```
+
+**`gpio.mode=pulse` is required.** Without it the GPIO driver silently falls back to digital mode on a default pin: it never triggers the sensor, and its output looks like real data but is a pin state plus a millisecond counter that climbs steadily whatever the sensor does. To confirm the config was read correctly, check the `[SCHED …] add[0]:` line it prints: it must say `method=pulse`. If `method=` is blank, the mode is missing. The `GPIO(pin=…)` number on that line is not used in pulse mode and can be ignored.
+
+After `RUN`, a working HC-SR04 prints lines like:
+
+```
+proto=gpio src=HCSR04 len=3 ts=12345 : 2A 06 01
+```
+
+The first two bytes are the echo pulse width in microseconds, low byte first, so `2A 06` is 0x062A = 1578 µs. The third byte `01` marks a valid reading. Divide the width by 58 to get the distance in centimetres, so 1578 µs is about 27 cm. A line reading `len=1 … : 00` means no echo arrived before the timeout.
+
+Either way, new lines should arrive repeatedly at roughly the configured `freq_hz`, and the values should change when you move the sensor or your hand in front of it. That live, changing output is the real end-to-end proof: firmware built correctly, flashed correctly, the specific sensor is wired to the pins you told the config about, and the bus driver for that protocol is reading real data. Type `STOP` when done.
+
+If you send the config and get `[SCHED] no free slots` or an `ERR:` line instead, re-check the syntax against `project_v3/README.md`; if you get `[SCHED] added:` but never see any data lines after `RUN`, re-check the physical wiring from section 3 before assuming the firmware is broken.
 
 ## 13. Known issues and open items
 
@@ -305,4 +320,4 @@ If you send the config and get `[SCHED] no free slots` or an `ERR:` line instead
 
 If your assigned board turns out to be an original Pico W (RP2040) rather than a Pico 2 W, this firmware will not run on it as currently configured — flag this to the team rather than assuming your hardware matches.
 
-The HC-SR04 voltage situation in section 3 is a workaround, not a fix. Once the team's logic level shifter arrives, rewire the HC-SR04 through it at full 5 V rather than continuing to run it at 3.3 V or through a resistor divider.
+If the team's logic level shifter arrives, it can replace the Echo resistor divider in section 3. Keep the Pico side at 3.3 V logic and power the HC-SR04 as its own specification requires.
