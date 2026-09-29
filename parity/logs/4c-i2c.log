@@ -1,0 +1,33 @@
+16:00:24 [SCHED     53825ms] run_all: running=0
+16:00:25 [SCHED     54826ms] run_all: running=0
+16:00:25 --- cfg-tsl-id: BEGINCFG|name=TSLID|proto=i2c|mode=poll|freq_hz=1|i2c.sda=16|i2c.scl=17|i2c.addr=0x29|i2c.pre=0x80 0x03 0x81 0x02|i2c.reg=0x8A|i2c.reg_size=1|i2c.read_len=1|i2c.restart=1|ENDCFG
+16:00:26 [SCHED     55826ms] run_all: running=0
+16:00:27 [SCHED     56827ms] run_all: running=0
+16:00:27 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+16:00:28 OK: Config applied (inline, delim='|')
+16:00:28 [I2C] pre_len=4 : 80 03 81 02
+16:00:28 [I2C] pre write failed (sz=2 err=-1)
+16:00:28 [I2C] init pre-writes failed r=-1
+16:00:28 [SCHED     57828ms] add[0]: init_cfg FAILED for TSLID on i2c
+16:00:28 CFG: add failed (-2)
+16:00:28 [SCHED     57828ms] run_all: running=0
+16:00:29 [SCHED     58828ms] run_all: running=0
+16:00:30 [SCHED     59829ms] run_all: running=0
+16:00:31 [SCHED     60829ms] run_all: running=0
+16:00:32 [SCHED     61829ms] run_all: running=0
+16:00:32 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+16:00:33 [SCHED     62829ms] run_all: running=0
+16:00:34 [SCHED     63829ms] run_all: running=0
+16:00:35 [SCHED     64829ms] run_all: running=0
+16:00:36 [SCHED     65829ms] run_all: running=0
+16:00:36 --- i2c-id: RUN
+16:00:37 RUN
+16:00:37 [SCHED     66830ms] run_all: running=1
+16:00:37 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+16:00:38 [SCHED     67830ms] run_all: running=1
+16:00:39 [SCHED     68830ms] run_all: running=1
+16:00:40 [SCHED     69830ms] run_all: running=1
+16:00:41 [SCHED     70830ms] run_all: running=1
+16:00:42 [SCHED     71830ms] run_all: running=1
+16:00:43 [SCHED     72830ms] run_all: running=1
+16:00:43 [MQTT] Status: Disconnected, Broker: 0.0.0.0

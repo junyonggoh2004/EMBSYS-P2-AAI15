@@ -1,0 +1,20 @@
+Task 3 - Pico reference build record
+Built: 2026-09-28 17:24 +08, by Hasif, on macOS (Apple Silicon)
+Source commit: 543a759 (firmware sources unchanged through 23db9c8)
+Board: pico2_w (RP2350), Pico SDK 2.3.0
+Compiler: Arm GNU Toolchain 14.2.Rel1 (arm-none-eabi-gcc 14.2.1 20241119)
+TFLite Micro submodule: dfea53b977f131dc50d7060568ad4fd355d4d71e (raspberrypi/pico-tflmicro)
+Build type: Release
+
+Artifacts (SHA-256):
+3d25103af8f8ea6cd1fca3283ee1a3fbc2f93f1381e60cc1841b21abdd91e5c1  project_v3.uf2
+961077e89c99d9bd905702386853ab62c4e109e83a424c071fcd4be414c9b5a4  project_v3.elf
+
+Size (arm-none-eabi-size):
+   text	   data	    bss	    dec	    hex	filename
+ 639852	      0	 295424	 935276	  e456c	build/project_v3.elf
+
+Compiler warnings in framework sources: 0
+Build log tail:
+[100%] Linking CXX executable project_v3.elf
+[100%] Built target project_v3
