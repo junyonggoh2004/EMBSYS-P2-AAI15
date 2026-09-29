@@ -156,6 +156,105 @@ STAGES = {
         ("stop-light", "STOP", "STOP", 2.5, [r"^STOP$"]),
         ("clear-light", "CLEAR", "CLEAR", 2.5, [r"^CLEARED"]),
     ],
+    # Rules on real HC-SR04 data (Trig GP16, Echo GP17). Move an object in and out of 30 cm.
+    # 1740 us of echo is about 30 cm.
+    "sonic-rule": [
+        ("clear-sr", "CLEAR", "CLEAR", 2.5, [r"^CLEARED"]),
+        ("cfg-sr", "HC-SR04 pulse config is accepted",
+         "BEGINCFG|name=HCSR04|proto=gpio|gpio.mode=pulse|mode=poll|freq_hz=2|gpio.trig=16"
+         "|gpio.echo=17|gpio.trig_us=10|gpio.pulse_timeout_us=25000|ENDCFG",
+         2.5, [r"^CFG: ok \(added #\d+: HCSR04\)"]),
+        ("rule-near", "Rule for an object nearer than 30 cm is accepted",
+         "BEGINRULE|name=R_NEAR|source=HCSR04|calc=w=u16le(0)|when=w<1740|action=log:near|ENDRULE",
+         2.5, [r"^RULE: ok"]),
+        ("rule-far", "Rule for an object 30 cm or further is accepted",
+         "BEGINRULE|name=R_FAR|source=HCSR04|calc=w=u16le(0)|when=w>=1740|action=log:far|ENDRULE",
+         2.5, [r"^RULE: ok"]),
+        ("sonic-rules-run", "Both rules fire on real distance data as the object moves", "RUN", 40.0,
+         [r"^\[RULE\] R_NEAR: near", r"^\[RULE\] R_FAR: far"]),
+        ("stop-sr", "STOP", "STOP", 2.5, [r"^STOP$"]),
+        ("clear-sr-end", "CLEAR", "CLEAR", 2.5, [r"^CLEARED"]),
+    ],
+    # IR reflective module: VCC 3V3, GND, OUT on GP16. Three sensors read the same pin at once:
+    # plain digital, inverted digital (T-02) and counter (T-05). Wave a hand over it slowly.
+    "4d-ir": [
+        ("clear-ir", "CLEAR", "CLEAR", 2.5, [r"^CLEARED"]),
+        ("cfg-ir", "IR sensor as a digital input is accepted",
+         "BEGINCFG|name=IR|proto=gpio|gpio.mode=digital|gpio.pin=16|gpio.pull=up|mode=poll|freq_hz=2|ENDCFG",
+         2.5, [r"^CFG: ok \(added #\d+: IR\)"]),
+        ("cfg-irinv", "The same pin with gpio.invert=1 is accepted",
+         "BEGINCFG|name=IRINV|proto=gpio|gpio.mode=digital|gpio.pin=16|gpio.pull=up|gpio.invert=1"
+         "|mode=poll|freq_hz=2|ENDCFG",
+         2.5, [r"^CFG: ok \(added #\d+: IRINV\)"]),
+        ("cfg-ircnt", "The same pin as a counter is accepted",
+         "BEGINCFG|name=IRCNT|proto=gpio|gpio.mode=counter|gpio.pin=16|gpio.pull=up|mode=poll|freq_hz=2|ENDCFG",
+         2.5, [r"^CFG: ok \(added #\d+: IRCNT\)"]),
+        ("ir-run", "A hand over the sensor changes both states, inverted reads the opposite, counter counts",
+         "RUN", 40.0,
+         [r"src=IR len=3 ts=\d+ : 00 ", r"src=IR len=3 ts=\d+ : 01 ",
+          r"src=IRINV len=3 ts=\d+ : 00 ", r"src=IRINV len=3 ts=\d+ : 01 ",
+          r"src=IRCNT len=4 ts=\d+ : 0[2-9A-F] 00 00 00"]),
+        ("stop-ir", "STOP", "STOP", 2.5, [r"^STOP$"]),
+        ("clear-ir-end", "CLEAR", "CLEAR", 2.5, [r"^CLEARED"]),
+    ],
+    # IR module retest on a fresh pin (OUT on GP20) with pull-down, so the result is decisive:
+    # steady 00 = wire not connected, steady 01 = output never changes, both = sensor works.
+    "4d-ir2": [
+        ("clear-ir2", "CLEAR", "CLEAR", 2.5, [r"^CLEARED"]),
+        ("cfg-ir2", "IR sensor on GP20 with pull-down is accepted",
+         "BEGINCFG|name=IR2|proto=gpio|gpio.mode=digital|gpio.pin=20|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG",
+         2.5, [r"^CFG: ok \(added #\d+: IR2\)"]),
+        ("cfg-ir2cnt", "The same pin as a counter is accepted",
+         "BEGINCFG|name=IR2CNT|proto=gpio|gpio.mode=counter|gpio.pin=20|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG",
+         2.5, [r"^CFG: ok \(added #\d+: IR2CNT\)"]),
+        ("ir2-run", "Triggering the sensor flips GP20 both ways and the counter counts", "RUN", 40.0,
+         [r"src=IR2 len=3 ts=\d+ : 00 ", r"src=IR2 len=3 ts=\d+ : 01 ",
+          r"src=IR2CNT len=4 ts=\d+ : 0[2-9A-F] 00 00 00"]),
+        ("stop-ir2", "STOP", "STOP", 2.5, [r"^STOP$"]),
+        ("clear-ir2-end", "CLEAR", "CLEAR", 2.5, [r"^CLEARED"]),
+    ],
+    # LM393 comparator board: VCC 3V3, GND, D0 on GP18. Turning its knob moves the threshold,
+    # so D0 flips. Pull-down makes a disconnected wire read a steady 00 instead of a false 01.
+    "4e-comp": [
+        ("clear-comp", "CLEAR", "CLEAR", 2.5, [r"^CLEARED"]),
+        ("cfg-comp", "Comparator D0 as a digital input on GP18 is accepted",
+         "BEGINCFG|name=COMP|proto=gpio|gpio.mode=digital|gpio.pin=18|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG",
+         2.5, [r"^CFG: ok \(added #\d+: COMP\)"]),
+        ("cfg-compcnt", "The same pin as a counter is accepted",
+         "BEGINCFG|name=COMPCNT|proto=gpio|gpio.mode=counter|gpio.pin=18|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG",
+         2.5, [r"^CFG: ok \(added #\d+: COMPCNT\)"]),
+        ("comp-run", "Turning the knob flips D0 both ways and the counter counts the flips", "RUN", 40.0,
+         [r"src=COMP len=3 ts=\d+ : 00 ", r"src=COMP len=3 ts=\d+ : 01 ",
+          r"src=COMPCNT len=4 ts=\d+ : 0[2-9A-F] 00 00 00"]),
+        ("stop-comp", "STOP", "STOP", 2.5, [r"^STOP$"]),
+        ("clear-comp-end", "CLEAR", "CLEAR", 2.5, [r"^CLEARED"]),
+    ],
+    # T-04: eight sensors at a high requested rate. Needs nothing wired to GP22.
+    "t04": [
+        ("clear-t04", "CLEAR", "CLEAR", 2.5, [r"^CLEARED"]),
+        *[(f"cfg-t04-{n}", f"Fast sensor {n} of 8 is accepted",
+           f"BEGINCFG|name=F{n}|proto=gpio|gpio.mode=digital|gpio.pin=22|gpio.pull=down"
+           "|mode=poll|freq_hz=20|ENDCFG",
+           2.5, [rf"^CFG: ok \(added #\d+: F{n}\)"]) for n in range(1, 9)],
+        ("run-t04", "All eight sensors keep publishing under load", "RUN", 12.0,
+         [rf"^proto=gpio src=F{n} len=3" for n in range(1, 9)]),
+        ("stop-t04", "STOP", "STOP", 2.5, [r"^STOP$"]),
+        ("alive-t04", "The board still answers after the overload run", "SHOW", 2.5,
+         [r"^\[SHOW\] sampling=0"]),
+        ("clear-t04-end", "CLEAR", "CLEAR", 2.5, [r"^CLEARED"]),
+    ],
+    # T-03: an out-of-range GPIO number. Reference defect: it is accepted and returns fake readings.
+    "t03": [
+        ("clear-t03", "CLEAR", "CLEAR", 2.5, [r"^CLEARED"]),
+        ("cfg-t03", "DEFECT: a config with gpio.pin=99 is accepted",
+         "BEGINCFG|name=BADPIN|proto=gpio|gpio.mode=digital|gpio.pin=99|mode=poll|freq_hz=1|ENDCFG",
+         3.0, [r"GPIO\(pin=99\)", r"^CFG: ok \(added #\d+: BADPIN\)"]),
+        ("run-t03", "DEFECT: the nonexistent pin publishes normal-looking readings", "RUN", 4.0,
+         [r"^proto=gpio src=BADPIN len=3 ts=\d+ : 00 "]),
+        ("stop-t03", "STOP", "STOP", 2.5, [r"^STOP$"]),
+        ("alive-t03", "The board did not crash", "SHOW", 3.0, [r"^\[SHOW\] sampling=0"]),
+        ("clear-t03-end", "CLEAR", "CLEAR", 2.5, [r"^CLEARED"]),
+    ],
     # T-10: a false when= runs no action, while a true one on the same sensor still fires.
     "t10": [
         ("clear-t10", "CLEAR", "CLEAR", 2.5, [r"^CLEARED"]),

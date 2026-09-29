@@ -1,0 +1,252 @@
+21:19:55 [SCHED   4627211ms] run_all: running=0
+21:19:55 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+21:19:56 [SCHED   4628211ms] run_all: running=0
+21:19:56 --- clear-comp: CLEAR
+21:19:57 [SCHED   4629212ms] reset: cleared 8 slots
+21:19:57 [RULE] reset
+21:19:57 CLEARED
+21:19:57 [SCHED   4629212ms] run_all: running=0
+21:19:58 [SCHED   4630212ms] run_all: running=0
+21:19:59 [SCHED   4631212ms] run_all: running=0
+21:19:59 --- cfg-comp: BEGINCFG|name=COMP|proto=gpio|gpio.mode=digital|gpio.pin=18|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+21:20:00 [SCHED   4632213ms] run_all: running=0
+21:20:00 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+21:20:01 OK: Config applied (inline, delim='|')
+21:20:01 [SCHED   4633213ms] add[0]: COMP on gpio freq=2.000Hz mode=poll method=digital GPIO(pin=18)
+21:20:01 [SCHED] added: COMP on gpio
+21:20:01 CFG: ok (added #0: COMP)
+21:20:01 [SCHED   4633214ms] run_all: running=0
+21:20:02 --- cfg-compcnt: BEGINCFG|name=COMPCNT|proto=gpio|gpio.mode=counter|gpio.pin=18|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+21:20:02 [SCHED   4634214ms] run_all: running=0
+21:20:03 OK: Config applied (inline, delim='|')
+21:20:03 [SCHED   4635215ms] add[1]: COMPCNT on gpio freq=2.000Hz mode=poll method=counter GPIO(pin=18)
+21:20:03 [SCHED] added: COMPCNT on gpio
+21:20:03 CFG: ok (added #1: COMPCNT)
+21:20:03 [SCHED   4635215ms] run_all: running=0
+21:20:04 [SCHED   4636216ms] run_all: running=0
+21:20:04 --- comp-run: RUN
+21:20:05 RUN
+21:20:05 [SCHED   4637216ms] run_all: running=1
+21:20:05 [SCHED   4637216ms] arm[0/COMP]: next_run reset to NOW
+21:20:05 [SCHED   4637216ms] arm[1/COMPCNT]: next_run reset to NOW
+21:20:05 [SCHED   4637216ms] publish[0/COMP]: 3 bytes via gpio
+21:20:05 proto=gpio src=COMP len=3 ts=4637216 : 01 A3 0F
+21:20:05 [SCHED   4637216ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:05 proto=gpio src=COMPCNT len=4 ts=4637217 : 00 00 00 00
+21:20:05 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+21:20:06 [SCHED   4638217ms] run_all: running=1
+21:20:06 [SCHED   4638217ms] publish[0/COMP]: 3 bytes via gpio
+21:20:06 proto=gpio src=COMP len=3 ts=4638217 : 01 8C 13
+21:20:06 [SCHED   4638217ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:06 proto=gpio src=COMPCNT len=4 ts=4638217 : 00 00 00 00
+21:20:07 [SCHED   4639218ms] run_all: running=1
+21:20:07 [SCHED   4639218ms] publish[0/COMP]: 3 bytes via gpio
+21:20:07 proto=gpio src=COMP len=3 ts=4639218 : 01 75 17
+21:20:07 [SCHED   4639218ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:07 proto=gpio src=COMPCNT len=4 ts=4639218 : 00 00 00 00
+21:20:08 [SCHED   4640218ms] run_all: running=1
+21:20:08 [SCHED   4640218ms] publish[0/COMP]: 3 bytes via gpio
+21:20:08 proto=gpio src=COMP len=3 ts=4640219 : 01 5D 1B
+21:20:08 [SCHED   4640219ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:08 proto=gpio src=COMPCNT len=4 ts=4640219 : 00 00 00 00
+21:20:09 [SCHED   4641219ms] run_all: running=1
+21:20:09 [SCHED   4641219ms] publish[0/COMP]: 3 bytes via gpio
+21:20:09 proto=gpio src=COMP len=3 ts=4641219 : 01 46 1F
+21:20:09 [SCHED   4641219ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:09 proto=gpio src=COMPCNT len=4 ts=4641220 : 00 00 00 00
+21:20:10 [SCHED   4642220ms] run_all: running=1
+21:20:10 [SCHED   4642220ms] publish[0/COMP]: 3 bytes via gpio
+21:20:10 proto=gpio src=COMP len=3 ts=4642220 : 01 2F 23
+21:20:10 [SCHED   4642220ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:10 proto=gpio src=COMPCNT len=4 ts=4642220 : 00 00 00 00
+21:20:10 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+21:20:11 [SCHED   4643221ms] run_all: running=1
+21:20:11 [SCHED   4643221ms] publish[0/COMP]: 3 bytes via gpio
+21:20:11 proto=gpio src=COMP len=3 ts=4643221 : 01 18 27
+21:20:11 [SCHED   4643221ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:11 proto=gpio src=COMPCNT len=4 ts=4643221 : 00 00 00 00
+21:20:12 [SCHED   4644221ms] run_all: running=1
+21:20:12 [SCHED   4644221ms] publish[0/COMP]: 3 bytes via gpio
+21:20:12 proto=gpio src=COMP len=3 ts=4644221 : 01 00 2B
+21:20:12 [SCHED   4644222ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:12 proto=gpio src=COMPCNT len=4 ts=4644222 : 00 00 00 00
+21:20:13 [SCHED   4645222ms] run_all: running=1
+21:20:13 [SCHED   4645222ms] publish[0/COMP]: 3 bytes via gpio
+21:20:13 proto=gpio src=COMP len=3 ts=4645222 : 01 E9 2E
+21:20:13 [SCHED   4645222ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:13 proto=gpio src=COMPCNT len=4 ts=4645223 : 00 00 00 00
+21:20:14 [SCHED   4646223ms] run_all: running=1
+21:20:14 [SCHED   4646223ms] publish[0/COMP]: 3 bytes via gpio
+21:20:14 proto=gpio src=COMP len=3 ts=4646223 : 01 D2 32
+21:20:14 [SCHED   4646223ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:14 proto=gpio src=COMPCNT len=4 ts=4646223 : 00 00 00 00
+21:20:15 [SCHED   4647223ms] run_all: running=1
+21:20:15 [SCHED   4647224ms] publish[0/COMP]: 3 bytes via gpio
+21:20:15 proto=gpio src=COMP len=3 ts=4647224 : 01 BB 36
+21:20:15 [SCHED   4647224ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:15 proto=gpio src=COMPCNT len=4 ts=4647224 : 00 00 00 00
+21:20:15 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+21:20:16 [SCHED   4648224ms] run_all: running=1
+21:20:16 [SCHED   4648224ms] publish[0/COMP]: 3 bytes via gpio
+21:20:16 proto=gpio src=COMP len=3 ts=4648224 : 01 A3 3A
+21:20:16 [SCHED   4648225ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:16 proto=gpio src=COMPCNT len=4 ts=4648225 : 00 00 00 00
+21:20:17 [SCHED   4649225ms] run_all: running=1
+21:20:17 [SCHED   4649225ms] publish[0/COMP]: 3 bytes via gpio
+21:20:17 proto=gpio src=COMP len=3 ts=4649225 : 01 8C 3E
+21:20:17 [SCHED   4649225ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:17 proto=gpio src=COMPCNT len=4 ts=4649225 : 00 00 00 00
+21:20:18 [SCHED   4650226ms] run_all: running=1
+21:20:18 [SCHED   4650226ms] publish[0/COMP]: 3 bytes via gpio
+21:20:18 proto=gpio src=COMP len=3 ts=4650226 : 01 75 42
+21:20:18 [SCHED   4650226ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:18 proto=gpio src=COMPCNT len=4 ts=4650226 : 00 00 00 00
+21:20:19 [SCHED   4651226ms] run_all: running=1
+21:20:19 [SCHED   4651227ms] publish[0/COMP]: 3 bytes via gpio
+21:20:19 proto=gpio src=COMP len=3 ts=4651227 : 01 5D 46
+21:20:19 [SCHED   4651227ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:19 proto=gpio src=COMPCNT len=4 ts=4651227 : 00 00 00 00
+21:20:20 [SCHED   4652227ms] run_all: running=1
+21:20:20 [SCHED   4652227ms] publish[0/COMP]: 3 bytes via gpio
+21:20:20 proto=gpio src=COMP len=3 ts=4652227 : 01 46 4A
+21:20:20 [SCHED   4652228ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:20 proto=gpio src=COMPCNT len=4 ts=4652228 : 00 00 00 00
+21:20:20 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+21:20:21 [SCHED   4653228ms] run_all: running=1
+21:20:21 [SCHED   4653228ms] publish[0/COMP]: 3 bytes via gpio
+21:20:21 proto=gpio src=COMP len=3 ts=4653228 : 01 2F 4E
+21:20:21 [SCHED   4653228ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:21 proto=gpio src=COMPCNT len=4 ts=4653228 : 00 00 00 00
+21:20:22 [SCHED   4654229ms] run_all: running=1
+21:20:22 [SCHED   4654229ms] publish[0/COMP]: 3 bytes via gpio
+21:20:22 proto=gpio src=COMP len=3 ts=4654229 : 01 18 52
+21:20:22 [SCHED   4654229ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:22 proto=gpio src=COMPCNT len=4 ts=4654229 : 00 00 00 00
+21:20:23 [SCHED   4655229ms] run_all: running=1
+21:20:23 [SCHED   4655229ms] publish[0/COMP]: 3 bytes via gpio
+21:20:23 proto=gpio src=COMP len=3 ts=4655230 : 01 00 56
+21:20:23 [SCHED   4655230ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:23 proto=gpio src=COMPCNT len=4 ts=4655230 : 00 00 00 00
+21:20:24 [SCHED   4656230ms] run_all: running=1
+21:20:24 [SCHED   4656230ms] publish[0/COMP]: 3 bytes via gpio
+21:20:24 proto=gpio src=COMP len=3 ts=4656230 : 01 E9 59
+21:20:24 [SCHED   4656230ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:24 proto=gpio src=COMPCNT len=4 ts=4656231 : 00 00 00 00
+21:20:25 [SCHED   4657231ms] run_all: running=1
+21:20:25 [SCHED   4657231ms] publish[0/COMP]: 3 bytes via gpio
+21:20:25 proto=gpio src=COMP len=3 ts=4657231 : 01 D2 5D
+21:20:25 [SCHED   4657231ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:25 proto=gpio src=COMPCNT len=4 ts=4657231 : 00 00 00 00
+21:20:25 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+21:20:26 [SCHED   4658232ms] run_all: running=1
+21:20:26 [SCHED   4658232ms] publish[0/COMP]: 3 bytes via gpio
+21:20:26 proto=gpio src=COMP len=3 ts=4658232 : 01 BB 61
+21:20:26 [SCHED   4658232ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:26 proto=gpio src=COMPCNT len=4 ts=4658232 : 00 00 00 00
+21:20:27 [SCHED   4659232ms] run_all: running=1
+21:20:27 [SCHED   4659232ms] publish[0/COMP]: 3 bytes via gpio
+21:20:27 proto=gpio src=COMP len=3 ts=4659233 : 01 A3 65
+21:20:27 [SCHED   4659233ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:27 proto=gpio src=COMPCNT len=4 ts=4659233 : 00 00 00 00
+21:20:28 [SCHED   4660233ms] run_all: running=1
+21:20:28 [SCHED   4660233ms] publish[0/COMP]: 3 bytes via gpio
+21:20:28 proto=gpio src=COMP len=3 ts=4660233 : 01 8C 69
+21:20:28 [SCHED   4660233ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:28 proto=gpio src=COMPCNT len=4 ts=4660234 : 00 00 00 00
+21:20:29 [SCHED   4661234ms] run_all: running=1
+21:20:29 [SCHED   4661234ms] publish[0/COMP]: 3 bytes via gpio
+21:20:29 proto=gpio src=COMP len=3 ts=4661234 : 01 75 6D
+21:20:29 [SCHED   4661234ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:29 proto=gpio src=COMPCNT len=4 ts=4661234 : 00 00 00 00
+21:20:30 [SCHED   4662234ms] run_all: running=1
+21:20:30 [SCHED   4662235ms] publish[0/COMP]: 3 bytes via gpio
+21:20:30 proto=gpio src=COMP len=3 ts=4662235 : 01 5E 71
+21:20:30 [SCHED   4662235ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:30 proto=gpio src=COMPCNT len=4 ts=4662235 : 00 00 00 00
+21:20:30 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+21:20:31 [SCHED   4663235ms] run_all: running=1
+21:20:31 [SCHED   4663235ms] publish[0/COMP]: 3 bytes via gpio
+21:20:31 proto=gpio src=COMP len=3 ts=4663235 : 01 46 75
+21:20:31 [SCHED   4663236ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:31 proto=gpio src=COMPCNT len=4 ts=4663236 : 00 00 00 00
+21:20:32 [SCHED   4664236ms] run_all: running=1
+21:20:32 [SCHED   4664236ms] publish[0/COMP]: 3 bytes via gpio
+21:20:32 proto=gpio src=COMP len=3 ts=4664236 : 01 2F 79
+21:20:32 [SCHED   4664236ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:32 proto=gpio src=COMPCNT len=4 ts=4664236 : 00 00 00 00
+21:20:33 [SCHED   4665237ms] run_all: running=1
+21:20:33 [SCHED   4665237ms] publish[0/COMP]: 3 bytes via gpio
+21:20:33 proto=gpio src=COMP len=3 ts=4665237 : 01 18 7D
+21:20:33 [SCHED   4665237ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:33 proto=gpio src=COMPCNT len=4 ts=4665237 : 00 00 00 00
+21:20:34 [SCHED   4666237ms] run_all: running=1
+21:20:34 [SCHED   4666238ms] publish[0/COMP]: 3 bytes via gpio
+21:20:34 proto=gpio src=COMP len=3 ts=4666238 : 01 01 81
+21:20:34 [SCHED   4666238ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:34 proto=gpio src=COMPCNT len=4 ts=4666238 : 00 00 00 00
+21:20:35 [SCHED   4667238ms] run_all: running=1
+21:20:35 [SCHED   4667238ms] publish[0/COMP]: 3 bytes via gpio
+21:20:35 proto=gpio src=COMP len=3 ts=4667238 : 01 E9 84
+21:20:35 [SCHED   4667239ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:35 proto=gpio src=COMPCNT len=4 ts=4667239 : 00 00 00 00
+21:20:35 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+21:20:36 [SCHED   4668239ms] run_all: running=1
+21:20:36 [SCHED   4668239ms] publish[0/COMP]: 3 bytes via gpio
+21:20:36 proto=gpio src=COMP len=3 ts=4668239 : 01 D2 88
+21:20:36 [SCHED   4668239ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:36 proto=gpio src=COMPCNT len=4 ts=4668240 : 00 00 00 00
+21:20:37 [SCHED   4669240ms] run_all: running=1
+21:20:37 [SCHED   4669240ms] publish[0/COMP]: 3 bytes via gpio
+21:20:37 proto=gpio src=COMP len=3 ts=4669240 : 01 BB 8C
+21:20:37 [SCHED   4669240ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:37 proto=gpio src=COMPCNT len=4 ts=4669240 : 00 00 00 00
+21:20:38 [SCHED   4670240ms] run_all: running=1
+21:20:38 [SCHED   4670241ms] publish[0/COMP]: 3 bytes via gpio
+21:20:38 proto=gpio src=COMP len=3 ts=4670241 : 01 A4 90
+21:20:38 [SCHED   4670241ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:38 proto=gpio src=COMPCNT len=4 ts=4670241 : 00 00 00 00
+21:20:39 [SCHED   4671241ms] run_all: running=1
+21:20:39 [SCHED   4671241ms] publish[0/COMP]: 3 bytes via gpio
+21:20:39 proto=gpio src=COMP len=3 ts=4671241 : 01 8C 94
+21:20:39 [SCHED   4671242ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:39 proto=gpio src=COMPCNT len=4 ts=4671242 : 00 00 00 00
+21:20:40 [SCHED   4672242ms] run_all: running=1
+21:20:40 [SCHED   4672242ms] publish[0/COMP]: 3 bytes via gpio
+21:20:40 proto=gpio src=COMP len=3 ts=4672242 : 01 75 98
+21:20:40 [SCHED   4672242ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:40 proto=gpio src=COMPCNT len=4 ts=4672242 : 00 00 00 00
+21:20:40 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+21:20:41 [SCHED   4673243ms] run_all: running=1
+21:20:41 [SCHED   4673243ms] publish[0/COMP]: 3 bytes via gpio
+21:20:41 proto=gpio src=COMP len=3 ts=4673243 : 01 5E 9C
+21:20:41 [SCHED   4673243ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:41 proto=gpio src=COMPCNT len=4 ts=4673243 : 00 00 00 00
+21:20:42 [SCHED   4674244ms] run_all: running=1
+21:20:42 [SCHED   4674244ms] publish[0/COMP]: 3 bytes via gpio
+21:20:42 proto=gpio src=COMP len=3 ts=4674244 : 01 47 A0
+21:20:42 [SCHED   4674244ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:42 proto=gpio src=COMPCNT len=4 ts=4674244 : 00 00 00 00
+21:20:43 [SCHED   4675244ms] run_all: running=1
+21:20:43 [SCHED   4675244ms] publish[0/COMP]: 3 bytes via gpio
+21:20:43 proto=gpio src=COMP len=3 ts=4675245 : 01 2F A4
+21:20:43 [SCHED   4675245ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:43 proto=gpio src=COMPCNT len=4 ts=4675245 : 00 00 00 00
+21:20:44 [SCHED   4676245ms] run_all: running=1
+21:20:44 [SCHED   4676245ms] publish[0/COMP]: 3 bytes via gpio
+21:20:44 proto=gpio src=COMP len=3 ts=4676245 : 01 18 A8
+21:20:44 [SCHED   4676245ms] publish[1/COMPCNT]: 4 bytes via gpio
+21:20:44 proto=gpio src=COMPCNT len=4 ts=4676246 : 00 00 00 00
+21:20:45 --- stop-comp: STOP
+21:20:45 STOP
+21:20:45 [SCHED   4677246ms] run_all: running=0
+21:20:45 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+21:20:46 [SCHED   4678246ms] run_all: running=0
+21:20:47 [SCHED   4679246ms] run_all: running=0
+21:20:47 --- clear-comp-end: CLEAR
+21:20:48 [SCHED   4680246ms] reset: cleared 8 slots
+21:20:48 [RULE] reset
+21:20:48 CLEARED
+21:20:48 [SCHED   4680247ms] run_all: running=0
+21:20:49 [SCHED   4681247ms] run_all: running=0
+21:20:50 [SCHED   4682247ms] run_all: running=0
+21:20:50 [MQTT] Status: Disconnected, Broker: 0.0.0.0

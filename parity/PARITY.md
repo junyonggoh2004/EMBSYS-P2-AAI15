@@ -54,6 +54,7 @@ These are behaviours of the supplied Pico firmware, recorded as the baseline. Th
 | D-05 | The UART driver never empties its receive buffer. On the first run after boot, a stray `00` entered when the pins were set up, and every later reply stayed one byte out of step | P-17 |
 | D-06 | Sampling is capped at about 1 Hz by the fixed 1000 ms main-loop delay, whatever `freq_hz` requests | NFR-01 |
 | D-07 | With nothing in range, the HC-SR04 holds Echo high for longer than `gpio.pulse_timeout_us`. The driver clips the width at the timeout but still marks the reading valid: `A9 61 01` is 25 001 µs, about 431 cm. "Nothing in range" is therefore indistinguishable from a real reading at the timeout distance | P-12, 26 readings in `4c-sonic.log` |
+| D-08 | A GPIO pin number that does not exist (`gpio.pin=99`; the RP2350 has GPIO 0 to 29) is accepted, and the sensor then publishes normal-looking `00` readings from it. Wrong data with no error | T-03 |
 
 ### Planned test rows for tasks 13 to 20
 
@@ -62,9 +63,9 @@ The README's acceptance for tasks 13 to 20 names specific fault and limit cases.
 | ID | Task | Planned test | Pico status | ESP32-S3 result |
 |---|---|---|---|---|
 | T-01 | 13 | FreeRTOS tasks run the REPL and scheduler with no watchdog resets; stack high-water marks recorded for every task | N/A (no RTOS) | |
-| T-02 | 14 | `gpio.invert=1` and `gpio.debounce_ms` change the reported state as documented | Not yet run; loopback wire only | |
-| T-03 | 14 | An out-of-range `gpio.pin` is refused rather than crashing the board | Not yet run | |
-| T-04 | 14 | Eight sensors at the highest supported rate keep their sample period, or the overload is reported | Not yet run | |
+| T-02 | 14 | `gpio.invert=1` and `gpio.debounce_ms` change the reported state as documented | Invert: pass. On 81 paired samples of the same pin, the `gpio.invert=1` sensor always reported the opposite of the plain one (stage `4d-ir`). Debounce: not measurable at the reference's 1 s sampling interval (D-06) | |
+| T-03 | 14 | An out-of-range `gpio.pin` is refused rather than crashing the board | Defect recorded (D-08): `gpio.pin=99` is accepted with `CFG: ok` and then publishes normal-looking `00` readings every second. The board does not crash. Stage `t03`, `logs/t03.log` | |
+| T-04 | 14 | Eight sensors at the highest supported rate keep their sample period, or the overload is reported | Pass on stability, with a gap: 8 sensors at a requested `freq_hz=20` (50 ms) all kept publishing and the board kept responding, but every sensor was sampled every 1002 to 1003 ms and no overload was reported (D-06). Stage `t04`, `logs/t04.log` | |
 | T-05 | 15 | Counter mode loses no edges up to a stated maximum rate | Not yet run; the rate limit is set in task 4 review | |
 | T-06 | 15 | One-wire with the sensor absent times out cleanly | Not yet run | |
 | T-07 | 16 | I2C with `i2c.restart=0` against `1`, two devices on one bus, and recovery after a device is unplugged | Not yet run; the TSL2561 is now available for it | |
@@ -114,6 +115,8 @@ The README's acceptance for tasks 13 to 20 names specific fault and limit cases.
 | P-28 | FR-13 | Not yet written | `cmd.to`, `cfg.to` and bridging between two nodes | Not run; needs a second Pico | **Pending network** | | |
 | P-29 | FR-14 | Not yet written | `send_model.py` upload, then `infer.run` | Not run | **Pending network** | | |
 | P-30 | FR-09 | Not yet written | The team's reference UART sensor (radar) returns its frames | Not run. UART has only been proven with a loopback wire (P-16) | **Pending hardware** | | |
+| P-31 | FR-04, FR-05 | `4d-ir` / `ir-run` | A real digital sensor (3-pin IR module, OUT on GP16) switches the input between `00` and `01`, and counter mode counts the changes | Not verified. The module's own indicator LED visibly changed when triggered, but GP16 read `01` on all 81 samples across two runs and the counter stayed at 0. The cause is not identified; a wiring fault at GP16 is suspected. A pull-down scan read GP16 and GP17 both high, possibly the RP2350's pull-down latching erratum (E9) | Not verified; **optional extra, not required for task 5** (GPIO digital and counter are covered by P-10 and P-11) | `4d-ir.log` | |
+| P-32 | FR-04, FR-05 | `4e-comp` / `comp-run` | A 4-pin LM393 comparator board (the team's "temperature sensor"; D0 on GP18) flips D0 when its threshold knob is turned | Not verified. D0 was actively driven high (it read `01` with the pull-down enabled, so the wire was connected), but it stayed `01` on all 40 samples while the knob was turned, and the counter stayed at 0. The board's sensing element appears to be missing (empty pads), so its threshold may never be crossed. This board is not a one-wire sensor, so it cannot cover P-14 | Not verified; **optional extra, not required for task 5** | `4e-comp.log` | |
 | N-01 | FR-03 | `5-neg` / `neg-proto` | Unsupported protocol refused | Accepted as I2C on default pins (D-01) | Defect recorded | `5-neg.log` | |
 | N-02 | FR-08 | `5-neg` / `neg-i2c-nodev` | Missing I2C device refused | `init_cfg FAILED for NODEV`, `CFG: add failed (-2)` | Pass | `5-neg.log` | |
 | N-03 | FR-03 | `5-neg` / `neg-nopin` | Config without a pin refused | Accepted on GP2 (D-02) | Defect recorded | `5-neg.log` | |
