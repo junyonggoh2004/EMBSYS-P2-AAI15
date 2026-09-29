@@ -1,8 +1,8 @@
-# Building, Flashing, and Verifying project_v3 (FlexiEdgePico)
+# Pico Reference and ESP32-S3 Arduino Setup
 
-This is the complete guide for getting the existing sensor node firmware running on your own hardware, from an empty machine to a board that is confirmed working. It covers what to install, what to wire, how to build, how to flash, and — critically — how to actually prove each stage worked rather than just assuming it did. Read it in order the first time through.
+Sections 0–13 are the complete guide for getting the existing Pico reference firmware running on your own hardware, from an empty machine to a board that is confirmed working. They cover what to install, wire, build, flash and verify. The separate ESP32-S3 Arduino setup plan follows section 13.
 
-Verified end to end on macOS (Apple Silicon) on 2026-09-18. Windows and Linux notes are marked wherever a step differs.
+The Pico procedure was verified end to end on macOS (Apple Silicon) on 2026-09-18. Windows and Linux notes are marked wherever a step differs. The ESP32-S3 Arduino procedure is not yet hardware-verified.
 
 ## 0. What you are building, and on what hardware
 
@@ -321,3 +321,65 @@ If you send the config and get `[SCHED] no free slots` or an `ERR:` line instead
 If your assigned board turns out to be an original Pico W (RP2040) rather than a Pico 2 W, this firmware will not run on it as currently configured — flag this to the team rather than assuming your hardware matches.
 
 If the team's logic level shifter arrives, it can replace the Echo resistor divider in section 3. Keep the Pico side at 3.3 V logic and power the HC-SR04 as its own specification requires.
+
+## ESP32-S3 Arduino setup (Tasks 7–9; pending verification)
+
+The ESP32-S3 port uses **Arduino IDE with the Arduino-ESP32 core**. The Pico instructions above and the root Pico `CMakeLists.txt` remain the reference build. The S3 sketch is in [`esp32s3/`](esp32s3/README.md) and is limited to serial bring-up. Do not treat its successful upload as framework parity.
+
+### Environment versions to pin (Task 7)
+
+| Item | Team value |
+| --- | --- |
+| Arduino IDE version | **TODO — agree and record exact version** |
+| Arduino-ESP32 core version | **TODO — agree and record exact version before claiming a reproducible build** |
+| Required external Arduino libraries | **None for the minimal bring-up sketch. TODO — name and pin each library when a later task selects it** |
+
+All team members should use the same recorded versions. The team has not yet selected an Arduino-ESP32 core version. Task 7 is complete only when every machine compiles the same minimal S3 sketch using the pinned IDE and core versions.
+
+1. Install the agreed Arduino IDE version from the [Arduino software page](https://www.arduino.cc/en/software).
+2. In Arduino IDE, open **File → Preferences** and add Espressif's stable Boards Manager URL to **Additional boards manager URLs**: `https://espressif.github.io/arduino-esp32/package_esp32_index.json`.
+3. Open **Tools → Board → Boards Manager**, find **esp32 by Espressif Systems**, and install the team's exact pinned Arduino-ESP32 core version. Select the ESP32-S3 board entry matching the confirmed hardware. Do not use an automatically selected latest version as the team pin.
+4. Install any later required external libraries through Library Manager at their recorded versions. The minimal sketch needs no external library.
+
+The [Arduino-ESP32 installation guide](https://docs.espressif.com/projects/arduino-esp32/en/latest/installing.html) documents the Boards Manager URL and installation flow.
+
+### Board details and IDE settings to confirm (Task 8)
+
+Record these from the actual board markings, its matching pinout and a physical USB test before selecting final settings or connecting sensors:
+
+| Item | Confirmed value |
+| --- | --- |
+| Exact Super Mini board/revision and ESP32-S3 module marking | **TODO** |
+| Flash size | **TODO** |
+| PSRAM presence and size | **TODO** |
+| Exposed, usable GPIOs and reserved/unsafe pins | **TODO — cite the matching board pinout** |
+| USB connector and serial path (`Serial` via native USB CDC or USB-to-UART bridge) | **TODO** |
+| Arduino IDE board profile | **TODO** |
+| Board-specific Flash Size and PSRAM menu choices | **TODO** |
+| Board-specific USB Mode, USB CDC On Boot and Upload Mode choices, if offered | **TODO** |
+| Port and any first-upload/boot-button procedure | **TODO** |
+
+The exact USB and upload settings depend on the board's wiring and Arduino-ESP32 core version. Follow the matching board documentation and verify the result on hardware; do not assume that every ESP32-S3 Super Mini exposes the same console path. Espressif's [USB CDC guide](https://docs.espressif.com/projects/arduino-esp32/en/latest/tutorials/cdc_dfu_flash.html) explains the relevant Arduino menu options.
+
+### Compile, upload and monitor the minimal sketch (Task 9)
+
+1. In Arduino IDE, open `esp32s3/esp32s3.ino` and select the confirmed **ESP32-S3 target board** and board-specific settings from the table above.
+2. Connect the board with a data-capable USB cable and choose its observed port under **Tools → Port**.
+3. Click **Verify/Compile**, then **Upload**. Record the IDE, core and board settings used for the result.
+4. Open **Serial Monitor** at **115200 baud** on the confirmed console port. The sketch repeats `Hello from ESP32-S3`, so the line remains visible even if Serial Monitor opens after startup. If upload succeeds but the line is absent, check the actual USB/serial path and IDE USB settings before changing the sketch.
+
+Task 9 passes only after the line is observed on the physical Super Mini. No S3 sensor pinout, flash or PSRAM value has yet been verified.
+
+### Port architecture for later tasks
+
+```text
+Shared Configurable Edge code
+           |
+          HAL
+        /     \
+   Pico HAL   ESP32-S3 HAL
+       |            |
+   Pico SDK   Arduino-ESP32
+```
+
+Configuration parsing, the common sensor representation, scheduler, rule engine, output formatting, MQTT payload handling and application/ML logic should not call Arduino or Pico SDK functions directly. Platform operations belong in the HAL or platform drivers. If partitions, PSRAM access, a compatible TFLite Micro integration or measured performance require underlying ESP-IDF APIs from Arduino, document each exception and keep it below the shared-code boundary. The MQTT and ML library choices are still open and must be compatibility-tested and version-pinned before implementation.
