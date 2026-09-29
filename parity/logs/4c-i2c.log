@@ -1,33 +1,161 @@
-16:00:24 [SCHED     53825ms] run_all: running=0
-16:00:25 [SCHED     54826ms] run_all: running=0
-16:00:25 --- cfg-tsl-id: BEGINCFG|name=TSLID|proto=i2c|mode=poll|freq_hz=1|i2c.sda=16|i2c.scl=17|i2c.addr=0x29|i2c.pre=0x80 0x03 0x81 0x02|i2c.reg=0x8A|i2c.reg_size=1|i2c.read_len=1|i2c.restart=1|ENDCFG
-16:00:26 [SCHED     55826ms] run_all: running=0
-16:00:27 [SCHED     56827ms] run_all: running=0
-16:00:27 [MQTT] Status: Disconnected, Broker: 0.0.0.0
-16:00:28 OK: Config applied (inline, delim='|')
-16:00:28 [I2C] pre_len=4 : 80 03 81 02
-16:00:28 [I2C] pre write failed (sz=2 err=-1)
-16:00:28 [I2C] init pre-writes failed r=-1
-16:00:28 [SCHED     57828ms] add[0]: init_cfg FAILED for TSLID on i2c
-16:00:28 CFG: add failed (-2)
-16:00:28 [SCHED     57828ms] run_all: running=0
-16:00:29 [SCHED     58828ms] run_all: running=0
-16:00:30 [SCHED     59829ms] run_all: running=0
-16:00:31 [SCHED     60829ms] run_all: running=0
-16:00:32 [SCHED     61829ms] run_all: running=0
-16:00:32 [MQTT] Status: Disconnected, Broker: 0.0.0.0
-16:00:33 [SCHED     62829ms] run_all: running=0
-16:00:34 [SCHED     63829ms] run_all: running=0
-16:00:35 [SCHED     64829ms] run_all: running=0
-16:00:36 [SCHED     65829ms] run_all: running=0
-16:00:36 --- i2c-id: RUN
-16:00:37 RUN
-16:00:37 [SCHED     66830ms] run_all: running=1
-16:00:37 [MQTT] Status: Disconnected, Broker: 0.0.0.0
-16:00:38 [SCHED     67830ms] run_all: running=1
-16:00:39 [SCHED     68830ms] run_all: running=1
-16:00:40 [SCHED     69830ms] run_all: running=1
-16:00:41 [SCHED     70830ms] run_all: running=1
-16:00:42 [SCHED     71830ms] run_all: running=1
-16:00:43 [SCHED     72830ms] run_all: running=1
-16:00:43 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:10:03 [SCHED    435928ms] run_all: running=0
+20:10:05 [SCHED    436928ms] run_all: running=0
+20:10:05 [SCHED    437928ms] run_all: running=0
+20:10:06 --- cfg-tsl-id: BEGINCFG|name=TSLID|proto=i2c|mode=poll|freq_hz=1|i2c.sda=16|i2c.scl=17|i2c.addr=0x29|i2c.pre=0x80 0x03 0x81 0x02|i2c.reg=0x8A|i2c.reg_size=1|i2c.read_len=1|i2c.restart=1|ENDCFG
+20:10:06 [SCHED    438928ms] run_all: running=0
+20:10:08 [SCHED    439929ms] run_all: running=0
+20:10:08 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:10:08 OK: Config applied (inline, delim='|')
+20:10:08 [I2C] pre_len=4 : 80 03 81 02
+20:10:08 [SCHED    440935ms] add[0]: TSLID on i2c freq=1.000Hz mode=poll I2C(sda=16,scl=17,addr=0x29,reg=0x8A,len=1)
+20:10:08 [SCHED] added: TSLID on i2c
+20:10:08 CFG: ok (added #0: TSLID)
+20:10:08 [SCHED    440935ms] run_all: running=0
+20:10:08 --- i2c-id: RUN
+20:10:09 RUN
+20:10:09 [SCHED    441935ms] run_all: running=1
+20:10:09 [SCHED    441935ms] arm[0/TSLID]: next_run reset to NOW
+20:10:09 [SCHED    441936ms] publish[0/TSLID]: 1 bytes via i2c
+20:10:09 proto=i2c src=TSLID len=1 ts=441936 : 50
+20:10:11 [SCHED    442936ms] run_all: running=1
+20:10:11 [SCHED    442937ms] publish[0/TSLID]: 1 bytes via i2c
+20:10:11 proto=i2c src=TSLID len=1 ts=442937 : 50
+20:10:11 [SCHED    443937ms] run_all: running=1
+20:10:11 [SCHED    443937ms] publish[0/TSLID]: 1 bytes via i2c
+20:10:11 proto=i2c src=TSLID len=1 ts=443938 : 50
+20:10:12 [SCHED    444938ms] run_all: running=1
+20:10:12 [SCHED    444938ms] publish[0/TSLID]: 1 bytes via i2c
+20:10:12 proto=i2c src=TSLID len=1 ts=444938 : 50
+20:10:12 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:10:13 --- stop-id: STOP
+20:10:14 STOP
+20:10:14 [SCHED    445939ms] run_all: running=0
+20:10:14 [SCHED    446939ms] run_all: running=0
+20:10:15 --- clear-id: CLEAR
+20:10:15 [SCHED    447939ms] reset: cleared 8 slots
+20:10:15 [RULE] reset
+20:10:15 CLEARED
+20:10:15 [SCHED    447939ms] run_all: running=0
+20:10:17 [SCHED    448939ms] run_all: running=0
+20:10:17 [SCHED    449940ms] run_all: running=0
+20:10:17 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:10:18 --- cfg-tsl-data: BEGINCFG|name=LUX|proto=i2c|mode=poll|freq_hz=1|i2c.sda=16|i2c.scl=17|i2c.addr=0x29|i2c.pre=0x80 0x03 0x81 0x02|i2c.reg=0x8C|i2c.reg_size=1|i2c.read_len=4|i2c.restart=1|ENDCFG
+20:10:19 [SCHED    450940ms] run_all: running=0
+20:10:20 [SCHED    451941ms] run_all: running=0
+20:10:20 OK: Config applied (inline, delim='|')
+20:10:20 [I2C] pre_len=4 : 80 03 81 02
+20:10:20 [SCHED    452946ms] add[0]: LUX on i2c freq=1.000Hz mode=poll I2C(sda=16,scl=17,addr=0x29,reg=0x8C,len=4)
+20:10:20 [SCHED] added: LUX on i2c
+20:10:20 CFG: ok (added #0: LUX)
+20:10:20 [SCHED    452947ms] run_all: running=0
+20:10:21 --- i2c-light: RUN
+20:10:22 RUN
+20:10:22 [SCHED    453947ms] run_all: running=1
+20:10:22 [SCHED    453947ms] arm[0/LUX]: next_run reset to NOW
+20:10:22 [SCHED    453948ms] publish[0/LUX]: 4 bytes via i2c
+20:10:22 proto=i2c src=LUX len=4 ts=453948 : 14 00 03 00
+20:10:22 [SCHED    454948ms] run_all: running=1
+20:10:23 [SCHED    454949ms] publish[0/LUX]: 4 bytes via i2c
+20:10:23 proto=i2c src=LUX len=4 ts=454949 : 14 00 03 00
+20:10:23 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:10:23 [SCHED    455949ms] run_all: running=1
+20:10:23 [SCHED    455950ms] publish[0/LUX]: 4 bytes via i2c
+20:10:23 proto=i2c src=LUX len=4 ts=455950 : 14 00 03 00
+20:10:25 [SCHED    456950ms] run_all: running=1
+20:10:25 [SCHED    456951ms] publish[0/LUX]: 4 bytes via i2c
+20:10:25 proto=i2c src=LUX len=4 ts=456951 : 14 00 03 00
+20:10:26 [SCHED    457952ms] run_all: running=1
+20:10:26 [SCHED    457952ms] publish[0/LUX]: 4 bytes via i2c
+20:10:26 proto=i2c src=LUX len=4 ts=457953 : 14 00 03 00
+20:10:27 [SCHED    458953ms] run_all: running=1
+20:10:27 [SCHED    458954ms] publish[0/LUX]: 4 bytes via i2c
+20:10:27 proto=i2c src=LUX len=4 ts=458954 : 14 00 03 00
+20:10:28 [SCHED    459954ms] run_all: running=1
+20:10:28 [SCHED    459955ms] publish[0/LUX]: 4 bytes via i2c
+20:10:28 proto=i2c src=LUX len=4 ts=459955 : 14 00 03 00
+20:10:28 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:10:28 [SCHED    460955ms] run_all: running=1
+20:10:29 [SCHED    460956ms] publish[0/LUX]: 4 bytes via i2c
+20:10:29 proto=i2c src=LUX len=4 ts=460956 : 12 00 03 00
+20:10:30 [SCHED    461956ms] run_all: running=1
+20:10:30 [SCHED    461957ms] publish[0/LUX]: 4 bytes via i2c
+20:10:30 proto=i2c src=LUX len=4 ts=461957 : 12 00 03 00
+20:10:31 [SCHED    462957ms] run_all: running=1
+20:10:31 [SCHED    462958ms] publish[0/LUX]: 4 bytes via i2c
+20:10:31 proto=i2c src=LUX len=4 ts=462958 : 12 00 03 00
+20:10:31 [SCHED    463959ms] run_all: running=1
+20:10:31 [SCHED    463959ms] publish[0/LUX]: 4 bytes via i2c
+20:10:31 proto=i2c src=LUX len=4 ts=463959 : 12 00 03 00
+20:10:33 [SCHED    464960ms] run_all: running=1
+20:10:33 [SCHED    464960ms] publish[0/LUX]: 4 bytes via i2c
+20:10:33 proto=i2c src=LUX len=4 ts=464961 : 13 00 03 00
+20:10:33 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:10:34 [SCHED    465961ms] run_all: running=1
+20:10:34 [SCHED    465962ms] publish[0/LUX]: 4 bytes via i2c
+20:10:34 proto=i2c src=LUX len=4 ts=465962 : 13 00 03 00
+20:10:35 [SCHED    466962ms] run_all: running=1
+20:10:35 [SCHED    466963ms] publish[0/LUX]: 4 bytes via i2c
+20:10:35 proto=i2c src=LUX len=4 ts=466963 : 13 00 03 00
+20:10:36 [SCHED    467963ms] run_all: running=1
+20:10:36 [SCHED    467964ms] publish[0/LUX]: 4 bytes via i2c
+20:10:36 proto=i2c src=LUX len=4 ts=467964 : 13 00 03 00
+20:10:37 [SCHED    468964ms] run_all: running=1
+20:10:37 [SCHED    468965ms] publish[0/LUX]: 4 bytes via i2c
+20:10:37 proto=i2c src=LUX len=4 ts=468965 : 13 00 03 00
+20:10:38 [SCHED    469965ms] run_all: running=1
+20:10:38 [SCHED    469966ms] publish[0/LUX]: 4 bytes via i2c
+20:10:38 proto=i2c src=LUX len=4 ts=469966 : 13 00 03 00
+20:10:38 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:10:39 [SCHED    470966ms] run_all: running=1
+20:10:39 [SCHED    470967ms] publish[0/LUX]: 4 bytes via i2c
+20:10:39 proto=i2c src=LUX len=4 ts=470967 : 12 00 03 00
+20:10:40 [SCHED    471968ms] run_all: running=1
+20:10:40 [SCHED    471968ms] publish[0/LUX]: 4 bytes via i2c
+20:10:40 proto=i2c src=LUX len=4 ts=471969 : 45 00 09 00
+20:10:40 [SCHED    472969ms] run_all: running=1
+20:10:41 [SCHED    472970ms] publish[0/LUX]: 4 bytes via i2c
+20:10:41 proto=i2c src=LUX len=4 ts=472970 : 4A 00 0A 00
+20:10:42 [SCHED    473970ms] run_all: running=1
+20:10:42 [SCHED    473971ms] publish[0/LUX]: 4 bytes via i2c
+20:10:42 proto=i2c src=LUX len=4 ts=473971 : 4D 00 0B 00
+20:10:43 [SCHED    474971ms] run_all: running=1
+20:10:43 [SCHED    474972ms] publish[0/LUX]: 4 bytes via i2c
+20:10:43 proto=i2c src=LUX len=4 ts=474972 : 13 00 03 00
+20:10:43 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:10:43 [SCHED    475972ms] run_all: running=1
+20:10:44 [SCHED    475973ms] publish[0/LUX]: 4 bytes via i2c
+20:10:44 proto=i2c src=LUX len=4 ts=475973 : 13 00 03 00
+20:10:45 [SCHED    476973ms] run_all: running=1
+20:10:45 [SCHED    476974ms] publish[0/LUX]: 4 bytes via i2c
+20:10:45 proto=i2c src=LUX len=4 ts=476974 : 13 00 03 00
+20:10:46 [SCHED    477974ms] run_all: running=1
+20:10:46 [SCHED    477975ms] publish[0/LUX]: 4 bytes via i2c
+20:10:46 proto=i2c src=LUX len=4 ts=477975 : 13 00 03 00
+20:10:47 [SCHED    478976ms] run_all: running=1
+20:10:47 [SCHED    478976ms] publish[0/LUX]: 4 bytes via i2c
+20:10:47 proto=i2c src=LUX len=4 ts=478976 : 1B 00 04 00
+20:10:48 [SCHED    479977ms] run_all: running=1
+20:10:48 [SCHED    479977ms] publish[0/LUX]: 4 bytes via i2c
+20:10:48 proto=i2c src=LUX len=4 ts=479978 : 19 00 04 00
+20:10:48 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:10:49 [SCHED    480978ms] run_all: running=1
+20:10:49 [SCHED    480979ms] publish[0/LUX]: 4 bytes via i2c
+20:10:49 proto=i2c src=LUX len=4 ts=480979 : 22 00 05 00
+20:10:49 [SCHED    481979ms] run_all: running=1
+20:10:50 [SCHED    481980ms] publish[0/LUX]: 4 bytes via i2c
+20:10:50 proto=i2c src=LUX len=4 ts=481980 : 20 00 05 00
+20:10:51 [SCHED    482980ms] run_all: running=1
+20:10:51 [SCHED    482981ms] publish[0/LUX]: 4 bytes via i2c
+20:10:51 proto=i2c src=LUX len=4 ts=482981 : 25 00 05 00
+20:10:51 --- stop-light: STOP
+20:10:52 STOP
+20:10:52 [SCHED    483981ms] run_all: running=0
+20:10:52 [SCHED    484982ms] run_all: running=0
+20:10:52 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:10:54 [SCHED    485982ms] run_all: running=0
+20:10:54 --- clear-light: CLEAR
+20:10:55 [SCHED    486982ms] reset: cleared 8 slots
+20:10:55 [RULE] reset
+20:10:55 CLEARED
+20:10:55 [SCHED    486982ms] run_all: running=0
+20:10:55 [SCHED    487982ms] run_all: running=0

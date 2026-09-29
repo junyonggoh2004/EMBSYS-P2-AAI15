@@ -19,7 +19,7 @@ Owner: Hasif. Requirements are proposed for team review (task 4). The Pico colum
 | FR-05 | GPIO counter mode counts level changes | Count increases by one per change seen between samples | P-11 | Pico: Hasif. S3: task 15 | `4b.log` |
 | FR-06 | GPIO pulse mode measures HC-SR04 echo width | Width changes with distance; no echo reports `len=1 : 00` | P-12, P-13 | Pico: Hasif. S3: task 15 | `4c-sonic.log` |
 | FR-07 | GPIO onewire mode reads a DHT22 or AM2302 | Humidity and temperature frames decode to plausible values | P-14 | Pico: Hasif. S3: task 15 | Pending |
-| FR-08 | I2C reads a register after optional pre-writes, with repeated start | A known device returns its identity register; a missing device is rejected | P-15, N-02 | Pico: Hasif. S3: task 16 | `5-neg.log` |
+| FR-08 | I2C reads a register after optional pre-writes, with repeated start | A known device returns its identity register; a missing device is rejected | P-15, N-02 | Pico: Hasif. S3: task 16 | `4c-i2c.log`, `5-neg.log` |
 | FR-09 | UART request and response with pre-bytes, delay and read length | Bytes sent return intact and in order | P-16 | Pico: Hasif. S3: task 17 | `4c-uart.log` |
 | FR-10 | Rule engine evaluates `calc`/`when` and runs every local action | `log`, GPIO `HIGH`/`LOW`/`TOGGLE`/`PULSE`, `pwm` and `batch:` actions run as documented | P-18 to P-22 | Pico: Hasif. S3: task 18 | `4a.log`, `4b.log` |
 | FR-11 | Inference runs the built-in model through `infer.set` and `infer.run` | An `[INFER] invoke=` line with a score, mask and threshold is printed | P-23 | Pico: Hasif. S3: task 20 | `4a.log` |
@@ -54,9 +54,32 @@ These are behaviours of the supplied Pico firmware, recorded as the baseline. Th
 | D-05 | The UART driver never empties its receive buffer. On the first run after boot, a stray `00` entered when the pins were set up, and every later reply stayed one byte out of step | P-17 |
 | D-06 | Sampling is capped at about 1 Hz by the fixed 1000 ms main-loop delay, whatever `freq_hz` requests | NFR-01 |
 
+### Planned test rows for tasks 13 to 20
+
+The README's acceptance for tasks 13 to 20 names specific fault and limit cases. Each has a row here so that every planned feature has a Pico and an ESP32-S3 test. Rows marked N/A on the Pico have no Pico equivalent, because the Pico firmware runs a single bare-metal loop with no RTOS.
+
+| ID | Task | Planned test | Pico status | ESP32-S3 result |
+|---|---|---|---|---|
+| T-01 | 13 | FreeRTOS tasks run the REPL and scheduler with no watchdog resets; stack high-water marks recorded for every task | N/A (no RTOS) | |
+| T-02 | 14 | `gpio.invert=1` and `gpio.debounce_ms` change the reported state as documented | Not yet run; loopback wire only | |
+| T-03 | 14 | An out-of-range `gpio.pin` is refused rather than crashing the board | Not yet run | |
+| T-04 | 14 | Eight sensors at the highest supported rate keep their sample period, or the overload is reported | Not yet run | |
+| T-05 | 15 | Counter mode loses no edges up to a stated maximum rate | Not yet run; the rate limit is set in task 4 review | |
+| T-06 | 15 | One-wire with the sensor absent times out cleanly | Not yet run | |
+| T-07 | 16 | I2C with `i2c.restart=0` against `1`, two devices on one bus, and recovery after a device is unplugged | Not yet run; the TSL2561 is now available for it | |
+| T-08 | 17 | UART `uart.line_mode=1`, framing settings (`uart.bits`, `uart.parity`, `uart.stop`), a partial message, and more input than `uart.read_len` | Not yet run; possible with the loopback wire | |
+| T-09 | 17 | UART under sustained input for an agreed period with no lost or corrupted frames | Not yet run | |
+| T-10 | 18 | A `when=` condition that is false runs no action | Not yet run | |
+| T-11 | 19 | Recovery from Wi-Fi loss and broker loss, then reconnection | Not yet run; needs network | |
+| T-12 | 19 | Malformed JSON and an oversized MQTT payload are refused without a reset | Not yet run; needs network | |
+| T-13 | 19 | Messages arriving faster than they are processed (queue saturation) are handled without a reset | Not yet run; needs network | |
+| T-14 | 20 | An uploaded model persists across a reboot | Not yet run; needs network | |
+| T-15 | 20 | Invalid, oversized, corrupt and interrupted uploads are rejected and the previous model still works | Not yet run; needs network | |
+| T-16 | 20 | Tensor arena and heap use recorded during inference | Not yet run | |
+
 ## 2. Parity table (task 5)
 
-**Status summary: task 5 is not complete, and no real sensor has been verified on the Pico yet.** Of 38 rows, 22 pass, but 16 of those need no wiring at all (REPL, configuration, rules, inference, invalid input and limits), and the other 6 used jumper-wire loopbacks with no sensor attached (GP21 to GP22 for GPIO, GP16 to GP17 for UART). One more row passes only on the timeout path, because the attached HC-SR04 never responded. Four defects, one quirk and one measurement are recorded. Nine rows are pending: every real sensor (HC-SR04, TSL2561 light sensor, one-wire, UART radar) and every Wi-Fi/MQTT row.
+**Status summary: task 5 is not complete. One real sensor has been verified so far: the TSL2561 light sensor over I2C (P-15).** Of 38 rows, 23 pass. Of those, 16 need no wiring at all (REPL, configuration, rules, inference, invalid input and limits), 6 used jumper-wire loopbacks with no sensor attached (GP21 to GP22 for GPIO, GP16 to GP17 for UART), and 1 is the real light sensor. One more row passes only on the timeout path, because the attached HC-SR04 never responded. Four defects, one quirk and one measurement are recorded. Eight rows are pending: the HC-SR04, one-wire sensor and UART radar, and every Wi-Fi/MQTT row.
 
 | ID | Req | Stage / step | Expected | Pico observed | Pico result | Evidence | ESP32-S3 result |
 |---|---|---|---|---|---|---|---|
@@ -74,7 +97,7 @@ These are behaviours of the supplied Pico firmware, recorded as the baseline. Th
 | P-12 | FR-06 | `4c-sonic` / `sonic-read` | Echo width changes with distance | No valid echo: the HC-SR04 was powered at 3.3 V and needs 5 V with a 1:2 resistor divider on Echo | **Pending hardware** | `4c-sonic.log` | |
 | P-13 | FR-06 | `4c-sonic` / `sonic-read` | No echo reports a timeout frame | `len=1 : 00` on 44 of 44 readings | Pass | `4c-sonic.log` | |
 | P-14 | FR-07 | Not yet written | DHT22 or AM2302 frame | No sensor of this type available | **Pending hardware** | | |
-| P-15 | FR-08 | `4c-i2c` / `cfg-tsl-id`, `i2c-id` | TSL2561 identity register reads `0x5X` | Device did not acknowledge at `0x29`, `0x39` or `0x49`; wiring to be rechecked | **Pending hardware** | `4c-i2c.log` | |
+| P-15 | FR-08 | `4c-i2c` / `cfg-tsl-id`, `i2c-id`, `i2c-light` | TSL2561 identity register reads `0x5X`; light channels respond to light | ID `0x50` at address `0x29`. Channel 0 read 18 to 20 in room light and 69 to 77 under a torch; channel 1 read 3, rising to 9 to 11. On this Grove cable the **yellow wire carries SDA (GP16) and the white wire SCL (GP17)**, the reverse of the usual Grove colours | Pass | `4c-i2c.log` | |
 | P-16 | FR-09 | `4c-uart` / `uart-echo-a`, `uart-echo-b` | Bytes return intact and in order | `A5 5A` and `12 34 56` with GP16 looped to GP17 | Pass | `4c-uart.log` | |
 | P-17 | FR-09 | `4c-uart` / `uart-echo-a` | First read after boot aligned | Offset by one byte on the first run after boot (D-05) | Recorded quirk | Observed 2026-09-29; that log was replaced by the passing rerun | |
 | P-18 | FR-10 | `4a` / `rule-log`, `run-data` | `log` action fires when `when` is true | `[RULE] R_LOG: pin low (value=0.000 …)` | Pass | `4a.log` | |
