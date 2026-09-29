@@ -129,8 +129,10 @@ STAGES = {
          "BEGINCFG|name=HCSR04|proto=gpio|gpio.mode=pulse|mode=poll|freq_hz=2|gpio.trig=16"
          "|gpio.echo=17|gpio.trig_us=10|gpio.pulse_timeout_us=25000|ENDCFG",
          2.5, [r"method=pulse", r"^CFG: ok \(added #\d+: HCSR04\)"]),
-        ("sonic-read", "Valid echo readings arrive while a hand moves in front of the sensor", "RUN", 45.0,
-         [r"^proto=gpio src=HCSR04 len=3 ts=\d+ : [0-9A-F]{2} [0-9A-F]{2} 01$"]),
+        # Width must be under the 25 000 us timeout (0x61A8), so a reading only counts
+        # when an object is actually in range; a clipped A9 61 means nothing was seen.
+        ("sonic-read", "A real distance is measured while an object is held in front of the sensor", "RUN", 45.0,
+         [r"^proto=gpio src=HCSR04 len=3 ts=\d+ : [0-9A-F]{2} ([0-5][0-9A-F]|60) 01$"]),
         ("stop-sonic", "STOP", "STOP", 2.5, [r"^STOP$"]),
         ("clear-sonic", "CLEAR", "CLEAR", 2.5, [r"^CLEARED"]),
     ],
@@ -153,6 +155,24 @@ STAGES = {
          [r"^proto=i2c src=LUX len=4 ts=\d+ : ([0-9A-F]{2} ){3}[0-9A-F]{2}$"]),
         ("stop-light", "STOP", "STOP", 2.5, [r"^STOP$"]),
         ("clear-light", "CLEAR", "CLEAR", 2.5, [r"^CLEARED"]),
+    ],
+    # T-10: a false when= runs no action, while a true one on the same sensor still fires.
+    "t10": [
+        ("clear-t10", "CLEAR", "CLEAR", 2.5, [r"^CLEARED"]),
+        ("cfg-t10", "GPIO digital input on GP22 (nothing attached, reads low)",
+         "BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=22|gpio.pull=down"
+         "|mode=poll|freq_hz=1|ENDCFG",
+         2.5, [r"^CFG: ok \(added #\d+: DIG\)"]),
+        ("rule-false", "Rule whose condition is false is accepted",
+         "BEGINRULE|name=RF|source=DIG|calc=s=u8(0)|when=s==1|action=log:should not fire|ENDRULE",
+         2.5, [r"^RULE: ok"]),
+        ("rule-true", "Control rule whose condition is true is accepted",
+         "BEGINRULE|name=RT|source=DIG|calc=s=u8(0)|when=s==0|action=log:control fired|ENDRULE",
+         2.5, [r"^RULE: ok"]),
+        ("run-t10", "The true rule fires and the false rule never does", "RUN", 6.0,
+         [r"^\[RULE\] RT: control fired", r"!^\[RULE\] RF:"]),
+        ("stop-t10", "STOP", "STOP", 2.5, [r"^STOP$"]),
+        ("clear-t10-end", "CLEAR", "CLEAR", 2.5, [r"^CLEARED"]),
     ],
     # Invalid input and limits. Needs nothing wired to the board.
     "5-neg": [
@@ -233,7 +253,8 @@ def read_for(ser, seconds, log):
 
 
 def all_seen(lines, patterns):
-    return all(any(re.search(p, line) for line in lines) for p in patterns)
+    # A pattern starting with "!" must NOT appear, so it can never end a step early.
+    return all(any(re.search(p, line) for line in lines) for p in patterns if not p.startswith("!"))
 
 
 def run_step(ser, wait, patterns, log):
@@ -252,6 +273,11 @@ def run_step(ser, wait, patterns, log):
 def check(step_id, description, lines, patterns):
     missing, evidence = [], []
     for pattern in patterns:
+        if pattern.startswith("!"):
+            hit = next((line for line in lines if re.search(pattern[1:], line)), None)
+            if hit is not None:
+                missing.append(f"{pattern} (appeared: {hit})")
+            continue
         hit = next((line for line in lines if re.search(pattern, line)), None)
         if hit is None:
             missing.append(pattern)

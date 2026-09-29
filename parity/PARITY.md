@@ -53,6 +53,7 @@ These are behaviours of the supplied Pico firmware, recorded as the baseline. Th
 | D-04 | A non-numeric pin in a GPIO action is accepted when the rule is added and only reported when it fires | N-05 |
 | D-05 | The UART driver never empties its receive buffer. On the first run after boot, a stray `00` entered when the pins were set up, and every later reply stayed one byte out of step | P-17 |
 | D-06 | Sampling is capped at about 1 Hz by the fixed 1000 ms main-loop delay, whatever `freq_hz` requests | NFR-01 |
+| D-07 | With nothing in range, the HC-SR04 holds Echo high for longer than `gpio.pulse_timeout_us`. The driver clips the width at the timeout but still marks the reading valid: `A9 61 01` is 25 001 µs, about 431 cm. "Nothing in range" is therefore indistinguishable from a real reading at the timeout distance | P-12, 26 readings in `4c-sonic.log` |
 
 ### Planned test rows for tasks 13 to 20
 
@@ -69,7 +70,7 @@ The README's acceptance for tasks 13 to 20 names specific fault and limit cases.
 | T-07 | 16 | I2C with `i2c.restart=0` against `1`, two devices on one bus, and recovery after a device is unplugged | Not yet run; the TSL2561 is now available for it | |
 | T-08 | 17 | UART `uart.line_mode=1`, framing settings (`uart.bits`, `uart.parity`, `uart.stop`), a partial message, and more input than `uart.read_len` | Not yet run; possible with the loopback wire | |
 | T-09 | 17 | UART under sustained input for an agreed period with no lost or corrupted frames | Not yet run | |
-| T-10 | 18 | A `when=` condition that is false runs no action | Not yet run | |
+| T-10 | 18 | A `when=` condition that is false runs no action | Pass: over 6 s the false rule never fired while a true control rule on the same sensor did (stage `t10`, `logs/t10.log`) | |
 | T-11 | 19 | Recovery from Wi-Fi loss and broker loss, then reconnection | Not yet run; needs network | |
 | T-12 | 19 | Malformed JSON and an oversized MQTT payload are refused without a reset | Not yet run; needs network | |
 | T-13 | 19 | Messages arriving faster than they are processed (queue saturation) are handled without a reset | Not yet run; needs network | |
@@ -79,7 +80,7 @@ The README's acceptance for tasks 13 to 20 names specific fault and limit cases.
 
 ## 2. Parity table (task 5)
 
-**Status summary: task 5 is not complete. One real sensor has been verified so far: the TSL2561 light sensor over I2C (P-15).** Of 38 rows, 23 pass. Of those, 16 need no wiring at all (REPL, configuration, rules, inference, invalid input and limits), 6 used jumper-wire loopbacks with no sensor attached (GP21 to GP22 for GPIO, GP16 to GP17 for UART), and 1 is the real light sensor. One more row passes only on the timeout path, because the attached HC-SR04 never responded. Four defects, one quirk and one measurement are recorded. Eight rows are pending: the HC-SR04, one-wire sensor and UART radar, and every Wi-Fi/MQTT row.
+**Status summary: task 5 is not complete. Two real sensors have been verified: the TSL2561 light sensor over I2C (P-15) and the HC-SR04 ultrasonic sensor in GPIO pulse mode (P-12).** Of 38 rows, 25 pass: 16 need no wiring at all (REPL, configuration, rules, inference, invalid input and limits), 6 used jumper-wire loopbacks with no sensor attached (GP21 to GP22 for GPIO, GP16 to GP17 for UART), 2 are the real sensors, and 1 is the HC-SR04's no-echo timeout path. Four defects, one quirk and one measurement are recorded. Seven rows are pending: the one-wire sensor, the UART radar, and every Wi-Fi/MQTT row.
 
 | ID | Req | Stage / step | Expected | Pico observed | Pico result | Evidence | ESP32-S3 result |
 |---|---|---|---|---|---|---|---|
@@ -94,8 +95,8 @@ The README's acceptance for tasks 13 to 20 names specific fault and limit cases.
 | P-09 | FR-04 | `4a` / `run-data` | Pin with pull-down reads low | `: 00 …` | Pass | `4a.log` | |
 | P-10 | FR-04 | `4b` / `gpio-high`, `gpio-low`, `gpio-toggle` | GP22 follows GP21 through a jumper | `01` after HIGH, `00` after LOW, alternating on TOGGLE | Pass | `4b.log` | |
 | P-11 | FR-05 | `4b` / `gpio-counter` | Count rises with each toggle | Reached `03 00 00 00` | Pass | `4b.log` | |
-| P-12 | FR-06 | `4c-sonic` / `sonic-read` | Echo width changes with distance | No valid echo: the HC-SR04 was powered at 3.3 V and needs 5 V with a 1:2 resistor divider on Echo | **Pending hardware** | `4c-sonic.log` | |
-| P-13 | FR-06 | `4c-sonic` / `sonic-read` | No echo reports a timeout frame | `len=1 : 00` on 44 of 44 readings | Pass | `4c-sonic.log` | |
+| P-12 | FR-06 | `4c-sonic` / `sonic-read` | Echo width changes with distance | 18 in-range readings from 5.9 cm to 30.9 cm, following an object moved between about 6 cm and 30 cm. Wiring: VCC to **VBUS (5 V)**, Trig to GP16, Echo through one series resistor to GP17, GND. This works because RP2350 GPIO inputs tolerate up to 5.5 V while the chip is powered. **ESP32-S3 GPIO pins are not 5 V tolerant, so the S3 wiring must use a 1:2 divider or a level shifter on Echo.** At a 3.3 V supply this sensor never echoed | Pass | `4c-sonic.log` | |
+| P-13 | FR-06 | `4c-sonic` / `sonic-read` | No echo reports a timeout frame | With a 3.3 V supply the sensor never raised Echo, and all 44 readings were `len=1 : 00`. That run's log was replaced by the 5 V run. At 5 V with nothing in range, see D-07 | Pass | Observed 2026-09-29 | |
 | P-14 | FR-07 | Not yet written | DHT22 or AM2302 frame | No sensor of this type available | **Pending hardware** | | |
 | P-15 | FR-08 | `4c-i2c` / `cfg-tsl-id`, `i2c-id`, `i2c-light` | TSL2561 identity register reads `0x5X`; light channels respond to light | ID `0x50` at address `0x29`. Channel 0 read 18 to 20 in room light and 69 to 77 under a torch; channel 1 read 3, rising to 9 to 11. On this Grove cable the **yellow wire carries SDA (GP16) and the white wire SCL (GP17)**, the reverse of the usual Grove colours | Pass | `4c-i2c.log` | |
 | P-16 | FR-09 | `4c-uart` / `uart-echo-a`, `uart-echo-b` | Bytes return intact and in order | `A5 5A` and `12 34 56` with GP16 looped to GP17 | Pass | `4c-uart.log` | |

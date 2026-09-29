@@ -1,168 +1,169 @@
-15:36:32 [SCHED    967636ms] run_all: running=0
-15:36:32 [MQTT] Status: Disconnected, Broker: 0.0.0.0
-15:36:33 [SCHED    968636ms] run_all: running=0
-15:36:34 [SCHED    969636ms] run_all: running=0
-15:36:34 --- cfg-sonic: BEGINCFG|name=HCSR04|proto=gpio|gpio.mode=pulse|mode=poll|freq_hz=2|gpio.trig=16|gpio.echo=17|gpio.trig_us=10|gpio.pulse_timeout_us=25000|ENDCFG
-15:36:35 [SCHED    970636ms] run_all: running=0
-15:36:36 [SCHED    971637ms] run_all: running=0
-15:36:37 OK: Config applied (inline, delim='|')
-15:36:37 [SCHED    972663ms] add[0]: HCSR04 on gpio freq=2.000Hz mode=poll method=pulse GPIO(pin=2)
-15:36:37 [SCHED] added: HCSR04 on gpio
-15:36:37 CFG: ok (added #0: HCSR04)
-15:36:37 [SCHED    972663ms] run_all: running=0
-15:36:37 [MQTT] Status: Disconnected, Broker: 0.0.0.0
-15:36:37 --- sonic-read: RUN
-15:36:38 RUN
-15:36:38 [SCHED    973663ms] run_all: running=1
-15:36:38 [SCHED    973663ms] arm[0/HCSR04]: next_run reset to NOW
-15:36:38 [SCHED    973689ms] publish[0/HCSR04]: 1 bytes via gpio
-15:36:38 proto=gpio src=HCSR04 len=1 ts=973689 : 00
-15:36:39 [SCHED    974689ms] run_all: running=1
-15:36:39 [SCHED    974714ms] publish[0/HCSR04]: 1 bytes via gpio
-15:36:39 proto=gpio src=HCSR04 len=1 ts=974714 : 00
-15:36:40 [SCHED    975714ms] run_all: running=1
-15:36:40 [SCHED    975739ms] publish[0/HCSR04]: 1 bytes via gpio
-15:36:40 proto=gpio src=HCSR04 len=1 ts=975740 : 00
-15:36:41 [SCHED    976740ms] run_all: running=1
-15:36:41 [SCHED    976765ms] publish[0/HCSR04]: 1 bytes via gpio
-15:36:41 proto=gpio src=HCSR04 len=1 ts=976765 : 00
-15:36:42 [SCHED    977765ms] run_all: running=1
-15:36:42 [SCHED    977790ms] publish[0/HCSR04]: 1 bytes via gpio
-15:36:42 proto=gpio src=HCSR04 len=1 ts=977790 : 00
-15:36:42 [MQTT] Status: Disconnected, Broker: 0.0.0.0
-15:36:43 [SCHED    978791ms] run_all: running=1
-15:36:43 [SCHED    978816ms] publish[0/HCSR04]: 1 bytes via gpio
-15:36:43 proto=gpio src=HCSR04 len=1 ts=978816 : 00
-15:36:44 [SCHED    979816ms] run_all: running=1
-15:36:44 [SCHED    979841ms] publish[0/HCSR04]: 1 bytes via gpio
-15:36:44 proto=gpio src=HCSR04 len=1 ts=979841 : 00
-15:36:45 [SCHED    980841ms] run_all: running=1
-15:36:45 [SCHED    980867ms] publish[0/HCSR04]: 1 bytes via gpio
-15:36:45 proto=gpio src=HCSR04 len=1 ts=980867 : 00
-15:36:46 [SCHED    981867ms] run_all: running=1
-15:36:46 [SCHED    981892ms] publish[0/HCSR04]: 1 bytes via gpio
-15:36:46 proto=gpio src=HCSR04 len=1 ts=981892 : 00
-15:36:47 [SCHED    982892ms] run_all: running=1
-15:36:47 [SCHED    982917ms] publish[0/HCSR04]: 1 bytes via gpio
-15:36:47 proto=gpio src=HCSR04 len=1 ts=982918 : 00
-15:36:47 [MQTT] Status: Disconnected, Broker: 0.0.0.0
-15:36:48 [SCHED    983918ms] run_all: running=1
-15:36:48 [SCHED    983943ms] publish[0/HCSR04]: 1 bytes via gpio
-15:36:48 proto=gpio src=HCSR04 len=1 ts=983943 : 00
-15:36:49 [SCHED    984943ms] run_all: running=1
-15:36:49 [SCHED    984968ms] publish[0/HCSR04]: 1 bytes via gpio
-15:36:49 proto=gpio src=HCSR04 len=1 ts=984968 : 00
-15:36:50 [SCHED    985969ms] run_all: running=1
-15:36:50 [SCHED    985994ms] publish[0/HCSR04]: 1 bytes via gpio
-15:36:50 proto=gpio src=HCSR04 len=1 ts=985994 : 00
-15:36:51 [SCHED    986994ms] run_all: running=1
-15:36:51 [SCHED    987019ms] publish[0/HCSR04]: 1 bytes via gpio
-15:36:51 proto=gpio src=HCSR04 len=1 ts=987019 : 00
-15:36:52 [SCHED    988019ms] run_all: running=1
-15:36:52 [SCHED    988045ms] publish[0/HCSR04]: 1 bytes via gpio
-15:36:52 proto=gpio src=HCSR04 len=1 ts=988045 : 00
-15:36:52 [MQTT] Status: Disconnected, Broker: 0.0.0.0
-15:36:53 [SCHED    989045ms] run_all: running=1
-15:36:53 [SCHED    989070ms] publish[0/HCSR04]: 1 bytes via gpio
-15:36:53 proto=gpio src=HCSR04 len=1 ts=989070 : 00
-15:36:54 [SCHED    990070ms] run_all: running=1
-15:36:54 [SCHED    990095ms] publish[0/HCSR04]: 1 bytes via gpio
-15:36:54 proto=gpio src=HCSR04 len=1 ts=990096 : 00
-15:36:55 [SCHED    991096ms] run_all: running=1
-15:36:55 [SCHED    991121ms] publish[0/HCSR04]: 1 bytes via gpio
-15:36:55 proto=gpio src=HCSR04 len=1 ts=991121 : 00
-15:36:56 [SCHED    992121ms] run_all: running=1
-15:36:56 [SCHED    992146ms] publish[0/HCSR04]: 1 bytes via gpio
-15:36:56 proto=gpio src=HCSR04 len=1 ts=992146 : 00
-15:36:57 [SCHED    993147ms] run_all: running=1
-15:36:57 [SCHED    993172ms] publish[0/HCSR04]: 1 bytes via gpio
-15:36:57 proto=gpio src=HCSR04 len=1 ts=993172 : 00
-15:36:57 [MQTT] Status: Disconnected, Broker: 0.0.0.0
-15:36:58 [SCHED    994172ms] run_all: running=1
-15:36:58 [SCHED    994197ms] publish[0/HCSR04]: 1 bytes via gpio
-15:36:58 proto=gpio src=HCSR04 len=1 ts=994197 : 00
-15:36:59 [SCHED    995197ms] run_all: running=1
-15:36:59 [SCHED    995223ms] publish[0/HCSR04]: 1 bytes via gpio
-15:36:59 proto=gpio src=HCSR04 len=1 ts=995223 : 00
-15:37:00 [SCHED    996223ms] run_all: running=1
-15:37:00 [SCHED    996248ms] publish[0/HCSR04]: 1 bytes via gpio
-15:37:00 proto=gpio src=HCSR04 len=1 ts=996248 : 00
-15:37:01 [SCHED    997248ms] run_all: running=1
-15:37:01 [SCHED    997273ms] publish[0/HCSR04]: 1 bytes via gpio
-15:37:01 proto=gpio src=HCSR04 len=1 ts=997274 : 00
-15:37:02 [SCHED    998274ms] run_all: running=1
-15:37:02 [SCHED    998299ms] publish[0/HCSR04]: 1 bytes via gpio
-15:37:02 proto=gpio src=HCSR04 len=1 ts=998299 : 00
-15:37:02 [MQTT] Status: Disconnected, Broker: 0.0.0.0
-15:37:03 [SCHED    999299ms] run_all: running=1
-15:37:03 [SCHED    999324ms] publish[0/HCSR04]: 1 bytes via gpio
-15:37:03 proto=gpio src=HCSR04 len=1 ts=999324 : 00
-15:37:04 [SCHED   1000325ms] run_all: running=1
-15:37:04 [SCHED   1000350ms] publish[0/HCSR04]: 1 bytes via gpio
-15:37:04 proto=gpio src=HCSR04 len=1 ts=1000350 : 00
-15:37:05 [SCHED   1001350ms] run_all: running=1
-15:37:05 [SCHED   1001375ms] publish[0/HCSR04]: 1 bytes via gpio
-15:37:05 proto=gpio src=HCSR04 len=1 ts=1001375 : 00
-15:37:06 [SCHED   1002376ms] run_all: running=1
-15:37:06 [SCHED   1002401ms] publish[0/HCSR04]: 1 bytes via gpio
-15:37:06 proto=gpio src=HCSR04 len=1 ts=1002401 : 00
-15:37:07 [SCHED   1003401ms] run_all: running=1
-15:37:07 [SCHED   1003426ms] publish[0/HCSR04]: 1 bytes via gpio
-15:37:07 proto=gpio src=HCSR04 len=1 ts=1003426 : 00
-15:37:07 [MQTT] Status: Disconnected, Broker: 0.0.0.0
-15:37:08 [SCHED   1004426ms] run_all: running=1
-15:37:08 [SCHED   1004452ms] publish[0/HCSR04]: 1 bytes via gpio
-15:37:08 proto=gpio src=HCSR04 len=1 ts=1004452 : 00
-15:37:10 [SCHED   1005452ms] run_all: running=1
-15:37:10 [SCHED   1005477ms] publish[0/HCSR04]: 1 bytes via gpio
-15:37:10 proto=gpio src=HCSR04 len=1 ts=1005477 : 00
-15:37:10 [SCHED   1006477ms] run_all: running=1
-15:37:11 [SCHED   1006502ms] publish[0/HCSR04]: 1 bytes via gpio
-15:37:11 proto=gpio src=HCSR04 len=1 ts=1006502 : 00
-15:37:11 [SCHED   1007503ms] run_all: running=1
-15:37:12 [SCHED   1007528ms] publish[0/HCSR04]: 1 bytes via gpio
-15:37:12 proto=gpio src=HCSR04 len=1 ts=1007528 : 00
-15:37:13 [SCHED   1008528ms] run_all: running=1
-15:37:13 [SCHED   1008553ms] publish[0/HCSR04]: 1 bytes via gpio
-15:37:13 proto=gpio src=HCSR04 len=1 ts=1008553 : 00
-15:37:13 [MQTT] Status: Disconnected, Broker: 0.0.0.0
-15:37:14 [SCHED   1009553ms] run_all: running=1
-15:37:14 [SCHED   1009579ms] publish[0/HCSR04]: 1 bytes via gpio
-15:37:14 proto=gpio src=HCSR04 len=1 ts=1009579 : 00
-15:37:15 [SCHED   1010579ms] run_all: running=1
-15:37:15 [SCHED   1010604ms] publish[0/HCSR04]: 1 bytes via gpio
-15:37:15 proto=gpio src=HCSR04 len=1 ts=1010604 : 00
-15:37:16 [SCHED   1011604ms] run_all: running=1
-15:37:16 [SCHED   1011629ms] publish[0/HCSR04]: 1 bytes via gpio
-15:37:16 proto=gpio src=HCSR04 len=1 ts=1011630 : 00
-15:37:17 [SCHED   1012630ms] run_all: running=1
-15:37:17 [SCHED   1012655ms] publish[0/HCSR04]: 1 bytes via gpio
-15:37:17 proto=gpio src=HCSR04 len=1 ts=1012655 : 00
-15:37:18 [SCHED   1013655ms] run_all: running=1
-15:37:18 [SCHED   1013680ms] publish[0/HCSR04]: 1 bytes via gpio
-15:37:18 proto=gpio src=HCSR04 len=1 ts=1013680 : 00
-15:37:18 [MQTT] Status: Disconnected, Broker: 0.0.0.0
-15:37:19 [SCHED   1014681ms] run_all: running=1
-15:37:19 [SCHED   1014706ms] publish[0/HCSR04]: 1 bytes via gpio
-15:37:19 proto=gpio src=HCSR04 len=1 ts=1014706 : 00
-15:37:20 [SCHED   1015706ms] run_all: running=1
-15:37:20 [SCHED   1015731ms] publish[0/HCSR04]: 1 bytes via gpio
-15:37:20 proto=gpio src=HCSR04 len=1 ts=1015731 : 00
-15:37:21 [SCHED   1016731ms] run_all: running=1
-15:37:21 [SCHED   1016757ms] publish[0/HCSR04]: 1 bytes via gpio
-15:37:21 proto=gpio src=HCSR04 len=1 ts=1016757 : 00
-15:37:22 [SCHED   1017757ms] run_all: running=1
-15:37:22 [SCHED   1017782ms] publish[0/HCSR04]: 1 bytes via gpio
-15:37:22 proto=gpio src=HCSR04 len=1 ts=1017782 : 00
-15:37:22 --- stop-sonic: STOP
-15:37:23 STOP
-15:37:23 [SCHED   1018782ms] run_all: running=0
-15:37:23 [MQTT] Status: Disconnected, Broker: 0.0.0.0
-15:37:24 [SCHED   1019783ms] run_all: running=0
-15:37:25 [SCHED   1020783ms] run_all: running=0
-15:37:25 --- clear-sonic: CLEAR
-15:37:26 [SCHED   1021783ms] reset: cleared 8 slots
-15:37:26 [RULE] reset
-15:37:26 CLEARED
-15:37:26 [SCHED   1021783ms] run_all: running=0
-15:37:27 [SCHED   1022784ms] run_all: running=0
+20:34:13 [SCHED   1885214ms] run_all: running=0
+20:34:14 [SCHED   1886215ms] run_all: running=0
+20:34:15 [SCHED   1887215ms] run_all: running=0
+20:34:15 --- cfg-sonic: BEGINCFG|name=HCSR04|proto=gpio|gpio.mode=pulse|mode=poll|freq_hz=2|gpio.trig=16|gpio.echo=17|gpio.trig_us=10|gpio.pulse_timeout_us=25000|ENDCFG
+20:34:16 [SCHED   1888215ms] run_all: running=0
+20:34:16 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:34:17 [SCHED   1889216ms] run_all: running=0
+20:34:18 OK: Config applied (inline, delim='|')
+20:34:18 [SCHED   1890217ms] add[0]: HCSR04 on gpio freq=2.000Hz mode=poll method=pulse GPIO(pin=2)
+20:34:18 [SCHED] added: HCSR04 on gpio
+20:34:18 CFG: ok (added #0: HCSR04)
+20:34:18 [SCHED   1890218ms] run_all: running=0
+20:34:18 --- sonic-read: RUN
+20:34:19 RUN
+20:34:19 [SCHED   1891218ms] run_all: running=1
+20:34:19 [SCHED   1891218ms] arm[0/HCSR04]: next_run reset to NOW
+20:34:19 [SCHED   1891243ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:19 proto=gpio src=HCSR04 len=3 ts=1891244 : A9 61 01
+20:34:20 [SCHED   1892244ms] run_all: running=1
+20:34:20 [SCHED   1892269ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:20 proto=gpio src=HCSR04 len=3 ts=1892269 : A9 61 01
+20:34:21 [SCHED   1893270ms] run_all: running=1
+20:34:21 [SCHED   1893271ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:21 proto=gpio src=HCSR04 len=3 ts=1893271 : 73 02 01
+20:34:21 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:34:22 [SCHED   1894271ms] run_all: running=1
+20:34:22 [SCHED   1894272ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:22 proto=gpio src=HCSR04 len=3 ts=1894272 : B5 02 01
+20:34:23 [SCHED   1895272ms] run_all: running=1
+20:34:23 [SCHED   1895273ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:23 proto=gpio src=HCSR04 len=3 ts=1895273 : 5A 02 01
+20:34:24 [SCHED   1896274ms] run_all: running=1
+20:34:24 [SCHED   1896275ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:24 proto=gpio src=HCSR04 len=3 ts=1896275 : 5A 02 01
+20:34:25 [SCHED   1897275ms] run_all: running=1
+20:34:25 [SCHED   1897276ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:25 proto=gpio src=HCSR04 len=3 ts=1897276 : 55 02 01
+20:34:26 [SCHED   1898276ms] run_all: running=1
+20:34:26 [SCHED   1898277ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:26 proto=gpio src=HCSR04 len=3 ts=1898277 : 0E 02 01
+20:34:26 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:34:27 [SCHED   1899277ms] run_all: running=1
+20:34:27 [SCHED   1899278ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:27 proto=gpio src=HCSR04 len=3 ts=1899278 : E6 01 01
+20:34:28 [SCHED   1900279ms] run_all: running=1
+20:34:28 [SCHED   1900279ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:28 proto=gpio src=HCSR04 len=3 ts=1900279 : 58 01 01
+20:34:29 [SCHED   1901280ms] run_all: running=1
+20:34:29 [SCHED   1901280ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:29 proto=gpio src=HCSR04 len=3 ts=1901280 : D2 01 01
+20:34:30 [SCHED   1902281ms] run_all: running=1
+20:34:30 [SCHED   1902281ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:30 proto=gpio src=HCSR04 len=3 ts=1902281 : 72 01 01
+20:34:31 [SCHED   1903282ms] run_all: running=1
+20:34:31 [SCHED   1903282ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:31 proto=gpio src=HCSR04 len=3 ts=1903283 : C8 01 01
+20:34:31 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:34:32 [SCHED   1904283ms] run_all: running=1
+20:34:32 [SCHED   1904308ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:32 proto=gpio src=HCSR04 len=3 ts=1904308 : A9 61 01
+20:34:33 [SCHED   1905309ms] run_all: running=1
+20:34:33 [SCHED   1905309ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:33 proto=gpio src=HCSR04 len=3 ts=1905310 : 32 02 01
+20:34:34 [SCHED   1906310ms] run_all: running=1
+20:34:34 [SCHED   1906311ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:34 proto=gpio src=HCSR04 len=3 ts=1906311 : 7E 02 01
+20:34:35 [SCHED   1907311ms] run_all: running=1
+20:34:35 [SCHED   1907337ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:35 proto=gpio src=HCSR04 len=3 ts=1907337 : A9 61 01
+20:34:36 [SCHED   1908338ms] run_all: running=1
+20:34:36 [SCHED   1908363ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:36 proto=gpio src=HCSR04 len=3 ts=1908363 : A9 61 01
+20:34:36 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:34:37 [SCHED   1909363ms] run_all: running=1
+20:34:37 [SCHED   1909364ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:37 proto=gpio src=HCSR04 len=3 ts=1909364 : E3 02 01
+20:34:38 [SCHED   1910365ms] run_all: running=1
+20:34:38 [SCHED   1910390ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:38 proto=gpio src=HCSR04 len=3 ts=1910390 : A9 61 01
+20:34:39 [SCHED   1911390ms] run_all: running=1
+20:34:39 [SCHED   1911416ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:39 proto=gpio src=HCSR04 len=3 ts=1911416 : A9 61 01
+20:34:40 [SCHED   1912416ms] run_all: running=1
+20:34:40 [SCHED   1912441ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:40 proto=gpio src=HCSR04 len=3 ts=1912441 : A9 61 01
+20:34:41 [SCHED   1913442ms] run_all: running=1
+20:34:41 [SCHED   1913467ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:41 proto=gpio src=HCSR04 len=3 ts=1913467 : A9 61 01
+20:34:41 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:34:42 [SCHED   1914467ms] run_all: running=1
+20:34:42 [SCHED   1914469ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:42 proto=gpio src=HCSR04 len=3 ts=1914469 : 6C 06 01
+20:34:43 [SCHED   1915470ms] run_all: running=1
+20:34:43 [SCHED   1915472ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:43 proto=gpio src=HCSR04 len=3 ts=1915472 : 6B 06 01
+20:34:44 [SCHED   1916472ms] run_all: running=1
+20:34:44 [SCHED   1916497ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:44 proto=gpio src=HCSR04 len=3 ts=1916497 : A9 61 01
+20:34:45 [SCHED   1917498ms] run_all: running=1
+20:34:45 [SCHED   1917500ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:45 proto=gpio src=HCSR04 len=3 ts=1917500 : 03 07 01
+20:34:46 [SCHED   1918500ms] run_all: running=1
+20:34:46 [SCHED   1918502ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:46 proto=gpio src=HCSR04 len=3 ts=1918502 : A3 06 01
+20:34:46 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:34:47 [SCHED   1919503ms] run_all: running=1
+20:34:47 [SCHED   1919528ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:47 proto=gpio src=HCSR04 len=3 ts=1919528 : A9 61 01
+20:34:48 [SCHED   1920528ms] run_all: running=1
+20:34:48 [SCHED   1920554ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:48 proto=gpio src=HCSR04 len=3 ts=1920554 : A9 61 01
+20:34:49 [SCHED   1921554ms] run_all: running=1
+20:34:49 [SCHED   1921579ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:49 proto=gpio src=HCSR04 len=3 ts=1921579 : A9 61 01
+20:34:50 [SCHED   1922580ms] run_all: running=1
+20:34:50 [SCHED   1922605ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:50 proto=gpio src=HCSR04 len=3 ts=1922605 : A9 61 01
+20:34:51 [SCHED   1923605ms] run_all: running=1
+20:34:51 [SCHED   1923631ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:51 proto=gpio src=HCSR04 len=3 ts=1923631 : A9 61 01
+20:34:51 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:34:52 [SCHED   1924631ms] run_all: running=1
+20:34:52 [SCHED   1924656ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:52 proto=gpio src=HCSR04 len=3 ts=1924656 : A9 61 01
+20:34:53 [SCHED   1925657ms] run_all: running=1
+20:34:53 [SCHED   1925682ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:53 proto=gpio src=HCSR04 len=3 ts=1925682 : A9 61 01
+20:34:54 [SCHED   1926682ms] run_all: running=1
+20:34:54 [SCHED   1926708ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:54 proto=gpio src=HCSR04 len=3 ts=1926708 : A9 61 01
+20:34:55 [SCHED   1927708ms] run_all: running=1
+20:34:55 [SCHED   1927733ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:55 proto=gpio src=HCSR04 len=3 ts=1927733 : A9 61 01
+20:34:56 [SCHED   1928734ms] run_all: running=1
+20:34:56 [SCHED   1928759ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:56 proto=gpio src=HCSR04 len=3 ts=1928759 : A9 61 01
+20:34:56 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:34:57 [SCHED   1929759ms] run_all: running=1
+20:34:57 [SCHED   1929785ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:57 proto=gpio src=HCSR04 len=3 ts=1929785 : A9 61 01
+20:34:58 [SCHED   1930785ms] run_all: running=1
+20:34:58 [SCHED   1930810ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:58 proto=gpio src=HCSR04 len=3 ts=1930810 : A9 61 01
+20:34:59 [SCHED   1931811ms] run_all: running=1
+20:34:59 [SCHED   1931836ms] publish[0/HCSR04]: 3 bytes via gpio
+20:34:59 proto=gpio src=HCSR04 len=3 ts=1931836 : A9 61 01
+20:35:00 [SCHED   1932836ms] run_all: running=1
+20:35:00 [SCHED   1932862ms] publish[0/HCSR04]: 3 bytes via gpio
+20:35:00 proto=gpio src=HCSR04 len=3 ts=1932862 : A9 61 01
+20:35:01 [SCHED   1933862ms] run_all: running=1
+20:35:01 [SCHED   1933887ms] publish[0/HCSR04]: 3 bytes via gpio
+20:35:01 proto=gpio src=HCSR04 len=3 ts=1933887 : A9 61 01
+20:35:01 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:35:02 [SCHED   1934888ms] run_all: running=1
+20:35:02 [SCHED   1934913ms] publish[0/HCSR04]: 3 bytes via gpio
+20:35:02 proto=gpio src=HCSR04 len=3 ts=1934913 : A9 61 01
+20:35:03 --- stop-sonic: STOP
+20:35:03 STOP
+20:35:03 [SCHED   1935914ms] run_all: running=0
+20:35:05 [SCHED   1936914ms] run_all: running=0
+20:35:05 [SCHED   1937914ms] run_all: running=0
+20:35:06 --- clear-sonic: CLEAR
+20:35:06 [SCHED   1938914ms] reset: cleared 8 slots
+20:35:06 [RULE] reset
+20:35:06 CLEARED
+20:35:06 [SCHED   1938914ms] run_all: running=0
+20:35:06 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:35:08 [SCHED   1939915ms] run_all: running=0
+20:35:08 [SCHED   1940915ms] run_all: running=0
