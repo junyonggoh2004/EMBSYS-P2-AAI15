@@ -1,12 +1,12 @@
 # D1 Requirements and Parity Table (Tasks 4 and 5)
 
-Owner: Hasif. Requirements are proposed for team review (task 4). The Pico column is the executed baseline (task 5); rows marked pending need hardware or a network that was not available during the run. The ESP32-S3 column is filled in during tasks 13 to 21 using the same commands.
+Owner: Hasif. Requirements signed off by the team (task 4). The Pico column is the executed baseline (task 5); rows marked pending need hardware or a network that was not available during the run. The ESP32-S3 column is filled in during tasks 13 to 21 using the same commands.
 
 **Reference under test:** `s3-port` commit `543a759` (firmware sources unchanged through `23db9c8`), Raspberry Pi Pico 2 W (RP2350, confirmed from the bootloader's `INFO_UF2.TXT`), Pico SDK 2.3.0, Arm GNU Toolchain 14.2.Rel1. Tester: Hasif, 2026-09-28 to 2026-10-02. The Wi-Fi and MQTT rows used the same sources with a home network's credentials and the broker address in the gitignored `project_v3/include/wifi_credentials.h`. Build record and artifact hashes: [logs/3-build.txt](logs/3-build.txt). Frozen as the annotated tag `pico-reference` (task 6); the clean-checkout rebuild check is in [logs/6-reference-check.txt](logs/6-reference-check.txt).
 
 **Reproducing a result:** the exact command text for every row is in [parity_test.py](parity_test.py) under the stage and step named in the table. Run `python3 parity/parity_test.py --stage <stage>` with the board connected over USB; the raw serial capture is written to `parity/logs/<stage>.log`. The Wi-Fi and MQTT rows (P-25 to P-29) use [mqtt_test.py](mqtt_test.py) instead: run a Mosquitto broker on the host, install `paho-mqtt`, set `MQTT_HOST` in `wifi_credentials.h` to the host's address, then run `python3 parity/mqtt_test.py --broker <host address> --boot` and reflash or replug the board. It sends every command over MQTT, checks the serial log and the broker traffic together, and writes `parity/logs/mqtt.log`. The host also plays a second node, `pico-002`, so P-28 needs only one board. The Pico 2 W joins 2.4 GHz WPA2-Personal networks only.
 
-## 1. Requirements (task 4, proposed)
+## 1. Requirements (task 4)
 
 ### Functional
 
@@ -30,9 +30,9 @@ Owner: Hasif. Requirements are proposed for team review (task 4). The Pico colum
 
 ### Non-functional
 
-Values in the target column are proposals for team review, derived from the Pico measurements.
+Targets are derived from the Pico measurements and signed off by the team.
 
-| ID | Requirement | Pico measurement | Proposed ESP32-S3 target | Planned test |
+| ID | Requirement | Pico measurement | ESP32-S3 target | Planned test |
 |---|---|---|---|---|
 | NFR-01 | Main loop and sampling period | Loop period 1000 to 1201 ms, mean 1006.4 ms over 301 passes. A sensor configured at `freq_hz=2` was sampled every 1002 to 1003 ms, because the main loop sleeps 1000 ms per pass | For `freq_hz=1`, period 1000 ms ±10%, with jitter recorded; never slower than the Pico | Heartbeat and sample timestamps in every log |
 | NFR-02 | REPL response latency | Replies arrive within one loop pass on the board (at most about 1.2 s). USB delivery to the host occasionally lagged by up to about 5 s | Reply within 1 s of the command | Timestamped command and reply lines |
@@ -70,7 +70,7 @@ The README's acceptance for tasks 13 to 20 names specific fault and limit cases.
 | T-02 | 14 | `gpio.invert=1` and `gpio.debounce_ms` change the reported state as documented | Invert: pass. On 81 paired samples of the same pin, the `gpio.invert=1` sensor always reported the opposite of the plain one (stage `4d-ir`). Debounce: not measurable at the reference's 1 s sampling interval (D-06) | |
 | T-03 | 14 | An out-of-range `gpio.pin` is refused rather than crashing the board | Defect recorded (D-08): `gpio.pin=99` is accepted with `CFG: ok` and then publishes normal-looking `00` readings every second. The board does not crash. Stage `t03`, `logs/t03.log` | |
 | T-04 | 14 | Eight sensors at the highest supported rate keep their sample period, or the overload is reported | Pass on stability, with a gap: 8 sensors at a requested `freq_hz=20` (50 ms) all kept publishing and the board kept responding, but every sensor was sampled every 1002 to 1003 ms and no overload was reported (D-06). Stage `t04`, `logs/t04.log` | |
-| T-05 | 15 | Counter mode loses no edges up to a stated maximum rate | Not yet run; the rate limit is set in task 4 review | |
+| T-05 | 15 | Counter mode loses no edges up to a stated maximum rate | Not yet run; the maximum rate is to be stated in task 10 | |
 | T-06 | 15 | One-wire with the sensor absent times out cleanly | Not yet run | |
 | T-07 | 16 | I2C with `i2c.restart=0` against `1`, two devices on one bus, and recovery after a device is unplugged | Not yet run; the TSL2561 is now available for it | |
 | T-08 | 17 | UART `uart.line_mode=1`, framing settings (`uart.bits`, `uart.parity`, `uart.stop`), a partial message, and more input than `uart.read_len` | Not yet run; possible with the loopback wire | |
