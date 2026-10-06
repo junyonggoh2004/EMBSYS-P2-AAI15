@@ -54,12 +54,11 @@ Shared code may call only four interfaces: the HAL below; the existing sensor dr
 | Monotonic time | `get_absolute_time`, `absolute_time_diff_us`, `to_ms_since_boot` in the scheduler, drivers, rules, MQTT and inference code | `hal_time_us()` (64-bit µs), `hal_time_ms()` (32-bit ms) | `esp_timer_get_time()` | Never blocks; safe from any task or ISR |
 | Delay | `sleep_ms` in seven files | `hal_delay_ms(ms)` | `vTaskDelay` | Yields; never called from an ISR or with a lock held |
 | Short wait | `sleep_us` in `gpio.c`, `uart.c` | `hal_delay_us(us)` | `delayMicroseconds` | Busy-waits; at most 1000 µs |
-| Console | `stdio_init_all`, `printf`, `getchar_timeout_us` | `hal_console_write`, `hal_console_getc(timeout)` | `Serial` over USB CDC | Writes are whole lines and thread-safe; `getc` returns -1 on timeout |
-| GPIO | `gpio_init`, `gpio_set_dir`, `gpio_put`, `gpio_get`, pull functions | `hal_gpio_valid`, `hal_gpio_mode`, `hal_gpio_write`, `hal_gpio_read` | `pinMode`, `digitalWrite`, `digitalRead` | An invalid or reserved pin returns `HAL_ERR_PIN` |
-| Edge count | None (Pico samples the level) | `hal_gpio_count_edges(pin, counter)` | `attachInterrupt`, ISR in IRAM | Counter is a 32-bit value read atomically |
-| PWM | `pwm_*` in `rule_action.c` | `hal_pwm_set(pin, freq, duty)` | LEDC through the Arduino API | Duty 0.0 to 1.0 |
-| Critical section | `save_and_disable_interrupts` | `hal_crit_enter`, `hal_crit_exit` | `portENTER_CRITICAL` on a spinlock | Held for at most 10 ms |
-| Watchdog | None | `hal_wdt_add`, `hal_wdt_feed` | `esp_task_wdt` | 5 s timeout |
+| Console | `stdio_init_all`, `printf`, `getchar_timeout_us` | `hal_console_getc(timeout)`; output stays C `printf` | `Serial` over USB CDC, with stdout routed to it | `getc` returns `HAL_ERR_TIMEOUT` when nothing arrives; each backend routes stdout to its console |
+| GPIO | `gpio_init`, `gpio_set_dir`, `gpio_put`, `gpio_get` in `rule_action.c` | `hal_gpio_valid`, `hal_gpio_mode`, `hal_gpio_write`, `hal_gpio_read`, `hal_gpio_toggle` | `pinMode`, `digitalWrite`, `digitalRead` | An invalid pin returns `HAL_ERR_PIN` |
+| PWM | `pwm_*` in `rule_action.c` | `hal_pwm_set(pin, duty)`, `hal_pwm_stop(pin)` | LEDC through the Arduino API | Duty 0.0 to 1.0 in steps of 1/1000; frequency fixed per target to match parity (about 37.5 kHz on the Pico) |
+
+The contract, with units, return values, blocking limits and ISR rules, is [project_v3/include/hal/hal.h](project_v3/include/hal/hal.h), and the Pico backend is [project_v3/platform/pico/hal_pico.c](project_v3/platform/pico/hal_pico.c) (task 11). [tools/check_hal_boundary.sh](tools/check_hal_boundary.sh) compiles every shared module without any SDK headers, which proves that no shared module bypasses the HAL. Edge counting, critical sections and the task watchdog are used only below the boundary, by the GPIO driver, the model store and the task 13 runtime, so they are platform services rather than HAL functions; on the S3 they use `attachInterrupt`, `portENTER_CRITICAL` and `esp_task_wdt`.
 
 Platform drivers sit beside the HAL rather than inside it: I2C (`hardware/i2c.h`) becomes `Wire`, UART (`hardware/uart.h`) becomes `HardwareSerial` on UART1, the network (`cyw43_arch`, lwIP MQTT) becomes Arduino `WiFi` plus the MQTT library in section 10, flash (`hardware/flash.h`) becomes the model store in section 11, and the TFLite Micro port becomes an Arduino build of the library.
 

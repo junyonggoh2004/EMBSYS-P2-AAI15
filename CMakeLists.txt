@@ -63,6 +63,7 @@ add_executable(project_v3
 
     project_v3/inference_engine/tflite_wrapper.cpp
     project_v3/inference_engine/inference_manager.c
+    project_v3/platform/pico/hal_pico.c
     )
 
 pico_set_program_name(project_v3 "project_v3")

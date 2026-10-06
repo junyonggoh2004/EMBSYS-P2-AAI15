@@ -4,10 +4,10 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "pico/time.h"
+#include "hal/hal.h"
 // Milliseconds since boot (monotonic)
 static inline uint32_t app_now_ms(void) {
-    return to_ms_since_boot(get_absolute_time());
+    return hal_time_ms();
 }
 // ---------- enums ----------
 typedef enum {

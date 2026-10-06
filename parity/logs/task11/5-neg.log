@@ -1,0 +1,305 @@
+15:57:04 [SCHED     65867ms] run_all: running=0
+15:57:04 [MQTT] conn status=256
+15:57:05 [SCHED     66868ms] run_all: running=0
+15:57:05 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:57:06 [SCHED     67868ms] run_all: running=0
+15:57:06 --- clear-0: CLEAR
+15:57:07 [SCHED     68869ms] reset: cleared 8 slots
+15:57:07 [RULE] reset
+15:57:07 CLEARED
+15:57:07 [SCHED     68869ms] run_all: running=0
+15:57:08 [SCHED     69869ms] run_all: running=0
+15:57:09 --- neg-proto: BEGINCFG|name=BADP|proto=spi|mode=poll|freq_hz=1|ENDCFG
+15:57:09 OK: Config applied (inline, delim='|')
+15:57:09 [I2C] pre_len=0 :
+15:57:09 [SCHED     70870ms] add[0]: BADP on i2c freq=1.000Hz mode=poll I2C(sda=4,scl=5,addr=0x76,reg=0x0,len=1)
+15:57:09 [SCHED] added: BADP on i2c
+15:57:09 CFG: ok (added #0: BADP)
+15:57:09 [SCHED     70871ms] run_all: running=0
+15:57:09 [MQTT] conn status=256
+15:57:10 [SCHED     71871ms] run_all: running=0
+15:57:10 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:57:11 [SCHED     72871ms] run_all: running=0
+15:57:11 --- neg-i2c-nodev: BEGINCFG|name=NODEV|proto=i2c|mode=poll|freq_hz=1|i2c.sda=16|i2c.scl=17|i2c.addr=0x29|i2c.pre=0x80 0x03|i2c.reg=0x8A|i2c.reg_size=1|i2c.read_len=1|i2c.restart=1|ENDCFG
+15:57:12 [SCHED     73872ms] run_all: running=0
+15:57:13 [SCHED     74873ms] run_all: running=0
+15:57:14 OK: Config applied (inline, delim='|')
+15:57:14 [I2C] pre_len=2 : 80 03
+15:57:14 [I2C] pre write failed (sz=2 err=-1)
+15:57:14 [I2C] init pre-writes failed r=-1
+15:57:14 [SCHED     75874ms] add[1]: init_cfg FAILED for NODEV on i2c
+15:57:14 CFG: add failed (-2)
+15:57:14 [SCHED     75874ms] run_all: running=0
+15:57:14 [MQTT] conn status=256
+15:57:14 --- neg-nopin: BEGINCFG|name=NOPIN|proto=gpio|gpio.mode=digital|mode=poll|freq_hz=1|ENDCFG
+15:57:15 [SCHED     76875ms] run_all: running=0
+15:57:15 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:57:16 OK: Config applied (inline, delim='|')
+15:57:16 [SCHED     77876ms] add[1]: NOPIN on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=2)
+15:57:16 [SCHED] added: NOPIN on gpio
+15:57:16 CFG: ok (added #1: NOPIN)
+15:57:16 [SCHED     77876ms] run_all: running=0
+15:57:17 --- clear-1: CLEAR
+15:57:17 [SCHED     78877ms] reset: cleared 8 slots
+15:57:17 [RULE] reset
+15:57:17 CLEARED
+15:57:17 [SCHED     78877ms] run_all: running=0
+15:57:18 [SCHED     79877ms] run_all: running=0
+15:57:19 [SCHED     80878ms] run_all: running=0
+15:57:19 [MQTT] conn status=256
+15:57:19 --- slot-1: BEGINCFG|name=S1|proto=gpio|gpio.mode=digital|gpio.pin=22|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+15:57:20 [SCHED     81878ms] run_all: running=0
+15:57:20 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:57:21 OK: Config applied (inline, delim='|')
+15:57:21 [SCHED     82880ms] add[0]: S1 on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=22)
+15:57:21 [SCHED] added: S1 on gpio
+15:57:21 CFG: ok (added #0: S1)
+15:57:21 [SCHED     82880ms] run_all: running=0
+15:57:22 --- slot-2: BEGINCFG|name=S2|proto=gpio|gpio.mode=digital|gpio.pin=22|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+15:57:22 [SCHED     83880ms] run_all: running=0
+15:57:23 OK: Config applied (inline, delim='|')
+15:57:23 [SCHED     84881ms] add[1]: S2 on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=22)
+15:57:23 [SCHED] added: S2 on gpio
+15:57:23 CFG: ok (added #1: S2)
+15:57:23 [SCHED     84882ms] run_all: running=0
+15:57:24 [SCHED     85882ms] run_all: running=0
+15:57:24 [MQTT] conn status=256
+15:57:24 --- slot-3: BEGINCFG|name=S3|proto=gpio|gpio.mode=digital|gpio.pin=22|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+15:57:25 [SCHED     86883ms] run_all: running=0
+15:57:25 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:57:26 OK: Config applied (inline, delim='|')
+15:57:26 [SCHED     87884ms] add[2]: S3 on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=22)
+15:57:26 [SCHED] added: S3 on gpio
+15:57:26 CFG: ok (added #2: S3)
+15:57:26 [SCHED     87884ms] run_all: running=0
+15:57:27 [SCHED     88884ms] run_all: running=0
+15:57:27 --- slot-4: BEGINCFG|name=S4|proto=gpio|gpio.mode=digital|gpio.pin=22|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+15:57:28 [SCHED     89885ms] run_all: running=0
+15:57:29 OK: Config applied (inline, delim='|')
+15:57:29 [SCHED     90886ms] add[3]: S4 on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=22)
+15:57:29 [SCHED] added: S4 on gpio
+15:57:29 CFG: ok (added #3: S4)
+15:57:29 [SCHED     90886ms] run_all: running=0
+15:57:29 [MQTT] conn status=256
+15:57:30 --- slot-5: BEGINCFG|name=S5|proto=gpio|gpio.mode=digital|gpio.pin=22|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+15:57:30 [SCHED     91887ms] run_all: running=0
+15:57:30 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:57:31 OK: Config applied (inline, delim='|')
+15:57:31 [SCHED     92888ms] add[4]: S5 on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=22)
+15:57:31 [SCHED] added: S5 on gpio
+15:57:31 CFG: ok (added #4: S5)
+15:57:31 [SCHED     92889ms] run_all: running=0
+15:57:32 [SCHED     93889ms] run_all: running=0
+15:57:32 --- slot-6: BEGINCFG|name=S6|proto=gpio|gpio.mode=digital|gpio.pin=22|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+15:57:33 [SCHED     94889ms] run_all: running=0
+15:57:34 OK: Config applied (inline, delim='|')
+15:57:34 [SCHED     95890ms] add[5]: S6 on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=22)
+15:57:34 [SCHED] added: S6 on gpio
+15:57:34 CFG: ok (added #5: S6)
+15:57:34 [SCHED     95891ms] run_all: running=0
+15:57:34 [MQTT] conn status=256
+15:57:35 --- slot-7: BEGINCFG|name=S7|proto=gpio|gpio.mode=digital|gpio.pin=22|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+15:57:35 [SCHED     96892ms] run_all: running=0
+15:57:35 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:57:36 OK: Config applied (inline, delim='|')
+15:57:36 [SCHED     97893ms] add[6]: S7 on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=22)
+15:57:36 [SCHED] added: S7 on gpio
+15:57:36 CFG: ok (added #6: S7)
+15:57:36 [SCHED     97893ms] run_all: running=0
+15:57:37 [SCHED     98893ms] run_all: running=0
+15:57:37 --- slot-8: BEGINCFG|name=S8|proto=gpio|gpio.mode=digital|gpio.pin=22|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+15:57:38 [SCHED     99894ms] run_all: running=0
+15:57:39 OK: Config applied (inline, delim='|')
+15:57:39 [SCHED    100895ms] add[7]: S8 on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=22)
+15:57:39 [SCHED] added: S8 on gpio
+15:57:39 CFG: ok (added #7: S8)
+15:57:39 [SCHED    100895ms] run_all: running=0
+15:57:39 [MQTT] conn status=256
+15:57:40 [SCHED    101896ms] run_all: running=0
+15:57:40 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:57:40 --- neg-slots: BEGINCFG|name=S9|proto=gpio|gpio.mode=digital|gpio.pin=22|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+15:57:41 [SCHED    102896ms] run_all: running=0
+15:57:42 OK: Config applied (inline, delim='|')
+15:57:42 [SCHED    103897ms] add: no free slots
+15:57:42 [SCHED] no free slots
+15:57:42 CFG: add failed (-10)
+15:57:42 [SCHED    103897ms] run_all: running=0
+15:57:43 --- neg-rule-nosource: BEGINRULE|name=RN|calc=x=u8(0)|when=1|action=log:x|ENDRULE
+15:57:43 [RULE] missing source=
+15:57:43 RULE: parse error
+15:57:43 [SCHED    104898ms] run_all: running=0
+15:57:44 [SCHED    105899ms] run_all: running=0
+15:57:44 [MQTT] conn status=256
+15:57:45 [SCHED    106899ms] run_all: running=0
+15:57:45 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:57:45 --- rule-1: BEGINRULE|name=R1|source=S1|calc=x=u8(0)|when=1|action=log:ok1|ENDRULE
+15:57:46 [SCHED    107900ms] run_all: running=0
+15:57:47 [RULE] added name=R1 src=S1 vars=1 action=log:ok1
+15:57:47 RULE: ok
+15:57:47 [SCHED    108901ms] run_all: running=0
+15:57:48 --- rule-2: BEGINRULE|name=R2|source=S1|calc=x=u8(0)|when=1|action=log:ok2|ENDRULE
+15:57:48 [SCHED    109901ms] run_all: running=0
+15:57:49 [RULE] added name=R2 src=S1 vars=1 action=log:ok2
+15:57:49 RULE: ok
+15:57:49 [SCHED    110902ms] run_all: running=0
+15:57:49 [MQTT] conn status=256
+15:57:50 [SCHED    111903ms] run_all: running=0
+15:57:50 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:57:50 --- rule-3: BEGINRULE|name=R3|source=S1|calc=x=u8(0)|when=1|action=log:ok3|ENDRULE
+15:57:51 [SCHED    112904ms] run_all: running=0
+15:57:52 [RULE] added name=R3 src=S1 vars=1 action=log:ok3
+15:57:52 RULE: ok
+15:57:52 [SCHED    113905ms] run_all: running=0
+15:57:53 --- rule-4-badpin: BEGINRULE|name=R4|source=S1|calc=x=u8(0)|when=1|action=gpio:X=HIGH|ENDRULE
+15:57:53 [SCHED    114905ms] run_all: running=0
+15:57:54 [RULE] added name=R4 src=S1 vars=1 action=gpio:X=HIGH
+15:57:54 RULE: ok
+15:57:54 [SCHED    115906ms] run_all: running=0
+15:57:54 [MQTT] conn status=256
+15:57:55 [SCHED    116906ms] run_all: running=0
+15:57:55 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:57:56 --- neg-rule-full: BEGINRULE|name=R5|source=S1|calc=x=u8(0)|when=1|action=log:no|ENDRULE
+15:57:56 [SCHED    117907ms] run_all: running=0
+15:57:57 [RULE] table full
+15:57:57 RULE: parse error
+15:57:57 [SCHED    118908ms] run_all: running=0
+15:57:58 [SCHED    119908ms] run_all: running=0
+15:57:58 --- neg-badpin-run: RUN
+15:57:59 RUN
+15:57:59 [SCHED    120908ms] run_all: running=1
+15:57:59 [SCHED    120908ms] arm[0/S1]: next_run reset to NOW
+15:57:59 [SCHED    120909ms] arm[1/S2]: next_run reset to NOW
+15:57:59 [SCHED    120909ms] arm[2/S3]: next_run reset to NOW
+15:57:59 [SCHED    120909ms] arm[3/S4]: next_run reset to NOW
+15:57:59 [SCHED    120909ms] arm[4/S5]: next_run reset to NOW
+15:57:59 [SCHED    120909ms] arm[5/S6]: next_run reset to NOW
+15:57:59 [SCHED    120909ms] arm[6/S7]: next_run reset to NOW
+15:57:59 [SCHED    120909ms] arm[7/S8]: next_run reset to NOW
+15:57:59 [SCHED    120909ms] publish[0/S1]: 3 bytes via gpio
+15:57:59 proto=gpio src=S1 len=3 ts=120909 : 00 8D 94
+15:57:59 [RULE] R1: ok1 (value=0.000 ts=120909)
+15:57:59 [RULE] R2: ok2 (value=0.000 ts=120909)
+15:57:59 [RULE] R3: ok3 (value=0.000 ts=120909)
+15:57:59 [RULE] R4: bad gpio pin in action='gpio:X=HIGH'
+15:57:59 [TRACE] Total Rule Eval (S1): 653us
+15:57:59 [SCHED    120910ms] publish[1/S2]: 3 bytes via gpio
+15:57:59 proto=gpio src=S2 len=3 ts=120910 : 00 BD 8C
+15:57:59 [SCHED    120910ms] publish[2/S3]: 3 bytes via gpio
+15:57:59 proto=gpio src=S3 len=3 ts=120911 : 00 02 81
+15:57:59 [SCHED    120911ms] publish[3/S4]: 3 bytes via gpio
+15:57:59 proto=gpio src=S4 len=3 ts=120911 : 00 49 75
+15:57:59 [SCHED    120911ms] publish[4/S5]: 3 bytes via gpio
+15:57:59 proto=gpio src=S5 len=3 ts=120911 : 00 77 6D
+15:57:59 [SCHED    120911ms] publish[5/S6]: 3 bytes via gpio
+15:57:59 proto=gpio src=S6 len=3 ts=120911 : 00 BD 61
+15:57:59 [SCHED    120911ms] publish[6/S7]: 3 bytes via gpio
+15:57:59 proto=gpio src=S7 len=3 ts=120911 : 00 EA 59
+15:57:59 [SCHED    120912ms] publish[7/S8]: 3 bytes via gpio
+15:57:59 proto=gpio src=S8 len=3 ts=120912 : 00 31 4E
+15:57:59 [MQTT] conn status=256
+15:58:00 [SCHED    121912ms] run_all: running=1
+15:58:00 [SCHED    121913ms] publish[0/S1]: 3 bytes via gpio
+15:58:00 proto=gpio src=S1 len=3 ts=121913 : 00 79 98
+15:58:00 [RULE] R1: ok1 (value=0.000 ts=121913)
+15:58:00 [RULE] R2: ok2 (value=0.000 ts=121913)
+15:58:00 [RULE] R3: ok3 (value=0.000 ts=121913)
+15:58:00 [RULE] R4: bad gpio pin in action='gpio:X=HIGH'
+15:58:00 [TRACE] Total Rule Eval (S1): 624us
+15:58:00 [SCHED    121914ms] publish[1/S2]: 3 bytes via gpio
+15:58:00 proto=gpio src=S2 len=3 ts=121914 : 00 A9 90
+15:58:00 [SCHED    121914ms] publish[2/S3]: 3 bytes via gpio
+15:58:00 proto=gpio src=S3 len=3 ts=121914 : 00 EE 84
+15:58:00 [SCHED    121914ms] publish[3/S4]: 3 bytes via gpio
+15:58:00 proto=gpio src=S4 len=3 ts=121914 : 00 34 79
+15:58:00 [SCHED    121915ms] publish[4/S5]: 3 bytes via gpio
+15:58:00 proto=gpio src=S5 len=3 ts=121915 : 00 63 71
+15:58:00 [SCHED    121915ms] publish[5/S6]: 3 bytes via gpio
+15:58:00 proto=gpio src=S6 len=3 ts=121915 : 00 A9 65
+15:58:00 [SCHED    121915ms] publish[6/S7]: 3 bytes via gpio
+15:58:00 proto=gpio src=S7 len=3 ts=121915 : 00 D6 5D
+15:58:00 [SCHED    121915ms] publish[7/S8]: 3 bytes via gpio
+15:58:00 proto=gpio src=S8 len=3 ts=121915 : 00 1C 52
+15:58:00 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:58:01 [SCHED    122916ms] run_all: running=1
+15:58:01 [SCHED    122916ms] publish[0/S1]: 3 bytes via gpio
+15:58:01 proto=gpio src=S1 len=3 ts=122916 : 00 64 9C
+15:58:01 [RULE] R1: ok1 (value=0.000 ts=122916)
+15:58:01 [RULE] R2: ok2 (value=0.000 ts=122916)
+15:58:01 [RULE] R3: ok3 (value=0.000 ts=122916)
+15:58:01 [RULE] R4: bad gpio pin in action='gpio:X=HIGH'
+15:58:01 [TRACE] Total Rule Eval (S1): 490us
+15:58:01 [SCHED    122917ms] publish[1/S2]: 3 bytes via gpio
+15:58:01 proto=gpio src=S2 len=3 ts=122917 : 00 94 94
+15:58:01 [SCHED    122917ms] publish[2/S3]: 3 bytes via gpio
+15:58:01 proto=gpio src=S3 len=3 ts=122917 : 00 D9 88
+15:58:01 [SCHED    122917ms] publish[3/S4]: 3 bytes via gpio
+15:58:01 proto=gpio src=S4 len=3 ts=122917 : 00 1F 7D
+15:58:01 [SCHED    122917ms] publish[4/S5]: 3 bytes via gpio
+15:58:01 proto=gpio src=S5 len=3 ts=122918 : 00 4D 75
+15:58:01 [SCHED    122918ms] publish[5/S6]: 3 bytes via gpio
+15:58:01 proto=gpio src=S6 len=3 ts=122918 : 00 94 69
+15:58:01 [SCHED    122918ms] publish[6/S7]: 3 bytes via gpio
+15:58:01 proto=gpio src=S7 len=3 ts=122918 : 00 C1 61
+15:58:01 [SCHED    122918ms] publish[7/S8]: 3 bytes via gpio
+15:58:01 proto=gpio src=S8 len=3 ts=122918 : 00 07 56
+15:58:02 [SCHED    123918ms] run_all: running=1
+15:58:02 [SCHED    123919ms] publish[0/S1]: 3 bytes via gpio
+15:58:02 proto=gpio src=S1 len=3 ts=123919 : 00 4F A0
+15:58:02 [RULE] R1: ok1 (value=0.000 ts=123919)
+15:58:02 [RULE] R2: ok2 (value=0.000 ts=123919)
+15:58:02 [RULE] R3: ok3 (value=0.000 ts=123919)
+15:58:02 [RULE] R4: bad gpio pin in action='gpio:X=HIGH'
+15:58:02 [TRACE] Total Rule Eval (S1): 526us
+15:58:02 [SCHED    123920ms] publish[1/S2]: 3 bytes via gpio
+15:58:02 proto=gpio src=S2 len=3 ts=123920 : 00 7F 98
+15:58:02 [SCHED    123920ms] publish[2/S3]: 3 bytes via gpio
+15:58:02 proto=gpio src=S3 len=3 ts=123920 : 00 C4 8C
+15:58:02 [SCHED    123920ms] publish[3/S4]: 3 bytes via gpio
+15:58:02 proto=gpio src=S4 len=3 ts=123920 : 00 0A 81
+15:58:02 [SCHED    123920ms] publish[4/S5]: 3 bytes via gpio
+15:58:02 proto=gpio src=S5 len=3 ts=123920 : 00 38 79
+15:58:02 [SCHED    123921ms] publish[5/S6]: 3 bytes via gpio
+15:58:02 proto=gpio src=S6 len=3 ts=123921 : 00 7F 6D
+15:58:02 [SCHED    123921ms] publish[6/S7]: 3 bytes via gpio
+15:58:02 proto=gpio src=S7 len=3 ts=123921 : 00 AC 65
+15:58:02 [SCHED    123921ms] publish[7/S8]: 3 bytes via gpio
+15:58:02 proto=gpio src=S8 len=3 ts=123921 : 00 F2 59
+15:58:02 --- stop-neg: STOP
+15:58:03 STOP
+15:58:03 [SCHED    124921ms] run_all: running=0
+15:58:04 [SCHED    125922ms] run_all: running=0
+15:58:04 [MQTT] conn status=256
+15:58:05 [SCHED    126922ms] run_all: running=0
+15:58:05 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:58:05 --- clearrules-neg: CLEARRULES
+15:58:06 [RULE] reset
+15:58:06 [SCHED    127923ms] run_all: running=0
+15:58:07 [SCHED    128923ms] run_all: running=0
+15:58:08 --- neg-badexpr: BEGINRULE|name=RX|source=S1|calc=x=u8(0)|when=x>>>|action=log:x|ENDRULE
+15:58:08 [SCHED    129923ms] run_all: running=0
+15:58:09 [RULE] added name=RX src=S1 vars=1 action=log:x
+15:58:09 RULE: ok
+15:58:09 [SCHED    130924ms] run_all: running=0
+15:58:09 [MQTT] conn status=256
+15:58:10 [SCHED    131925ms] run_all: running=0
+15:58:10 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:58:10 --- clear-2: CLEAR
+15:58:11 [SCHED    132926ms] reset: cleared 8 slots
+15:58:11 [RULE] reset
+15:58:11 CLEARED
+15:58:11 [SCHED    132926ms] run_all: running=0
+15:58:12 [SCHED    133926ms] run_all: running=0
+15:58:13 --- neg-toolong: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+15:58:13 [SCHED    134927ms] run_all: running=0
+15:58:14 [SCHED    135927ms] run_all: running=0
+15:58:14 [MQTT] conn status=256
+15:58:15 [SCHED    136928ms] run_all: running=0
+15:58:15 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:58:16 [SCHED    137929ms] run_all: running=0
+15:58:17 [SCHED    138929ms] run_all: running=0
+15:58:18 [SCHED    139930ms] run_all: running=0
+15:58:19 [SCHED    140930ms] run_all: running=0
+15:58:19 [MQTT] conn status=256
+15:58:20 Line too long
+15:58:20 [SCHED    141931ms] run_all: running=0
+15:58:20 [MQTT] Status: Disconnected, Broker: 192.168.1.136

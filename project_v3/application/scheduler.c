@@ -1,8 +1,7 @@
 // scheduler.c — multi-sensor (I2C0 + I2C1 + UART + GPIO) with <pico/time.h>
 #include <stdio.h>
 #include <string.h>
-#include "pico/stdlib.h"
-#include "pico/time.h"
+#include "hal/hal.h"
 #include "application/output_format.h"
 #include "bus/bus_common.h"
 #include "bus/bus_if.h"
@@ -16,7 +15,7 @@
 
 #if SCHED_DEBUG
 #define SLOG(fmt, ...) do { \
-    uint32_t _ms = to_ms_since_boot(get_absolute_time()); \
+    uint32_t _ms = hal_time_ms(); \
     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
 } while(0)
 #else
@@ -29,7 +28,7 @@ typedef struct {
     void *ctx;
     app_cfg_t cfg_copy;         // keep a private copy
     bool streaming;
-    absolute_time_t next_run;
+    uint64_t next_run;          // hal_time_us() deadline, 0 = not armed
     bool in_use;
 } active_sensor_t;
 
@@ -94,7 +93,7 @@ int scheduler_add_config(const app_cfg_t *cfg_in) {
 
                 S->bus = NULL;
                 S->ctx = NULL;
-                S->next_run = get_absolute_time();  // not really used for remote
+                S->next_run = hal_time_us();  // not really used for remote
                 printf("[SCHED] added MQTT-remote: local=%s <- %s/%s\n",
                        cfg_in->name, remote_node, remote_source);
                 return i;
@@ -102,7 +101,7 @@ int scheduler_add_config(const app_cfg_t *cfg_in) {
 
             const char *pname = proto_name(cfg_in->proto);
             S->bus = bus_lookup(pname);
-            S->next_run = get_absolute_time();
+            S->next_run = hal_time_us();
 
             if (!S->bus) {
                 SLOG("add[%d]: UNKNOWN proto for %s", i, cfg_in->name);
@@ -168,7 +167,7 @@ void scheduler_run_all(bool running) {
 
     static bool s_prev_running = false;
     if (running && !s_prev_running) {
-        absolute_time_t now_edge = get_absolute_time();
+        uint64_t now_edge = hal_time_us();
         for (int j = 0; j < MAX_ACTIVE; j++) if (g_sensors[j].in_use) {
             g_sensors[j].next_run = now_edge;       // arm all to “now”
             SLOG("arm[%d/%s]: next_run reset to NOW", j, g_sensors[j].cfg_copy.name);
@@ -178,17 +177,17 @@ void scheduler_run_all(bool running) {
 
     // extra safety: if running but a sensor next_run looks bogus, arm it
     if (running) {
-        absolute_time_t now_chk = get_absolute_time();
+        uint64_t now_chk = hal_time_us();
         for (int j = 0; j < MAX_ACTIVE; j++) if (g_sensors[j].in_use) {
-            int64_t dt_chk = absolute_time_diff_us(now_chk, g_sensors[j].next_run); // to - from
-            if (is_nil_time(g_sensors[j].next_run) || dt_chk < -(10LL*1000*1000)) { // >10s late or NIL
+            int64_t dt_chk = (int64_t)(g_sensors[j].next_run - now_chk); // to - from
+            if (g_sensors[j].next_run == 0 || dt_chk < -(10LL*1000*1000)) { // >10s late or NIL
                 g_sensors[j].next_run = now_chk;
                 SLOG("arm[%d/%s]: corrected next_run -> NOW", j, g_sensors[j].cfg_copy.name);
             }
         }
     }
 
-    absolute_time_t now = get_absolute_time();
+    uint64_t now = hal_time_us();
 
     for (int i = 0; i < MAX_ACTIVE; i++) {
         active_sensor_t *S = &g_sensors[i];
@@ -219,7 +218,7 @@ void scheduler_run_all(bool running) {
         bool did_poll = false;
 
 if (cfg->mode == sample_mode_poll) {
-    int64_t dt_us = absolute_time_diff_us(now, S->next_run); // to - from
+    int64_t dt_us = (int64_t)(S->next_run - now); // to - from
     if (dt_us <= 0) {
         did_poll = true;
         n = S->bus->poll_once ? S->bus->poll_once(S->ctx, buf, sizeof(buf)) : -1;
@@ -236,8 +235,8 @@ if (cfg->mode == sample_mode_poll) {
             period_ms = 1000u;  // default 1s if freq=0
         }
 
-        now = get_absolute_time();
-        S->next_run = delayed_by_ms(now, period_ms);
+        now = hal_time_us();
+        S->next_run = now + (uint64_t)period_ms * 1000u;
     }
 }
 

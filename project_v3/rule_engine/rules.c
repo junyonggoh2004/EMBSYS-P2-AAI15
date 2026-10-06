@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "pico/stdlib.h"
+#include "hal/hal.h"
 
 #include "rule_engine/rules.h"
 #include "rule_engine/rule_expr.h"   // to_rpn, eval_ctx_t, eval_rpn, rpn_t
@@ -225,7 +225,7 @@ void rules_on_sample(const char *source,
 {
     if (!source || !buf || len <= 0) return;
 
-    absolute_time_t t_start = get_absolute_time();
+    uint64_t t_start = hal_time_us();
     int rules_fired = 0;
 
     for (int i=0; i<g_rules_n; i++) {
@@ -315,7 +315,7 @@ void rules_on_sample(const char *source,
         rules_fired++;
     }
 
-    int64_t dt = absolute_time_diff_us(t_start, get_absolute_time());
+    int64_t dt = (int64_t)(hal_time_us() - t_start);
     if (rules_fired > 0 || dt > 500) {
         printf("[TRACE] Total Rule Eval (%s): %lldus\n", source, (long long)dt);
     }

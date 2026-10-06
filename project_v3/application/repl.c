@@ -2,8 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
-#include "pico/stdlib.h"
-#include "pico/time.h"
+#include "hal/hal.h"
 
 #include "bus/bus_common.h"
 #include "application/output_format.h"
@@ -136,7 +135,7 @@ void repl_poll(app_cfg_t *unused, bool *running, bool *cfg_ready) {
     static size_t line_len = 0;
     int ch;
 
-    while ((ch = getchar_timeout_us(0)) != PICO_ERROR_TIMEOUT) {
+    while ((ch = hal_console_getc(0)) != HAL_ERR_TIMEOUT) {
         if (ch == '\r') continue;
 
         if (ch == '\n') {

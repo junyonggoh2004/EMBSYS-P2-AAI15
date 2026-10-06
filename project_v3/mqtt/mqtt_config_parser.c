@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <strings.h>
-#include "pico/stdlib.h"
+#include "hal/hal.h"
 #include "bus/bus_common.h"
 #include "application/scheduler.h"
 #include "mqtt/mqtt_telemetry.h"
@@ -275,7 +275,7 @@ static void cmd_cb(const char *cmd) {
         strncpy(dummy_rule.name, "CMD_BATCH", sizeof(dummy_rule.name)-1);
         strncpy(dummy_rule.action, cmd, sizeof(dummy_rule.action)-1);
         
-        uint32_t now = to_ms_since_boot(get_absolute_time());
+        uint32_t now = hal_time_ms();
         printf("[CMD] Executing batch...\n");
         fire_action(&dummy_rule, 0.0, now);
     }

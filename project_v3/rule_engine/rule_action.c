@@ -2,9 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "pico/stdlib.h"
-#include "hardware/gpio.h"
-#include "hardware/pwm.h"       // NEW: for PWM control
+#include "hal/hal.h"
 
 #include "mqtt/mqtt_telemetry.h"
 #include "rule_engine/rule_action.h"
@@ -14,31 +12,8 @@ extern bool rules_get_var(const rule_t *R, const char *name, double *out);
 
 // Helper: drive a GPIO pin to 0/1
 static void gpio_drive(int pin, int level) {
-    gpio_init((uint)pin);
-    gpio_set_dir((uint)pin, GPIO_OUT);
-    gpio_put((uint)pin, level ? 1 : 0);
-}
-
-// Helper: set a PWM duty cycle on a given GPIO pin
-// duty_frac in [0.0 .. 1.0]
-static void pwm_set_duty_frac(int pin, float duty_frac) {
-    if (duty_frac < 0.0f) duty_frac = 0.0f;
-    if (duty_frac > 1.0f) duty_frac = 1.0f;
-
-    gpio_set_function((uint)pin, GPIO_FUNC_PWM);
-    uint slice = pwm_gpio_to_slice_num((uint)pin);
-    uint chan  = pwm_gpio_to_channel((uint)pin);
-
-    // Simple default config: 10 kHz-ish on default clk
-    pwm_config cfg = pwm_get_default_config();
-    // You can tweak divider/wrap later if you want different freq/resolution
-    pwm_config_set_clkdiv(&cfg, 4.0f);      // reasonably high frequency
-    pwm_config_set_wrap(&cfg, 1000);        // 0..1000 => ~10-bit resolution
-    pwm_init(slice, &cfg, false);
-
-    uint16_t level = (uint16_t)(duty_frac * 1000.0f);
-    pwm_set_chan_level(slice, chan, level);
-    pwm_set_enabled(slice, true);
+    hal_gpio_mode(pin, HAL_GPIO_OUTPUT);
+    hal_gpio_write(pin, level);
 }
 
 /* Helper: publish config/rule to a specific node
@@ -139,7 +114,7 @@ void fire_action(const rule_t *R, double value, uint32_t ts_ms) {
     const char *a = R->action;
     if (!a || !*a) return;
 
-    absolute_time_t t_start = get_absolute_time();
+    uint64_t t_start = hal_time_us();
 
     /* ---------------- batch: ... | ... ----------------
        Splits string by '|', trims spaces, and fires each action sequentially.
@@ -172,7 +147,7 @@ void fire_action(const rule_t *R, double value, uint32_t ts_ms) {
             }
             token = strtok_r(NULL, "|", &saveptr);
         }
-        int64_t dt = absolute_time_diff_us(t_start, get_absolute_time());
+        int64_t dt = (int64_t)(hal_time_us() - t_start);
         printf("[TRACE] Rule Parse + Batch Actions executed in %lldus\n", (long long)dt);
         return;
     }
@@ -234,11 +209,7 @@ if (!strncmp(a, "log:", 4)) {
 
         /* gpio:<pin>=TOGGLE */
         if (!strncmp(eq, "TOGGLE", 6)) {
-            gpio_init((uint)pin);
-            gpio_set_dir((uint)pin, GPIO_OUT);
-            int cur = gpio_get((uint)pin);
-            int next = !cur;
-            gpio_put((uint)pin, next);
+            int next = hal_gpio_toggle(pin) > 0;
 
             printf("[RULE] %s: gpio %d=TOGGLE -> %d\n", R->name, pin, next);
             mqtt_pub_event(R->name, "gpio", value,
@@ -254,7 +225,7 @@ if (!strncmp(a, "log:", 4)) {
             if (ms <= 0) ms = 100; // default 100ms if bad/missing
 
             gpio_drive(pin, 1);
-            sleep_ms((uint)ms);
+            hal_delay_ms((uint32_t)ms);
             gpio_drive(pin, 0);
 
             printf("[RULE] %s: gpio %d=PULSE %dms\n", R->name, pin, ms);
@@ -293,8 +264,7 @@ if (!strncmp(a, "log:", 4)) {
 
         // OFF => disable PWM on that pin
         if (!strncmp(eq, "OFF", 3)) {
-            gpio_set_function((uint)pin, GPIO_FUNC_SIO);
-            gpio_drive(pin, 0);
+            hal_pwm_stop(pin);
             printf("[RULE] %s: pwm %d=OFF\n", R->name, pin);
             mqtt_pub_event(R->name, "pwm", value, "OFF", ts_ms);
             return;
@@ -327,7 +297,7 @@ if (!strncmp(a, "log:", 4)) {
             duty_frac = (v > 1.0f) ? (v / 100.0f) : v;
         }
 
-        pwm_set_duty_frac(pin, duty_frac);
+        hal_pwm_set(pin, duty_frac);
 
         printf("[RULE] %s: pwm %d duty=%.3f\n", R->name, pin, duty_frac);
         mqtt_pub_event(R->name, "pwm", value, buf, ts_ms);

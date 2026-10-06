@@ -11,7 +11,7 @@
 #include "mqtt/mqtt_model_transfer.h"
 #include <stdio.h>
 #include <string.h>
-#include "pico/time.h"
+#include "hal/hal.h"
 
 /* Pre-compiled test model */
 #include "../models/model_data.h"
@@ -183,7 +183,7 @@ void inference_mgr_poll(void) {
     /* Auto-load: when a model transfer completes, load it automatically */
     if (!s_auto_loaded && model_transfer_status() == MODEL_READY) {
         printf("[INFER] MODEL_READY detected — starting auto-load...\n");
-        sleep_ms(20); /* wait for USB serial flush */
+        hal_delay_ms(20); /* wait for USB serial flush */
         if (inference_mgr_load_from_flash()) {
             printf("[INFER] Auto-load successful.\n");
             s_auto_loaded = true;
@@ -281,7 +281,7 @@ void inference_mgr_set_input_slot(int feature_idx, float raw_value) {
     /* Mark the corresponding sensor slot as active */
     int slot = feature_idx / INFER_FEATURES_PER_SLOT;
     if (slot < INFER_MAX_SLOTS) {
-        s_slot_last_seen_ms[slot] = to_ms_since_boot(get_absolute_time());
+        s_slot_last_seen_ms[slot] = hal_time_ms();
     }
 }
 
@@ -292,9 +292,9 @@ bool inference_mgr_run_and_check(float *out_loss) {
     inference_mgr_set_inputs(s_inputs, s_input_count > 0 ? s_input_count : s_norm_count);
 
     /* --- Timed invoke --- */
-    absolute_time_t t_start = get_absolute_time();
+    uint64_t t_start = hal_time_us();
     if (!inference_mgr_run()) return false;
-    s_last_invoke_us = absolute_time_diff_us(t_start, get_absolute_time());
+    s_last_invoke_us = (int64_t)(hal_time_us() - t_start);
 
     /* --- Compute anomaly loss based on score mode --- */
     int n = s_norm_count > 0 ? s_norm_count : s_input_count;
@@ -324,7 +324,7 @@ bool inference_mgr_run_and_check(float *out_loss) {
 
     /* Build the active sensor mask string (e.g. "1010") */
     char mask[INFER_MAX_SLOTS + 1];
-    uint32_t now = to_ms_since_boot(get_absolute_time());
+    uint32_t now = hal_time_ms();
     for (int i = 0; i < INFER_MAX_SLOTS; i++) {
         /* Slot expires and drops out of the mask if not updated in 5000ms */
         if (s_slot_last_seen_ms[i] != 0 && (now - s_slot_last_seen_ms[i]) < 5000) {
