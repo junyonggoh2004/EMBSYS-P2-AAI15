@@ -1,0 +1,7 @@
+15:54:53 [TASK] SchedulerTask    stack_free=11528 B
+15:54:53 [TASK] MQTTTask         stack_free=7412 B
+15:54:53 [TASK] ControlTask      stack_free=2264 B
+15:54:53 [TASK] InferenceTask    stack_free=7408 B
+15:54:53 [TASK] ApplicationTask  stack_free=3312 B
+15:54:53 [TASK] BenchmarkTask    stack_free=2252 B
+15:54:53 [TASK] heap_free=165780 B min_free=165668 B

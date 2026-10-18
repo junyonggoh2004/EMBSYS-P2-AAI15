@@ -1,0 +1,314 @@
+--- boot capture on /dev/tty.usbmodem2101 ---
+15:20:35 WiFi connect failed
+15:20:35 [SCHED     10744ms] reset: cleared 8 slots
+15:20:35 [MODEL] Model transfer subsystem initialised.
+15:20:35 [MODEL] Flash region: offset=0x003C0000, addr=0x103C0000, size=256KB
+15:20:35 [INFER] Inference manager initialised.
+15:20:35 [TFLITE] Unloading previous model state...
+15:20:35 [TFLITE] Unload complete.
+15:20:35 [TFLITE] Verifying FlatBuffer at 10050A20...
+15:20:35 [TFLITE] Schema version 3 verified.
+15:20:35 [TFLITE] Creating OpResolver...
+15:20:35 [TFLITE] Ops registered.
+15:20:35 [TFLITE] Creating Interpreter (Arena size 65536)...
+15:20:35 [TFLITE] Allocating tensors...
+15:20:35 [TFLITE] Tensors allocated.
+15:20:35 [TFLITE] Model loaded OK!
+15:20:35 [TFLITE]   Inputs:  1 tensor(s), 16 total element(s)
+15:20:35 [TFLITE]   Outputs: 1 tensor(s), 16 total element(s)
+15:20:35 [TFLITE]   Arena:   3012 / 65536 bytes used
+15:20:35 [INFER] Base model loaded: 16 inputs, 16 outputs
+15:20:35 [INFER] Loaded 16 base normalization params and 16 threshold masks
+15:20:35 [SCHED     10830ms] run_all: running=0
+15:20:35 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+15:20:36 [SCHED     11830ms] run_all: running=0
+15:20:37 [SCHED     12830ms] run_all: running=0
+15:20:38 [SCHED     13830ms] run_all: running=0
+15:20:39 [SCHED     14830ms] run_all: running=0
+15:20:40 [SCHED     15830ms] run_all: running=0
+15:20:40 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+15:20:41 [SCHED     16831ms] run_all: running=0
+--- cfg-input: BEGINCFG|name=IN|proto=gpio|gpio.mode=digital|gpio.pin=22|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+15:20:42 [SCHED     17831ms] run_all: running=0
+15:20:43 OK: Config applied (inline, delim='|')
+15:20:43 [SCHED     18832ms] add[0]: IN on gpio freq=2.000Hz mode=poll method=digital GPIO(pin=22)
+15:20:43 [SCHED] added: IN on gpio
+15:20:43 CFG: ok (added #0: IN)
+15:20:43 [SCHED     18832ms] run_all: running=0
+15:20:44 [SCHED     19833ms] run_all: running=0
+--- rule-high: BEGINRULE|name=R_HIGH|source=IN|calc=s=u8(0)|when=s==0|action=gpio:21=HIGH|ENDRULE
+15:20:45 [SCHED     20833ms] run_all: running=0
+15:20:45 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+15:20:46 [RULE] added name=R_HIGH src=IN vars=1 action=gpio:21=HIGH
+15:20:46 RULE: ok
+15:20:46 [SCHED     21834ms] run_all: running=0
+--- gpio-high: RUN
+15:20:47 RUN
+15:20:47 [SCHED     22834ms] run_all: running=1
+15:20:47 [SCHED     22834ms] arm[0/IN]: next_run reset to NOW
+15:20:47 [SCHED     22835ms] publish[0/IN]: 3 bytes via gpio
+15:20:47 proto=gpio src=IN len=3 ts=22835 : 00 A3 0F
+15:20:47 [RULE] R_HIGH: gpio 21=HIGH
+15:20:47 [TRACE] Total Rule Eval (IN): 291us
+15:20:48 [SCHED     23835ms] run_all: running=1
+15:20:48 [SCHED     23836ms] publish[0/IN]: 3 bytes via gpio
+15:20:48 proto=gpio src=IN len=3 ts=23836 : 01 00 00
+15:20:48 [TRACE] Total Rule Eval (IN): 56us
+15:20:49 [SCHED     24836ms] run_all: running=1
+15:20:49 [SCHED     24836ms] publish[0/IN]: 3 bytes via gpio
+15:20:49 proto=gpio src=IN len=3 ts=24836 : 01 E8 03
+15:20:49 [TRACE] Total Rule Eval (IN): 39us
+15:20:50 [SCHED     25837ms] run_all: running=1
+15:20:50 [SCHED     25837ms] publish[0/IN]: 3 bytes via gpio
+15:20:50 proto=gpio src=IN len=3 ts=25837 : 01 D1 07
+15:20:50 [TRACE] Total Rule Eval (IN): 33us
+15:20:50 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+15:20:51 [SCHED     26837ms] run_all: running=1
+15:20:51 [SCHED     26837ms] publish[0/IN]: 3 bytes via gpio
+15:20:51 proto=gpio src=IN len=3 ts=26838 : 01 B9 0B
+15:20:51 [TRACE] Total Rule Eval (IN): 33us
+--- stop-high: STOP
+15:20:52 STOP
+15:20:52 [SCHED     27838ms] run_all: running=0
+15:20:53 [SCHED     28838ms] run_all: running=0
+15:20:54 [SCHED     29838ms] run_all: running=0
+--- rule-low: BEGINRULE|name=R_LOW|source=IN|calc=s=u8(0)|when=s==1|action=gpio:21=LOW|ENDRULE
+15:20:55 [SCHED     30839ms] run_all: running=0
+15:20:55 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+15:20:56 [RULE] added name=R_LOW src=IN vars=1 action=gpio:21=LOW
+15:20:56 RULE: ok
+15:20:56 [SCHED     31840ms] run_all: running=0
+--- gpio-low: RUN
+15:20:57 RUN
+15:20:57 [SCHED     32840ms] run_all: running=1
+15:20:57 [SCHED     32840ms] arm[0/IN]: next_run reset to NOW
+15:20:57 [SCHED     32840ms] publish[0/IN]: 3 bytes via gpio
+15:20:57 proto=gpio src=IN len=3 ts=32840 : 01 2C 23
+15:20:57 [RULE] R_LOW: gpio 21=LOW
+15:20:57 [TRACE] Total Rule Eval (IN): 273us
+15:20:58 [SCHED     33841ms] run_all: running=1
+15:20:58 [SCHED     33841ms] publish[0/IN]: 3 bytes via gpio
+15:20:58 proto=gpio src=IN len=3 ts=33841 : 00 00 00
+15:20:58 [RULE] R_HIGH: gpio 21=HIGH
+15:20:58 [TRACE] Total Rule Eval (IN): 250us
+15:20:59 [SCHED     34842ms] run_all: running=1
+15:20:59 [SCHED     34842ms] publish[0/IN]: 3 bytes via gpio
+15:20:59 proto=gpio src=IN len=3 ts=34842 : 01 00 00
+15:20:59 [RULE] R_LOW: gpio 21=LOW
+15:20:59 [TRACE] Total Rule Eval (IN): 222us
+15:21:00 [SCHED     35842ms] run_all: running=1
+15:21:00 [SCHED     35843ms] publish[0/IN]: 3 bytes via gpio
+15:21:00 proto=gpio src=IN len=3 ts=35843 : 00 00 00
+15:21:00 [RULE] R_HIGH: gpio 21=HIGH
+15:21:00 [TRACE] Total Rule Eval (IN): 316us
+15:21:00 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+15:21:01 [SCHED     36843ms] run_all: running=1
+15:21:01 [SCHED     36844ms] publish[0/IN]: 3 bytes via gpio
+15:21:01 proto=gpio src=IN len=3 ts=36844 : 01 00 00
+15:21:01 [RULE] R_LOW: gpio 21=LOW
+15:21:01 [TRACE] Total Rule Eval (IN): 203us
+--- stop-low: STOP
+15:21:02 STOP
+15:21:02 [SCHED     37844ms] run_all: running=0
+15:21:03 [SCHED     38844ms] run_all: running=0
+15:21:04 [SCHED     39844ms] run_all: running=0
+--- clear-rules-1: CLEARRULES
+15:21:05 [RULE] reset
+15:21:05 [SCHED     40845ms] run_all: running=0
+15:21:05 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+15:21:06 [SCHED     41845ms] run_all: running=0
+15:21:07 [SCHED     42845ms] run_all: running=0
+--- rule-toggle: BEGINRULE|name=R_TGL|source=IN|calc=s=u8(0)|when=1|action=gpio:21=TOGGLE|ENDRULE
+15:21:08 [SCHED     43846ms] run_all: running=0
+15:21:09 [RULE] added name=R_TGL src=IN vars=1 action=gpio:21=TOGGLE
+15:21:09 RULE: ok
+15:21:09 [SCHED     44847ms] run_all: running=0
+--- gpio-toggle: RUN
+15:21:10 RUN
+15:21:10 [SCHED     45847ms] run_all: running=1
+15:21:10 [SCHED     45847ms] arm[0/IN]: next_run reset to NOW
+15:21:10 [SCHED     45847ms] publish[0/IN]: 3 bytes via gpio
+15:21:10 proto=gpio src=IN len=3 ts=45847 : 00 00 00
+15:21:10 [RULE] R_TGL: gpio 21=TOGGLE -> 1
+15:21:10 [TRACE] Total Rule Eval (IN): 238us
+15:21:10 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+15:21:11 [SCHED     46848ms] run_all: running=1
+15:21:11 [SCHED     46848ms] publish[0/IN]: 3 bytes via gpio
+15:21:11 proto=gpio src=IN len=3 ts=46848 : 01 00 00
+15:21:11 [RULE] R_TGL: gpio 21=TOGGLE -> 0
+15:21:11 [TRACE] Total Rule Eval (IN): 230us
+15:21:12 [SCHED     47849ms] run_all: running=1
+15:21:12 [SCHED     47849ms] publish[0/IN]: 3 bytes via gpio
+15:21:12 proto=gpio src=IN len=3 ts=47849 : 00 00 00
+15:21:12 [RULE] R_TGL: gpio 21=TOGGLE -> 1
+15:21:12 [TRACE] Total Rule Eval (IN): 192us
+15:21:13 [SCHED     48849ms] run_all: running=1
+15:21:13 [SCHED     48850ms] publish[0/IN]: 3 bytes via gpio
+15:21:13 proto=gpio src=IN len=3 ts=48850 : 01 00 00
+15:21:13 [RULE] R_TGL: gpio 21=TOGGLE -> 0
+15:21:13 [TRACE] Total Rule Eval (IN): 194us
+15:21:14 [SCHED     49850ms] run_all: running=1
+15:21:14 [SCHED     49850ms] publish[0/IN]: 3 bytes via gpio
+15:21:14 proto=gpio src=IN len=3 ts=49850 : 00 00 00
+15:21:14 [RULE] R_TGL: gpio 21=TOGGLE -> 1
+15:21:14 [TRACE] Total Rule Eval (IN): 183us
+15:21:15 [SCHED     50851ms] run_all: running=1
+15:21:15 [SCHED     50851ms] publish[0/IN]: 3 bytes via gpio
+15:21:15 proto=gpio src=IN len=3 ts=50851 : 01 00 00
+15:21:15 [RULE] R_TGL: gpio 21=TOGGLE -> 0
+15:21:15 [TRACE] Total Rule Eval (IN): 209us
+15:21:15 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+--- stop-toggle: STOP
+15:21:16 STOP
+15:21:16 [SCHED     51852ms] run_all: running=0
+15:21:17 [SCHED     52852ms] run_all: running=0
+15:21:18 [SCHED     53852ms] run_all: running=0
+--- clear-rules-2: CLEARRULES
+15:21:19 [RULE] reset
+15:21:19 [SCHED     54853ms] run_all: running=0
+15:21:20 [SCHED     55853ms] run_all: running=0
+15:21:20 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+--- rule-pulse: BEGINRULE|name=R_PLS|source=IN|calc=s=u8(0)|when=1|action=gpio:21=PULSE:200|ENDRULE
+15:21:21 [SCHED     56853ms] run_all: running=0
+15:21:22 [RULE] added name=R_PLS src=IN vars=1 action=gpio:21=PULSE:200
+15:21:22 RULE: ok
+15:21:22 [SCHED     57854ms] run_all: running=0
+15:21:23 [SCHED     58854ms] run_all: running=0
+--- gpio-pulse: RUN
+15:21:24 RUN
+15:21:24 [SCHED     59855ms] run_all: running=1
+15:21:24 [SCHED     59855ms] arm[0/IN]: next_run reset to NOW
+15:21:24 [SCHED     59855ms] publish[0/IN]: 3 bytes via gpio
+15:21:24 proto=gpio src=IN len=3 ts=59855 : 00 00 00
+15:21:24 [RULE] R_PLS: gpio 21=PULSE 200ms
+15:21:24 [TRACE] Total Rule Eval (IN): 200315us
+15:21:25 [SCHED     61056ms] run_all: running=1
+15:21:25 [SCHED     61056ms] publish[0/IN]: 3 bytes via gpio
+15:21:25 proto=gpio src=IN len=3 ts=61056 : 00 B1 04
+15:21:25 [RULE] R_PLS: gpio 21=PULSE 200ms
+15:21:25 [TRACE] Total Rule Eval (IN): 200238us
+15:21:25 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+15:21:26 [SCHED     62256ms] run_all: running=1
+15:21:26 [SCHED     62257ms] publish[0/IN]: 3 bytes via gpio
+15:21:26 proto=gpio src=IN len=3 ts=62257 : 00 62 09
+15:21:26 [RULE] R_PLS: gpio 21=PULSE 200ms
+15:21:26 [TRACE] Total Rule Eval (IN): 200237us
+--- stop-pulse: STOP
+15:21:27 STOP
+15:21:27 [SCHED     63457ms] run_all: running=0
+15:21:28 [SCHED     64458ms] run_all: running=0
+15:21:30 [SCHED     65458ms] run_all: running=0
+--- clear-1: CLEAR
+15:21:30 [SCHED     66458ms] reset: cleared 8 slots
+15:21:30 [RULE] reset
+15:21:30 CLEARED
+15:21:30 [SCHED     66458ms] run_all: running=0
+15:21:30 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+15:21:31 [SCHED     67458ms] run_all: running=0
+15:21:32 [SCHED     68459ms] run_all: running=0
+--- cfg-counter: BEGINCFG|name=CNT|proto=gpio|gpio.mode=counter|gpio.pin=22|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+15:21:33 [SCHED     69459ms] run_all: running=0
+15:21:34 OK: Config applied (inline, delim='|')
+15:21:34 [SCHED     70460ms] add[0]: CNT on gpio freq=2.000Hz mode=poll method=counter GPIO(pin=22)
+15:21:34 [SCHED] added: CNT on gpio
+15:21:34 CFG: ok (added #0: CNT)
+15:21:34 [SCHED     70460ms] run_all: running=0
+--- rule-count: BEGINRULE|name=R_CNT|source=CNT|calc=c=u8(0)|when=1|action=gpio:21=TOGGLE|ENDRULE
+15:21:35 [SCHED     71461ms] run_all: running=0
+15:21:35 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+15:21:36 [RULE] added name=R_CNT src=CNT vars=1 action=gpio:21=TOGGLE
+15:21:36 RULE: ok
+15:21:36 [SCHED     72462ms] run_all: running=0
+15:21:38 [SCHED     73462ms] run_all: running=0
+--- gpio-counter: RUN
+15:21:38 RUN
+15:21:38 [SCHED     74462ms] run_all: running=1
+15:21:38 [SCHED     74462ms] arm[0/CNT]: next_run reset to NOW
+15:21:38 [SCHED     74462ms] publish[0/CNT]: 4 bytes via gpio
+15:21:38 proto=gpio src=CNT len=4 ts=74462 : 00 00 00 00
+15:21:38 [RULE] R_CNT: gpio 21=TOGGLE -> 1
+15:21:38 [TRACE] Total Rule Eval (CNT): 262us
+15:21:39 [SCHED     75463ms] run_all: running=1
+15:21:39 [SCHED     75463ms] publish[0/CNT]: 4 bytes via gpio
+15:21:39 proto=gpio src=CNT len=4 ts=75463 : 01 00 00 00
+15:21:39 [RULE] R_CNT: gpio 21=TOGGLE -> 0
+15:21:39 [TRACE] Total Rule Eval (CNT): 214us
+15:21:40 [SCHED     76464ms] run_all: running=1
+15:21:41 [SCHED     76464ms] publish[0/CNT]: 4 bytes via gpio
+15:21:41 proto=gpio src=CNT len=4 ts=76464 : 02 00 00 00
+15:21:41 [RULE] R_CNT: gpio 21=TOGGLE -> 1
+15:21:41 [TRACE] Total Rule Eval (CNT): 201us
+15:21:41 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+15:21:41 [SCHED     77465ms] run_all: running=1
+15:21:41 [SCHED     77465ms] publish[0/CNT]: 4 bytes via gpio
+15:21:41 proto=gpio src=CNT len=4 ts=77465 : 03 00 00 00
+15:21:41 [RULE] R_CNT: gpio 21=TOGGLE -> 0
+15:21:41 [TRACE] Total Rule Eval (CNT): 193us
+15:21:42 [SCHED     78465ms] run_all: running=1
+15:21:42 [SCHED     78465ms] publish[0/CNT]: 4 bytes via gpio
+15:21:42 proto=gpio src=CNT len=4 ts=78466 : 04 00 00 00
+15:21:42 [RULE] R_CNT: gpio 21=TOGGLE -> 1
+15:21:42 [TRACE] Total Rule Eval (CNT): 182us
+15:21:44 [SCHED     79466ms] run_all: running=1
+15:21:44 [SCHED     79466ms] publish[0/CNT]: 4 bytes via gpio
+15:21:44 proto=gpio src=CNT len=4 ts=79466 : 05 00 00 00
+15:21:44 [RULE] R_CNT: gpio 21=TOGGLE -> 0
+15:21:44 [TRACE] Total Rule Eval (CNT): 186us
+15:21:44 [SCHED     80467ms] run_all: running=1
+15:21:44 [SCHED     80467ms] publish[0/CNT]: 4 bytes via gpio
+15:21:44 proto=gpio src=CNT len=4 ts=80467 : 06 00 00 00
+15:21:44 [RULE] R_CNT: gpio 21=TOGGLE -> 1
+15:21:44 [TRACE] Total Rule Eval (CNT): 190us
+--- stop-counter: STOP
+15:21:46 STOP
+15:21:46 [SCHED     81468ms] run_all: running=0
+15:21:46 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+15:21:46 [SCHED     82468ms] run_all: running=0
+--- clear-rules-3: CLEARRULES
+15:21:47 [RULE] reset
+15:21:47 [SCHED     83468ms] run_all: running=0
+15:21:49 [SCHED     84469ms] run_all: running=0
+15:21:49 [SCHED     85469ms] run_all: running=0
+--- rule-pwm: BEGINRULE|name=R_PWM|source=CNT|calc=c=u8(0)|when=1|action=pwm:21=0.5|ENDRULE
+15:21:50 [SCHED     86469ms] run_all: running=0
+15:21:50 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+15:21:51 [RULE] added name=R_PWM src=CNT vars=1 action=pwm:21=0.5
+15:21:51 RULE: ok
+15:21:51 [SCHED     87470ms] run_all: running=0
+15:21:52 [SCHED     88470ms] run_all: running=0
+--- pwm-run: RUN
+15:21:53 RUN
+15:21:53 [SCHED     89470ms] run_all: running=1
+15:21:53 [SCHED     89470ms] arm[0/CNT]: next_run reset to NOW
+15:21:53 [SCHED     89471ms] publish[0/CNT]: 4 bytes via gpio
+15:21:53 proto=gpio src=CNT len=4 ts=89471 : 07 00 00 00
+15:21:53 [RULE] R_PWM: pwm 21 duty=0.500
+15:21:53 [TRACE] Total Rule Eval (CNT): 362us
+15:21:55 [SCHED     90472ms] run_all: running=1
+15:21:55 [SCHED     90472ms] publish[0/CNT]: 4 bytes via gpio
+15:21:55 proto=gpio src=CNT len=4 ts=90472 : 08 00 00 00
+15:21:55 [RULE] R_PWM: pwm 21 duty=0.500
+15:21:55 [TRACE] Total Rule Eval (CNT): 301us
+15:21:55 [SCHED     91472ms] run_all: running=1
+15:21:55 [SCHED     91473ms] publish[0/CNT]: 4 bytes via gpio
+15:21:55 proto=gpio src=CNT len=4 ts=91473 : 09 00 00 00
+15:21:55 [RULE] R_PWM: pwm 21 duty=0.500
+15:21:55 [TRACE] Total Rule Eval (CNT): 279us
+15:21:55 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+15:21:56 [SCHED     92473ms] run_all: running=1
+15:21:56 [SCHED     92474ms] publish[0/CNT]: 4 bytes via gpio
+15:21:56 proto=gpio src=CNT len=4 ts=92474 : 0A 00 00 00
+15:21:56 [RULE] R_PWM: pwm 21 duty=0.500
+15:21:56 [TRACE] Total Rule Eval (CNT): 274us
+--- stop-pwm: STOP
+15:21:58 STOP
+15:21:58 [SCHED     93474ms] run_all: running=0
+15:21:58 [SCHED     94475ms] run_all: running=0
+--- clear-2: CLEAR
+15:21:59 [SCHED     95475ms] reset: cleared 8 slots
+15:21:59 [RULE] reset
+15:21:59 CLEARED
+15:21:59 [SCHED     95475ms] run_all: running=0
+15:22:01 [SCHED     96475ms] run_all: running=0
+15:22:01 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+15:22:01 [SCHED     97476ms] run_all: running=0

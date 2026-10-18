@@ -1,0 +1,24 @@
+{
+  "configs": [
+    {
+      "name": "MOCK_SENSOR_1",
+      "proto": "gpio",
+      "mode": "poll",
+      "freq_hz": 1,
+      "gpio": { "pin": 26, "pull": "up" }
+    }
+  ],
+  "rules": [
+    {
+      "name": "AUTOENCODER_FEEDS",
+      "source": "MOCK_SENSOR_1",
+      "calc": [
+        "v0=0.0",
+        "v1=0.0",
+        "v2=0.0",
+        "v3=0.0"
+      ],
+      "action": "batch: infer.set:0:$v0 | infer.set:1:$v1 | infer.set:2:$v2 | infer.set:3:$v3 | infer.run:log:ANOMALY TRIGGERED DUE TO HIGH MSE!"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "configs": [
+    {
+      "name": "XYC_H206",
+      "proto": "gpio",
+      "mode": "poll",
+      "freq_hz": 10,
+      "gpio": {
+        "pin": 16,
+        "pull": "up",
+        "mode": "digital",
+        "invert": 1,
+        "debounce_ms": 10
+      }
+    }
+  ],
+  "rules": [
+    {
+      "name": "H206_ML_TRIGGER",
+      "source": "XYC_H206",
+      "calc": [
+        "val=u8(0)"
+      ],
+      "action": "batch: infer.set:0:$val | infer.run:log:LINEBREAK ANOMALY DETECTED! MSE=$value"
+    }
+  ]
+}

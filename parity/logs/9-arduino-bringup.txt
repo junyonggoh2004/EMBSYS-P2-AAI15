@@ -1,0 +1,38 @@
+Task 9 — Arduino ESP32-S3 local bring-up observation
+Date: 2026-10-13 (Asia/Singapore)
+Tester: Sitt
+Source commit tested: fe082bd (esp32s3/esp32s3.ino last changed in 2ded606)
+Hardware: ESP32-S3 Super Mini matching the user-supplied HW-747 pinout
+SoC revision: v0.2, reported by esptool v5.3.1 on COM6
+Flash / PSRAM: 4 MB embedded flash / 2 MB embedded PSRAM, reported by esptool
+IDE: Arduino IDE 2.3.10
+Board package: esp32 by Espressif Systems 3.3.12
+Board profile: ESP32S3 Dev Module
+Board FQBN: esp32:esp32:esp32s3 (profile identifier in installed core)
+Port: COM6
+USB CDC On Boot: Enabled
+Upload Mode: UART0 / Hardware CDC
+Flash Size: 4MB (32Mb)
+PSRAM menu: Disabled for this minimal sketch
+Serial Monitor: 115200 baud
+External libraries: none
+
+Observed in the tester's Arduino IDE screenshots:
+- Verify/Compile succeeded.
+- Upload wrote the sketch, verified the written data hash, and reported Done uploading.
+- Serial Monitor displayed Hello from ESP32-S3 repeatedly. A sample of the
+  screenshot's timestamped lines is transcribed below; timestamps are from
+  Arduino IDE, and the raw screenshot was shared in the project conversation.
+
+11:52:08.848 -> Hello from ESP32-S3
+11:52:09.870 -> Hello from ESP32-S3
+11:52:10.830 -> Hello from ESP32-S3
+11:52:11.850 -> Hello from ESP32-S3
+11:52:12.853 -> Hello from ESP32-S3
+11:52:13.835 -> Hello from ESP32-S3
+11:52:14.865 -> Hello from ESP32-S3
+
+Result: local Task 9 compile/upload/serial bring-up passed. No reset was
+visible during the captured monitor interval. The exact chip/module marking,
+final sensor pin layout, and Task 7 verification on other machines remain open.
+The full set of visible Arduino Tools menu options is recorded in SETUP.md.

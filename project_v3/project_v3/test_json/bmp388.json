@@ -1,0 +1,34 @@
+{
+  "configs": [
+    {
+      "name": "BMP388",
+      "proto": "i2c",
+      "mode": "poll",
+      "freq_hz": 1,
+      "i2c": {
+        "sda": 4,
+        "scl": 5,
+        "addr": "0x77",
+        "reg": "0x04",
+        "reg_size": 1,
+        "read_len": 6,
+        "restart": 0,
+        "post_delay_ms": 1
+      }
+    }
+  ],
+  "rules": [
+    {
+      "name": "BMP388",
+      "source": "BMP388",
+      "calc": [
+        "p_raw=u16le(0)",
+        "t_raw=u16le(3)",
+        "temp_c=(t_raw-44800)/256.0",
+        "press_pa=p_raw*1.8"
+      ],
+      "when": "1",
+      "action": "log:BMP388 temp=$temp_c C pressure=$press_pa Pa"
+    }
+  ]
+}

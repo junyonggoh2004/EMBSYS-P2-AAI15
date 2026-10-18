@@ -1,0 +1,64 @@
+17:10:44 [HALTEST] PASS pwm-duty-25 set 0.25 measured 0.250
+17:10:44 [HALTEST] PASS pwm-duty-50 set 0.50 measured 0.500
+17:10:44 [HALTEST] PASS pwm-duty-75 set 0.75 measured 0.749
+17:10:44 [HALTEST] PASS pulse-200ms-nonblocking returned after 45 us, high 199043 us
+17:10:45 [HALTEST] PASS edge-count-no-loss 20000 edges at 18.5 kHz, 20000 counted
+17:10:45 [SCHED      4500ms] reset: cleared 8 slots
+17:10:45 [RULE] reset
+17:10:45 [SCHED      4500ms] add[0]: S3GPIO on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=4)
+17:10:45 [SCHED] added: S3GPIO on gpio
+17:10:45 [SCHED      4500ms] run_all: running=0
+17:10:45 [HALTEST] PASS gpio-driver-accepts-config scheduler_add_config=0
+17:10:45 [SCHED      4501ms] reset: cleared 8 slots
+17:10:45 [HALTEST] PASS mqtt-init-accepts-broker mqtt_init=true (no network task in this sketch)
+17:10:45 [INFER] Inference manager initialised.
+17:10:45 [S3] TFLite Micro not ported yet
+17:10:45 [INFER] Failed to load base model: error 5
+17:10:45 [HALTEST] PASS unported-tflite-reports-no-model load_base_model=false
+17:10:45 [HALTEST] done failures=0
+17:10:46 [TICK] 5502
+17:10:46 [HALTEST] start
+17:10:46 [HALTEST] PASS time-monotonic 5541780 -> 5541781 us
+17:10:46 [HALTEST] PASS time-ms-matches-us ms=5541 us/1000=5541
+17:10:46 [HALTEST] PASS delay-ms-100 100625 us
+17:10:46 [HALTEST] PASS delay-ms-1 1940 us
+17:10:46 [HALTEST] PASS delay-us-500 501 us
+17:10:46 [HALTEST] PASS console-getc-timeout ret=-1 after 20401 us
+17:10:46 [HALTEST] PASS gpio-reserved-pins-refused -1 19 20 22 26 32 49 99
+17:10:46 [HALTEST] PASS gpio-input-pulldown mode=0 read=0
+17:10:46 [HALTEST] PASS gpio-input-pullup mode=0 read=1
+17:10:46 [HALTEST] PASS gpio-output-toggle toggle 1/1 then 0/0
+17:10:46 [HALTEST] PASS pwm-set-and-stop set=0 set=0 stop=0 read=0
+17:10:46 [HALTEST] PASS pwm-duty-25 set 0.25 measured 0.250
+17:10:46 [HALTEST] PASS pwm-duty-50 set 0.50 measured 0.500
+17:10:46 [HALTEST] PASS pwm-duty-75 set 0.75 measured 0.749
+17:10:47 [HALTEST] PASS pulse-200ms-nonblocking returned after 34 us, high 199054 us
+17:10:48 [HALTEST] PASS edge-count-no-loss 20000 edges at 18.5 kHz, 20000 counted
+17:10:48 [SCHED      7035ms] reset: cleared 8 slots
+17:10:48 [RULE] reset
+17:10:48 [SCHED      7036ms] add[0]: S3GPIO on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=4)
+17:10:48 [SCHED] added: S3GPIO on gpio
+17:10:48 [SCHED      7036ms] run_all: running=0
+17:10:48 [HALTEST] PASS gpio-driver-accepts-config scheduler_add_config=0
+17:10:48 [SCHED      7036ms] reset: cleared 8 slots
+17:10:48 [HALTEST] PASS mqtt-init-accepts-broker mqtt_init=true (no network task in this sketch)
+17:10:48 [INFER] Inference manager initialised.
+17:10:48 [S3] TFLite Micro not ported yet
+17:10:48 [INFER] Failed to load base model: error 5
+17:10:48 [HALTEST] PASS unported-tflite-reports-no-model load_base_model=false
+17:10:48 [HALTEST] done failures=0
+17:10:48 [ECHO] hello parity 12345
+17:10:48 [TICK] 7501
+17:10:49 [TICK] 8503
+17:10:50 [TICK] 9501
+17:10:51 [TICK] 10503
+17:10:52 [TICK] 11501
+17:10:53 [TICK] 12503
+17:10:54 [TICK] 13502
+17:10:55 [TICK] 14503
+17:10:56 [TICK] 15502
+17:10:57 [TICK] 16501
+17:10:58 [TICK] 17503
+17:10:59 [TICK] 18502
+17:11:00 [TICK] 19501
+17:11:01 [TICK] 20503

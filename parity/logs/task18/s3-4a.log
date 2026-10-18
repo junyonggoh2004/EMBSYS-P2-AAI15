@@ -1,0 +1,187 @@
+16:33:07 [SCHED    113995ms] run_all: running=0
+16:33:09 [SCHED    115709ms] run_all: running=0
+16:33:09 --- repl-help: HELP
+16:33:09 Commands:
+16:33:09   BEGINCFG ... ENDCFG        - add sensor config (multi-line)
+16:33:09   BEGINCFG|k=v|...|ENDCFG    - add sensor config (inline with '|', supports \|)
+16:33:09   BEGINRULE ... ENDRULE      - add rule (multi-line)
+16:33:09   BEGINRULE|k=v|...|ENDRULE  - add rule (inline with '|', supports \|)
+16:33:09   RUN / STOP                 - control sampling
+16:33:09   CLEAR                      - clear sensors + rules
+16:33:09   SHOW / SHOWRULES           - show sensors / rules
+16:33:09   CLEARRULES                 - clear only rules
+16:33:09   HELP                       - this text
+16:33:09 
+16:33:09 Example inline rule (HMC5883L big-endian X,Z,Y at 0x03):
+16:33:09 BEGINRULE|name=GY511_MAG|source=GY511_ACC|calc=mx=s16be(0)|calc=mz=s16be(2)|calc=my=s16be(4)|calc=mag=sqrt(mx*mx+my*my+mz*mz)|when=mag>350|action=log:MAG change detected|ENDRULE
+16:33:10 [SCHED    117255ms] run_all: running=0
+16:33:11 [SCHED    118255ms] run_all: running=0
+16:33:12 --- repl-show: SHOW
+16:33:12 [SHOW] sampling=0
+16:33:12 [RULE] count=0
+16:33:13 [SCHED    119850ms] run_all: running=0
+16:33:14 [SCHED    120850ms] run_all: running=0
+16:33:14 --- repl-run: RUN
+16:33:15 RUN
+16:33:16 [SCHED    122440ms] run_all: running=1
+16:33:17 [SCHED    123440ms] run_all: running=1
+16:33:17 --- repl-stop: STOP
+16:33:17 STOP
+16:33:18 [SCHED    125029ms] run_all: running=0
+16:33:19 [SCHED    126029ms] run_all: running=0
+16:33:20 --- repl-unknown: FOO
+16:33:20 Unknown: FOO
+16:33:21 [SCHED    127616ms] run_all: running=0
+16:33:22 [SCHED    128616ms] run_all: running=0
+16:33:22 --- cfg-digital: BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+16:33:22 OK: Config applied (inline, delim='|')
+16:33:22 [SCHED    129208ms] add[0]: DIG on gpio freq=2.000Hz mode=poll method=digital GPIO(pin=6)
+16:33:22 [SCHED] added: DIG on gpio
+16:33:22 CFG: ok (added #0: DIG)
+16:33:23 [SCHED    130208ms] run_all: running=0
+16:33:24 [SCHED    131208ms] run_all: running=0
+16:33:25 --- repl-show-cfg: SHOW
+16:33:25 [SHOW] sampling=0
+16:33:25 [SCHED] #0 name=DIG proto=gpio mode=poll freq=2.000Hz
+16:33:25 [RULE] count=0
+16:33:26 [SCHED    132783ms] run_all: running=0
+16:33:27 [SCHED    133783ms] run_all: running=0
+16:33:27 --- rule-log: BEGINRULE|name=R_LOG|source=DIG|calc=s=u8(0)|when=s==0|action=log:pin low|ENDRULE
+16:33:28 [RULE] added name=R_LOG src=DIG vars=1 action=log:pin low
+16:33:28 RULE: ok
+16:33:28 [SCHED    135372ms] run_all: running=0
+16:33:29 [SCHED    136372ms] run_all: running=0
+16:33:30 --- rule-infer: BEGINRULE|name=R_INF|source=DIG|calc=s=u8(0)|when=1|action=batch: infer.set:0:1.0 \| infer.run|ENDRULE
+16:33:30 [RULE] added name=R_INF src=DIG vars=1 action=batch: infer.set:0:1.0 \| infer.run
+16:33:30 RULE: ok
+16:33:31 [SCHED    137962ms] run_all: running=0
+16:33:32 [SCHED    138962ms] run_all: running=0
+16:33:33 --- run-data: RUN
+16:33:33 RUN
+16:33:33 [SCHED    139546ms] arm[0/DIG]: next_run reset to NOW
+16:33:33 [SCHED    139546ms] publish[0/DIG]: 3 bytes via gpio
+16:33:33 proto=gpio src=DIG len=3 ts=139547 : 01 00 00
+16:33:33 [TRACE] Rule Parse + Batch Actions executed in 77us
+16:33:33 [TRACE] Total Rule Eval (DIG): 258us
+16:33:33 [SCHED    140047ms] run_all: running=1
+16:33:33 [SCHED    140047ms] publish[0/DIG]: 3 bytes via gpio
+16:33:33 proto=gpio src=DIG len=3 ts=140047 : 00 00 00
+16:33:33 [RULE] R_LOG: pin low (value=0.000 ts=140047)
+16:33:33 [TRACE] Rule Parse + Batch Actions executed in 58us
+16:33:33 [TRACE] Total Rule Eval (DIG): 375us
+16:33:34 [SCHED    140548ms] publish[0/DIG]: 3 bytes via gpio
+16:33:34 proto=gpio src=DIG len=3 ts=140548 : 01 00 00
+16:33:34 [TRACE] Rule Parse + Batch Actions executed in 57us
+16:33:34 [TRACE] Total Rule Eval (DIG): 184us
+16:33:34 [SCHED    141049ms] run_all: running=1
+16:33:34 [SCHED    141049ms] publish[0/DIG]: 3 bytes via gpio
+16:33:34 proto=gpio src=DIG len=3 ts=141049 : 01 F5 01
+16:33:34 [TRACE] Rule Parse + Batch Actions executed in 49us
+16:33:34 [TRACE] Total Rule Eval (DIG): 171us
+16:33:35 [SCHED    141550ms] publish[0/DIG]: 3 bytes via gpio
+16:33:35 proto=gpio src=DIG len=3 ts=141550 : 01 EA 03
+16:33:35 [TRACE] Rule Parse + Batch Actions executed in 48us
+16:33:35 [TRACE] Total Rule Eval (DIG): 177us
+16:33:35 [SCHED    142051ms] run_all: running=1
+16:33:35 [SCHED    142051ms] publish[0/DIG]: 3 bytes via gpio
+16:33:35 proto=gpio src=DIG len=3 ts=142051 : 00 00 00
+16:33:35 [RULE] R_LOG: pin low (value=0.000 ts=142051)
+16:33:35 [TRACE] Rule Parse + Batch Actions executed in 59us
+16:33:35 [TRACE] Total Rule Eval (DIG): 324us
+16:33:36 [SCHED    142552ms] publish[0/DIG]: 3 bytes via gpio
+16:33:36 proto=gpio src=DIG len=3 ts=142552 : 01 00 00
+16:33:36 [TRACE] Rule Parse + Batch Actions executed in 59us
+16:33:36 [TRACE] Total Rule Eval (DIG): 193us
+16:33:36 [SCHED    143053ms] run_all: running=1
+16:33:36 [SCHED    143053ms] publish[0/DIG]: 3 bytes via gpio
+16:33:36 proto=gpio src=DIG len=3 ts=143053 : 00 00 00
+16:33:36 [RULE] R_LOG: pin low (value=0.000 ts=143053)
+16:33:36 [TRACE] Rule Parse + Batch Actions executed in 59us
+16:33:36 [TRACE] Total Rule Eval (DIG): 315us
+16:33:37 [SCHED    143554ms] publish[0/DIG]: 3 bytes via gpio
+16:33:37 proto=gpio src=DIG len=3 ts=143554 : 01 00 00
+16:33:37 [TRACE] Rule Parse + Batch Actions executed in 56us
+16:33:37 [TRACE] Total Rule Eval (DIG): 191us
+16:33:37 [SCHED    144055ms] run_all: running=1
+16:33:37 [SCHED    144055ms] publish[0/DIG]: 3 bytes via gpio
+16:33:37 proto=gpio src=DIG len=3 ts=144055 : 00 00 00
+16:33:37 [RULE] R_LOG: pin low (value=0.000 ts=144055)
+16:33:37 [TRACE] Rule Parse + Batch Actions executed in 60us
+16:33:37 [TRACE] Total Rule Eval (DIG): 328us
+16:33:38 [SCHED    144556ms] publish[0/DIG]: 3 bytes via gpio
+16:33:38 proto=gpio src=DIG len=3 ts=144556 : 01 00 00
+16:33:38 [TRACE] Rule Parse + Batch Actions executed in 59us
+16:33:38 [TRACE] Total Rule Eval (DIG): 196us
+16:33:38 [SCHED    145057ms] run_all: running=1
+16:33:38 [SCHED    145057ms] publish[0/DIG]: 3 bytes via gpio
+16:33:38 proto=gpio src=DIG len=3 ts=145057 : 01 F5 01
+16:33:38 [TRACE] Rule Parse + Batch Actions executed in 50us
+16:33:38 [TRACE] Total Rule Eval (DIG): 170us
+16:33:39 [SCHED    145558ms] publish[0/DIG]: 3 bytes via gpio
+16:33:39 proto=gpio src=DIG len=3 ts=145558 : 01 EA 03
+16:33:39 [TRACE] Rule Parse + Batch Actions executed in 51us
+16:33:39 [TRACE] Total Rule Eval (DIG): 179us
+16:33:39 [SCHED    146059ms] run_all: running=1
+16:33:39 [SCHED    146059ms] publish[0/DIG]: 3 bytes via gpio
+16:33:39 proto=gpio src=DIG len=3 ts=146059 : 00 00 00
+16:33:39 [RULE] R_LOG: pin low (value=0.000 ts=146059)
+16:33:39 [TRACE] Rule Parse + Batch Actions executed in 59us
+16:33:39 [TRACE] Total Rule Eval (DIG): 319us
+16:33:40 [SCHED    146560ms] publish[0/DIG]: 3 bytes via gpio
+16:33:40 proto=gpio src=DIG len=3 ts=146560 : 00 F5 01
+16:33:40 [RULE] R_LOG: pin low (value=0.000 ts=146560)
+16:33:40 [TRACE] Rule Parse + Batch Actions executed in 69us
+16:33:40 [TRACE] Total Rule Eval (DIG): 322us
+16:33:40 [SCHED    147061ms] run_all: running=1
+16:33:40 [SCHED    147061ms] publish[0/DIG]: 3 bytes via gpio
+16:33:40 proto=gpio src=DIG len=3 ts=147061 : 00 EA 03
+16:33:40 [RULE] R_LOG: pin low (value=0.000 ts=147061)
+16:33:40 [TRACE] Rule Parse + Batch Actions executed in 56us
+16:33:40 [TRACE] Total Rule Eval (DIG): 328us
+16:33:41 [SCHED    147562ms] publish[0/DIG]: 3 bytes via gpio
+16:33:41 proto=gpio src=DIG len=3 ts=147562 : 00 DF 05
+16:33:41 [RULE] R_LOG: pin low (value=0.000 ts=147562)
+16:33:41 [TRACE] Rule Parse + Batch Actions executed in 69us
+16:33:41 [TRACE] Total Rule Eval (DIG): 328us
+16:33:41 [SCHED    148063ms] run_all: running=1
+16:33:41 [SCHED    148063ms] publish[0/DIG]: 3 bytes via gpio
+16:33:41 proto=gpio src=DIG len=3 ts=148063 : 00 D4 07
+16:33:41 [RULE] R_LOG: pin low (value=0.000 ts=148063)
+16:33:41 [TRACE] Rule Parse + Batch Actions executed in 58us
+16:33:41 [TRACE] Total Rule Eval (DIG): 325us
+16:33:42 [SCHED    148564ms] publish[0/DIG]: 3 bytes via gpio
+16:33:42 proto=gpio src=DIG len=3 ts=148564 : 00 C9 09
+16:33:42 [RULE] R_LOG: pin low (value=0.000 ts=148564)
+16:33:42 [TRACE] Rule Parse + Batch Actions executed in 68us
+16:33:42 [TRACE] Total Rule Eval (DIG): 326us
+16:33:42 [SCHED    149065ms] run_all: running=1
+16:33:42 [SCHED    149065ms] publish[0/DIG]: 3 bytes via gpio
+16:33:42 proto=gpio src=DIG len=3 ts=149065 : 00 BE 0B
+16:33:42 [RULE] R_LOG: pin low (value=0.000 ts=149065)
+16:33:42 [TRACE] Rule Parse + Batch Actions executed in 55us
+16:33:42 [TRACE] Total Rule Eval (DIG): 329us
+16:33:43 [SCHED    149566ms] publish[0/DIG]: 3 bytes via gpio
+16:33:43 proto=gpio src=DIG len=3 ts=149566 : 00 B3 0D
+16:33:43 [RULE] R_LOG: pin low (value=0.000 ts=149566)
+16:33:43 [TRACE] Rule Parse + Batch Actions executed in 69us
+16:33:43 [TRACE] Total Rule Eval (DIG): 323us
+16:33:43 --- run-stop: STOP
+16:33:43 STOP
+16:33:44 [SCHED    150905ms] run_all: running=0
+16:33:45 [SCHED    151905ms] run_all: running=0
+16:33:46 --- repl-showrules: SHOWRULES
+16:33:46 [RULE] count=2
+16:33:46   #0 name=R_LOG src=DIG vars=1 action=log:pin low prev_init=1
+16:33:46   #1 name=R_INF src=DIG vars=1 action=batch: infer.set:0:1.0 \| infer.run prev_init=1
+16:33:47 [SCHED    153498ms] run_all: running=0
+16:33:48 [SCHED    154498ms] run_all: running=0
+16:33:48 --- repl-clearrules: CLEARRULES
+16:33:48 [RULE] reset
+16:33:49 [SCHED    156086ms] run_all: running=0
+16:33:50 [SCHED    157086ms] run_all: running=0
+16:33:51 --- repl-clear: CLEAR
+16:33:51 [SCHED    157671ms] reset: cleared 8 slots
+16:33:51 [RULE] reset
+16:33:51 CLEARED
+16:33:52 [SCHED    158671ms] run_all: running=0
+16:33:53 [SCHED    159671ms] run_all: running=0

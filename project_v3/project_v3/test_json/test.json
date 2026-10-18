@@ -1,0 +1,26 @@
+{
+    "configs": [
+        {
+            "name": "AM2302",
+            "proto": "gpio",
+            "mode": "poll",
+            "freq_hz": 0.5,
+            "gpio": {
+                "pin": 17,
+                "pull": "up",
+                "mode": "onewire"
+            }
+        }
+    ],
+    "rules": [
+        {
+            "name": "TEST_CFG_TO",
+            "source": "AM2302",
+            "calc": [
+                "raw=u8(0)"
+            ],
+            "when": "1",
+            "action": "cfg.to:pico-001:{\"configs\":[{\"name\":\"XYC_H206\",\"proto\":\"gpio\",\"mode\":\"poll\",\"freq_hz\":1,\"gpio\":{\"pin\":26,\"mode\":\"digital\",\"pull\":\"up\",\"invert\":1,\"debounce_ms\":20}}]}"
+        }
+    ]
+}

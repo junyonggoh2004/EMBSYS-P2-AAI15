@@ -1,0 +1,73 @@
+15:43:28 [SCHED    140288ms] run_all: running=0
+15:43:28 Unknown: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+15:43:29 [SCHED    141399ms] run_all: running=0
+15:43:29 --- clear-t10: CLEAR
+15:43:29 [SCHED    141957ms] reset: cleared 8 slots
+15:43:29 [RULE] reset
+15:43:29 CLEARED
+15:43:30 [SCHED    142957ms] run_all: running=0
+15:43:31 [SCHED    143957ms] run_all: running=0
+15:43:32 --- cfg-t10: BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+15:43:32 OK: Config applied (inline, delim='|')
+15:43:32 [SCHED    144542ms] add[0]: DIG on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=6)
+15:43:32 [SCHED] added: DIG on gpio
+15:43:32 CFG: ok (added #0: DIG)
+15:43:33 [SCHED    145542ms] run_all: running=0
+15:43:34 [SCHED    146542ms] run_all: running=0
+15:43:35 --- rule-false: BEGINRULE|name=RF|source=DIG|calc=s=u8(0)|when=s==1|action=log:should not fire|ENDRULE
+15:43:35 [RULE] added name=RF src=DIG vars=1 action=log:should not fire
+15:43:35 RULE: ok
+15:43:36 [SCHED    148126ms] run_all: running=0
+15:43:37 [SCHED    149126ms] run_all: running=0
+15:43:37 --- rule-true: BEGINRULE|name=RT|source=DIG|calc=s=u8(0)|when=s==0|action=log:control fired|ENDRULE
+15:43:37 [RULE] added name=RT src=DIG vars=1 action=log:control fired
+15:43:37 RULE: ok
+15:43:38 [SCHED    150707ms] run_all: running=0
+15:43:39 [SCHED    151707ms] run_all: running=0
+15:43:40 --- run-t10: RUN
+15:43:40 RUN
+15:43:40 [SCHED    152284ms] arm[0/DIG]: next_run reset to NOW
+15:43:40 [SCHED    152284ms] publish[0/DIG]: 3 bytes via gpio
+15:43:40 proto=gpio src=DIG len=3 ts=152285 : 00 3E 1E
+15:43:40 [RULE] RT: control fired (value=0.000 ts=152285)
+15:43:40 [TRACE] Total Rule Eval (DIG): 270us
+15:43:41 [SCHED    153285ms] run_all: running=1
+15:43:41 [SCHED    153285ms] publish[0/DIG]: 3 bytes via gpio
+15:43:41 proto=gpio src=DIG len=3 ts=153285 : 00 27 22
+15:43:41 [RULE] RT: control fired (value=0.000 ts=153285)
+15:43:41 [TRACE] Total Rule Eval (DIG): 207us
+15:43:42 [SCHED    154286ms] run_all: running=1
+15:43:42 [SCHED    154286ms] publish[0/DIG]: 3 bytes via gpio
+15:43:42 proto=gpio src=DIG len=3 ts=154286 : 00 10 26
+15:43:42 [RULE] RT: control fired (value=0.000 ts=154286)
+15:43:42 [TRACE] Total Rule Eval (DIG): 215us
+15:43:43 [SCHED    155287ms] run_all: running=1
+15:43:43 [SCHED    155287ms] publish[0/DIG]: 3 bytes via gpio
+15:43:43 proto=gpio src=DIG len=3 ts=155287 : 00 F9 29
+15:43:43 [RULE] RT: control fired (value=0.000 ts=155287)
+15:43:43 [TRACE] Total Rule Eval (DIG): 198us
+15:43:44 [SCHED    156288ms] run_all: running=1
+15:43:44 [SCHED    156288ms] publish[0/DIG]: 3 bytes via gpio
+15:43:44 proto=gpio src=DIG len=3 ts=156288 : 00 E2 2D
+15:43:44 [RULE] RT: control fired (value=0.000 ts=156288)
+15:43:44 [TRACE] Total Rule Eval (DIG): 215us
+15:43:45 [SCHED    157289ms] run_all: running=1
+15:43:45 [SCHED    157289ms] publish[0/DIG]: 3 bytes via gpio
+15:43:45 proto=gpio src=DIG len=3 ts=157289 : 00 CB 31
+15:43:45 [RULE] RT: control fired (value=0.000 ts=157289)
+15:43:45 [TRACE] Total Rule Eval (DIG): 195us
+15:43:46 [SCHED    158290ms] run_all: running=1
+15:43:46 [SCHED    158290ms] publish[0/DIG]: 3 bytes via gpio
+15:43:46 proto=gpio src=DIG len=3 ts=158290 : 00 B4 35
+15:43:46 [RULE] RT: control fired (value=0.000 ts=158290)
+15:43:46 [TRACE] Total Rule Eval (DIG): 215us
+15:43:46 --- stop-t10: STOP
+15:43:46 STOP
+15:43:47 [SCHED    159514ms] run_all: running=0
+15:43:48 [SCHED    160514ms] run_all: running=0
+15:43:49 --- clear-t10-end: CLEAR
+15:43:49 [SCHED    161107ms] reset: cleared 8 slots
+15:43:49 [RULE] reset
+15:43:49 CLEARED
+15:43:50 [SCHED    162107ms] run_all: running=0
+15:43:51 [SCHED    163107ms] run_all: running=0

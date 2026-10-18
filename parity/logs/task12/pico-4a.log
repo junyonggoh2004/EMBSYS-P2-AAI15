@@ -1,0 +1,140 @@
+15:13:04 [SCHED     13829ms] run_all: running=0
+15:13:05 [SCHED     14829ms] run_all: running=0
+15:13:05 --- repl-help: HELP
+15:13:06 Commands:
+15:13:06   BEGINCFG ... ENDCFG        - add sensor config (multi-line)
+15:13:06   BEGINCFG|k=v|...|ENDCFG    - add sensor config (inline with '|', supports \|)
+15:13:06   BEGINRULE ... ENDRULE      - add rule (multi-line)
+15:13:06   BEGINRULE|k=v|...|ENDRULE  - add rule (inline with '|', supports \|)
+15:13:06   RUN / STOP                 - control sampling
+15:13:06   CLEAR                      - clear sensors + rules
+15:13:06   SHOW / SHOWRULES           - show sensors / rules
+15:13:06   CLEARRULES                 - clear only rules
+15:13:06   HELP                       - this text
+15:13:06 
+15:13:06 Example inline rule (HMC5883L big-endian X,Z,Y at 0x03):
+15:13:06 BEGINRULE|name=GY511_MAG|source=GY511_ACC|calc=mx=s16be(0)|calc=mz=s16be(2)|calc=my=s16be(4)|calc=mag=sqrt(mx*mx+my*my+mz*mz)|when=mag>350|action=log:MAG change detected|ENDRULE
+15:13:06 [SCHED     15830ms] run_all: running=0
+15:13:06 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:13:06 [MQTT] reconnect err=-4
+15:13:07 [SCHED     16831ms] run_all: running=0
+15:13:08 [SCHED     17831ms] run_all: running=0
+15:13:08 --- repl-show: SHOW
+15:13:09 [SHOW] sampling=0
+15:13:09 [RULE] count=0
+15:13:09 [SCHED     18831ms] run_all: running=0
+15:13:10 [SCHED     19831ms] run_all: running=0
+15:13:11 --- repl-run: RUN
+15:13:11 RUN
+15:13:11 [SCHED     20831ms] run_all: running=1
+15:13:11 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:13:11 [MQTT] reconnect err=-4
+15:13:12 [SCHED     21832ms] run_all: running=1
+15:13:13 [SCHED     22832ms] run_all: running=1
+15:13:13 --- repl-stop: STOP
+15:13:14 STOP
+15:13:14 [SCHED     23832ms] run_all: running=0
+15:13:15 [SCHED     24832ms] run_all: running=0
+15:13:16 [SCHED     25832ms] run_all: running=0
+15:13:16 [MQTT] reconnect err=-4
+15:13:16 --- repl-unknown: FOO
+15:13:17 Unknown: FOO
+15:13:17 [SCHED     26833ms] run_all: running=0
+15:13:17 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:13:18 [SCHED     27833ms] run_all: running=0
+15:13:18 --- cfg-digital: BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=22|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+15:13:19 [SCHED     28833ms] run_all: running=0
+15:13:20 OK: Config applied (inline, delim='|')
+15:13:20 [SCHED     29834ms] add[0]: DIG on gpio freq=2.000Hz mode=poll method=digital GPIO(pin=22)
+15:13:20 [SCHED] added: DIG on gpio
+15:13:20 CFG: ok (added #0: DIG)
+15:13:20 [SCHED     29835ms] run_all: running=0
+15:13:21 [SCHED     30835ms] run_all: running=0
+15:13:21 [MQTT] reconnect err=-4
+15:13:21 --- repl-show-cfg: SHOW
+15:13:22 [SHOW] sampling=0
+15:13:22 [SCHED] #0 name=DIG proto=gpio mode=poll freq=2.000Hz
+15:13:22 [RULE] count=0
+15:13:22 [SCHED     31836ms] run_all: running=0
+15:13:22 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:13:23 [SCHED     32836ms] run_all: running=0
+15:13:24 --- rule-log: BEGINRULE|name=R_LOG|source=DIG|calc=s=u8(0)|when=s==0|action=log:pin low|ENDRULE
+15:13:24 [SCHED     33836ms] run_all: running=0
+15:13:25 [RULE] added name=R_LOG src=DIG vars=1 action=log:pin low
+15:13:25 RULE: ok
+15:13:25 [SCHED     34837ms] run_all: running=0
+15:13:26 [SCHED     35837ms] run_all: running=0
+15:13:26 [MQTT] reconnect err=-4
+15:13:26 --- rule-infer: BEGINRULE|name=R_INF|source=DIG|calc=s=u8(0)|when=1|action=batch: infer.set:0:1.0 \| infer.run|ENDRULE
+15:13:27 [SCHED     36838ms] run_all: running=0
+15:13:27 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:13:28 [RULE] added name=R_INF src=DIG vars=1 action=batch: infer.set:0:1.0 \| infer.run
+15:13:28 RULE: ok
+15:13:28 [SCHED     37839ms] run_all: running=0
+15:13:29 [SCHED     38839ms] run_all: running=0
+15:13:29 --- run-data: RUN
+15:13:30 RUN
+15:13:30 [SCHED     39839ms] run_all: running=1
+15:13:30 [SCHED     39840ms] arm[0/DIG]: next_run reset to NOW
+15:13:30 [SCHED     39840ms] publish[0/DIG]: 3 bytes via gpio
+15:13:30 proto=gpio src=DIG len=3 ts=39840 : 00 16 27
+15:13:30 [RULE] R_LOG: pin low (value=0.000 ts=39840)
+15:13:30 [INFER] invoke=1298us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+15:13:30 [TRACE] Rule Parse + Batch Actions executed in 2135us
+15:13:30 [TRACE] Total Rule Eval (DIG): 2555us
+15:13:31 [SCHED     40843ms] run_all: running=1
+15:13:31 [SCHED     40843ms] publish[0/DIG]: 3 bytes via gpio
+15:13:31 proto=gpio src=DIG len=3 ts=40843 : 00 01 2B
+15:13:31 [RULE] R_LOG: pin low (value=0.000 ts=40843)
+15:13:31 [INFER] invoke=1046us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+15:13:31 [TRACE] Rule Parse + Batch Actions executed in 1830us
+15:13:31 [TRACE] Total Rule Eval (DIG): 2193us
+15:13:31 [MQTT] reconnect err=-4
+15:13:32 [SCHED     41846ms] run_all: running=1
+15:13:32 [SCHED     41846ms] publish[0/DIG]: 3 bytes via gpio
+15:13:32 proto=gpio src=DIG len=3 ts=41846 : 00 EC 2E
+15:13:32 [RULE] R_LOG: pin low (value=0.000 ts=41846)
+15:13:32 [INFER] invoke=1014us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+15:13:32 [TRACE] Rule Parse + Batch Actions executed in 1843us
+15:13:32 [TRACE] Total Rule Eval (DIG): 2208us
+15:13:32 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:13:33 [SCHED     42849ms] run_all: running=1
+15:13:33 [SCHED     42849ms] publish[0/DIG]: 3 bytes via gpio
+15:13:33 proto=gpio src=DIG len=3 ts=42849 : 00 D7 32
+15:13:33 [RULE] R_LOG: pin low (value=0.000 ts=42849)
+15:13:33 [INFER] invoke=976us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+15:13:33 [TRACE] Rule Parse + Batch Actions executed in 1781us
+15:13:33 [TRACE] Total Rule Eval (DIG): 2153us
+15:13:34 [SCHED     43852ms] run_all: running=1
+15:13:34 [SCHED     43852ms] publish[0/DIG]: 3 bytes via gpio
+15:13:34 proto=gpio src=DIG len=3 ts=43852 : 00 C2 36
+15:13:34 [RULE] R_LOG: pin low (value=0.000 ts=43852)
+15:13:34 [INFER] invoke=1004us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+15:13:34 [TRACE] Rule Parse + Batch Actions executed in 1761us
+15:13:34 [TRACE] Total Rule Eval (DIG): 2149us
+15:13:34 --- run-stop: STOP
+15:13:35 STOP
+15:13:35 [SCHED     44855ms] run_all: running=0
+15:13:36 [SCHED     45855ms] run_all: running=0
+15:13:36 [MQTT] reconnect err=-4
+15:13:36 --- repl-showrules: SHOWRULES
+15:13:37 [RULE] count=2
+15:13:37   #0 name=R_LOG src=DIG vars=1 action=log:pin low prev_init=1
+15:13:37   #1 name=R_INF src=DIG vars=1 action=batch: infer.set:0:1.0 \| infer.run prev_init=1
+15:13:37 [SCHED     46856ms] run_all: running=0
+15:13:37 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:13:38 [SCHED     47856ms] run_all: running=0
+15:13:39 [SCHED     48856ms] run_all: running=0
+15:13:39 --- repl-clearrules: CLEARRULES
+15:13:40 [RULE] reset
+15:13:40 [SCHED     49857ms] run_all: running=0
+15:13:41 [SCHED     50857ms] run_all: running=0
+15:13:41 [MQTT] reconnect err=-4
+15:13:42 --- repl-clear: CLEAR
+15:13:42 [SCHED     51857ms] reset: cleared 8 slots
+15:13:42 [RULE] reset
+15:13:42 CLEARED
+15:13:42 [SCHED     51857ms] run_all: running=0
+15:13:42 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:13:43 [SCHED     52858ms] run_all: running=0
+15:13:44 [SCHED     53858ms] run_all: running=0

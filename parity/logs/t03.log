@@ -1,0 +1,57 @@
+20:53:26 [SCHED   3038015ms] run_all: running=0
+20:53:27 [SCHED   3039015ms] run_all: running=0
+20:53:28 [SCHED   3040016ms] run_all: running=0
+20:53:28 --- clear-t03: CLEAR
+20:53:29 [SCHED   3041016ms] reset: cleared 8 slots
+20:53:29 [RULE] reset
+20:53:29 CLEARED
+20:53:29 [SCHED   3041016ms] run_all: running=0
+20:53:29 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:53:30 [SCHED   3042016ms] run_all: running=0
+20:53:30 --- cfg-t03: BEGINCFG|name=BADPIN|proto=gpio|gpio.mode=digital|gpio.pin=99|mode=poll|freq_hz=1|ENDCFG
+20:53:31 [SCHED   3043017ms] run_all: running=0
+20:53:32 OK: Config applied (inline, delim='|')
+20:53:32 [SCHED   3044018ms] add[0]: BADPIN on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=99)
+20:53:32 [SCHED] added: BADPIN on gpio
+20:53:32 CFG: ok (added #0: BADPIN)
+20:53:32 [SCHED   3044018ms] run_all: running=0
+20:53:33 [SCHED   3045018ms] run_all: running=0
+20:53:33 --- run-t03: RUN
+20:53:34 RUN
+20:53:34 [SCHED   3046018ms] run_all: running=1
+20:53:34 [SCHED   3046018ms] arm[0/BADPIN]: next_run reset to NOW
+20:53:34 [SCHED   3046019ms] publish[0/BADPIN]: 3 bytes via gpio
+20:53:34 proto=gpio src=BADPIN len=3 ts=3046019 : 00 D0 07
+20:53:34 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:53:35 [SCHED   3047019ms] run_all: running=1
+20:53:35 [SCHED   3047019ms] publish[0/BADPIN]: 3 bytes via gpio
+20:53:35 proto=gpio src=BADPIN len=3 ts=3047019 : 00 B9 0B
+20:53:36 [SCHED   3048019ms] run_all: running=1
+20:53:36 [SCHED   3048020ms] publish[0/BADPIN]: 3 bytes via gpio
+20:53:36 proto=gpio src=BADPIN len=3 ts=3048020 : 00 A1 0F
+20:53:37 [SCHED   3049020ms] run_all: running=1
+20:53:37 [SCHED   3049020ms] publish[0/BADPIN]: 3 bytes via gpio
+20:53:37 proto=gpio src=BADPIN len=3 ts=3049020 : 00 8A 13
+20:53:38 [SCHED   3050020ms] run_all: running=1
+20:53:38 [SCHED   3050020ms] publish[0/BADPIN]: 3 bytes via gpio
+20:53:38 proto=gpio src=BADPIN len=3 ts=3050020 : 00 72 17
+20:53:38 --- stop-t03: STOP
+20:53:39 STOP
+20:53:39 [SCHED   3051021ms] run_all: running=0
+20:53:39 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:53:40 [SCHED   3052021ms] run_all: running=0
+20:53:40 --- alive-t03: SHOW
+20:53:41 [SHOW] sampling=0
+20:53:41 [SCHED] #0 name=BADPIN proto=gpio mode=poll freq=1.000Hz
+20:53:41 [RULE] count=0
+20:53:41 [SCHED   3053021ms] run_all: running=0
+20:53:42 [SCHED   3054022ms] run_all: running=0
+20:53:43 [SCHED   3055022ms] run_all: running=0
+20:53:43 --- clear-t03-end: CLEAR
+20:53:44 [SCHED   3056022ms] reset: cleared 8 slots
+20:53:44 [RULE] reset
+20:53:44 CLEARED
+20:53:44 [SCHED   3056022ms] run_all: running=0
+20:53:44 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:53:45 [SCHED   3057023ms] run_all: running=0
+20:53:46 [SCHED   3058023ms] run_all: running=0

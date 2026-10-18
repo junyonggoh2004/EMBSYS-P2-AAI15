@@ -1,0 +1,79 @@
+--- publish pico/pico-001/config: BEGINCFG\|name=LED\|proto=gpio\|gpio.mode=digital\|gpio.pin=25\|ENDCFG
+[CFG] cfg_cb payload (first 120): BEGINCFG\|name=LED\|proto=gpio\|gpio.mode=digital\|gpio.pin=25\|ENDCFG
+[JSON] not starting with '{' after trim, char=0x42
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[I2C] pre_len=0 :
+[SCHED    163074ms] add[0]: LED\ on i2c freq=1.000Hz mode=poll I2C(sda=4,scl=5,addr=0x76,reg=0x0,len=1)
+[SCHED] added: LED\ on i2c
+[CFG] added #0: LED\
+--- publish pico/pico-001/cmd: SHOW
+[CMD] SHOW
+[SCHED] #0 name=LED\ proto=i2c mode=poll freq=1.000Hz
+[RULE] count=0
+--- publish pico/pico-001/cmd: CLEAR
+[SCHED    174078ms] reset: cleared 8 slots
+[RULE] reset
+[BRIDGE] reset
+[CMD] CLEAR (scheduler + rules + bridge)
+--- publish pico/pico-001/config: {"configs":[{"name":"DIG","proto":"gpio","mode":"poll","freq_hz":1,"gpio":{"pin":22,"pull":"down","mode":"digital"}}],"rules":[{"name":"R_CFGJ","source":"DIG","calc":["s=u8(0)"],"when":"s==0","action":"cfg.to:pico-002:{configs:[{name:LED,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:25,mode:digital}}]}"}]}
+[CFG] cfg_cb payload (first 120): {"configs":[{"name":"DIG","proto":"gpio","mode":"poll","freq_hz":1,"gpio":{"pin":22,"pull":"down","mode":"digital"}}],"r
+[JSON] configs processed: 1
+[JSON] rules processed: 1
+[CFG] mqtt_json_try_convert_to_inline -> 267
+[CFG] inline from JSON: BEGINCFG|name=DIG|proto=gpio|mode=poll|freq_hz=1|gpio.pin=22|gpio.pull=down|gpio.mode=digital|ENDCFGBEGINRULE|name=R_CFGJ|source=DIG|calc=s=u8(0)|when=s==0|action=cfg.to:pico-002:{configs:[{name:LED,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:25,mode:digital}}]}|ENDRULE
+[SCHED    200084ms] add[0]: DIG on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=22)
+[SCHED] added: DIG on gpio
+[CFG] added #0: DIG
+[RULE] added name=R_CFGJ src=DIG vars=1 action=cfg.to:pico-002:{configs:[{name:LED,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:25,mode:digital}}]}
+[RULE] added name=R_CFGJ
+--- publish pico/pico-001/cmd: RUN
+[CMD] RUN
+[SCHED    206088ms] arm[0/DIG]: next_run reset to NOW
+[SCHED    206088ms] publish[0/DIG]: 3 bytes via gpio
+proto=gpio src=DIG len=3 ts=206088 : 00 74 17
+{configs:[{name:LED,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:25,mode:digital}}]}
+{configs:[{name:LED,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:25,mode:digital}}]}
+[RULE] R_CFGJ: cfg.to -> node=pico-002
+[TRACE] Total Rule Eval (DIG): 1131us
+[SCHED    207090ms] publish[0/DIG]: 3 bytes via gpio
+proto=gpio src=DIG len=3 ts=207090 : 00 5E 1B
+{configs:[{name:LED,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:25,mode:digital}}]}
+{configs:[{name:LED,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:25,mode:digital}}]}
+[RULE] R_CFGJ: cfg.to -> node=pico-002
+[TRACE] Total Rule Eval (DIG): 1129us
+[SCHED    208092ms] publish[0/DIG]: 3 bytes via gpio
+proto=gpio src=DIG len=3 ts=208093 : 00 48 1F
+{configs:[{name:LED,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:25,mode:digital}}]}
+{configs:[{name:LED,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:25,mode:digital}}]}
+[RULE] R_CFGJ: cfg.to -> node=pico-002
+[TRACE] Total Rule Eval (DIG): 1110us
+BROKER pico/pico-002/config {configs:[{name:LED,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:25,mode:digital}}]}
+BROKER pico/pico-002/config {configs:[{name:LED,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:25,mode:digital}}]}
+--- publish pico/pico-001/cmd: STOP
+[SCHED    209094ms] publish[0/DIG]: 3 bytes via gpio
+proto=gpio src=DIG len=3 ts=209095 : 00 32 23
+{configs:[{name:LED,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:25,mode:digital}}]}
+{configs:[{name:LED,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:25,mode:digital}}]}
+[RULE] R_CFGJ: cfg.to -> node=pico-002
+[TRACE] Total Rule Eval (DIG): 1082us
+[CMD] STOP
+BROKER pico/pico-002/config {configs:[{name:LED,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:25,mode:digital}}]}
+--- publish pico/pico-001/cmd: CLEAR
+[SCHED    213098ms] reset: cleared 8 slots
+[RULE] reset
+[BRIDGE] reset
+[CMD] CLEAR (scheduler + rules + bridge)
+=== replaying what pico-002 received into pico-001 ===
+--- publish pico/pico-001/config: {configs:[{name:LED,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:25,mode:digital}}]}
+[CFG] cfg_cb payload (first 120): {configs:[{name:LED,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:25,mode:digital}}]}
+[JSON] jsmn error=-2 (INVALID/PART)
+[CFG] mqtt_json_try_convert_to_inline -> -2
+[CFG] unrecognized payload (no BEGINCFG/BEGINRULE)
+--- publish pico/pico-001/cmd: SHOW
+[CMD] SHOW
+[RULE] count=0
+--- publish pico/pico-001/cmd: CLEAR
+[SCHED    225102ms] reset: cleared 8 slots
+[RULE] reset
+[BRIDGE] reset
+[CMD] CLEAR (scheduler + rules + bridge)

@@ -1,0 +1,45 @@
+15:28:13 line mqtt_init=false
+15:28:13 [INFER] Inference manager initialised.
+15:28:13 [S3] TFLite Micro not ported yet
+15:28:13 [INFER] Failed to load base model: error 5
+15:28:13 [HALTEST] PASS unported-tflite-reports-no-model load_base_model=false
+15:28:13 [HALTEST] done failures=0
+15:28:14 [TICK] 11929
+15:28:14 [HALTEST] start
+15:28:14 [HALTEST] PASS time-monotonic 11980983 -> 11980985 us
+15:28:14 [HALTEST] PASS time-ms-matches-us ms=11981 us/1000=11981
+15:28:14 [HALTEST] PASS delay-ms-100 100750 us
+15:28:14 [HALTEST] PASS delay-ms-1 1948 us
+15:28:14 [HALTEST] PASS delay-us-500 502 us
+15:28:14 [HALTEST] PASS console-getc-timeout ret=-1 after 20400 us
+15:28:14 [HALTEST] PASS gpio-reserved-pins-refused -1 19 20 22 26 32 49 99
+15:28:14 [HALTEST] PASS gpio-input-pulldown mode=0 read=0
+15:28:14 [HALTEST] PASS gpio-input-pullup mode=0 read=1
+15:28:14 [HALTEST] PASS gpio-output-toggle toggle 1/1 then 0/0
+15:28:14 [HALTEST] PASS pwm-set-and-stop set=0 set=0 stop=0 read=0
+15:28:14 [SCHED     12106ms] reset: cleared 8 slots
+15:28:14 [RULE] reset
+15:28:14 [S3] gpio driver not ported yet
+15:28:14 [SCHED     12106ms] add[0]: init_cfg FAILED for S3GPIO on gpio
+15:28:14 [SCHED     12106ms] run_all: running=0
+15:28:14 [HALTEST] PASS unported-gpio-driver-refuses scheduler_add_config=-2
+15:28:14 [S3] MQTT not ported yet
+15:28:14 [HALTEST] PASS unported-mqtt-reports-offline mqtt_init=false
+15:28:14 [INFER] Inference manager initialised.
+15:28:14 [S3] TFLite Micro not ported yet
+15:28:14 [INFER] Failed to load base model: error 5
+15:28:14 [HALTEST] PASS unported-tflite-reports-no-model load_base_model=false
+15:28:14 [HALTEST] done failures=0
+15:28:14 [ECHO] hello parity 12345
+15:28:14 [TICK] 12930
+15:28:16 [TICK] 13929
+15:28:17 [TICK] 14928
+15:28:17 [TICK] 15930
+15:28:19 [TICK] 16929
+15:28:20 [TICK] 17928
+15:28:20 [TICK] 18930
+15:28:22 [TICK] 19929
+15:28:23 [TICK] 20928
+15:28:23 [TICK] 21930
+15:28:25 [TICK] 22929
+15:28:26 [TICK] 23928

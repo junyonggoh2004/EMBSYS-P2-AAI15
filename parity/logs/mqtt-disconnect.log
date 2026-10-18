@@ -1,0 +1,35 @@
+17:55:16 [MQTT] Status: Connected, Broker: 192.168.1.136
+17:55:17 [MQTT] conn status=256
+17:55:18 [MQTT] conn status=256
+17:55:20 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+17:55:22 [MQTT] conn status=256
+17:55:25 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+17:55:28 [MQTT] conn status=256
+17:55:30 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+17:55:32 [MQTT] conn status=256
+17:55:35 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+17:55:37 [MQTT] conn status=256
+17:55:41 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+17:55:43 [MQTT] conn status=256
+17:55:45 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+17:55:47 [MQTT] conn status=256
+17:55:51 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+17:55:53 [MQTT] conn status=256
+17:55:55 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+17:55:57 [MQTT] conn status=256
+17:56:01 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+17:56:03 [MQTT] connected to broker
+17:56:03 [MQTT] Subscribing to node wildcard: pico/pico-001/#
+17:56:03 [MQTT] Subscribing to broadcast: pico/broadcast/config
+17:56:03 [MQTT] Subscribed OK to: node-wildcard
+17:56:03 [MQTT] Subscribed OK to: broadcast
+17:56:05 [MQTT] Status: Connected, Broker: 192.168.1.136
+17:56:10 [MQTT] Status: Connected, Broker: 192.168.1.136
+17:56:16 [MQTT] Status: Connected, Broker: 192.168.1.136
+17:56:20 [MQTT] Status: Connected, Broker: 192.168.1.136
+17:56:26 [MQTT] Status: Connected, Broker: 192.168.1.136
+17:56:30 [MQTT] Status: Connected, Broker: 192.168.1.136
+17:56:36 [MQTT] Status: Connected, Broker: 192.168.1.136
+17:56:40 [MQTT] Status: Connected, Broker: 192.168.1.136
+17:56:45 [MQTT] Status: Connected, Broker: 192.168.1.136
+17:56:52 [MQTT] Status: Connected, Broker: 192.168.1.136

@@ -1,0 +1,47 @@
+{
+  "configs": [
+    {
+      "name": "GY511_ACC",
+      "proto": "i2c",
+      "mode": "poll",
+      "freq_hz": "2",
+      "i2c": {
+        "sda": "0", "scl": "1", "addr": "0x19",
+        "pre": ["0x20", "0x57"], "post_delay_ms": "2",
+        "reg": "0xA8", "reg_size": "1", "read_len": "6", "restart": 1
+      }
+    },
+    {
+      "name": "XYC_H206",
+      "proto": "gpio",
+      "mode": "poll",
+      "freq_hz": 10,
+      "gpio": {
+        "pin": 16, "pull": "up", "mode": "digital", "invert": 1, "debounce_ms": 10
+      }
+    }
+  ],
+  "rules": [
+    {
+      "name": "FUSION_ACCEL",
+      "source": "GY511_ACC",
+      "calc": [
+        "mx=s16le(0) / 16384",
+        "my=s16le(2) / 16384",
+        "mz=s16le(4) / 16384",
+        "mag=sqrt(mx*mx + my*my + mz*mz)",
+        "m_avg=mean(mag, 5)",
+        "m_std=std(mag, 5)",
+        "m_min=min(mag, 5)",
+        "m_max=max(mag, 5)"
+      ],
+      "action": "batch: infer.set:8:$m_avg | infer.set:9:$m_std | infer.set:10:$m_min | infer.set:11:$m_max | infer.run:log:FUSION ANOMALY (accel triggered)! MSE=$value | record.json:accel:m_avg,m_std,m_min,m_max"
+    },
+    {
+      "name": "FUSION_H206",
+      "source": "XYC_H206",
+      "calc": ["v=u8(0)"],
+      "action": "batch: infer.set:0:$v | infer.run:log:FUSION ANOMALY (h206 triggered)! MSE=$value"
+    }
+  ]
+}

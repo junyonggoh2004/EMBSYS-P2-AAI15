@@ -1,0 +1,801 @@
+17:54:22 [SCHED    426511ms] run_all: running=0
+17:54:22 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:54:23 [SCHED    428237ms] run_all: running=0
+17:54:24 --- clear-t09: CLEAR
+17:54:24 [SCHED    428789ms] reset: cleared 8 slots
+17:54:24 [RULE] reset
+17:54:24 CLEARED
+17:54:25 [SCHED    429789ms] run_all: running=0
+17:54:26 [SCHED    430789ms] run_all: running=0
+17:54:27 --- cfg-sus: BEGINCFG|name=USUS|proto=uart|uart.tx=1|uart.rx=2|uart.baud=115200|uart.pre=0x01 0x02 0x03 0x04 0x05 0x06 0x07 0x08 0x09 0x0A 0x0B 0x0C 0x0D 0x0E 0x0F 0x10|uart.post_delay_ms=2|uart.read_len=16|mode=poll|freq_hz=20|ENDCFG
+17:54:27 OK: Config applied (inline, delim='|')
+17:54:27 [SCHED    431393ms] add[0]: USUS on uart freq=20.000Hz mode=poll UART(tx=1,rx=2,baud=115200)
+17:54:27 [SCHED] added: USUS on uart
+17:54:27 CFG: ok (added #0: USUS)
+17:54:27 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:54:28 [SCHED    432394ms] run_all: running=0
+17:54:29 [SCHED    433394ms] run_all: running=0
+17:54:29 --- run-sus: RUN
+17:54:29 RUN
+17:54:29 [SCHED    433985ms] arm[0/USUS]: next_run reset to NOW
+17:54:29 [SCHED    433988ms] publish[0/USUS]: 16 bytes via uart
+17:54:29 proto=uart src=USUS len=16 ts=433988 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:29 [SCHED    434042ms] publish[0/USUS]: 16 bytes via uart
+17:54:29 proto=uart src=USUS len=16 ts=434042 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:29 [SCHED    434096ms] publish[0/USUS]: 16 bytes via uart
+17:54:29 proto=uart src=USUS len=16 ts=434096 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:29 [SCHED    434150ms] publish[0/USUS]: 16 bytes via uart
+17:54:29 proto=uart src=USUS len=16 ts=434150 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:29 [SCHED    434204ms] publish[0/USUS]: 16 bytes via uart
+17:54:29 proto=uart src=USUS len=16 ts=434204 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:29 [SCHED    434258ms] publish[0/USUS]: 16 bytes via uart
+17:54:29 proto=uart src=USUS len=16 ts=434258 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:30 [SCHED    434312ms] publish[0/USUS]: 16 bytes via uart
+17:54:30 proto=uart src=USUS len=16 ts=434312 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:30 [SCHED    434366ms] publish[0/USUS]: 16 bytes via uart
+17:54:30 proto=uart src=USUS len=16 ts=434366 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:30 [SCHED    434417ms] run_all: running=1
+17:54:30 [SCHED    434420ms] publish[0/USUS]: 16 bytes via uart
+17:54:30 proto=uart src=USUS len=16 ts=434420 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:30 [SCHED    434474ms] publish[0/USUS]: 16 bytes via uart
+17:54:30 proto=uart src=USUS len=16 ts=434474 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:30 [SCHED    434528ms] publish[0/USUS]: 16 bytes via uart
+17:54:30 proto=uart src=USUS len=16 ts=434528 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:30 [SCHED    434582ms] publish[0/USUS]: 16 bytes via uart
+17:54:30 proto=uart src=USUS len=16 ts=434582 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:30 [SCHED    434636ms] publish[0/USUS]: 16 bytes via uart
+17:54:30 proto=uart src=USUS len=16 ts=434636 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:30 [SCHED    434690ms] publish[0/USUS]: 16 bytes via uart
+17:54:30 proto=uart src=USUS len=16 ts=434690 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:30 [SCHED    434744ms] publish[0/USUS]: 16 bytes via uart
+17:54:30 proto=uart src=USUS len=16 ts=434744 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:30 [SCHED    434798ms] publish[0/USUS]: 16 bytes via uart
+17:54:30 proto=uart src=USUS len=16 ts=434798 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:30 [SCHED    434852ms] publish[0/USUS]: 16 bytes via uart
+17:54:30 proto=uart src=USUS len=16 ts=434852 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:30 [SCHED    434906ms] publish[0/USUS]: 16 bytes via uart
+17:54:30 proto=uart src=USUS len=16 ts=434906 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:30 [SCHED    434960ms] publish[0/USUS]: 16 bytes via uart
+17:54:30 proto=uart src=USUS len=16 ts=434960 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:30 [SCHED    435014ms] publish[0/USUS]: 16 bytes via uart
+17:54:30 proto=uart src=USUS len=16 ts=435014 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:30 [SCHED    435068ms] publish[0/USUS]: 16 bytes via uart
+17:54:30 proto=uart src=USUS len=16 ts=435068 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:30 [SCHED    435122ms] publish[0/USUS]: 16 bytes via uart
+17:54:30 proto=uart src=USUS len=16 ts=435122 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:30 [SCHED    435176ms] publish[0/USUS]: 16 bytes via uart
+17:54:30 proto=uart src=USUS len=16 ts=435176 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:30 [SCHED    435230ms] publish[0/USUS]: 16 bytes via uart
+17:54:30 proto=uart src=USUS len=16 ts=435230 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:30 [SCHED    435284ms] publish[0/USUS]: 16 bytes via uart
+17:54:30 proto=uart src=USUS len=16 ts=435284 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:31 [SCHED    435338ms] publish[0/USUS]: 16 bytes via uart
+17:54:31 proto=uart src=USUS len=16 ts=435338 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:31 [SCHED    435392ms] publish[0/USUS]: 16 bytes via uart
+17:54:31 proto=uart src=USUS len=16 ts=435392 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:31 [SCHED    435443ms] run_all: running=1
+17:54:31 [SCHED    435446ms] publish[0/USUS]: 16 bytes via uart
+17:54:31 proto=uart src=USUS len=16 ts=435446 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:31 [SCHED    435500ms] publish[0/USUS]: 16 bytes via uart
+17:54:31 proto=uart src=USUS len=16 ts=435500 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:31 [SCHED    435554ms] publish[0/USUS]: 16 bytes via uart
+17:54:31 proto=uart src=USUS len=16 ts=435554 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:31 [SCHED    435608ms] publish[0/USUS]: 16 bytes via uart
+17:54:31 proto=uart src=USUS len=16 ts=435608 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:31 [SCHED    435662ms] publish[0/USUS]: 16 bytes via uart
+17:54:31 proto=uart src=USUS len=16 ts=435662 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:31 [SCHED    435716ms] publish[0/USUS]: 16 bytes via uart
+17:54:31 proto=uart src=USUS len=16 ts=435716 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:31 [SCHED    435770ms] publish[0/USUS]: 16 bytes via uart
+17:54:31 proto=uart src=USUS len=16 ts=435770 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:31 [SCHED    435824ms] publish[0/USUS]: 16 bytes via uart
+17:54:31 proto=uart src=USUS len=16 ts=435824 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:31 [SCHED    435878ms] publish[0/USUS]: 16 bytes via uart
+17:54:31 proto=uart src=USUS len=16 ts=435878 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:31 [SCHED    435932ms] publish[0/USUS]: 16 bytes via uart
+17:54:31 proto=uart src=USUS len=16 ts=435932 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:31 [SCHED    435986ms] publish[0/USUS]: 16 bytes via uart
+17:54:31 proto=uart src=USUS len=16 ts=435986 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:31 [SCHED    436040ms] publish[0/USUS]: 16 bytes via uart
+17:54:31 proto=uart src=USUS len=16 ts=436040 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:31 [SCHED    436094ms] publish[0/USUS]: 16 bytes via uart
+17:54:31 proto=uart src=USUS len=16 ts=436094 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:31 [SCHED    436148ms] publish[0/USUS]: 16 bytes via uart
+17:54:31 proto=uart src=USUS len=16 ts=436148 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:31 [SCHED    436202ms] publish[0/USUS]: 16 bytes via uart
+17:54:31 proto=uart src=USUS len=16 ts=436202 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:31 [SCHED    436256ms] publish[0/USUS]: 16 bytes via uart
+17:54:31 proto=uart src=USUS len=16 ts=436256 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:31 [SCHED    436310ms] publish[0/USUS]: 16 bytes via uart
+17:54:31 proto=uart src=USUS len=16 ts=436310 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:32 [SCHED    436364ms] publish[0/USUS]: 16 bytes via uart
+17:54:32 proto=uart src=USUS len=16 ts=436364 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:32 [SCHED    436418ms] publish[0/USUS]: 16 bytes via uart
+17:54:32 proto=uart src=USUS len=16 ts=436418 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:32 [SCHED    436469ms] run_all: running=1
+17:54:32 [SCHED    436472ms] publish[0/USUS]: 16 bytes via uart
+17:54:32 proto=uart src=USUS len=16 ts=436472 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:32 [SCHED    436526ms] publish[0/USUS]: 16 bytes via uart
+17:54:32 proto=uart src=USUS len=16 ts=436526 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:32 [SCHED    436580ms] publish[0/USUS]: 16 bytes via uart
+17:54:32 proto=uart src=USUS len=16 ts=436580 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:32 [SCHED    436634ms] publish[0/USUS]: 16 bytes via uart
+17:54:32 proto=uart src=USUS len=16 ts=436634 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:32 [SCHED    436688ms] publish[0/USUS]: 16 bytes via uart
+17:54:32 proto=uart src=USUS len=16 ts=436688 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:32 [SCHED    436742ms] publish[0/USUS]: 16 bytes via uart
+17:54:32 proto=uart src=USUS len=16 ts=436742 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:32 [SCHED    436796ms] publish[0/USUS]: 16 bytes via uart
+17:54:32 proto=uart src=USUS len=16 ts=436796 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:32 [SCHED    436850ms] publish[0/USUS]: 16 bytes via uart
+17:54:32 proto=uart src=USUS len=16 ts=436850 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:32 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:54:32 [SCHED    436904ms] publish[0/USUS]: 16 bytes via uart
+17:54:32 proto=uart src=USUS len=16 ts=436904 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:32 [SCHED    436958ms] publish[0/USUS]: 16 bytes via uart
+17:54:32 proto=uart src=USUS len=16 ts=436958 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:32 [SCHED    437012ms] publish[0/USUS]: 16 bytes via uart
+17:54:32 proto=uart src=USUS len=16 ts=437012 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:32 [SCHED    437066ms] publish[0/USUS]: 16 bytes via uart
+17:54:32 proto=uart src=USUS len=16 ts=437066 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:32 [SCHED    437120ms] publish[0/USUS]: 16 bytes via uart
+17:54:32 proto=uart src=USUS len=16 ts=437120 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:32 [SCHED    437174ms] publish[0/USUS]: 16 bytes via uart
+17:54:32 proto=uart src=USUS len=16 ts=437174 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:32 [SCHED    437228ms] publish[0/USUS]: 16 bytes via uart
+17:54:32 proto=uart src=USUS len=16 ts=437228 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:32 [SCHED    437282ms] publish[0/USUS]: 16 bytes via uart
+17:54:32 proto=uart src=USUS len=16 ts=437282 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:33 [SCHED    437336ms] publish[0/USUS]: 16 bytes via uart
+17:54:33 proto=uart src=USUS len=16 ts=437336 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:33 [SCHED    437390ms] publish[0/USUS]: 16 bytes via uart
+17:54:33 proto=uart src=USUS len=16 ts=437390 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:33 [SCHED    437444ms] publish[0/USUS]: 16 bytes via uart
+17:54:33 proto=uart src=USUS len=16 ts=437444 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:33 [SCHED    437495ms] run_all: running=1
+17:54:33 [SCHED    437498ms] publish[0/USUS]: 16 bytes via uart
+17:54:33 proto=uart src=USUS len=16 ts=437498 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:33 [SCHED    437552ms] publish[0/USUS]: 16 bytes via uart
+17:54:33 proto=uart src=USUS len=16 ts=437552 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:33 [SCHED    437606ms] publish[0/USUS]: 16 bytes via uart
+17:54:33 proto=uart src=USUS len=16 ts=437606 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:33 [SCHED    437660ms] publish[0/USUS]: 16 bytes via uart
+17:54:33 proto=uart src=USUS len=16 ts=437660 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:33 [SCHED    437714ms] publish[0/USUS]: 16 bytes via uart
+17:54:33 proto=uart src=USUS len=16 ts=437714 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:33 [SCHED    437768ms] publish[0/USUS]: 16 bytes via uart
+17:54:33 proto=uart src=USUS len=16 ts=437768 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:33 [SCHED    437822ms] publish[0/USUS]: 16 bytes via uart
+17:54:33 proto=uart src=USUS len=16 ts=437822 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:33 [SCHED    437876ms] publish[0/USUS]: 16 bytes via uart
+17:54:33 proto=uart src=USUS len=16 ts=437876 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:33 [SCHED    437930ms] publish[0/USUS]: 16 bytes via uart
+17:54:33 proto=uart src=USUS len=16 ts=437930 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:33 [SCHED    437984ms] publish[0/USUS]: 16 bytes via uart
+17:54:33 proto=uart src=USUS len=16 ts=437984 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:33 [SCHED    438038ms] publish[0/USUS]: 16 bytes via uart
+17:54:33 proto=uart src=USUS len=16 ts=438038 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:33 [SCHED    438092ms] publish[0/USUS]: 16 bytes via uart
+17:54:33 proto=uart src=USUS len=16 ts=438092 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:33 [SCHED    438146ms] publish[0/USUS]: 16 bytes via uart
+17:54:33 proto=uart src=USUS len=16 ts=438146 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:33 [SCHED    438200ms] publish[0/USUS]: 16 bytes via uart
+17:54:33 proto=uart src=USUS len=16 ts=438200 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:33 [SCHED    438254ms] publish[0/USUS]: 16 bytes via uart
+17:54:33 proto=uart src=USUS len=16 ts=438254 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:33 [SCHED    438308ms] publish[0/USUS]: 16 bytes via uart
+17:54:33 proto=uart src=USUS len=16 ts=438308 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:34 [SCHED    438362ms] publish[0/USUS]: 16 bytes via uart
+17:54:34 proto=uart src=USUS len=16 ts=438362 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:34 [SCHED    438416ms] publish[0/USUS]: 16 bytes via uart
+17:54:34 proto=uart src=USUS len=16 ts=438416 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:34 [SCHED    438470ms] publish[0/USUS]: 16 bytes via uart
+17:54:34 proto=uart src=USUS len=16 ts=438470 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:34 [SCHED    438521ms] run_all: running=1
+17:54:34 [SCHED    438524ms] publish[0/USUS]: 16 bytes via uart
+17:54:34 proto=uart src=USUS len=16 ts=438524 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:34 [SCHED    438578ms] publish[0/USUS]: 16 bytes via uart
+17:54:34 proto=uart src=USUS len=16 ts=438578 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:34 [SCHED    438632ms] publish[0/USUS]: 16 bytes via uart
+17:54:34 proto=uart src=USUS len=16 ts=438632 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:34 [SCHED    438686ms] publish[0/USUS]: 16 bytes via uart
+17:54:34 proto=uart src=USUS len=16 ts=438686 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:34 [SCHED    438740ms] publish[0/USUS]: 16 bytes via uart
+17:54:34 proto=uart src=USUS len=16 ts=438740 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:34 [SCHED    438794ms] publish[0/USUS]: 16 bytes via uart
+17:54:34 proto=uart src=USUS len=16 ts=438794 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:34 [SCHED    438848ms] publish[0/USUS]: 16 bytes via uart
+17:54:34 proto=uart src=USUS len=16 ts=438848 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:34 [SCHED    438902ms] publish[0/USUS]: 16 bytes via uart
+17:54:34 proto=uart src=USUS len=16 ts=438902 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:34 [SCHED    438956ms] publish[0/USUS]: 16 bytes via uart
+17:54:34 proto=uart src=USUS len=16 ts=438956 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:34 [SCHED    439010ms] publish[0/USUS]: 16 bytes via uart
+17:54:34 proto=uart src=USUS len=16 ts=439010 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:34 [SCHED    439064ms] publish[0/USUS]: 16 bytes via uart
+17:54:34 proto=uart src=USUS len=16 ts=439064 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:34 [SCHED    439118ms] publish[0/USUS]: 16 bytes via uart
+17:54:34 proto=uart src=USUS len=16 ts=439118 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:34 [SCHED    439172ms] publish[0/USUS]: 16 bytes via uart
+17:54:34 proto=uart src=USUS len=16 ts=439172 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:34 [SCHED    439226ms] publish[0/USUS]: 16 bytes via uart
+17:54:34 proto=uart src=USUS len=16 ts=439226 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:34 [SCHED    439280ms] publish[0/USUS]: 16 bytes via uart
+17:54:34 proto=uart src=USUS len=16 ts=439280 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:34 [SCHED    439334ms] publish[0/USUS]: 16 bytes via uart
+17:54:34 proto=uart src=USUS len=16 ts=439334 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:35 [SCHED    439388ms] publish[0/USUS]: 16 bytes via uart
+17:54:35 proto=uart src=USUS len=16 ts=439388 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:35 [SCHED    439442ms] publish[0/USUS]: 16 bytes via uart
+17:54:35 proto=uart src=USUS len=16 ts=439442 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:35 [SCHED    439496ms] publish[0/USUS]: 16 bytes via uart
+17:54:35 proto=uart src=USUS len=16 ts=439496 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:35 [SCHED    439547ms] run_all: running=1
+17:54:35 [SCHED    439550ms] publish[0/USUS]: 16 bytes via uart
+17:54:35 proto=uart src=USUS len=16 ts=439550 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:35 [SCHED    439604ms] publish[0/USUS]: 16 bytes via uart
+17:54:35 proto=uart src=USUS len=16 ts=439604 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:35 [SCHED    439658ms] publish[0/USUS]: 16 bytes via uart
+17:54:35 proto=uart src=USUS len=16 ts=439658 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:35 [SCHED    439712ms] publish[0/USUS]: 16 bytes via uart
+17:54:35 proto=uart src=USUS len=16 ts=439712 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:35 [SCHED    439766ms] publish[0/USUS]: 16 bytes via uart
+17:54:35 proto=uart src=USUS len=16 ts=439766 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:35 [SCHED    439820ms] publish[0/USUS]: 16 bytes via uart
+17:54:35 proto=uart src=USUS len=16 ts=439820 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:35 [SCHED    439874ms] publish[0/USUS]: 16 bytes via uart
+17:54:35 proto=uart src=USUS len=16 ts=439874 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:35 [SCHED    439928ms] publish[0/USUS]: 16 bytes via uart
+17:54:35 proto=uart src=USUS len=16 ts=439928 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:35 [SCHED    439982ms] publish[0/USUS]: 16 bytes via uart
+17:54:35 proto=uart src=USUS len=16 ts=439982 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:35 [SCHED    440036ms] publish[0/USUS]: 16 bytes via uart
+17:54:35 proto=uart src=USUS len=16 ts=440036 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:35 [SCHED    440090ms] publish[0/USUS]: 16 bytes via uart
+17:54:35 proto=uart src=USUS len=16 ts=440090 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:35 [SCHED    440144ms] publish[0/USUS]: 16 bytes via uart
+17:54:35 proto=uart src=USUS len=16 ts=440144 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:35 [SCHED    440198ms] publish[0/USUS]: 16 bytes via uart
+17:54:35 proto=uart src=USUS len=16 ts=440198 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:35 [SCHED    440252ms] publish[0/USUS]: 16 bytes via uart
+17:54:35 proto=uart src=USUS len=16 ts=440252 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:36 [SCHED    440306ms] publish[0/USUS]: 16 bytes via uart
+17:54:36 proto=uart src=USUS len=16 ts=440306 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:36 [SCHED    440360ms] publish[0/USUS]: 16 bytes via uart
+17:54:36 proto=uart src=USUS len=16 ts=440360 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:36 [SCHED    440414ms] publish[0/USUS]: 16 bytes via uart
+17:54:36 proto=uart src=USUS len=16 ts=440414 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:36 [SCHED    440468ms] publish[0/USUS]: 16 bytes via uart
+17:54:36 proto=uart src=USUS len=16 ts=440468 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:36 [SCHED    440522ms] publish[0/USUS]: 16 bytes via uart
+17:54:36 proto=uart src=USUS len=16 ts=440522 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:36 [SCHED    440573ms] run_all: running=1
+17:54:36 [SCHED    440576ms] publish[0/USUS]: 16 bytes via uart
+17:54:36 proto=uart src=USUS len=16 ts=440576 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:36 [SCHED    440630ms] publish[0/USUS]: 16 bytes via uart
+17:54:36 proto=uart src=USUS len=16 ts=440630 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:36 [SCHED    440684ms] publish[0/USUS]: 16 bytes via uart
+17:54:36 proto=uart src=USUS len=16 ts=440684 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:36 [SCHED    440738ms] publish[0/USUS]: 16 bytes via uart
+17:54:36 proto=uart src=USUS len=16 ts=440738 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:36 [SCHED    440792ms] publish[0/USUS]: 16 bytes via uart
+17:54:36 proto=uart src=USUS len=16 ts=440792 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:36 [SCHED    440846ms] publish[0/USUS]: 16 bytes via uart
+17:54:36 proto=uart src=USUS len=16 ts=440846 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:36 [SCHED    440900ms] publish[0/USUS]: 16 bytes via uart
+17:54:36 proto=uart src=USUS len=16 ts=440900 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:36 [SCHED    440954ms] publish[0/USUS]: 16 bytes via uart
+17:54:36 proto=uart src=USUS len=16 ts=440954 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:36 [SCHED    441008ms] publish[0/USUS]: 16 bytes via uart
+17:54:36 proto=uart src=USUS len=16 ts=441008 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:36 [SCHED    441062ms] publish[0/USUS]: 16 bytes via uart
+17:54:36 proto=uart src=USUS len=16 ts=441062 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:36 [SCHED    441116ms] publish[0/USUS]: 16 bytes via uart
+17:54:36 proto=uart src=USUS len=16 ts=441116 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:36 [SCHED    441170ms] publish[0/USUS]: 16 bytes via uart
+17:54:36 proto=uart src=USUS len=16 ts=441170 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:36 [SCHED    441224ms] publish[0/USUS]: 16 bytes via uart
+17:54:36 proto=uart src=USUS len=16 ts=441224 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:36 [SCHED    441278ms] publish[0/USUS]: 16 bytes via uart
+17:54:36 proto=uart src=USUS len=16 ts=441278 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:37 [SCHED    441332ms] publish[0/USUS]: 16 bytes via uart
+17:54:37 proto=uart src=USUS len=16 ts=441332 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:37 [SCHED    441386ms] publish[0/USUS]: 16 bytes via uart
+17:54:37 proto=uart src=USUS len=16 ts=441386 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:37 [SCHED    441440ms] publish[0/USUS]: 16 bytes via uart
+17:54:37 proto=uart src=USUS len=16 ts=441440 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:37 [SCHED    441494ms] publish[0/USUS]: 16 bytes via uart
+17:54:37 proto=uart src=USUS len=16 ts=441494 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:37 [SCHED    441548ms] publish[0/USUS]: 16 bytes via uart
+17:54:37 proto=uart src=USUS len=16 ts=441548 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:37 [SCHED    441599ms] run_all: running=1
+17:54:37 [SCHED    441602ms] publish[0/USUS]: 16 bytes via uart
+17:54:37 proto=uart src=USUS len=16 ts=441602 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:37 [SCHED    441656ms] publish[0/USUS]: 16 bytes via uart
+17:54:37 proto=uart src=USUS len=16 ts=441656 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:37 [SCHED    441710ms] publish[0/USUS]: 16 bytes via uart
+17:54:37 proto=uart src=USUS len=16 ts=441710 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:37 [SCHED    441764ms] publish[0/USUS]: 16 bytes via uart
+17:54:37 proto=uart src=USUS len=16 ts=441764 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:37 [SCHED    441818ms] publish[0/USUS]: 16 bytes via uart
+17:54:37 proto=uart src=USUS len=16 ts=441818 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:37 [SCHED    441872ms] publish[0/USUS]: 16 bytes via uart
+17:54:37 proto=uart src=USUS len=16 ts=441872 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:37 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:54:37 [SCHED    441926ms] publish[0/USUS]: 16 bytes via uart
+17:54:37 proto=uart src=USUS len=16 ts=441926 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:37 [SCHED    441980ms] publish[0/USUS]: 16 bytes via uart
+17:54:37 proto=uart src=USUS len=16 ts=441980 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:37 [SCHED    442034ms] publish[0/USUS]: 16 bytes via uart
+17:54:37 proto=uart src=USUS len=16 ts=442034 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:37 [SCHED    442088ms] publish[0/USUS]: 16 bytes via uart
+17:54:37 proto=uart src=USUS len=16 ts=442088 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:37 [SCHED    442142ms] publish[0/USUS]: 16 bytes via uart
+17:54:37 proto=uart src=USUS len=16 ts=442142 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:37 [SCHED    442196ms] publish[0/USUS]: 16 bytes via uart
+17:54:37 proto=uart src=USUS len=16 ts=442196 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:37 [SCHED    442250ms] publish[0/USUS]: 16 bytes via uart
+17:54:37 proto=uart src=USUS len=16 ts=442250 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:37 [SCHED    442304ms] publish[0/USUS]: 16 bytes via uart
+17:54:37 proto=uart src=USUS len=16 ts=442304 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:38 [SCHED    442358ms] publish[0/USUS]: 16 bytes via uart
+17:54:38 proto=uart src=USUS len=16 ts=442358 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:38 [SCHED    442412ms] publish[0/USUS]: 16 bytes via uart
+17:54:38 proto=uart src=USUS len=16 ts=442412 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:38 [SCHED    442466ms] publish[0/USUS]: 16 bytes via uart
+17:54:38 proto=uart src=USUS len=16 ts=442466 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:38 [SCHED    442520ms] publish[0/USUS]: 16 bytes via uart
+17:54:38 proto=uart src=USUS len=16 ts=442520 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:38 [SCHED    442574ms] publish[0/USUS]: 16 bytes via uart
+17:54:38 proto=uart src=USUS len=16 ts=442574 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:38 [SCHED    442625ms] run_all: running=1
+17:54:38 [SCHED    442628ms] publish[0/USUS]: 16 bytes via uart
+17:54:38 proto=uart src=USUS len=16 ts=442628 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:38 [SCHED    442682ms] publish[0/USUS]: 16 bytes via uart
+17:54:38 proto=uart src=USUS len=16 ts=442682 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:38 [SCHED    442736ms] publish[0/USUS]: 16 bytes via uart
+17:54:38 proto=uart src=USUS len=16 ts=442736 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:38 [SCHED    442790ms] publish[0/USUS]: 16 bytes via uart
+17:54:38 proto=uart src=USUS len=16 ts=442790 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:38 [SCHED    442844ms] publish[0/USUS]: 16 bytes via uart
+17:54:38 proto=uart src=USUS len=16 ts=442844 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:38 [SCHED    442898ms] publish[0/USUS]: 16 bytes via uart
+17:54:38 proto=uart src=USUS len=16 ts=442898 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:38 [SCHED    442952ms] publish[0/USUS]: 16 bytes via uart
+17:54:38 proto=uart src=USUS len=16 ts=442952 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:38 [SCHED    443006ms] publish[0/USUS]: 16 bytes via uart
+17:54:38 proto=uart src=USUS len=16 ts=443006 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:38 [SCHED    443060ms] publish[0/USUS]: 16 bytes via uart
+17:54:38 proto=uart src=USUS len=16 ts=443060 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:38 [SCHED    443114ms] publish[0/USUS]: 16 bytes via uart
+17:54:38 proto=uart src=USUS len=16 ts=443114 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:38 [SCHED    443168ms] publish[0/USUS]: 16 bytes via uart
+17:54:38 proto=uart src=USUS len=16 ts=443168 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:38 [SCHED    443222ms] publish[0/USUS]: 16 bytes via uart
+17:54:38 proto=uart src=USUS len=16 ts=443222 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:38 [SCHED    443276ms] publish[0/USUS]: 16 bytes via uart
+17:54:38 proto=uart src=USUS len=16 ts=443276 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:39 [SCHED    443330ms] publish[0/USUS]: 16 bytes via uart
+17:54:39 proto=uart src=USUS len=16 ts=443330 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:39 [SCHED    443384ms] publish[0/USUS]: 16 bytes via uart
+17:54:39 proto=uart src=USUS len=16 ts=443384 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:39 [SCHED    443438ms] publish[0/USUS]: 16 bytes via uart
+17:54:39 proto=uart src=USUS len=16 ts=443438 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:39 [SCHED    443492ms] publish[0/USUS]: 16 bytes via uart
+17:54:39 proto=uart src=USUS len=16 ts=443492 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:39 [SCHED    443546ms] publish[0/USUS]: 16 bytes via uart
+17:54:39 proto=uart src=USUS len=16 ts=443546 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:39 [SCHED    443600ms] publish[0/USUS]: 16 bytes via uart
+17:54:39 proto=uart src=USUS len=16 ts=443600 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:39 [SCHED    443651ms] run_all: running=1
+17:54:39 [SCHED    443654ms] publish[0/USUS]: 16 bytes via uart
+17:54:39 proto=uart src=USUS len=16 ts=443654 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:39 [SCHED    443708ms] publish[0/USUS]: 16 bytes via uart
+17:54:39 proto=uart src=USUS len=16 ts=443708 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:39 [SCHED    443762ms] publish[0/USUS]: 16 bytes via uart
+17:54:39 proto=uart src=USUS len=16 ts=443762 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:39 [SCHED    443816ms] publish[0/USUS]: 16 bytes via uart
+17:54:39 proto=uart src=USUS len=16 ts=443816 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:39 [SCHED    443870ms] publish[0/USUS]: 16 bytes via uart
+17:54:39 proto=uart src=USUS len=16 ts=443870 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:39 [SCHED    443924ms] publish[0/USUS]: 16 bytes via uart
+17:54:39 proto=uart src=USUS len=16 ts=443924 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:39 [SCHED    443978ms] publish[0/USUS]: 16 bytes via uart
+17:54:39 proto=uart src=USUS len=16 ts=443978 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:39 [SCHED    444032ms] publish[0/USUS]: 16 bytes via uart
+17:54:39 proto=uart src=USUS len=16 ts=444032 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:39 [SCHED    444086ms] publish[0/USUS]: 16 bytes via uart
+17:54:39 proto=uart src=USUS len=16 ts=444086 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:39 [SCHED    444140ms] publish[0/USUS]: 16 bytes via uart
+17:54:39 proto=uart src=USUS len=16 ts=444140 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:39 [SCHED    444194ms] publish[0/USUS]: 16 bytes via uart
+17:54:39 proto=uart src=USUS len=16 ts=444194 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:39 [SCHED    444248ms] publish[0/USUS]: 16 bytes via uart
+17:54:39 proto=uart src=USUS len=16 ts=444248 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:39 [SCHED    444302ms] publish[0/USUS]: 16 bytes via uart
+17:54:39 proto=uart src=USUS len=16 ts=444302 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:40 [SCHED    444356ms] publish[0/USUS]: 16 bytes via uart
+17:54:40 proto=uart src=USUS len=16 ts=444356 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:40 [SCHED    444410ms] publish[0/USUS]: 16 bytes via uart
+17:54:40 proto=uart src=USUS len=16 ts=444410 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:40 [SCHED    444464ms] publish[0/USUS]: 16 bytes via uart
+17:54:40 proto=uart src=USUS len=16 ts=444464 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:40 [SCHED    444518ms] publish[0/USUS]: 16 bytes via uart
+17:54:40 proto=uart src=USUS len=16 ts=444518 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:40 [SCHED    444572ms] publish[0/USUS]: 16 bytes via uart
+17:54:40 proto=uart src=USUS len=16 ts=444572 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:40 [SCHED    444626ms] publish[0/USUS]: 16 bytes via uart
+17:54:40 proto=uart src=USUS len=16 ts=444626 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:40 [SCHED    444677ms] run_all: running=1
+17:54:40 [SCHED    444680ms] publish[0/USUS]: 16 bytes via uart
+17:54:40 proto=uart src=USUS len=16 ts=444680 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:40 [SCHED    444734ms] publish[0/USUS]: 16 bytes via uart
+17:54:40 proto=uart src=USUS len=16 ts=444734 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:40 [SCHED    444788ms] publish[0/USUS]: 16 bytes via uart
+17:54:40 proto=uart src=USUS len=16 ts=444788 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:40 [SCHED    444842ms] publish[0/USUS]: 16 bytes via uart
+17:54:40 proto=uart src=USUS len=16 ts=444842 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:40 [SCHED    444896ms] publish[0/USUS]: 16 bytes via uart
+17:54:40 proto=uart src=USUS len=16 ts=444896 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:40 [SCHED    444950ms] publish[0/USUS]: 16 bytes via uart
+17:54:40 proto=uart src=USUS len=16 ts=444950 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:40 [SCHED    445004ms] publish[0/USUS]: 16 bytes via uart
+17:54:40 proto=uart src=USUS len=16 ts=445004 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:40 [SCHED    445058ms] publish[0/USUS]: 16 bytes via uart
+17:54:40 proto=uart src=USUS len=16 ts=445058 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:40 [SCHED    445112ms] publish[0/USUS]: 16 bytes via uart
+17:54:40 proto=uart src=USUS len=16 ts=445112 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:40 [SCHED    445166ms] publish[0/USUS]: 16 bytes via uart
+17:54:40 proto=uart src=USUS len=16 ts=445166 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:40 [SCHED    445220ms] publish[0/USUS]: 16 bytes via uart
+17:54:40 proto=uart src=USUS len=16 ts=445220 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:40 [SCHED    445274ms] publish[0/USUS]: 16 bytes via uart
+17:54:40 proto=uart src=USUS len=16 ts=445274 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:40 [SCHED    445328ms] publish[0/USUS]: 16 bytes via uart
+17:54:40 proto=uart src=USUS len=16 ts=445328 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:41 [SCHED    445382ms] publish[0/USUS]: 16 bytes via uart
+17:54:41 proto=uart src=USUS len=16 ts=445382 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:41 [SCHED    445436ms] publish[0/USUS]: 16 bytes via uart
+17:54:41 proto=uart src=USUS len=16 ts=445436 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:41 [SCHED    445490ms] publish[0/USUS]: 16 bytes via uart
+17:54:41 proto=uart src=USUS len=16 ts=445490 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:41 [SCHED    445544ms] publish[0/USUS]: 16 bytes via uart
+17:54:41 proto=uart src=USUS len=16 ts=445544 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:41 [SCHED    445598ms] publish[0/USUS]: 16 bytes via uart
+17:54:41 proto=uart src=USUS len=16 ts=445598 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:41 [SCHED    445652ms] publish[0/USUS]: 16 bytes via uart
+17:54:41 proto=uart src=USUS len=16 ts=445652 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:41 [SCHED    445703ms] run_all: running=1
+17:54:41 [SCHED    445706ms] publish[0/USUS]: 16 bytes via uart
+17:54:41 proto=uart src=USUS len=16 ts=445706 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:41 [SCHED    445760ms] publish[0/USUS]: 16 bytes via uart
+17:54:41 proto=uart src=USUS len=16 ts=445760 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:41 [SCHED    445814ms] publish[0/USUS]: 16 bytes via uart
+17:54:41 proto=uart src=USUS len=16 ts=445814 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:41 [SCHED    445868ms] publish[0/USUS]: 16 bytes via uart
+17:54:41 proto=uart src=USUS len=16 ts=445868 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:41 [SCHED    445922ms] publish[0/USUS]: 16 bytes via uart
+17:54:41 proto=uart src=USUS len=16 ts=445922 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:41 [SCHED    445976ms] publish[0/USUS]: 16 bytes via uart
+17:54:41 proto=uart src=USUS len=16 ts=445976 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:41 [SCHED    446030ms] publish[0/USUS]: 16 bytes via uart
+17:54:41 proto=uart src=USUS len=16 ts=446030 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:41 [SCHED    446084ms] publish[0/USUS]: 16 bytes via uart
+17:54:41 proto=uart src=USUS len=16 ts=446084 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:41 [SCHED    446138ms] publish[0/USUS]: 16 bytes via uart
+17:54:41 proto=uart src=USUS len=16 ts=446138 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:41 [SCHED    446192ms] publish[0/USUS]: 16 bytes via uart
+17:54:41 proto=uart src=USUS len=16 ts=446192 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:41 [SCHED    446246ms] publish[0/USUS]: 16 bytes via uart
+17:54:41 proto=uart src=USUS len=16 ts=446246 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:42 [SCHED    446300ms] publish[0/USUS]: 16 bytes via uart
+17:54:42 proto=uart src=USUS len=16 ts=446300 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:42 [SCHED    446354ms] publish[0/USUS]: 16 bytes via uart
+17:54:42 proto=uart src=USUS len=16 ts=446354 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:42 [SCHED    446408ms] publish[0/USUS]: 16 bytes via uart
+17:54:42 proto=uart src=USUS len=16 ts=446408 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:42 [SCHED    446462ms] publish[0/USUS]: 16 bytes via uart
+17:54:42 proto=uart src=USUS len=16 ts=446462 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:42 [SCHED    446516ms] publish[0/USUS]: 16 bytes via uart
+17:54:42 proto=uart src=USUS len=16 ts=446516 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:42 [SCHED    446570ms] publish[0/USUS]: 16 bytes via uart
+17:54:42 proto=uart src=USUS len=16 ts=446570 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:42 [SCHED    446624ms] publish[0/USUS]: 16 bytes via uart
+17:54:42 proto=uart src=USUS len=16 ts=446624 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:42 [SCHED    446678ms] publish[0/USUS]: 16 bytes via uart
+17:54:42 proto=uart src=USUS len=16 ts=446678 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:42 [SCHED    446729ms] run_all: running=1
+17:54:42 [SCHED    446732ms] publish[0/USUS]: 16 bytes via uart
+17:54:42 proto=uart src=USUS len=16 ts=446732 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:42 [SCHED    446786ms] publish[0/USUS]: 16 bytes via uart
+17:54:42 proto=uart src=USUS len=16 ts=446786 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:42 [SCHED    446840ms] publish[0/USUS]: 16 bytes via uart
+17:54:42 proto=uart src=USUS len=16 ts=446840 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:42 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:54:42 [SCHED    446894ms] publish[0/USUS]: 16 bytes via uart
+17:54:42 proto=uart src=USUS len=16 ts=446894 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:42 [SCHED    446948ms] publish[0/USUS]: 16 bytes via uart
+17:54:42 proto=uart src=USUS len=16 ts=446948 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:42 [SCHED    447002ms] publish[0/USUS]: 16 bytes via uart
+17:54:42 proto=uart src=USUS len=16 ts=447002 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:42 [SCHED    447056ms] publish[0/USUS]: 16 bytes via uart
+17:54:42 proto=uart src=USUS len=16 ts=447056 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:42 [SCHED    447110ms] publish[0/USUS]: 16 bytes via uart
+17:54:42 proto=uart src=USUS len=16 ts=447110 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:42 [SCHED    447164ms] publish[0/USUS]: 16 bytes via uart
+17:54:42 proto=uart src=USUS len=16 ts=447164 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:42 [SCHED    447218ms] publish[0/USUS]: 16 bytes via uart
+17:54:42 proto=uart src=USUS len=16 ts=447218 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:42 [SCHED    447272ms] publish[0/USUS]: 16 bytes via uart
+17:54:42 proto=uart src=USUS len=16 ts=447272 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:43 [SCHED    447326ms] publish[0/USUS]: 16 bytes via uart
+17:54:43 proto=uart src=USUS len=16 ts=447326 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:43 [SCHED    447380ms] publish[0/USUS]: 16 bytes via uart
+17:54:43 proto=uart src=USUS len=16 ts=447380 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:43 [SCHED    447434ms] publish[0/USUS]: 16 bytes via uart
+17:54:43 proto=uart src=USUS len=16 ts=447434 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:43 [SCHED    447488ms] publish[0/USUS]: 16 bytes via uart
+17:54:43 proto=uart src=USUS len=16 ts=447488 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:43 [SCHED    447542ms] publish[0/USUS]: 16 bytes via uart
+17:54:43 proto=uart src=USUS len=16 ts=447542 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:43 [SCHED    447596ms] publish[0/USUS]: 16 bytes via uart
+17:54:43 proto=uart src=USUS len=16 ts=447596 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:43 [SCHED    447650ms] publish[0/USUS]: 16 bytes via uart
+17:54:43 proto=uart src=USUS len=16 ts=447650 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:43 [SCHED    447704ms] publish[0/USUS]: 16 bytes via uart
+17:54:43 proto=uart src=USUS len=16 ts=447704 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:43 [SCHED    447755ms] run_all: running=1
+17:54:43 [SCHED    447758ms] publish[0/USUS]: 16 bytes via uart
+17:54:43 proto=uart src=USUS len=16 ts=447758 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:43 [SCHED    447812ms] publish[0/USUS]: 16 bytes via uart
+17:54:43 proto=uart src=USUS len=16 ts=447812 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:43 [SCHED    447866ms] publish[0/USUS]: 16 bytes via uart
+17:54:43 proto=uart src=USUS len=16 ts=447866 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:43 [SCHED    447920ms] publish[0/USUS]: 16 bytes via uart
+17:54:43 proto=uart src=USUS len=16 ts=447920 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:43 [SCHED    447974ms] publish[0/USUS]: 16 bytes via uart
+17:54:43 proto=uart src=USUS len=16 ts=447974 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:43 [SCHED    448028ms] publish[0/USUS]: 16 bytes via uart
+17:54:43 proto=uart src=USUS len=16 ts=448028 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:43 [SCHED    448082ms] publish[0/USUS]: 16 bytes via uart
+17:54:43 proto=uart src=USUS len=16 ts=448082 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:43 [SCHED    448136ms] publish[0/USUS]: 16 bytes via uart
+17:54:43 proto=uart src=USUS len=16 ts=448136 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:43 [SCHED    448190ms] publish[0/USUS]: 16 bytes via uart
+17:54:43 proto=uart src=USUS len=16 ts=448190 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:43 [SCHED    448244ms] publish[0/USUS]: 16 bytes via uart
+17:54:43 proto=uart src=USUS len=16 ts=448244 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:43 [SCHED    448298ms] publish[0/USUS]: 16 bytes via uart
+17:54:43 proto=uart src=USUS len=16 ts=448298 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:44 [SCHED    448352ms] publish[0/USUS]: 16 bytes via uart
+17:54:44 proto=uart src=USUS len=16 ts=448352 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:44 [SCHED    448406ms] publish[0/USUS]: 16 bytes via uart
+17:54:44 proto=uart src=USUS len=16 ts=448406 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:44 [SCHED    448460ms] publish[0/USUS]: 16 bytes via uart
+17:54:44 proto=uart src=USUS len=16 ts=448460 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:44 [SCHED    448514ms] publish[0/USUS]: 16 bytes via uart
+17:54:44 proto=uart src=USUS len=16 ts=448514 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:44 [SCHED    448568ms] publish[0/USUS]: 16 bytes via uart
+17:54:44 proto=uart src=USUS len=16 ts=448568 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:44 [SCHED    448622ms] publish[0/USUS]: 16 bytes via uart
+17:54:44 proto=uart src=USUS len=16 ts=448622 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:44 [SCHED    448676ms] publish[0/USUS]: 16 bytes via uart
+17:54:44 proto=uart src=USUS len=16 ts=448676 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:44 [SCHED    448730ms] publish[0/USUS]: 16 bytes via uart
+17:54:44 proto=uart src=USUS len=16 ts=448730 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:44 [SCHED    448781ms] run_all: running=1
+17:54:44 [SCHED    448784ms] publish[0/USUS]: 16 bytes via uart
+17:54:44 proto=uart src=USUS len=16 ts=448784 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:44 [SCHED    448838ms] publish[0/USUS]: 16 bytes via uart
+17:54:44 proto=uart src=USUS len=16 ts=448838 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:44 [SCHED    448892ms] publish[0/USUS]: 16 bytes via uart
+17:54:44 proto=uart src=USUS len=16 ts=448892 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:44 [SCHED    448946ms] publish[0/USUS]: 16 bytes via uart
+17:54:44 proto=uart src=USUS len=16 ts=448946 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:44 [SCHED    449000ms] publish[0/USUS]: 16 bytes via uart
+17:54:44 proto=uart src=USUS len=16 ts=449000 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:44 [SCHED    449054ms] publish[0/USUS]: 16 bytes via uart
+17:54:44 proto=uart src=USUS len=16 ts=449054 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:44 [SCHED    449108ms] publish[0/USUS]: 16 bytes via uart
+17:54:44 proto=uart src=USUS len=16 ts=449108 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:44 [SCHED    449162ms] publish[0/USUS]: 16 bytes via uart
+17:54:44 proto=uart src=USUS len=16 ts=449162 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:44 [SCHED    449216ms] publish[0/USUS]: 16 bytes via uart
+17:54:44 proto=uart src=USUS len=16 ts=449216 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:45 [SCHED    449270ms] publish[0/USUS]: 16 bytes via uart
+17:54:45 proto=uart src=USUS len=16 ts=449270 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:45 [SCHED    449324ms] publish[0/USUS]: 16 bytes via uart
+17:54:45 proto=uart src=USUS len=16 ts=449324 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:45 [SCHED    449378ms] publish[0/USUS]: 16 bytes via uart
+17:54:45 proto=uart src=USUS len=16 ts=449378 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:45 [SCHED    449432ms] publish[0/USUS]: 16 bytes via uart
+17:54:45 proto=uart src=USUS len=16 ts=449432 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:45 [SCHED    449486ms] publish[0/USUS]: 16 bytes via uart
+17:54:45 proto=uart src=USUS len=16 ts=449486 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:45 [SCHED    449540ms] publish[0/USUS]: 16 bytes via uart
+17:54:45 proto=uart src=USUS len=16 ts=449540 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:45 [SCHED    449594ms] publish[0/USUS]: 16 bytes via uart
+17:54:45 proto=uart src=USUS len=16 ts=449594 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:45 [SCHED    449648ms] publish[0/USUS]: 16 bytes via uart
+17:54:45 proto=uart src=USUS len=16 ts=449648 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:45 [SCHED    449702ms] publish[0/USUS]: 16 bytes via uart
+17:54:45 proto=uart src=USUS len=16 ts=449702 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:45 [SCHED    449756ms] publish[0/USUS]: 16 bytes via uart
+17:54:45 proto=uart src=USUS len=16 ts=449756 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:45 [SCHED    449807ms] run_all: running=1
+17:54:45 [SCHED    449810ms] publish[0/USUS]: 16 bytes via uart
+17:54:45 proto=uart src=USUS len=16 ts=449810 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:45 [SCHED    449864ms] publish[0/USUS]: 16 bytes via uart
+17:54:45 proto=uart src=USUS len=16 ts=449864 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:45 [SCHED    449918ms] publish[0/USUS]: 16 bytes via uart
+17:54:45 proto=uart src=USUS len=16 ts=449918 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:45 [SCHED    449972ms] publish[0/USUS]: 16 bytes via uart
+17:54:45 proto=uart src=USUS len=16 ts=449972 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:45 [SCHED    450026ms] publish[0/USUS]: 16 bytes via uart
+17:54:45 proto=uart src=USUS len=16 ts=450026 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:45 [SCHED    450080ms] publish[0/USUS]: 16 bytes via uart
+17:54:45 proto=uart src=USUS len=16 ts=450080 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:45 [SCHED    450134ms] publish[0/USUS]: 16 bytes via uart
+17:54:45 proto=uart src=USUS len=16 ts=450134 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:45 [SCHED    450188ms] publish[0/USUS]: 16 bytes via uart
+17:54:45 proto=uart src=USUS len=16 ts=450188 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:45 [SCHED    450242ms] publish[0/USUS]: 16 bytes via uart
+17:54:45 proto=uart src=USUS len=16 ts=450242 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:46 [SCHED    450296ms] publish[0/USUS]: 16 bytes via uart
+17:54:46 proto=uart src=USUS len=16 ts=450296 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:46 [SCHED    450350ms] publish[0/USUS]: 16 bytes via uart
+17:54:46 proto=uart src=USUS len=16 ts=450350 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:46 [SCHED    450404ms] publish[0/USUS]: 16 bytes via uart
+17:54:46 proto=uart src=USUS len=16 ts=450404 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:46 [SCHED    450458ms] publish[0/USUS]: 16 bytes via uart
+17:54:46 proto=uart src=USUS len=16 ts=450458 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:46 [SCHED    450512ms] publish[0/USUS]: 16 bytes via uart
+17:54:46 proto=uart src=USUS len=16 ts=450512 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:46 [SCHED    450566ms] publish[0/USUS]: 16 bytes via uart
+17:54:46 proto=uart src=USUS len=16 ts=450566 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:46 [SCHED    450620ms] publish[0/USUS]: 16 bytes via uart
+17:54:46 proto=uart src=USUS len=16 ts=450620 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:46 [SCHED    450674ms] publish[0/USUS]: 16 bytes via uart
+17:54:46 proto=uart src=USUS len=16 ts=450674 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:46 [SCHED    450728ms] publish[0/USUS]: 16 bytes via uart
+17:54:46 proto=uart src=USUS len=16 ts=450728 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:46 [SCHED    450782ms] publish[0/USUS]: 16 bytes via uart
+17:54:46 proto=uart src=USUS len=16 ts=450782 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:46 [SCHED    450833ms] run_all: running=1
+17:54:46 [SCHED    450836ms] publish[0/USUS]: 16 bytes via uart
+17:54:46 proto=uart src=USUS len=16 ts=450836 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:46 [SCHED    450890ms] publish[0/USUS]: 16 bytes via uart
+17:54:46 proto=uart src=USUS len=16 ts=450890 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:46 [SCHED    450944ms] publish[0/USUS]: 16 bytes via uart
+17:54:46 proto=uart src=USUS len=16 ts=450944 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:46 [SCHED    450998ms] publish[0/USUS]: 16 bytes via uart
+17:54:46 proto=uart src=USUS len=16 ts=450998 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:46 [SCHED    451052ms] publish[0/USUS]: 16 bytes via uart
+17:54:46 proto=uart src=USUS len=16 ts=451052 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:46 [SCHED    451106ms] publish[0/USUS]: 16 bytes via uart
+17:54:46 proto=uart src=USUS len=16 ts=451106 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:46 [SCHED    451160ms] publish[0/USUS]: 16 bytes via uart
+17:54:46 proto=uart src=USUS len=16 ts=451160 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:46 [SCHED    451214ms] publish[0/USUS]: 16 bytes via uart
+17:54:46 proto=uart src=USUS len=16 ts=451214 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:46 [SCHED    451268ms] publish[0/USUS]: 16 bytes via uart
+17:54:46 proto=uart src=USUS len=16 ts=451268 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:46 [SCHED    451322ms] publish[0/USUS]: 16 bytes via uart
+17:54:47 proto=uart src=USUS len=16 ts=451322 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:47 [SCHED    451376ms] publish[0/USUS]: 16 bytes via uart
+17:54:47 proto=uart src=USUS len=16 ts=451376 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:47 [SCHED    451430ms] publish[0/USUS]: 16 bytes via uart
+17:54:47 proto=uart src=USUS len=16 ts=451430 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:47 [SCHED    451484ms] publish[0/USUS]: 16 bytes via uart
+17:54:47 proto=uart src=USUS len=16 ts=451484 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:47 [SCHED    451538ms] publish[0/USUS]: 16 bytes via uart
+17:54:47 proto=uart src=USUS len=16 ts=451538 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:47 [SCHED    451592ms] publish[0/USUS]: 16 bytes via uart
+17:54:47 proto=uart src=USUS len=16 ts=451592 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:47 [SCHED    451646ms] publish[0/USUS]: 16 bytes via uart
+17:54:47 proto=uart src=USUS len=16 ts=451646 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:47 [SCHED    451700ms] publish[0/USUS]: 16 bytes via uart
+17:54:47 proto=uart src=USUS len=16 ts=451700 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:47 [SCHED    451754ms] publish[0/USUS]: 16 bytes via uart
+17:54:47 proto=uart src=USUS len=16 ts=451754 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:47 [SCHED    451808ms] publish[0/USUS]: 16 bytes via uart
+17:54:47 proto=uart src=USUS len=16 ts=451808 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:47 [SCHED    451859ms] run_all: running=1
+17:54:47 [SCHED    451862ms] publish[0/USUS]: 16 bytes via uart
+17:54:47 proto=uart src=USUS len=16 ts=451862 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:47 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:54:47 [SCHED    451916ms] publish[0/USUS]: 16 bytes via uart
+17:54:47 proto=uart src=USUS len=16 ts=451916 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:47 [SCHED    451970ms] publish[0/USUS]: 16 bytes via uart
+17:54:47 proto=uart src=USUS len=16 ts=451970 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:47 [SCHED    452024ms] publish[0/USUS]: 16 bytes via uart
+17:54:47 proto=uart src=USUS len=16 ts=452024 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:47 [SCHED    452078ms] publish[0/USUS]: 16 bytes via uart
+17:54:47 proto=uart src=USUS len=16 ts=452078 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:47 [SCHED    452132ms] publish[0/USUS]: 16 bytes via uart
+17:54:47 proto=uart src=USUS len=16 ts=452132 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:47 [SCHED    452186ms] publish[0/USUS]: 16 bytes via uart
+17:54:47 proto=uart src=USUS len=16 ts=452186 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:47 [SCHED    452240ms] publish[0/USUS]: 16 bytes via uart
+17:54:47 proto=uart src=USUS len=16 ts=452240 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:47 [SCHED    452294ms] publish[0/USUS]: 16 bytes via uart
+17:54:47 proto=uart src=USUS len=16 ts=452294 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:47 [SCHED    452348ms] publish[0/USUS]: 16 bytes via uart
+17:54:47 proto=uart src=USUS len=16 ts=452348 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:48 [SCHED    452402ms] publish[0/USUS]: 16 bytes via uart
+17:54:48 proto=uart src=USUS len=16 ts=452402 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:48 [SCHED    452456ms] publish[0/USUS]: 16 bytes via uart
+17:54:48 proto=uart src=USUS len=16 ts=452456 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:48 [SCHED    452510ms] publish[0/USUS]: 16 bytes via uart
+17:54:48 proto=uart src=USUS len=16 ts=452510 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:48 [SCHED    452564ms] publish[0/USUS]: 16 bytes via uart
+17:54:48 proto=uart src=USUS len=16 ts=452564 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:48 [SCHED    452618ms] publish[0/USUS]: 16 bytes via uart
+17:54:48 proto=uart src=USUS len=16 ts=452618 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:48 [SCHED    452672ms] publish[0/USUS]: 16 bytes via uart
+17:54:48 proto=uart src=USUS len=16 ts=452672 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:48 [SCHED    452726ms] publish[0/USUS]: 16 bytes via uart
+17:54:48 proto=uart src=USUS len=16 ts=452726 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:48 [SCHED    452780ms] publish[0/USUS]: 16 bytes via uart
+17:54:48 proto=uart src=USUS len=16 ts=452780 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:48 [SCHED    452834ms] publish[0/USUS]: 16 bytes via uart
+17:54:48 proto=uart src=USUS len=16 ts=452834 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:48 [SCHED    452885ms] run_all: running=1
+17:54:48 [SCHED    452888ms] publish[0/USUS]: 16 bytes via uart
+17:54:48 proto=uart src=USUS len=16 ts=452888 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:48 [SCHED    452942ms] publish[0/USUS]: 16 bytes via uart
+17:54:48 proto=uart src=USUS len=16 ts=452942 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:48 [SCHED    452996ms] publish[0/USUS]: 16 bytes via uart
+17:54:48 proto=uart src=USUS len=16 ts=452996 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:48 [SCHED    453050ms] publish[0/USUS]: 16 bytes via uart
+17:54:48 proto=uart src=USUS len=16 ts=453050 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:48 [SCHED    453104ms] publish[0/USUS]: 16 bytes via uart
+17:54:48 proto=uart src=USUS len=16 ts=453104 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:48 [SCHED    453158ms] publish[0/USUS]: 16 bytes via uart
+17:54:48 proto=uart src=USUS len=16 ts=453158 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:48 [SCHED    453212ms] publish[0/USUS]: 16 bytes via uart
+17:54:48 proto=uart src=USUS len=16 ts=453212 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:48 [SCHED    453266ms] publish[0/USUS]: 16 bytes via uart
+17:54:48 proto=uart src=USUS len=16 ts=453266 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:49 [SCHED    453320ms] publish[0/USUS]: 16 bytes via uart
+17:54:49 proto=uart src=USUS len=16 ts=453320 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:49 [SCHED    453374ms] publish[0/USUS]: 16 bytes via uart
+17:54:49 proto=uart src=USUS len=16 ts=453374 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:49 [SCHED    453428ms] publish[0/USUS]: 16 bytes via uart
+17:54:49 proto=uart src=USUS len=16 ts=453428 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:49 [SCHED    453482ms] publish[0/USUS]: 16 bytes via uart
+17:54:49 proto=uart src=USUS len=16 ts=453482 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:49 [SCHED    453536ms] publish[0/USUS]: 16 bytes via uart
+17:54:49 proto=uart src=USUS len=16 ts=453536 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:49 [SCHED    453590ms] publish[0/USUS]: 16 bytes via uart
+17:54:49 proto=uart src=USUS len=16 ts=453590 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:49 [SCHED    453644ms] publish[0/USUS]: 16 bytes via uart
+17:54:49 proto=uart src=USUS len=16 ts=453644 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:49 [SCHED    453698ms] publish[0/USUS]: 16 bytes via uart
+17:54:49 proto=uart src=USUS len=16 ts=453698 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:49 [SCHED    453752ms] publish[0/USUS]: 16 bytes via uart
+17:54:49 proto=uart src=USUS len=16 ts=453752 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:49 [SCHED    453806ms] publish[0/USUS]: 16 bytes via uart
+17:54:49 proto=uart src=USUS len=16 ts=453806 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:49 [SCHED    453860ms] publish[0/USUS]: 16 bytes via uart
+17:54:49 proto=uart src=USUS len=16 ts=453860 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:49 [SCHED    453911ms] run_all: running=1
+17:54:49 [SCHED    453914ms] publish[0/USUS]: 16 bytes via uart
+17:54:49 proto=uart src=USUS len=16 ts=453914 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:49 [SCHED    453968ms] publish[0/USUS]: 16 bytes via uart
+17:54:49 proto=uart src=USUS len=16 ts=453968 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:49 [SCHED    454022ms] publish[0/USUS]: 16 bytes via uart
+17:54:49 proto=uart src=USUS len=16 ts=454022 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:49 [SCHED    454076ms] publish[0/USUS]: 16 bytes via uart
+17:54:49 proto=uart src=USUS len=16 ts=454076 : 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10
+17:54:49 --- stop-sus: STOP
+17:54:49 STOP
+17:54:50 [SCHED    455106ms] run_all: running=0
+17:54:51 [SCHED    456106ms] run_all: running=0
+17:54:52 --- clear-t09-end: CLEAR
+17:54:52 [SCHED    456701ms] reset: cleared 8 slots
+17:54:52 [RULE] reset
+17:54:52 CLEARED
+17:54:52 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:54:53 [SCHED    457701ms] run_all: running=0
+17:54:54 [SCHED    458701ms] run_all: running=0

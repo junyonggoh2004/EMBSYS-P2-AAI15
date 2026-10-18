@@ -1,0 +1,91 @@
+17:49:28 [SCHED    132619ms] run_all: running=0
+17:49:29 [SCHED    134331ms] run_all: running=0
+17:49:30 --- cfg-uart-a: BEGINCFG|name=ULOOP|proto=uart|uart.tx=1|uart.rx=2|uart.baud=115200|uart.pre=0xA5 0x5A|uart.post_delay_ms=5|uart.read_len=2|mode=poll|freq_hz=2|ENDCFG
+17:49:30 OK: Config applied (inline, delim='|')
+17:49:30 [SCHED    134884ms] add[0]: ULOOP on uart freq=2.000Hz mode=poll UART(tx=1,rx=2,baud=115200)
+17:49:30 [SCHED] added: ULOOP on uart
+17:49:30 CFG: ok (added #0: ULOOP)
+17:49:31 [SCHED    135885ms] run_all: running=0
+17:49:32 [SCHED    136885ms] run_all: running=0
+17:49:32 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:49:33 --- uart-echo-a: RUN
+17:49:33 RUN
+17:49:33 [SCHED    137462ms] arm[0/ULOOP]: next_run reset to NOW
+17:49:33 [SCHED    137468ms] publish[0/ULOOP]: 2 bytes via uart
+17:49:33 proto=uart src=ULOOP len=2 ts=137468 : A5 5A
+17:49:33 [SCHED    137969ms] run_all: running=1
+17:49:33 [SCHED    137975ms] publish[0/ULOOP]: 2 bytes via uart
+17:49:33 proto=uart src=ULOOP len=2 ts=137975 : A5 5A
+17:49:34 [SCHED    138482ms] publish[0/ULOOP]: 2 bytes via uart
+17:49:34 proto=uart src=ULOOP len=2 ts=138482 : A5 5A
+17:49:34 [SCHED    138983ms] run_all: running=1
+17:49:34 [SCHED    138989ms] publish[0/ULOOP]: 2 bytes via uart
+17:49:34 proto=uart src=ULOOP len=2 ts=138989 : A5 5A
+17:49:35 [SCHED    139496ms] publish[0/ULOOP]: 2 bytes via uart
+17:49:35 proto=uart src=ULOOP len=2 ts=139496 : A5 5A
+17:49:35 [SCHED    139997ms] run_all: running=1
+17:49:35 [SCHED    140003ms] publish[0/ULOOP]: 2 bytes via uart
+17:49:35 proto=uart src=ULOOP len=2 ts=140003 : A5 5A
+17:49:36 [SCHED    140510ms] publish[0/ULOOP]: 2 bytes via uart
+17:49:36 proto=uart src=ULOOP len=2 ts=140510 : A5 5A
+17:49:36 [SCHED    141011ms] run_all: running=1
+17:49:36 [SCHED    141017ms] publish[0/ULOOP]: 2 bytes via uart
+17:49:36 proto=uart src=ULOOP len=2 ts=141017 : A5 5A
+17:49:37 [SCHED    141524ms] publish[0/ULOOP]: 2 bytes via uart
+17:49:37 proto=uart src=ULOOP len=2 ts=141524 : A5 5A
+17:49:37 --- stop-a: STOP
+17:49:37 STOP
+17:49:37 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:49:38 [SCHED    142601ms] run_all: running=0
+17:49:39 [SCHED    143601ms] run_all: running=0
+17:49:39 --- clear-a: CLEAR
+17:49:39 [SCHED    144225ms] reset: cleared 8 slots
+17:49:39 [RULE] reset
+17:49:39 CLEARED
+17:49:40 [SCHED    145225ms] run_all: running=0
+17:49:41 [SCHED    146225ms] run_all: running=0
+17:49:42 --- cfg-uart-b: BEGINCFG|name=ULOOP2|proto=uart|uart.tx=1|uart.rx=2|uart.baud=115200|uart.pre=0x12 0x34 0x56|uart.post_delay_ms=5|uart.read_len=3|mode=poll|freq_hz=2|ENDCFG
+17:49:42 OK: Config applied (inline, delim='|')
+17:49:42 [SCHED    146818ms] add[0]: ULOOP2 on uart freq=2.000Hz mode=poll UART(tx=1,rx=2,baud=115200)
+17:49:42 [SCHED] added: ULOOP2 on uart
+17:49:42 CFG: ok (added #0: ULOOP2)
+17:49:42 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:49:43 [SCHED    147819ms] run_all: running=0
+17:49:44 [SCHED    148819ms] run_all: running=0
+17:49:45 --- uart-echo-b: RUN
+17:49:45 RUN
+17:49:45 [SCHED    149396ms] arm[0/ULOOP2]: next_run reset to NOW
+17:49:45 [SCHED    149402ms] publish[0/ULOOP2]: 3 bytes via uart
+17:49:45 proto=uart src=ULOOP2 len=3 ts=149402 : 12 34 56
+17:49:45 [SCHED    149903ms] run_all: running=1
+17:49:45 [SCHED    149909ms] publish[0/ULOOP2]: 3 bytes via uart
+17:49:45 proto=uart src=ULOOP2 len=3 ts=149909 : 12 34 56
+17:49:46 [SCHED    150416ms] publish[0/ULOOP2]: 3 bytes via uart
+17:49:46 proto=uart src=ULOOP2 len=3 ts=150416 : 12 34 56
+17:49:46 [SCHED    150917ms] run_all: running=1
+17:49:46 [SCHED    150923ms] publish[0/ULOOP2]: 3 bytes via uart
+17:49:46 proto=uart src=ULOOP2 len=3 ts=150923 : 12 34 56
+17:49:47 [SCHED    151430ms] publish[0/ULOOP2]: 3 bytes via uart
+17:49:47 proto=uart src=ULOOP2 len=3 ts=151430 : 12 34 56
+17:49:47 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:49:47 [SCHED    151931ms] run_all: running=1
+17:49:47 [SCHED    151937ms] publish[0/ULOOP2]: 3 bytes via uart
+17:49:47 proto=uart src=ULOOP2 len=3 ts=151937 : 12 34 56
+17:49:48 [SCHED    152444ms] publish[0/ULOOP2]: 3 bytes via uart
+17:49:48 proto=uart src=ULOOP2 len=3 ts=152444 : 12 34 56
+17:49:48 [SCHED    152945ms] run_all: running=1
+17:49:48 [SCHED    152951ms] publish[0/ULOOP2]: 3 bytes via uart
+17:49:48 proto=uart src=ULOOP2 len=3 ts=152951 : 12 34 56
+17:49:49 [SCHED    153458ms] publish[0/ULOOP2]: 3 bytes via uart
+17:49:49 proto=uart src=ULOOP2 len=3 ts=153458 : 12 34 56
+17:49:49 --- stop-b: STOP
+17:49:49 STOP
+17:49:50 [SCHED    154527ms] run_all: running=0
+17:49:51 [SCHED    155527ms] run_all: running=0
+17:49:51 --- clear-b: CLEAR
+17:49:51 [SCHED    156116ms] reset: cleared 8 slots
+17:49:51 [RULE] reset
+17:49:51 CLEARED
+17:49:52 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:49:52 [SCHED    157116ms] run_all: running=0
+17:49:53 [SCHED    158116ms] run_all: running=0

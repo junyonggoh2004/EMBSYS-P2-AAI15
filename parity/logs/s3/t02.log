@@ -1,0 +1,103 @@
+17:51:09 [SCHED    233588ms] run_all: running=0
+17:51:10 [SCHED    235329ms] run_all: running=0
+17:51:11 --- clear-t02: CLEAR
+17:51:11 [SCHED    235886ms] reset: cleared 8 slots
+17:51:11 [RULE] reset
+17:51:11 CLEARED
+17:51:12 [SCHED    236886ms] run_all: running=0
+17:51:12 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:51:13 [SCHED    237886ms] run_all: running=0
+17:51:14 --- cfg-plain: BEGINCFG|name=PLAIN|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+17:51:14 OK: Config applied (inline, delim='|')
+17:51:14 [SCHED    238471ms] add[0]: PLAIN on gpio freq=2.000Hz mode=poll method=digital GPIO(pin=6)
+17:51:14 [SCHED] added: PLAIN on gpio
+17:51:14 CFG: ok (added #0: PLAIN)
+17:51:15 [SCHED    239472ms] run_all: running=0
+17:51:16 [SCHED    240472ms] run_all: running=0
+17:51:16 --- cfg-inv: BEGINCFG|name=INV|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|gpio.invert=1|mode=poll|freq_hz=2|ENDCFG
+17:51:16 OK: Config applied (inline, delim='|')
+17:51:16 [SCHED    241072ms] add[1]: INV on gpio freq=2.000Hz mode=poll method=digital GPIO(pin=6)
+17:51:16 [SCHED] added: INV on gpio
+17:51:16 CFG: ok (added #1: INV)
+17:51:17 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:51:17 [SCHED    242073ms] run_all: running=0
+17:51:18 [SCHED    243073ms] run_all: running=0
+17:51:19 --- rule-drive: BEGINRULE|name=RH|source=PLAIN|calc=s=u8(0)|when=1|action=gpio:5=HIGH|ENDRULE
+17:51:19 [RULE] added name=RH src=PLAIN vars=1 action=gpio:5=HIGH
+17:51:19 RULE: ok
+17:51:20 [SCHED    244650ms] run_all: running=0
+17:51:21 [SCHED    245650ms] run_all: running=0
+17:51:21 --- run-t02: RUN
+17:51:21 RUN
+17:51:21 [SCHED    246235ms] arm[0/PLAIN]: next_run reset to NOW
+17:51:21 [SCHED    246235ms] arm[1/INV]: next_run reset to NOW
+17:51:21 [SCHED    246235ms] publish[0/PLAIN]: 3 bytes via gpio
+17:51:21 proto=gpio src=PLAIN len=3 ts=246235 : 01 54 1E
+17:51:21 [RULE] RH: gpio 5=HIGH
+17:51:21 [TRACE] Total Rule Eval (PLAIN): 828us
+17:51:21 [SCHED    246237ms] publish[1/INV]: 3 bytes via gpio
+17:51:21 proto=gpio src=INV len=3 ts=246237 : 00 00 00
+17:51:22 [SCHED    246736ms] run_all: running=1
+17:51:22 [SCHED    246736ms] publish[0/PLAIN]: 3 bytes via gpio
+17:51:22 proto=gpio src=PLAIN len=3 ts=246736 : 01 49 20
+17:51:22 [RULE] RH: gpio 5=HIGH
+17:51:22 [TRACE] Total Rule Eval (PLAIN): 645us
+17:51:22 [SCHED    246737ms] publish[1/INV]: 3 bytes via gpio
+17:51:22 proto=gpio src=INV len=3 ts=246737 : 00 F4 01
+17:51:22 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:51:22 [SCHED    247237ms] publish[0/PLAIN]: 3 bytes via gpio
+17:51:22 proto=gpio src=PLAIN len=3 ts=247237 : 01 3E 22
+17:51:22 [RULE] RH: gpio 5=HIGH
+17:51:22 [TRACE] Total Rule Eval (PLAIN): 663us
+17:51:22 [SCHED    247238ms] publish[1/INV]: 3 bytes via gpio
+17:51:22 proto=gpio src=INV len=3 ts=247238 : 00 E9 03
+17:51:23 [SCHED    247738ms] run_all: running=1
+17:51:23 [SCHED    247738ms] publish[0/PLAIN]: 3 bytes via gpio
+17:51:23 proto=gpio src=PLAIN len=3 ts=247738 : 01 33 24
+17:51:23 [RULE] RH: gpio 5=HIGH
+17:51:23 [TRACE] Total Rule Eval (PLAIN): 640us
+17:51:23 [SCHED    247739ms] publish[1/INV]: 3 bytes via gpio
+17:51:23 proto=gpio src=INV len=3 ts=247739 : 00 DE 05
+17:51:23 [SCHED    248239ms] publish[0/PLAIN]: 3 bytes via gpio
+17:51:23 proto=gpio src=PLAIN len=3 ts=248239 : 01 28 26
+17:51:23 [RULE] RH: gpio 5=HIGH
+17:51:23 [TRACE] Total Rule Eval (PLAIN): 646us
+17:51:23 [SCHED    248240ms] publish[1/INV]: 3 bytes via gpio
+17:51:23 proto=gpio src=INV len=3 ts=248240 : 00 D3 07
+17:51:24 [SCHED    248740ms] run_all: running=1
+17:51:24 [SCHED    248740ms] publish[0/PLAIN]: 3 bytes via gpio
+17:51:24 proto=gpio src=PLAIN len=3 ts=248740 : 01 1D 28
+17:51:24 [RULE] RH: gpio 5=HIGH
+17:51:24 [TRACE] Total Rule Eval (PLAIN): 646us
+17:51:24 [SCHED    248741ms] publish[1/INV]: 3 bytes via gpio
+17:51:24 proto=gpio src=INV len=3 ts=248741 : 00 C8 09
+17:51:24 [SCHED    249241ms] publish[0/PLAIN]: 3 bytes via gpio
+17:51:24 proto=gpio src=PLAIN len=3 ts=249241 : 01 12 2A
+17:51:24 [RULE] RH: gpio 5=HIGH
+17:51:24 [TRACE] Total Rule Eval (PLAIN): 689us
+17:51:24 [SCHED    249242ms] publish[1/INV]: 3 bytes via gpio
+17:51:24 proto=gpio src=INV len=3 ts=249242 : 00 BD 0B
+17:51:25 [SCHED    249742ms] run_all: running=1
+17:51:25 [SCHED    249742ms] publish[0/PLAIN]: 3 bytes via gpio
+17:51:25 proto=gpio src=PLAIN len=3 ts=249742 : 01 07 2C
+17:51:25 [RULE] RH: gpio 5=HIGH
+17:51:25 [TRACE] Total Rule Eval (PLAIN): 655us
+17:51:25 [SCHED    249743ms] publish[1/INV]: 3 bytes via gpio
+17:51:25 proto=gpio src=INV len=3 ts=249743 : 00 B2 0D
+17:51:25 [SCHED    250243ms] publish[0/PLAIN]: 3 bytes via gpio
+17:51:25 proto=gpio src=PLAIN len=3 ts=250243 : 01 FC 2D
+17:51:25 [RULE] RH: gpio 5=HIGH
+17:51:25 [TRACE] Total Rule Eval (PLAIN): 658us
+17:51:25 [SCHED    250244ms] publish[1/INV]: 3 bytes via gpio
+17:51:25 proto=gpio src=INV len=3 ts=250244 : 00 A7 0F
+17:51:25 --- stop-t02: STOP
+17:51:26 STOP
+17:51:27 [SCHED    251350ms] run_all: running=0
+17:51:27 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:51:28 [SCHED    252350ms] run_all: running=0
+17:51:28 --- clear-t02-end: CLEAR
+17:51:28 [SCHED    252933ms] reset: cleared 8 slots
+17:51:28 [RULE] reset
+17:51:28 CLEARED
+17:51:29 [SCHED    253933ms] run_all: running=0
+17:51:30 [SCHED    254933ms] run_all: running=0

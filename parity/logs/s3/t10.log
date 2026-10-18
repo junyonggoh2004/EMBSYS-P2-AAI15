@@ -1,0 +1,79 @@
+18:02:23 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:02:23 [SCHED     15826ms] run_all: running=0
+18:02:24 [SCHED     16872ms] run_all: running=0
+18:02:25 --- clear-t10: CLEAR
+18:02:25 [SCHED     17422ms] reset: cleared 8 slots
+18:02:25 [RULE] reset
+18:02:25 CLEARED
+18:02:26 [SCHED     18423ms] run_all: running=0
+18:02:27 [SCHED     19423ms] run_all: running=0
+18:02:27 --- cfg-t10: BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+18:02:28 OK: Config applied (inline, delim='|')
+18:02:28 [SCHED     20020ms] add[0]: DIG on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=6)
+18:02:28 [SCHED] added: DIG on gpio
+18:02:28 CFG: ok (added #0: DIG)
+18:02:28 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:02:28 [SCHED     21021ms] run_all: running=0
+18:02:30 [SCHED     22021ms] run_all: running=0
+18:02:30 --- rule-false: BEGINRULE|name=RF|source=DIG|calc=s=u8(0)|when=s==1|action=log:should not fire|ENDRULE
+18:02:30 [RULE] added name=RF src=DIG vars=1 action=log:should not fire
+18:02:30 RULE: ok
+18:02:31 [SCHED     23616ms] run_all: running=0
+18:02:32 [SCHED     24616ms] run_all: running=0
+18:02:33 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:02:33 --- rule-true: BEGINRULE|name=RT|source=DIG|calc=s=u8(0)|when=s==0|action=log:control fired|ENDRULE
+18:02:33 [RULE] added name=RT src=DIG vars=1 action=log:control fired
+18:02:33 RULE: ok
+18:02:34 [SCHED     26188ms] run_all: running=0
+18:02:35 [SCHED     27188ms] run_all: running=0
+18:02:35 --- run-t10: RUN
+18:02:35 RUN
+18:02:35 [SCHED     27768ms] arm[0/DIG]: next_run reset to NOW
+18:02:35 [SCHED     27768ms] publish[0/DIG]: 3 bytes via gpio
+18:02:35 proto=gpio src=DIG len=3 ts=27768 : 00 44 1E
+18:02:35 [RULE] RT: control fired (value=0.000 ts=27768)
+18:02:35 [TRACE] Total Rule Eval (DIG): 443us
+18:02:36 [SCHED     28769ms] run_all: running=1
+18:02:36 [SCHED     28769ms] publish[0/DIG]: 3 bytes via gpio
+18:02:36 proto=gpio src=DIG len=3 ts=28769 : 00 2D 22
+18:02:36 [RULE] RT: control fired (value=0.000 ts=28769)
+18:02:36 [TRACE] Total Rule Eval (DIG): 423us
+18:02:37 [SCHED     29770ms] run_all: running=1
+18:02:37 [SCHED     29770ms] publish[0/DIG]: 3 bytes via gpio
+18:02:37 proto=gpio src=DIG len=3 ts=29770 : 00 16 26
+18:02:37 [RULE] RT: control fired (value=0.000 ts=29770)
+18:02:37 [TRACE] Total Rule Eval (DIG): 426us
+18:02:38 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:02:38 [SCHED     30771ms] run_all: running=1
+18:02:38 [SCHED     30771ms] publish[0/DIG]: 3 bytes via gpio
+18:02:38 proto=gpio src=DIG len=3 ts=30771 : 00 FF 29
+18:02:38 [RULE] RT: control fired (value=0.000 ts=30771)
+18:02:38 [TRACE] Total Rule Eval (DIG): 423us
+18:02:39 [WIFI] not connected: reason 2, see esp_wifi_types.h
+18:02:39 [WIFI] not connected: reason 3, see esp_wifi_types.h
+18:02:39 [SCHED     31772ms] run_all: running=1
+18:02:39 [SCHED     31772ms] publish[0/DIG]: 3 bytes via gpio
+18:02:39 proto=gpio src=DIG len=3 ts=31772 : 00 E8 2D
+18:02:39 [RULE] RT: control fired (value=0.000 ts=31772)
+18:02:39 [TRACE] Total Rule Eval (DIG): 509us
+18:02:40 [SCHED     32772ms] run_all: running=1
+18:02:40 [SCHED     32773ms] publish[0/DIG]: 3 bytes via gpio
+18:02:40 proto=gpio src=DIG len=3 ts=32773 : 00 D1 31
+18:02:40 [RULE] RT: control fired (value=0.000 ts=32773)
+18:02:40 [TRACE] Total Rule Eval (DIG): 430us
+18:02:41 [SCHED     33773ms] run_all: running=1
+18:02:41 [SCHED     33774ms] publish[0/DIG]: 3 bytes via gpio
+18:02:41 proto=gpio src=DIG len=3 ts=33774 : 00 BA 35
+18:02:41 [RULE] RT: control fired (value=0.000 ts=33774)
+18:02:41 [TRACE] Total Rule Eval (DIG): 638us
+18:02:41 --- stop-t10: STOP
+18:02:42 STOP
+18:02:42 [SCHED     34968ms] run_all: running=0
+18:02:43 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:02:43 [SCHED     35968ms] run_all: running=0
+18:02:44 --- clear-t10-end: CLEAR
+18:02:44 [SCHED     36564ms] reset: cleared 8 slots
+18:02:44 [RULE] reset
+18:02:44 CLEARED
+18:02:45 [SCHED     37565ms] run_all: running=0
+18:02:46 [SCHED     38565ms] run_all: running=0

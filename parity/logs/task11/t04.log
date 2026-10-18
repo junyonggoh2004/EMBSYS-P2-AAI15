@@ -1,0 +1,327 @@
+15:59:06 [SCHED    187959ms] run_all: running=0
+15:59:07 [SCHED    188959ms] run_all: running=0
+15:59:08 --- clear-t04: CLEAR
+15:59:08 [SCHED    189959ms] reset: cleared 8 slots
+15:59:08 [RULE] reset
+15:59:08 CLEARED
+15:59:08 [SCHED    189960ms] run_all: running=0
+15:59:09 [SCHED    190960ms] run_all: running=0
+15:59:09 [MQTT] conn status=256
+15:59:10 [SCHED    191961ms] run_all: running=0
+15:59:10 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:59:11 --- cfg-t04-1: BEGINCFG|name=F1|proto=gpio|gpio.mode=digital|gpio.pin=22|gpio.pull=down|mode=poll|freq_hz=20|ENDCFG
+15:59:11 [SCHED    192961ms] run_all: running=0
+15:59:12 OK: Config applied (inline, delim='|')
+15:59:12 [SCHED    193962ms] add[0]: F1 on gpio freq=20.000Hz mode=poll method=digital GPIO(pin=22)
+15:59:12 [SCHED] added: F1 on gpio
+15:59:12 CFG: ok (added #0: F1)
+15:59:12 [SCHED    193963ms] run_all: running=0
+15:59:13 [SCHED    194963ms] run_all: running=0
+15:59:13 --- cfg-t04-2: BEGINCFG|name=F2|proto=gpio|gpio.mode=digital|gpio.pin=22|gpio.pull=down|mode=poll|freq_hz=20|ENDCFG
+15:59:14 [SCHED    195963ms] run_all: running=0
+15:59:14 [MQTT] conn status=256
+15:59:15 OK: Config applied (inline, delim='|')
+15:59:15 [SCHED    196965ms] add[1]: F2 on gpio freq=20.000Hz mode=poll method=digital GPIO(pin=22)
+15:59:15 [SCHED] added: F2 on gpio
+15:59:15 CFG: ok (added #1: F2)
+15:59:15 [SCHED    196965ms] run_all: running=0
+15:59:15 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:59:16 --- cfg-t04-3: BEGINCFG|name=F3|proto=gpio|gpio.mode=digital|gpio.pin=22|gpio.pull=down|mode=poll|freq_hz=20|ENDCFG
+15:59:16 [SCHED    197966ms] run_all: running=0
+15:59:17 OK: Config applied (inline, delim='|')
+15:59:17 [SCHED    198966ms] add[2]: F3 on gpio freq=20.000Hz mode=poll method=digital GPIO(pin=22)
+15:59:17 [SCHED] added: F3 on gpio
+15:59:17 CFG: ok (added #2: F3)
+15:59:17 [SCHED    198967ms] run_all: running=0
+15:59:18 [SCHED    199967ms] run_all: running=0
+15:59:18 --- cfg-t04-4: BEGINCFG|name=F4|proto=gpio|gpio.mode=digital|gpio.pin=22|gpio.pull=down|mode=poll|freq_hz=20|ENDCFG
+15:59:19 [SCHED    200967ms] run_all: running=0
+15:59:19 [MQTT] conn status=256
+15:59:20 OK: Config applied (inline, delim='|')
+15:59:20 [SCHED    201969ms] add[3]: F4 on gpio freq=20.000Hz mode=poll method=digital GPIO(pin=22)
+15:59:20 [SCHED] added: F4 on gpio
+15:59:20 CFG: ok (added #3: F4)
+15:59:20 [SCHED    201969ms] run_all: running=0
+15:59:20 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:59:21 --- cfg-t04-5: BEGINCFG|name=F5|proto=gpio|gpio.mode=digital|gpio.pin=22|gpio.pull=down|mode=poll|freq_hz=20|ENDCFG
+15:59:21 [SCHED    202970ms] run_all: running=0
+15:59:22 OK: Config applied (inline, delim='|')
+15:59:22 [SCHED    203971ms] add[4]: F5 on gpio freq=20.000Hz mode=poll method=digital GPIO(pin=22)
+15:59:22 [SCHED] added: F5 on gpio
+15:59:22 CFG: ok (added #4: F5)
+15:59:22 [SCHED    203971ms] run_all: running=0
+15:59:23 [SCHED    204971ms] run_all: running=0
+15:59:24 --- cfg-t04-6: BEGINCFG|name=F6|proto=gpio|gpio.mode=digital|gpio.pin=22|gpio.pull=down|mode=poll|freq_hz=20|ENDCFG
+15:59:24 [SCHED    205972ms] run_all: running=0
+15:59:24 [MQTT] conn status=256
+15:59:25 OK: Config applied (inline, delim='|')
+15:59:25 [SCHED    206973ms] add[5]: F6 on gpio freq=20.000Hz mode=poll method=digital GPIO(pin=22)
+15:59:25 [SCHED] added: F6 on gpio
+15:59:25 CFG: ok (added #5: F6)
+15:59:25 [SCHED    206974ms] run_all: running=0
+15:59:25 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:59:26 [SCHED    207974ms] run_all: running=0
+15:59:26 --- cfg-t04-7: BEGINCFG|name=F7|proto=gpio|gpio.mode=digital|gpio.pin=22|gpio.pull=down|mode=poll|freq_hz=20|ENDCFG
+15:59:27 [SCHED    208974ms] run_all: running=0
+15:59:28 OK: Config applied (inline, delim='|')
+15:59:28 [SCHED    209975ms] add[6]: F7 on gpio freq=20.000Hz mode=poll method=digital GPIO(pin=22)
+15:59:28 [SCHED] added: F7 on gpio
+15:59:28 CFG: ok (added #6: F7)
+15:59:28 [SCHED    209976ms] run_all: running=0
+15:59:29 --- cfg-t04-8: BEGINCFG|name=F8|proto=gpio|gpio.mode=digital|gpio.pin=22|gpio.pull=down|mode=poll|freq_hz=20|ENDCFG
+15:59:29 [SCHED    210976ms] run_all: running=0
+15:59:29 [MQTT] conn status=256
+15:59:30 OK: Config applied (inline, delim='|')
+15:59:30 [SCHED    211978ms] add[7]: F8 on gpio freq=20.000Hz mode=poll method=digital GPIO(pin=22)
+15:59:30 [SCHED] added: F8 on gpio
+15:59:30 CFG: ok (added #7: F8)
+15:59:30 [SCHED    211978ms] run_all: running=0
+15:59:30 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:59:31 [SCHED    212978ms] run_all: running=0
+15:59:31 --- run-t04: RUN
+15:59:32 RUN
+15:59:32 [SCHED    213979ms] run_all: running=1
+15:59:32 [SCHED    213979ms] arm[0/F1]: next_run reset to NOW
+15:59:32 [SCHED    213979ms] arm[1/F2]: next_run reset to NOW
+15:59:32 [SCHED    213979ms] arm[2/F3]: next_run reset to NOW
+15:59:32 [SCHED    213979ms] arm[3/F4]: next_run reset to NOW
+15:59:32 [SCHED    213979ms] arm[4/F5]: next_run reset to NOW
+15:59:32 [SCHED    213979ms] arm[5/F6]: next_run reset to NOW
+15:59:32 [SCHED    213979ms] arm[6/F7]: next_run reset to NOW
+15:59:32 [SCHED    213979ms] arm[7/F8]: next_run reset to NOW
+15:59:32 [SCHED    213979ms] publish[0/F1]: 3 bytes via gpio
+15:59:32 proto=gpio src=F1 len=3 ts=213979 : 00 31 4E
+15:59:32 [SCHED    213980ms] publish[1/F2]: 3 bytes via gpio
+15:59:32 proto=gpio src=F2 len=3 ts=213980 : 00 77 42
+15:59:32 [SCHED    213980ms] publish[2/F3]: 3 bytes via gpio
+15:59:32 proto=gpio src=F3 len=3 ts=213980 : 00 A6 3A
+15:59:32 [SCHED    213980ms] publish[3/F4]: 3 bytes via gpio
+15:59:32 proto=gpio src=F4 len=3 ts=213980 : 00 EB 2E
+15:59:32 [SCHED    213980ms] publish[4/F5]: 3 bytes via gpio
+15:59:32 proto=gpio src=F5 len=3 ts=213981 : 00 19 27
+15:59:32 [SCHED    213981ms] publish[5/F6]: 3 bytes via gpio
+15:59:32 proto=gpio src=F6 len=3 ts=213981 : 00 60 1B
+15:59:32 [SCHED    213981ms] publish[6/F7]: 3 bytes via gpio
+15:59:32 proto=gpio src=F7 len=3 ts=213981 : 00 A6 0F
+15:59:32 [SCHED    213981ms] publish[7/F8]: 3 bytes via gpio
+15:59:32 proto=gpio src=F8 len=3 ts=213981 : 00 D3 07
+15:59:33 [SCHED    214981ms] run_all: running=1
+15:59:33 [SCHED    214982ms] publish[0/F1]: 3 bytes via gpio
+15:59:33 proto=gpio src=F1 len=3 ts=214982 : 00 1C 52
+15:59:33 [SCHED    214982ms] publish[1/F2]: 3 bytes via gpio
+15:59:33 proto=gpio src=F2 len=3 ts=214982 : 00 61 46
+15:59:33 [SCHED    214982ms] publish[2/F3]: 3 bytes via gpio
+15:59:33 proto=gpio src=F3 len=3 ts=214982 : 00 90 3E
+15:59:33 [SCHED    214982ms] publish[3/F4]: 3 bytes via gpio
+15:59:33 proto=gpio src=F4 len=3 ts=214982 : 00 D5 32
+15:59:33 [SCHED    214983ms] publish[4/F5]: 3 bytes via gpio
+15:59:33 proto=gpio src=F5 len=3 ts=214983 : 00 04 2B
+15:59:33 [SCHED    214983ms] publish[5/F6]: 3 bytes via gpio
+15:59:33 proto=gpio src=F6 len=3 ts=214983 : 00 4A 1F
+15:59:33 [SCHED    214983ms] publish[6/F7]: 3 bytes via gpio
+15:59:33 proto=gpio src=F7 len=3 ts=214983 : 00 90 13
+15:59:33 [SCHED    214983ms] publish[7/F8]: 3 bytes via gpio
+15:59:33 proto=gpio src=F8 len=3 ts=214983 : 00 BD 0B
+15:59:34 [SCHED    215984ms] run_all: running=1
+15:59:34 [SCHED    215984ms] publish[0/F1]: 3 bytes via gpio
+15:59:34 proto=gpio src=F1 len=3 ts=215984 : 00 06 56
+15:59:34 [SCHED    215984ms] publish[1/F2]: 3 bytes via gpio
+15:59:34 proto=gpio src=F2 len=3 ts=215984 : 00 4B 4A
+15:59:34 [SCHED    215984ms] publish[2/F3]: 3 bytes via gpio
+15:59:34 proto=gpio src=F3 len=3 ts=215984 : 00 7A 42
+15:59:34 [SCHED    215984ms] publish[3/F4]: 3 bytes via gpio
+15:59:34 proto=gpio src=F4 len=3 ts=215985 : 00 BF 36
+15:59:34 [SCHED    215985ms] publish[4/F5]: 3 bytes via gpio
+15:59:34 proto=gpio src=F5 len=3 ts=215985 : 00 EE 2E
+15:59:34 [SCHED    215985ms] publish[5/F6]: 3 bytes via gpio
+15:59:34 proto=gpio src=F6 len=3 ts=215985 : 00 34 23
+15:59:34 [SCHED    215985ms] publish[6/F7]: 3 bytes via gpio
+15:59:34 proto=gpio src=F7 len=3 ts=215985 : 00 7A 17
+15:59:34 [SCHED    215986ms] publish[7/F8]: 3 bytes via gpio
+15:59:34 proto=gpio src=F8 len=3 ts=215986 : 00 A8 0F
+15:59:34 [MQTT] conn status=256
+15:59:35 [SCHED    216986ms] run_all: running=1
+15:59:35 [SCHED    216986ms] publish[0/F1]: 3 bytes via gpio
+15:59:35 proto=gpio src=F1 len=3 ts=216987 : 00 F0 59
+15:59:35 [SCHED    216987ms] publish[1/F2]: 3 bytes via gpio
+15:59:35 proto=gpio src=F2 len=3 ts=216987 : 00 36 4E
+15:59:35 [SCHED    216987ms] publish[2/F3]: 3 bytes via gpio
+15:59:35 proto=gpio src=F3 len=3 ts=216987 : 00 65 46
+15:59:35 [SCHED    216987ms] publish[3/F4]: 3 bytes via gpio
+15:59:35 proto=gpio src=F4 len=3 ts=216987 : 00 AA 3A
+15:59:35 [SCHED    216988ms] publish[4/F5]: 3 bytes via gpio
+15:59:35 proto=gpio src=F5 len=3 ts=216988 : 00 D9 32
+15:59:35 [SCHED    216988ms] publish[5/F6]: 3 bytes via gpio
+15:59:35 proto=gpio src=F6 len=3 ts=216988 : 00 1F 27
+15:59:35 [SCHED    216988ms] publish[6/F7]: 3 bytes via gpio
+15:59:35 proto=gpio src=F7 len=3 ts=216988 : 00 65 1B
+15:59:35 [SCHED    216988ms] publish[7/F8]: 3 bytes via gpio
+15:59:35 proto=gpio src=F8 len=3 ts=216988 : 00 92 13
+15:59:35 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:59:36 [SCHED    217989ms] run_all: running=1
+15:59:36 [SCHED    217989ms] publish[0/F1]: 3 bytes via gpio
+15:59:36 proto=gpio src=F1 len=3 ts=217989 : 00 DB 5D
+15:59:36 [SCHED    217989ms] publish[1/F2]: 3 bytes via gpio
+15:59:36 proto=gpio src=F2 len=3 ts=217989 : 00 20 52
+15:59:36 [SCHED    217989ms] publish[2/F3]: 3 bytes via gpio
+15:59:36 proto=gpio src=F3 len=3 ts=217989 : 00 4F 4A
+15:59:36 [SCHED    217990ms] publish[3/F4]: 3 bytes via gpio
+15:59:36 proto=gpio src=F4 len=3 ts=217990 : 00 95 3E
+15:59:36 [SCHED    217990ms] publish[4/F5]: 3 bytes via gpio
+15:59:36 proto=gpio src=F5 len=3 ts=217990 : 00 C3 36
+15:59:36 [SCHED    217990ms] publish[5/F6]: 3 bytes via gpio
+15:59:36 proto=gpio src=F6 len=3 ts=217990 : 00 09 2B
+15:59:36 [SCHED    217990ms] publish[6/F7]: 3 bytes via gpio
+15:59:36 proto=gpio src=F7 len=3 ts=217990 : 00 4F 1F
+15:59:36 [SCHED    217991ms] publish[7/F8]: 3 bytes via gpio
+15:59:36 proto=gpio src=F8 len=3 ts=217991 : 00 7D 17
+15:59:37 [SCHED    218991ms] run_all: running=1
+15:59:37 [SCHED    218991ms] publish[0/F1]: 3 bytes via gpio
+15:59:37 proto=gpio src=F1 len=3 ts=218991 : 00 C5 61
+15:59:37 [SCHED    218991ms] publish[1/F2]: 3 bytes via gpio
+15:59:37 proto=gpio src=F2 len=3 ts=218991 : 00 0A 56
+15:59:37 [SCHED    218992ms] publish[2/F3]: 3 bytes via gpio
+15:59:37 proto=gpio src=F3 len=3 ts=218992 : 00 3A 4E
+15:59:37 [SCHED    218992ms] publish[3/F4]: 3 bytes via gpio
+15:59:37 proto=gpio src=F4 len=3 ts=218992 : 00 7F 42
+15:59:37 [SCHED    218992ms] publish[4/F5]: 3 bytes via gpio
+15:59:37 proto=gpio src=F5 len=3 ts=218992 : 00 AD 3A
+15:59:37 [SCHED    218992ms] publish[5/F6]: 3 bytes via gpio
+15:59:37 proto=gpio src=F6 len=3 ts=218992 : 00 F3 2E
+15:59:37 [SCHED    218992ms] publish[6/F7]: 3 bytes via gpio
+15:59:37 proto=gpio src=F7 len=3 ts=218993 : 00 39 23
+15:59:37 [SCHED    218993ms] publish[7/F8]: 3 bytes via gpio
+15:59:37 proto=gpio src=F8 len=3 ts=218993 : 00 67 1B
+15:59:38 [SCHED    219993ms] run_all: running=1
+15:59:38 [SCHED    219993ms] publish[0/F1]: 3 bytes via gpio
+15:59:38 proto=gpio src=F1 len=3 ts=219993 : 00 AF 65
+15:59:38 [SCHED    219993ms] publish[1/F2]: 3 bytes via gpio
+15:59:38 proto=gpio src=F2 len=3 ts=219993 : 00 F4 59
+15:59:38 [SCHED    219994ms] publish[2/F3]: 3 bytes via gpio
+15:59:38 proto=gpio src=F3 len=3 ts=219994 : 00 24 52
+15:59:38 [SCHED    219994ms] publish[3/F4]: 3 bytes via gpio
+15:59:38 proto=gpio src=F4 len=3 ts=219994 : 00 69 46
+15:59:38 [SCHED    219994ms] publish[4/F5]: 3 bytes via gpio
+15:59:38 proto=gpio src=F5 len=3 ts=219994 : 00 97 3E
+15:59:38 [SCHED    219994ms] publish[5/F6]: 3 bytes via gpio
+15:59:38 proto=gpio src=F6 len=3 ts=219994 : 00 DD 32
+15:59:38 [SCHED    219995ms] publish[6/F7]: 3 bytes via gpio
+15:59:38 proto=gpio src=F7 len=3 ts=219995 : 00 24 27
+15:59:38 [SCHED    219995ms] publish[7/F8]: 3 bytes via gpio
+15:59:38 proto=gpio src=F8 len=3 ts=219995 : 00 51 1F
+15:59:39 [SCHED    220995ms] run_all: running=1
+15:59:39 [SCHED    220995ms] publish[0/F1]: 3 bytes via gpio
+15:59:39 proto=gpio src=F1 len=3 ts=220995 : 00 99 69
+15:59:39 [SCHED    220996ms] publish[1/F2]: 3 bytes via gpio
+15:59:39 proto=gpio src=F2 len=3 ts=220996 : 00 DF 5D
+15:59:39 [SCHED    220996ms] publish[2/F3]: 3 bytes via gpio
+15:59:39 proto=gpio src=F3 len=3 ts=220996 : 00 0E 56
+15:59:39 [SCHED    220996ms] publish[3/F4]: 3 bytes via gpio
+15:59:39 proto=gpio src=F4 len=3 ts=220996 : 00 53 4A
+15:59:39 [SCHED    220996ms] publish[4/F5]: 3 bytes via gpio
+15:59:39 proto=gpio src=F5 len=3 ts=220996 : 00 81 42
+15:59:39 [SCHED    220997ms] publish[5/F6]: 3 bytes via gpio
+15:59:39 proto=gpio src=F6 len=3 ts=220997 : 00 C8 36
+15:59:39 [SCHED    220997ms] publish[6/F7]: 3 bytes via gpio
+15:59:39 proto=gpio src=F7 len=3 ts=220997 : 00 0E 2B
+15:59:39 [SCHED    220997ms] publish[7/F8]: 3 bytes via gpio
+15:59:39 proto=gpio src=F8 len=3 ts=220997 : 00 3B 23
+15:59:39 [MQTT] conn status=256
+15:59:40 [SCHED    221998ms] run_all: running=1
+15:59:40 [SCHED    221998ms] publish[0/F1]: 3 bytes via gpio
+15:59:40 proto=gpio src=F1 len=3 ts=221998 : 00 84 6D
+15:59:40 [SCHED    221998ms] publish[1/F2]: 3 bytes via gpio
+15:59:40 proto=gpio src=F2 len=3 ts=221998 : 00 C9 61
+15:59:40 [SCHED    221999ms] publish[2/F3]: 3 bytes via gpio
+15:59:40 proto=gpio src=F3 len=3 ts=221999 : 00 F9 59
+15:59:40 [SCHED    221999ms] publish[3/F4]: 3 bytes via gpio
+15:59:40 proto=gpio src=F4 len=3 ts=221999 : 00 3E 4E
+15:59:40 [SCHED    221999ms] publish[4/F5]: 3 bytes via gpio
+15:59:40 proto=gpio src=F5 len=3 ts=221999 : 00 6C 46
+15:59:40 [SCHED    221999ms] publish[5/F6]: 3 bytes via gpio
+15:59:40 proto=gpio src=F6 len=3 ts=221999 : 00 B2 3A
+15:59:40 [SCHED    222000ms] publish[6/F7]: 3 bytes via gpio
+15:59:40 proto=gpio src=F7 len=3 ts=222000 : 00 F8 2E
+15:59:40 [SCHED    222000ms] publish[7/F8]: 3 bytes via gpio
+15:59:40 proto=gpio src=F8 len=3 ts=222000 : 00 26 27
+15:59:40 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:59:41 [SCHED    223000ms] run_all: running=1
+15:59:41 [SCHED    223000ms] publish[0/F1]: 3 bytes via gpio
+15:59:41 proto=gpio src=F1 len=3 ts=223000 : 00 6E 71
+15:59:41 [SCHED    223001ms] publish[1/F2]: 3 bytes via gpio
+15:59:41 proto=gpio src=F2 len=3 ts=223001 : 00 B4 65
+15:59:41 [SCHED    223001ms] publish[2/F3]: 3 bytes via gpio
+15:59:41 proto=gpio src=F3 len=3 ts=223001 : 00 E3 5D
+15:59:41 [SCHED    223001ms] publish[3/F4]: 3 bytes via gpio
+15:59:41 proto=gpio src=F4 len=3 ts=223001 : 00 28 52
+15:59:41 [SCHED    223001ms] publish[4/F5]: 3 bytes via gpio
+15:59:41 proto=gpio src=F5 len=3 ts=223002 : 00 56 4A
+15:59:41 [SCHED    223002ms] publish[5/F6]: 3 bytes via gpio
+15:59:41 proto=gpio src=F6 len=3 ts=223002 : 00 9D 3E
+15:59:41 [SCHED    223002ms] publish[6/F7]: 3 bytes via gpio
+15:59:41 proto=gpio src=F7 len=3 ts=223002 : 00 E3 32
+15:59:41 [SCHED    223002ms] publish[7/F8]: 3 bytes via gpio
+15:59:41 proto=gpio src=F8 len=3 ts=223002 : 00 10 2B
+15:59:42 [SCHED    224002ms] run_all: running=1
+15:59:42 [SCHED    224003ms] publish[0/F1]: 3 bytes via gpio
+15:59:42 proto=gpio src=F1 len=3 ts=224003 : 00 59 75
+15:59:42 [SCHED    224003ms] publish[1/F2]: 3 bytes via gpio
+15:59:42 proto=gpio src=F2 len=3 ts=224003 : 00 9E 69
+15:59:42 [SCHED    224003ms] publish[2/F3]: 3 bytes via gpio
+15:59:42 proto=gpio src=F3 len=3 ts=224003 : 00 CD 61
+15:59:42 [SCHED    224003ms] publish[3/F4]: 3 bytes via gpio
+15:59:42 proto=gpio src=F4 len=3 ts=224003 : 00 12 56
+15:59:42 [SCHED    224004ms] publish[4/F5]: 3 bytes via gpio
+15:59:42 proto=gpio src=F5 len=3 ts=224004 : 00 41 4E
+15:59:42 [SCHED    224004ms] publish[5/F6]: 3 bytes via gpio
+15:59:42 proto=gpio src=F6 len=3 ts=224004 : 00 87 42
+15:59:42 [SCHED    224004ms] publish[6/F7]: 3 bytes via gpio
+15:59:42 proto=gpio src=F7 len=3 ts=224004 : 00 CD 36
+15:59:42 [SCHED    224004ms] publish[7/F8]: 3 bytes via gpio
+15:59:42 proto=gpio src=F8 len=3 ts=224004 : 00 FA 2E
+15:59:43 [SCHED    225005ms] run_all: running=1
+15:59:43 [SCHED    225005ms] publish[0/F1]: 3 bytes via gpio
+15:59:43 proto=gpio src=F1 len=3 ts=225005 : 00 43 79
+15:59:43 [SCHED    225005ms] publish[1/F2]: 3 bytes via gpio
+15:59:43 proto=gpio src=F2 len=3 ts=225005 : 00 88 6D
+15:59:43 [SCHED    225005ms] publish[2/F3]: 3 bytes via gpio
+15:59:43 proto=gpio src=F3 len=3 ts=225005 : 00 B7 65
+15:59:43 [SCHED    225006ms] publish[3/F4]: 3 bytes via gpio
+15:59:43 proto=gpio src=F4 len=3 ts=225006 : 00 FD 59
+15:59:43 [SCHED    225006ms] publish[4/F5]: 3 bytes via gpio
+15:59:43 proto=gpio src=F5 len=3 ts=225006 : 00 2B 52
+15:59:43 [SCHED    225006ms] publish[5/F6]: 3 bytes via gpio
+15:59:43 proto=gpio src=F6 len=3 ts=225006 : 00 71 46
+15:59:43 [SCHED    225006ms] publish[6/F7]: 3 bytes via gpio
+15:59:43 proto=gpio src=F7 len=3 ts=225006 : 00 B7 3A
+15:59:43 [SCHED    225006ms] publish[7/F8]: 3 bytes via gpio
+15:59:43 proto=gpio src=F8 len=3 ts=225007 : 00 E4 32
+15:59:43 --- stop-t04: STOP
+15:59:44 STOP
+15:59:44 [SCHED    226007ms] run_all: running=0
+15:59:44 [MQTT] conn status=256
+15:59:45 [SCHED    227008ms] run_all: running=0
+15:59:45 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:59:46 --- alive-t04: SHOW
+15:59:46 [SHOW] sampling=0
+15:59:46 [SCHED] #0 name=F1 proto=gpio mode=poll freq=20.000Hz
+15:59:46 [SCHED] #1 name=F2 proto=gpio mode=poll freq=20.000Hz
+15:59:46 [SCHED] #2 name=F3 proto=gpio mode=poll freq=20.000Hz
+15:59:46 [SCHED] #3 name=F4 proto=gpio mode=poll freq=20.000Hz
+15:59:46 [SCHED] #4 name=F5 proto=gpio mode=poll freq=20.000Hz
+15:59:46 [SCHED] #5 name=F6 proto=gpio mode=poll freq=20.000Hz
+15:59:46 [SCHED] #6 name=F7 proto=gpio mode=poll freq=20.000Hz
+15:59:46 [SCHED] #7 name=F8 proto=gpio mode=poll freq=20.000Hz
+15:59:46 [RULE] count=0
+15:59:46 [SCHED    228009ms] run_all: running=0
+15:59:47 [SCHED    229009ms] run_all: running=0
+15:59:48 [SCHED    230009ms] run_all: running=0
+15:59:49 --- clear-t04-end: CLEAR
+15:59:49 [SCHED    231009ms] reset: cleared 8 slots
+15:59:49 [RULE] reset
+15:59:49 CLEARED
+15:59:49 [SCHED    231010ms] run_all: running=0
+15:59:49 [MQTT] conn status=256
+15:59:50 [SCHED    232010ms] run_all: running=0
+15:59:50 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:59:51 [SCHED    233011ms] run_all: running=0

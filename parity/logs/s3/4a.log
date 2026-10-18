@@ -1,0 +1,166 @@
+18:00:58 [SCHED     16769ms] run_all: running=0
+18:00:59 [SCHED     17817ms] run_all: running=0
+18:00:59 --- repl-help: HELP
+18:00:59 Commands:
+18:00:59   BEGINCFG ... ENDCFG        - add sensor config (multi-line)
+18:00:59   BEGINCFG|k=v|...|ENDCFG    - add sensor config (inline with '|', supports \|)
+18:00:59   BEGINRULE ... ENDRULE      - add rule (multi-line)
+18:00:59   BEGINRULE|k=v|...|ENDRULE  - add rule (inline with '|', supports \|)
+18:00:59   RUN / STOP                 - control sampling
+18:00:59   CLEAR                      - clear sensors + rules
+18:00:59   SHOW / SHOWRULES           - show sensors / rules
+18:00:59   CLEARRULES                 - clear only rules
+18:00:59   HELP                       - this text
+18:00:59 
+18:00:59 Example inline rule (HMC5883L big-endian X,Z,Y at 0x03):
+18:00:59 BEGINRULE|name=GY511_MAG|source=GY511_ACC|calc=mx=s16be(0)|calc=mz=s16be(2)|calc=my=s16be(4)|calc=mag=sqrt(mx*mx+my*my+mz*mz)|when=mag>350|action=log:MAG change detected|ENDRULE
+18:01:00 [SCHED     19374ms] run_all: running=0
+18:01:01 [SCHED     20374ms] run_all: running=0
+18:01:02 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:01:02 --- repl-show: SHOW
+18:01:02 [SHOW] sampling=0
+18:01:02 [RULE] count=0
+18:01:03 [SCHED     21964ms] run_all: running=0
+18:01:04 [SCHED     22964ms] run_all: running=0
+18:01:05 --- repl-run: RUN
+18:01:05 RUN
+18:01:05 [WIFI] not connected: reason 201, network not found (wrong name, or not 2.4 GHz)
+18:01:05 [WIFI] not connected: reason 36, see esp_wifi_types.h
+18:01:05 [WIFI] not connected: reason 3, see esp_wifi_types.h
+18:01:06 [SCHED     24584ms] run_all: running=1
+18:01:07 [SCHED     25584ms] run_all: running=1
+18:01:07 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:01:07 --- repl-stop: STOP
+18:01:07 STOP
+18:01:08 [SCHED     27176ms] run_all: running=0
+18:01:09 [SCHED     28176ms] run_all: running=0
+18:01:10 --- repl-unknown: FOO
+18:01:10 Unknown: FOO
+18:01:11 [SCHED     29769ms] run_all: running=0
+18:01:12 [SCHED     30769ms] run_all: running=0
+18:01:12 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:01:12 --- cfg-digital: BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+18:01:12 OK: Config applied (inline, delim='|')
+18:01:12 [SCHED     31367ms] add[0]: DIG on gpio freq=2.000Hz mode=poll method=digital GPIO(pin=6)
+18:01:12 [SCHED] added: DIG on gpio
+18:01:12 CFG: ok (added #0: DIG)
+18:01:13 [SCHED     32368ms] run_all: running=0
+18:01:14 [SCHED     33368ms] run_all: running=0
+18:01:15 --- repl-show-cfg: SHOW
+18:01:15 [SHOW] sampling=0
+18:01:15 [SCHED] #0 name=DIG proto=gpio mode=poll freq=2.000Hz
+18:01:15 [RULE] count=0
+18:01:16 [SCHED     34959ms] run_all: running=0
+18:01:17 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:01:17 [SCHED     35960ms] run_all: running=0
+18:01:18 --- rule-log: BEGINRULE|name=R_LOG|source=DIG|calc=s=u8(0)|when=s==0|action=log:pin low|ENDRULE
+18:01:18 [RULE] added name=R_LOG src=DIG vars=1 action=log:pin low
+18:01:18 RULE: ok
+18:01:19 [SCHED     37567ms] run_all: running=0
+18:01:20 [SCHED     38567ms] run_all: running=0
+18:01:20 --- rule-infer: BEGINRULE|name=R_INF|source=DIG|calc=s=u8(0)|when=1|action=batch: infer.set:0:1.0 \| infer.run|ENDRULE
+18:01:20 [RULE] added name=R_INF src=DIG vars=1 action=batch: infer.set:0:1.0 \| infer.run
+18:01:20 RULE: ok
+18:01:21 [SCHED     40158ms] run_all: running=0
+18:01:22 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:01:22 [SCHED     41158ms] run_all: running=0
+18:01:23 --- run-data: RUN
+18:01:23 RUN
+18:01:23 [SCHED     41743ms] arm[0/DIG]: next_run reset to NOW
+18:01:23 [SCHED     41743ms] publish[0/DIG]: 3 bytes via gpio
+18:01:23 proto=gpio src=DIG len=3 ts=41743 : 00 88 28
+18:01:23 [RULE] R_LOG: pin low (value=0.000 ts=41743)
+18:01:23 [INFER] invoke=585us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+18:01:23 [TRACE] Rule Parse + Batch Actions executed in 1063us
+18:01:23 [TRACE] Total Rule Eval (DIG): 1573us
+18:01:23 [SCHED     42244ms] run_all: running=1
+18:01:23 [SCHED     42244ms] publish[0/DIG]: 3 bytes via gpio
+18:01:23 proto=gpio src=DIG len=3 ts=42244 : 00 7D 2A
+18:01:23 [RULE] R_LOG: pin low (value=0.000 ts=42244)
+18:01:23 [INFER] invoke=282us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+18:01:23 [TRACE] Rule Parse + Batch Actions executed in 764us
+18:01:23 [TRACE] Total Rule Eval (DIG): 1271us
+18:01:24 [SCHED     42745ms] publish[0/DIG]: 3 bytes via gpio
+18:01:24 proto=gpio src=DIG len=3 ts=42745 : 00 72 2C
+18:01:24 [RULE] R_LOG: pin low (value=0.000 ts=42745)
+18:01:24 [INFER] invoke=277us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+18:01:24 [TRACE] Rule Parse + Batch Actions executed in 745us
+18:01:24 [TRACE] Total Rule Eval (DIG): 1233us
+18:01:24 [SCHED     43246ms] run_all: running=1
+18:01:24 [SCHED     43246ms] publish[0/DIG]: 3 bytes via gpio
+18:01:24 proto=gpio src=DIG len=3 ts=43246 : 00 67 2E
+18:01:24 [RULE] R_LOG: pin low (value=0.000 ts=43246)
+18:01:24 [INFER] invoke=326us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+18:01:24 [TRACE] Rule Parse + Batch Actions executed in 1001us
+18:01:24 [TRACE] Total Rule Eval (DIG): 1766us
+18:01:25 [SCHED     43747ms] publish[0/DIG]: 3 bytes via gpio
+18:01:25 proto=gpio src=DIG len=3 ts=43747 : 00 5C 30
+18:01:25 [RULE] R_LOG: pin low (value=0.000 ts=43747)
+18:01:25 [INFER] invoke=275us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+18:01:25 [TRACE] Rule Parse + Batch Actions executed in 819us
+18:01:25 [TRACE] Total Rule Eval (DIG): 1373us
+18:01:25 [SCHED     44247ms] run_all: running=1
+18:01:25 [SCHED     44247ms] publish[0/DIG]: 3 bytes via gpio
+18:01:25 proto=gpio src=DIG len=3 ts=44247 : 00 50 32
+18:01:25 [RULE] R_LOG: pin low (value=0.000 ts=44247)
+18:01:25 [INFER] invoke=358us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+18:01:25 [TRACE] Rule Parse + Batch Actions executed in 1245us
+18:01:25 [TRACE] Total Rule Eval (DIG): 2038us
+18:01:26 [SCHED     44748ms] publish[0/DIG]: 3 bytes via gpio
+18:01:26 proto=gpio src=DIG len=3 ts=44748 : 00 45 34
+18:01:26 [RULE] R_LOG: pin low (value=0.000 ts=44748)
+18:01:26 [INFER] invoke=419us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+18:01:26 [TRACE] Rule Parse + Batch Actions executed in 1038us
+18:01:26 [TRACE] Total Rule Eval (DIG): 2149us
+18:01:26 [SCHED     45249ms] run_all: running=1
+18:01:26 [SCHED     45249ms] publish[0/DIG]: 3 bytes via gpio
+18:01:26 proto=gpio src=DIG len=3 ts=45249 : 00 3A 36
+18:01:26 [RULE] R_LOG: pin low (value=0.000 ts=45249)
+18:01:26 [INFER] invoke=268us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+18:01:26 [TRACE] Rule Parse + Batch Actions executed in 755us
+18:01:26 [TRACE] Total Rule Eval (DIG): 1264us
+18:01:27 [SCHED     45750ms] publish[0/DIG]: 3 bytes via gpio
+18:01:27 proto=gpio src=DIG len=3 ts=45750 : 00 2F 38
+18:01:27 [RULE] R_LOG: pin low (value=0.000 ts=45750)
+18:01:27 [INFER] invoke=272us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+18:01:27 [TRACE] Rule Parse + Batch Actions executed in 805us
+18:01:27 [TRACE] Total Rule Eval (DIG): 1455us
+18:01:27 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:01:27 [SCHED     46250ms] run_all: running=1
+18:01:27 [SCHED     46250ms] publish[0/DIG]: 3 bytes via gpio
+18:01:27 proto=gpio src=DIG len=3 ts=46250 : 00 23 3A
+18:01:27 [RULE] R_LOG: pin low (value=0.000 ts=46250)
+18:01:27 [INFER] invoke=402us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+18:01:27 [TRACE] Rule Parse + Batch Actions executed in 1227us
+18:01:27 [TRACE] Total Rule Eval (DIG): 1854us
+18:01:28 [SCHED     46751ms] publish[0/DIG]: 3 bytes via gpio
+18:01:28 proto=gpio src=DIG len=3 ts=46751 : 00 18 3C
+18:01:28 [RULE] R_LOG: pin low (value=0.000 ts=46751)
+18:01:28 [INFER] invoke=276us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+18:01:28 [TRACE] Rule Parse + Batch Actions executed in 769us
+18:01:28 [TRACE] Total Rule Eval (DIG): 1270us
+18:01:28 --- run-stop: STOP
+18:01:28 STOP
+18:01:29 [SCHED     47916ms] run_all: running=0
+18:01:30 [SCHED     48916ms] run_all: running=0
+18:01:30 --- repl-showrules: SHOWRULES
+18:01:31 [RULE] count=2
+18:01:31   #0 name=R_LOG src=DIG vars=1 action=log:pin low prev_init=1
+18:01:31   #1 name=R_INF src=DIG vars=1 action=batch: infer.set:0:1.0 \| infer.run prev_init=1
+18:01:32 [SCHED     50498ms] run_all: running=0
+18:01:32 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:01:33 [SCHED     51498ms] run_all: running=0
+18:01:33 --- repl-clearrules: CLEARRULES
+18:01:33 [RULE] reset
+18:01:34 [SCHED     53085ms] run_all: running=0
+18:01:35 [SCHED     54085ms] run_all: running=0
+18:01:36 --- repl-clear: CLEAR
+18:01:36 [SCHED     54675ms] reset: cleared 8 slots
+18:01:36 [RULE] reset
+18:01:36 CLEARED
+18:01:37 [SCHED     55676ms] run_all: running=0
+18:01:37 [WIFI] not connected: reason 201, network not found (wrong name, or not 2.4 GHz)
+18:01:37 [WIFI] not connected: reason 36, see esp_wifi_types.h
+18:01:37 [WIFI] not connected: reason 3, see esp_wifi_types.h
+18:01:37 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:01:38 [SCHED     56676ms] run_all: running=0
