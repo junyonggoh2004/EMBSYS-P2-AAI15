@@ -1,38 +1,42 @@
-04:58:41 [SCHED    126775ms] run_all: running=0
-04:58:43 [SCHED    128647ms] run_all: running=0
-04:58:43 --- clear-t03: CLEAR
-04:58:44 [SCHED    129148ms] reset: cleared 8 slots
-04:58:44 [RULE] reset
-04:58:44 CLEARED
-04:58:45 [SCHED    130153ms] run_all: running=0
-04:58:46 [SCHED    131154ms] run_all: running=0
-04:58:46 --- cfg-t03: BEGINCFG|name=BADPIN|proto=gpio|gpio.mode=digital|gpio.pin=99|mode=poll|freq_hz=1|ENDCFG
-04:58:46 OK: Config applied (inline, delim='|')
-04:58:46 [GPIO] BADPIN: pin 99 not available on this board
-04:58:46 [SCHED    131856ms] add[0]: init_cfg FAILED for BADPIN on gpio
-04:58:46 CFG: add failed (-2)
-04:58:47 [SCHED    132857ms] run_all: running=0
-04:58:48 [SCHED    133858ms] run_all: running=0
-04:58:49 [SCHED    134859ms] run_all: running=0
-04:58:49 --- run-t03: RUN
-04:58:49 RUN
-04:58:50 [SCHED    136056ms] run_all: running=1
-04:58:51 [SCHED    137057ms] run_all: running=1
-04:58:52 [SCHED    138058ms] run_all: running=1
-04:58:53 [SCHED    139059ms] run_all: running=1
-04:58:54 --- stop-t03: STOP
-04:58:54 STOP
-04:58:55 [SCHED    140377ms] run_all: running=0
-04:58:56 [SCHED    141378ms] run_all: running=0
-04:58:56 --- alive-t03: SHOW
-04:58:56 [SHOW] sampling=0
-04:58:56 [RULE] count=0
-04:58:57 [SCHED    143053ms] run_all: running=0
-04:58:58 [SCHED    144054ms] run_all: running=0
-04:58:59 [SCHED    145055ms] run_all: running=0
-04:59:00 --- clear-t03-end: CLEAR
-04:59:00 [SCHED    145262ms] reset: cleared 8 slots
-04:59:00 [RULE] reset
-04:59:00 CLEARED
-04:59:01 [SCHED    146268ms] run_all: running=0
-04:59:02 [SCHED    147269ms] run_all: running=0
+15:17:29 [SCHED      6141ms] run_all: running=0
+15:17:31 [SCHED      7747ms] run_all: running=0
+15:17:31 --- clear-t03: CLEAR
+15:17:31 [SCHED      8302ms] reset: cleared 8 slots
+15:17:31 [RULE] reset
+15:17:31 CLEARED
+15:17:32 [SCHED      9307ms] run_all: running=0
+15:17:33 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:17:33 [SCHED     10308ms] run_all: running=0
+15:17:34 --- cfg-t03: BEGINCFG|name=BADPIN|proto=gpio|gpio.mode=digital|gpio.pin=99|mode=poll|freq_hz=1|ENDCFG
+15:17:34 OK: Config applied (inline, delim='|')
+15:17:34 [GPIO] BADPIN: pin 99 not available on this board
+15:17:34 [SCHED     10907ms] add[0]: init_cfg FAILED for BADPIN on gpio
+15:17:34 CFG: add failed (-2)
+15:17:35 [SCHED     11908ms] run_all: running=0
+15:17:36 [SCHED     12909ms] run_all: running=0
+15:17:37 [SCHED     13910ms] run_all: running=0
+15:17:37 --- run-t03: RUN
+15:17:37 RUN
+15:17:38 [SCHED     15006ms] run_all: running=1
+15:17:38 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:17:39 [SCHED     16007ms] run_all: running=1
+15:17:40 [SCHED     17008ms] run_all: running=1
+15:17:41 [SCHED     18009ms] run_all: running=1
+15:17:41 --- stop-t03: STOP
+15:17:41 STOP
+15:17:42 [SCHED     19160ms] run_all: running=0
+15:17:43 [SCHED     20161ms] run_all: running=0
+15:17:43 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:17:44 --- alive-t03: SHOW
+15:17:44 [SHOW] sampling=0
+15:17:44 [RULE] count=0
+15:17:45 [SCHED     21738ms] run_all: running=0
+15:17:46 [SCHED     22739ms] run_all: running=0
+15:17:47 [SCHED     23740ms] run_all: running=0
+15:17:47 --- clear-t03-end: CLEAR
+15:17:47 [SCHED     23845ms] reset: cleared 8 slots
+15:17:47 [RULE] reset
+15:17:47 CLEARED
+15:17:48 [SCHED     24850ms] run_all: running=0
+15:17:48 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:17:49 [SCHED     25851ms] run_all: running=0

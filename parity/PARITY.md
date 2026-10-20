@@ -175,3 +175,57 @@ Final build on 2026-10-13: HW-747 Super Mini (ESP32-S3, 4 MB flash, 2 MB PSRAM),
 **Pico regression:** the Pico firmware (`project_v3`) builds with every shared-code change above and `tools/check_hal_boundary.sh` passes; the Pico hardware re-run is still to do.
 
 **Not run on the S3:** 4c-sonic (P-12, P-13) needs a 1:2 divider on Echo and the kit has only two 50 kΩ resistors; the TSL2561 (4c-i2c) is no longer in the kit, so I2C is verified with the GY-511 (4c-mag); P-30 radar deferred as on the Pico; the Pico hardware re-run waits for a Pico on a data cable.
+
+## 4. ESP32-S3 on µT-Kernel 3 SMP (tasks 24 to 34)
+
+Build: `esp32s3_mtk` on the course port `sirfonzie/mtk3smp-esp32s3` at `e92874d`, ESP-IDF `v6.1-dev-2300-g17a74c925c`, `xtensa-esp-elf-gcc` 15.2.0 (`esp-15.2.0_20251204`), the port's default optimisation (`-Og`). Same HW-747 Super Mini as §3, Mosquitto 2.1.2 on the Mac, Wi-Fi on a 2.4 GHz phone hotspot. Run on 2026-10-20 by Hasif with the scripts unchanged (`sh tools/mtk.sh <stage>`); logs are in `parity/logs/mtk/`. The FreeRTOS column repeats §3 (Arduino-ESP32 3.3.12, 2026-10-13/14) so the two runtimes can be read side by side.
+
+| Stage | Covers | FreeRTOS (Arduino) | µT-Kernel 3 SMP | Notes |
+|---|---|---|---|---|
+| `hal_test.py` (haltest firmware) | NFR13, T-05 | 23/23 | 27/27, 1 skipped | The four extra checks prove the interrupt-driven echo wait (task 29). PWM duty 0.250/0.500/0.749; PULSE returns in 24 µs, pin high 201.6 ms (alarm resolution 1 ms); 20,000 edges at 19.8 kHz, none lost; UART internal loopback 34/34 bytes; I2C NACK on a missing device; the 5↔6 jumper measurement is skipped because no jumper was fitted |
+| `4a` | P-01 to P-07, P-09, P-18, P-22, P-23 | 14/14 | 14/14 | Inference runs in InferenceTask with MSE 0.4179, as on the Pico; one invocation takes 500–525 µs, against 265–280 µs on the Arduino build in the same session (`parity/logs/s3/wcet.log`): here each request crosses to InferenceTask and back, and this build uses the port's default `-Og` where Arduino-ESP32 builds at `-Os` (see the cycle-time notes) |
+| `5-neg` | N-01 to N-08 | 27/27 | 27/27 | |
+| `t03` | T-03 | 6/6 | 6/6 | |
+| `t04` | T-04 | 13/13 | 13/13 | |
+| `t06` | T-06 | 6/7 | 7/7 | The no-echo read now times out cleanly on GPIO7; a stuck-high echo still reports the timeout as a width (D-07, unchanged for parity, HAL test) |
+| `t10` | T-10 | 7/7 | 7/7 | |
+| `mqtt_test.py` | P-25 to P-29 | 27/27 | 27/27 | Includes the model upload over MQTT and inference on it |
+| `model_test.py` | T-14, T-15, T-16 | 9/9 | 8/9 | Valid, corrupt, oversized and interrupted uploads all behave as on the Arduino build, with inference running throughout; arena 2,908 of 65,536 B. `persists-after-reset` misses only because this build reloads the saved model about 1 s after reset and the script reopens the port 4 s after it; the reload is captured in `31-model-persists.log` |
+| `net_fault_test.py` | T-11, T-12 | 9/9 | 9/9 | Broker loss back in 2.1 s (FreeRTOS 2.2 s); after a Wi-Fi drop the node is back on the broker 5.4 s after the link returns (FreeRTOS 1.8 s; esp-mqtt retries every 5 s); 20 samples taken offline; heap 40,852 → 40,796 B; no reset |
+| `flood_test.py` | T-13 | Pass | Pass | 2,544 messages at 50 per second in 60 s; heartbeat kept throughout and for 30 s after; no reset |
+| `timing_test.py` | NFR1 | Pass | Pass | Table below |
+| `wcet_test.py` | F6, R1 | not run then | measured | Table below |
+| `endurance_test.py` | NFR6 | 6/6 | 6/6 | 30 minutes with Wi-Fi and MQTT: three sensors (2, 1 and 0.5 Hz) and an inference rule on every E1 sample; no reset or panic; largest sample gap one period (E1 3,600 samples, E2 1,800, E3 902); 181 heartbeats, largest gap 10.1 s; internal heap 39,360 → 39,380 B, sampled every 5 minutes. A first attempt was void because the laptop went to sleep with its lid closed, which stopped the script reading the board and took the broker offline; the board itself kept running |
+| `TASKS` after the suite | T-01 | Pass | Pass | At the end of the endurance run every task that ran stayed on its own core (InferenceTask 3,602 runs, all on core 1; MQTTTask only on core 0). Stack free: SchedulerTask 11,292, MQTTTask 14,284, ControlTask 3,132, InferenceTask 6,460, ApplicationTask 3,420, BenchmarkTask 2,364, MonitorTask 3,308 B. No message-buffer drops. Internal heap 40,880 B, minimum 31,928 B (`32-tasks-after-suite.log`) |
+| Watchdog (`STALL 30000`) | NFR6 | not tested | Pass | Feeding stops 5.3 s into the stall and timer group 0's watchdog resets the chip 10 s later (`28-watchdog.log`) |
+| Core residency | Change requirement | n/a | Pass | Every task ran only on its assigned core (`28-core-residency.log`) |
+
+**NFR1 sample timing** (Wi-Fi and MQTT active; ms):
+
+| Target | FreeRTOS mean | FreeRTOS p95 | FreeRTOS missed | µT-Kernel mean | µT-Kernel p95 | µT-Kernel missed |
+|---|---|---|---|---|---|---|
+| 10 | 10.99 | 12 | 68 of 19,558 | 11.05 | 12 | 63 of 19,505 |
+| 50 | 51.15 | 52 | 12 of 4,203 | 51.07 | 52 | 6 of 4,220 |
+| 100 | 101.28 | 102 | 6 of 2,122 | 101.81 | 102 | 16 of 2,117 |
+| 500 | 504.52 | 502 | 3 of 426 | 502.20 | 502 | 1 of 429 |
+| 1,000 | 1,005.72 | 1,002 | 1 of 213 | 1,001.13 | 1,002 | 0 of 215 |
+| 2,000 | 2,019.88 | 2,002 | 1 of 106 | 2,019.93 | 2,002 | 1 of 106 |
+
+Both builds meet NFR1 at every graded rate, and both occasionally skip one sample (a gap of two periods), so the skipped samples come from the shared scheduler rather than the RTOS.
+
+**SchedulerTask cycle time** (`wcet_test.py`, 20 s per scenario, MQTT connected; µs; the maximum is the largest observed cycle, not a proven bound):
+
+| Scenario | FreeRTOS cycles | FreeRTOS mean | FreeRTOS p95 | FreeRTOS max | µT-Kernel cycles | µT-Kernel mean | µT-Kernel p95 | µT-Kernel max |
+|---|---|---|---|---|---|---|---|---|
+| Idle, sampling on, no sensors | 25 | 229 | <250 | 244 | 25 | 188 | <250 | 320 |
+| 8 digital inputs at 50 ms | 1,643 | 1,447 | <5,000 | 7,006 | 748 | 1,595 | <5,000 | 3,838 |
+| 1 digital input + rule at 50 ms | 794 | 692 | <2,500 | 2,336 | 410 | 1,024 | <2,500 | 1,698 |
+| 1 HC-SR04 at 50 ms, no echo (25 ms timeout) | 281 | 25,522 | <50,000 | 26,098 | 277 | 26,168 | <50,000 | 26,704 |
+| 2 HC-SR04 at 50 ms, no echo | 315 | 45,776 | >50,000 | 52,257 | 277 | 51,979 | >50,000 | 53,511 |
+| Inference rule at 50 ms | 428 | 1,608 | <2,500 | 2,541 | 415 | 1,964 | <5,000 | 3,033 |
+
+On both runtimes two ultrasonic reads with no echo take longer than the 50 ms window, because each read waits for its 25 ms timeout inside SchedulerTask's cycle. On µT-Kernel the CPU is free during that wait (the HAL test's spinner ran 563,596 loops), on FreeRTOS it busy-waits. The inference cycle is longer on µT-Kernel, where each invocation crosses to InferenceTask and back and the build uses the port's default `-Og` optimisation where Arduino-ESP32 uses `-Os`: one invocation takes about 500 µs against 265–280 µs on the Arduino build, measured in the same session. How much of the difference each factor causes was not measured. In the multi-sensor scenarios the FreeRTOS build woke SchedulerTask about twice as often in the same 20 s, so its mean is spread over more, shorter cycles. The FreeRTOS column comes from the second of two runs: in the first, the Arduino build stopped about 24 s after boot with a core 1 panic (`Stack canary watchpoint triggered (IDLE1)`) and restarted. That board had just been running the µT-Kernel build, whose `model` partition (0x300000–0x382000) overlaps the Arduino build's LittleFS partition (from 0x310000), so the Arduino build may have started on a file system the other build had written into; this was not investigated further.
+
+**Memory.** Firmware 1,249,296 B on µT-Kernel against 1,339,722 B on FreeRTOS. Internal heap free with Wi-Fi and MQTT running: 40,880 B on µT-Kernel (minimum 31,928 B since boot) against 53,716 B (minimum 49,376 B) on FreeRTOS. The µT-Kernel build keeps EdgeCore's static tables and the tensor arena in PSRAM and, since task 31, the course port's kernel and shim in IRAM (MTK_REDESIGN.md §8).
+
+**Not run on µT-Kernel (hardware pending):** 4b and t02 need the GPIO5↔GPIO6 jumper; 4c-uart, t08 and t09 need the GPIO1↔GPIO2 jumper (the light sensor uses GPIO1, so it must be removed first); 4c-mag needs the GY-511; 4c-sonic needs the HC-SR04 with its divider, as in §3. The UART, I2C and GPIO drivers are covered meanwhile by the HAL test's internal UART loopback, I2C NACK and self-driven PWM, PULSE, edge and echo checks. 4d-ir needs a hand over the light sensor and is run interactively.

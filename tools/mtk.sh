@@ -12,6 +12,8 @@
 #   sh tools/mtk.sh test <stage>       run a parity stage, e.g. 4a, 5-neg, t04; log in parity/logs/mtk/
 #   sh tools/mtk.sh mqtt <broker-ip>   the 27-step MQTT test (node from wifi_credentials.h)
 #   sh tools/mtk.sh model|faults|flood|endurance <broker-ip>
+#                                      faults includes the broker-loss check when MOSQ_CONF names the
+#                                      Mosquitto config and Mosquitto runs as /opt/homebrew/sbin/mosquitto -c it
 #   sh tools/mtk.sh timing             NFR1 sample period and jitter
 #   sh tools/mtk.sh wcet               SchedulerTask cycle time per scenario
 #
@@ -106,11 +108,12 @@ case "$1" in
            mkdir -p parity/logs/mtk
            case "$1" in
              model)     $PY parity/model_test.py --broker "$2" --node "${NODE:-$(node_id)}" --port "$PORT" --log parity/logs/mtk/model.log ;;
-             faults)    $PY parity/net_fault_test.py --broker "$2" --node "${NODE:-$(node_id)}" --port "$PORT" --log parity/logs/mtk/faults.log ;;
+             faults)    $PY parity/net_fault_test.py --broker "$2" --node "${NODE:-$(node_id)}" --port "$PORT" \
+                          ${MOSQ_CONF:+--mosquitto-conf "$MOSQ_CONF"} --log parity/logs/mtk/faults.log ;;
              flood)     $PY parity/flood_test.py --broker "$2" --node "${NODE:-$(node_id)}" --board s3 --seconds 60 --log parity/logs/mtk/flood.log ;;
              endurance) $PY parity/endurance_test.py --broker "$2" --node "${NODE:-$(node_id)}" --port "$PORT" --log parity/logs/mtk/endurance.log ;;
            esac ;;
   timing)  need_port; mkdir -p parity/logs/mtk; $PY parity/timing_test.py --board s3 --port "$PORT" --log parity/logs/mtk/timing.log ;;
   wcet)    need_port; mkdir -p parity/logs/mtk; $PY parity/wcet_test.py --port "$PORT" --log parity/logs/mtk/wcet.log ;;
-  *)       sed -n '2,22p' "$0" ;;
+  *)       sed -n '2,25p' "$0" ;;
 esac

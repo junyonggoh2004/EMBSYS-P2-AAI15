@@ -1,0 +1,15 @@
+# Task 32: TASKS at the end of the 30-minute endurance run, 2026-10-20 17:49, HW-747, final µT-Kernel firmware. The board was reset when the run started, so the counters cover the run: three digital sensors at 2, 1 and 0.5 Hz, an inference rule on every E1 sample, Wi-Fi and MQTT connected. ran_on_coreN counts each task's loop iterations on core N; ApplicationTask and BenchmarkTask had no messages to handle (D6 and D5 work), so they did not run.
+[TASK] SchedulerTask    id=7  core=1 pri=21 stack_free=11292 B ran_on_core0=0 ran_on_core1=4547
+[TASK] MQTTTask         id=8  core=0 pri=22 stack_free=14284 B ran_on_core0=166679 ran_on_core1=0
+[TASK] ControlTask      id=9  core=1 pri=23 stack_free=3132 B ran_on_core0=0 ran_on_core1=18631
+[TASK] InferenceTask    id=10 core=1 pri=23 stack_free=6460 B ran_on_core0=0 ran_on_core1=3602
+[TASK] ApplicationTask  id=11 core=1 pri=23 stack_free=3420 B ran_on_core0=0 ran_on_core1=0
+[TASK] BenchmarkTask    id=12 core=1 pri=24 stack_free=2364 B ran_on_core0=0 ran_on_core1=0
+[TASK] MonitorTask      id=13 core=1 pri=24 stack_free=3308 B ran_on_core0=0 ran_on_core1=1832
+[TASK] sched_mbf  free=12912 B dropped=0
+[TASK] pub_mbf    free=10944 B dropped=0
+[TASK] infer_mbf  free=336 B dropped=0
+[TASK] app_mbf    free=544 B dropped=0
+[TASK] bench_mbf  free=512 B dropped=0
+[TASK] heap_free=40880 B min_free=31928 B largest=31744 B console_rx_irqs=21 console_rx_dropped=0
+[TASK] SchedulerTask cycles=5 mean_us=11399 p95_us=>50000 max_us=52029
