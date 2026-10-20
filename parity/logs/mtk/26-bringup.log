@@ -1,0 +1,91 @@
+# Task 26 bring-up, 2026-10-20 04:24, HW-747 Super Mini (ESP32-S3FH4R2), esp32s3_mtk on the course port e92874d, ESP-IDF v6.1-dev-2300-g17a74c925c.
+# Raw USB console capture after a reset. The port's [crumb] flight-recorder lines (previous boot's interrupt entries) are omitted.
+# The two [BRINGUP]/[BOOT] lines that overlap were printed by both cores at once with esp_rom_printf; task 27 adds the console mutex.
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x15 (USB_UART_CHIP_RESET),boot:0x2b (SPI_FAST_FLASH_BOOT)
+Saved PC:0x42011702
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x1524
+load:0x403c8700,len:0xd48
+load:0x403cb700,len:0x2f60
+entry 0x403c8900
+I (24) boot: ESP-IDF v6.1-dev-2300-g17a74c925c 2nd stage bootloader
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (25) boot: efuse block revision: v1.4
+I (25) boot.esp32s3: Boot SPI Speed : 80MHz
+I (25) boot.esp32s3: SPI Mode       : DIO
+I (26) boot.esp32s3: SPI Flash Size : 4MB
+I (26) boot: Enabling RNG early entropy source...
+I (26) boot: Partition Table:
+I (26) boot: ## Label            Usage          Type ST Offset   Length
+I (26) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (27) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (27) boot:  2 factory          factory app      00 00 00010000 002f0000
+I (28) boot:  3 model            Unknown data     01 40 00300000 00080000
+I (28) boot: End of partition table
+I (28) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=08568h ( 34152) map
+I (35) esp_image: segment 1: paddr=00018590 vaddr=3fc8f900 size=02274h (  8820) load
+I (37) esp_image: segment 2: paddr=0001a80c vaddr=40374000 size=0580ch ( 22540) load
+I (43) esp_image: segment 3: paddr=00020020 vaddr=42000020 size=12f14h ( 77588) map
+I (57) esp_image: segment 4: paddr=00032f3c vaddr=4037980c size=05fe8h ( 24552) load
+I (63) esp_image: segment 5: paddr=00038f2c vaddr=50000000 size=00024h (    36) load
+I (68) boot: Loaded app from partition at offset 0x10000
+I (68) boot: Disabling RNG early entropy source...
+I (69) cpu_start: Multicore app
+I (79) cpu_start: Pro cpu start user code
+I (79) cpu_start: cpu freq: 240000000 Hz
+I (79) app_init: Application information:
+I (79) app_init: Project name:     esp32s3_mtk
+I (79) app_init: ELF file SHA256:  27ef712b9...
+I (79) app_init: ESP-IDF:          v6.1-dev-2300-g17a74c925c
+I (79) efuse_init: Min chip rev:     v0.0
+I (80) efuse_init: Max chip rev:     v0.99 
+I (80) efuse_init: Chip rev:         v0.2
+I (80) heap_init: Initializing. RAM available for dynamic allocation:
+I (80) heap_init: At 3FCAA5D0 len 0003F140 (252 KiB): RAM
+I (80) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (81) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (81) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (82) spi_flash: detected chip: generic
+I (82) spi_flash: flash io: dio
+[shim] xTaskCreate enter: 'ipc0' prio=24 core=0 stack=1280
+[shim] xTaskCreate: 'ipc0' tk_id=1 pri=1
+[shim] xTaskCreate enter: 'ipc1' prio=24 core=1 stack=1280
+[shim] xTaskCreate: 'ipc1' tk_id=2 pri=1
+I (83) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (84) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+
+
+[mtkernel] __wrap_esp_startup_start_app: bypassing FreeRTOS
+=420117[0s2m pe]p cc2o=r0e010 0e0n0t0r0y,  epprci3d==00100
+0000 sp=[smp] core31f cw9a8i9t4i0n gI NfTo=r core00 0I0P1I8 4a4l0l oWcBa=tor
+14 WS=4000
+[smp] core0 IPI alloc begin source=79
+[smp] core0 IPI alloc done err=0
+[smp] core0 wa[istmipn]g  cfoorre 1c odrier1e citn ItPeIr riupnts tsaeltlu pbe
+gin source=80
+[smp] core1 direct IPI install done int=0 level=1
+[smp] [csomrpe]1  coIrPeI0  roebcseeivrevre du pc o(rFeR1O Mi_nCPeUr_rIuNpTtR 1s)etu,p  pcaormkpilnegt
+e
+[mtkernel] heap 0x3fc98010..0x3fca3010 (45056 bytes)
+[mtkernel] calling knl_main()
+SYSTIMER started!
+
+
+microT-Kernel Version 3.00
+
+[BOOT] esp32s3_mtk: micro T-Kernel 3 SMP, 2 processors, usermain on core 1
+[BRINGUP] task pinned to core 0: ti[cBkO OT0]  rtuansnkisn g sotna rctoerde  (e0r=
+[BRINGUP0] )t
+ask pinned to core 1: tick 0 running on core 1
+[BRINGUP] task pinned to core 0: tick 1 running on core 0
+[BRINGUP] task pinned to core 1: tick 1 running on core 1
+[BRINGUP] task pinned to core 0: tick 2 running on core 0
+[BRINGUP] task pinned to core 1: tick 2 running on core 1
+[BRINGUP] task pinned to core 0: tick 3 running on core 0
+[BRINGUP] task pinned to core 0: tick 4 running on core 0
+[BRINGUP] task pinned to core 1: tick 3 running on core 1
+[BRINGUP] task pinned to core 1: tick 4 running on core 1
