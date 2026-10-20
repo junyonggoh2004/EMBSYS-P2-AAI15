@@ -4,6 +4,7 @@
 // differences are noted where the hardware forces them.
 #include <Arduino.h>
 #include <Wire.h>
+#include <SPI.h>
 #include <stdio.h>
 #include "esp_timer.h"
 #include "sdkconfig.h"
@@ -146,6 +147,38 @@ int hal_gpio_pulse(int pin, uint32_t ms) {
     return HAL_OK;
 }
 
+// The reference firmware's echo measurement, moved here unchanged from the
+// shared GPIO driver (D1 task 29): busy-wait for the echo to rise, then for it
+// to fall, each bounded by timeout_us.
+int hal_gpio_measure_pulse(int trig_pin, int echo_pin, uint32_t trig_us, uint32_t timeout_us)
+{
+    hal_gpio_mode(trig_pin, HAL_GPIO_OUTPUT);   // driven low
+    hal_delay_us(2);
+
+    // send trigger pulse
+    hal_gpio_write(trig_pin, 1);
+    hal_delay_us(trig_us);
+    hal_gpio_write(trig_pin, 0);
+
+    // wait for echo HIGH
+    uint64_t t0 = hal_time_us();
+    while (hal_gpio_read(echo_pin) <= 0) {
+        if (hal_time_us() - t0 > timeout_us)
+            return -1;
+    }
+
+    // echo HIGH -> measure width
+    uint64_t start = hal_time_us();
+    while (hal_gpio_read(echo_pin) > 0) {
+        if (hal_time_us() - start > timeout_us)
+            break;
+    }
+    uint64_t end = hal_time_us();
+    int32_t width = (int32_t)(end - start);
+    if (width < 0) width = 0;
+    return (int)width; // microseconds
+}
+
 static volatile uint32_t s_edges[49];
 
 static void IRAM_ATTR edge_isr(void *arg) {
@@ -281,4 +314,127 @@ int hal_uart_write(int port, const uint8_t *data, size_t len) {
 int hal_uart_read_byte(int port) {
     HardwareSerial *u = s_uart[port & 1];
     return u->available() > 0 ? u->read() : HAL_ERR_TIMEOUT;
+}
+
+// ---------- SPI ----------
+
+typedef struct {
+    bool active;
+    int cs;
+    uint32_t hz;
+    uint8_t mode;
+    uint8_t refs;
+} spi_device_t;
+
+static SPIClass s_fspi(FSPI);
+static SemaphoreHandle_t s_spi_mutex;
+static spi_device_t s_spi_devices[8];
+static int s_spi_sclk = -1, s_spi_mosi = -1, s_spi_miso = -1;
+static uint8_t s_spi_host_refs;
+
+static bool spi_lock(uint32_t timeout_ms) {
+    if (!s_spi_mutex) s_spi_mutex = xSemaphoreCreateMutex();
+    if (!s_spi_mutex) return false;
+    TickType_t ticks = pdMS_TO_TICKS(timeout_ms);
+    if (ticks == 0) ticks = 1;
+    return xSemaphoreTake(s_spi_mutex, ticks) == pdTRUE;
+}
+
+static void spi_unlock(void) {
+    xSemaphoreGive(s_spi_mutex);
+}
+
+int hal_spi_open(const char *host, int sclk, int mosi, int miso, int cs,
+                 uint32_t hz, uint8_t mode) {
+    if (!host || strcmp(host, "fspi") != 0 || mode > 3 || hz == 0)
+        return HAL_ERR_INVALID;
+    if (!hal_gpio_valid(sclk) || !hal_gpio_valid(mosi) || !hal_gpio_valid(cs) ||
+        (miso >= 0 && !hal_gpio_valid(miso))) return HAL_ERR_PIN;
+    if (!spi_lock(1000)) return HAL_ERR_NO_MEMORY;
+
+    if (s_spi_host_refs &&
+        (s_spi_sclk != sclk || s_spi_mosi != mosi || s_spi_miso != miso)) {
+        spi_unlock();
+        return HAL_ERR_BUSY;
+    }
+    for (int i = 0; i < 8; ++i) {
+        if (!s_spi_devices[i].active || s_spi_devices[i].cs != cs) continue;
+        if (s_spi_devices[i].hz != hz || s_spi_devices[i].mode != mode) {
+            spi_unlock();
+            return HAL_ERR_BUSY;
+        }
+        s_spi_devices[i].refs++;
+        s_spi_host_refs++;
+        spi_unlock();
+        return i;
+    }
+
+    int slot = -1;
+    for (int i = 0; i < 8; ++i) {
+        if (!s_spi_devices[i].active) { slot = i; break; }
+    }
+    if (slot < 0) {
+        spi_unlock();
+        return HAL_ERR_BUSY;
+    }
+    if (!s_spi_host_refs) {
+        s_fspi.begin(sclk, miso, mosi, -1);
+        s_spi_sclk = sclk;
+        s_spi_mosi = mosi;
+        s_spi_miso = miso;
+    }
+    pinMode(cs, OUTPUT);
+    digitalWrite(cs, HIGH);
+    s_spi_devices[slot] = { true, cs, hz, mode, 1 };
+    s_spi_host_refs++;
+    spi_unlock();
+    return slot;
+}
+
+int hal_spi_transfer(int device, const uint8_t *tx, uint8_t *rx, size_t len,
+                     uint32_t timeout_ms) {
+    if (device < 0 || device >= 8 || len == 0 || len > 1024)
+        return HAL_ERR_INVALID;
+    if (!spi_lock(timeout_ms)) return HAL_ERR_TIMEOUT;
+    if (!s_spi_devices[device].active) {
+        spi_unlock();
+        return HAL_ERR_INVALID;
+    }
+
+    const spi_device_t d = s_spi_devices[device];
+    uint64_t start = hal_time_us();
+    s_fspi.beginTransaction(SPISettings(d.hz, MSBFIRST, d.mode));
+    digitalWrite(d.cs, LOW);
+    for (size_t i = 0; i < len; ++i) {
+        uint8_t v = s_fspi.transfer(tx ? tx[i] : 0);
+        if (rx) rx[i] = v;
+    }
+    digitalWrite(d.cs, HIGH);
+    s_fspi.endTransaction();
+    uint64_t elapsed = hal_time_us() - start;
+    spi_unlock();
+    if (elapsed > (uint64_t)timeout_ms * 1000u) return HAL_ERR_TIMEOUT;
+    return (int)len;
+}
+
+int hal_spi_close(int device) {
+    if (device < 0 || device >= 8) return HAL_ERR_INVALID;
+    if (!spi_lock(1000)) return HAL_ERR_TIMEOUT;
+    spi_device_t *d = &s_spi_devices[device];
+    if (!d->active || !d->refs) {
+        spi_unlock();
+        return HAL_ERR_INVALID;
+    }
+    d->refs--;
+    s_spi_host_refs--;
+    if (!d->refs) {
+        digitalWrite(d->cs, HIGH);
+        memset(d, 0, sizeof(*d));
+    }
+    if (!s_spi_host_refs) {
+        s_fspi.end();
+        s_spi_sclk = s_spi_mosi = s_spi_miso = -1;
+    }
+    spi_unlock();
+    return HAL_OK;
 }

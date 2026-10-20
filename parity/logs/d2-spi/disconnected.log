@@ -1,0 +1,77 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x15 (USB_UART_CHIP_RESET),boot:0x2a (SPI_FAST_FLASH_BOOT)
+Saved PC:0x4037ae32
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x10cc
+load:0x403c8700,len:0xc2c
+load:0x403cb700,len:0x30b0
+entry 0x403c88b8
+[BOOT] esp32s3_edge node s3-001
+[SCHED         7ms] reset: cleared 8 slots
+[MODEL] Model transfer subsystem initialised.
+[MODEL] No saved model; using the built-in one
+[INFER] Inference manager initialised.
+[TFLITE] Unloading previous model state...
+[TFLITE] Unload complete.
+[TFLITE] Verifying FlatBuffer at 0x3c1165e0...
+[TFLITE] Schema version 3 verified.
+[TFLITE] Creating OpResolver...
+[TFLITE] Ops registered.
+[TFLITE] Creating Interpreter (Arena size 65536)...
+[TFLITE] Allocating tensors...
+[TFLITE] Tensors allocated.
+[TFLITE] Model loaded OK!
+[TFLITE]   Inputs:  1 tensor(s), 16 total element(s)
+[TFLITE]   Outputs: 1 tensor(s), 16 total element(s)
+[TFLITE]   Arena:   2908 / 65536 bytes used
+[INFER] Base model loaded: 16 inputs, 16 outputs
+[INFER] Loaded 16 base normalization params and 16 threshold masks
+[WIFI] no credentials; running offline
+
+--- STOP
+STOP
+[SCHED       581ms] run_all: running=0
+
+--- CLEAR
+[SCHED      1109ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=DISCONNECTED|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63|spi.read_len=64|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED      1640ms] add[0]: DISCONNECTED on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=64,rx=64,timeout=100ms)
+[SCHED] added: DISCONNECTED on spi
+CFG: ok (added #0: DISCONNECTED)
+[SCHED      1641ms] run_all: running=0
+[SCHED      2641ms] run_all: running=0
+
+--- RUN
+RUN
+[SCHED      2705ms] arm[0/DISCONNECTED]: next_run reset to NOW
+[SCHED      2705ms] publish[0/DISCONNECTED]: 64 bytes via spi
+proto=spi src=DISCONNECTED len=64 ts=2705 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[SCHED      3206ms] publish[0/DISCONNECTED]: 64 bytes via spi
+proto=spi src=DISCONNECTED len=64 ts=3206 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[SCHED      3707ms] run_all: running=1
+[SCHED      3707ms] publish[0/DISCONNECTED]: 64 bytes via spi
+proto=spi src=DISCONNECTED len=64 ts=3707 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[SCHED      4208ms] publish[0/DISCONNECTED]: 64 bytes via spi
+proto=spi src=DISCONNECTED len=64 ts=4208 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[SCHED      4709ms] run_all: running=1
+[SCHED      4709ms] publish[0/DISCONNECTED]: 64 bytes via spi
+proto=spi src=DISCONNECTED len=64 ts=4709 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[SCHED      5210ms] publish[0/DISCONNECTED]: 64 bytes via spi
+proto=spi src=DISCONNECTED len=64 ts=5210 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[SCHED      5711ms] run_all: running=1
+[SCHED      5711ms] publish[0/DISCONNECTED]: 64 bytes via spi
+proto=spi src=DISCONNECTED len=64 ts=5711 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+--- STOP
+STOP
+
+--- CLEAR
+[SCHED      6316ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED

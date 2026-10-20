@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <limits.h>
 #include "bus/bus_common.h"
 
 /* internal helpers */
@@ -18,6 +19,31 @@ static float parse_f32(const char *s) {
     return strtof(s, NULL);   // handles "1", "0.5", "2.0", etc.
 }
 
+static bool parse_u32_strict(const char *s, uint32_t *out) {
+    if (!s || !*s || !out || *s == '-') return false;
+    char *end = NULL;
+    unsigned long v = strtoul(s, &end, 0);
+    while (end && (*end == ' ' || *end == '\t')) end++;
+    if (!end || end == s || *end || v > UINT32_MAX) return false;
+    *out = (uint32_t)v;
+    return true;
+}
+
+static bool parse_i32_strict(const char *s, int *out) {
+    if (!s || !*s || !out) return false;
+    char *end = NULL;
+    long v = strtol(s, &end, 0);
+    while (end && (*end == ' ' || *end == '\t')) end++;
+    if (!end || end == s || *end || v < INT_MIN || v > INT_MAX) return false;
+    *out = (int)v;
+    return true;
+}
+
+static void spi_error(app_cfg_t *cfg, const char *message) {
+    if (!cfg->cfg_error[0])
+        snprintf(cfg->cfg_error, sizeof cfg->cfg_error, "%s", message);
+}
+
 
 static void str_lower(char *s) { for (; *s; ++s) *s = (char)tolower(*s); }
 
@@ -30,7 +56,11 @@ void cfg_parse_line(const char *line_in, app_cfg_t *cfg) {
     if (!s_in_block) return ;
 
     /* copy & trim */
-    char line[160];
+    char line[512];
+    if (strlen(line_in) >= sizeof line) {
+        spi_error(cfg, "config field too long");
+        return;
+    }
     strncpy(line, line_in, sizeof(line)-1);
     line[sizeof(line)-1] = 0;
 
@@ -61,7 +91,8 @@ void cfg_parse_line(const char *line_in, app_cfg_t *cfg) {
         if      (!strcmp(v,"i2c"))  cfg->proto = proto_i2c;
         else if (!strcmp(v,"uart")) cfg->proto = proto_uart;
         else if (!strcmp(v,"gpio")) cfg->proto = proto_gpio;
-        else if (!strcmp(v,"mqtt")) cfg->proto = proto_mqtt;   // NEW
+        else if (!strcmp(v,"mqtt")) cfg->proto = proto_mqtt;
+        else if (!strcmp(v,"spi"))  cfg->proto = proto_spi;
         else snprintf(cfg->cfg_error, sizeof cfg->cfg_error, "unsupported proto '%s'", v);
     } else if (!strcmp(key, "mode")) {
         char v[8]={0}; strncpy(v,val,7); v[7]=0; str_lower(v);
@@ -135,6 +166,61 @@ void cfg_parse_line(const char *line_in, app_cfg_t *cfg) {
         cfg->uart_post_delay_ms = (uint16_t)parse_u32(val);
     }
 
+    /* spi.* -- strict parsing prevents malformed values from becoming zero. */
+    else if (!strcmp(key, "spi.host")) {
+        if (strlen(val) >= sizeof cfg->spi_host) {
+            spi_error(cfg, "spi.host too long");
+        } else {
+            snprintf(cfg->spi_host, sizeof cfg->spi_host, "%s", val);
+            str_lower(cfg->spi_host);
+        }
+    }
+    else if (!strcmp(key, "spi.sclk")) {
+        if (!parse_i32_strict(val, &cfg->spi_sclk)) spi_error(cfg, "invalid spi.sclk");
+    }
+    else if (!strcmp(key, "spi.mosi")) {
+        if (!parse_i32_strict(val, &cfg->spi_mosi)) spi_error(cfg, "invalid spi.mosi");
+    }
+    else if (!strcmp(key, "spi.miso")) {
+        if (!parse_i32_strict(val, &cfg->spi_miso)) spi_error(cfg, "invalid spi.miso");
+    }
+    else if (!strcmp(key, "spi.cs")) {
+        if (!parse_i32_strict(val, &cfg->spi_cs)) spi_error(cfg, "invalid spi.cs");
+    }
+    else if (!strcmp(key, "spi.hz")) {
+        if (!parse_u32_strict(val, &cfg->spi_hz)) spi_error(cfg, "invalid spi.hz");
+    }
+    else if (!strcmp(key, "spi.mode")) {
+        uint32_t v;
+        if (!parse_u32_strict(val, &v) || v > UINT8_MAX) spi_error(cfg, "invalid spi.mode");
+        else cfg->spi_mode = (uint8_t)v;
+    }
+    else if (!strcmp(key, "spi.read_len")) {
+        uint32_t v;
+        if (!parse_u32_strict(val, &v) || v > UINT16_MAX) spi_error(cfg, "invalid spi.read_len");
+        else cfg->spi_read_len = (uint16_t)v;
+    }
+    else if (!strcmp(key, "spi.timeout_ms")) {
+        if (!parse_u32_strict(val, &cfg->spi_timeout_ms)) spi_error(cfg, "invalid spi.timeout_ms");
+    }
+    else if (!strcmp(key, "spi.tx")) {
+        cfg->spi_tx_len = 0;
+        char *tok = strtok(val, " ,\t");
+        while (tok) {
+            uint32_t byte;
+            if (cfg->spi_tx_len >= APP_SPI_TX_MAX) {
+                spi_error(cfg, "spi.tx exceeds 64 bytes");
+                break;
+            }
+            if (!parse_u32_strict(tok, &byte) || byte > 0xFFu) {
+                spi_error(cfg, "invalid spi.tx byte");
+                break;
+            }
+            cfg->spi_tx[cfg->spi_tx_len++] = (uint8_t)byte;
+            tok = strtok(NULL, " ,\t");
+        }
+    }
+
 
      /* gpio.* */
     else if (!strcmp(key, "gpio.pin")) {
@@ -196,5 +282,35 @@ return;
 
 void cfg_parse_end(app_cfg_t *cfg) {
     s_in_block = 0;
-    (void)cfg;
+    if (!cfg || cfg->cfg_error[0] || cfg->proto != proto_spi) return;
+
+    if (strcmp(cfg->spi_host, "spi2") == 0)
+        snprintf(cfg->spi_host, sizeof cfg->spi_host, "fspi");
+    if (strcmp(cfg->spi_host, "fspi") != 0) {
+        spi_error(cfg, "unsupported spi.host");
+    } else if (cfg->mode != sample_mode_poll) {
+        spi_error(cfg, "spi stream unsupported");
+    } else if (cfg->spi_mode > 3) {
+        spi_error(cfg, "spi.mode must be 0..3");
+    } else if (cfg->spi_hz < APP_SPI_HZ_MIN || cfg->spi_hz > APP_SPI_HZ_MAX) {
+        spi_error(cfg, "spi.hz out of range");
+    } else if (cfg->spi_timeout_ms == 0 || cfg->spi_timeout_ms > APP_SPI_TIMEOUT_MAX) {
+        spi_error(cfg, "spi.timeout_ms out of range");
+    } else if (cfg->spi_read_len > APP_SPI_RX_MAX) {
+        spi_error(cfg, "spi.read_len exceeds 128");
+    } else if (!hal_gpio_valid(cfg->spi_sclk) || !hal_gpio_valid(cfg->spi_mosi) ||
+               !hal_gpio_valid(cfg->spi_cs) ||
+               (cfg->spi_miso >= 0 && !hal_gpio_valid(cfg->spi_miso))) {
+        spi_error(cfg, "invalid or reserved SPI pin");
+    } else if (cfg->spi_read_len && cfg->spi_miso < 0) {
+        spi_error(cfg, "spi.miso required for RX");
+    } else if (cfg->spi_sclk == cfg->spi_mosi || cfg->spi_sclk == cfg->spi_cs ||
+               cfg->spi_mosi == cfg->spi_cs ||
+               (cfg->spi_miso >= 0 &&
+                (cfg->spi_miso == cfg->spi_sclk || cfg->spi_miso == cfg->spi_mosi ||
+                 cfg->spi_miso == cfg->spi_cs))) {
+        spi_error(cfg, "SPI pins must be unique");
+    } else if (cfg->spi_tx_len == 0 && cfg->spi_read_len == 0) {
+        spi_error(cfg, "SPI transfer is empty");
+    }
 }

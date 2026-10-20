@@ -43,7 +43,7 @@ static void split_feed_by_delim(const char *between, char delim,
                                 void (*feed)(const char *one)) {
     const char *p = between;
     const char *start = between;
-    char buf[256];
+    char buf[512];
 
     while (*p) {
         if (*p == '\\') {                 // allow escaping: \|
@@ -107,6 +107,9 @@ void repl_init_defaults(app_cfg_t *cfg) {
     cfg->i2c_addr=0x76; cfg->i2c_reg_size=1; cfg->i2c_read_len=1; cfg->i2c_restart=true;
     cfg->uart_tx=0; cfg->uart_rx=1; cfg->uart_baud=9600;
     cfg->uart_bits=8; cfg->uart_parity='N'; cfg->uart_stop=1; cfg->uart_read_len=64;
+    snprintf(cfg->spi_host, sizeof cfg->spi_host, "fspi");
+    cfg->spi_sclk=12; cfg->spi_mosi=11; cfg->spi_miso=13; cfg->spi_cs=10;
+    cfg->spi_hz=10000000; cfg->spi_mode=0; cfg->spi_timeout_ms=100;
     // No default pins: a GPIO config must name its pins (D-02)
     cfg->gpio_pin=-1; cfg->gpio_trig=-1; cfg->gpio_echo=-1; cfg->gpio_pulse_timeout_us=30000;
 }

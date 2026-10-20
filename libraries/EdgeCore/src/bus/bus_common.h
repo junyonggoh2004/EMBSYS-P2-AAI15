@@ -14,8 +14,15 @@ typedef enum {
     proto_i2c  = 0,
     proto_uart = 1,
     proto_gpio = 2,
-    proto_mqtt = 3
+    proto_mqtt = 3,
+    proto_spi  = 4
 } proto_t;
+
+#define APP_SPI_TX_MAX          64u
+#define APP_SPI_RX_MAX         128u
+#define APP_SPI_HZ_MIN        1000u
+#define APP_SPI_HZ_MAX    40000000u
+#define APP_SPI_TIMEOUT_MAX  10000u
 
 typedef enum {
     sample_mode_poll   = 0,
@@ -59,6 +66,19 @@ typedef struct {
     uint8_t        uart_pre_len;       
     uint32_t       uart_post_delay_ms;
     bool           uart_pre_done; 
+
+    // -------- SPI --------
+    char           spi_host[8];       // canonical name: "fspi"
+    int            spi_sclk;
+    int            spi_mosi;
+    int            spi_miso;          // -1 is valid for TX-only devices
+    int            spi_cs;
+    uint32_t       spi_hz;
+    uint8_t        spi_mode;          // CPOL/CPHA mode 0..3, MSB-first
+    uint8_t        spi_tx[APP_SPI_TX_MAX];
+    uint8_t        spi_tx_len;
+    uint16_t       spi_read_len;
+    uint32_t       spi_timeout_ms;
 
     // -------- GPIO --------
     const char    *gpio_mode;          // "digital" | "pulse" | "onewire" | "counter"

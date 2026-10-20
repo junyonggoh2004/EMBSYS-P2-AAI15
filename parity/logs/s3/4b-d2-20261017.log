@@ -1,0 +1,568 @@
+15:13:56 [SCHED     32013ms] run_all: running=0
+15:13:57 [SCHED     33362ms] run_all: running=0
+15:13:58 --- cfg-input: BEGINCFG|name=IN|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+15:13:58 OK: Config applied (inline, delim='|')
+15:13:58 [SCHED     33948ms] add[0]: IN on gpio freq=2.000Hz mode=poll method=digital GPIO(pin=6)
+15:13:58 [SCHED] added: IN on gpio
+15:13:58 CFG: ok (added #0: IN)
+15:13:59 [SCHED     34949ms] run_all: running=0
+15:14:00 [SCHED     35949ms] run_all: running=0
+15:14:00 --- rule-high: BEGINRULE|name=R_HIGH|source=IN|calc=s=u8(0)|when=s==0|action=gpio:5=HIGH|ENDRULE
+15:14:00 [RULE] added name=R_HIGH src=IN vars=1 action=gpio:5=HIGH
+15:14:00 RULE: ok
+15:14:01 [SCHED     37599ms] run_all: running=0
+15:14:02 [SCHED     38599ms] run_all: running=0
+15:14:03 --- gpio-high: RUN
+15:14:03 RUN
+15:14:03 [SCHED     39204ms] arm[0/IN]: next_run reset to NOW
+15:14:03 [SCHED     39204ms] publish[0/IN]: 3 bytes via gpio
+15:14:03 proto=gpio src=IN len=3 ts=39204 : 00 88 14
+15:14:03 [RULE] R_HIGH: gpio 5=HIGH
+15:14:03 [TRACE] Total Rule Eval (IN): 683us
+15:14:03 [SCHED     39704ms] run_all: running=1
+15:14:03 [SCHED     39705ms] publish[0/IN]: 3 bytes via gpio
+15:14:03 proto=gpio src=IN len=3 ts=39705 : 00 7D 16
+15:14:03 [RULE] R_HIGH: gpio 5=HIGH
+15:14:03 [TRACE] Total Rule Eval (IN): 578us
+15:14:04 [SCHED     40206ms] publish[0/IN]: 3 bytes via gpio
+15:14:04 proto=gpio src=IN len=3 ts=40206 : 00 72 18
+15:14:04 [RULE] R_HIGH: gpio 5=HIGH
+15:14:04 [TRACE] Total Rule Eval (IN): 595us
+15:14:04 [SCHED     40706ms] run_all: running=1
+15:14:04 [SCHED     40706ms] publish[0/IN]: 3 bytes via gpio
+15:14:04 proto=gpio src=IN len=3 ts=40706 : 00 66 1A
+15:14:04 [RULE] R_HIGH: gpio 5=HIGH
+15:14:04 [TRACE] Total Rule Eval (IN): 590us
+15:14:05 [SCHED     41207ms] publish[0/IN]: 3 bytes via gpio
+15:14:05 proto=gpio src=IN len=3 ts=41207 : 00 5B 1C
+15:14:05 [RULE] R_HIGH: gpio 5=HIGH
+15:14:05 [TRACE] Total Rule Eval (IN): 605us
+15:14:05 [SCHED     41707ms] run_all: running=1
+15:14:05 [SCHED     41707ms] publish[0/IN]: 3 bytes via gpio
+15:14:05 proto=gpio src=IN len=3 ts=41707 : 00 4F 1E
+15:14:05 [RULE] R_HIGH: gpio 5=HIGH
+15:14:05 [TRACE] Total Rule Eval (IN): 571us
+15:14:06 [SCHED     42208ms] publish[0/IN]: 3 bytes via gpio
+15:14:06 proto=gpio src=IN len=3 ts=42208 : 00 44 20
+15:14:06 [RULE] R_HIGH: gpio 5=HIGH
+15:14:06 [TRACE] Total Rule Eval (IN): 596us
+15:14:06 [SCHED     42708ms] run_all: running=1
+15:14:06 [SCHED     42708ms] publish[0/IN]: 3 bytes via gpio
+15:14:06 proto=gpio src=IN len=3 ts=42708 : 00 38 22
+15:14:06 [RULE] R_HIGH: gpio 5=HIGH
+15:14:06 [TRACE] Total Rule Eval (IN): 565us
+15:14:07 [SCHED     43209ms] publish[0/IN]: 3 bytes via gpio
+15:14:07 proto=gpio src=IN len=3 ts=43209 : 00 2D 24
+15:14:07 [RULE] R_HIGH: gpio 5=HIGH
+15:14:07 [TRACE] Total Rule Eval (IN): 591us
+15:14:07 [SCHED     43709ms] run_all: running=1
+15:14:07 [SCHED     43709ms] publish[0/IN]: 3 bytes via gpio
+15:14:07 proto=gpio src=IN len=3 ts=43709 : 00 21 26
+15:14:07 [RULE] R_HIGH: gpio 5=HIGH
+15:14:07 [TRACE] Total Rule Eval (IN): 559us
+15:14:08 [SCHED     44210ms] publish[0/IN]: 3 bytes via gpio
+15:14:08 proto=gpio src=IN len=3 ts=44210 : 00 16 28
+15:14:08 [RULE] R_HIGH: gpio 5=HIGH
+15:14:08 [TRACE] Total Rule Eval (IN): 598us
+15:14:08 [SCHED     44710ms] run_all: running=1
+15:14:08 [SCHED     44710ms] publish[0/IN]: 3 bytes via gpio
+15:14:08 proto=gpio src=IN len=3 ts=44710 : 00 0A 2A
+15:14:08 [RULE] R_HIGH: gpio 5=HIGH
+15:14:08 [TRACE] Total Rule Eval (IN): 558us
+15:14:09 [SCHED     45211ms] publish[0/IN]: 3 bytes via gpio
+15:14:09 proto=gpio src=IN len=3 ts=45211 : 00 FF 2B
+15:14:09 [RULE] R_HIGH: gpio 5=HIGH
+15:14:09 [TRACE] Total Rule Eval (IN): 592us
+15:14:09 [SCHED     45711ms] run_all: running=1
+15:14:09 [SCHED     45711ms] publish[0/IN]: 3 bytes via gpio
+15:14:09 proto=gpio src=IN len=3 ts=45711 : 00 F3 2D
+15:14:09 [RULE] R_HIGH: gpio 5=HIGH
+15:14:09 [TRACE] Total Rule Eval (IN): 591us
+15:14:10 [SCHED     46212ms] publish[0/IN]: 3 bytes via gpio
+15:14:10 proto=gpio src=IN len=3 ts=46212 : 00 E8 2F
+15:14:10 [RULE] R_HIGH: gpio 5=HIGH
+15:14:10 [TRACE] Total Rule Eval (IN): 592us
+15:14:10 [SCHED     46712ms] run_all: running=1
+15:14:10 [SCHED     46712ms] publish[0/IN]: 3 bytes via gpio
+15:14:10 proto=gpio src=IN len=3 ts=46712 : 00 DC 31
+15:14:10 [RULE] R_HIGH: gpio 5=HIGH
+15:14:10 [TRACE] Total Rule Eval (IN): 569us
+15:14:11 [SCHED     47213ms] publish[0/IN]: 3 bytes via gpio
+15:14:11 proto=gpio src=IN len=3 ts=47213 : 00 D1 33
+15:14:11 [RULE] R_HIGH: gpio 5=HIGH
+15:14:11 [TRACE] Total Rule Eval (IN): 583us
+15:14:11 [SCHED     47713ms] run_all: running=1
+15:14:11 [SCHED     47713ms] publish[0/IN]: 3 bytes via gpio
+15:14:11 proto=gpio src=IN len=3 ts=47713 : 00 C5 35
+15:14:11 [RULE] R_HIGH: gpio 5=HIGH
+15:14:11 [TRACE] Total Rule Eval (IN): 575us
+15:14:12 [SCHED     48214ms] publish[0/IN]: 3 bytes via gpio
+15:14:12 proto=gpio src=IN len=3 ts=48214 : 00 BA 37
+15:14:12 [RULE] R_HIGH: gpio 5=HIGH
+15:14:12 [TRACE] Total Rule Eval (IN): 586us
+15:14:12 [SCHED     48714ms] run_all: running=1
+15:14:12 [SCHED     48714ms] publish[0/IN]: 3 bytes via gpio
+15:14:12 proto=gpio src=IN len=3 ts=48714 : 00 AE 39
+15:14:12 [RULE] R_HIGH: gpio 5=HIGH
+15:14:12 [TRACE] Total Rule Eval (IN): 561us
+15:14:13 [SCHED     49215ms] publish[0/IN]: 3 bytes via gpio
+15:14:13 proto=gpio src=IN len=3 ts=49215 : 00 A3 3B
+15:14:13 [RULE] R_HIGH: gpio 5=HIGH
+15:14:13 [TRACE] Total Rule Eval (IN): 594us
+15:14:13 --- stop-high: STOP
+15:14:13 STOP
+15:14:14 [SCHED     50436ms] run_all: running=0
+15:14:15 [SCHED     51436ms] run_all: running=0
+15:14:16 --- rule-low: BEGINRULE|name=R_LOW|source=IN|calc=s=u8(0)|when=s==1|action=gpio:5=LOW|ENDRULE
+15:14:16 [RULE] added name=R_LOW src=IN vars=1 action=gpio:5=LOW
+15:14:16 RULE: ok
+15:14:17 [SCHED     53156ms] run_all: running=0
+15:14:18 [SCHED     54156ms] run_all: running=0
+15:14:18 --- gpio-low: RUN
+15:14:19 RUN
+15:14:19 [SCHED     54820ms] arm[0/IN]: next_run reset to NOW
+15:14:19 [SCHED     54820ms] publish[0/IN]: 3 bytes via gpio
+15:14:19 proto=gpio src=IN len=3 ts=54820 : 00 88 51
+15:14:19 [RULE] R_HIGH: gpio 5=HIGH
+15:14:19 [TRACE] Total Rule Eval (IN): 620us
+15:14:19 [SCHED     55320ms] run_all: running=1
+15:14:19 [SCHED     55321ms] publish[0/IN]: 3 bytes via gpio
+15:14:19 proto=gpio src=IN len=3 ts=55321 : 00 7D 53
+15:14:19 [RULE] R_HIGH: gpio 5=HIGH
+15:14:19 [TRACE] Total Rule Eval (IN): 598us
+15:14:19 [SCHED     55822ms] publish[0/IN]: 3 bytes via gpio
+15:14:19 proto=gpio src=IN len=3 ts=55822 : 00 72 55
+15:14:19 [RULE] R_HIGH: gpio 5=HIGH
+15:14:19 [TRACE] Total Rule Eval (IN): 577us
+15:14:20 [SCHED     56322ms] run_all: running=1
+15:14:20 [SCHED     56322ms] publish[0/IN]: 3 bytes via gpio
+15:14:20 proto=gpio src=IN len=3 ts=56322 : 00 66 57
+15:14:20 [RULE] R_HIGH: gpio 5=HIGH
+15:14:20 [TRACE] Total Rule Eval (IN): 613us
+15:14:20 [SCHED     56823ms] publish[0/IN]: 3 bytes via gpio
+15:14:20 proto=gpio src=IN len=3 ts=56823 : 00 5B 59
+15:14:20 [RULE] R_HIGH: gpio 5=HIGH
+15:14:20 [TRACE] Total Rule Eval (IN): 590us
+15:14:21 [SCHED     57323ms] run_all: running=1
+15:14:21 [SCHED     57323ms] publish[0/IN]: 3 bytes via gpio
+15:14:21 proto=gpio src=IN len=3 ts=57323 : 00 4F 5B
+15:14:21 [RULE] R_HIGH: gpio 5=HIGH
+15:14:21 [TRACE] Total Rule Eval (IN): 595us
+15:14:21 [SCHED     57824ms] publish[0/IN]: 3 bytes via gpio
+15:14:21 proto=gpio src=IN len=3 ts=57824 : 00 44 5D
+15:14:21 [RULE] R_HIGH: gpio 5=HIGH
+15:14:21 [TRACE] Total Rule Eval (IN): 588us
+15:14:22 [SCHED     58324ms] run_all: running=1
+15:14:22 [SCHED     58324ms] publish[0/IN]: 3 bytes via gpio
+15:14:22 proto=gpio src=IN len=3 ts=58324 : 00 38 5F
+15:14:22 [RULE] R_HIGH: gpio 5=HIGH
+15:14:22 [TRACE] Total Rule Eval (IN): 619us
+15:14:22 [SCHED     58825ms] publish[0/IN]: 3 bytes via gpio
+15:14:22 proto=gpio src=IN len=3 ts=58825 : 00 2D 61
+15:14:22 [RULE] R_HIGH: gpio 5=HIGH
+15:14:22 [TRACE] Total Rule Eval (IN): 590us
+15:14:23 [SCHED     59325ms] run_all: running=1
+15:14:23 [SCHED     59325ms] publish[0/IN]: 3 bytes via gpio
+15:14:23 proto=gpio src=IN len=3 ts=59325 : 00 21 63
+15:14:23 [RULE] R_HIGH: gpio 5=HIGH
+15:14:23 [TRACE] Total Rule Eval (IN): 596us
+15:14:24 [SCHED     59826ms] publish[0/IN]: 3 bytes via gpio
+15:14:24 proto=gpio src=IN len=3 ts=59826 : 00 16 65
+15:14:24 [RULE] R_HIGH: gpio 5=HIGH
+15:14:24 [TRACE] Total Rule Eval (IN): 588us
+15:14:24 [SCHED     60326ms] run_all: running=1
+15:14:24 [SCHED     60326ms] publish[0/IN]: 3 bytes via gpio
+15:14:24 proto=gpio src=IN len=3 ts=60326 : 00 0A 67
+15:14:24 [RULE] R_HIGH: gpio 5=HIGH
+15:14:24 [TRACE] Total Rule Eval (IN): 594us
+15:14:24 [SCHED     60827ms] publish[0/IN]: 3 bytes via gpio
+15:14:24 proto=gpio src=IN len=3 ts=60827 : 00 FF 68
+15:14:24 [RULE] R_HIGH: gpio 5=HIGH
+15:14:24 [TRACE] Total Rule Eval (IN): 576us
+15:14:25 [SCHED     61327ms] run_all: running=1
+15:14:25 [SCHED     61327ms] publish[0/IN]: 3 bytes via gpio
+15:14:25 proto=gpio src=IN len=3 ts=61327 : 00 F3 6A
+15:14:25 [RULE] R_HIGH: gpio 5=HIGH
+15:14:25 [TRACE] Total Rule Eval (IN): 614us
+15:14:25 [SCHED     61828ms] publish[0/IN]: 3 bytes via gpio
+15:14:25 proto=gpio src=IN len=3 ts=61828 : 00 E8 6C
+15:14:25 [RULE] R_HIGH: gpio 5=HIGH
+15:14:25 [TRACE] Total Rule Eval (IN): 593us
+15:14:26 [SCHED     62328ms] run_all: running=1
+15:14:26 [SCHED     62328ms] publish[0/IN]: 3 bytes via gpio
+15:14:26 proto=gpio src=IN len=3 ts=62328 : 00 DC 6E
+15:14:26 [RULE] R_HIGH: gpio 5=HIGH
+15:14:26 [TRACE] Total Rule Eval (IN): 609us
+15:14:26 [SCHED     62829ms] publish[0/IN]: 3 bytes via gpio
+15:14:26 proto=gpio src=IN len=3 ts=62829 : 00 D1 70
+15:14:26 [RULE] R_HIGH: gpio 5=HIGH
+15:14:26 [TRACE] Total Rule Eval (IN): 570us
+15:14:27 [SCHED     63329ms] run_all: running=1
+15:14:27 [SCHED     63329ms] publish[0/IN]: 3 bytes via gpio
+15:14:27 proto=gpio src=IN len=3 ts=63329 : 00 C5 72
+15:14:27 [RULE] R_HIGH: gpio 5=HIGH
+15:14:27 [TRACE] Total Rule Eval (IN): 610us
+15:14:28 [SCHED     63830ms] publish[0/IN]: 3 bytes via gpio
+15:14:28 proto=gpio src=IN len=3 ts=63830 : 00 BA 74
+15:14:28 [RULE] R_HIGH: gpio 5=HIGH
+15:14:28 [TRACE] Total Rule Eval (IN): 585us
+15:14:28 [SCHED     64330ms] run_all: running=1
+15:14:28 [SCHED     64330ms] publish[0/IN]: 3 bytes via gpio
+15:14:28 proto=gpio src=IN len=3 ts=64330 : 00 AE 76
+15:14:28 [RULE] R_HIGH: gpio 5=HIGH
+15:14:28 [TRACE] Total Rule Eval (IN): 616us
+15:14:28 [SCHED     64831ms] publish[0/IN]: 3 bytes via gpio
+15:14:28 proto=gpio src=IN len=3 ts=64831 : 00 A3 78
+15:14:28 [RULE] R_HIGH: gpio 5=HIGH
+15:14:28 [TRACE] Total Rule Eval (IN): 590us
+15:14:29 --- stop-low: STOP
+15:14:29 STOP
+15:14:30 [SCHED     65958ms] run_all: running=0
+15:14:31 [SCHED     66958ms] run_all: running=0
+15:14:31 --- clear-rules-1: CLEARRULES
+15:14:31 [RULE] reset
+15:14:32 [SCHED     68648ms] run_all: running=0
+15:14:33 [SCHED     69648ms] run_all: running=0
+15:14:34 --- rule-toggle: BEGINRULE|name=R_TGL|source=IN|calc=s=u8(0)|when=1|action=gpio:5=TOGGLE|ENDRULE
+15:14:34 [RULE] added name=R_TGL src=IN vars=1 action=gpio:5=TOGGLE
+15:14:34 RULE: ok
+15:14:35 [SCHED     71288ms] run_all: running=0
+15:14:36 [SCHED     72288ms] run_all: running=0
+15:14:37 --- gpio-toggle: RUN
+15:14:37 RUN
+15:14:37 [SCHED     72976ms] arm[0/IN]: next_run reset to NOW
+15:14:37 [SCHED     72976ms] publish[0/IN]: 3 bytes via gpio
+15:14:37 proto=gpio src=IN len=3 ts=72976 : 00 74 98
+15:14:37 [RULE] R_TGL: gpio 5=TOGGLE -> 0
+15:14:37 [TRACE] Total Rule Eval (IN): 607us
+15:14:37 [SCHED     73476ms] run_all: running=1
+15:14:37 [SCHED     73477ms] publish[0/IN]: 3 bytes via gpio
+15:14:37 proto=gpio src=IN len=3 ts=73477 : 00 69 9A
+15:14:37 [RULE] R_TGL: gpio 5=TOGGLE -> 1
+15:14:37 [TRACE] Total Rule Eval (IN): 569us
+15:14:38 [SCHED     73978ms] publish[0/IN]: 3 bytes via gpio
+15:14:38 proto=gpio src=IN len=3 ts=73978 : 00 5E 9C
+15:14:38 [RULE] R_TGL: gpio 5=TOGGLE -> 0
+15:14:38 [TRACE] Total Rule Eval (IN): 560us
+15:14:38 [SCHED     74478ms] run_all: running=1
+15:14:38 [SCHED     74478ms] publish[0/IN]: 3 bytes via gpio
+15:14:38 proto=gpio src=IN len=3 ts=74478 : 00 52 9E
+15:14:38 [RULE] R_TGL: gpio 5=TOGGLE -> 1
+15:14:38 [TRACE] Total Rule Eval (IN): 575us
+15:14:39 [SCHED     74979ms] publish[0/IN]: 3 bytes via gpio
+15:14:39 proto=gpio src=IN len=3 ts=74979 : 00 47 A0
+15:14:39 [RULE] R_TGL: gpio 5=TOGGLE -> 0
+15:14:39 [TRACE] Total Rule Eval (IN): 554us
+15:14:39 [SCHED     75479ms] run_all: running=1
+15:14:39 [SCHED     75479ms] publish[0/IN]: 3 bytes via gpio
+15:14:39 proto=gpio src=IN len=3 ts=75479 : 00 3B A2
+15:14:39 [RULE] R_TGL: gpio 5=TOGGLE -> 1
+15:14:39 [TRACE] Total Rule Eval (IN): 574us
+15:14:40 [SCHED     75980ms] publish[0/IN]: 3 bytes via gpio
+15:14:40 proto=gpio src=IN len=3 ts=75980 : 00 30 A4
+15:14:40 [RULE] R_TGL: gpio 5=TOGGLE -> 0
+15:14:40 [TRACE] Total Rule Eval (IN): 553us
+15:14:40 [SCHED     76480ms] run_all: running=1
+15:14:40 [SCHED     76480ms] publish[0/IN]: 3 bytes via gpio
+15:14:40 proto=gpio src=IN len=3 ts=76480 : 00 24 A6
+15:14:40 [RULE] R_TGL: gpio 5=TOGGLE -> 1
+15:14:40 [TRACE] Total Rule Eval (IN): 574us
+15:14:41 [SCHED     76981ms] publish[0/IN]: 3 bytes via gpio
+15:14:41 proto=gpio src=IN len=3 ts=76981 : 00 19 A8
+15:14:41 [RULE] R_TGL: gpio 5=TOGGLE -> 0
+15:14:41 [TRACE] Total Rule Eval (IN): 548us
+15:14:41 [SCHED     77481ms] run_all: running=1
+15:14:41 [SCHED     77481ms] publish[0/IN]: 3 bytes via gpio
+15:14:41 proto=gpio src=IN len=3 ts=77481 : 00 0D AA
+15:14:41 [RULE] R_TGL: gpio 5=TOGGLE -> 1
+15:14:41 [TRACE] Total Rule Eval (IN): 556us
+15:14:42 [SCHED     77982ms] publish[0/IN]: 3 bytes via gpio
+15:14:42 proto=gpio src=IN len=3 ts=77982 : 00 02 AC
+15:14:42 [RULE] R_TGL: gpio 5=TOGGLE -> 0
+15:14:42 [TRACE] Total Rule Eval (IN): 561us
+15:14:42 [SCHED     78482ms] run_all: running=1
+15:14:42 [SCHED     78482ms] publish[0/IN]: 3 bytes via gpio
+15:14:42 proto=gpio src=IN len=3 ts=78482 : 00 F6 AD
+15:14:42 [RULE] R_TGL: gpio 5=TOGGLE -> 1
+15:14:42 [TRACE] Total Rule Eval (IN): 586us
+15:14:43 [SCHED     78983ms] publish[0/IN]: 3 bytes via gpio
+15:14:43 proto=gpio src=IN len=3 ts=78983 : 00 EB AF
+15:14:43 [RULE] R_TGL: gpio 5=TOGGLE -> 0
+15:14:43 [TRACE] Total Rule Eval (IN): 555us
+15:14:43 [SCHED     79483ms] run_all: running=1
+15:14:43 [SCHED     79483ms] publish[0/IN]: 3 bytes via gpio
+15:14:43 proto=gpio src=IN len=3 ts=79483 : 00 DF B1
+15:14:43 [RULE] R_TGL: gpio 5=TOGGLE -> 1
+15:14:43 [TRACE] Total Rule Eval (IN): 573us
+15:14:44 [SCHED     79984ms] publish[0/IN]: 3 bytes via gpio
+15:14:44 proto=gpio src=IN len=3 ts=79984 : 00 D4 B3
+15:14:44 [RULE] R_TGL: gpio 5=TOGGLE -> 0
+15:14:44 [TRACE] Total Rule Eval (IN): 538us
+15:14:44 [SCHED     80484ms] run_all: running=1
+15:14:44 [SCHED     80484ms] publish[0/IN]: 3 bytes via gpio
+15:14:44 proto=gpio src=IN len=3 ts=80484 : 00 C8 B5
+15:14:44 [RULE] R_TGL: gpio 5=TOGGLE -> 1
+15:14:44 [TRACE] Total Rule Eval (IN): 585us
+15:14:45 [SCHED     80985ms] publish[0/IN]: 3 bytes via gpio
+15:14:45 proto=gpio src=IN len=3 ts=80985 : 00 BD B7
+15:14:45 [RULE] R_TGL: gpio 5=TOGGLE -> 0
+15:14:45 [TRACE] Total Rule Eval (IN): 554us
+15:14:45 [SCHED     81485ms] run_all: running=1
+15:14:45 [SCHED     81485ms] publish[0/IN]: 3 bytes via gpio
+15:14:45 proto=gpio src=IN len=3 ts=81485 : 00 B1 B9
+15:14:45 [RULE] R_TGL: gpio 5=TOGGLE -> 1
+15:14:45 [TRACE] Total Rule Eval (IN): 560us
+15:14:46 [SCHED     81986ms] publish[0/IN]: 3 bytes via gpio
+15:14:46 proto=gpio src=IN len=3 ts=81986 : 00 A6 BB
+15:14:46 [RULE] R_TGL: gpio 5=TOGGLE -> 0
+15:14:46 [TRACE] Total Rule Eval (IN): 569us
+15:14:46 [SCHED     82486ms] run_all: running=1
+15:14:46 [SCHED     82486ms] publish[0/IN]: 3 bytes via gpio
+15:14:46 proto=gpio src=IN len=3 ts=82486 : 00 9A BD
+15:14:46 [RULE] R_TGL: gpio 5=TOGGLE -> 1
+15:14:46 [TRACE] Total Rule Eval (IN): 567us
+15:14:47 [SCHED     82987ms] publish[0/IN]: 3 bytes via gpio
+15:14:47 proto=gpio src=IN len=3 ts=82987 : 00 8F BF
+15:14:47 [RULE] R_TGL: gpio 5=TOGGLE -> 0
+15:14:47 [TRACE] Total Rule Eval (IN): 544us
+15:14:47 --- stop-toggle: STOP
+15:14:47 STOP
+15:14:48 [SCHED     84251ms] run_all: running=0
+15:14:49 [SCHED     85251ms] run_all: running=0
+15:14:50 --- clear-rules-2: CLEARRULES
+15:14:50 [RULE] reset
+15:14:51 [SCHED     86983ms] run_all: running=0
+15:14:52 [SCHED     87983ms] run_all: running=0
+15:14:52 --- rule-pulse: BEGINRULE|name=R_PLS|source=IN|calc=s=u8(0)|when=1|action=gpio:5=PULSE:200|ENDRULE
+15:14:52 [RULE] added name=R_PLS src=IN vars=1 action=gpio:5=PULSE:200
+15:14:52 RULE: ok
+15:14:53 [SCHED     89618ms] run_all: running=0
+15:14:54 [SCHED     90618ms] run_all: running=0
+15:14:55 --- gpio-pulse: RUN
+15:14:55 RUN
+15:14:55 [SCHED     91248ms] arm[0/IN]: next_run reset to NOW
+15:14:55 [SCHED     91248ms] publish[0/IN]: 3 bytes via gpio
+15:14:55 proto=gpio src=IN len=3 ts=91248 : 00 D4 DF
+15:14:55 [RULE] R_PLS: gpio 5=PULSE 200ms
+15:14:55 [TRACE] Total Rule Eval (IN): 638us
+15:14:55 [SCHED     91748ms] run_all: running=1
+15:14:55 [SCHED     91749ms] publish[0/IN]: 3 bytes via gpio
+15:14:55 proto=gpio src=IN len=3 ts=91749 : 00 C9 E1
+15:14:55 [RULE] R_PLS: gpio 5=PULSE 200ms
+15:14:55 [TRACE] Total Rule Eval (IN): 563us
+15:14:56 [SCHED     92250ms] publish[0/IN]: 3 bytes via gpio
+15:14:56 proto=gpio src=IN len=3 ts=92250 : 00 BE E3
+15:14:56 [RULE] R_PLS: gpio 5=PULSE 200ms
+15:14:56 [TRACE] Total Rule Eval (IN): 600us
+15:14:56 [SCHED     92750ms] run_all: running=1
+15:14:56 [SCHED     92750ms] publish[0/IN]: 3 bytes via gpio
+15:14:56 proto=gpio src=IN len=3 ts=92750 : 00 B2 E5
+15:14:56 [RULE] R_PLS: gpio 5=PULSE 200ms
+15:14:56 [TRACE] Total Rule Eval (IN): 574us
+15:14:57 [SCHED     93251ms] publish[0/IN]: 3 bytes via gpio
+15:14:57 proto=gpio src=IN len=3 ts=93251 : 00 A7 E7
+15:14:57 [RULE] R_PLS: gpio 5=PULSE 200ms
+15:14:57 [TRACE] Total Rule Eval (IN): 590us
+15:14:57 [SCHED     93751ms] run_all: running=1
+15:14:57 [SCHED     93751ms] publish[0/IN]: 3 bytes via gpio
+15:14:57 proto=gpio src=IN len=3 ts=93751 : 00 9B E9
+15:14:57 [RULE] R_PLS: gpio 5=PULSE 200ms
+15:14:57 [TRACE] Total Rule Eval (IN): 574us
+15:14:58 [SCHED     94252ms] publish[0/IN]: 3 bytes via gpio
+15:14:58 proto=gpio src=IN len=3 ts=94252 : 00 90 EB
+15:14:58 [RULE] R_PLS: gpio 5=PULSE 200ms
+15:14:58 [TRACE] Total Rule Eval (IN): 597us
+15:14:58 [SCHED     94752ms] run_all: running=1
+15:14:58 [SCHED     94752ms] publish[0/IN]: 3 bytes via gpio
+15:14:58 proto=gpio src=IN len=3 ts=94752 : 00 84 ED
+15:14:58 [RULE] R_PLS: gpio 5=PULSE 200ms
+15:14:58 [TRACE] Total Rule Eval (IN): 599us
+15:14:59 [SCHED     95253ms] publish[0/IN]: 3 bytes via gpio
+15:14:59 proto=gpio src=IN len=3 ts=95253 : 00 79 EF
+15:14:59 [RULE] R_PLS: gpio 5=PULSE 200ms
+15:14:59 [TRACE] Total Rule Eval (IN): 602us
+15:14:59 --- stop-pulse: STOP
+15:14:59 STOP
+15:15:00 [SCHED     96518ms] run_all: running=0
+15:15:01 [SCHED     97518ms] run_all: running=0
+15:15:02 --- clear-1: CLEAR
+15:15:02 [SCHED     98198ms] reset: cleared 8 slots
+15:15:02 [RULE] reset
+15:15:02 CLEARED
+15:15:03 [SCHED     99198ms] run_all: running=0
+15:15:04 [SCHED    100198ms] run_all: running=0
+15:15:04 --- cfg-counter: BEGINCFG|name=CNT|proto=gpio|gpio.mode=counter|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+15:15:05 OK: Config applied (inline, delim='|')
+15:15:05 [SCHED    100852ms] add[0]: CNT on gpio freq=2.000Hz mode=poll method=counter GPIO(pin=6)
+15:15:05 [SCHED] added: CNT on gpio
+15:15:05 CFG: ok (added #0: CNT)
+15:15:05 [SCHED    101853ms] run_all: running=0
+15:15:07 [SCHED    102853ms] run_all: running=0
+15:15:07 --- rule-count: BEGINRULE|name=R_CNT|source=CNT|calc=c=u8(0)|when=1|action=gpio:5=TOGGLE|ENDRULE
+15:15:07 [RULE] added name=R_CNT src=CNT vars=1 action=gpio:5=TOGGLE
+15:15:07 RULE: ok
+15:15:08 [SCHED    104477ms] run_all: running=0
+15:15:09 [SCHED    105477ms] run_all: running=0
+15:15:10 --- gpio-counter: RUN
+15:15:10 RUN
+15:15:10 [SCHED    106114ms] arm[0/CNT]: next_run reset to NOW
+15:15:10 [SCHED    106114ms] publish[0/CNT]: 4 bytes via gpio
+15:15:10 proto=gpio src=CNT len=4 ts=106114 : 00 00 00 00
+15:15:10 [RULE] R_CNT: gpio 5=TOGGLE -> 1
+15:15:10 [TRACE] Total Rule Eval (CNT): 629us
+15:15:10 [SCHED    106614ms] run_all: running=1
+15:15:10 [SCHED    106615ms] publish[0/CNT]: 4 bytes via gpio
+15:15:10 proto=gpio src=CNT len=4 ts=106615 : 00 00 00 00
+15:15:10 [RULE] R_CNT: gpio 5=TOGGLE -> 0
+15:15:10 [TRACE] Total Rule Eval (CNT): 552us
+15:15:11 [SCHED    107116ms] publish[0/CNT]: 4 bytes via gpio
+15:15:11 proto=gpio src=CNT len=4 ts=107116 : 00 00 00 00
+15:15:11 [RULE] R_CNT: gpio 5=TOGGLE -> 1
+15:15:11 [TRACE] Total Rule Eval (CNT): 557us
+15:15:11 [SCHED    107616ms] run_all: running=1
+15:15:11 [SCHED    107616ms] publish[0/CNT]: 4 bytes via gpio
+15:15:11 proto=gpio src=CNT len=4 ts=107616 : 00 00 00 00
+15:15:11 [RULE] R_CNT: gpio 5=TOGGLE -> 0
+15:15:11 [TRACE] Total Rule Eval (CNT): 579us
+15:15:12 [SCHED    108117ms] publish[0/CNT]: 4 bytes via gpio
+15:15:12 proto=gpio src=CNT len=4 ts=108117 : 00 00 00 00
+15:15:12 [RULE] R_CNT: gpio 5=TOGGLE -> 1
+15:15:12 [TRACE] Total Rule Eval (CNT): 568us
+15:15:12 [SCHED    108617ms] run_all: running=1
+15:15:12 [SCHED    108617ms] publish[0/CNT]: 4 bytes via gpio
+15:15:12 proto=gpio src=CNT len=4 ts=108617 : 00 00 00 00
+15:15:12 [RULE] R_CNT: gpio 5=TOGGLE -> 0
+15:15:12 [TRACE] Total Rule Eval (CNT): 577us
+15:15:13 [SCHED    109118ms] publish[0/CNT]: 4 bytes via gpio
+15:15:13 proto=gpio src=CNT len=4 ts=109118 : 00 00 00 00
+15:15:13 [RULE] R_CNT: gpio 5=TOGGLE -> 1
+15:15:13 [TRACE] Total Rule Eval (CNT): 557us
+15:15:13 [SCHED    109618ms] run_all: running=1
+15:15:13 [SCHED    109618ms] publish[0/CNT]: 4 bytes via gpio
+15:15:13 proto=gpio src=CNT len=4 ts=109618 : 00 00 00 00
+15:15:13 [RULE] R_CNT: gpio 5=TOGGLE -> 0
+15:15:13 [TRACE] Total Rule Eval (CNT): 558us
+15:15:14 [SCHED    110119ms] publish[0/CNT]: 4 bytes via gpio
+15:15:14 proto=gpio src=CNT len=4 ts=110119 : 00 00 00 00
+15:15:14 [RULE] R_CNT: gpio 5=TOGGLE -> 1
+15:15:14 [TRACE] Total Rule Eval (CNT): 547us
+15:15:14 [SCHED    110619ms] run_all: running=1
+15:15:14 [SCHED    110619ms] publish[0/CNT]: 4 bytes via gpio
+15:15:14 proto=gpio src=CNT len=4 ts=110619 : 00 00 00 00
+15:15:14 [RULE] R_CNT: gpio 5=TOGGLE -> 0
+15:15:14 [TRACE] Total Rule Eval (CNT): 567us
+15:15:15 [SCHED    111120ms] publish[0/CNT]: 4 bytes via gpio
+15:15:15 proto=gpio src=CNT len=4 ts=111120 : 00 00 00 00
+15:15:15 [RULE] R_CNT: gpio 5=TOGGLE -> 1
+15:15:15 [TRACE] Total Rule Eval (CNT): 564us
+15:15:15 [SCHED    111620ms] run_all: running=1
+15:15:15 [SCHED    111620ms] publish[0/CNT]: 4 bytes via gpio
+15:15:15 proto=gpio src=CNT len=4 ts=111620 : 00 00 00 00
+15:15:15 [RULE] R_CNT: gpio 5=TOGGLE -> 0
+15:15:15 [TRACE] Total Rule Eval (CNT): 574us
+15:15:16 [SCHED    112121ms] publish[0/CNT]: 4 bytes via gpio
+15:15:16 proto=gpio src=CNT len=4 ts=112121 : 00 00 00 00
+15:15:16 [RULE] R_CNT: gpio 5=TOGGLE -> 1
+15:15:16 [TRACE] Total Rule Eval (CNT): 555us
+15:15:16 [SCHED    112621ms] run_all: running=1
+15:15:16 [SCHED    112621ms] publish[0/CNT]: 4 bytes via gpio
+15:15:16 proto=gpio src=CNT len=4 ts=112621 : 00 00 00 00
+15:15:16 [RULE] R_CNT: gpio 5=TOGGLE -> 0
+15:15:16 [TRACE] Total Rule Eval (CNT): 578us
+15:15:17 [SCHED    113122ms] publish[0/CNT]: 4 bytes via gpio
+15:15:17 proto=gpio src=CNT len=4 ts=113122 : 00 00 00 00
+15:15:17 [RULE] R_CNT: gpio 5=TOGGLE -> 1
+15:15:17 [TRACE] Total Rule Eval (CNT): 530us
+15:15:17 [SCHED    113622ms] run_all: running=1
+15:15:17 [SCHED    113622ms] publish[0/CNT]: 4 bytes via gpio
+15:15:17 proto=gpio src=CNT len=4 ts=113622 : 00 00 00 00
+15:15:17 [RULE] R_CNT: gpio 5=TOGGLE -> 0
+15:15:17 [TRACE] Total Rule Eval (CNT): 592us
+15:15:18 [SCHED    114123ms] publish[0/CNT]: 4 bytes via gpio
+15:15:18 proto=gpio src=CNT len=4 ts=114123 : 00 00 00 00
+15:15:18 [RULE] R_CNT: gpio 5=TOGGLE -> 1
+15:15:18 [TRACE] Total Rule Eval (CNT): 548us
+15:15:18 [SCHED    114623ms] run_all: running=1
+15:15:18 [SCHED    114623ms] publish[0/CNT]: 4 bytes via gpio
+15:15:18 proto=gpio src=CNT len=4 ts=114623 : 00 00 00 00
+15:15:18 [RULE] R_CNT: gpio 5=TOGGLE -> 0
+15:15:18 [TRACE] Total Rule Eval (CNT): 566us
+15:15:19 [SCHED    115124ms] publish[0/CNT]: 4 bytes via gpio
+15:15:19 proto=gpio src=CNT len=4 ts=115124 : 00 00 00 00
+15:15:19 [RULE] R_CNT: gpio 5=TOGGLE -> 1
+15:15:19 [TRACE] Total Rule Eval (CNT): 555us
+15:15:19 [SCHED    115624ms] run_all: running=1
+15:15:19 [SCHED    115624ms] publish[0/CNT]: 4 bytes via gpio
+15:15:19 proto=gpio src=CNT len=4 ts=115624 : 00 00 00 00
+15:15:19 [RULE] R_CNT: gpio 5=TOGGLE -> 0
+15:15:19 [TRACE] Total Rule Eval (CNT): 573us
+15:15:20 [SCHED    116125ms] publish[0/CNT]: 4 bytes via gpio
+15:15:20 proto=gpio src=CNT len=4 ts=116125 : 00 00 00 00
+15:15:20 [RULE] R_CNT: gpio 5=TOGGLE -> 1
+15:15:20 [TRACE] Total Rule Eval (CNT): 554us
+15:15:20 --- stop-counter: STOP
+15:15:20 STOP
+15:15:21 [SCHED    117168ms] run_all: running=0
+15:15:22 [SCHED    118168ms] run_all: running=0
+15:15:22 --- clear-rules-3: CLEARRULES
+15:15:23 [RULE] reset
+15:15:23 [SCHED    119808ms] run_all: running=0
+15:15:24 [SCHED    120808ms] run_all: running=0
+15:15:25 --- rule-pwm: BEGINRULE|name=R_PWM|source=CNT|calc=c=u8(0)|when=1|action=pwm:5=0.5|ENDRULE
+15:15:25 [RULE] added name=R_PWM src=CNT vars=1 action=pwm:5=0.5
+15:15:25 RULE: ok
+15:15:26 [SCHED    122449ms] run_all: running=0
+15:15:27 [SCHED    123449ms] run_all: running=0
+15:15:28 --- pwm-run: RUN
+15:15:28 RUN
+15:15:28 [SCHED    124076ms] arm[0/CNT]: next_run reset to NOW
+15:15:28 [SCHED    124076ms] publish[0/CNT]: 4 bytes via gpio
+15:15:28 proto=gpio src=CNT len=4 ts=124076 : 00 00 00 00
+15:15:28 [RULE] R_PWM: pwm 5 duty=0.500
+15:15:28 [TRACE] Total Rule Eval (CNT): 1063us
+15:15:28 [SCHED    124577ms] run_all: running=1
+15:15:28 [SCHED    124577ms] publish[0/CNT]: 4 bytes via gpio
+15:15:28 proto=gpio src=CNT len=4 ts=124577 : 00 00 00 00
+15:15:28 [RULE] R_PWM: pwm 5 duty=0.500
+15:15:28 [TRACE] Total Rule Eval (CNT): 788us
+15:15:29 [SCHED    125078ms] publish[0/CNT]: 4 bytes via gpio
+15:15:29 proto=gpio src=CNT len=4 ts=125078 : 00 00 00 00
+15:15:29 [RULE] R_PWM: pwm 5 duty=0.500
+15:15:29 [TRACE] Total Rule Eval (CNT): 764us
+15:15:29 [SCHED    125578ms] run_all: running=1
+15:15:29 [SCHED    125578ms] publish[0/CNT]: 4 bytes via gpio
+15:15:29 proto=gpio src=CNT len=4 ts=125578 : 00 00 00 00
+15:15:29 [RULE] R_PWM: pwm 5 duty=0.500
+15:15:29 [TRACE] Total Rule Eval (CNT): 756us
+15:15:30 [SCHED    126079ms] publish[0/CNT]: 4 bytes via gpio
+15:15:30 proto=gpio src=CNT len=4 ts=126079 : 00 00 00 00
+15:15:30 [RULE] R_PWM: pwm 5 duty=0.500
+15:15:30 [TRACE] Total Rule Eval (CNT): 754us
+15:15:30 [SCHED    126579ms] run_all: running=1
+15:15:30 [SCHED    126579ms] publish[0/CNT]: 4 bytes via gpio
+15:15:30 proto=gpio src=CNT len=4 ts=126579 : 00 00 00 00
+15:15:30 [RULE] R_PWM: pwm 5 duty=0.500
+15:15:30 [TRACE] Total Rule Eval (CNT): 751us
+15:15:31 [SCHED    127080ms] publish[0/CNT]: 4 bytes via gpio
+15:15:31 proto=gpio src=CNT len=4 ts=127080 : 00 00 00 00
+15:15:31 [RULE] R_PWM: pwm 5 duty=0.500
+15:15:31 [TRACE] Total Rule Eval (CNT): 761us
+15:15:31 [SCHED    127580ms] run_all: running=1
+15:15:31 [SCHED    127580ms] publish[0/CNT]: 4 bytes via gpio
+15:15:31 proto=gpio src=CNT len=4 ts=127580 : 00 00 00 00
+15:15:31 [RULE] R_PWM: pwm 5 duty=0.500
+15:15:31 [TRACE] Total Rule Eval (CNT): 754us
+15:15:32 [SCHED    128081ms] publish[0/CNT]: 4 bytes via gpio
+15:15:32 proto=gpio src=CNT len=4 ts=128081 : 00 00 00 00
+15:15:32 [RULE] R_PWM: pwm 5 duty=0.500
+15:15:32 [TRACE] Total Rule Eval (CNT): 763us
+15:15:32 --- stop-pwm: STOP
+15:15:32 STOP
+15:15:33 [SCHED    129303ms] run_all: running=0
+15:15:34 [SCHED    130303ms] run_all: running=0
+15:15:35 --- clear-2: CLEAR
+15:15:35 [SCHED    130949ms] reset: cleared 8 slots
+15:15:35 [RULE] reset
+15:15:35 CLEARED
+15:15:36 [SCHED    131949ms] run_all: running=0
+15:15:37 [SCHED    132949ms] run_all: running=0

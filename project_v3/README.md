@@ -2,6 +2,8 @@
 
 **Pico-v3** is a modular, configuration-driven sensor node framework for the Raspberry Pi Pico W. It allows for dynamic runtime configuration of sensors (UART, I2C, GPIO), local data processing using a Reverse Polish Notation (RPN) rule engine, and real-time telemetry via MQTT.
 
+> **D2 branch note:** `s3-port-d2` plans SPI as a fourth hardware interface behind the same registry. SPI is not implemented until the acceptance checklist in [`../D2_SPI_TODO.md`](../D2_SPI_TODO.md) passes; the schema below documents the proposed contract for review.
+
 ---
 
 ## 🏗️ Architecture & Design
@@ -15,12 +17,14 @@ graph TD
         S_UART[UART Sensors]
         S_I2C[I2C Sensors]
         S_GPIO[GPIO Sensors]
+        S_SPI["SPI Devices (D2 planned)"]
     end
 
     subgraph "Bus Layer (Drivers)"
         Bus_UART["bus/uart.c"]
         Bus_I2C["bus/i2c.c"]
         Bus_GPIO["bus/gpio.c"]
+        Bus_SPI["bus/spi.c (D2 planned)"]
     end
 
     subgraph "Application Layer"
@@ -39,10 +43,12 @@ graph TD
     S_UART --> Bus_UART
     S_I2C --> Bus_I2C
     S_GPIO --> Bus_GPIO
+    S_SPI --> Bus_SPI
 
     Bus_UART --> Sched
     Bus_I2C --> Sched
     Bus_GPIO --> Sched
+    Bus_SPI --> Sched
 
     Sched -->|Data Frame| Output
 
@@ -64,7 +70,7 @@ graph TD
 The firmware is structured into four distinct layers, allowing for modularity and dynamic runtime reconfiguration without recompilation.
 
 1.  **Hardware Abstraction Bus Layer (`bus/`)**:
-    *   **Hardware Abstraction**: Drivers for UART, I2C, and GPIO.
+    *   **Hardware Abstraction**: Drivers for UART, I2C, and GPIO; D2 adds SPI after its contract and tests are approved.
     *   **Standard Interface**: All drivers implement a common `bus_t` interface (`init`, `poll`, `stream`).
     *   **Responsibility**: Reads raw bytes from hardware and passes them to the scheduler.
 
@@ -129,6 +135,13 @@ mosquitto_pub -h <IP_ADDRESS> -t "pico/<Node_Number>/config" -m "BEGINCFG|name=G
 | | `i2c.restart` | 1=Repeated Start, 0=Stop then Start | `i2c.restart=1` |
 | *Optional I2C* | `i2c .pre` | Pre byte sent to wake sensor | `i2c.pre=0xA5, 0x01` |
 | | `i2c.post_delay_ms` | Sleep time after sending pre bytes | `i2c.post_delay_ms=50` |
+| **SPI (D2 planned)** | `spi.host` | SPI host/bus selected at runtime | `spi.host=spi2` |
+| | `spi.sclk`, `spi.mosi`, `spi.miso`, `spi.cs` | Runtime signal pin mapping; use `-1` only where the agreed contract permits a missing signal | `spi.sclk=12` |
+| | `spi.hz` | Device clock frequency in hertz | `spi.hz=10000000` |
+| | `spi.mode` | SPI mode 0–3 | `spi.mode=0` |
+| | `spi.tx` | Optional bytes transmitted before/during the read | `spi.tx=0xA5 0x5A` |
+| | `spi.read_len` | Number of receive bytes required | `spi.read_len=2` |
+| | `spi.timeout_ms` | Bounded transaction timeout | `spi.timeout_ms=100` |
 | **GPIO (Digital)** | `gpio.pin` | Pin to read | `gpio.pin=15` |
 | | `gpio.pull` | 1=Up, 2=Down 0=Off/Floating | `gpio.pull=1` |
 | | `gpio.mode` | digital/pulse/onewire/counter | `gpio.mode=digital` |

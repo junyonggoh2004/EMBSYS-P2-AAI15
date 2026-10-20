@@ -1,0 +1,44 @@
+15:41:25 [TFLITE] Model loaded OK!
+15:41:25 [TFLITE]   Inputs:  1 tensor(s), 16 total element(s)
+15:41:25 [TFLITE]   Outputs: 1 tensor(s), 16 total element(s)
+15:41:25 [TFLITE]   Arena:   2908 / 65536 bytes used
+15:41:25 [INFER] Base model loaded: 16 inputs, 16 outputs
+15:41:25 [INFER] Loaded 16 base normalization params and 16 threshold masks
+15:41:26 [SCHED     11507ms] run_all: running=0
+15:41:27 [SCHED     12588ms] run_all: running=0
+15:41:27 --- clear-t03: CLEAR
+15:41:28 [SCHED     13156ms] reset: cleared 8 slots
+15:41:28 [RULE] reset
+15:41:28 CLEARED
+15:41:28 [SCHED     14156ms] run_all: running=0
+15:41:29 [SCHED     15156ms] run_all: running=0
+15:41:30 --- cfg-t03: BEGINCFG|name=BADPIN|proto=gpio|gpio.mode=digital|gpio.pin=99|mode=poll|freq_hz=1|ENDCFG
+15:41:30 OK: Config applied (inline, delim='|')
+15:41:30 [GPIO] BADPIN: pin 99 not available on this board
+15:41:30 [SCHED     15822ms] add[0]: init_cfg FAILED for BADPIN on gpio
+15:41:30 CFG: add failed (-2)
+15:41:31 [SCHED     16822ms] run_all: running=0
+15:41:32 [SCHED     17822ms] run_all: running=0
+15:41:33 [SCHED     18822ms] run_all: running=0
+15:41:33 --- run-t03: RUN
+15:41:33 RUN
+15:41:34 [SCHED     19954ms] run_all: running=1
+15:41:35 [SCHED     20954ms] run_all: running=1
+15:41:36 [SCHED     21954ms] run_all: running=1
+15:41:37 [SCHED     22954ms] run_all: running=1
+15:41:37 --- stop-t03: STOP
+15:41:38 STOP
+15:41:38 [SCHED     24154ms] run_all: running=0
+15:41:40 [SCHED     25154ms] run_all: running=0
+15:41:40 --- alive-t03: SHOW
+15:41:40 [SHOW] sampling=0
+15:41:40 [RULE] count=0
+15:41:41 [SCHED     26771ms] run_all: running=0
+15:41:42 [SCHED     27771ms] run_all: running=0
+15:41:43 [SCHED     28771ms] run_all: running=0
+15:41:43 --- clear-t03-end: CLEAR
+15:41:43 [SCHED     28923ms] reset: cleared 8 slots
+15:41:43 [RULE] reset
+15:41:43 CLEARED
+15:41:44 [SCHED     29923ms] run_all: running=0
+15:41:45 [SCHED     30923ms] run_all: running=0

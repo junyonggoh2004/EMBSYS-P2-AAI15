@@ -5,12 +5,14 @@
 extern const bus_t bus_i2c;
 extern const bus_t bus_uart;
 extern const bus_t bus_gpio;
+extern const bus_t bus_spi;
 
 // table of supported buses
 static const bus_t *s_buses[] = {
     &bus_i2c,
     &bus_uart,
     &bus_gpio,
+    &bus_spi,
     NULL
 };
 

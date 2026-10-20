@@ -5,7 +5,8 @@ Six digital sensors run together at 10, 50, 100, 500, 1000 and 2000 ms; no
 wiring is needed (inputs with pull-down). The 100, 500, 1000 and 2000 ms
 sensors pass when the mean interval is within 5% of the target over at least
 100 samples; 10 and 50 ms are measured and reported with their jitter, as the
-Week 6 review asks. Run it with the board's Wi-Fi and MQTT connected.
+Week 6 review asks. The p95 and maximum interval and the number of skipped
+samples are reported too, because the mean alone hides jitter (prof feedback). Run it with the board's Wi-Fi and MQTT connected.
 """
 
 import argparse
@@ -61,7 +62,7 @@ def main():
         send("CLEAR", 1.5)
 
     ok_all = True
-    print(f"{'sensor':<7} {'target':>7} {'n':>5} {'mean ms':>9} {'min':>6} {'max':>6} {'stdev':>7}  result")
+    print(f"{'sensor':<7} {'target':>7} {'n':>5} {'mean ms':>9} {'p95':>7} {'min':>6} {'max':>6} {'stdev':>7} {'missed':>6}  result")
     for name, hz in SENSORS:
         target = 1000.0 / hz
         ts = stamps[name]
@@ -71,11 +72,13 @@ def main():
             ok_all = False
             continue
         mean, sd = statistics.mean(iv), statistics.pstdev(iv)
+        p95 = sorted(iv)[int(0.95 * (len(iv) - 1))]
+        missed = sum(1 for x in iv if x > 1.5 * target)   # a gap of about two periods = one skipped sample
         graded = target >= 100
         ok = len(iv) >= 100 and abs(mean - target) <= 0.05 * target
         verdict = ("PASS" if ok else "FAIL") if graded else "measured"
         ok_all = ok_all and (ok or not graded)
-        print(f"{name:<7} {target:7.0f} {len(iv):5} {mean:9.2f} {min(iv):6} {max(iv):6} {sd:7.2f}  {verdict}")
+        print(f"{name:<7} {target:7.0f} {len(iv):5} {mean:9.2f} {p95:7} {min(iv):6} {max(iv):6} {sd:7.2f} {missed:6}  {verdict}")
     print(f"\nRaw log: {args.log}")
     return 0 if ok_all else 1
 

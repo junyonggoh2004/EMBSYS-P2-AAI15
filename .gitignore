@@ -41,3 +41,16 @@ libraries/MQTT/
 
 # Python environment for the test scripts (tools/s3.sh setup)
 .venv/
+
+# µT-Kernel build (esp32s3_mtk): Wi-Fi credentials, generated config and
+# component-manager downloads (dependencies.lock IS committed: it pins them)
+esp32s3_mtk/main/wifi_credentials.h
+esp32s3_mtk/sdkconfig
+esp32s3_mtk/sdkconfig.old
+esp32s3_mtk/managed_components/
+esp32s3_mtk/haltest/sdkconfig
+esp32s3_mtk/haltest/sdkconfig.old
+esp32s3_mtk/haltest/managed_components/
+esp32s3_mtk/wifirepro/sdkconfig
+esp32s3_mtk/wifirepro/sdkconfig.old
+esp32s3_mtk/wifirepro/managed_components/

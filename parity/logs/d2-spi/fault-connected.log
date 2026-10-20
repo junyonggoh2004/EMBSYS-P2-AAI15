@@ -1,0 +1,192 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x15 (USB_UART_CHIP_RESET),boot:0x2a (SPI_FAST_FLASH_BOOT)
+Saved PC:0x4037ae32
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x10cc
+load:0x403c8700,len:0xc2c
+load:0x403cb700,len:0x30b0
+entry 0x403c88b8
+[BOOT] esp32s3_edge node s3-001
+[SCHED         7ms] reset: cleared 8 slots
+[MODEL] Model transfer subsystem initialised.
+[MODEL] No saved model; using the built-in one
+[INFER] Inference manager initialised.
+[TFLITE] Unloading previous model state...
+[TFLITE] Unload complete.
+[TFLITE] Verifying FlatBuffer at 0x3c1165e0...
+[TFLITE] Schema version 3 verified.
+[TFLITE] Creating OpResolver...
+[TFLITE] Ops registered.
+[TFLITE] Creating Interpreter (Arena size 65536)...
+[TFLITE] Allocating tensors...
+[TFLITE] Tensors allocated.
+[TFLITE] Model loaded OK!
+[TFLITE]   Inputs:  1 tensor(s), 16 total element(s)
+[TFLITE]   Outputs: 1 tensor(s), 16 total element(s)
+[TFLITE]   Arena:   2908 / 65536 bytes used
+[INFER] Base model loaded: 16 inputs, 16 outputs
+[INFER] Loaded 16 base normalization params and 16 threshold masks
+[WIFI] no credentials; running offline
+
+--- STOP
+STOP
+[SCHED       591ms] run_all: running=0
+
+--- CLEAR
+[SCHED      1120ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=BASELINE|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED      1641ms] add[0]: BASELINE on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: BASELINE on spi
+CFG: ok (added #0: BASELINE)
+[SCHED      1641ms] run_all: running=0
+[SCHED      2641ms] run_all: running=0
+
+--- RUN
+RUN
+[SCHED      2696ms] arm[0/BASELINE]: next_run reset to NOW
+[SCHED      2696ms] publish[0/BASELINE]: 2 bytes via spi
+proto=spi src=BASELINE len=2 ts=2696 : A5 5A
+[SCHED      3197ms] publish[0/BASELINE]: 2 bytes via spi
+proto=spi src=BASELINE len=2 ts=3197 : A5 5A
+[SCHED      3697ms] run_all: running=1
+[SCHED      3697ms] publish[0/BASELINE]: 2 bytes via spi
+proto=spi src=BASELINE len=2 ts=3697 : A5 5A
+[SCHED      4198ms] publish[0/BASELINE]: 2 bytes via spi
+proto=spi src=BASELINE len=2 ts=4198 : A5 5A
+[SCHED      4698ms] run_all: running=1
+[SCHED      4698ms] publish[0/BASELINE]: 2 bytes via spi
+proto=spi src=BASELINE len=2 ts=4698 : A5 5A
+
+--- BEGINCFG|name=CLOCK_TOO_LOW|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=999|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED] config CLOCK_TOO_LOW refused: spi.hz out of range
+CFG: add failed (-5)
+[SCHED      5199ms] publish[0/BASELINE]: 2 bytes via spi
+proto=spi src=BASELINE len=2 ts=5199 : A5 5A
+[SCHED      5700ms] run_all: running=1
+[SCHED      5700ms] publish[0/BASELINE]: 2 bytes via spi
+proto=spi src=BASELINE len=2 ts=5700 : A5 5A
+[SCHED      6201ms] publish[0/BASELINE]: 2 bytes via spi
+proto=spi src=BASELINE len=2 ts=6201 : A5 5A
+[SCHED      6701ms] run_all: running=1
+[SCHED      6701ms] publish[0/BASELINE]: 2 bytes via spi
+proto=spi src=BASELINE len=2 ts=6701 : A5 5A
+
+--- BEGINCFG|name=CLOCK_TOO_HIGH|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=40000001|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED] config CLOCK_TOO_HIGH refused: spi.hz out of range
+CFG: add failed (-5)
+[SCHED      7202ms] publish[0/BASELINE]: 2 bytes via spi
+proto=spi src=BASELINE len=2 ts=7202 : A5 5A
+[SCHED      7702ms] run_all: running=1
+[SCHED      7702ms] publish[0/BASELINE]: 2 bytes via spi
+proto=spi src=BASELINE len=2 ts=7702 : A5 5A
+[SCHED      8203ms] publish[0/BASELINE]: 2 bytes via spi
+proto=spi src=BASELINE len=2 ts=8203 : A5 5A
+[SCHED      8703ms] run_all: running=1
+[SCHED      8703ms] publish[0/BASELINE]: 2 bytes via spi
+proto=spi src=BASELINE len=2 ts=8703 : A5 5A
+
+--- STOP
+STOP
+
+--- CLEAR
+[SCHED      9424ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=CLOCK_MIN_1KHZ|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=1000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED      9944ms] add[0]: CLOCK_MIN_1KHZ on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=1000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: CLOCK_MIN_1KHZ on spi
+CFG: ok (added #0: CLOCK_MIN_1KHZ)
+[SCHED      9945ms] run_all: running=0
+[SCHED     10945ms] run_all: running=0
+
+--- RUN
+RUN
+[SCHED     10999ms] arm[0/CLOCK_MIN_1KHZ]: next_run reset to NOW
+[SCHED     10999ms] publish[0/CLOCK_MIN_1KHZ]: 2 bytes via spi
+proto=spi src=CLOCK_MIN_1KHZ len=2 ts=10999 : A5 5A
+[SCHED     11500ms] publish[0/CLOCK_MIN_1KHZ]: 2 bytes via spi
+proto=spi src=CLOCK_MIN_1KHZ len=2 ts=11500 : A5 5A
+[SCHED     12001ms] run_all: running=1
+[SCHED     12001ms] publish[0/CLOCK_MIN_1KHZ]: 2 bytes via spi
+proto=spi src=CLOCK_MIN_1KHZ len=2 ts=12001 : A5 5A
+[SCHED     12502ms] publish[0/CLOCK_MIN_1KHZ]: 2 bytes via spi
+proto=spi src=CLOCK_MIN_1KHZ len=2 ts=12502 : A5 5A
+[SCHED     13003ms] run_all: running=1
+[SCHED     13003ms] publish[0/CLOCK_MIN_1KHZ]: 2 bytes via spi
+proto=spi src=CLOCK_MIN_1KHZ len=2 ts=13003 : A5 5A
+
+--- STOP
+STOP
+
+--- CLEAR
+[SCHED     13540ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=CLOCK_MAX_40MHZ|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=40000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     14062ms] add[0]: CLOCK_MAX_40MHZ on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=40000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: CLOCK_MAX_40MHZ on spi
+CFG: ok (added #0: CLOCK_MAX_40MHZ)
+[SCHED     14063ms] run_all: running=0
+[SCHED     15063ms] run_all: running=0
+
+--- RUN
+RUN
+[SCHED     15124ms] arm[0/CLOCK_MAX_40MHZ]: next_run reset to NOW
+[SCHED     15124ms] publish[0/CLOCK_MAX_40MHZ]: 2 bytes via spi
+proto=spi src=CLOCK_MAX_40MHZ len=2 ts=15124 : A5 5A
+[SCHED     15625ms] publish[0/CLOCK_MAX_40MHZ]: 2 bytes via spi
+proto=spi src=CLOCK_MAX_40MHZ len=2 ts=15625 : A5 5A
+[SCHED     16125ms] run_all: running=1
+[SCHED     16125ms] publish[0/CLOCK_MAX_40MHZ]: 2 bytes via spi
+proto=spi src=CLOCK_MAX_40MHZ len=2 ts=16125 : A5 5A
+[SCHED     16626ms] publish[0/CLOCK_MAX_40MHZ]: 2 bytes via spi
+proto=spi src=CLOCK_MAX_40MHZ len=2 ts=16626 : A5 5A
+[SCHED     17126ms] run_all: running=1
+[SCHED     17126ms] publish[0/CLOCK_MAX_40MHZ]: 2 bytes via spi
+proto=spi src=CLOCK_MAX_40MHZ len=2 ts=17126 : A5 5A
+
+--- STOP
+STOP
+
+--- CLEAR
+[SCHED     17671ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=FORCED_TIMEOUT|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=1000|spi.mode=0|spi.tx=0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63|spi.read_len=128|spi.timeout_ms=1|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     18194ms] add[0]: FORCED_TIMEOUT on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=1000,mode=0,tx=64,rx=128,timeout=1ms)
+[SCHED] added: FORCED_TIMEOUT on spi
+CFG: ok (added #0: FORCED_TIMEOUT)
+[SCHED     18195ms] run_all: running=0
+[SCHED     19195ms] run_all: running=0
+
+--- RUN
+RUN
+[SCHED     19261ms] arm[0/FORCED_TIMEOUT]: next_run reset to NOW
+[SCHED     19276ms] error[0/FORCED_TIMEOUT]: poll returned -1
+[SCHED     19792ms] error[0/FORCED_TIMEOUT]: poll returned -1
+[SCHED     20292ms] run_all: running=1
+[SCHED     20307ms] error[0/FORCED_TIMEOUT]: poll returned -1
+[SCHED     20823ms] error[0/FORCED_TIMEOUT]: poll returned -1
+
+--- STOP
+STOP
+
+--- CLEAR
+[SCHED     21816ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED     21816ms] run_all: running=0

@@ -96,6 +96,43 @@ static void handle_sched_msg(sched_msg_t *m, bool *running, bool *cfg_ready) {
     }
 }
 
+// SchedulerTask cycle time: the work done on each wake-up (messages, sensor
+// reads, rules, model and inference polling), for WCET evidence (D5). Only
+// SchedulerTask writes the statistics; TASKS prints them and asks for a reset.
+static const uint32_t k_cycle_edges_us[] = { 100, 250, 500, 1000, 2500, 5000, 10000, 25000, 50000 };
+static const size_t k_cycle_bins = sizeof k_cycle_edges_us / sizeof k_cycle_edges_us[0] + 1;
+static uint32_t s_cycle_hist[sizeof k_cycle_edges_us / sizeof k_cycle_edges_us[0] + 1];
+static uint32_t s_cycle_n, s_cycle_max_us;
+static uint64_t s_cycle_sum_us;
+static volatile bool s_cycle_reset;
+
+static void cycle_record(uint32_t us) {
+    if (s_cycle_reset) {
+        memset(s_cycle_hist, 0, sizeof s_cycle_hist);
+        s_cycle_n = 0; s_cycle_max_us = 0; s_cycle_sum_us = 0;
+        s_cycle_reset = false;
+    }
+    size_t b = 0;
+    while (b < k_cycle_bins - 1 && us >= k_cycle_edges_us[b]) b++;
+    s_cycle_hist[b]++;
+    s_cycle_n++;
+    s_cycle_sum_us += us;
+    if (us > s_cycle_max_us) s_cycle_max_us = us;
+}
+
+static void cycle_print_and_reset(void) {
+    uint32_t n = s_cycle_n, need = (uint32_t)((n * 95ULL + 99) / 100), seen = 0;
+    size_t b = 0;
+    for (; b < k_cycle_bins && n; b++) { seen += s_cycle_hist[b]; if (seen >= need) break; }
+    char p95[16];
+    if (!n) snprintf(p95, sizeof p95, "-");
+    else if (b >= k_cycle_bins - 1) snprintf(p95, sizeof p95, ">%u", (unsigned)k_cycle_edges_us[k_cycle_bins - 2]);
+    else snprintf(p95, sizeof p95, "<%u", (unsigned)k_cycle_edges_us[b]);
+    printf("[TASK] SchedulerTask cycles=%u mean_us=%u p95_us=%s max_us=%u\n", (unsigned)n,
+           n ? (unsigned)(s_cycle_sum_us / n) : 0u, p95, (unsigned)s_cycle_max_us);
+    s_cycle_reset = true;
+}
+
 static void scheduler_task(void *arg) {
     (void)arg;
     static bool running = false, cfg_ready = false;
@@ -117,11 +154,13 @@ static void scheduler_task(void *arg) {
     esp_task_wdt_add(NULL);
     for (;;) {
         uint32_t wait_ms = scheduler_next_due_ms(running, 1000);
-        if (xQueueReceive(sched_q, &msg, pdMS_TO_TICKS(wait_ms)) == pdTRUE)
-            handle_sched_msg(&msg, &running, &cfg_ready);
+        bool got = xQueueReceive(sched_q, &msg, pdMS_TO_TICKS(wait_ms)) == pdTRUE;
+        uint64_t t0 = hal_time_us();
+        if (got) handle_sched_msg(&msg, &running, &cfg_ready);
         scheduler_run_all(running);
         model_transfer_poll();
         inference_mgr_poll();
+        cycle_record((uint32_t)(hal_time_us() - t0));
         esp_task_wdt_reset();
     }
 }
@@ -230,6 +269,7 @@ extern "C" void runtime_print_tasks(void) {
     }
     printf("[TASK] heap_free=%u B min_free=%u B psram_free=%u B\n",
            (unsigned)ESP.getFreeHeap(), (unsigned)ESP.getMinFreeHeap(), (unsigned)ESP.getFreePsram());
+    cycle_print_and_reset();
 }
 
 extern "C" void runtime_monitor_tick(void) {

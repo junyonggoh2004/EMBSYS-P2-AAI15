@@ -1,0 +1,78 @@
+15:21:39 add[0]: S3GPIO on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=4)
+15:21:39 [SCHED] added: S3GPIO on gpio
+15:21:39 [SCHED      8953ms] run_all: running=0
+15:21:39 [HALTEST] PASS gpio-driver-accepts-config scheduler_add_config=0
+15:21:39 [SCHED      8954ms] reset: cleared 8 slots
+15:21:39 [HALTEST] PASS mqtt-init-accepts-broker mqtt_init=true (no network task in this sketch)
+15:21:39 [INFER] Inference manager initialised.
+15:21:39 [TFLITE] Unloading previous model state...
+15:21:39 [TFLITE] Unload complete.
+15:21:39 [TFLITE] Verifying FlatBuffer at 0x3c0a0484...
+15:21:39 [TFLITE] Schema version 3 verified.
+15:21:39 [TFLITE] Creating OpResolver...
+15:21:39 [TFLITE] Ops registered.
+15:21:39 [TFLITE] Creating Interpreter (Arena size 65536)...
+15:21:39 [TFLITE] Allocating tensors...
+15:21:39 [TFLITE] Tensors allocated.
+15:21:39 [TFLITE] Model loaded OK!
+15:21:39 [TFLITE]   Inputs:  1 tensor(s), 16 total element(s)
+15:21:39 [TFLITE]   Outputs: 1 tensor(s), 16 total element(s)
+15:21:39 [TFLITE]   Arena:   2908 / 65536 bytes used
+15:21:39 [INFER] Base model loaded: 16 inputs, 16 outputs
+15:21:39 [INFER] Loaded 16 base normalization params and 16 threshold masks
+15:21:39 [HALTEST] FAIL unported-tflite-reports-no-model loaded
+15:21:39 [HALTEST] done failures=1
+15:21:40 [TICK] 9960
+15:21:40 [HALTEST] start
+15:21:40 [HALTEST] PASS time-monotonic 10023219 -> 10023220 us
+15:21:40 [HALTEST] PASS time-ms-matches-us ms=10023 us/1000=10023
+15:21:40 [HALTEST] PASS delay-ms-100 100713 us
+15:21:40 [HALTEST] PASS delay-ms-1 1946 us
+15:21:40 [HALTEST] PASS delay-us-500 502 us
+15:21:40 [HALTEST] PASS console-getc-timeout ret=-1 after 20399 us
+15:21:40 [HALTEST] PASS gpio-reserved-pins-refused -1 19 20 22 26 32 49 99
+15:21:40 [HALTEST] PASS gpio-input-pulldown mode=0 read=0
+15:21:40 [HALTEST] PASS gpio-input-pullup mode=0 read=1
+15:21:40 [HALTEST] PASS gpio-output-toggle toggle 1/1 then 0/0
+15:21:40 [HALTEST] PASS pwm-set-and-stop set=0 set=0 stop=0 read=0
+15:21:40 [HALTEST] SKIP jumper-measurements no jumper between GPIO5 and GPIO6
+15:21:40 [SCHED     10148ms] reset: cleared 8 slots
+15:21:40 [RULE] reset
+15:21:40 [SCHED     10148ms] add[0]: S3GPIO on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=4)
+15:21:40 [SCHED] added: S3GPIO on gpio
+15:21:40 [SCHED     10149ms] run_all: running=0
+15:21:40 [HALTEST] PASS gpio-driver-accepts-config scheduler_add_config=0
+15:21:40 [SCHED     10149ms] reset: cleared 8 slots
+15:21:40 [HALTEST] PASS mqtt-init-accepts-broker mqtt_init=true (no network task in this sketch)
+15:21:40 [INFER] Inference manager initialised.
+15:21:40 [TFLITE] Unloading previous model state...
+15:21:40 [TFLITE] Unload complete.
+15:21:40 [TFLITE] Verifying FlatBuffer at 0x3c0a0484...
+15:21:40 [TFLITE] Schema version 3 verified.
+15:21:40 [TFLITE] Creating OpResolver...
+15:21:40 [TFLITE] Ops registered.
+15:21:40 [TFLITE] Creating Interpreter (Arena size 65536)...
+15:21:40 [TFLITE] Allocating tensors...
+15:21:40 [TFLITE] Tensors allocated.
+15:21:40 [TFLITE] Model loaded OK!
+15:21:40 [TFLITE]   Inputs:  1 tensor(s), 16 total element(s)
+15:21:40 [TFLITE]   Outputs: 1 tensor(s), 16 total element(s)
+15:21:40 [TFLITE]   Arena:   2908 / 65536 bytes used
+15:21:40 [INFER] Base model loaded: 16 inputs, 16 outputs
+15:21:40 [INFER] Loaded 16 base normalization params and 16 threshold masks
+15:21:40 [HALTEST] FAIL unported-tflite-reports-no-model loaded
+15:21:41 [HALTEST] done failures=1
+15:21:41 [ECHO] hello parity 12345
+15:21:41 [TICK] 10958
+15:21:42 [TICK] 11960
+15:21:43 [TICK] 12959
+15:21:44 [TICK] 13958
+15:21:45 [TICK] 14960
+15:21:46 [TICK] 15959
+15:21:47 [TICK] 16958
+15:21:48 [TICK] 17960
+15:21:49 [TICK] 18959
+15:21:50 [TICK] 19958
+15:21:51 [TICK] 20960
+15:21:52 [TICK] 21959
+15:21:53 [TICK] 22958

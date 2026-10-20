@@ -39,7 +39,14 @@ static active_sensor_t g_sensors[MAX_ACTIVE];
 
 /* Map enum -> name used by bus_lookup */
 static inline const char* proto_name(proto_t p) {
-    return (p==proto_i2c) ? "i2c" : (p==proto_uart) ? "uart" : (p==proto_mqtt) ? "mqtt": "gpio";
+    switch (p) {
+        case proto_i2c:  return "i2c";
+        case proto_uart: return "uart";
+        case proto_gpio: return "gpio";
+        case proto_mqtt: return "mqtt";
+        case proto_spi:  return "spi";
+        default:         return NULL;
+    }
 }
 
 int scheduler_count(void) {
@@ -50,10 +57,17 @@ int scheduler_count(void) {
 
 /* Initialize scheduler */
 void scheduler_reset(void) {
-    /* Driver contexts are calloc'd by init_cfg; free them or every CLEAR
-       leaks one per sensor. Edge-counter interrupts only touch HAL state. */
+    /* Contexts are opaque to the scheduler. Give each driver a chance to
+       stop hardware activity and release platform resources before CLEAR. */
     for (int i = 0; i < MAX_ACTIVE; i++) {
-        if (g_sensors[i].in_use && g_sensors[i].ctx) free(g_sensors[i].ctx);
+        active_sensor_t *S = &g_sensors[i];
+        if (S->streaming && S->bus && S->bus->stream_stop) {
+            S->bus->stream_stop(S->ctx);
+        }
+        if (S->ctx) {
+            if (S->bus && S->bus->deinit) S->bus->deinit(S->ctx);
+            else free(S->ctx); /* compatibility for an out-of-tree driver */
+        }
     }
     memset(g_sensors, 0, sizeof(g_sensors));
     SLOG("reset: cleared %d slots", (int)MAX_ACTIVE);
@@ -64,9 +78,16 @@ void scheduler_dump(void) {
             const app_cfg_t *c = &g_sensors[i].cfg_copy;
             printf("[SCHED] #%d name=%s proto=%s mode=%s freq=%.3fHz\n",
                    i, c->name,
-                   proto_name(c->proto),
+                   proto_name(c->proto) ? proto_name(c->proto) : "unknown",
                    (c->mode==sample_mode_stream)?"stream":"poll",
                    c->freq_hz);
+            if (c->proto == proto_spi) {
+                printf("[SCHED] #%d SPI host=%s sclk=%d mosi=%d miso=%d cs=%d hz=%u mode=%u tx=%u rx=%u timeout_ms=%u\n",
+                       i, c->spi_host, c->spi_sclk, c->spi_mosi, c->spi_miso,
+                       c->spi_cs, (unsigned)c->spi_hz, (unsigned)c->spi_mode,
+                       (unsigned)c->spi_tx_len, (unsigned)c->spi_read_len,
+                       (unsigned)c->spi_timeout_ms);
+            }
         }
     }
 }
@@ -112,6 +133,11 @@ int scheduler_add_config(const app_cfg_t *cfg_in) {
             }
 
             const char *pname = proto_name(cfg_in->proto);
+            if (!pname) {
+                SLOG("add[%d]: UNKNOWN proto for %s", i, cfg_in->name);
+                S->in_use = false;
+                return -1;
+            }
             S->bus = bus_lookup(pname);
             S->next_run = hal_time_us();
 
@@ -128,11 +154,23 @@ int scheduler_add_config(const app_cfg_t *cfg_in) {
                 .kv_pairs = (void *)&S->cfg_copy
             };
 
-            if (S->bus->init_cfg && S->bus->init_cfg(&scfg, &S->ctx) != 0) {
+            void *new_ctx = NULL;
+            int init_rc = S->bus->init_cfg ? S->bus->init_cfg(&scfg, &new_ctx) : -1;
+            if (init_rc != 0) {
+                /* A driver should normally clean up and return NULL on
+                   failure. This also protects against a partially returned
+                   context from a future driver such as SPI. */
+                if (new_ctx) {
+                    if (S->bus->deinit) S->bus->deinit(new_ctx);
+                    else free(new_ctx);
+                }
                 SLOG("add[%d]: init_cfg FAILED for %s on %s", i, cfg_in->name, pname);
+                S->bus = NULL;
+                S->ctx = NULL;
                 S->in_use = false;
                 return -2;
             }
+            S->ctx = new_ctx;
 
             if (S->bus->probe) (void)S->bus->probe(S->ctx);
 
@@ -148,6 +186,13 @@ int scheduler_add_config(const app_cfg_t *cfg_in) {
                      i, S->cfg_copy.name, pname, S->cfg_copy.freq_hz,
                      (S->cfg_copy.mode==sample_mode_stream)?"stream":"poll",
                      S->cfg_copy.uart_tx, S->cfg_copy.uart_rx, S->cfg_copy.uart_baud);
+            } else if (cfg_in->proto == proto_spi) {
+                SLOG("add[%d]: %s on %s freq=%.3fHz mode=poll SPI(host=%s,sclk=%d,mosi=%d,miso=%d,cs=%d,hz=%u,mode=%u,tx=%u,rx=%u,timeout=%ums)",
+                     i, S->cfg_copy.name, pname, S->cfg_copy.freq_hz,
+                     S->cfg_copy.spi_host, S->cfg_copy.spi_sclk, S->cfg_copy.spi_mosi,
+                     S->cfg_copy.spi_miso, S->cfg_copy.spi_cs, (unsigned)S->cfg_copy.spi_hz,
+                     (unsigned)S->cfg_copy.spi_mode, (unsigned)S->cfg_copy.spi_tx_len,
+                     (unsigned)S->cfg_copy.spi_read_len, (unsigned)S->cfg_copy.spi_timeout_ms);
             } else {
                 SLOG("add[%d]: %s on %s freq=%.3fHz mode=%s method=%s GPIO(pin=%d)",
                      i, S->cfg_copy.name, pname, S->cfg_copy.freq_hz,

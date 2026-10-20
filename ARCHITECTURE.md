@@ -4,6 +4,8 @@ Status: draft for team review, 2026-10-03, prepared by Hasif. The README makes t
 
 Requirements, the parity table and every test ID cited here are defined in [parity/PARITY.md](parity/PARITY.md). The Pico reference is the tag `pico-reference`.
 
+> **Runtime superseded (Tribunal 1, 19 Oct 2026).** This freeze describes the Arduino/FreeRTOS runtime of tasks 11–22, which is now the measured baseline. The change requirement moved D1 onto µT-Kernel 3 SMP on the course port: the task table, kernel objects, core assignment and interrupt handling that replace sections 6, 7 and 10 are in [MTK_REDESIGN.md](MTK_REDESIGN.md) §3–§5, and the two-slot model store that replaces section 11's storage is in §3 there. Requirements, defect dispositions, the HAL interface and the hardware layout below are unchanged; section 4's ESP32-S3 implementation column describes the Arduino backend, and the µT-Kernel backend for the same interface is mapped in [PORTABILITY.md §6](PORTABILITY.md#6-the-µt-kernel-3-smp-build-tasks-2434).
+
 ## 1. Team roles and subsystem ownership
 
 The port keeps the reference's application logic and replaces only what touches the platform. The table divides the code that way and maps each part to its implementation task. Owners for tasks 11 to 23 are assigned at the review; the D1 team is Hasif, Cody and Sitt.
@@ -15,6 +17,7 @@ The port keeps the reference's application logic and replaces only what touches 
 | Scheduler and GPIO modes | `scheduler.c`, `config_parser.c` | GPIO driver behind `bus_gpio` | 14, 15 | |
 | I2C | None | I2C driver behind `bus_i2c`, on `Wire` | 16 | |
 | UART | None | UART driver behind `bus_uart`, on `HardwareSerial` | 17 | |
+| SPI (D2) | Shared configuration, registry and transaction/error contract | SPI bus manager and device driver behind `bus_spi`; Arduino `SPIClass` or documented ESP-IDF exception | D2 | Brendan and Jy |
 | Rule engine | `rules.c`, `rule_expr.c`, `rule_action.c` | GPIO and PWM actions through the HAL | 18 | |
 | Wi-Fi, MQTT, bridging | `mqtt_config_parser.c`, `mqtt_json_parser.c`, `sensor_bridge.c` | Network driver in the `net` task | 19 | |
 | Model transfer, inference | `inference_manager.c`, transfer state machine | Model store, TFLite Micro wrapper | 20 | |
@@ -58,11 +61,13 @@ Shared code may call only four interfaces: the HAL below; the existing sensor dr
 | GPIO | `gpio_init`, `gpio_set_dir`, `gpio_put`, `gpio_get` in `rule_action.c` | `hal_gpio_valid`, `hal_gpio_mode`, `hal_gpio_write`, `hal_gpio_read`, `hal_gpio_toggle` | `pinMode`, `digitalWrite`, `digitalRead` | An invalid pin returns `HAL_ERR_PIN` |
 | PWM | `pwm_*` in `rule_action.c` | `hal_pwm_set(pin, duty)`, `hal_pwm_stop(pin)` | LEDC through the Arduino API | Duty 0.0 to 1.0 in steps of 1/1000; frequency fixed per target to match parity (about 37.5 kHz on the Pico) |
 
-The contract, with units, return values, blocking limits and ISR rules, is [project_v3/include/hal/hal.h](project_v3/include/hal/hal.h), and the Pico backend is [project_v3/platform/pico/hal_pico.c](project_v3/platform/pico/hal_pico.c) (task 11). [tools/check_hal_boundary.sh](tools/check_hal_boundary.sh) compiles every shared module without any SDK headers, which proves that no shared module bypasses the HAL. Edge counting, critical sections and the task watchdog are used only below the boundary, by the GPIO driver, the model store and the task 13 runtime, so they are platform services rather than HAL functions; on the S3 they use `attachInterrupt`, `portENTER_CRITICAL` and `esp_task_wdt`.
+The contract, with units, return values, blocking limits and ISR rules, is [libraries/EdgeCore/src/hal/hal.h](libraries/EdgeCore/src/hal/hal.h), and the Pico backend is [project_v3/platform/pico/hal_pico.c](project_v3/platform/pico/hal_pico.c) (task 11). [tools/check_hal_boundary.sh](tools/check_hal_boundary.sh) compiles every shared module without any SDK headers, which proves that no shared module bypasses the HAL. Edge counting, critical sections and the task watchdog are used only below the boundary, by the GPIO driver, the model store and the task 13 runtime, so they are platform services rather than HAL functions; on the S3 they use `attachInterrupt`, `portENTER_CRITICAL` and `esp_task_wdt`.
 
-Platform drivers sit beside the HAL rather than inside it: I2C (`hardware/i2c.h`) becomes `Wire`, UART (`hardware/uart.h`) becomes `HardwareSerial` on UART1, the network (`cyw43_arch`, lwIP MQTT) becomes Arduino `WiFi` plus the MQTT library in section 10, flash (`hardware/flash.h`) becomes the model store in section 11, and the TFLite Micro port becomes an Arduino build of the library.
+Platform drivers sit beside the HAL rather than inside it: I2C (`hardware/i2c.h`) becomes `Wire`, UART (`hardware/uart.h`) becomes `HardwareSerial` on UART1, D2 SPI uses a `SPIClass` adapter behind `bus_spi`, the network (`cyw43_arch`, lwIP MQTT) becomes Arduino `WiFi` plus the MQTT library in section 10, flash (`hardware/flash.h`) becomes the model store in section 11, and the TFLite Micro port becomes an Arduino build of the library.
 
-Three ESP-IDF calls are documented exceptions, as the README requires. `esp_timer_get_time` is used because Arduino `micros()` is 32-bit and wraps after about 71 minutes, while the reference relies on 64-bit time. `esp_task_wdt` is used because Arduino offers no per-task watchdog. `esp_partition` is used because Arduino has no raw partition interface (section 11). Each stays below the boundary and is tested in its task.
+D2 extended `bus_t` with a `deinit` lifecycle callback and added typed SPI errors. SPI bus ownership, locking, device handles and platform error translation stay in the ESP32-S3 backend. The current `SPIClass` implementation uses synchronous byte transfers, not DMA; its timeout is checked after a transfer, while mutex acquisition has a bounded wait. Shared application code sees validated configuration, the common registry, and explicit success/error results. Device-response verification must be added by the W25Q32 layer: generic SPI cannot detect an absent slave from a completed clocking operation. The detailed gates are [D2_SPI_TODO.md](D2_SPI_TODO.md) and [D2_SPI_DESIGN_NOTES.md](D2_SPI_DESIGN_NOTES.md).
+
+The D1 design currently has three documented ESP-IDF exceptions, as the README requires. `esp_timer_get_time` is used because Arduino `micros()` is 32-bit and wraps after about 71 minutes, while the reference relies on 64-bit time. `esp_task_wdt` is used because Arduino offers no per-task watchdog. `esp_partition` is used because Arduino has no raw partition interface (section 11). Each stays below the boundary and is tested in its task. D2 retained Arduino `SPIClass`; it introduced no `spi_master` exception. The accepted limitation is that a synchronous SPI transaction cannot be preempted by the configured timeout.
 
 Source layout: the shared code, including the bus drivers, is the Arduino library [libraries/EdgeCore/](libraries/EdgeCore/), which the Pico CMake build also compiles, so both targets use the identical files with no copy (task 12). Pico platform code stays in `project_v3/`; the ESP32-S3 platform code is the library [libraries/EdgeS3/](libraries/EdgeS3/) (HAL backend and the FreeRTOS runtime), used by the firmware sketch `esp32s3_edge/` and the HAL test sketch `esp32s3_haltest/`. Task 9 keeps the `esp32s3/` bring-up sketch free of framework code. Build steps for both targets are in SETUP.md.
 
@@ -77,6 +82,9 @@ The pin and power table is the output of task 8 in SETUP.md and is copied here a
 | UART radar | UART | Not tested (P-30) | Task 8 | Per datasheet |
 | IR module, comparator board | GPIO digital | GP16, GP18 (optional extras) | Task 8 | 3.3 V |
 | Parity loopback jumpers | GPIO, UART | GP21 to GP22, GP16 to GP17 | Task 8 | None |
+| D2 SPI loopback | SPI2/FSPI | No Pico parity requirement | SCLK GPIO11, MOSI GPIO12, MISO GPIO13, CS GPIO10; GPIO12↔GPIO13 jumper | 3.3 V logic; TFT disconnected |
+| D2 W25Q32 acceptance device | SPI2/FSPI | No Pico parity requirement | Proposed SCLK GPIO11, MOSI GPIO12, MISO GPIO13, CS GPIO10; confirm module labels before wiring | Verify module is 3.3 V compatible |
+| D2 TFT experiment (optional) | Four-wire SPI plus DC/reset/backlight | Not part of the Pico baseline | Separate fixture; GPIO13 backlight conflicts with loopback MISO | Does not replace W25Q32 proof |
 
 The parity harness sends Pico pin numbers. Task 21 adds a pin map to it so that the same stages run on the S3 with only the pins changed, as task 14 requires.
 
@@ -124,7 +132,7 @@ flowchart LR
     ENG -->|"start pulse"| TMR(["pulse timer"])
     NET -->|"WIFI_UP, MQTT_UP"| EVT{{"net_events"}}
     EVT --> ENG
-    ENG --> BUS["bus drivers: GPIO, I2C, UART"]
+    ENG --> BUS["bus drivers: GPIO, I2C, UART, SPI (D2)"]
     MOD --> STORE[("model slots A and B")]
     NET <--> BROKER["MQTT broker"]
 ```
@@ -245,6 +253,7 @@ The task requires a team-reviewed record of AI use in the design. This draft was
 | 9 scheduler and GPIO | 14, 15 | P-07, P-09 to P-14, T-02 to T-06, NFR-01 |
 | 5 and 4 I2C driver | 16 | P-15, N-02, T-07 |
 | 5 and 4 UART driver | 17 | P-16, P-17, P-30, T-08, T-09 |
+| 4, 5, 7 and 9 SPI extension | D2 | FR-16, FR-17, NFR-08, T-17 to T-23 |
 | 3 and 6 rule actions | 18 | P-18 to P-22, T-10, N-05 to N-07 |
 | 10 MQTT | 19 | P-25 to P-28, T-11 to T-13, NFR-07 |
 | 11 model store | 20 | P-23, P-29, T-14 to T-16, NFR-03, NFR-04 |

@@ -177,7 +177,7 @@ static void run_selftest(void) {
 
     inference_mgr_init();
     bool model = inference_mgr_load_base_model();
-    check("unported-tflite-reports-no-model", !model && !inference_mgr_is_ready(),
+    check("base-model-loads", model && inference_mgr_is_ready(),
           model ? "loaded" : "load_base_model=false");
 
     printf("[HALTEST] done failures=%d\n", s_fail);

@@ -32,6 +32,8 @@ static int do_pre_writes(i2c_ctx_t *c);
 /* ---------- helpers ---------- */
 /* ---------- bus implementation ---------- */
 static int i2c_init_cfg(const sensor_cfg_t *scfg, void **out_ctx) {
+    if (!scfg || !out_ctx) return -1;
+    *out_ctx = NULL;
     const app_cfg_t *cfg = (const app_cfg_t *)scfg->kv_pairs;
 
     i2c_ctx_t *c = (i2c_ctx_t *)calloc(1, sizeof(*c));
@@ -81,6 +83,10 @@ static int i2c_init_cfg(const sensor_cfg_t *scfg, void **out_ctx) {
 static int i2c_probe(void *ctx_) {
     (void)ctx_;
     return 0;
+}
+
+static void i2c_deinit(void *ctx_) {
+    free(ctx_);
 }
 
 static int do_pre_writes(i2c_ctx_t *c) {
@@ -137,6 +143,7 @@ static void i2c_stream_stop(void *ctx)  { (void)ctx; }
 const bus_t bus_i2c = {
     .name = "i2c",
     .init_cfg = i2c_init_cfg,
+    .deinit = i2c_deinit,
     .probe = i2c_probe,
     .poll_once = i2c_poll_once,
     .stream_start = i2c_stream_start,

@@ -42,6 +42,8 @@ static int do_pre_writes(uart_ctx_t *c) {
 
 /* ---------------------- bus interface functions ----------------------- */
 static int uart_init_cfg(const sensor_cfg_t *scfg, void **out_ctx) {
+    if (!scfg || !out_ctx) return -1;
+    *out_ctx = NULL;
     const app_cfg_t *cfg = (const app_cfg_t *)scfg->kv_pairs;
 
     uart_ctx_t *c = (uart_ctx_t*)calloc(1, sizeof(*c));
@@ -88,6 +90,10 @@ static int uart_probe(void *ctx_) {
     (void)ctx_;
     // Could try a non-intrusive check; UART has no "probe" per se.
     return 0;
+}
+
+static void uart_deinit(void *ctx_) {
+    free(ctx_);
 }
 
 static int uart_poll_once(void *ctx_, uint8_t *buf, size_t cap) {
@@ -153,6 +159,7 @@ static void uart_stream_stop(void *ctx_) {
 const bus_t bus_uart = {
     .name         = "uart",
     .init_cfg     = uart_init_cfg,
+    .deinit       = uart_deinit,
     .probe        = uart_probe,
     .poll_once    = uart_poll_once,
     .stream_start = uart_stream_start,

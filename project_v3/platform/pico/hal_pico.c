@@ -99,6 +99,38 @@ static void edge_isr(uint gpio, uint32_t events) {
         s_edges[gpio] += ((events & GPIO_IRQ_EDGE_RISE) ? 1u : 0u) + ((events & GPIO_IRQ_EDGE_FALL) ? 1u : 0u);
 }
 
+// The reference firmware's echo measurement, moved here unchanged from the
+// shared GPIO driver (D1 task 29): busy-wait for the echo to rise, then for it
+// to fall, each bounded by timeout_us.
+int hal_gpio_measure_pulse(int trig_pin, int echo_pin, uint32_t trig_us, uint32_t timeout_us)
+{
+    hal_gpio_mode(trig_pin, HAL_GPIO_OUTPUT);   // driven low
+    hal_delay_us(2);
+
+    // send trigger pulse
+    hal_gpio_write(trig_pin, 1);
+    hal_delay_us(trig_us);
+    hal_gpio_write(trig_pin, 0);
+
+    // wait for echo HIGH
+    uint64_t t0 = hal_time_us();
+    while (hal_gpio_read(echo_pin) <= 0) {
+        if (hal_time_us() - t0 > timeout_us)
+            return -1;
+    }
+
+    // echo HIGH -> measure width
+    uint64_t start = hal_time_us();
+    while (hal_gpio_read(echo_pin) > 0) {
+        if (hal_time_us() - start > timeout_us)
+            break;
+    }
+    uint64_t end = hal_time_us();
+    int32_t width = (int32_t)(end - start);
+    if (width < 0) width = 0;
+    return (int)width; // microseconds
+}
+
 int hal_gpio_count_edges(int pin, bool enable) {
     if (!hal_gpio_valid(pin)) return HAL_ERR_PIN;
     if (enable) {
@@ -213,4 +245,26 @@ int hal_uart_write(int port, const uint8_t *data, size_t len) {
 int hal_uart_read_byte(int port) {
     uart_inst_t *u = uart_for(port);
     return uart_is_readable(u) ? (int)uart_getc(u) : HAL_ERR_TIMEOUT;
+}
+
+// ---------- SPI ----------
+// D2 is an ESP32-S3 extension. Keep the shared EdgeCore build linkable on the
+// Pico while reporting the platform limitation explicitly at runtime.
+
+int hal_spi_open(const char *host, int sclk, int mosi, int miso, int cs,
+                 uint32_t hz, uint8_t mode) {
+    (void)host; (void)sclk; (void)mosi; (void)miso; (void)cs;
+    (void)hz; (void)mode;
+    return HAL_ERR_UNSUPPORTED;
+}
+
+int hal_spi_transfer(int device, const uint8_t *tx, uint8_t *rx, size_t len,
+                     uint32_t timeout_ms) {
+    (void)device; (void)tx; (void)rx; (void)len; (void)timeout_ms;
+    return HAL_ERR_UNSUPPORTED;
+}
+
+int hal_spi_close(int device) {
+    (void)device;
+    return HAL_ERR_UNSUPPORTED;
 }
