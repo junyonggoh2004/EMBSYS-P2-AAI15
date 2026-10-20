@@ -51,3 +51,6 @@ esp32s3_mtk/managed_components/
 esp32s3_mtk/haltest/sdkconfig
 esp32s3_mtk/haltest/sdkconfig.old
 esp32s3_mtk/haltest/managed_components/
+esp32s3_mtk/wifirepro/sdkconfig
+esp32s3_mtk/wifirepro/sdkconfig.old
+esp32s3_mtk/wifirepro/managed_components/

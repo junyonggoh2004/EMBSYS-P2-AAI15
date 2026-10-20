@@ -41,6 +41,23 @@ idf_env() {
   . "$IDF_DIR/export.sh" >/dev/null 2>&1
 }
 idf() { idf_env; idf.py -C "$PROJ" "$@"; }
+# Reset the chip into its normal firmware through the USB-Serial-JTAG RTS line.
+reset_chip() {
+  $PY -c "import serial,time,sys
+s=serial.Serial(sys.argv[1],115200,timeout=0.1); s.dtr=False; s.rts=True; time.sleep(0.1)
+try: s.rts=False
+except Exception: pass" "$PORT" 2>/dev/null || true
+}
+# Flash a project. esptool sometimes reaches the ROM download mode without a
+# sync reply ("TX path seems down"); a normal reset and a 10 s wait for the
+# USB device to come back clears it, so retry once that way.
+flash_proj() {
+  idf.py -C "$1" -p "$PORT" build >/dev/null
+  idf.py -C "$1" -p "$PORT" flash && return 0
+  echo "Flash failed; resetting the board and retrying in 10 s..."
+  reset_chip; sleep 10
+  idf.py -C "$1" -p "$PORT" flash
+}
 node_id() { sed -n 's/^#define NODE_ID *"\([^"]*\)".*/\1/p' $PROJ/main/wifi_credentials.h 2>/dev/null | head -1; }
 
 case "$1" in
@@ -70,12 +87,12 @@ case "$1" in
       echo "MISMATCH: run sh tools/mtk.sh setup (and git submodule update)"; exit 1; }
     idf.py -C $PROJ build | grep -E "binary size|Project build complete" ;;
   build)   idf build ;;
-  flash)   need_port; idf -p "$PORT" build flash ;;
+  flash)   need_port; idf_env; flash_proj $PROJ ;;
   monitor) need_port; idf -p "$PORT" monitor ;;
   haltest) need_port; mkdir -p parity/logs/mtk
            idf_env
-           idf.py -C $PROJ/haltest -p "$PORT" build flash >/dev/null
-           trap 'echo "Restoring the firmware..."; idf.py -C $PROJ -p "$PORT" build flash >/dev/null' EXIT
+           flash_proj $PROJ/haltest >/dev/null
+           trap 'echo "Restoring the firmware..."; flash_proj $PROJ >/dev/null' EXIT
            sleep 2
            $PY parity/hal_test.py --port "$PORT" --log parity/logs/mtk/hal_test.log ;;
   purity)  sh tools/check_mtk_purity.sh && sh tools/check_hal_boundary.sh >/dev/null 2>&1 && echo "ok    shared code: no SDK calls (check_hal_boundary.sh)" ;;
@@ -90,7 +107,7 @@ case "$1" in
            case "$1" in
              model)     $PY parity/model_test.py --broker "$2" --node "${NODE:-$(node_id)}" --port "$PORT" --log parity/logs/mtk/model.log ;;
              faults)    $PY parity/net_fault_test.py --broker "$2" --node "${NODE:-$(node_id)}" --port "$PORT" --log parity/logs/mtk/faults.log ;;
-             flood)     $PY parity/flood_test.py --broker "$2" --node "${NODE:-$(node_id)}" --board s3 --log parity/logs/mtk/flood.log ;;
+             flood)     $PY parity/flood_test.py --broker "$2" --node "${NODE:-$(node_id)}" --board s3 --seconds 60 --log parity/logs/mtk/flood.log ;;
              endurance) $PY parity/endurance_test.py --broker "$2" --node "${NODE:-$(node_id)}" --port "$PORT" --log parity/logs/mtk/endurance.log ;;
            esac ;;
   timing)  need_port; mkdir -p parity/logs/mtk; $PY parity/timing_test.py --board s3 --port "$PORT" --log parity/logs/mtk/timing.log ;;

@@ -1,11 +1,28 @@
-# Task 28 watchdog test, 2026-10-20 05:02: STALL 30000 stops ControlTask's heartbeat; MonitorTask stops feeding the RTC watchdog after 5 s; the RTC watchdog resets the chip 10 s later and the next boot reports it. [crumb] lines (the port's flight recorder) omitted.
+# Task 28 watchdog test, 2026-10-20 05:25: STALL 30000 stops ControlTask's heartbeat; MonitorTask stops feeding the timer-group-0 watchdog (MWDT0) once ControlTask has been silent for 5 s; MWDT0 resets the chip 10 s later (rst:0x7 TG0WDT_SYS_RST) and the next boot reports the watchdog reset. SchedulerTask's 1 s lines show the rest of the system kept running until the reset. Excerpt of the console capture; Wi-Fi, broker and shim lines left out.
 rst:0x15 (USB_UART_CHIP_RESET),boot:0x2b (SPI_FAST_FLASH_BOOT)
 [BOOT] esp32s3_mtk node s3-001: micro T-Kernel 3 SMP, 2 processors, reset reason: USB
 [BOOT] micro T-Kernel 3 SMP runtime: 7 tasks, 5 message buffers, 1 event flag, 1 cyclic handler
-[MON] RTC watchdog armed: 10 s, fed while SchedulerTask, ControlTask and MQTTTask are alive
+[MON] hardware watchdog armed: 10 s, fed while SchedulerTask, ControlTask and MQTTTask are alive
+[SCHED      2034ms] run_all: running=0
+[SCHED      3035ms] run_all: running=0
+[SCHED      4036ms] run_all: running=0
 [CTRL] stalling ControlTask for 30000 ms (watchdog test)
-[MON] ControlTask silent for 5178 ms: watchdog no longer fed
-rst:0x9 (RTCWDT_SYS_RST),boot:0x2b (SPI_FAST_FLASH_BOOT)
-[BOOT] esp32s3_mtk node s3-001: micro T-Kernel 3 SMP, 2 processors, reset reason: other watchdog
+[SCHED      5037ms] run_all: running=0
+[SCHED      6038ms] run_all: running=0
+[SCHED      7039ms] run_all: running=0
+[SCHED      8040ms] run_all: running=0
+[SCHED      9041ms] run_all: running=0
+[MON] ControlTask silent for 5329 ms: watchdog no longer fed
+[SCHED     10042ms] run_all: running=0
+[SCHED     11043ms] run_all: running=0
+[SCHED     12044ms] run_all: running=0
+[SCHED     13045ms] run_all: running=0
+[SCHED     14046ms] run_all: running=0
+[SCHED     15047ms] run_all: running=0
+[SCHED     16048ms] run_all: running=0
+[SCHED     17049ms] run_all: running=0
+[SCHED     18050ms] run_all: running=0
+rst:0x7 (TG0WDT_SYS_RST),boot:0x2b (SPI_FAST_FLASH_BOOT)
+[BOOT] esp32s3_mtk node s3-001: micro T-Kernel 3 SMP, 2 processors, reset reason: task watchdog
 [BOOT] micro T-Kernel 3 SMP runtime: 7 tasks, 5 message buffers, 1 event flag, 1 cyclic handler
-[MON] RTC watchdog armed: 10 s, fed while SchedulerTask, ControlTask and MQTTTask are alive
+[MON] hardware watchdog armed: 10 s, fed while SchedulerTask, ControlTask and MQTTTask are alive

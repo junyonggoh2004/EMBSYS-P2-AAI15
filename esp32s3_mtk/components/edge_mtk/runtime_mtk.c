@@ -32,8 +32,10 @@
 #include "esp_heap_caps.h"
 #include "esp_rom_sys.h"
 #include "esp_system.h"
+#include "esp_private/periph_ctrl.h"
+#include "hal/mwdt_ll.h"
+#include "hal/timg_ll.h"
 #include "hal/wdt_hal.h"
-#include "soc/rtc.h"
 
 #include "hal/hal.h"
 #include "application/scheduler.h"
@@ -100,7 +102,9 @@ static void benchmark_task(INT, void *);
 static void monitor_task(INT, void *);
 
 static uint8_t s_stk_sched[16384] __attribute__((aligned(16)));
-static uint8_t s_stk_mqtt[8192]   __attribute__((aligned(16)));
+// MQTTTask runs esp-mqtt's publish and lwIP's send path in its own context:
+// measured at about 7.7 KB on the first publish, so it gets 16 KB.
+static uint8_t s_stk_mqtt[16384]  __attribute__((aligned(16)));
 static uint8_t s_stk_ctrl[4096]   __attribute__((aligned(16)));
 static uint8_t s_stk_infer[8192]  __attribute__((aligned(16)));
 static uint8_t s_stk_app[4096]    __attribute__((aligned(16)));
@@ -308,8 +312,8 @@ static void control_task(INT stacd, void *exinf)
             mqtt_wifi_drop();
         } else if (strncasecmp(line, "STALL ", 6) == 0) {
             // Watchdog test: this task stops reporting for the given time, as
-            // if it were stuck. MonitorTask stops feeding the RTC watchdog
-            // after 5 s and the chip resets RWDT_TIMEOUT_S later.
+            // if it were stuck. MonitorTask stops feeding the hardware watchdog
+            // after 5 s and the chip resets WDT_TIMEOUT_S later.
             uint32_t ms = (uint32_t)strtoul(line + 6, NULL, 10);
             printf("[CTRL] stalling ControlTask for %u ms (watchdog test)\n", (unsigned)ms);
             tk_dly_tsk((TMO)ms);
@@ -393,17 +397,22 @@ static uint32_t stack_free(const rt_task_def_t *t)
 
 // ---------- MonitorTask ----------
 // Woken every second by a cyclic handler. Reports stacks running low, checks
-// the heartbeats of the tasks that must keep running, and feeds the RTC
+// the heartbeats of the tasks that must keep running, and feeds the hardware
 // watchdog only while all of them are alive. IDF's task and interrupt
 // watchdogs are unarmed in the course port's SMP profile, so this is the
 // watchdog: a task stuck for longer than its limit stops the feeding and the
-// RTC watchdog resets the chip RWDT_TIMEOUT_S later.
+// timer-group-0 watchdog resets the chip WDT_TIMEOUT_S later.
+//
+// Timer group 0's watchdog (MWDT0), not the RTC watchdog: the RTC watchdog
+// lives in the RTC power domain and survives the reset into the ROM download
+// mode, so it would reset the chip in the middle of flashing a large image.
+// A chip reset clears MWDT0.
 
-#define RWDT_TIMEOUT_S 10
+#define WDT_TIMEOUT_S 10
 
 static ID s_mon_cyc;
-static wdt_hal_context_t s_rwdt;
-static bool s_rwdt_on;
+static wdt_hal_context_t s_wdt;
+static bool s_wdt_on;
 
 static const struct { rt_task_t task; uint32_t limit_ms; } k_supervised[] = {
     { RT_SCHEDULER, 5000 },   // waits at most 1 s for its next sensor
@@ -417,31 +426,37 @@ static void monitor_cyclic(void *exinf)
     tk_wup_tsk(s_tasks[RT_MONITOR].id);       // task-independent: wake only
 }
 
-static void rwdt_start(void)
+static void wdt_start(void)
 {
-    s_rwdt = (wdt_hal_context_t)RWDT_HAL_CONTEXT_DEFAULT();
-    uint32_t ticks = rtc_clk_slow_freq_get_hz() * RWDT_TIMEOUT_S;
-    wdt_hal_write_protect_disable(&s_rwdt);
-    wdt_hal_config_stage(&s_rwdt, WDT_STAGE0, ticks, WDT_STAGE_ACTION_RESET_SYSTEM);
-    wdt_hal_enable(&s_rwdt);
-    wdt_hal_write_protect_enable(&s_rwdt);
-    s_rwdt_on = true;
+    PERIPH_RCC_ACQUIRE_ATOMIC(PERIPH_TIMG0_MODULE, ref_count) {
+        if (ref_count == 0) {
+            timg_ll_enable_bus_clock(0, true);
+            timg_ll_reset_register(0);
+        }
+    }
+    // 80 MHz / 40000 = 500 us per tick
+    wdt_hal_init(&s_wdt, WDT_MWDT0, MWDT_LL_DEFAULT_CLK_PRESCALER, false);
+    wdt_hal_write_protect_disable(&s_wdt);
+    wdt_hal_config_stage(&s_wdt, WDT_STAGE0, WDT_TIMEOUT_S * 2000, WDT_STAGE_ACTION_RESET_SYSTEM);
+    wdt_hal_enable(&s_wdt);
+    wdt_hal_write_protect_enable(&s_wdt);
+    s_wdt_on = true;
 }
 
-static void rwdt_feed(void)
+static void wdt_feed(void)
 {
-    wdt_hal_write_protect_disable(&s_rwdt);
-    wdt_hal_feed(&s_rwdt);
-    wdt_hal_write_protect_enable(&s_rwdt);
+    wdt_hal_write_protect_disable(&s_wdt);
+    wdt_hal_feed(&s_wdt);
+    wdt_hal_write_protect_enable(&s_wdt);
 }
 
 static void monitor_task(INT stacd, void *exinf)
 {
     (void)stacd; (void)exinf;
     static bool warned_stack[RT_NTASKS], warned_alive[RT_NTASKS];
-    rwdt_start();
-    printf("[MON] RTC watchdog armed: %d s, fed while SchedulerTask, ControlTask and MQTTTask are alive\n",
-           RWDT_TIMEOUT_S);
+    wdt_start();
+    printf("[MON] hardware watchdog armed: %d s, fed while SchedulerTask, ControlTask and MQTTTask are alive\n",
+           WDT_TIMEOUT_S);
     for (;;) {
         tk_slp_tsk(TMO_FEVR);                 // the cyclic handler wakes this task once a second
         runtime_alive(RT_MONITOR);
@@ -459,7 +474,7 @@ static void monitor_task(INT stacd, void *exinf)
                 warned_alive[t] = false;
             }
         }
-        if (all_alive && s_rwdt_on) rwdt_feed();
+        if (all_alive && s_wdt_on) wdt_feed();
         for (int t = 0; t < RT_NTASKS; t++) {
             uint32_t free_b = stack_free(&s_tasks[t]);
             if (free_b < 1024 && !warned_stack[t]) {

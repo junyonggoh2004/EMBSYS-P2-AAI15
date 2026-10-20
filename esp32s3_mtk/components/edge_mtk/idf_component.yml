@@ -1,0 +1,4 @@
+# Registry components, pinned (dependencies.lock records their hashes):
+# esp-mqtt left ESP-IDF in v6 (the version the course port's examples lock).
+dependencies:
+  espressif/mqtt: "==1.1.0"

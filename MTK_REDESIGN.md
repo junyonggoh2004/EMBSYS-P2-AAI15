@@ -28,7 +28,7 @@ Three consequences follow for D1.
 | One-shot FreeRTOS software timer ending a PULSE action | Alarm handler `tk_cre_alm`/`tk_sta_alm` | The handler only drives the pin low |
 | Periodic wake-ups | Cyclic handler `tk_cre_cyc` waking MonitorTask with `tk_wup_tsk` | Monitoring runs on a kernel time base, not a sleep loop |
 | `attachInterruptArg` GPIO ISR and Arduino UART driver task | `tk_def_int` on the GPIO and UART interrupt sources, registered from core 1 | Handlers do minimal work: count edges, timestamp echo edges, move UART bytes into a ring; they signal tasks with `tk_set_flg` |
-| `esp_task_wdt` (task watchdog) | MonitorTask heartbeat supervision plus the RTC watchdog fed only when every supervised task is alive | IDF's task and interrupt watchdogs are unarmed in the port's SMP profile |
+| `esp_task_wdt` (task watchdog) | MonitorTask heartbeat supervision plus the timer-group-0 hardware watchdog (MWDT0, 10 s, system reset), fed only while every supervised task is alive | IDF's task and interrupt watchdogs are unarmed in the port's SMP profile. Not the RTC watchdog: it survives the reset into the ROM download mode and reset the chip in the middle of flashing a large image |
 | `vTaskDelay`, `millis()`, `esp_timer_get_time()` | `tk_dly_tsk`; the 64-bit SYSTIMER count for microsecond timestamps | |
 | Arduino `Serial` (USB CDC) | USB-Serial-JTAG at register level, writes under the console mutex | |
 | Arduino `WiFi`, `MQTTClient` | `esp_wifi` and esp-mqtt owned by MQTTTask; inbound messages copied into `sched_mbf` | IDF's internal Wi-Fi, lwIP and esp-mqtt tasks run as µT-Kernel tasks through the course shim (section 6) |
@@ -39,7 +39,7 @@ Three consequences follow for D1.
 | Task | Core (processor) | µT-Kernel priority | Week 6 FreeRTOS priority | Stack | Waits on |
 |---|---|---:|---:|---:|---|
 | SchedulerTask | 1 (`TP_PRC2`) | 21 | 4 | 16 KB | `sched_mbf` with a timeout equal to the next sensor due time |
-| MQTTTask | 0 (`TP_PRC1`) | 22 | 3 | 8 KB | `pub_mbf` (10 ms) and the network state |
+| MQTTTask | 0 (`TP_PRC1`) | 22 | 3 | 16 KB | `pub_mbf` (10 ms) and the network state |
 | ControlTask | 1 | 23 | 2 | 4 KB | USB console bytes (1 ms poll) |
 | InferenceTask | 1 | 23 | 2 | 8 KB | `infer_mbf` |
 | ApplicationTask | 1 | 23 | 2 | 4 KB | `app_mbf` (D6 application logic) |
@@ -81,9 +81,11 @@ The first full build without PSRAM did not link: internal DRAM (341 KB, shared w
 | Actuator and output control | GPIO write/toggle, PULSE by alarm handler, PWM by LEDC | 27 | 4b |
 | Communication and networking | MQTTTask with esp_wifi and esp-mqtt | 30 | MQTT, fault and flood tests |
 | Inter-task communication | Five message buffers and one event flag | 28 | Flood test; `TASKS` drop counters |
-| System monitoring and control | MonitorTask (stacks, heap, heartbeats, RTC watchdog), ControlTask, BenchmarkTask | 28 | `TASKS`; endurance run |
+| System monitoring and control | MonitorTask (stacks, heap, heartbeats, hardware watchdog), ControlTask, BenchmarkTask | 28, 30 | `TASKS`; watchdog test; endurance run |
 | Preserve the required functionality | Re-run every D1 test unchanged and compare with FreeRTOS | 32 | PARITY.md section 4 |
 
 ## 10. Test plan and hardware needs
 
 The same scripts in `parity/` run against the µT-Kernel build, because it answers on the same USB port with the same output format. Tests that need no wiring (console, configuration, rules, inference, invalid input, timing, cycle time, MQTT, model upload, faults, flooding, endurance, the digital light sensor) run as each task lands. Tests that need jumpers or sensors (the GPIO loopback 5↔6 and 1↔2, the UART loopback, the 20,000-edge counter, the GY-511 on I2C and a real HC-SR04 through its divider) are marked "hardware pending" until the board is rewired.
+
+**Wi-Fi on the course port (measured in task 30).** On the course port the S3's radio intermittently stops receiving. While the station is still associated, a scan of normal duration (about 2.9 s) finds no network at all; the access point's beacons are then missed (disconnect reason 200) and every reconnection attempt fails with "no access point found" (reason 201) until the radio recovers: about 90 s in the port-only test below, and more than 50 s in one run of our firmware whose capture ended before the link returned. The same board running the Arduino/FreeRTOS build in the same place minutes later found 6 to 8 networks on every scan. The behaviour reproduces with the course port's own `wifi_sta` component on its SMP profile in a minimal application that contains none of our code and no PSRAM (`esp32s3_mtk/wifirepro`), so it comes from the port with this ESP-IDF version rather than from the redesign. Changing the kernel tick rate (1000 Hz and 100 Hz) did not change it, and neither restarting the driver nor de-initialising and re-initialising it was seen to shorten an outage. MQTTTask therefore treats a lost link as an expected condition: it reports each new disconnect reason once, asks the driver to reconnect 2 s after every failed attempt, restarts the driver after 15 s without a link, and keeps the node running offline meanwhile, with publishing refused exactly as when the broker is down. Sampling, rules and the console are unaffected because they run on core 1 and never wait for the network. The MQTT, fault and flood tests are run while the link is up, and the fault test exercises the drop and recovery path. Evidence: [30-wifi-findings.txt](parity/logs/mtk/30-wifi-findings.txt).

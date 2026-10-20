@@ -1,0 +1,100 @@
+# Task 30 Wi-Fi findings on the course port, 2026-10-20, ESP32-S3 Super Mini (HW-747), one access point
+# on channel 7 at about -73 dBm. Network names, MAC and IP addresses are redacted.
+
+## A. Port-only reproduction (esp32s3_mtk/wifirepro: the course port's wifi_sta on its SMP profile, none of
+## our code, no PSRAM), 06:11-06:13. From boot every connect attempt fails with reason 201 (no AP found)
+## and scans find nothing; wifi_sta gives up after 20 attempts; scans see networks again after about 90 s.
+06:11:09 === port opened
+06:11:11 [wifi] disconnected (reason 201), retry 2
+06:11:13 [wifi] disconnected (reason 201), retry 3
+06:11:14 W (-939192100) wifi:sta_scan: STA is connecting, scan are not allowed!
+06:11:14 [T 5 s] scan err=12294 n=0
+06:11:16 [wifi] disconnected (reason 201), retry 4
+06:11:18 [wifi] disconnected (reason 201), retry 5
+06:11:21 [wifi] disconnected (reason 201), retry 6
+06:11:23 [wifi] disconnected (reason 201), retry 7
+06:11:24 W (-939182097) wifi:sta_scan: STA is connecting, scan are not allowed!
+06:11:24 [T 15 s] scan err=12294 n=0
+06:11:26 [wifi] disconnected (reason 201), retry 8
+06:11:28 [wifi] disconnected (reason 201), retry 9
+06:11:30 [wifi] disconnected (reason 201), retry 10
+06:11:33 [wifi] disconnected (reason 201), retry 11
+06:11:34 W (-939172094) wifi:sta_scan: STA is connecting, scan are not allowed!
+06:11:34 [T 25 s] scan err=12294 n=0
+06:11:35 [wifi] disconnected (reason 201), retry 12
+06:11:38 [wifi] disconnected (reason 201), retry 13
+06:11:40 [wifi] disconnected (reason 201), retry 14
+06:11:43 [wifi] disconnected (reason 201), retry 15
+06:11:44 W (-939162091) wifi:sta_scan: STA is connecting, scan are not allowed!
+06:11:44 [T 35 s] scan err=12294 n=0
+06:11:45 [wifi] disconnected (reason 201), retry 16
+06:11:47 [wifi] disconnected (reason 201), retry 17
+06:11:50 [wifi] disconnected (reason 201), retry 18
+06:11:52 [wifi] disconnected (reason 201), retry 19
+06:11:54 W (-939152088) wifi:sta_scan: STA is connecting, scan are not allowed!
+06:11:54 [T 45 s] scan err=12294 n=0
+06:11:55 [wifi] disconnected (reason 201), retry 20
+06:11:57 [wifi] giving up after 20 attempts (last reason 201)
+06:12:06 [T 57 s] scan err=0 n=0
+06:12:19 [T 70 s] scan err=0 n=0
+06:12:31 [T 82 s] scan err=0 n=0
+06:12:43 [T 94 s] scan err=0 n=1
+06:12:56 [T 107 s] scan err=0 n=4
+06:13:08 [T 119 s] scan err=0 n=3
+06:13:21 [T 132 s] scan err=0 n=6
+06:13:33 [T 144 s] scan err=0 n=4
+
+## B. Arduino/FreeRTOS build on the same board, same place, 06:15: three scans in a row, 6 to 8 networks each.
+WiFi connected
+[WIFI] ip=<ip>
+[WIFI] scanning...
+[WIFI] "<ssid>" (3 chars) ch  7 rssi  -73 WPA2 <bssid>
+[WIFI] "<ssid>" (12 chars) ch 11 rssi  -84 WPA2 <bssid>
+[WIFI] "<ssid>" (12 chars) ch  1 rssi  -86 WPA2/WPA3 <bssid>
+[WIFI] "<ssid>" (10 chars) ch 11 rssi  -90 WPA2 <bssid>
+[WIFI] "<ssid>" (8 chars) ch 11 rssi  -91 WPA2 <bssid>
+[WIFI] "<ssid>" (10 chars) ch 11 rssi  -92 WPA2 <bssid>
+[WIFI] 6 networks; this node uses "<ssid>", status connected
+[WIFI] scanning...
+[WIFI] "<ssid>" (3 chars) ch  7 rssi  -74 WPA2 <bssid>
+[WIFI] "<ssid>" (12 chars) ch 11 rssi  -85 WPA2 <bssid>
+[WIFI] "<ssid>" (12 chars) ch  1 rssi  -86 WPA2/WPA3 <bssid>
+[WIFI] "<ssid>" (10 chars) ch 11 rssi  -90 WPA2 <bssid>
+[WIFI] "<ssid>" (11 chars) ch  9 rssi  -92 WPA/WPA2 <bssid>
+[WIFI] "<ssid>" (10 chars) ch 11 rssi  -92 WPA2 <bssid>
+[WIFI] "<ssid>" (8 chars) ch 11 rssi  -92 WPA2 <bssid>
+[WIFI] 7 networks; this node uses "<ssid>", status connected
+[WIFI] scanning...
+[WIFI] "<ssid>" (3 chars) ch  7 rssi  -78 WPA2 <bssid>
+[WIFI] "<ssid>" (12 chars) ch 11 rssi  -84 WPA2 <bssid>
+[WIFI] "<ssid>" (12 chars) ch  1 rssi  -86 WPA2/WPA3 <bssid>
+[WIFI] "<ssid>" (10 chars) ch 11 rssi  -90 WPA2 <bssid>
+[WIFI] "<ssid>" (15 chars) ch  1 rssi  -91 WPA2 <bssid>
+[WIFI] "<ssid>" (10 chars) ch 11 rssi  -91 WPA2 <bssid>
+[WIFI] "<ssid>" (8 chars) ch 11 rssi  -92 WPA2 <bssid>
+[WIFI] "<ssid>" (8 chars) ch  1 rssi  -94 WPA/WPA2 <bssid>
+[WIFI] 8 networks; this node uses "<ssid>", status connected
+
+## C. Our µT-Kernel firmware, 06:23: while still associated, timed WIFISCANs of normal duration (about
+## 2.9 s) return no networks, the AP's beacons are then missed (reason 200) and reconnects fail with
+## reason 201 until the radio recovers.
+[WIFI] scanning...
+[MQTT] Status: Connected, Broker: <ip>
+[WIFI] 0 networks; this node uses "<ssid>", status connected (scan err 0, 2931 ms)
+I (-939188299) wifi:bcn_timeout,ap_probe_send_start
+[WIFI] scanning...
+[MQTT] Status: Connected, Broker: <ip>
+[WIFI] not connected: reason 200, signal lost
+[WIFI] connection lost; reconnecting
+[MQTT] disconnected from broker
+[WIFI] 0 networks; this node uses "<ssid>", status connected (scan err 0, 2828 ms)
+[MQTT] Status: Disconnected, Broker: <ip>
+[WIFI] scanning...
+W (-939181498) wifi:sta_scan: STA is connecting, scan are not allowed!
+[WIFI] 0 networks; this node uses "<ssid>", status not connected (scan err 12294, 0 ms)
+[WIFI] not connected: reason 201, network not found (wrong name, or not 2.4 GHz)
+[MQTT] Status: Disconnected, Broker: <ip>
+[WIFI] scanning...
+[WIFI] 0 networks; this node uses "<ssid>", status not connected (scan err 0, 506 ms)
+[MQTT] Status: Disconnected, Broker: <ip>
+[WIFI] no reconnect for 15 s; restarting the Wi-Fi driver
