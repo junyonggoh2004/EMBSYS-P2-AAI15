@@ -24,6 +24,10 @@
 
 static int s_fail;
 
+// Incremented by a low-priority task on core 1: it only advances while the
+// test task leaves the core free, so it shows whether a wait sleeps or spins.
+static volatile uint32_t s_spin;
+
 static void check(const char *name, bool ok, const char *detail)
 {
     printf("[HALTEST] %s %s %s\n", ok ? "PASS" : "FAIL", name, detail);
@@ -165,6 +169,46 @@ static void run_selftest(void)
     edge_count_check(4, 4, "edge-count-no-loss-self");
     hal_gpio_mode(4, HAL_GPIO_INPUT);
 
+    // HC-SR04 echo through the interrupt (task 29), echo on GPIO4, trigger on
+    // GPIO5. A 5 ms PULSE on GPIO4 stands in for the echo.
+    hal_gpio_pulse(4, 5);
+    int ew = hal_gpio_measure_pulse(5, 4, 10, 25000);
+    snprintf(d, sizeof d, "measured %d us for a 5 ms PULSE (alarm resolution 1 ms)", ew);
+    check("echo-width-self", ew >= 4000 && ew <= 6500, d);
+    hal_delay_ms(10);
+
+    hal_gpio_mode(4, HAL_GPIO_INPUT_PULLDOWN);
+    t0 = hal_time_us();
+    ew = hal_gpio_measure_pulse(5, 4, 10, 25000);
+    dt = hal_time_us() - t0;
+    snprintf(d, sizeof d, "returned %d after %llu us", ew, (unsigned long long)dt);
+    check("echo-none-times-out", ew == HAL_ERR_TIMEOUT && dt >= 25000 && dt <= 26500, d);
+
+    hal_gpio_mode(4, HAL_GPIO_OUTPUT);
+    hal_gpio_write(4, 1);
+    ew = hal_gpio_measure_pulse(5, 4, 10, 25000);
+    snprintf(d, sizeof d, "returned %d (D-07: the timeout reported as a width)", ew);
+    check("echo-stuck-high-reports-timeout", ew == 25001, d);
+    hal_gpio_mode(4, HAL_GPIO_INPUT_PULLDOWN);
+
+    // The echo wait must leave core 1 to other tasks: compare how far the
+    // spinner gets while the test task sleeps 25 ms, waits 25 ms for an echo
+    // that never comes, and busy-waits 25 ms.
+    uint32_t c0 = s_spin;
+    hal_delay_ms(25);
+    uint32_t free_run = s_spin - c0;
+    c0 = s_spin;
+    (void)hal_gpio_measure_pulse(5, 4, 10, 25000);
+    uint32_t echo_run = s_spin - c0;
+    c0 = s_spin;
+    hal_delay_us(1000); for (int i = 0; i < 24; i++) hal_delay_us(1000);
+    uint32_t busy_run = s_spin - c0;
+    snprintf(d, sizeof d, "spinner: sleep %u, echo wait %u, busy-wait %u", (unsigned)free_run,
+             (unsigned)echo_run, (unsigned)busy_run);
+    check("echo-wait-releases-cpu", free_run > 1000 && echo_run * 10 >= free_run * 8 && busy_run * 20 < free_run, d);
+    hal_gpio_mode(4, HAL_GPIO_INPUT);
+    hal_gpio_mode(5, HAL_GPIO_INPUT);
+
     // UART through the controller's internal loopback (TX pin 4, RX pin 5).
     int port = hal_uart_open(4, 5, 115200, 8, 'N', 1);
     if (port >= 0) {
@@ -261,6 +305,12 @@ static void test_task(INT stacd, void *exinf)
     }
 }
 
+static void spin_task(INT stacd, void *exinf)
+{
+    (void)stacd; (void)exinf;
+    for (;;) s_spin = s_spin + 1;
+}
+
 static void idle_task(INT stacd, void *exinf)
 {
     (void)stacd; (void)exinf;
@@ -280,6 +330,7 @@ EXPORT INT usermain(void)
     ER er = console_init();
     if (er == E_OK) er = start((FP)idle_task, CNF_MAX_TSKPRI, 1024, TP_PRC1, 0);
     if (er == E_OK) er = start((FP)idle_task, CNF_MAX_TSKPRI, 1024, TP_PRC2, 0);
+    if (er == E_OK) er = start((FP)spin_task, 30, 1024, TP_PRC2, 0);
     if (er == E_OK) er = start((FP)test_task, 21, 8192, TP_PRC2, TA_FPU);
     if (er != E_OK) printf("[BOOT] start-up failed er=%d\n", (int)er);
     tk_slp_tsk(TMO_FEVR);

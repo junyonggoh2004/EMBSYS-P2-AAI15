@@ -10,6 +10,8 @@
 //   delays             tk_dly_tsk, finished with a short busy wait
 //   PULSE              a pool of alarm handlers (tk_cre_alm) end the pulse
 //   edge counting      one GPIO interrupt handler (tk_def_int) counts edges
+//   HC-SR04 echo       the same handler timestamps the echo edges and sets an
+//                      event flag; the measuring task sleeps on tk_wai_flg
 //   UART receive       one interrupt handler per UART (tk_def_int) fills a ring
 //
 // Interrupts are registered by hal_mtk_init() and hal_uart_open(), which the
@@ -204,7 +206,16 @@ static volatile uint64_t s_count_mask;      // pins whose edges are counted
 static uint32_t s_gpio_core;                 // core the GPIO interrupt is routed to
 static bool s_gpio_irq;
 
-// GPIO interrupt hook for the echo capture (task 29); NULL until installed.
+// HC-SR04 echo capture (task 29): the handler records when the echo pin rose
+// and fell and sets ECHO_RISE / ECHO_FALL; only hal_gpio_measure_pulse(),
+// called from SchedulerTask, arms it.
+#define ECHO_RISE 0x1u
+#define ECHO_FALL 0x2u
+static ID s_echo_flg;
+static volatile int s_echo_pin = -1;
+static volatile uint64_t s_echo_rise_us, s_echo_fall_us;
+
+// GPIO interrupt hook for tests; NULL unless installed.
 static void (*s_gpio_hook)(uint32_t lo, uint32_t hi);
 
 void hal_mtk_set_gpio_hook(void (*hook)(uint32_t lo, uint32_t hi))
@@ -217,6 +228,7 @@ uint32_t hal_mtk_gpio_core(void) { return s_gpio_core; }
 static void gpio_isr(UINT intno)
 {
     (void)intno;
+    uint64_t now = (uint64_t)esp_timer_get_time();
     uint32_t lo = 0, hi = 0;
     gpio_ll_get_intr_status(s_gpio, s_gpio_core, &lo);
     gpio_ll_get_intr_status_high(s_gpio, s_gpio_core, &hi);
@@ -228,6 +240,18 @@ static void gpio_isr(UINT intno)
         int pin = __builtin_ctzll(count);
         count &= count - 1;
         s_edges[pin] = s_edges[pin] + 1;      // only this handler writes it
+    }
+    int ep = s_echo_pin;
+    if (ep >= 0 && ((pending >> ep) & 1)) {
+        if (!s_echo_rise_us) {
+            s_echo_rise_us = now;
+            gpio_ll_set_intr_type(s_gpio, ep, GPIO_INTR_NEGEDGE);
+            tk_set_flg(s_echo_flg, ECHO_RISE);
+        } else if (!s_echo_fall_us) {
+            s_echo_fall_us = now;
+            gpio_ll_intr_disable(s_gpio, ep);
+            tk_set_flg(s_echo_flg, ECHO_FALL);
+        }
     }
     if (s_gpio_hook) s_gpio_hook(lo, hi);
 }
@@ -254,6 +278,96 @@ int hal_gpio_count_edges(int pin, bool enable)
 uint32_t hal_gpio_edge_count(int pin)
 {
     return hal_gpio_valid(pin) ? __atomic_load_n(&s_edges[pin], __ATOMIC_ACQUIRE) : 0;
+}
+
+// ---------- HC-SR04 echo: the interrupt timestamps the edges, the task sleeps ----------
+
+static void echo_clear_status(int pin)
+{
+    gpio_ll_clear_intr_status(s_gpio, pin < 32 ? (1u << pin) : 0);
+    gpio_ll_clear_intr_status_high(s_gpio, pin >= 32 ? (1u << (pin - 32)) : 0);
+}
+
+static void echo_disarm(int pin)
+{
+    gpio_ll_intr_disable(s_gpio, pin);
+    s_echo_pin = -1;
+}
+
+// The reference busy-wait, used only where the task cannot sleep (no GPIO
+// interrupt yet, or called outside a task).
+static int measure_pulse_busy(int echo, uint32_t timeout_us, uint64_t t0)
+{
+    while (gpio_ll_get_level(s_gpio, echo) == 0)
+        if (esp_timer_get_time() - t0 > timeout_us) return HAL_ERR_TIMEOUT;
+    uint64_t start = esp_timer_get_time();
+    while (gpio_ll_get_level(s_gpio, echo))
+        if (esp_timer_get_time() - start > timeout_us) break;
+    return (int)(esp_timer_get_time() - start);
+}
+
+int hal_gpio_measure_pulse(int trig, int echo, uint32_t trig_us, uint32_t timeout_us)
+{
+    if (!hal_gpio_valid(trig) || !hal_gpio_valid(echo)) return HAL_ERR_TIMEOUT;
+    hal_gpio_mode(trig, HAL_GPIO_OUTPUT);           // driven low
+    esp_rom_delay_us(2);
+
+    bool irq = s_gpio_irq && s_echo_flg > 0;
+    if (irq) {                                       // arm for the rising edge
+        gpio_ll_intr_disable(s_gpio, echo);
+        s_echo_rise_us = s_echo_fall_us = 0;
+        tk_clr_flg(s_echo_flg, 0);
+        s_echo_pin = echo;
+        gpio_ll_set_intr_type(s_gpio, echo, GPIO_INTR_POSEDGE);
+        echo_clear_status(echo);
+        gpio_ll_intr_enable_on_core(s_gpio, s_gpio_core, echo);
+    }
+
+    gpio_ll_set_level(s_gpio, trig, 1);
+    esp_rom_delay_us(trig_us);
+    gpio_ll_set_level(s_gpio, trig, 0);
+    uint64_t t_trig = (uint64_t)esp_timer_get_time();
+    if (!irq) return measure_pulse_busy(echo, timeout_us, t_trig);
+
+    // An echo already high when the trigger ends counts as starting now, as
+    // in the reference. The pin's interrupt is masked while this is decided,
+    // so the handler cannot record a rise at the same time.
+    gpio_ll_intr_disable(s_gpio, echo);
+    if (!s_echo_rise_us && gpio_ll_get_level(s_gpio, echo)) {
+        s_echo_rise_us = t_trig;
+        gpio_ll_set_intr_type(s_gpio, echo, GPIO_INTR_NEGEDGE);
+        echo_clear_status(echo);
+    }
+    if (!s_echo_fall_us) gpio_ll_intr_enable_on_core(s_gpio, s_gpio_core, echo);
+
+    // Sleep until the handler reports the edge or the reference timeout
+    // passes; each wait is for the exact time left, rounded up to a tick, and
+    // repeated if the kernel returns before that time.
+    UINT pat;
+    for (;;) {
+        uint64_t now = (uint64_t)esp_timer_get_time();
+        if (s_echo_rise_us || now - t_trig > timeout_us) break;
+        ER er = tk_wai_flg(s_echo_flg, ECHO_RISE, TWF_ORW, &pat,
+                           (TMO)((t_trig + timeout_us - now + 999) / 1000));
+        if (er == E_CTX) {                           // not in a task: fall back
+            echo_disarm(echo);
+            return measure_pulse_busy(echo, timeout_us, t_trig);
+        }
+    }
+    uint64_t start = s_echo_rise_us;
+    if (!start || start - t_trig > timeout_us) {
+        echo_disarm(echo);
+        return HAL_ERR_TIMEOUT;                      // no echo
+    }
+    for (;;) {
+        uint64_t now = (uint64_t)esp_timer_get_time();
+        if (s_echo_fall_us || now - start > timeout_us) break;
+        (void)tk_wai_flg(s_echo_flg, ECHO_FALL, TWF_ORW, &pat, (TMO)((start + timeout_us - now + 999) / 1000));
+    }
+    uint64_t fall = s_echo_fall_us;
+    echo_disarm(echo);
+    if (!fall || fall - start > timeout_us) return (int)timeout_us + 1;   // still high: D-07
+    return (int)(fall - start);
 }
 
 // ---------- PWM: LEDC low-speed timer 0, 8 channels ----------
@@ -698,6 +812,10 @@ ER hal_mtk_init(void)
         if (id < E_OK) return (ER)id;
         s_pulse[i].alm = id;
     }
+    T_CFLG cflg = { .exinf = NULL, .flgatr = TA_TFIFO | TA_WSGL, .iflgptn = 0 };
+    ID flg = tk_cre_flg(&cflg);
+    if (flg < E_OK) return (ER)flg;
+    s_echo_flg = flg;
     // GPIO interrupt on the calling core (SchedulerTask: core 1).
     s_gpio_core = (uint32_t)esp_cpu_get_core_id();
     T_DINT dint = { .intatr = TA_HLNG, .inthdr = (FP)gpio_isr };

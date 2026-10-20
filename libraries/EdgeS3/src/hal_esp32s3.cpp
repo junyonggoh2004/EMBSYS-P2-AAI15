@@ -147,6 +147,38 @@ int hal_gpio_pulse(int pin, uint32_t ms) {
     return HAL_OK;
 }
 
+// The reference firmware's echo measurement, moved here unchanged from the
+// shared GPIO driver (D1 task 29): busy-wait for the echo to rise, then for it
+// to fall, each bounded by timeout_us.
+int hal_gpio_measure_pulse(int trig_pin, int echo_pin, uint32_t trig_us, uint32_t timeout_us)
+{
+    hal_gpio_mode(trig_pin, HAL_GPIO_OUTPUT);   // driven low
+    hal_delay_us(2);
+
+    // send trigger pulse
+    hal_gpio_write(trig_pin, 1);
+    hal_delay_us(trig_us);
+    hal_gpio_write(trig_pin, 0);
+
+    // wait for echo HIGH
+    uint64_t t0 = hal_time_us();
+    while (hal_gpio_read(echo_pin) <= 0) {
+        if (hal_time_us() - t0 > timeout_us)
+            return -1;
+    }
+
+    // echo HIGH -> measure width
+    uint64_t start = hal_time_us();
+    while (hal_gpio_read(echo_pin) > 0) {
+        if (hal_time_us() - start > timeout_us)
+            break;
+    }
+    uint64_t end = hal_time_us();
+    int32_t width = (int32_t)(end - start);
+    if (width < 0) width = 0;
+    return (int)width; // microseconds
+}
+
 static volatile uint32_t s_edges[49];
 
 static void IRAM_ATTR edge_isr(void *arg) {
