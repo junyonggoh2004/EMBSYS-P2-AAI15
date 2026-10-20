@@ -1,0 +1,38 @@
+04:41:51 [TICK] 2471
+04:41:51 [HALTEST] start
+04:41:51 [HALTEST] PASS time-monotonic 2541395 -> 2541396 us
+04:41:51 [HALTEST] PASS time-ms-matches-us ms=2541 us/1000=2541
+04:41:51 [HALTEST] PASS delay-ms-100 100002 us
+04:41:51 [HALTEST] PASS delay-ms-1 1002 us
+04:41:51 [HALTEST] PASS delay-us-500 502 us
+04:41:51 [HALTEST] PASS console-getc-timeout ret=-1 after 20506 us
+04:41:51 [HALTEST] PASS gpio-reserved-pins-refused -1 19 20 22 26 32 49 99
+04:41:51 [HALTEST] PASS gpio-input-pulldown mode=0 read=0
+04:41:51 [HALTEST] PASS gpio-input-pullup mode=0 read=1
+04:41:51 [HALTEST] PASS gpio-output-toggle toggle 1/1 then 0/0
+04:41:51 [HALTEST] PASS pwm-set-and-stop set=0 set=0 stop=0 read=0
+04:41:51 [HALTEST] PASS pwm-duty-25-self set 0.25 measured 0.250
+04:41:51 [HALTEST] PASS pwm-duty-50-self set 0.50 measured 0.501
+04:41:51 [HALTEST] PASS pwm-duty-75-self set 0.75 measured 0.749
+04:41:51 [HALTEST] PASS pulse-200ms-nonblocking-self returned after 59 us, high 201161 us
+04:41:52 [HALTEST] PASS edge-count-no-loss-self 20000 edges at 19.8 kHz, 20000 counted (er=0)
+04:41:52 [HALTEST] PASS uart-internal-loopback port=0 got 34/34 bytes
+04:41:52 [HALTEST] PASS i2c-missing-device-nack bus=0 write=-4 write-nostop=1 read=-4
+04:41:52 [HALTEST] SKIP jumper-measurements no jumper between GPIO5 and GPIO6
+04:41:52 [HALTEST] PASS test-task-on-core-1 running on core 1
+04:41:52 [HALTEST] done failures=0
+04:41:52 [ECHO] hello parity 12345
+04:41:53 [TICK] 4471
+04:41:54 [TICK] 5471
+04:41:55 [TICK] 6470
+04:41:56 [TICK] 7470
+04:41:57 [TICK] 8471
+04:41:58 [TICK] 9471
+04:41:59 [TICK] 10470
+04:42:00 [TICK] 11471
+04:42:01 [TICK] 12471
+04:42:02 [TICK] 13470
+04:42:03 [TICK] 14470
+04:42:04 [TICK] 15471
+04:42:05 [TICK] 16471
+04:42:06 [TICK] 17470

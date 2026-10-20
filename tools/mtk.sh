@@ -7,6 +7,8 @@
 #   sh tools/mtk.sh build              build esp32s3_mtk
 #   sh tools/mtk.sh flash              build and flash
 #   sh tools/mtk.sh monitor            open the console (Ctrl-] to leave)
+#   sh tools/mtk.sh haltest            flash the HAL test firmware, run it, then restore the firmware
+#   sh tools/mtk.sh purity             check our code uses no FreeRTOS, Arduino or esp_driver_* API
 #   sh tools/mtk.sh test <stage>       run a parity stage, e.g. 4a, 5-neg, t04; log in parity/logs/mtk/
 #   sh tools/mtk.sh mqtt <broker-ip>   the 27-step MQTT test (node from wifi_credentials.h)
 #   sh tools/mtk.sh model|faults|flood|endurance <broker-ip>
@@ -70,6 +72,13 @@ case "$1" in
   build)   idf build ;;
   flash)   need_port; idf -p "$PORT" build flash ;;
   monitor) need_port; idf -p "$PORT" monitor ;;
+  haltest) need_port; mkdir -p parity/logs/mtk
+           idf_env
+           idf.py -C $PROJ/haltest -p "$PORT" build flash >/dev/null
+           trap 'echo "Restoring the firmware..."; idf.py -C $PROJ -p "$PORT" build flash >/dev/null' EXIT
+           sleep 2
+           $PY parity/hal_test.py --port "$PORT" --log parity/logs/mtk/hal_test.log ;;
+  purity)  sh tools/check_mtk_purity.sh && sh tools/check_hal_boundary.sh >/dev/null 2>&1 && echo "ok    shared code: no SDK calls (check_hal_boundary.sh)" ;;
   test)    need_port; mkdir -p parity/logs/mtk
            $PY parity/parity_test.py --stage "${2:-4a}" --board s3 --port "$PORT" --log "parity/logs/mtk/${2:-4a}.log" ;;
   mqtt)    need_port; [ -n "$2" ] || { echo "usage: sh tools/mtk.sh mqtt <broker-ip>"; exit 1; }
