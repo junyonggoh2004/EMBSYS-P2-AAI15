@@ -534,7 +534,7 @@ git submodule update --init esp32s3_mtk/third_party/mtk3smp-esp32s3
 sh tools/mtk.sh setup        # once, about 15 minutes and 2 GB
 sh tools/mtk.sh check        # course port, ESP-IDF and compiler versions, then a build
 sh tools/mtk.sh flash        # build and flash over the board's USB-C port
-sh tools/mtk.sh monitor      # console (Ctrl-] to leave)
+sh tools/mtk.sh monitor      # console: type HELP, TASKS or a config line (Ctrl+C to leave)
 ```
 
 Wi-Fi settings go in `esp32s3_mtk/main/wifi_credentials.h` (copy the `.example`; gitignored), with the same fields as the Arduino build. `MQTT_HOST` is compiled in, so after the laptop changes network (a different hotspot or router gives it a new IP address) put the new address there and flash again.
@@ -561,7 +561,7 @@ Two behaviours of the course port affect testing (MTK_REDESIGN.md §8 and §10):
 
 ### Hardware checks on µT-Kernel (jumpers and sensors)
 
-These stages need wires or sensors and are the ones PARITY.md §4 lists as hardware pending. Do them in this order, which needs the fewest wiring changes. Unplug the USB cable before changing any wire, close any open monitor before a test, and run each command from the repository root. Pin positions on the board are in the [pinout](README.md#board-pinout); the sensor wiring is the same as for the Arduino build ([README Part E](README.md#part-e-real-sensors)).
+These stages need wires or sensors. Rows 8 to 10 (GY-511 and HC-SR04) passed on 2026-10-21; the others are the ones PARITY.md §4 still lists as hardware pending. Do them in this order, which needs the fewest wiring changes. Unplug the USB cable before changing any wire, close any open monitor before a test, and run each command from the repository root. Pin positions on the board are in the [pinout](README.md#board-pinout); the sensor wiring is the same as for the Arduino build ([README Part E](README.md#part-e-real-sensors)).
 
 | # | Wiring | Command | Pass |
 |---|---|---|---|
@@ -572,8 +572,8 @@ These stages need wires or sensors and are the ones PARITY.md §4 lists as hardw
 | 5 | Remove the light sensor and the GPIO5–GPIO6 jumper; add a jumper from GPIO1 to GPIO2 | `sh tools/mtk.sh test 4c-uart` | `8/8 passed` |
 | 6 | Same jumper | `sh tools/mtk.sh test t08` | `26/26 passed` |
 | 7 | Same jumper | `sh tools/mtk.sh test t09` | `5/5 passed` |
-| 8 | Remove the jumper. GY-511: VIN to 3V3, GND to GND, SDA to GPIO1, SCL to GPIO2 | `sh tools/mtk.sh test 4c-mag` | `15/15 passed` |
-| 9 | Remove the GY-511. HC-SR04: VCC to 5V, GND to GND, Trig to GPIO1, Echo through a divider to GPIO2 (Echo to one resistor to GPIO2, and GPIO2 to two resistors in series to GND; three equal resistors, 1 kΩ to 10 kΩ, give about 3.3 V). Move your hand towards and away from it during the run | `sh tools/mtk.sh test 4c-sonic` | `4/4 passed` |
+| 8 | Remove the jumper. GY-511: VIN to 3V3, GND to GND, SDA to GPIO1, SCL to GPIO2. To watch it first: `sh tools/mtk.sh live mag` (identity `H43`, total acceleration about 1 g, heading changing as you turn it flat, away from the laptop) | `sh tools/mtk.sh test 4c-mag` | `15/15 passed` |
+| 9 | Remove the GY-511. HC-SR04, 3 V module as in the kit: VCC to 3V3, GND to GND, Trig to GPIO1, Echo to GPIO2, wired straight (a 5 V module needs VCC to 5V and Echo through a divider: Echo to one resistor to GPIO2, GPIO2 to two resistors in series to GND, three equal resistors of 1 to 10 kΩ). Move your hand towards and away from it during the run. To watch it first: `sh tools/mtk.sh live sonic` (distance in cm following your hand) | `sh tools/mtk.sh test 4c-sonic` | `4/4 passed` |
 | 10 | Same wiring; move an object in and out of 30 cm | `sh tools/mtk.sh test sonic-rule` | `7/7 passed` |
 
-Each run writes `parity/logs/mtk/<stage>.log`. A stage that fails prints the step and what it expected; keep the log. Never connect the HC-SR04's Echo straight to a GPIO: it outputs 5 V and the ESP32-S3's pins take 3.3 V at most.
+Each run writes `parity/logs/mtk/<stage>.log`. A stage that fails prints the step and what it expected; keep the log. Never connect a 5 V HC-SR04's Echo straight to a GPIO: it outputs 5 V and the ESP32-S3's pins take 3.3 V at most. The 3 V module's Echo is 3.3 V and goes straight to the pin.

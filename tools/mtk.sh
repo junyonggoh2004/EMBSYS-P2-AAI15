@@ -6,12 +6,13 @@
 #   sh tools/mtk.sh check              print the pinned versions and build the firmware
 #   sh tools/mtk.sh build              build esp32s3_mtk
 #   sh tools/mtk.sh flash              build and flash
-#   sh tools/mtk.sh monitor            open the console (Ctrl-] to leave)
+#   sh tools/mtk.sh monitor            open the console (Ctrl+C to leave)
 #   sh tools/mtk.sh haltest            flash the HAL test firmware, run it, then restore the firmware
 #   sh tools/mtk.sh purity             check our code uses no FreeRTOS, Arduino or esp_driver_* API
 #   sh tools/mtk.sh image              check the built firmware links no FreeRTOS kernel code
 #   sh tools/mtk.sh test <stage>       run a parity stage, e.g. 4a, 5-neg, t04; log in parity/logs/mtk/
 #   sh tools/mtk.sh compare <stage>    the Pico's and this build's output for a stage, side by side
+#   sh tools/mtk.sh live sonic|mag [s] run the HC-SR04 or the GY-511 and show its readings in units
 #   sh tools/mtk.sh mqtt <broker-ip>   the 27-step MQTT test (node from wifi_credentials.h)
 #   sh tools/mtk.sh model|faults|flood|endurance <broker-ip>
 #                                      faults includes the broker-loss check when MOSQ_CONF names the
@@ -92,7 +93,12 @@ case "$1" in
     idf.py -C $PROJ build | grep -E "binary size|Project build complete" ;;
   build)   idf build ;;
   flash)   need_port; idf_env; flash_proj $PROJ ;;
-  monitor) need_port; idf -p "$PORT" monitor ;;
+  # The console takes typed lines (HELP, TASKS, BEGINCFG...) through pyserial's
+  # miniterm: ESP-IDF's monitor shows the board's output but did not pass typed
+  # keys to it in our tests. For decoded crash backtraces (output only) use
+  # idf.py -C esp32s3_mtk monitor.
+  monitor) need_port; echo "Console on $PORT: type a command and press Enter. Ctrl+C leaves."
+           $PY -m serial.tools.miniterm --eol CRLF --raw --quiet --exit-char 3 "$PORT" 115200 ;;
   haltest) need_port; mkdir -p parity/logs/mtk
            idf_env
            flash_proj $PROJ/haltest >/dev/null
@@ -106,6 +112,8 @@ case "$1" in
   image)   idf_env; sh tools/check_mtk_image.sh ;;
   test)    need_port; mkdir -p parity/logs/mtk
            $PY parity/parity_test.py --stage "${2:-4a}" --board s3 --port "$PORT" --log "parity/logs/mtk/${2:-4a}.log" ;;
+  live)    need_port; [ -n "$2" ] || { echo "usage: sh tools/mtk.sh live sonic|mag [seconds]"; exit 1; }
+           $PY tools/mtk_live.py "$2" --port "$PORT" ${3:+--seconds "$3"} ;;
   compare) st=${2:-4a}
            for f in parity/logs/$st.log parity/logs/mtk/$st.log; do
              echo "===== $f"
@@ -126,5 +134,5 @@ case "$1" in
            esac ;;
   timing)  need_port; mkdir -p parity/logs/mtk; $PY parity/timing_test.py --board s3 --port "$PORT" --log parity/logs/mtk/timing.log ;;
   wcet)    need_port; mkdir -p parity/logs/mtk; $PY parity/wcet_test.py --port "$PORT" --log parity/logs/mtk/wcet.log ;;
-  *)       sed -n '2,27p' "$0" ;;
+  *)       sed -n '2,28p' "$0" ;;
 esac
