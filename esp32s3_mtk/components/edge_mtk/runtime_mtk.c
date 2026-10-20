@@ -191,8 +191,6 @@ static bool parse_line_topic(const char *topic, char *node, size_t nn, char *src
 
 // ---------- SchedulerTask ----------
 
-void inference_on_done(const sched_msg_t *m);   // inference_mtk.cpp (task 31)
-
 static void handle_sched_msg(sched_msg_t *m, bool *running, bool *cfg_ready)
 {
     switch (m->kind) {
@@ -201,7 +199,6 @@ static void handle_sched_msg(sched_msg_t *m, bool *running, bool *cfg_ready)
     case SCHED_MQTT_CMD:     if (s_cmd_cb) s_cmd_cb(m->text); break;
     case SCHED_MQTT_NODE:    if (s_node_cb) s_node_cb("unknown", m->text); break;
     case SCHED_MODEL_PARAMS: inference_mgr_set_params((const uint8_t *)m->text, m->len); break;
-    case SCHED_INFER_DONE:   inference_on_done(m); break;
     case SCHED_REMOTE_LINE: {
         char node[32], src[32];
         if (parse_line_topic(m->topic, node, sizeof node, src, sizeof src))
@@ -342,7 +339,7 @@ static void mqtt_task(INT stacd, void *exinf)
     mqtt_task_body();
 }
 
-// ---------- InferenceTask (body in inference_mtk.cpp, task 31) ----------
+// ---------- InferenceTask (body in inference_mtk.cpp: owns the interpreter) ----------
 
 static void inference_task(INT stacd, void *exinf)
 {
@@ -562,6 +559,7 @@ ER runtime_start(void)
     ID flg = tk_cre_flg(&cflg);
     CHECK("net_flg", flg);
     net_flg = flg;
+    CHECK("inference reply buffer and mutex", inference_mtk_init());
 
     // Idle tasks first, one per processor, so neither dispatcher is ever left
     // without a ready task.
@@ -585,7 +583,7 @@ ER runtime_start(void)
 
     for (int t = 0; t < RT_NTASKS; t++) CHECK(s_tasks[t].name, tk_sta_tsk(s_tasks[t].id, 0));
 
-    printf("[BOOT] micro T-Kernel 3 SMP runtime: %d tasks, 5 message buffers, 1 event flag, 1 cyclic handler\n",
+    printf("[BOOT] micro T-Kernel 3 SMP runtime: %d tasks, 6 message buffers, 1 event flag, 1 cyclic handler\n",
            RT_NTASKS);
     return E_OK;
 }

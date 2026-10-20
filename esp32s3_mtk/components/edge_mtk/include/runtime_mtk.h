@@ -26,7 +26,6 @@ typedef enum {
     SCHED_MQTT_NODE,           // payload from pico/<node>/in
     SCHED_REMOTE_LINE,         // a followed node's sensor line; topic says which
     SCHED_MODEL_PARAMS,        // pico/<node>/model/params (binary; len is set)
-    SCHED_INFER_DONE,          // InferenceTask finished a run (task 31)
 } sched_kind_t;
 
 typedef struct {
@@ -68,7 +67,7 @@ typedef struct {
 #define INFER_MBF_MSGS  4
 #define APP_MBF_MSGS    8
 #define BENCH_MBF_MSGS  16
-#define INFER_MSG_MAX   64     // infer_mbf message size (task 31 defines the content)
+#define INFER_MSG_MAX   80     // infer_mbf request: model pointer and size, or 16 input floats
 #define APP_MSG_MAX     64
 
 // net_flg bits, set by MQTTTask and the network event handler
@@ -102,6 +101,9 @@ ER runtime_start(void);
 // Prints every task's ID, core, priority, stack headroom and per-core
 // residency, the message-buffer drop counters and the heap (console TASKS).
 void runtime_print_tasks(void);
+
+// Creates InferenceTask's reply buffer and request mutex (inference_mtk.cpp).
+ER inference_mtk_init(void);
 
 // Records a timing sample for BenchmarkTask without blocking the caller.
 void runtime_bench(const char *name, uint32_t value_us);

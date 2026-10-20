@@ -1,0 +1,323 @@
+15:13:10 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:13:11 [SCHED    170692ms] run_all: running=0
+Reading model: autoencoder_int8 (2).tflite
+Size: 16440 bytes, CRC32: 0xF6AED6F8
+Packing normalization params from: norm_stats (2).json
+  Packed 15 threshold masks
+  Score mode: MSE (Autoencoder)
+  Binary params blob: 251 bytes for 16 features
+Waiting for Pico heartbeat (to ensure same broker)...
+Connected to broker 172.20.10.5
+Subscribing to pico/s3-001/heartbeat for verification...
+RECEIVED Heartbeat from Pico: {"uptime_s":172}
+Publishing to pico/s3-001/model/start...
+Sending 16440 bytes in 512-byte chunks...
+  Sent chunk 0
+RECEIVED Heartbeat from Pico: {"uptime_s":182}
+  Sent chunk 10
+RECEIVED Heartbeat from Pico: {"uptime_s":192}
+  Sent chunk 20
+RECEIVED Heartbeat from Pico: {"uptime_s":202}
+  Sent chunk 30
+RECEIVED Heartbeat from Pico: {"uptime_s":212}
+Publishing to pico/s3-001/model/end...
+Model transfer complete!
+Publishing norm params to pico/s3-001/model/params (251 bytes)...
+Normalization params sent!
+
+Done! Check the Pico serial monitor for confirmation.
+15:13:58 [SCHED    171693ms] run_all: running=0
+15:13:58 [SCHED    172694ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/start (36 bytes)
+15:13:58 [MODEL] Transfer starting: 16440 bytes, CRC32=0xF6AED6F8
+15:13:58 [SCHED    173708ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/0 (512 bytes)
+15:13:58 [MODEL] Chunk 0: 512 / 16440 bytes (3%)
+15:13:58 [SCHED    174726ms] run_all: running=0
+15:13:58 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:13:58 [SCHED    175727ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/1 (512 bytes)
+15:13:58 [MODEL] Chunk 1: 1024 / 16440 bytes (6%)
+15:13:58 [SCHED    176728ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/2 (512 bytes)
+15:13:58 [MODEL] Chunk 2: 1536 / 16440 bytes (9%)
+15:13:58 [SCHED    177729ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/3 (512 bytes)
+15:13:58 [MODEL] Chunk 3: 2048 / 16440 bytes (12%)
+15:13:58 [SCHED    178730ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/4 (512 bytes)
+15:13:58 [MODEL] Chunk 4: 2560 / 16440 bytes (15%)
+15:13:58 [SCHED    179731ms] run_all: running=0
+15:13:58 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/5 (512 bytes)
+15:13:58 [MODEL] Chunk 5: 3072 / 16440 bytes (18%)
+15:13:58 [SCHED    180732ms] run_all: running=0
+15:13:58 [SCHED    181733ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/6 (512 bytes)
+15:13:58 [MODEL] Chunk 6: 3584 / 16440 bytes (21%)
+15:13:58 [SCHED    182734ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/7 (512 bytes)
+15:13:58 [MODEL] Chunk 7: 4096 / 16440 bytes (24%)
+15:13:58 [SCHED    183735ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/8 (512 bytes)
+15:13:58 [MODEL] Chunk 8: 4608 / 16440 bytes (28%)
+15:13:58 [SCHED    184751ms] run_all: running=0
+15:13:58 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/9 (512 bytes)
+15:13:58 [MODEL] Chunk 9: 5120 / 16440 bytes (31%)
+15:13:58 [SCHED    185752ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/10 (512 bytes)
+15:13:58 [MODEL] Chunk 10: 5632 / 16440 bytes (34%)
+15:13:58 [SCHED    186753ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/11 (512 bytes)
+15:13:58 [MODEL] Chunk 11: 6144 / 16440 bytes (37%)
+15:13:58 [SCHED    187754ms] run_all: running=0
+15:13:58 [SCHED    188755ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/12 (512 bytes)
+15:13:58 [MODEL] Chunk 12: 6656 / 16440 bytes (40%)
+15:13:58 [SCHED    189756ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/13 (512 bytes)
+15:13:58 [MODEL] Chunk 13: 7168 / 16440 bytes (43%)
+15:13:58 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:13:58 [SCHED    190757ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/14 (512 bytes)
+15:13:58 [MODEL] Chunk 14: 7680 / 16440 bytes (46%)
+15:13:58 [SCHED    191758ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/15 (512 bytes)
+15:13:58 [MODEL] Chunk 15: 8192 / 16440 bytes (49%)
+15:13:58 [SCHED    192759ms] run_all: running=0
+15:13:58 [SCHED    193760ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/16 (512 bytes)
+15:13:58 [MODEL] Chunk 16: 8704 / 16440 bytes (52%)
+15:13:58 [SCHED    194774ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/17 (512 bytes)
+15:13:58 [MODEL] Chunk 17: 9216 / 16440 bytes (56%)
+15:13:58 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:13:58 [SCHED    195775ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/18 (512 bytes)
+15:13:58 [MODEL] Chunk 18: 9728 / 16440 bytes (59%)
+15:13:58 [SCHED    196776ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/19 (512 bytes)
+15:13:58 [MODEL] Chunk 19: 10240 / 16440 bytes (62%)
+15:13:58 [SCHED    197777ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/20 (512 bytes)
+15:13:58 [MODEL] Chunk 20: 10752 / 16440 bytes (65%)
+15:13:58 [SCHED    198778ms] run_all: running=0
+15:13:58 [SCHED    199779ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/21 (512 bytes)
+15:13:58 [MODEL] Chunk 21: 11264 / 16440 bytes (68%)
+15:13:58 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:13:58 [SCHED    200780ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/22 (512 bytes)
+15:13:58 [MODEL] Chunk 22: 11776 / 16440 bytes (71%)
+15:13:58 [SCHED    201781ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/23 (512 bytes)
+15:13:58 [MODEL] Chunk 23: 12288 / 16440 bytes (74%)
+15:13:58 [SCHED    202782ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/24 (512 bytes)
+15:13:58 [MODEL] Chunk 24: 12800 / 16440 bytes (77%)
+15:13:58 [SCHED    203797ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/25 (512 bytes)
+15:13:58 [MODEL] Chunk 25: 13312 / 16440 bytes (80%)
+15:13:58 [SCHED    204798ms] run_all: running=0
+15:13:58 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:13:58 [SCHED    205799ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/26 (512 bytes)
+15:13:58 [MODEL] Chunk 26: 13824 / 16440 bytes (84%)
+15:13:58 [SCHED    206800ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/27 (512 bytes)
+15:13:58 [MODEL] Chunk 27: 14336 / 16440 bytes (87%)
+15:13:58 [SCHED    207801ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/28 (512 bytes)
+15:13:58 [MODEL] Chunk 28: 14848 / 16440 bytes (90%)
+15:13:58 [SCHED    208802ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/29 (512 bytes)
+15:13:58 [MODEL] Chunk 29: 15360 / 16440 bytes (93%)
+15:13:58 [SCHED    209803ms] run_all: running=0
+15:13:58 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/30 (512 bytes)
+15:13:58 [MODEL] Chunk 30: 15872 / 16440 bytes (96%)
+15:13:58 [SCHED    210804ms] run_all: running=0
+15:13:58 [SCHED    211805ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/31 (512 bytes)
+15:13:58 [MODEL] Chunk 31: 16384 / 16440 bytes (99%)
+15:13:58 [SCHED    212806ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/chunk/32 (56 bytes)
+15:13:58 [MODEL] Chunk 32: 16440 / 16440 bytes (100%)
+15:13:58 [SCHED    213821ms] run_all: running=0
+15:13:58 [MQTT] Model data on: pico/s3-001/model/end (0 bytes)
+15:13:58 [MODEL] Transfer complete! 16440 bytes verified, saved to flash slot 0
+15:13:58 [SCHED    214822ms] run_all: running=0
+15:13:58 [INFER] MODEL_READY detected — starting auto-load...
+15:13:58 [TFLITE] Unloading previous model state...
+15:13:58 [TFLITE] Unload complete.
+15:13:58 [TFLITE] Verifying FlatBuffer at 0x3c321000...
+15:13:58 [TFLITE] Schema version 3 verified.
+15:13:58 [TFLITE] Creating OpResolver...
+15:13:58 [TFLITE] Ops registered.
+15:13:58 [TFLITE] Creating Interpreter (Arena size 65536)...
+15:13:58 [TFLITE] Allocating tensors...
+15:13:58 [TFLITE] Tensors allocated.
+15:13:58 [TFLITE] Model loaded OK!
+15:13:58 [TFLITE]   Inputs:  1 tensor(s), 16 total element(s)
+15:13:58 [TFLITE]   Outputs: 1 tensor(s), 16 total element(s)
+15:13:58 [TFLITE]   Arena:   2908 / 65536 bytes used
+15:13:58 [INFER] Model loaded: 16 inputs, 16 outputs
+15:13:58 [INFER] Auto-load successful.
+15:13:58 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:13:58 [SCHED    215853ms] run_all: running=0
+15:13:58 [MQTT] Norm params on: pico/s3-001/model/params (251 bytes)
+15:13:58 [INFER] Loaded 16 normalization params
+15:13:58 [INFER] Loaded 15 threshold masks
+15:13:58 [INFER] Score mode: MSE (Autoencoder)
+15:13:58 [SCHED    217260ms] run_all: running=0
+15:13:58 [SCHED    218261ms] run_all: running=0
+15:13:59 [SCHED    219262ms] run_all: running=0
+15:14:00 [SCHED    220263ms] run_all: running=0
+15:14:00 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:14:01 [SCHED    221264ms] run_all: running=0
+15:14:02 [SCHED    222265ms] run_all: running=0
+15:14:03 [SCHED    223266ms] run_all: running=0
+15:14:04 [SCHED    224267ms] run_all: running=0
+15:14:05 [SCHED    225268ms] run_all: running=0
+15:14:05 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:14:06 [SCHED    226269ms] run_all: running=0
+15:14:07 [CMD] Executing batch...
+15:14:07 [INFER] invoke=1747us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+15:14:07 [TRACE] Rule Parse + Batch Actions executed in 2798us
+15:14:08 [SCHED    227391ms] run_all: running=0
+15:14:08 [SCHED    228392ms] run_all: running=0
+15:14:10 [SCHED    229393ms] run_all: running=0
+15:14:10 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:14:11 [SCHED    230394ms] run_all: running=0
+15:14:11 [SCHED    231395ms] run_all: running=0
+15:14:12 [MQTT] Model data on: pico/s3-001/model/start (33 bytes)
+15:14:12 [MODEL] Transfer starting: 16440 bytes, CRC32=0xF6AED6F9
+15:14:12 [MQTT] Model data on: pico/s3-001/model/chunk/0 (1024 bytes)
+15:14:12 [MODEL] Chunk 0: 1024 / 16440 bytes (6%)
+15:14:12 [MQTT] Model data on: pico/s3-001/model/chunk/1 (1024 bytes)
+15:14:12 [MODEL] Chunk 1: 2048 / 16440 bytes (12%)
+15:14:12 [MQTT] Model data on: pico/s3-001/model/chunk/2 (1024 bytes)
+15:14:12 [MODEL] Chunk 2: 3072 / 16440 bytes (18%)
+15:14:12 [MQTT] Model data on: pico/s3-001/model/chunk/3 (1024 bytes)
+15:14:12 [MODEL] Chunk 3: 4096 / 16440 bytes (24%)
+15:14:12 [MQTT] Model data on: pico/s3-001/model/chunk/4 (1024 bytes)
+15:14:12 [MODEL] Chunk 4: 5120 / 16440 bytes (31%)
+15:14:12 [MQTT] Model data on: pico/s3-001/model/chunk/5 (1024 bytes)
+15:14:12 [MODEL] Chunk 5: 6144 / 16440 bytes (37%)
+15:14:12 [MQTT] Model data on: pico/s3-001/model/chunk/6 (1024 bytes)
+15:14:12 [MODEL] Chunk 6: 7168 / 16440 bytes (43%)
+15:14:12 [MQTT] Model data on: pico/s3-001/model/chunk/7 (1024 bytes)
+15:14:12 [MODEL] Chunk 7: 8192 / 16440 bytes (49%)
+15:14:12 [MQTT] Model data on: pico/s3-001/model/chunk/8 (1024 bytes)
+15:14:12 [MODEL] Chunk 8: 9216 / 16440 bytes (56%)
+15:14:12 [MQTT] Model data on: pico/s3-001/model/chunk/9 (1024 bytes)
+15:14:12 [MODEL] Chunk 9: 10240 / 16440 bytes (62%)
+15:14:12 [MQTT] Model data on: pico/s3-001/model/chunk/10 (1024 bytes)
+15:14:12 [MODEL] Chunk 10: 11264 / 16440 bytes (68%)
+15:14:12 [MQTT] Model data on: pico/s3-001/model/chunk/11 (1024 bytes)
+15:14:12 [MODEL] Chunk 11: 12288 / 16440 bytes (74%)
+15:14:12 [MQTT] Model data on: pico/s3-001/model/chunk/12 (1024 bytes)
+15:14:12 [MODEL] Chunk 12: 13312 / 16440 bytes (80%)
+15:14:12 [MQTT] Model data on: pico/s3-001/model/chunk/13 (1024 bytes)
+15:14:12 [MODEL] Chunk 13: 14336 / 16440 bytes (87%)
+15:14:12 [MQTT] Model data on: pico/s3-001/model/chunk/14 (1024 bytes)
+15:14:12 [MODEL] Chunk 14: 15360 / 16440 bytes (93%)
+15:14:12 [MQTT] Model data on: pico/s3-001/model/chunk/15 (1024 bytes)
+15:14:12 [MODEL] Chunk 15: 16384 / 16440 bytes (99%)
+15:14:12 [MQTT] Model data on: pico/s3-001/model/chunk/16 (56 bytes)
+15:14:12 [MODEL] Chunk 16: 16440 / 16440 bytes (100%)
+15:14:12 [MQTT] Model data on: pico/s3-001/model/end (0 bytes)
+15:14:12 [MODEL] CRC32 mismatch: got 0xF6AED6F8, expected 0xF6AED6F9
+15:14:12 [MODEL] Previous model kept (16440 bytes)
+15:14:13 [SCHED    232497ms] run_all: running=0
+15:14:14 [SCHED    233498ms] run_all: running=0
+15:14:15 [SCHED    234499ms] run_all: running=0
+15:14:16 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:14:16 [SCHED    235500ms] run_all: running=0
+15:14:17 [SCHED    236501ms] run_all: running=0
+15:14:17 [MQTT] Model data on: pico/s3-001/model/start (25 bytes)
+15:14:17 [MODEL] Invalid size 300000 (max 262144)
+15:14:17 [MODEL] Previous model kept (16440 bytes)
+15:14:18 [SCHED    237502ms] run_all: running=0
+15:14:19 [SCHED    238503ms] run_all: running=0
+15:14:20 [SCHED    239504ms] run_all: running=0
+15:14:21 [MQTT] Model data on: pico/s3-001/model/start (33 bytes)
+15:14:21 [MODEL] Transfer starting: 16440 bytes, CRC32=0xF6AED6F8
+15:14:21 [MQTT] Model data on: pico/s3-001/model/chunk/0 (1024 bytes)
+15:14:21 [MODEL] Chunk 0: 1024 / 16440 bytes (6%)
+15:14:21 [MQTT] Model data on: pico/s3-001/model/chunk/1 (1024 bytes)
+15:14:21 [MODEL] Chunk 1: 2048 / 16440 bytes (12%)
+15:14:21 [MQTT] Model data on: pico/s3-001/model/chunk/2 (1024 bytes)
+15:14:21 [MODEL] Chunk 2: 3072 / 16440 bytes (18%)
+15:14:21 [MQTT] Model data on: pico/s3-001/model/chunk/3 (1024 bytes)
+15:14:21 [MODEL] Chunk 3: 4096 / 16440 bytes (24%)
+15:14:21 [MQTT] Model data on: pico/s3-001/model/chunk/4 (1024 bytes)
+15:14:21 [MODEL] Chunk 4: 5120 / 16440 bytes (31%)
+15:14:21 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:14:21 [SCHED    240538ms] run_all: running=0
+15:14:21 [MQTT] Model data on: pico/s3-001/model/start (33 bytes)
+15:14:21 [MODEL] Previous upload interrupted; restarting
+15:14:21 [MODEL] Transfer starting: 16440 bytes, CRC32=0xF6AED6F8
+15:14:22 [SCHED    241540ms] run_all: running=0
+15:14:23 [SCHED    242541ms] run_all: running=0
+15:14:24 [CMD] Executing batch...
+15:14:24 [INFER] invoke=1494us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+15:14:24 [TRACE] Rule Parse + Batch Actions executed in 2673us
+15:14:25 [SCHED    244415ms] run_all: running=0
+15:14:26 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:14:26 [SCHED    245416ms] run_all: running=0
+15:14:27 [SCHED    246417ms] run_all: running=0
+15:14:28 [SCHED    247418ms] run_all: running=0
+15:14:29 [SCHED    248419ms] run_all: running=0
+15:14:33 [SCHED      4163ms] run_all: running=0
+15:14:34 [SCHED      5164ms] run_all: running=0
+15:14:34 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:14:35 [SCHED      6165ms] run_all: running=0
+15:14:36 [SCHED      7166ms] run_all: running=0
+15:14:37 [SCHED      8167ms] run_all: running=0
+15:14:38 [SCHED      9168ms] run_all: running=0
+15:14:39 [SCHED     10169ms] run_all: running=0
+15:14:39 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:14:40 [SCHED     11170ms] run_all: running=0
+15:14:41 [SCHED     12171ms] run_all: running=0
+15:14:42 [SCHED     13172ms] run_all: running=0
+15:14:43 [SCHED     14173ms] run_all: running=0
+15:14:44 [SCHED     15174ms] run_all: running=0
+15:14:44 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:14:45 [SCHED     16175ms] run_all: running=0
+15:14:46 [SCHED     17176ms] run_all: running=0
+15:14:47 [SCHED     18177ms] run_all: running=0
+15:14:48 [SCHED     19178ms] run_all: running=0
+15:14:49 [SCHED     20179ms] run_all: running=0
+15:14:49 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:14:50 [SCHED     21180ms] run_all: running=0
+15:14:51 [SCHED     22181ms] run_all: running=0
+15:14:52 [SCHED     23182ms] run_all: running=0
+15:14:53 [SCHED     24183ms] run_all: running=0
+15:14:54 [SCHED     25184ms] run_all: running=0
+15:14:54 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:14:55 [SCHED     26185ms] run_all: running=0
+15:14:56 [SCHED     27186ms] run_all: running=0
+15:14:57 [SCHED     28187ms] run_all: running=0
+15:14:58 [SCHED     29188ms] run_all: running=0
+15:14:59 [SCHED     30189ms] run_all: running=0
+15:14:59 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:15:00 [SCHED     31190ms] run_all: running=0
+15:15:01 [SCHED     32191ms] run_all: running=0
+15:15:02 [SCHED     33192ms] run_all: running=0
+15:15:03 [SCHED     34193ms] run_all: running=0
+15:15:04 [SCHED     35194ms] run_all: running=0
+15:15:04 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:15:05 [SCHED     36195ms] run_all: running=0
+15:15:06 [SCHED     37196ms] run_all: running=0
+15:15:07 [SCHED     38197ms] run_all: running=0
+15:15:08 [CMD] Executing batch...
+15:15:08 [INFER] invoke=1801us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+15:15:08 [TRACE] Rule Parse + Batch Actions executed in 2858us
+15:15:09 [SCHED     39823ms] run_all: running=0
+15:15:09 [MQTT] Status: Connected, Broker: 172.20.10.5
+15:15:10 [SCHED     40824ms] run_all: running=0
+15:15:11 [SCHED     41825ms] run_all: running=0
+15:15:12 [SCHED     42826ms] run_all: running=0
+15:15:13 [SCHED     43827ms] run_all: running=0
