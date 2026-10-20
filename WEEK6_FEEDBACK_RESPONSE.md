@@ -5,7 +5,7 @@ This file is the single record of the professor's feedback on the Week 6 design 
 | | |
 |---|---|
 | Tracker branch | `s3-port-d2` (the team's working branch; D1 is also merged into `main`) |
-| Last updated | 2026-10-18, by Hasif |
+| Last updated | 2026-10-20, by Hasif (D1 µT-Kernel redesign, branch `s3-port-d1-redesign`) |
 | Feedback received | After the Week 6 design review submission (before 2026-10-18) |
 | Reviewed document | Week 6 Design Review "P2-AAI15", local copy `ESP_P2_AAI15 (2).pdf` |
 | Next event | Tribunal 1, Monday 2026-10-19 (see section 1) |
@@ -29,7 +29,7 @@ This file is the single record of the professor's feedback on the Week 6 design 
 
 **Tribunal 1** (prof's email): Monday 2026-10-19 on Zoom at 11:00; a 15-minute brief on a requirement change, then a 90-minute recorded group discussion of its impact on resources, memory, processing time, hardware constraints and module dependencies, in which every member explains their own sub-module. Documents (.doc or .pdf): `[Group ID]_PreTri1` before 11:00, `[Group ID]_ImmTri1` by 13:10, `[Group ID]_PostTri1` by 2026-10-23 23:59; the recording is uploaded as soon as possible. This tracker is the source for the feedback-related parts of those documents. Confirm whether the group ID is `AAI15` or `P2-AAI15`.
 
-**Where the evidence lives.** D1 results: [parity/PARITY.md §3](parity/PARITY.md#3-esp32-s3-results-tasks-13-to-21) and `parity/logs/s3/`. Board and wiring: [SETUP.md](SETUP.md). Pico-to-S3 changes and defects D-01 to D-15: [PORTABILITY.md](PORTABILITY.md). D2 work: [D2_SPI_TODO.md](D2_SPI_TODO.md), [D2_SPI_DESIGN_NOTES.md](D2_SPI_DESIGN_NOTES.md), [D2_EVENT_RECORD_DESIGN.md](D2_EVENT_RECORD_DESIGN.md), `parity/logs/d2-spi/`.
+**Where the evidence lives.** D1 results: [parity/PARITY.md §3](parity/PARITY.md#3-esp32-s3-results-tasks-13-to-21) and `parity/logs/s3/` for the Arduino/FreeRTOS build, and [§4](parity/PARITY.md#4-esp32-s3-on-µt-kernel-3-smp-tasks-24-to-34) and `parity/logs/mtk/` for the µT-Kernel 3 SMP build required since Tribunal 1 ([MTK_REDESIGN.md](MTK_REDESIGN.md)). Board and wiring: [SETUP.md](SETUP.md). Pico-to-S3 changes and defects D-01 to D-15: [PORTABILITY.md](PORTABILITY.md). D2 work: [D2_SPI_TODO.md](D2_SPI_TODO.md), [D2_SPI_DESIGN_NOTES.md](D2_SPI_DESIGN_NOTES.md), [D2_EVENT_RECORD_DESIGN.md](D2_EVENT_RECORD_DESIGN.md), `parity/logs/d2-spi/`.
 
 ## 2. The feedback, word for word
 
@@ -74,7 +74,7 @@ This file is the single record of the professor's feedback on the Week 6 design 
 | F3 | Artefacts contradict each other | D1 | Hasif | ✅ | [F3](#f3-contradictions-between-artefacts) |
 | F4 | Own wiring diagram per node | D6, D2 | Team, Brendan | 🟡 | [F4](#f4-wiring-diagram-per-node) |
 | F5 | Echo-timing method; no blocking wait | D3 | Cody | ❌ | [F5](#f5-echo-timing-method) |
-| F6 | Measure SchedulerTask WCET | D3, D5 | Cody, Hasif | 🟡 | [F6](#f6-schedulertask-wcet) |
+| F6 | Measure SchedulerTask WCET | D3, D5 | Cody, Hasif | ✅ | [F6](#f6-schedulertask-wcet) |
 | F7 | HC-SR04 trigger order and spacing | D3 | Cody | ❌ | [F7](#f7-hc-sr04-trigger-order-and-spacing) |
 | F8 | LD2450 UART drain, buffer, presence | D6 | Team | ❌ | [F8](#f8-ld2450-uart-handling) |
 | F9 | One observation-window owner; event record with ID | D6 | Team | ❌ | [F9](#f9-observation-window-owner-and-event-record) |
@@ -94,7 +94,7 @@ This file is the single record of the professor's feedback on the Week 6 design 
 | C1 | Resolve inconsistencies, then prove sampling before ML | D3, D6 | Cody, team | 🟡 | [C1](#c1-sampling-path-before-ml) |
 | C2 | The project must be in C | D1 | Hasif, team | 🟡 | [C2](#c2-use-of-c) |
 
-**Totals:** ✅ 8 · 🟡 6 · ❌ 10. Every open (❌) item belongs to D3, D4 or D6. Of the D1 and D5 items, only F6 (a measurement run on the board) and C2 (the professor's confirmation) remain.
+**Totals:** ✅ 9 · 🟡 5 · ❌ 10. Every open (❌) item belongs to D3, D4 or D6. Of the D1 and D5 items, only C2 (the professor's confirmation) remains.
 
 ## 4. Item details
 
@@ -113,10 +113,10 @@ Feedback: several artefacts contradict each other; resolve these first. Affects:
 Feedback: replace the stock DevKitC-1 pinout with your own wiring diagram for each node. Status 🟡. Done: the D1 sensor node's pin table and wiring diagram ([SETUP.md, Pin, power and wiring](SETUP.md#pin-power-and-wiring-task-8)) and the board pinout image (`Pinout_Super_Mini_S3.png`). Open: diagrams for the other two nodes (D6) and the W25Q32 fixture (D2, in Brendan's list). Next action: D6 agrees each node's devices, then each diagram is drawn from the SETUP format.
 
 ### F5. Echo-timing method
-Feedback: the echo-timing method is not stated; a blocking wait can take 25–38 ms on timeout, so two ultrasonic sensors cannot both be sampled every 50 ms; time ECHO with RMT/MCPWM capture or timestamped edge interrupts that notify the task. Status ❌. Fact: the D1 pulse driver (`measure_pulse_us` in `libraries/EdgeCore/src/bus/gpio.c`) busy-waits inside SchedulerTask, for up to its 25 ms timeout when nothing answers. Next action (D3): replace it with capture or timestamped edge interrupts; the D1 edge ISR for counters (`hal_gpio_count_edges`) is the starting point. Section 8 measures the current cost.
+Feedback: the echo-timing method is not stated; a blocking wait can take 25–38 ms on timeout, so two ultrasonic sensors cannot both be sampled every 50 ms; time ECHO with RMT/MCPWM capture or timestamped edge interrupts that notify the task. Status ❌. Fact: the D1 pulse driver (`measure_pulse_us` in `libraries/EdgeCore/src/bus/gpio.c`) busy-waits inside SchedulerTask, for up to its 25 ms timeout when nothing answers. Next action (D3): replace it with capture or timestamped edge interrupts; the D1 edge ISR for counters (`hal_gpio_count_edges`) is the starting point. Section 8 measures the current cost. Update 2026-10-20 (D1 task 29, µT-Kernel redesign): on the µT-Kernel build the busy-wait is gone. `hal_gpio_measure_pulse` timestamps both echo edges in the GPIO interrupt and the measuring task sleeps on an event flag; a lower-priority task on core 1 ran 563,596 loops during an echo wait against 0 during a busy-wait ([29-echo-and-wcet.txt](parity/logs/mtk/29-echo-and-wcet.txt), HAL test). The wait still lasts up to the timeout inside SchedulerTask's cycle, so the sampling plan for two sensors per window (F7, R1) stays with D3.
 
 ### F6. SchedulerTask WCET
-Feedback: measure SchedulerTask WCET. Status 🟡. Done: SchedulerTask measures the work of every wake-up and `TASKS` reports the count, mean, p95 bucket and maximum; `parity/wcet_test.py` runs six load scenarios (section 8). Open: the run itself, which needs the board. Next action: `sh tools/s3.sh flash`, then `.venv/bin/python parity/wcet_test.py`; copy the table into section 8 and set ✅.
+Feedback: measure SchedulerTask WCET. Status 🟡. Done: SchedulerTask measures the work of every wake-up and `TASKS` reports the count, mean, p95 bucket and maximum; `parity/wcet_test.py` runs six load scenarios (section 8). Open: the run itself, which needs the board. Next action: `sh tools/s3.sh flash`, then `.venv/bin/python parity/wcet_test.py`; copy the table into section 8 and set ✅. Update 2026-10-20: measured on the µT-Kernel build and on the FreeRTOS build for comparison (section 8, [PARITY.md §4](parity/PARITY.md#4-esp32-s3-on-µt-kernel-3-smp-tasks-24-to-34)); status ✅.
 
 ### F7. HC-SR04 trigger order and spacing
 Feedback: define trigger spacing and order for the two HC-SR04s to avoid crosstalk (review §8.3), since entry/exit direction depends on which fires first. Status ❌. Nothing defined yet. Next action (D3): choose the order and minimum spacing (an echo can last up to 25 ms), and test crosstalk with both sensors facing the entrance.
@@ -152,7 +152,7 @@ Feedback: NFR1 uses the mean interval, which hides jitter; add a p95 or maximum 
 Feedback: add a fault table separating critical faults from DEGRADED. Status ✅ (section 11). Next action: paste it into the review's statechart section. No deliverable owns fault handling yet; the team should assign it.
 
 ### R1. SchedulerTask timing at 50 ms
-Risk: SchedulerTask timing with two ultrasonic sensors, radar UART and I²C sensors at the 50 ms window rate. Status ❌. Depends on F5, F6 and F8 and needs the entrance hardware. The F6 scenarios already include two ultrasonic reads with no echo, the worst case of the current driver.
+Risk: SchedulerTask timing with two ultrasonic sensors, radar UART and I²C sensors at the 50 ms window rate. Status ❌. Depends on F5, F6 and F8 and needs the entrance hardware. The F6 scenarios already include two ultrasonic reads with no echo, the worst case of the current driver. Update 2026-10-20: measured (section 8). Two no-echo reads take 52.0 ms on average and 53.5 ms at most per cycle on the µT-Kernel build, more than the 50 ms window, so the risk is confirmed; one read takes at most 26.7 ms.
 
 ### R2. Entry/exit order over MQTT
 Risk: correct entry/exit ordering when readings travel over MQTT between nodes. Status ❌. Removed by design once F9 moves window assembly to the sensor node, so ordering never depends on MQTT delivery.
@@ -161,7 +161,7 @@ Risk: correct entry/exit ordering when readings travel over MQTT between nodes. 
 Risk: collecting enough labelled entrance events to reach NFR10 (80% accuracy) for all four classes. Status ❌. No dataset yet; it is shared by D4 and D6.
 
 ### R4. Model upload and flash writes during sampling
-Risk: model upload and flash writes running alongside live sampling. Status 🟡. Model upload is proven on the S3 (`model_test.py` 9/9) but not under measured live sampling. Brendan's T-23 combined run (SPI flash writes, sampling and inference) covers the rest.
+Risk: model upload and flash writes running alongside live sampling. Status 🟡. Model upload is proven on the S3 (`model_test.py` 9/9) but not under measured live sampling. Brendan's T-23 combined run (SPI flash writes, sampling and inference) covers the rest. Update 2026-10-20 (D1 task 31): on the µT-Kernel build an upload is written to the flash slot not in use while sampling and inference continue (`mqtt_test.py` 27/27, `model_test.py` 8/9, [PARITY.md §4](parity/PARITY.md#4-esp32-s3-on-µt-kernel-3-smp-tasks-24-to-34)). Each flash write briefly parks the other core, and the course port needed its kernel and shim moved into IRAM before writes were safe while Wi-Fi was active ([MTK_REDESIGN.md §8](MTK_REDESIGN.md#8-memory-plan)).
 
 ### R5. Occupancy integrity
 Risk: occupancy count integrity under duplicate messages and node resets. Status ❌. Follows F10.
@@ -170,7 +170,7 @@ Risk: occupancy count integrity under duplicate messages and node resets. Status
 Feedback: resolve the inconsistencies first, then prove the sampling path on real hardware before investing further in ML optimisation. Status 🟡. The generic sampling path is proven on the S3 (NFR1 timing, 30-minute endurance run, all D1 parity stages). The entrance sampling path (two ultrasonic sensors and the radar) is not.
 
 ### C2. Use of C
-Feedback: the project must be in C. Status 🟡: the boundary is documented (section 13), but the team and the professor must confirm it. Next action: ask the professor whether the thin C++ Arduino layer is acceptable.
+Feedback: the project must be in C. Status 🟡: the boundary is documented (section 13), but the team and the professor must confirm it. Next action: ask the professor whether the thin C++ Arduino layer is acceptable. Update 2026-10-20: the µT-Kernel build has no Arduino layer; its platform code is C apart from the TFLite Micro wrapper (section 13).
 
 ## 5. Corrected hardware and naming (F3)
 
@@ -230,14 +230,18 @@ All sizes are the implemented values in `libraries/EdgeS3/src/runtime_s3.cpp`. N
 
 SchedulerTask measures the work it does on each wake-up: messages, sensor reads, rules, and model and inference polling. `TASKS` prints `SchedulerTask cycles=… mean_us=… p95_us=… max_us=…` and then resets the statistics. The maximum is the largest observed cycle, not a proven bound. `parity/wcet_test.py` runs these scenarios for 20 s each:
 
-| Scenario | cycles | mean µs | p95 µs | max µs |
-|---|---|---|---|---|
-| Idle, sampling on, no sensors | pending | | | |
-| 8 digital inputs at 50 ms | pending | | | |
-| 1 digital input + rule at 50 ms | pending | | | |
-| 1 HC-SR04 at 50 ms, no echo (25 ms timeout) | pending | | | |
-| 2 HC-SR04 at 50 ms, no echo | pending | | | |
-| Inference rule at 50 ms | pending | | | |
+Measured on 2026-10-20 on the HW-747 with Wi-Fi and MQTT connected (`parity/logs/mtk/wcet.log`, `parity/logs/s3/wcet.log`):
+
+| Scenario | FreeRTOS cycles | FreeRTOS mean | FreeRTOS p95 | FreeRTOS max | µT-Kernel cycles | µT-Kernel mean | µT-Kernel p95 | µT-Kernel max |
+|---|---|---|---|---|---|---|---|---|
+| Idle, sampling on, no sensors | 25 | 229 | <250 | 244 | 25 | 188 | <250 | 320 |
+| 8 digital inputs at 50 ms | 1,643 | 1,447 | <5,000 | 7,006 | 748 | 1,595 | <5,000 | 3,838 |
+| 1 digital input + rule at 50 ms | 794 | 692 | <2,500 | 2,336 | 410 | 1,024 | <2,500 | 1,698 |
+| 1 HC-SR04 at 50 ms, no echo (25 ms timeout) | 281 | 25,522 | <50,000 | 26,098 | 277 | 26,168 | <50,000 | 26,704 |
+| 2 HC-SR04 at 50 ms, no echo | 315 | 45,776 | >50,000 | 52,257 | 277 | 51,979 | >50,000 | 53,511 |
+| Inference rule at 50 ms | 428 | 1,608 | <2,500 | 2,541 | 415 | 1,964 | <5,000 | 3,033 |
+
+On both runtimes two ultrasonic reads with no echo take longer than the 50 ms window, because each read waits for its 25 ms timeout inside SchedulerTask's cycle. On µT-Kernel the CPU is free during that wait (the HAL test's spinner ran 563,596 loops), on FreeRTOS it busy-waits. The inference cycle is longer on µT-Kernel, where each invocation crosses to InferenceTask and back and the build uses the port's default `-Og` optimisation where Arduino-ESP32 uses `-Os`: one invocation takes about 500 µs against 265–280 µs on the Arduino build, measured in the same session. How much of the difference each factor causes was not measured. In the multi-sensor scenarios the FreeRTOS build woke SchedulerTask about twice as often in the same 20 s, so its mean is spread over more, shorter cycles.
 
 Components measured earlier: rule evaluation 77–646 µs per sample (`[TRACE] Total Rule Eval` on the light-sensor run); inference 242–462 µs per invocation (D1 task 20). The pulse driver busy-waits inside SchedulerTask for up to 25 ms when no echo returns, so two ultrasonic sensors with no echo would use about 50 ms of every 50 ms window. That confirms the risk in F5 and R1, and the scenarios above will show it directly.
 
@@ -326,6 +330,8 @@ C++ is limited to a thin platform layer of five files, about 1,800 lines (`libra
 
 Removing C++ entirely would mean replacing Arduino with the ESP-IDF C drivers, which conflicts with D1's Arduino requirement and repeats verified work. D2 also chose to keep `SPIClass` and record the C/C++ boundary (D2_SPI_TODO.md). Recommendation: keep this boundary, and confirm with the professor that "in C" refers to the application code.
 
+**µT-Kernel build (since Tribunal 1).** The platform layer that replaces the Arduino one (`esp32s3_mtk/components/edge_mtk/` and `main/`) is C: the console, HAL, µT-Kernel runtime, Wi-Fi and MQTT, and model store, about 2,700 lines. The one C++ file is `inference_mtk.cpp` (about 350 lines), because TensorFlow Lite Micro's interface is C++; it exposes C functions behind `inference_engine/tflite_wrapper.h`, as on the Pico.
+
 ## 14. Decisions needed and change log
 
 **Decisions needed:**
@@ -346,3 +352,4 @@ Removing C++ entirely would mean replacing Arduino with the ESP-IDF C drivers, w
 | Date | By | Change |
 |---|---|---|
 | 2026-10-18 | Hasif | Tracker created on `s3-port-d2`. F3, F12, F13, F14, F16 and F17 resolved; F6 instrumented (`TASKS` cycle statistics, `parity/wcet_test.py`), run pending; `parity/timing_test.py` reports p95, maximum and skipped samples; D2 status recorded from D2_SPI_TODO.md at `548d2e3`. Before this update: ✅ 2, 🟡 8, ❌ 14. After: ✅ 8, 🟡 6, ❌ 10. |
+| 2026-10-20 | Hasif | D1 µT-Kernel 3 SMP redesign (tasks 24–34, [MTK_REDESIGN.md](MTK_REDESIGN.md)): F6 measured on both runtimes and set ✅ (section 8); evidence added to F5 (interrupt-driven echo wait), R1 (two no-echo reads exceed the 50 ms window), R4 (uploads during sampling) and C2 (the µT-Kernel platform layer is C). |

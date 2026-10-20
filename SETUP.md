@@ -1,6 +1,6 @@
 # Pico Reference and ESP32-S3 Arduino Setup
 
-Sections 0–13 are the complete guide for getting the existing Pico reference firmware running on your own hardware, from an empty machine to a board that is confirmed working. They cover what to install, wire, build, flash and verify. The separate ESP32-S3 Arduino setup plan follows section 13.
+Sections 0–13 are the complete guide for getting the existing Pico reference firmware running on your own hardware, from an empty machine to a board that is confirmed working. They cover what to install, wire, build, flash and verify. The separate ESP32-S3 Arduino setup plan follows section 13. Since Tribunal 1 the D1 firmware on the ESP32-S3 runs on µT-Kernel 3 SMP: its setup is the last section, [ESP32-S3 on µT-Kernel 3 SMP](#esp32-s3-on-µt-kernel-3-smp-tasks-2534). The ESP32-S3 Arduino sections remain for the FreeRTOS baseline build and the D2 SPI work.
 
 The Pico procedure was verified end to end on macOS (Apple Silicon) on 2026-09-18. Windows and Linux notes are marked wherever a step differs. The minimal ESP32-S3 Arduino sketch was verified on one physical board on 2026-10-13; broader board integration remains pending.
 
@@ -525,6 +525,7 @@ Since Tribunal 1 the D1 firmware runs on the course µT-Kernel 3 SMP port instea
 | ESP-IDF | `v6.1-dev-2300-g17a74c925c` (commit `17a74c925c`) | The exact revision the port is qualified on; it replaces IDF's FreeRTOS scheduler, so another revision would need its qualification rerun |
 | Compiler | `xtensa-esp-elf-gcc 15.2.0` (`esp-15.2.0_20251204`), installed by IDF's `install.sh` | Same reason |
 | esp-mqtt | `espressif/mqtt` 1.1.0, locked in `esp32s3_mtk/dependencies.lock` | esp-mqtt left IDF for the component registry in v6 |
+| TFLite Micro | `espressif/esp-tflite-micro` 1.4.0, locked in the same file | The release Arduino-ESP32 3.3.12 bundles, so inference compares like for like with the FreeRTOS build |
 
 `sh tools/mtk.sh setup` clones ESP-IDF into `~/esp/esp-idf-v6.1` (set `IDF_DIR` to change it), checks out the pinned commit and its submodules, installs the toolchain for the ESP32-S3, creates the Python test environment and copies the credentials template. `sh tools/mtk.sh check` prints the three pinned versions, refuses a mismatch, and builds the firmware.
 
@@ -536,4 +537,23 @@ sh tools/mtk.sh flash        # build and flash over the board's USB-C port
 sh tools/mtk.sh monitor      # console (Ctrl-] to leave)
 ```
 
-Wi-Fi settings go in `esp32s3_mtk/main/wifi_credentials.h` (copy the `.example`; gitignored), with the same fields as the Arduino build.
+Wi-Fi settings go in `esp32s3_mtk/main/wifi_credentials.h` (copy the `.example`; gitignored), with the same fields as the Arduino build. `MQTT_HOST` is compiled in, so after the laptop changes network (a different hotspot or router gives it a new IP address) put the new address there and flash again.
+
+### Testing on µT-Kernel (tasks 27–32)
+
+The parity scripts are the same as for the Arduino build; `tools/mtk.sh` passes them the board and writes the logs to `parity/logs/mtk/`. Results are in [PARITY.md §4](parity/PARITY.md).
+
+```sh
+sh tools/mtk.sh haltest                  # HAL test firmware, then the normal firmware is flashed back
+sh tools/mtk.sh test 4a                  # any wiring-free stage: 4a, 5-neg, t03, t04, t06, t10
+sh tools/mtk.sh compare 4a               # the Pico's and this build's output for the stage
+sh tools/mtk.sh mqtt <laptop-ip>         # also: model, flood, endurance
+MOSQ_CONF=~/mosq.conf sh tools/mtk.sh faults <laptop-ip>
+sh tools/mtk.sh timing                   # NFR1
+sh tools/mtk.sh wcet                     # SchedulerTask cycle time
+sh tools/mtk.sh purity                   # no FreeRTOS, Arduino or esp_driver_* use in our code
+```
+
+For the broker-loss part of `faults`, start Mosquitto as `/opt/homebrew/sbin/mosquitto -c ~/mosq.conf -v` (the test stops and restarts it by that name) and set `MOSQ_CONF`; without it the other eight checks still run. Keep the laptop awake and its lid open during `endurance` (30 minutes): on battery, a closed lid puts the Mac to sleep, the test stops reading the board and the broker goes offline. If `flash` reports "No serial data received" or "TX path seems down", `mtk.sh` resets the board and retries once by itself. When a board goes back from the µT-Kernel build to the Arduino build, erase the flash first (`idf.py -C esp32s3_mtk -p <port> erase-flash` after `. ~/esp/esp-idf-v6.1/export.sh`): the µT-Kernel `model` partition overlaps the Arduino build's LittleFS partition, and a stored model would sit inside the Arduino file system. The other direction needs nothing, because the µT-Kernel model store ignores any slot without its CRC-checked header.
+
+Two behaviours of the course port affect testing (MTK_REDESIGN.md §8 and §10): its radio sometimes stops receiving for a minute or more, including right after a reset, so a network test that runs during such a window fails until the link returns; and the port's kernel and shim must run from IRAM for flash writes to be safe, which `components/edge_mtk/port_iram.lf` arranges.

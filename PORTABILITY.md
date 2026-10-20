@@ -1,6 +1,6 @@
 # D1 Portability and Design-Review Closure (Task 22)
 
-This document records how the Pico 2 W reference (`pico-reference`) maps onto the ESP32-S3 port, every exception to the Arduino-only rule, the behaviour that differs between the boards, and how the implementation compares with the submitted Week 6 design review. Test evidence is in `parity/logs/s3/` and is summarised in PARITY.md §3.
+This document records how the Pico 2 W reference (`pico-reference`) maps onto the ESP32-S3 port, every exception to the Arduino-only rule, the behaviour that differs between the boards, and how the implementation compares with the submitted Week 6 design review. Sections 1 to 5 describe the Arduino/FreeRTOS build (tasks 11–22), which is now the measured baseline; test evidence is in `parity/logs/s3/` and PARITY.md §3. Since Tribunal 1 the D1 runtime is µT-Kernel 3 SMP on the course port; section 6 maps the same dependencies onto that build (tasks 24–34), and [MTK_REDESIGN.md](MTK_REDESIGN.md) holds its design and compliance matrix.
 
 ## 1. Pico dependencies and their replacements
 
@@ -62,3 +62,25 @@ FreeRTOS calls (tasks, queues, event groups, software timers) are the RTOS the W
 ## 5. Design consistency with the Week 6 review
 
 The implemented task names, priorities, cores, queues (`sched_q`, `pub_q`, `infer_q`, `app_q`, `bench_q`), the `net_events` group, the GPIO edge ISR and the one-shot PULSE timer match review section 3. Two items differ and need the review updated: the review's hardware section names three ESP32-S3-WROOM-1-N16R8 DevKitC-1 boards with the console on GPIO43/44, while every test ran on the HW-747 Super Mini (ESP32-S3, 4 MB flash, 2 MB PSRAM) with the console on native USB; and `i2c_mutex`/`spi_mutex` are not needed yet, because SchedulerTask is the only bus user until ApplicationTask (D6) drives the LCD and flash. Queue capacities and overflow behaviour, an open gap in review section 8.3, are now defined: `sched_q` 6 × 2.2 KB, `pub_q` 16 × 680 B, `bench_q` 16; a full queue drops the new item and logs it, and the flood test (T-13) shows the node keeps running. MQTT bridging and reconnection, another 8.3 gap, are verified in `parity/logs/s3/mqtt.log` and `net-faults.log`.
+
+## 6. The µT-Kernel 3 SMP build (tasks 24–34)
+
+The EdgeCore library and its HAL interface are unchanged; `esp32s3_mtk/` replaces the Arduino platform layer. Following the course port's rule, peripherals are driven at register level through ESP-IDF's `hal/*_ll.h` and never through `esp_driver_*` components, and no code of ours calls a FreeRTOS or Arduino API (`tools/check_mtk_purity.sh`).
+
+| Pico dependency | Arduino/FreeRTOS build | µT-Kernel 3 SMP build |
+|---|---|---|
+| `pico/time.h` timing | `esp_timer_get_time`, `delay` | SYSTIMER count through `esp_timer_get_time`; `tk_dly_tsk` for delays |
+| USB stdio and `getchar_timeout_us` | `Serial` and a `fopencookie` stream | USB-Serial-JTAG registers; `printf` wrapped at link time and serialised by a µT-Kernel mutex; receive interrupt into a ring, task woken by an event flag |
+| `hardware/gpio.h` | `pinMode`, `digitalWrite`, `digitalRead` | `gpio_ll` registers |
+| Blocking PULSE | FreeRTOS one-shot software timer | µT-Kernel alarm handler |
+| Counter mode and echo timing | `attachInterruptArg` ISR; echo busy-wait | GPIO interrupt registered with `tk_def_int` on core 1: counts edges and timestamps echo edges; the measuring task sleeps on an event flag (task 29) |
+| `hardware/pwm.h` | LEDC through `ledcWrite` | `ledc_ll` registers, same 10-bit resolution |
+| `hardware/i2c.h` | `Wire`, `Wire1` | `i2c_ll` command lists, polled, with timeouts; repeated start kept |
+| `hardware/uart.h` | `Serial1`, `Serial2` | `uart_ll` registers; receive interrupt into a ring |
+| `main.c` super-loop | FreeRTOS tasks and queues | µT-Kernel tasks pinned at creation, message buffers, event flag, cyclic and alarm handlers (MTK_REDESIGN.md §3–§5) |
+| `cyw43_arch` Wi-Fi and lwIP MQTT | Arduino `WiFi`, MQTT library 2.5.3 | `esp_wifi` and esp-mqtt 1.1.0 owned by MQTTTask; IDF's network tasks run as µT-Kernel tasks through the course shim |
+| `pico-tflmicro` | TFLite Micro bundled with the core | `espressif/esp-tflite-micro` 1.4.0 (the same release), owned by InferenceTask |
+| `hardware/flash.h` model storage | LittleFS file, read into PSRAM | Two slots in a raw `model` partition with a CRC-checked header written last; the model runs in place through the flash cache |
+| Task watchdog | `esp_task_wdt` | MonitorTask heartbeats and timer group 0's hardware watchdog |
+
+ESP-IDF is still used below the HAL for start-up, the flash and PSRAM drivers, the Wi-Fi driver, lwIP, esp-mqtt and TFLite Micro; that is how the course port is built, and section 6 of MTK_REDESIGN.md explains why it leaves µT-Kernel solely responsible for scheduling, communication and synchronisation. Results on this build are in PARITY.md §4.

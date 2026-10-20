@@ -10,6 +10,7 @@
 #   sh tools/mtk.sh haltest            flash the HAL test firmware, run it, then restore the firmware
 #   sh tools/mtk.sh purity             check our code uses no FreeRTOS, Arduino or esp_driver_* API
 #   sh tools/mtk.sh test <stage>       run a parity stage, e.g. 4a, 5-neg, t04; log in parity/logs/mtk/
+#   sh tools/mtk.sh compare <stage>    the Pico's and this build's output for a stage, side by side
 #   sh tools/mtk.sh mqtt <broker-ip>   the 27-step MQTT test (node from wifi_credentials.h)
 #   sh tools/mtk.sh model|faults|flood|endurance <broker-ip>
 #                                      faults includes the broker-loss check when MOSQ_CONF names the
@@ -100,6 +101,11 @@ case "$1" in
   purity)  sh tools/check_mtk_purity.sh && sh tools/check_hal_boundary.sh >/dev/null 2>&1 && echo "ok    shared code: no SDK calls (check_hal_boundary.sh)" ;;
   test)    need_port; mkdir -p parity/logs/mtk
            $PY parity/parity_test.py --stage "${2:-4a}" --board s3 --port "$PORT" --log "parity/logs/mtk/${2:-4a}.log" ;;
+  compare) st=${2:-4a}
+           for f in parity/logs/$st.log parity/logs/mtk/$st.log; do
+             echo "===== $f"
+             cut -c10- "$f" | grep -E "^(Commands:|  [A-Z]|CFG:|RULE:|CLEARED|RUN$|STOP$|\[SHOW\]|\[RULE\] [A-Z_0-9]+:|\[INFER\] invoke|proto=)" | awk '!seen[substr($0,1,40)]++' | head -${LINES_MAX:-25}
+           done ;;
   mqtt)    need_port; [ -n "$2" ] || { echo "usage: sh tools/mtk.sh mqtt <broker-ip>"; exit 1; }
            mkdir -p parity/logs/mtk
            $PY parity/mqtt_test.py --broker "$2" --node "${NODE:-$(node_id)}" --board s3 --port "$PORT" --log parity/logs/mtk/mqtt.log ;;
@@ -115,5 +121,5 @@ case "$1" in
            esac ;;
   timing)  need_port; mkdir -p parity/logs/mtk; $PY parity/timing_test.py --board s3 --port "$PORT" --log parity/logs/mtk/timing.log ;;
   wcet)    need_port; mkdir -p parity/logs/mtk; $PY parity/wcet_test.py --port "$PORT" --log parity/logs/mtk/wcet.log ;;
-  *)       sed -n '2,25p' "$0" ;;
+  *)       sed -n '2,26p' "$0" ;;
 esac
