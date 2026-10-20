@@ -1,0 +1,11 @@
+# Task 28 watchdog test, 2026-10-20 05:02: STALL 30000 stops ControlTask's heartbeat; MonitorTask stops feeding the RTC watchdog after 5 s; the RTC watchdog resets the chip 10 s later and the next boot reports it. [crumb] lines (the port's flight recorder) omitted.
+rst:0x15 (USB_UART_CHIP_RESET),boot:0x2b (SPI_FAST_FLASH_BOOT)
+[BOOT] esp32s3_mtk node s3-001: micro T-Kernel 3 SMP, 2 processors, reset reason: USB
+[BOOT] micro T-Kernel 3 SMP runtime: 7 tasks, 5 message buffers, 1 event flag, 1 cyclic handler
+[MON] RTC watchdog armed: 10 s, fed while SchedulerTask, ControlTask and MQTTTask are alive
+[CTRL] stalling ControlTask for 30000 ms (watchdog test)
+[MON] ControlTask silent for 5178 ms: watchdog no longer fed
+rst:0x9 (RTCWDT_SYS_RST),boot:0x2b (SPI_FAST_FLASH_BOOT)
+[BOOT] esp32s3_mtk node s3-001: micro T-Kernel 3 SMP, 2 processors, reset reason: other watchdog
+[BOOT] micro T-Kernel 3 SMP runtime: 7 tasks, 5 message buffers, 1 event flag, 1 cyclic handler
+[MON] RTC watchdog armed: 10 s, fed while SchedulerTask, ControlTask and MQTTTask are alive

@@ -26,9 +26,16 @@ CONFIG_ESP_TASK_WDT_CHECK_IDLE_TASK_CPU0=n
 CONFIG_ESP_TASK_WDT_CHECK_IDLE_TASK_CPU1=n
 CONFIG_ESP_INT_WDT_CHECK_CPU1=n
 
-# PSRAM stays off, as in every course-port profile; internal SRAM holds
-# everything (MTK_REDESIGN.md section 8).
-# CONFIG_SPIRAM is not set
+# PSRAM: the module's 2 MB quad PSRAM is enabled because internal SRAM cannot
+# hold the shared code's static tables (rule table 68 KB, parser scratch
+# 37 KB), the port's kernel heap and stacks, and still leave Wi-Fi its heap.
+# Only EdgeCore's .bss is placed there (components/edgecore/linker.lf); kernel
+# objects, task stacks, message buffers and everything an interrupt handler
+# touches stay in internal RAM (MTK_REDESIGN.md section 8).
+CONFIG_SPIRAM=y
+CONFIG_SPIRAM_MODE_QUAD=y
+CONFIG_SPIRAM_SPEED_80M=y
+CONFIG_SPIRAM_ALLOW_BSS_SEG_EXTERNAL_MEMORY=y
 
 # Radio: Wi-Fi station only, WPA2 (the port's SMP profile drops SAE/OWE).
 CONFIG_LWIP_ENABLE=y

@@ -1,0 +1,38 @@
+04:58:41 [SCHED    126775ms] run_all: running=0
+04:58:43 [SCHED    128647ms] run_all: running=0
+04:58:43 --- clear-t03: CLEAR
+04:58:44 [SCHED    129148ms] reset: cleared 8 slots
+04:58:44 [RULE] reset
+04:58:44 CLEARED
+04:58:45 [SCHED    130153ms] run_all: running=0
+04:58:46 [SCHED    131154ms] run_all: running=0
+04:58:46 --- cfg-t03: BEGINCFG|name=BADPIN|proto=gpio|gpio.mode=digital|gpio.pin=99|mode=poll|freq_hz=1|ENDCFG
+04:58:46 OK: Config applied (inline, delim='|')
+04:58:46 [GPIO] BADPIN: pin 99 not available on this board
+04:58:46 [SCHED    131856ms] add[0]: init_cfg FAILED for BADPIN on gpio
+04:58:46 CFG: add failed (-2)
+04:58:47 [SCHED    132857ms] run_all: running=0
+04:58:48 [SCHED    133858ms] run_all: running=0
+04:58:49 [SCHED    134859ms] run_all: running=0
+04:58:49 --- run-t03: RUN
+04:58:49 RUN
+04:58:50 [SCHED    136056ms] run_all: running=1
+04:58:51 [SCHED    137057ms] run_all: running=1
+04:58:52 [SCHED    138058ms] run_all: running=1
+04:58:53 [SCHED    139059ms] run_all: running=1
+04:58:54 --- stop-t03: STOP
+04:58:54 STOP
+04:58:55 [SCHED    140377ms] run_all: running=0
+04:58:56 [SCHED    141378ms] run_all: running=0
+04:58:56 --- alive-t03: SHOW
+04:58:56 [SHOW] sampling=0
+04:58:56 [RULE] count=0
+04:58:57 [SCHED    143053ms] run_all: running=0
+04:58:58 [SCHED    144054ms] run_all: running=0
+04:58:59 [SCHED    145055ms] run_all: running=0
+04:59:00 --- clear-t03-end: CLEAR
+04:59:00 [SCHED    145262ms] reset: cleared 8 slots
+04:59:00 [RULE] reset
+04:59:00 CLEARED
+04:59:01 [SCHED    146268ms] run_all: running=0
+04:59:02 [SCHED    147269ms] run_all: running=0
