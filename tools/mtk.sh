@@ -9,6 +9,7 @@
 #   sh tools/mtk.sh monitor            open the console (Ctrl-] to leave)
 #   sh tools/mtk.sh haltest            flash the HAL test firmware, run it, then restore the firmware
 #   sh tools/mtk.sh purity             check our code uses no FreeRTOS, Arduino or esp_driver_* API
+#   sh tools/mtk.sh image              check the built firmware links no FreeRTOS kernel code
 #   sh tools/mtk.sh test <stage>       run a parity stage, e.g. 4a, 5-neg, t04; log in parity/logs/mtk/
 #   sh tools/mtk.sh compare <stage>    the Pico's and this build's output for a stage, side by side
 #   sh tools/mtk.sh mqtt <broker-ip>   the 27-step MQTT test (node from wifi_credentials.h)
@@ -98,7 +99,11 @@ case "$1" in
            trap 'echo "Restoring the firmware..."; flash_proj $PROJ >/dev/null' EXIT
            sleep 2
            $PY parity/hal_test.py --port "$PORT" --log parity/logs/mtk/hal_test.log ;;
-  purity)  sh tools/check_mtk_purity.sh && sh tools/check_hal_boundary.sh >/dev/null 2>&1 && echo "ok    shared code: no SDK calls (check_hal_boundary.sh)" ;;
+  purity)  sh tools/check_mtk_purity.sh || exit 1
+           sh tools/check_hal_boundary.sh >/dev/null 2>&1 || { echo "FAIL  shared code calls an SDK: run sh tools/check_hal_boundary.sh"; exit 1; }
+           echo "ok    shared code: no SDK calls (check_hal_boundary.sh)"
+           if [ -f $PROJ/build/$PROJ.elf ]; then idf_env; sh tools/check_mtk_image.sh; else echo "note  build first to check the firmware image too"; fi ;;
+  image)   idf_env; sh tools/check_mtk_image.sh ;;
   test)    need_port; mkdir -p parity/logs/mtk
            $PY parity/parity_test.py --stage "${2:-4a}" --board s3 --port "$PORT" --log "parity/logs/mtk/${2:-4a}.log" ;;
   compare) st=${2:-4a}
@@ -121,5 +126,5 @@ case "$1" in
            esac ;;
   timing)  need_port; mkdir -p parity/logs/mtk; $PY parity/timing_test.py --board s3 --port "$PORT" --log parity/logs/mtk/timing.log ;;
   wcet)    need_port; mkdir -p parity/logs/mtk; $PY parity/wcet_test.py --port "$PORT" --log parity/logs/mtk/wcet.log ;;
-  *)       sed -n '2,26p' "$0" ;;
+  *)       sed -n '2,27p' "$0" ;;
 esac

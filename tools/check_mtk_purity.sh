@@ -4,14 +4,14 @@
 # synchronisation (the change requirement), and no Arduino or esp_driver_*
 # component.
 #
-# Scans our µT-Kernel platform code (esp32s3_mtk/components, main, haltest)
+# Scans our µT-Kernel platform code (esp32s3_mtk/components, main, haltest, wifirepro)
 # and the shared EdgeCore library. The course port's own components (its
 # FreeRTOS-API shim for IDF's Wi-Fi, lwIP and esp-mqtt) live in
 # esp32s3_mtk/third_party and are not ours, so they are not scanned.
 #
 # Usage: sh tools/check_mtk_purity.sh   (from the repository root)
 
-DIRS="esp32s3_mtk/components esp32s3_mtk/main esp32s3_mtk/haltest/main libraries/EdgeCore/src"
+DIRS="esp32s3_mtk/components esp32s3_mtk/main esp32s3_mtk/haltest/main esp32s3_mtk/wifirepro/main libraries/EdgeCore/src"
 
 # FreeRTOS API (headers, objects, timing macros), Arduino, the IDF task
 # watchdog, and IDF's interrupt-owning drivers.

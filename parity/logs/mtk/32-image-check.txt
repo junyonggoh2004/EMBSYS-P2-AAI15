@@ -1,0 +1,22 @@
+# Task 32: tools/check_mtk_image.sh on 2026-10-20, ESP-IDF v6.1-dev-2300-g17a74c925c toolchain.
+# 1. The µT-Kernel firmware (esp32s3_mtk/build/esp32s3_mtk.elf):
+ok    esp32s3_mtk/build/esp32s3_mtk.elf: no FreeRTOS scheduler, tick, task or start-up code linked; µT-Kernel start-up and dispatcher present; 47 FreeRTOS API functions served by the course shim on µT-Kernel
+
+# 2. Control: the same check on the Arduino/FreeRTOS baseline firmware (esp32s3_edge.ino.elf, built by sh tools/s3.sh build) must fail, and does:
+FAIL  FreeRTOS kernel code linked: vTaskStartScheduler
+FAIL  FreeRTOS kernel code linked: xPortStartScheduler
+FAIL  FreeRTOS kernel code linked: xTaskIncrementTick
+FAIL  FreeRTOS kernel code linked: vTaskSwitchContext
+FAIL  FreeRTOS kernel code linked: prvIdleTask
+FAIL  FreeRTOS kernel code linked: prvAddNewTaskToReadyList
+FAIL  FreeRTOS kernel code linked: pxCurrentTCBs
+FAIL  FreeRTOS kernel code linked: xPortSysTickHandler
+FAIL  FreeRTOS kernel code linked: vPortSetupTimer
+FAIL  FreeRTOS kernel code linked: xQueueGenericSend
+FAIL  FreeRTOS kernel code linked: xTaskCreatePinnedToCore
+FAIL  FreeRTOS kernel code linked: main_task
+FAIL  FreeRTOS kernel code linked: esp_startup_start_app
+FAIL  µT-Kernel symbol missing: __wrap_esp_startup_start_app
+FAIL  µT-Kernel symbol missing: knl_dispatch
+FAIL  µT-Kernel symbol missing: tk_cre_tsk
+FAIL  µT-Kernel symbol missing: tk_sta_tsk

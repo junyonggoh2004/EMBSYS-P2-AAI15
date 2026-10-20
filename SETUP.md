@@ -551,9 +551,29 @@ sh tools/mtk.sh mqtt <laptop-ip>         # also: model, flood, endurance
 MOSQ_CONF=~/mosq.conf sh tools/mtk.sh faults <laptop-ip>
 sh tools/mtk.sh timing                   # NFR1
 sh tools/mtk.sh wcet                     # SchedulerTask cycle time
-sh tools/mtk.sh purity                   # no FreeRTOS, Arduino or esp_driver_* use in our code
+sh tools/mtk.sh purity                   # no FreeRTOS, Arduino or esp_driver_* use in our code, then the image check
+sh tools/mtk.sh image                    # the built firmware links no FreeRTOS kernel code
 ```
 
 For the broker-loss part of `faults`, start Mosquitto as `/opt/homebrew/sbin/mosquitto -c ~/mosq.conf -v` (the test stops and restarts it by that name) and set `MOSQ_CONF`; without it the other eight checks still run. Keep the laptop awake and its lid open during `endurance` (30 minutes): on battery, a closed lid puts the Mac to sleep, the test stops reading the board and the broker goes offline. If `flash` reports "No serial data received" or "TX path seems down", `mtk.sh` resets the board and retries once by itself. When a board goes back from the µT-Kernel build to the Arduino build, erase the flash first (`idf.py -C esp32s3_mtk -p <port> erase-flash` after `. ~/esp/esp-idf-v6.1/export.sh`): the µT-Kernel `model` partition overlaps the Arduino build's LittleFS partition, and a stored model would sit inside the Arduino file system. The other direction needs nothing, because the µT-Kernel model store ignores any slot without its CRC-checked header.
 
 Two behaviours of the course port affect testing (MTK_REDESIGN.md §8 and §10): its radio sometimes stops receiving for a minute or more, including right after a reset, so a network test that runs during such a window fails until the link returns; and the port's kernel and shim must run from IRAM for flash writes to be safe, which `components/edge_mtk/port_iram.lf` arranges.
+
+### Hardware checks on µT-Kernel (jumpers and sensors)
+
+These stages need wires or sensors and are the ones PARITY.md §4 lists as hardware pending. Do them in this order, which needs the fewest wiring changes. Unplug the USB cable before changing any wire, close any open monitor before a test, and run each command from the repository root. Pin positions on the board are in the [pinout](README.md#board-pinout); the sensor wiring is the same as for the Arduino build ([README Part E](README.md#part-e-real-sensors)).
+
+| # | Wiring | Command | Pass |
+|---|---|---|---|
+| 1 | MH light sensor: VCC to 3V3, GND to GND, DO to GPIO1. During the run, cover the sensor with your hand and uncover it a few times | `sh tools/mtk.sh test 4d-ir` | `7/7 passed` |
+| 2 | Add a jumper wire from GPIO5 to GPIO6 (the light sensor can stay) | `sh tools/mtk.sh haltest` | `32/32 passed` and no `SKIP` line |
+| 3 | Same jumper | `sh tools/mtk.sh test 4b` | `25/25 passed` |
+| 4 | Same jumper | `sh tools/mtk.sh test t02` | `7/7 passed` |
+| 5 | Remove the light sensor and the GPIO5–GPIO6 jumper; add a jumper from GPIO1 to GPIO2 | `sh tools/mtk.sh test 4c-uart` | `8/8 passed` |
+| 6 | Same jumper | `sh tools/mtk.sh test t08` | `26/26 passed` |
+| 7 | Same jumper | `sh tools/mtk.sh test t09` | `5/5 passed` |
+| 8 | Remove the jumper. GY-511: VIN to 3V3, GND to GND, SDA to GPIO1, SCL to GPIO2 | `sh tools/mtk.sh test 4c-mag` | `15/15 passed` |
+| 9 | Remove the GY-511. HC-SR04: VCC to 5V, GND to GND, Trig to GPIO1, Echo through a divider to GPIO2 (Echo to one resistor to GPIO2, and GPIO2 to two resistors in series to GND; three equal resistors, 1 kΩ to 10 kΩ, give about 3.3 V). Move your hand towards and away from it during the run | `sh tools/mtk.sh test 4c-sonic` | `4/4 passed` |
+| 10 | Same wiring; move an object in and out of 30 cm | `sh tools/mtk.sh test sonic-rule` | `7/7 passed` |
+
+Each run writes `parity/logs/mtk/<stage>.log`. A stage that fails prints the step and what it expected; keep the log. Never connect the HC-SR04's Echo straight to a GPIO: it outputs 5 V and the ESP32-S3's pins take 3.3 V at most.
