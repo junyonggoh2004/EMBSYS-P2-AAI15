@@ -1,0 +1,41 @@
+# ESP32-S3 Super Mini (HW-747, ESP32-S3FH4R2: 4 MB flash, 2 MB quad PSRAM),
+# course µT-Kernel 3 port, dual-core global-SMP profile. Settings follow the
+# port's SMP profile (its sdkconfig.defaults.m5sticks3.smp) except where this
+# board differs: generic board package, 4 MB flash, no Bluetooth.
+CONFIG_IDF_TARGET="esp32s3"
+CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_240=y
+
+# Console: the board's only USB port is the native USB-Serial-JTAG.
+CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=y
+# CONFIG_ESP_CONSOLE_UART_DEFAULT is not set
+
+# Course port: generic ESP32-S3 board package, global SMP (two dispatchers).
+CONFIG_MTK_BOARD_ESP32S3_MINI=y
+# CONFIG_ESP_SYSTEM_SINGLE_CORE_MODE is not set
+# CONFIG_FREERTOS_UNICORE is not set
+CONFIG_FREERTOS_NUMBER_OF_CORES=2
+CONFIG_MTK_SMP=y
+CONFIG_MTK_SMP_CALLBACK_DETACH=y
+CONFIG_FREERTOS_HZ=1000
+
+# The port keeps IDF's task and interrupt watchdogs unarmed in SMP: their feed
+# paths assume per-core FreeRTOS ticks. MonitorTask supervises instead.
+CONFIG_ESP_TASK_WDT_INIT=n
+CONFIG_ESP_TASK_WDT_CHECK_IDLE_TASK_CPU0=n
+CONFIG_ESP_TASK_WDT_CHECK_IDLE_TASK_CPU1=n
+CONFIG_ESP_INT_WDT_CHECK_CPU1=n
+
+# PSRAM stays off, as in every course-port profile; internal SRAM holds
+# everything (MTK_REDESIGN.md section 8).
+# CONFIG_SPIRAM is not set
+
+# Radio: Wi-Fi station only, WPA2 (the port's SMP profile drops SAE/OWE).
+CONFIG_LWIP_ENABLE=y
+CONFIG_ESP_WIFI_ENABLE_WPA3_SAE=n
+CONFIG_ESP_WIFI_ENABLE_WPA3_OWE_STA=n
+CONFIG_BT_ENABLED=n
+
+# 4 MB layout with a model-store partition (partitions.csv).
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"

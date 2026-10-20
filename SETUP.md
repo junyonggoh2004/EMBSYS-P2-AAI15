@@ -512,3 +512,28 @@ sh tools/s3.sh test 4a && sh tools/s3.sh test 4b && sh tools/s3.sh test 4c-uart
 ```
 
 The clean-clone part was run on 2026-10-14 from `s3-port` before the merge (see the task 7 clean install). Task 23 is done when the team merges, tags, and repeats these commands on the tag.
+
+## ESP32-S3 on µT-Kernel 3 SMP (tasks 25–34)
+
+Since Tribunal 1 the D1 firmware runs on the course µT-Kernel 3 SMP port instead of Arduino-ESP32 and FreeRTOS ([MTK_REDESIGN.md](MTK_REDESIGN.md)). The project is [`esp32s3_mtk/`](esp32s3_mtk/), a native ESP-IDF project; the Arduino build above stays as the FreeRTOS baseline.
+
+### Pinned versions (task 25)
+
+| Item | Version | Why pinned |
+|---|---|---|
+| Course port `sirfonzie/mtk3smp-esp32s3` | commit `e92874d` (submodule `esp32s3_mtk/third_party/mtk3smp-esp32s3`, unmodified) | The course port named in the change requirement |
+| ESP-IDF | `v6.1-dev-2300-g17a74c925c` (commit `17a74c925c`) | The exact revision the port is qualified on; it replaces IDF's FreeRTOS scheduler, so another revision would need its qualification rerun |
+| Compiler | `xtensa-esp-elf-gcc 15.2.0` (`esp-15.2.0_20251204`), installed by IDF's `install.sh` | Same reason |
+| esp-mqtt | `espressif/mqtt` 1.1.0, locked in `esp32s3_mtk/dependencies.lock` | esp-mqtt left IDF for the component registry in v6 |
+
+`sh tools/mtk.sh setup` clones ESP-IDF into `~/esp/esp-idf-v6.1` (set `IDF_DIR` to change it), checks out the pinned commit and its submodules, installs the toolchain for the ESP32-S3, creates the Python test environment and copies the credentials template. `sh tools/mtk.sh check` prints the three pinned versions, refuses a mismatch, and builds the firmware.
+
+```sh
+git submodule update --init esp32s3_mtk/third_party/mtk3smp-esp32s3
+sh tools/mtk.sh setup        # once, about 15 minutes and 2 GB
+sh tools/mtk.sh check        # course port, ESP-IDF and compiler versions, then a build
+sh tools/mtk.sh flash        # build and flash over the board's USB-C port
+sh tools/mtk.sh monitor      # console (Ctrl-] to leave)
+```
+
+Wi-Fi settings go in `esp32s3_mtk/main/wifi_credentials.h` (copy the `.example`; gitignored), with the same fields as the Arduino build.
