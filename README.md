@@ -1,3 +1,22 @@
+# D5 ESP32-S3 Benchmarking Programme
+
+Branch `s3-port-d5`, based on `s3-port-d1-redesign`. D5 defines and runs repeatable benchmarks for the Configurable Edge Platform on the ESP32-S3. The required firmware runs on the course µT-Kernel 3 SMP port in [`esp32s3_mtk/`](esp32s3_mtk/), following the professor's change requirement. The programme will measure both the cost of runtime configurability and the benefit of changing edge behaviour without rebuilding firmware. **This branch currently contains a plan, not final D5 measurements.**
+
+## D5 start here
+
+| Read or do | Where | Current state |
+|---|---|---|
+| Review the benchmark questions, fixed method and 10-task checklist | [D5_BENCHMARKS.md](D5_BENCHMARKS.md) | Planned; all D5 tasks remain open |
+| Understand the required µT-Kernel runtime, task/core assignments and compliance evidence | [MTK_REDESIGN.md](MTK_REDESIGN.md) | D1 redesign baseline |
+| Set up the S3 and inspect existing verification scripts | [SETUP.md](SETUP.md#esp32-s3-on-µt-kernel-3-smp-tasks-2534), [`tools/mtk.sh`](tools/mtk.sh), [`parity/`](parity/) | D1 checks and pilot data; not final D5 runs |
+| Agree the first D5 measurement gate | [D5 task 1](D5_BENCHMARKS.md#d5-task-checklist) | Map the team's B1–B6 claims to the proposed metrics and fix acceptance limits before collection |
+
+The D5 comparison has two purposes. A matched fixed-configuration **µT-Kernel** build on the same S3 will isolate configurability overhead. The earlier Arduino/FreeRTOS S3 build can show the effect of the runtime redesign, with its different build settings and storage layout recorded. Existing D1 and D2 logs are reference evidence; every final D5 value must come from repeated real-hardware runs under the approved protocol.
+
+The D1 redesign guide and D2 context remain below so the setup, test commands and existing evidence stay available.
+
+---
+
 # D1 ESP32-S3 Port with D2 SPI Extension
 
 Branch `s3-port-d1-redesign`, based on `s3-port-d2`. This is the Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) ported to the ESP32-S3 Super Mini. Since Tribunal 1 the D1 firmware runs on µT-Kernel 3 SMP through the course port ([MTK_REDESIGN.md](MTK_REDESIGN.md)); the earlier Arduino-ESP32/FreeRTOS port stays as the measured baseline and carries the D2 SPI work. The same configuration lines, console commands, MQTT topics, output format and ML model work on both boards, because both builds compile the same shared code.
