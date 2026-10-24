@@ -17,6 +17,7 @@ The shared driver, validated runtime schema, ESP32-S3 `SPIClass` backend, Pico c
 | [Feedback tracker](WEEK6_FEEDBACK_RESPONSE.md) | Every professor feedback item on the Week 6 design review: owner, status, evidence, next action |
 | [2. D1 task checklist](#2-d1-task-checklist) | Tasks 1–23 with status and dev notes; [execution model](#execution-model); [tasks 24–34: µT-Kernel 3 SMP redesign](#d1-redesign-port-to-µt-kernel-3-smp-tasks-2434) |
 | [µT-Kernel redesign plan](MTK_REDESIGN.md) | Change requirement, FreeRTOS-to-µT-Kernel mapping, core assignment, compliance matrix |
+| [D5 benchmarking checklist](D5_BENCHMARKS.md) | Revised D5 metrics, repeatable method, tasks and evidence gates for the µT-Kernel build |
 | [D2 tasks](D2_SPI_TODO.md) | The D2 SPI checklist (Brendan and Jun Yong), kept in its own file |
 | [D2 SPI work](#d2-spi-work) | SPI implementation plan, ownership, acceptance criteria, and verification links |
 | [3. Set up and test D1 from scratch](#3-set-up-and-test-d1-from-scratch-mac-and-windows) | Step-by-step for a new laptop (Mac and Windows) |
