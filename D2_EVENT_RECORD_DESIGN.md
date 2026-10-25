@@ -1,34 +1,38 @@
 # D2 event-record design template
 
-Status: **provisional design, not implemented or hardware-validated** (2026-10-17). Brendan and Jy should review it before firmware work. This document does not claim a W25Q32 test or an occupancy pipeline.
+Status (25 October 2026): the W25Q32 device layer and one approved scratch write have been hardware-validated. The event-record format, queue and occupancy pipeline remain **provisional and unimplemented**. Brendan chose to log every processed event; he asked to wait for D3/D6 agreement before freezing the format.
+
+## 25 October integration review — decision needed from D3/D6
+
+The fetched but **unmerged** `origin/d3` branch defines an 80-byte, pointer-free application `event_record_t` in `libraries/EdgeCore/src/application/event_record.h`. It carries `event_id`, `source_id`, `source_seq`, monotonic window start/end, class/quality fields and `model_version`. Its `application_result_t` separately carries `occupancy_after`, decided class, decision source and rejection/degraded outcome. That branch integrates the application path into the older Arduino runtime; current µT-Kernel `ApplicationTask` still only drains `app_mbf`. This is an interface proposal to reconcile, not an implemented µT-Kernel D2/D6 pipeline.
+
+The retired 32-byte draft predates that contract. It lacks `source_id` and a clearly mapped `event_id`, and its `boot identifier` has no agreed source in `origin/d3`. **Do not program an event record to flash yet.** Before freezing the on-flash format, Brendan/Jy and the D3/D6 owner should decide the following and add golden byte vectors:
+
+| Required stored value | Candidate source | Open decision |
+|---|---|---|
+| Canonical identity | D3 `event_id`, `source_id`, `source_seq` | Define reset/boot uniqueness and whether all three must be stored; D6 owns de-duplication semantics. |
+| Event time | D3 `window_end_us` (monotonic) | Preserve microseconds or document a bounded conversion to milliseconds and rollover. |
+| Occupancy outcome | `application_result_t.occupancy_after`, result code and degraded/reason fields | Log every processed event, including rejected, duplicate and degraded outcomes; agree exact enum and signed-count encoding with D3/D6. |
+| Publication outcome | Nonblocking enqueue result from the µT-Kernel publisher | Distinguish enqueue from broker delivery; preserve failure without blocking flash logging. |
+| Record integrity | Version, marker and CRC | Choose a new byte layout and CRC convention; never serialize an in-memory struct directly. |
+
+Integration order: merge/reconcile D3's shared C contracts with current `main`, port the ApplicationTask handoff to µT-Kernel, agree the mapping above, then implement the flash codec and queue. Until that approval, host-side W25Q32 command/fault tests can proceed independently of the record format. The device layer in `libraries/EdgeCore/src/flash/w25q32.[ch]` deliberately has no erase operation and requires a caller-approved scratch range for writes.
 
 ## Purpose and ownership
 
-Record a compact occupancy event in external SPI flash after the application has attempted to queue its MQTT publication. Flash logging must not run in `SchedulerTask`, sensor acquisition, or inference. A dedicated, typed `log_q` feeds the lower-priority `ApplicationTask`, which alone owns W25Q32 log operations. The generic SPI HAL remains device-independent; a W25Q32 device layer above it owns commands, device checks, and log integrity.
+Record every processed event in external SPI flash after the application has attempted to queue its MQTT publication, including events with rejected, duplicate or degraded outcomes. Flash logging must not run in `SchedulerTask`, sensor acquisition, or inference. A dedicated, typed `log_q` feeds the lower-priority `ApplicationTask`, which alone owns W25Q32 log operations. The generic SPI HAL remains device-independent; a W25Q32 device layer above it owns commands, device checks, and log integrity.
 
 “Publish first” means **attempt to enqueue** the occupancy result to the existing publisher before offering the log request. It does not assert MQTT broker delivery. A publisher-queue failure and a flash-log failure are independent, observable outcomes; neither may turn a failed reading into a valid one or stop live monitoring.
 
-## Proposed logical record v1 (32 bytes)
+## On-flash format awaiting D3/D6 agreement
 
-Serialize fields explicitly in little-endian byte order; do not write a compiler-dependent C/C++ struct image. CRC-32 covers bytes 0–27. Values and enumeration meanings must be frozen in a header and tested with golden byte vectors before deployment.
-
-| Byte offset | Size | Field | Notes |
-|---|---:|---|---|
-| 0 | 2 | Magic | Fixed marker for this log format; choose value before implementation. |
-| 2 | 1 | Version | `1` for this layout. |
-| 3 | 1 | Flags | At minimum, distinguish valid occupancy result and publisher enqueue outcome; reserve unused bits. |
-| 4 | 4 | Event sequence | Increment when an event is formed, before queueing, so dropped requests leave detectable gaps. Define rollover handling in tests. |
-| 8 | 8 | Uptime milliseconds | Monotonic time at event formation, not an unverified wall-clock timestamp. |
-| 16 | 2 | Occupancy count | Unsigned; reject out-of-range application values rather than truncate. |
-| 18 | 1 | Occupancy/class code | Define mapping from the actual application result. |
-| 19 | 1 | Confidence | 0–100 if available; otherwise a specified unavailable sentinel. |
-| 20 | 4 | Boot identifier | Identifies a reboot epoch; exact generation method needs team review. |
-| 24 | 4 | Model/configuration identifier | Stable identifier or specified unavailable sentinel; do not invent model provenance. |
-| 28 | 4 | CRC-32 | Covers bytes 0–27, using one documented polynomial/init/reflection convention. |
+The earlier 32-byte draft cannot represent the current D3 event identity and processing result. It has been retired as an implementation target. After D3/D6 agree the application contract, define an explicit versioned byte layout with a CRC and golden vectors. Serialize fields deliberately; never write a compiler-dependent C/C++ struct image. The record must distinguish an applied occupancy decision from duplicate, reordered, rejected, no-change and degraded processing, and preserve the MQTT **enqueue** result separately from broker delivery. The precise field widths, enum values and CRC convention are still open.
 
 An erased slot, unsupported version, invalid flags/field values, bad CRC, or torn write is **not** a stored event. A record is reported as stored only after program completion and byte-for-byte readback (including CRC) succeed. On reboot, scan the reserved log area, accept only valid records, and report invalid/torn slots without exposing them as occupancy data. Define how scanning skips or stops at a torn slot before coding the log allocator.
 
-This is the **logical** record format. Physical slot packing, erase-sector allocation, retention, and wrap policy remain open until the exact flash part and required event rate/retention are confirmed. Avoid assuming that a 32-byte record can be repeatedly programmed into the same flash page without checking the actual device datasheet. Never erase an unknown sector or silently wrap and overwrite retained events. For initial hardware proof, use an explicitly approved scratch sector and return a `LOG_FULL` outcome when its approved slots are exhausted.
+**D6 schema dependency:** The Week 6 feedback tracker assigns sensor-node event formation and the canonical event ID (proposed node ID + boot ID + sequence), MQTT de-duplication, and occupancy-after-reset semantics to D6 (F9/F10). Agree how the stored record carries or unambiguously references the D6 ID before programming an event record. D2 logs the agreed event but does not define D6's de-duplication or persistence policy.
+
+Physical slot packing, erase-sector allocation, retention, and wrap policy remain open until the agreed event size and required event rate/retention are known. Never erase an unknown sector or silently wrap and overwrite retained events. The one-time scratch-sector write proves the device layer, not the log allocator. Return a `LOG_FULL` outcome when approved slots are exhausted.
 
 ## Queue and processing policy
 
@@ -51,7 +55,9 @@ Capacity 8 is a starting point, not a proven performance limit. Measure producti
 
 ## Implementation and evidence checklist
 
-- [ ] Brendan and Jy approve queue ownership, record fields/enums/CRC convention, sequence/boot-ID semantics, and MQTT ordering.
+- [x] Brendan selected every processed event as the logging scope, including rejected, duplicate and degraded outcomes (25 October 2026).
+- [ ] Brendan, Jy and D3/D6 approve queue ownership, record fields/enums/CRC convention, sequence/boot-ID semantics, and MQTT ordering.
+- [ ] Confirm the canonical event-ID schema and occupancy persistence boundary with D6 (feedback F9/F10); update the logical record and golden vectors before writing flash.
 - [ ] Agree event rate, retention, scratch address, physical slot packing, full/wrap policy, and maximum acceptable sampling delay before enabling erase.
 - [ ] Add portable encode/decode and CRC golden-vector tests; test blank, torn, wrong-version, bad-CRC, invalid-field, sequence rollover, and reboot scan cases without a module.
 - [ ] Add mocked device tests for absent/wrong JEDEC ID, stuck busy, SPI timeout, partial program, bad readback, full log, and queue overflow. Verify no false “stored” or valid occupancy result.
@@ -63,11 +69,12 @@ Capacity 8 is a starting point, not a proven performance limit. Measure producti
 | Decision | Agreed value / rationale | Reviewer and date |
 |---|---|---|
 | Occupancy/class enum and confidence sentinel | TBD | TBD |
+| Events to log | Every processed event, including rejected, duplicate and degraded outcomes; exact enum mapping awaits D3/D6. | Brendan, 25 Oct 2026 |
 | CRC-32 convention and magic bytes | TBD | TBD |
 | Event sequence rollover and boot identifier | TBD | TBD |
 | Maximum event rate and minimum retention | TBD | TBD |
-| Flash part, JEDEC ID, voltage and maximum approved SPI clock | TBD; physical module required | TBD |
-| Scratch address, slot layout, erase and full-log policy | TBD; no erase before approval | TBD |
+| Flash part, JEDEC ID, voltage and maximum approved SPI clock | W25QXX breakout; physical JEDEC `EF4016` at 3.3 V; test clock 1 MHz. Exact top marking and production maximum clock still need confirmation. | Brendan, 25 Oct 2026: physical read/program test only |
+| Scratch address, slot layout, erase and full-log policy | Final 4 KiB `0x3FF000–0x3FFFFF` approved as disposable test scratch; 16 bytes at its start programmed once without erase. Event-log slot/retention/erase policy TBD. | Brendan, 25 Oct 2026: one-time test approval only |
 | Queue capacity/drop and publication semantics | Provisional: 8, drop newest, enqueue publish first | TBD |
 | T-23 latency, queue, stack and heap pass thresholds | TBD | TBD |
 

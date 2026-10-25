@@ -54,6 +54,12 @@ void mqtt_task_body(void);
 void mqtt_wifi_scan(void);
 void mqtt_wifi_drop(void);
 void inference_task_body(void);
+void mtk_spi_benchmark(unsigned mode, uint32_t hz);
+void mtk_spi_flash_id(void);
+void mtk_spi_flash_check(uint32_t expected_id);
+void mtk_spi_flash_scan(uint32_t expected_id);
+void mtk_spi_flash_program(uint32_t expected_id);
+void mtk_spi_flash_verify(uint32_t expected_id);
 
 ID sched_mbf, pub_mbf, infer_mbf, app_mbf, bench_mbf;
 ID net_flg;
@@ -307,6 +313,44 @@ static void control_task(INT stacd, void *exinf)
             mqtt_wifi_scan();
         } else if (strcasecmp(line, "WIFIDROP") == 0) {
             mqtt_wifi_drop();
+        } else if (strcasecmp(line, "SPIID") == 0) {
+            bench_msg_t b = { .name = "SPIID" };
+            if (!runtime_send(bench_mbf, &b, sizeof b))
+                puts("[SPIID] ERROR benchmark queue full");
+        } else if (strncasecmp(line, "SPICHECK ", 9) == 0 ||
+                   strncasecmp(line, "SPISCAN ", 8) == 0 ||
+                   strncasecmp(line, "SPIPROGRAM ", 11) == 0 ||
+                   strncasecmp(line, "SPIVERIFY ", 10) == 0) {
+            unsigned long expected;
+            char extra;
+            const bool scan = strncasecmp(line, "SPISCAN ", 8) == 0;
+            const bool program = strncasecmp(line, "SPIPROGRAM ", 11) == 0;
+            const bool verify = strncasecmp(line, "SPIVERIFY ", 10) == 0;
+            const char *value = line + (scan ? 8 : program ? 11 : verify ? 10 : 9);
+            if (sscanf(value, "%lx %c", &expected, &extra) != 1 ||
+                expected == 0 || expected >= 0xfffffful) {
+                puts("[SPI] ERROR expected <SPI command> <six-digit JEDEC ID>");
+            } else {
+                bench_msg_t b = { .value_us = (uint32_t)expected };
+                snprintf(b.name, sizeof b.name, "%s",
+                         scan ? "SPISCAN" : program ? "SPIPROGRAM" :
+                         verify ? "SPIVERIFY" : "SPICHECK");
+                if (!runtime_send(bench_mbf, &b, sizeof b))
+                    puts("[SPI] ERROR benchmark queue full");
+            }
+        } else if (strncasecmp(line, "SPIBENCH ", 9) == 0) {
+            unsigned mode;
+            unsigned long hz;
+            char extra;
+            if (sscanf(line, "SPIBENCH %u %lu %c", &mode, &hz, &extra) != 2 ||
+                mode > 3 || hz < 1000000ul || hz > 20000000ul) {
+                puts("[SPIBENCH] ERROR expected SPIBENCH <mode 0..3> <hz 1000000..20000000>");
+            } else {
+                bench_msg_t b = { .name = "SPIBENCH",
+                                  .value_us = (uint32_t)hz | ((uint32_t)mode << 30) };
+                if (!runtime_send(bench_mbf, &b, sizeof b))
+                    puts("[SPIBENCH] ERROR benchmark queue full");
+            }
         } else if (strncasecmp(line, "STALL ", 6) == 0) {
             // Watchdog test: this task stops reporting for the given time, as
             // if it were stuck. MonitorTask stops feeding the hardware watchdog
@@ -367,7 +411,20 @@ static void benchmark_task(INT stacd, void *exinf)
     for (;;) {
         if (tk_rcv_mbf(bench_mbf, &b, TMO_FEVR) > 0) {
             runtime_alive(RT_BENCHMARK);
-            printf("[BENCH] %s %lu us\n", b.name, (unsigned long)b.value_us);
+            if (strcmp(b.name, "SPIBENCH") == 0)
+                mtk_spi_benchmark(b.value_us >> 30, b.value_us & 0x3fffffffu);
+            else if (strcmp(b.name, "SPIID") == 0)
+                mtk_spi_flash_id();
+            else if (strcmp(b.name, "SPICHECK") == 0)
+                mtk_spi_flash_check(b.value_us);
+            else if (strcmp(b.name, "SPISCAN") == 0)
+                mtk_spi_flash_scan(b.value_us);
+            else if (strcmp(b.name, "SPIPROGRAM") == 0)
+                mtk_spi_flash_program(b.value_us);
+            else if (strcmp(b.name, "SPIVERIFY") == 0)
+                mtk_spi_flash_verify(b.value_us);
+            else
+                printf("[BENCH] %s %lu us\n", b.name, (unsigned long)b.value_us);
         }
     }
 }

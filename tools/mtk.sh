@@ -19,6 +19,12 @@
 #                                      Mosquitto config and Mosquitto runs as /opt/homebrew/sbin/mosquitto -c it
 #   sh tools/mtk.sh timing             NFR1 sample period and jitter
 #   sh tools/mtk.sh wcet               SchedulerTask cycle time per scenario
+#   sh tools/mtk.sh spi                D2 SPI REPL/loopback suite (GPIO12 to GPIO13 jumper)
+#   sh tools/mtk.sh spi-fault          D2 connected SPI faults (same jumper)
+#   sh tools/mtk.sh spi-bench [mode] [hz]  8–1024-byte µT-Kernel SPI benchmark
+#   SPIID (serial console)             read-only flash JEDEC ID, after checking wiring
+#   SPICHECK <id>, SPISCAN <id> (serial console)
+#                                      read-only W25Q32 repeated read and last-sector scan
 #
 # The course port is the submodule esp32s3_mtk/third_party/mtk3smp-esp32s3,
 # pinned to the commit the course published. It is qualified on exactly the
@@ -134,5 +140,11 @@ case "$1" in
            esac ;;
   timing)  need_port; mkdir -p parity/logs/mtk; $PY parity/timing_test.py --board s3 --port "$PORT" --log parity/logs/mtk/timing.log ;;
   wcet)    need_port; mkdir -p parity/logs/mtk; $PY parity/wcet_test.py --port "$PORT" --log parity/logs/mtk/wcet.log ;;
+  spi)     need_port; mkdir -p parity/logs/mtk/d2-spi
+           $PY parity/spi_test.py --port "$PORT" --log parity/logs/mtk/d2-spi/spi.log ;;
+  spi-fault) need_port; mkdir -p parity/logs/mtk/d2-spi
+           $PY parity/spi_fault_test.py --port "$PORT" --log parity/logs/mtk/d2-spi/fault-connected.log ;;
+  spi-bench) need_port
+           $PY parity/spi_benchmark.py --runtime mtk --port "$PORT" --mode "${2:-0}" --hz "${3:-10000000}" ;;
   *)       sed -n '2,28p' "$0" ;;
 esac
