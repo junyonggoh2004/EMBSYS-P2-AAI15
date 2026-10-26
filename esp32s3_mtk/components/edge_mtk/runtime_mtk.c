@@ -60,6 +60,9 @@ void mtk_spi_flash_check(uint32_t expected_id);
 void mtk_spi_flash_scan(uint32_t expected_id);
 void mtk_spi_flash_program(uint32_t expected_id);
 void mtk_spi_flash_verify(uint32_t expected_id);
+void mtk_spi_flash_log_plan(void);
+void mtk_spi_flash_log_write(void);
+void mtk_spi_flash_log_verify(void);
 
 ID sched_mbf, pub_mbf, infer_mbf, app_mbf, bench_mbf;
 ID net_flg;
@@ -317,6 +320,16 @@ static void control_task(INT stacd, void *exinf)
             bench_msg_t b = { .name = "SPIID" };
             if (!runtime_send(bench_mbf, &b, sizeof b))
                 puts("[SPIID] ERROR benchmark queue full");
+        } else if (strcasecmp(line, "SPILOGPLAN") == 0 ||
+                   strcasecmp(line, "SPILOGVERIFY") == 0 ||
+                   strcasecmp(line, "SPILOGWRITE EF4016 3FF100") == 0) {
+            bench_msg_t b = { 0 };
+            snprintf(b.name, sizeof b.name, "%s",
+                     strcasecmp(line, "SPILOGPLAN") == 0 ? "SPILOGPLAN" :
+                     strcasecmp(line, "SPILOGVERIFY") == 0 ? "SPILOGVERIFY" :
+                     "SPILOGWRITE");
+            if (!runtime_send(bench_mbf, &b, sizeof b))
+                puts("[SPILOG] ERROR benchmark queue full");
         } else if (strncasecmp(line, "SPICHECK ", 9) == 0 ||
                    strncasecmp(line, "SPISCAN ", 8) == 0 ||
                    strncasecmp(line, "SPIPROGRAM ", 11) == 0 ||
@@ -423,6 +436,12 @@ static void benchmark_task(INT stacd, void *exinf)
                 mtk_spi_flash_program(b.value_us);
             else if (strcmp(b.name, "SPIVERIFY") == 0)
                 mtk_spi_flash_verify(b.value_us);
+            else if (strcmp(b.name, "SPILOGPLAN") == 0)
+                mtk_spi_flash_log_plan();
+            else if (strcmp(b.name, "SPILOGWRITE") == 0)
+                mtk_spi_flash_log_write();
+            else if (strcmp(b.name, "SPILOGVERIFY") == 0)
+                mtk_spi_flash_log_verify();
             else
                 printf("[BENCH] %s %lu us\n", b.name, (unsigned long)b.value_us);
         }

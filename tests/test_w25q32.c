@@ -147,6 +147,17 @@ int main(void)
     /* Independent Python zlib.crc32/struct.pack reference for bytes 0..75. */
     assert(wire[76] == 0x54 && wire[77] == 0xec &&
            wire[78] == 0x60 && wire[79] == 0xf2);
+    /* Independent Python zlib.crc32 vector for the physical synthetic fixture. */
+    d2_log_record_t synthetic = {
+        .node_id = UINT64_C(0xd200000000000001), .boot_id = 0xd2000001u,
+        .log_seq = 1, .confidence_bp = UINT16_MAX,
+        .result_code = D2_LOG_REJECTED, .reason_code = 0xfeu,
+        .publish_status = D2_LOG_PUBLISH_NOT_ATTEMPTED
+    };
+    uint8_t synthetic_wire[D2_LOG_WIRE_BYTES];
+    assert(d2_log_encode(&synthetic, synthetic_wire) == HAL_OK);
+    assert(synthetic_wire[76] == 0xb4 && synthetic_wire[77] == 0x25 &&
+           synthetic_wire[78] == 0xcc && synthetic_wire[79] == 0xdc);
     assert(d2_log_decode(wire, &decoded) == HAL_OK);
     assert(decoded.node_id == event.node_id && decoded.event_id == 9);
     assert(decoded.occupancy_before == 4 && decoded.occupancy_after == 5);
