@@ -1,8 +1,8 @@
 # D2 SPI flash design and hardware checkpoint
 
-Updated 25 October 2026. The original module-free observations below are retained as history. The µT-Kernel SPI transport, physical W25Q32 device checks and benchmark now have separate target evidence. The event-log record and application queue remain proposals awaiting D3/D6 review.
+Updated 26 October 2026. The original module-free observations below are retained as history. The µT-Kernel SPI transport, physical W25Q32 device checks and benchmark have separate target evidence. A provisional D2-only event codec and non-erasing recovery scan now pass host tests and build on both targets; the application queue and D3/D6 mapping remain proposals.
 
-The [event-record design](D2_EVENT_RECORD_DESIGN.md) records the every-processed-event scope, proposed queue and failure behavior, and open D3/D6 decisions. The old 32-byte draft is retired; no event-log firmware has been implemented.
+The [event-record design](D2_EVENT_RECORD_DESIGN.md) records the every-processed-event scope, provisional 80-byte codec, proposed queue and failure behavior, and open D3/D6 decisions. The old 32-byte draft is retired. The codec is compiled but not called by the current µT-Kernel `ApplicationTask`, so no physical event-log or live-concurrency claim is made.
 
 ## Physical W25Q32 fixture and current result
 

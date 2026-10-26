@@ -1,6 +1,6 @@
 # D2 event-record design template
 
-Status (25 October 2026): the W25Q32 device layer and one approved scratch write have been hardware-validated. The event-record format, queue and occupancy pipeline remain **provisional and unimplemented**. Brendan chose to log every processed event; he asked to wait for D3/D6 agreement before freezing the format.
+Status (26 October 2026): the W25Q32 device layer and one approved scratch write have been hardware-validated. A **provisional D2-only event-log codec and non-erasing recovery allocator** now compile for Pico and µT-Kernel and pass host mocks. They are not wired into `ApplicationTask` and have not written an event record to physical flash. Brendan chose to log every processed event; D3/D6 must still approve the identity/result mapping before this format is frozen.
 
 ## 25 October integration review — decision needed from D3/D6
 
@@ -26,7 +26,26 @@ Record every processed event in external SPI flash after the application has att
 
 ## On-flash format awaiting D3/D6 agreement
 
-The earlier 32-byte draft cannot represent the current D3 event identity and processing result. It has been retired as an implementation target. After D3/D6 agree the application contract, define an explicit versioned byte layout with a CRC and golden vectors. Serialize fields deliberately; never write a compiler-dependent C/C++ struct image. The record must distinguish an applied occupancy decision from duplicate, reordered, rejected, no-change and degraded processing, and preserve the MQTT **enqueue** result separately from broker delivery. The precise field widths, enum values and CRC convention are still open.
+The earlier 32-byte draft cannot represent the current D3 event identity and processing result. It has been retired as an implementation target. The D2-owned [provisional codec](libraries/EdgeCore/src/flash/d2_event_log.h) serializes exactly 80 little-endian bytes rather than a compiler-dependent C struct. Its CRC-32/ISO-HDLC covers bytes 0–75 and occupies bytes 76–79; an independent `zlib.crc32` golden vector and host round-trip test are in `tests/test_w25q32.c`. This byte format remains subject to D3/D6 approval.
+
+| Bytes | Provisional content |
+|---:|---|
+| 0–7 | `D2LG` magic, version 1, length 80, degraded flag, MQTT enqueue status (not attempted/enqueued/failed) |
+| 8–35 | Stable node ID, boot ID, D2 log sequence, D3 event ID, source ID and source sequence |
+| 36–59 | Window start/end in monotonic microseconds, quality flags, model version |
+| 60–75 | Signed occupancy before/after, confidence basis points, processing result, decision source, class, numeric reason, event-valid flag, reserved zero |
+| 76–79 | CRC-32/ISO-HDLC of bytes 0–75 |
+
+D3's current `event_id` starts at 1 after each reboot and `source_id` hashes a source name. For an applied event, the adapter must provide a stable unique node ID and a boot ID unique across that node's boots; D2 increments `log_seq` for **every** processed event. Rejected malformed inputs may have zero D3 event/source fields but still receive a D2 log identity and reason code. The application owners must define boot-ID persistence, numeric reason mapping and the policy for publication attempts on non-applied results. D2 does not implement MQTT de-duplication or occupancy persistence.
+
+The portable [device layer](libraries/EdgeCore/src/flash/w25q32.c) reads 128-byte aligned slots and programs at most 80 bytes in one flash page after a blank check. Recovery scans an approved region, counts valid and torn/corrupt slots, and appends after the last nonblank slot. Failed program attempts consume a slot conservatively; no erase, wrap or overwrite is available. The proposed physical test range starts at `0x3FF100`, leaving the previously programmed first page untouched; 30 slots fit before `0x400000`. **This range is a proposed disposable test fixture, not a production retention policy or approval for another hardware write.**
+
+### Application handoff for the D3/D6 owners
+
+1. D3 forms one `event_record_t` at the sensor node. D6's single-writer `ApplicationTask` processes it once and returns `application_result_t`; the adapter assigns a D2 `log_seq` even if the event is rejected. D6 supplies a stable node ID and a boot ID that cannot repeat after reset.
+2. The application attempts its normal MQTT publication enqueue where policy requires one, and records `NOT_ATTEMPTED`, `ENQUEUED` or `FAILED`. This is **not** broker-delivery status. Map D3 quality/model/timestamps and D6 result/occupancy/degraded values into `d2_log_record_t`; map `reason` text to an agreed numeric code rather than persisting a pointer.
+3. Offer the snapshot to a bounded µT-Kernel log message buffer with zero producer wait. On full, drop the new log request, increment a counter and continue monitoring. `ApplicationTask` (or an agreed lower-priority owner) drains that buffer and calls `d2_log_append`; neither `SchedulerTask` nor inference writes flash. Confirm the exact owner and buffer item size before changing team runtime files.
+4. Report flash success only after program completion and readback. Keep distinct counters for queue drops, transport errors, write errors, invalid/torn slots and full storage; a storage error must not change D6's occupancy result.
 
 An erased slot, unsupported version, invalid flags/field values, bad CRC, or torn write is **not** a stored event. A record is reported as stored only after program completion and byte-for-byte readback (including CRC) succeed. On reboot, scan the reserved log area, accept only valid records, and report invalid/torn slots without exposing them as occupancy data. Define how scanning skips or stops at a torn slot before coding the log allocator.
 
@@ -59,7 +78,8 @@ Capacity 8 is a starting point, not a proven performance limit. Measure producti
 - [ ] Brendan, Jy and D3/D6 approve queue ownership, record fields/enums/CRC convention, sequence/boot-ID semantics, and MQTT ordering.
 - [ ] Confirm the canonical event-ID schema and occupancy persistence boundary with D6 (feedback F9/F10); update the logical record and golden vectors before writing flash.
 - [ ] Agree event rate, retention, scratch address, physical slot packing, full/wrap policy, and maximum acceptable sampling delay before enabling erase.
-- [ ] Add portable encode/decode and CRC golden-vector tests; test blank, torn, wrong-version, bad-CRC, invalid-field, sequence rollover, and reboot scan cases without a module.
+- [x] Add a provisional portable encode/decode codec and CRC golden vector; host tests cover version/CRC rejection, invalid applied input, every processing result, torn slot, readback, reboot scan, failed program and full area.
+- [ ] After D3/D6 approve the field semantics, add adapter tests for reboot identity, log-sequence rollover and agreed reason/publish mappings; freeze the on-flash version.
 - [ ] Add mocked device tests for absent/wrong JEDEC ID, stuck busy, SPI timeout, partial program, bad readback, full log, and queue overflow. Verify no false “stored” or valid occupancy result.
 - [ ] With the physical module: record part marking, 3.3 V check, fixture photo, JEDEC ID, scratch address, write/readback/reboot recovery, and disconnected-device evidence.
 - [ ] During live T-23: capture event rate, queue high-water and drops, publisher queue outcome, flash latency/errors, sampling median/p95/p99/max, SPI mutex wait/hold, stack/heap, resets, and watchdog events.
