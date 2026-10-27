@@ -1,6 +1,19 @@
-# D1 ESP32-S3 Port with D2 SPI Extension
+# Configurable Edge Platform on the ESP32-S3 (D1 to D6)
 
-Branch `main`: D1 (tasks 1–34) and the D2 SPI checkpoint. This is the Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) ported to the ESP32-S3 Super Mini. Since Tribunal 1 the firmware runs on µT-Kernel 3 SMP through the course port ([MTK_REDESIGN.md](MTK_REDESIGN.md)), and D2's SPI runs on it too; the earlier Arduino-ESP32/FreeRTOS port stays as the measured baseline. The same configuration lines, console commands, MQTT topics, output format and ML model work on both boards, because both builds compile the same shared code.
+Branch `main`: D1 (tasks 1–34), the D2 SPI checkpoint and the D5 benchmarking plan; D3, D4 and D6 are not merged yet. This is the Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) ported to the ESP32-S3 Super Mini. Since Tribunal 1 the firmware runs on µT-Kernel 3 SMP through the course port ([MTK_REDESIGN.md](MTK_REDESIGN.md)), and D2's SPI runs on it too; the earlier Arduino-ESP32/FreeRTOS port stays as the measured baseline. The same configuration lines, console commands, MQTT topics, output format and ML model work on both boards, because both builds compile the same shared code.
+
+## Deliverables at a glance
+
+| Deliverable | What it is | Owners | State on `main` (28 Oct 2026) | Details |
+|---|---|---|---|---|
+| D1 | Port configpico2wedge to the ESP32-S3, on µT-Kernel 3 SMP since Tribunal 1 | Hasif, Cody, Sitt | Done (tag `d1-mtk-v1.0`); task 7 rollout and six jumper or light-sensor stages pending | [Section 2](#2-d1-task-checklist) |
+| D2 | SPI support on the ESP32-S3 | Brendan, Jun Yong | Checkpoint merged 27 Oct; event logging, T-23 and sign-off open | [Section 3](#3-d2-task-checklist) |
+| D3 | Configurable timing: periodic, one-shot, event-driven, logical sequence | Cody | Not merged: on branch `d3`, still on the Arduino runtime | [Section 4](#4-d3-task-checklist) |
+| D4 | Embedded ML efficiency | Brendan, Jun Yong | Not merged: no D4 branch yet; research and B5 protocol on `main` | [Section 5](#5-d4-task-checklist) |
+| D5 | Benchmarking programme (B1–B8) | Hasif, Sitt | Plan merged; no results yet | [Section 6](#6-d5-task-checklist) |
+| D6 | End-to-end use case: people-flow and occupancy at an entrance | Whole team | Not merged: application work on branch `d3` | [Section 7](#7-d6-task-checklist) |
+
+Owners are the team workload split of 28 Sep 2026 ([feedback tracker](WEEK6_FEEDBACK_RESPONSE.md)); the Week 6 sub-module owners who present each part are listed there too. Each owner updates their row and section when their work merges.
 
 ## Contents
 
@@ -11,7 +24,11 @@ Branch `main`: D1 (tasks 1–34) and the D2 SPI checkpoint. This is the Pico 2 W
 | [2. D1 task checklist](#2-d1-task-checklist) | Tasks 1–23 with status and dev notes; [execution model](#execution-model); [tasks 24–34: µT-Kernel 3 SMP redesign](#d1-redesign-port-to-µt-kernel-3-smp-tasks-2434) |
 | [µT-Kernel redesign plan](MTK_REDESIGN.md) | Change requirement, FreeRTOS-to-µT-Kernel mapping, core assignment, compliance matrix |
 | [3. D2 task checklist](#3-d2-task-checklist) | D2 SPI tasks D2-1 to D2-11 with status, the checks before the merge, how to run the SPI tests, what D2 still needs; full list in [D2_SPI_TODO.md](D2_SPI_TODO.md) |
-| [4. Set up and test from scratch](#4-set-up-and-test-from-scratch-d1-and-d2) | Step-by-step on a new Mac for the µT-Kernel build (D1 and D2) |
+| [4. D3 task checklist](#4-d3-task-checklist) | Placeholder until `d3` merges: what D3 must deliver, where the work is, what it needs from `main` |
+| [5. D4 task checklist](#5-d4-task-checklist) | Placeholder until D4 work merges: what D4 must deliver and its research |
+| [6. D5 task checklist](#6-d5-task-checklist) | Benchmarks B1–B8, what each is compared against, tasks D5-1 to D5-12; definitions and method in [D5_BENCHMARKS.md](D5_BENCHMARKS.md) |
+| [7. D6 task checklist](#7-d6-task-checklist) | Placeholder until the use case merges: what D6 must deliver |
+| [8. Set up and test from scratch](#8-set-up-and-test-from-scratch-d1-and-d2) | Step-by-step on a new Mac for the µT-Kernel build (D1 and D2) |
 | &nbsp;&nbsp;[Part A: Install](#part-a-install) | Steps 1–4: tools, project, ESP-IDF and the course port, version check |
 | &nbsp;&nbsp;[Part B: Wi-Fi and broker](#part-b-wi-fi-and-broker) | Steps 5–7: laptop IP, Wi-Fi file, MQTT broker |
 | &nbsp;&nbsp;[Board pinout](#board-pinout) | Super Mini pin diagram and how to hold the board |
@@ -19,11 +36,11 @@ Branch `main`: D1 (tasks 1–34) and the D2 SPI checkpoint. This is the Pico 2 W
 | &nbsp;&nbsp;[Part D: Tests](#part-d-tests) | Steps 11–22: every wiring-free test and what it shows |
 | &nbsp;&nbsp;[Part E: Real sensors](#part-e-real-sensors) | GY-511, HC-SR04, the light sensor and jumper tests; why no resistor |
 | &nbsp;&nbsp;[Part F: D2 SPI](#part-f-d2-spi) | Host test, loopback suite and benchmark, read-only W25Q32 checks |
-| [5. Using any sensor](#5-using-any-sensor-config-cheat-sheet) | Wiring and the config line for every sensor type, including SPI, and rules |
-| [6. Completion rule](#6-completion-rule) | When a task counts as done |
-| [7. Arduino/FreeRTOS baseline](#7-arduinofreertos-baseline-set-up-and-test-reference) | The earlier build's step-by-step setup and tests, Mac and Windows |
+| [9. Using any sensor](#9-using-any-sensor-config-cheat-sheet) | Wiring and the config line for every sensor type, including SPI, and rules |
+| [10. Completion rule](#10-completion-rule) | When a task counts as done |
+| [11. Arduino/FreeRTOS baseline](#11-arduinofreertos-baseline-set-up-and-test-reference) | The earlier build's step-by-step setup and tests, Mac and Windows |
 
-Other documents: [WEEK6_FEEDBACK_RESPONSE.md](WEEK6_FEEDBACK_RESPONSE.md) (professor feedback tracker), [D2_SPI_TODO.md](D2_SPI_TODO.md) (D2 tasks), [SETUP.md](SETUP.md) (board and environment details), [parity/PARITY.md](parity/PARITY.md) (requirements and evidence), [PORTABILITY.md](PORTABILITY.md) (Pico to S3 changes and defects), [ARCHITECTURE.md](ARCHITECTURE.md) (task design), [project_v3/README.md](project_v3/README.md) (full config syntax).
+Other documents: [WEEK6_FEEDBACK_RESPONSE.md](WEEK6_FEEDBACK_RESPONSE.md) (professor feedback tracker), [D2_SPI_TODO.md](D2_SPI_TODO.md) (D2 tasks), [D5_BENCHMARKS.md](D5_BENCHMARKS.md) (D5 benchmark definitions and method), [SETUP.md](SETUP.md) (board and environment details), [parity/PARITY.md](parity/PARITY.md) (requirements and evidence), [PORTABILITY.md](PORTABILITY.md) (Pico to S3 changes and defects), [ARCHITECTURE.md](ARCHITECTURE.md) (task design), [project_v3/README.md](project_v3/README.md) (full config syntax).
 
 
 ---
@@ -120,7 +137,7 @@ Change requirement from Tribunal 1 (19 Oct 2026): the firmware must run on the c
 | 33 | Close the redesign documentation | Fill the evidence column of the compliance matrix, update PORTABILITY.md, ARCHITECTURE.md, SETUP.md and the feedback tracker, and switch "Start here" to the µT-Kernel build. | No document still describes FreeRTOS or Arduino as the D1 runtime except as the baseline; every requirement clause links to evidence. | Done | Hasif. Every clause of the compliance matrix links to its evidence ([MTK_REDESIGN.md §9](MTK_REDESIGN.md#9-compliance-matrix)); [Start here](#1-start-here) runs the µT-Kernel build (`sh tools/mtk.sh compare` added for the Pico comparison); [PORTABILITY.md §6](PORTABILITY.md#6-the-µt-kernel-3-smp-build-tasks-2434) maps every Pico dependency onto the µT-Kernel build; ARCHITECTURE.md and SETUP.md mark the Arduino material as the baseline, and SETUP.md has a µT-Kernel testing section; the [feedback tracker](WEEK6_FEEDBACK_RESPONSE.md) has F6 resolved and redesign evidence on F5, R1, R4 and C2; [MTK_REDESIGN.md §11](MTK_REDESIGN.md#11-checked-against-the-course-ports-own-code) compares the build with the course port's own components and examples, with the reason for every difference and three defects found in the port |
 | 34 | Release the µT-Kernel build | Merge `s3-port-d1-redesign` into `main`, tag the release, clone recursively into a new directory and follow SETUP.md to build, flash and rerun the smoke tests. | The tag resolves on origin; the clean clone builds and passes 4a. | Done | Hasif, 2026-10-21. A clean recursive clone (the course port fetched from GitHub) builds firmware identical to the image that passed the suite, apart from the 32-byte ELF fingerprint and the image hash that covers it. The branch merges into `main` with no conflicts (the merged tree equals the branch's) and is tagged `d1-mtk-v1.0`. The D2 SPI work up to the branch point came with it, as this branch is built on `s3-port-d2`; D2's µT-Kernel SPI backend followed in the D2 checkpoint merge ([section 3](#3-d2-task-checklist)) |
 
-> **D2 tasks** (SPI support, Brendan and Jun Yong) are tracked in [D2_SPI_TODO.md](D2_SPI_TODO.md), with the design in [D2_SPI_DESIGN_NOTES.md](D2_SPI_DESIGN_NOTES.md) and [D2_EVENT_RECORD_DESIGN.md](D2_EVENT_RECORD_DESIGN.md). Professor feedback that affects D2 is tracked in the [feedback tracker](WEEK6_FEEDBACK_RESPONSE.md#12-d2-feedback-status).
+> **D2 tasks** (SPI support, Brendan and Jun Yong) are in [section 3](#3-d2-task-checklist) and in full in [D2_SPI_TODO.md](D2_SPI_TODO.md), with the design in [D2_SPI_DESIGN_NOTES.md](D2_SPI_DESIGN_NOTES.md) and [D2_EVENT_RECORD_DESIGN.md](D2_EVENT_RECORD_DESIGN.md). Professor feedback that affects D2 is tracked in the [feedback tracker](WEEK6_FEEDBACK_RESPONSE.md#12-d2-feedback-status).
 
 ## Execution model
 
@@ -168,9 +185,81 @@ The full checklist with every gate and its evidence is [D2_SPI_TODO.md](D2_SPI_T
 
 ---
 
-# 4. Set up and test from scratch (D1 and D2)
+# 4. D3 task checklist
 
-Follow these steps in order on a Mac (Linux works the same way). They build, flash and test the firmware on `main`: D1 on µT-Kernel 3 SMP with D2's SPI. Each step says what you should see. On Windows, install ESP-IDF at commit `17a74c925c`, load it with its PowerShell `export.ps1` and give `IDF_PATH` forward slashes, as Brendan did ([D2_SPI_TODO.md](D2_SPI_TODO.md)); the Arduino baseline in [section 7](#7-arduinofreertos-baseline-set-up-and-test-reference) has full Windows steps.
+> **Placeholder.** Cody adds the D3 task table here, in the same format as sections 2 and 3, when `d3` is merged into `main`. Update this section and the D3 row of [Deliverables at a glance](#deliverables-at-a-glance) then.
+
+**What D3 must deliver** (requirements document): replace the fixed one-second delay with a configurable per-sensor interval supporting periodic, one-shot and event-driven execution, and a logical sequence in which one sensor event opens a window for another, with the requested interval measured against the actual interval on real hardware. Evidence: a requested-against-measured timing table at 10, 50, 100, 500, 1000 and 2000 ms with timing error, jitter and sample count, and at least one working event-driven or logical sequence.
+
+**Where the work is.** Branch `d3` (Cody), last updated 18 Oct 2026: configurable timing, the typed event record, ApplicationTask and occupancy logic, with its checklist in [D3_TASKS.md on `d3`](https://github.com/junyonggoh2004/EMBSYS-P2-AAI15/blob/d3/D3_TASKS.md) (13 items done, 88 open on 18 Oct). It was built on the Arduino/FreeRTOS runtime before the µT-Kernel redesign, so before it can merge it needs `main` merged in and its ApplicationTask logic moved from `libraries/EdgeS3/src/runtime_s3.cpp` into ApplicationTask in [runtime_mtk.c](esp32s3_mtk/components/edge_mtk/runtime_mtk.c) with µT-Kernel calls only (`sh tools/mtk.sh purity` must pass).
+
+**Who waits on it.** D2's flash event logging (D2-8, D2-9), D5's final B3 timing run (D5-6), and D6.
+
+
+---
+
+# 5. D4 task checklist
+
+> **Placeholder.** Brendan and Jun Yong add the D4 task table here, in the same format as sections 2 and 3, when their work merges. Update this section and the D4 row of [Deliverables at a glance](#deliverables-at-a-glance) then.
+
+**What D4 must deliver** (requirements document): a baseline model with accuracy, size, memory use and latency measured on the target; a reduced model, a quantised integer path where the deployment stack supports it, and compact features or a shorter window in place of unnecessary raw input; and a final model chosen on the accuracy and resource trade-off measured on hardware. Evidence: a baseline and an optimised model, both deployable; a before-and-after comparison of size, RAM, inference latency and classification performance on the target; and the rationale for the final choice.
+
+**Where the work is.** No D4 branch yet. The research and the B5 measurement protocol are on `main`: [D4_EMBEDDED_ML_RESEARCH.md](D4_EMBEDDED_ML_RESEARCH.md) and [D2_D4_RESEARCH_CONTEXT.md](D2_D4_RESEARCH_CONTEXT.md). The firmware's current model path (InferenceTask owning TFLite Micro, models uploaded over MQTT into two flash slots) is D1 task 31.
+
+**Who waits on it.** D5's B5 (D5-8) and D6's ML path.
+
+
+---
+
+# 6. D5 task checklist
+
+D5 defines and runs the benchmarking programme (owners: Hasif and Sitt). Its evidence, from the requirements document: benchmark definitions and a method another member can repeat, completed result tables for B1 to B6 as a minimum (B7 and B8 if time allows), all measured on real hardware with no placeholder values, and a summary of where configurability costs performance and where it does not. The professor's feedback adds SchedulerTask cycle measurement (F6), interval tails (F16) and the 50 ms all-sensors risk (R1); the requirements add explicit fault reporting, shown by fault injection during B8.
+
+The definitions, what each benchmark is compared against, the dependencies and the measurement method are in **[D5_BENCHMARKS.md](D5_BENCHMARKS.md)**. Start there, then [MTK_REDESIGN.md](MTK_REDESIGN.md) for the runtime being measured and [section 8](#8-set-up-and-test-from-scratch-d1-and-d2) to set up the board and run the existing tests, which D5's scripts build on.
+
+| ID | Benchmark | Compared against | Can start |
+|---|---|---|---|
+| B1 | ESP32-S3 portability | The Pico reference, feature by feature | Now (from the D1 parity stages) |
+| B2 | SPI performance | Its own 8–1024-byte sweep; configured against direct SPI for the cost of configurability | Now |
+| B3 | Configurable timing | The configured period, and the Pico's fixed one-second delay | Periodic baseline now; final after D3 |
+| B4 | Runtime reconfiguration | Rebuilding and reflashing | Now |
+| B5 | ML efficiency | D4's baseline against its optimised model | After D4 |
+| B6 | End-to-end use case | Manual ground truth; rule-based against ML | After D6 |
+| B7 | Resource usage | The fixed path on the same build | Now |
+| B8 | Reliability and stress, with fault injection | Zero resets and agreed error limits | D1-only workload now; final after D6 |
+
+| # | Task | Required work | Acceptance evidence | Status | Dev notes |
+|---:|---|---|---|---|---|
+| D5-1 | Agree the programme | Confirm B1–B8 as defined in [D5_BENCHMARKS.md §2](D5_BENCHMARKS.md#2-the-benchmarks); agree the numerical limit and the owner of each benchmark, the repeat rules, the fixed path used for the cost of configurability (console commands on the same build or a separate fixed firmware), and whether an external clock is available for physical latency. | A signed-off table of benchmark, unit, limit, owner and workload in D5_BENCHMARKS.md. | In progress: benchmarks and comparisons mapped 28 Oct; limits, owners and sign-off pending | Hasif and Sitt. Sitt's first draft (24 Oct) used D5-M01–M07; the mapping is in [D5_BENCHMARKS.md §7](D5_BENCHMARKS.md#7-earlier-planning-ids) |
+| D5-2 | Freeze the test platform | Record board, course port, ESP-IDF and toolchain, build, model, wiring, power, broker and core assignment, and every test setting. | A versioned environment manifest before any final run. | Planned | `sh tools/mtk.sh check`, [SETUP.md](SETUP.md#esp32-s3-on-µt-kernel-3-smp-tasks-2534), [MTK_REDESIGN.md §4](MTK_REDESIGN.md#4-task-table-and-task-to-core-assignment) |
+| D5-3 | Build and validate the instrumentation | Create `benchmarks/` with scripts that wrap `tools/mtk.sh` and `parity/`; add the fixed-path commands chosen in D5-1; calibrate timestamp resolution and overhead; detect lost log lines and message-buffer drops; make every summary reproducible from raw files. | A pilot run with known intervals and counts, measured instrumentation overhead and checked analysis output. | Planned | Pilot numbers are not final D5 results |
+| D5-4 | B1 portability | Run every parity stage on the µT-Kernel build, including the six hardware-pending stages, and tabulate each feature as pass, partial or fail against the Pico. | B1 table with a reason for every partial or fail. | Planned: can start now | D1 evidence in [PARITY.md §2 and §4](parity/PARITY.md#4-esp32-s3-on-µt-kernel-3-smp-tasks-24-to-34); wiring in [SETUP.md](SETUP.md#hardware-checks-on-µt-kernel-jumpers-and-sensors) |
+| D5-5 | B2 SPI performance | Five runs of each recorded clock and mode configuration on the GPIO12 to GPIO13 loopback, plus configured against direct SPI reads. | Latency (median, p95, p99, max), throughput and error rate by payload size from the D5 runs. | Planned: can start now | D2's transport benchmark is the pilot ([parity/logs/mtk/d2-spi/](parity/logs/mtk/d2-spi/)) |
+| D5-6 | B3 configurable timing | Requested against measured interval at 10–2000 ms, SchedulerTask cycle (F6), the 50 ms all-sensors window with one and two no-echo HC-SR04 reads (R1), and the Pico's one-second delay for comparison. | Timing error, jitter (p95, max), skipped samples and cycle distribution per run; every missed deadline explained. | Planned: periodic baseline can start now; **update when D3 merges** for the final run with its timing modes | `timing` and `wcet` results in PARITY.md §4 are the pilot |
+| D5-7 | B4 runtime reconfiguration | At least 20 valid and invalid changes over USB and MQTT, against the same changes made by rebuilding and reflashing. | Apply latency, success rate, sampling interruption and heap change, against rebuild time, steps and outage. | Planned: can start now | New script |
+| D5-8 | B5 ML efficiency | Measure D4's baseline and optimised models on the same inputs, alone and with sensors and MQTT running. | Accuracy, model size, RAM and inference latency for both models. | Blocked: **update when D4 delivers both models** | Protocol in [D4_EMBEDDED_ML_RESEARCH.md §13](D4_EMBEDDED_ML_RESEARCH.md#13-b5-benchmark-protocol) |
+| D5-9 | B6 end-to-end use case | Trials against manual ground truth covering entry, exit, turn-around and false events, rule-based against ML on the same event set. | Event accuracy, false events and occupancy count error. | Blocked: **update when D6's workload is frozen** | Shared with D6 |
+| D5-10 | B7 resource usage | Flash, static RAM, heap free and minimum with Wi-Fi running, PSRAM, stack minima and CPU where measurable, on the configured build and against the fixed path. | Resource table with the cost of configurability. | Planned: can start now | Current figures: DIRAM 97.9%, about 34 KB heap free ([d2-merge logs](parity/logs/mtk/d2-merge/)) |
+| D5-11 | B8 reliability and stress | Three 30-minute runs with sensors, rules, inference and MQTT, injecting sensor, network and model faults during each; check every fault is reported as an error and never as valid data. | Missed samples, errors, resets, watchdog events and packet loss per run; the fault-reporting record. | Planned: D1-only workload can start now (labelled); **update when D6's workload is frozen** | Builds on `endurance`, `faults`, `flood` and `t06` |
+| D5-12 | Analyse and publish | Compute every table from the raw files, write the configurability cost and benefit summary, and have another member reproduce one condition. | `benchmarks/results.md` with B1–B6 at least, each number linked to hardware, commit, script and run files; the summary; the reproduction. | Planned | Do not mark D5 done from D1 or D2 pilot logs |
+
+
+---
+
+# 7. D6 task checklist
+
+> **Placeholder.** The team adds the D6 task table here, in the same format as sections 2 and 3, when the use case merges. Update this section and the D6 row of [Deliverables at a glance](#deliverables-at-a-glance) then.
+
+**What D6 must deliver** (requirements document): an application that exercises timing configuration, sensor abstraction, node communication and inference in one demonstration, proposed as people-flow and occupancy monitoring at an entrance; a rule-based baseline first and the ML path second, compared on the same event set; trials against known ground truth including ambiguous and false events; and a runtime configuration change shown during the demonstration. Evidence: the working application; trial results covering entry, exit, incomplete or turn-around, and false or object events; the rule-based against ML comparison; and one recorded runtime reconfiguration.
+
+**Where the work is.** Part of the application logic (the typed event record, ApplicationTask and occupancy) is on branch `d3` with D3 (section 4). It depends on D3's timing, D4's model and D2's event log, and its trials are D5's B6.
+
+
+---
+
+# 8. Set up and test from scratch (D1 and D2)
+
+Follow these steps in order on a Mac (Linux works the same way). They build, flash and test the firmware on `main`: D1 on µT-Kernel 3 SMP with D2's SPI. Each step says what you should see. On Windows, install ESP-IDF at commit `17a74c925c`, load it with its PowerShell `export.ps1` and give `IDF_PATH` forward slashes, as Brendan did ([D2_SPI_TODO.md](D2_SPI_TODO.md)); the Arduino baseline in [section 11](#11-arduinofreertos-baseline-set-up-and-test-reference) has full Windows steps.
 
 ## What D1 and D2 are
 
@@ -308,7 +397,7 @@ If every step matched, this laptop has built, flashed and verified D1 and D2 by 
 
 ---
 
-# 5. Using any sensor (config cheat sheet)
+# 9. Using any sensor (config cheat sheet)
 
 The node is not plug-and-play: each sensor needs **one config line** that tells it the protocol, the pins and how to read it. No code change and no re-flash: wire the sensor, send the line, type `RUN`.
 
@@ -348,16 +437,16 @@ BEGINRULE|name=DARK|source=LIGHT|calc=s=u8(0)|when=s==1|action=log:it is dark|EN
 
 ---
 
-# 6. Completion rule
+# 10. Completion rule
 
 A task is not complete merely because code compiles or a single happy-path demonstration works. It is complete only when its acceptance evidence is recorded, relevant requirements and assumptions are updated, and any failure or limitation is either fixed or explicitly documented with an owner and disposition.
 
 
 ---
 
-# 7. Arduino/FreeRTOS baseline: set up and test (reference)
+# 11. Arduino/FreeRTOS baseline: set up and test (reference)
 
-These are the steps for the earlier Arduino-ESP32/FreeRTOS build (`esp32s3_edge/`, `tools/s3.sh`), kept as the measured baseline (task 21, [PARITY.md §3](parity/PARITY.md#3-esp32-s3-results-tasks-13-to-21)), with Windows commands. The board pinout is in [section 4](#board-pinout). Going from the µT-Kernel build back to this one, erase the flash first ([SETUP.md](SETUP.md#testing-on-µt-kernel-tasks-2732)).
+These are the steps for the earlier Arduino-ESP32/FreeRTOS build (`esp32s3_edge/`, `tools/s3.sh`), kept as the measured baseline (task 21, [PARITY.md §3](parity/PARITY.md#3-esp32-s3-results-tasks-13-to-21)), with Windows commands. The board pinout is in [section 8](#board-pinout). Going from the µT-Kernel build back to this one, erase the flash first ([SETUP.md](SETUP.md#testing-on-µt-kernel-tasks-2732)).
 
 
 ---
@@ -466,7 +555,7 @@ Close the monitor first (Ctrl+C): a test and the monitor cannot use the USB port
 
 ## Baseline Part E: Real sensors
 
-Use one sensor at a time. No breadboard and no resistor are needed for these two (see "Why no resistor" in section 4).
+Use one sensor at a time. No breadboard and no resistor are needed for these two (see "Why no resistor" in section 8).
 
 ### Step 25. GY-511 compass and accelerometer (I2C)
 
