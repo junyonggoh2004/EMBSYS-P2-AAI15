@@ -1,0 +1,42 @@
+18:35:18 [TICK] 2589
+18:35:18 [HALTEST] start
+18:35:18 [HALTEST] PASS time-monotonic 2673517 -> 2673518 us
+18:35:18 [HALTEST] PASS time-ms-matches-us ms=2673 us/1000=2673
+18:35:18 [HALTEST] PASS delay-ms-100 100003 us
+18:35:18 [HALTEST] PASS delay-ms-1 1003 us
+18:35:18 [HALTEST] PASS delay-us-500 501 us
+18:35:18 [HALTEST] PASS console-getc-timeout ret=-1 after 20276 us
+18:35:18 [HALTEST] PASS gpio-reserved-pins-refused -1 19 20 22 26 32 49 99
+18:35:18 [HALTEST] PASS gpio-input-pulldown mode=0 read=0
+18:35:18 [HALTEST] PASS gpio-input-pullup mode=0 read=1
+18:35:18 [HALTEST] PASS gpio-output-toggle toggle 1/1 then 0/0
+18:35:18 [HALTEST] PASS pwm-set-and-stop set=0 set=0 stop=0 read=0
+18:35:18 [HALTEST] PASS pwm-duty-25-self set 0.25 measured 0.250
+18:35:18 [HALTEST] PASS pwm-duty-50-self set 0.50 measured 0.500
+18:35:18 [HALTEST] PASS pwm-duty-75-self set 0.75 measured 0.749
+18:35:18 [HALTEST] PASS pulse-200ms-nonblocking-self returned after 24 us, high 201555 us
+18:35:19 [HALTEST] PASS edge-count-no-loss-self 20000 edges at 19.8 kHz, 20000 counted (er=0)
+18:35:19 [HALTEST] PASS echo-width-self measured 5613 us for a 5 ms PULSE (alarm resolution 1 ms)
+18:35:19 [HALTEST] PASS echo-none-times-out returned -1 after 25854 us
+18:35:19 [HALTEST] PASS echo-stuck-high-reports-timeout returned 25001 (D-07: the timeout reported as a width)
+18:35:19 [HALTEST] PASS echo-wait-releases-cpu spinner: sleep 542174, echo wait 563515, busy-wait 0
+18:35:19 [HALTEST] PASS uart-internal-loopback port=0 got 34/34 bytes
+18:35:19 [HALTEST] PASS i2c-missing-device-nack bus=0 write=-4 write-nostop=1 read=-4
+18:35:19 [HALTEST] SKIP jumper-measurements no jumper between GPIO5 and GPIO6
+18:35:19 [HALTEST] PASS test-task-on-core-1 running on core 1
+18:35:19 [HALTEST] done failures=0
+18:35:19 [ECHO] hello parity 12345
+18:35:20 [TICK] 4588
+18:35:21 [TICK] 5589
+18:35:22 [TICK] 6588
+18:35:23 [TICK] 7589
+18:35:24 [TICK] 8589
+18:35:25 [TICK] 9588
+18:35:26 [TICK] 10589
+18:35:27 [TICK] 11588
+18:35:28 [TICK] 12589
+18:35:29 [TICK] 13589
+18:35:30 [TICK] 14588
+18:35:31 [TICK] 15589
+18:35:32 [TICK] 16588
+18:35:33 [TICK] 17589

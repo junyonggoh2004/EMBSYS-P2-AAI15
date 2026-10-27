@@ -146,5 +146,5 @@ case "$1" in
            $PY parity/spi_fault_test.py --port "$PORT" --log parity/logs/mtk/d2-spi/fault-connected.log ;;
   spi-bench) need_port
            $PY parity/spi_benchmark.py --runtime mtk --port "$PORT" --mode "${2:-0}" --hz "${3:-10000000}" ;;
-  *)       sed -n '2,28p' "$0" ;;
+  *)       sed -n "2,$(grep -n '^# PORT=' "$0" | cut -d: -f1)p" "$0" ;;
 esac

@@ -407,9 +407,9 @@ Test only: GPIO1↔GPIO2 (UART loopback, I2C removed), GPIO5↔GPIO6 (GPIO loopb
 
 Configs for each device are in the README sensor table. Verified so far on this board: GY-511 (`4c-mag`), loopback UART, GPIO and PWM; the HC-SR04 and radar need the divider and the radar module respectively.
 
-### D2 SPI planning note
+### D2 SPI pins
 
-D2's verified loopback fixture uses SPI2/FSPI with SCLK GPIO11, MOSI GPIO12, MISO GPIO13, and CS GPIO10; connect GPIO12 directly to GPIO13 only for loopback and leave the TFT disconnected. The proposed W25Q32 fixture uses the same four signals plus 3.3 V and GND, but its module markings and power requirements must be checked before wiring. The earlier TFT experiment used SCLK GPIO12, MOSI GPIO11, CS GPIO10, DC GPIO9, reset GPIO8, and backlight GPIO13; it is a different, optional fixture and cannot coexist with the loopback/MISO wiring. Keep GPIO19/20 for native USB, keep boot/strapping pins available, and do not use flash/PSRAM-connected pins. Follow [D2_SPI_TODO.md](D2_SPI_TODO.md) for validation, fault, benchmark, and evidence gates.
+D2's verified loopback fixture uses SPI2/FSPI with SCLK GPIO11, MOSI GPIO12, MISO GPIO13, and CS GPIO10; connect GPIO12 directly to GPIO13 only for loopback and leave the TFT disconnected. The W25Q32 fixture uses the same four signals plus 3.3 V and GND; it was traced and verified on the µT-Kernel build on 25 October (JEDEC `EF4016`), and its tests are in [D2 SPI checks on µT-Kernel](#d2-spi-checks-on-µt-kernel). The loopback jumper and the module are never connected at the same time. The earlier TFT experiment used SCLK GPIO12, MOSI GPIO11, CS GPIO10, DC GPIO9, reset GPIO8, and backlight GPIO13; it is a different, optional fixture and cannot coexist with the loopback/MISO wiring. Keep GPIO19/20 for native USB, keep boot/strapping pins available, and do not use flash/PSRAM-connected pins. Follow [D2_SPI_TODO.md](D2_SPI_TODO.md) for validation, fault, benchmark, and evidence gates.
 
 ### Compile, upload and monitor the minimal sketch (Task 9)
 
@@ -515,7 +515,7 @@ The clean-clone part was run on 2026-10-14 from `s3-port` before the merge (see 
 
 ## ESP32-S3 on µT-Kernel 3 SMP (tasks 25–34)
 
-Since Tribunal 1 the D1 firmware runs on the course µT-Kernel 3 SMP port instead of Arduino-ESP32 and FreeRTOS ([MTK_REDESIGN.md](MTK_REDESIGN.md)). The project is [`esp32s3_mtk/`](esp32s3_mtk/), a native ESP-IDF project; the Arduino build above stays as the FreeRTOS baseline.
+Since Tribunal 1 the D1 firmware runs on the course µT-Kernel 3 SMP port instead of Arduino-ESP32 and FreeRTOS ([MTK_REDESIGN.md](MTK_REDESIGN.md)). The project is [`esp32s3_mtk/`](esp32s3_mtk/), a native ESP-IDF project; the Arduino build above stays as the FreeRTOS baseline. D2's SPI runs on this build as well ([D2 SPI checks on µT-Kernel](#d2-spi-checks-on-µt-kernel)).
 
 ### Pinned versions (task 25)
 
@@ -577,3 +577,18 @@ These stages need wires or sensors. Rows 8 to 10 (GY-511 and HC-SR04) passed on 
 | 10 | Same wiring; move an object in and out of 30 cm | `sh tools/mtk.sh test sonic-rule` | `7/7 passed` |
 
 Each run writes `parity/logs/mtk/<stage>.log`. A stage that fails prints the step and what it expected; keep the log. Never connect a 5 V HC-SR04's Echo straight to a GPIO: it outputs 5 V and the ESP32-S3's pins take 3.3 V at most. The 3 V module's Echo is 3.3 V and goes straight to the pin.
+
+### D2 SPI checks on µT-Kernel
+
+D2 (Brendan and Jy) added SPI to this build: the SPI2 register-level HAL in `hal_mtk.c`, the W25Q32 device layer and a provisional event-log codec in `libraries/EdgeCore/src/flash/`, and console commands that BenchmarkTask runs. The checks use one of two fixtures; unplug the USB cable before changing them and never connect both. SPI uses only GPIO10 to GPIO13, so nothing else has to be removed. Console commands are typed in `sh tools/mtk.sh monitor`. Brendan's results and logs are in [D2_SPI_TODO.md](D2_SPI_TODO.md) and [`parity/logs/mtk/d2-spi/`](parity/logs/mtk/d2-spi/).
+
+| # | Wiring | Command | Pass |
+|---|---|---|---|
+| 1 | None (runs on the laptop) | `sh tools/d2_host_test.sh` | `w25q32/log mock: PASS (device faults, codec, CRC, recovery, torn slot, full log)` |
+| 2 | A jumper wire from GPIO12 to GPIO13 | `sh tools/mtk.sh spi` | `22/22 passed` |
+| 3 | Same jumper | `sh tools/mtk.sh spi-fault` | `6/6 passed` |
+| 4 | Same jumper | `sh tools/mtk.sh spi-bench 0 10000000`, and the same with `1 10000000`, `2 10000000`, `0 20000000` and `3 20000000` for the five recorded configurations | `PASS:` followed by the report path under `parity/logs/mtk/d2-spi/` (about 30 s each) |
+| 5 | Remove the jumper; nothing on GPIO10 to GPIO13 | console: `SPICHECK EF4016` | `[SPICHECK] ERROR probe=-9 ...`: a missing module is reported as absent (`HAL_ERR_ABSENT`), never as data |
+| 6 | W25Q32 module: VCC to 3V3, GND to GND, CS to GPIO10, CLK to GPIO11, DI to GPIO12, DO to GPIO13 | console: `SPIID`, `SPICHECK EF4016`, `SPISCAN EF4016` | `[SPIID] raw=EF4016`, `[SPICHECK] PASS read-only ...`, and `[SPISCAN] BLANK` on an unused module (`NONBLANK` on Brendan's, which holds the test data below) |
+
+All six are read-only on the module. `SPIPROGRAM EF4016` and `SPILOGWRITE EF4016 3FF100` are one-time writes that Brendan ran on his module on 25 and 26 October: the device layer refuses to program anything that is not blank, so on his module they only report an error, and on another module they must not be run until a scratch address has been agreed with him. `SPIVERIFY EF4016` and `SPILOGVERIFY` re-read that test data without writing.
