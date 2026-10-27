@@ -1,6 +1,6 @@
 # D1 Redesign: Port to µT-Kernel 3 SMP (Tasks 24–34)
 
-Written on branch `s3-port-d1-redesign` (based on `s3-port-d2`), merged into `main` and tagged `d1-mtk-v1.0`. This document is the plan and the compliance record for the change requirement given at Tribunal 1 (19 Oct 2026). Each clause of the requirement maps to a design decision, a README task, and the evidence that closes it (section 9). D2 (SPI) and D3 onwards were outside this redesign. D2 has since ported its SPI onto this runtime with the same rules (register-level driver, µT-Kernel mutex, no FreeRTOS call; README D2 row); D3 onwards are ported by their owners.
+Written on branch `s3-port-d1-redesign` (based on `s3-port-d2`), merged into `main` and tagged `d1-mtk-v1.0`. This document is the plan and the compliance record for the change requirement given at Tribunal 1 (19 Oct 2026). Each clause of the requirement maps to a design decision, a README task, and the evidence that closes it (section 9). D2 (SPI) and D3 onwards were outside this redesign. D2 has since ported its SPI onto this runtime with the same rules (register-level driver, µT-Kernel mutex, no FreeRTOS call; README section 3); D3 onwards are ported by their owners.
 
 ## 1. The change requirement, word for word
 
