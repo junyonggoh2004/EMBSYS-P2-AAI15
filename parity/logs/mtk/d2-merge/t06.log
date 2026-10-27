@@ -1,0 +1,68 @@
+18:38:46 [SCHED    183620ms] run_all: running=0
+18:38:47 [SCHED    185381ms] run_all: running=0
+18:38:47 [MQTT] Status: Connected, Broker: 172.20.10.5
+18:38:48 --- clear-t06: CLEAR
+18:38:48 [SCHED    185929ms] reset: cleared 8 slots
+18:38:48 [RULE] reset
+18:38:48 CLEARED
+18:38:49 [SCHED    186934ms] run_all: running=0
+18:38:50 [SCHED    187935ms] run_all: running=0
+18:38:50 --- cfg-ow: BEGINCFG|name=OW|proto=gpio|gpio.mode=onewire|gpio.pin=6|mode=poll|freq_hz=2|ENDCFG
+18:38:51 OK: Config applied (inline, delim='|')
+18:38:51 [SCHED    188529ms] add[0]: OW on gpio freq=2.000Hz mode=poll method=onewire GPIO(pin=6)
+18:38:51 [SCHED] added: OW on gpio
+18:38:51 CFG: ok (added #0: OW)
+18:38:52 [SCHED    189530ms] run_all: running=0
+18:38:52 [MQTT] Status: Connected, Broker: 172.20.10.5
+18:38:53 [SCHED    190531ms] run_all: running=0
+18:38:53 --- cfg-son: BEGINCFG|name=SON|proto=gpio|gpio.mode=pulse|gpio.trig=4|gpio.echo=7|gpio.pull=down|gpio.pulse_timeout_us=25000|mode=poll|freq_hz=2|ENDCFG
+18:38:53 OK: Config applied (inline, delim='|')
+18:38:53 [SCHED    191150ms] add[1]: SON on gpio freq=2.000Hz mode=poll method=pulse GPIO(pin=-1)
+18:38:53 [SCHED] added: SON on gpio
+18:38:53 CFG: ok (added #1: SON)
+18:38:54 [SCHED    192151ms] run_all: running=0
+18:38:55 [SCHED    193152ms] run_all: running=0
+18:38:56 --- run-t06: RUN
+18:38:56 RUN
+18:38:56 [SCHED    193727ms] arm[0/OW]: next_run reset to NOW
+18:38:56 [SCHED    193727ms] arm[1/SON]: next_run reset to NOW
+18:38:56 [SCHED    193755ms] publish[1/SON]: 1 bytes via gpio
+18:38:56 proto=gpio src=SON len=1 ts=193755 : 00
+18:38:56 [SCHED    194231ms] run_all: running=1
+18:38:56 [SCHED    194282ms] publish[1/SON]: 1 bytes via gpio
+18:38:56 proto=gpio src=SON len=1 ts=194282 : 00
+18:38:57 [SCHED    194809ms] publish[1/SON]: 1 bytes via gpio
+18:38:57 proto=gpio src=SON len=1 ts=194809 : 00
+18:38:57 [SCHED    195238ms] run_all: running=1
+18:38:57 [SCHED    195336ms] publish[1/SON]: 1 bytes via gpio
+18:38:57 proto=gpio src=SON len=1 ts=195336 : 00
+18:38:57 [MQTT] Status: Connected, Broker: 172.20.10.5
+18:38:58 [SCHED    195863ms] publish[1/SON]: 1 bytes via gpio
+18:38:58 proto=gpio src=SON len=1 ts=195863 : 00
+18:38:58 [SCHED    196245ms] run_all: running=1
+18:38:58 [SCHED    196390ms] publish[1/SON]: 1 bytes via gpio
+18:38:58 proto=gpio src=SON len=1 ts=196390 : 00
+18:38:59 [SCHED    196917ms] publish[1/SON]: 1 bytes via gpio
+18:38:59 proto=gpio src=SON len=1 ts=196917 : 00
+18:38:59 [SCHED    197252ms] run_all: running=1
+18:39:00 [SCHED    197444ms] publish[1/SON]: 1 bytes via gpio
+18:39:00 proto=gpio src=SON len=1 ts=197444 : 00
+18:39:00 --- stop-t06: STOP
+18:39:00 STOP
+18:39:01 [SCHED    198859ms] run_all: running=0
+18:39:02 [SCHED    199860ms] run_all: running=0
+18:39:02 --- alive-t06: SHOW
+18:39:03 [SHOW] sampling=0
+18:39:03 [SCHED] #0 name=OW proto=gpio mode=poll freq=2.000Hz
+18:39:03 [SCHED] #1 name=SON proto=gpio mode=poll freq=2.000Hz
+18:39:03 [RULE] count=0
+18:39:03 [MQTT] Status: Connected, Broker: 172.20.10.5
+18:39:03 [SCHED    201446ms] run_all: running=0
+18:39:04 [SCHED    202447ms] run_all: running=0
+18:39:05 --- clear-t06-end: CLEAR
+18:39:05 [SCHED    203038ms] reset: cleared 8 slots
+18:39:05 [RULE] reset
+18:39:05 CLEARED
+18:39:06 [SCHED    204044ms] run_all: running=0
+18:39:07 [SCHED    205045ms] run_all: running=0
+18:39:07 [MQTT] Status: Connected, Broker: 172.20.10.5

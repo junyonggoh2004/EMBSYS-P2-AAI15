@@ -1,0 +1,2 @@
+# sent: SPIVERIFY EF4016
+[SPIVERIFY] PASS address=3FF000 bytes=16 pattern=retained

@@ -310,17 +310,17 @@ A recoverable fault keeps the node in DEGRADED: it continues sampling and report
 
 ## 12. D2 feedback status
 
-Brendan's [D2_SPI_TODO.md](D2_SPI_TODO.md) records how D2 answers the parts of this feedback that touch SPI. The statuses below are as recorded in that file at commit `548d2e3` (2026-10-17). D2 owns these items; update them there first, then here.
+Brendan's [D2_SPI_TODO.md](D2_SPI_TODO.md) is the current D2 checklist. The D2 status below was refreshed on 25 October 2026 for the µT-Kernel transport and physical W25Q32 checks; event logging and live concurrency remain open.
 
 | D2 item (from D2_SPI_TODO.md) | Tracker item | Status |
 |---|---|---|
-| Retain one shared SPI bus protected by `spi_mutex` | F2 | ✅ Implemented with a FreeRTOS mutex |
+| Retain one shared SPI bus protected by `spi_mutex` | F2 | ✅ Migrated SPI2 backend uses a bounded µT-Kernel `TA_INHERIT` mutex; target contention test remains open |
 | Keep flash logging out of SchedulerTask; perform it through ApplicationTask | F11, R4 | ❌ Open |
 | Define capacity, timeout, overflow response and drop policy for every logging or benchmarking queue | F13 | ❌ Open; a provisional log queue (capacity 8, drop newest) is drafted in [D2_EVENT_RECORD_DESIGN.md](D2_EVENT_RECORD_DESIGN.md) |
-| Measure p95 and maximum sampling/transfer latency in addition to means | F16 | ❌ Open for SPI transfers (sampling is covered by section 10) |
+| Measure p95 and maximum sampling/transfer latency in addition to means | F16 | 🟡 Five 8–1024-byte µT-Kernel loopback reports include p95/p99/max; live flash-write and sampling timing remains open (T-23) |
 | Demonstrate model activity and SPI flash writes alongside live sampling | R4 | ❌ Open (D2 T-23) |
 | Replace placeholder artwork with a per-node wiring diagram including the W25Q32 | F4 | ❌ Open |
-| Confirm failed or delayed SPI logging never stops occupancy processing or causes a valid-looking reading | F17 | ❌ Open |
+| Confirm failed or delayed SPI logging never stops occupancy processing or causes a valid-looking reading | F17 | 🟡 Physical absent-device rejection passed; application logging and live failure isolation remain open |
 
 ## 13. Use of C (C2)
 
