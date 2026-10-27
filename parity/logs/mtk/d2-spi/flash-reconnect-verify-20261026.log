@@ -1,0 +1,3 @@
+# sent: SPIVERIFY EF4016
+[TFLITE]   Arena:   2908 / 65536 bytes used
+[SPIVERIFY] PASS address=3FF000 bytes=16 pattern=retained

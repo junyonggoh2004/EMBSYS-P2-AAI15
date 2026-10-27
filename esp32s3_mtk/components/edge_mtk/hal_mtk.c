@@ -33,6 +33,7 @@
 #include "hal/gpio_ll.h"
 #include "hal/i2c_ll.h"
 #include "hal/ledc_ll.h"
+#include "hal/spi_ll.h"
 #include "hal/uart_ll.h"
 #include "soc/gpio_sig_map.h"
 #include "soc/interrupts.h"
@@ -780,30 +781,205 @@ void hal_mtk_uart_internal_loopback(int port, bool on)
 uint32_t hal_mtk_uart_dropped(int port) { return s_uart[port & 1].dropped; }
 
 // ---------- SPI ----------
-// D2 (SPI) is outside the D1 redesign; its owners port it to this runtime.
+// SPI2/FSPI, polled 64-byte FIFO chunks. CS is kept low across the entire
+// transaction, including 1024-byte benchmark transfers. No DMA or IDF driver
+// task/FreeRTOS object is involved. All device/host state is mutex protected.
 
-int hal_spi_open(const char *host, int sclk, int mosi, int miso, int cs, uint32_t hz, uint8_t mode)
+#define SPI_DEVICES 8
+#define SPI_FIFO_BYTES 64
+#define SPI_MAX_BYTES 1024
+
+typedef struct {
+    bool active;
+    int cs;
+    uint32_t hz;
+    uint8_t mode;
+    uint8_t refs;
+} spi_device_t;
+
+static ID s_spi_mtx;
+static spi_device_t s_spi_devices[SPI_DEVICES];
+static int s_spi_sclk = -1, s_spi_mosi = -1, s_spi_miso = -1;
+static unsigned s_spi_refs;
+
+static int spi_lock(uint32_t timeout_ms)
 {
-    (void)host; (void)sclk; (void)mosi; (void)miso; (void)cs; (void)hz; (void)mode;
-    return HAL_ERR_UNSUPPORTED;
+    if (s_spi_mtx <= 0) return HAL_ERR_NO_MEMORY;
+    ER er = tk_loc_mtx(s_spi_mtx, timeout_ms ? (TMO)timeout_ms : TMO_POL);
+    return er == E_OK ? HAL_OK : (er == E_TMOUT ? HAL_ERR_TIMEOUT : HAL_ERR_IO);
+}
+
+static void spi_pin_out(int pin, uint32_t signal)
+{
+    gpio_ll_func_sel(s_gpio, (uint8_t)pin, PIN_FUNC_GPIO);
+    gpio_ll_od_disable(s_gpio, pin);
+    gpio_ll_input_enable(s_gpio, pin);
+    gpio_ll_output_enable(s_gpio, pin);
+    gpio_ll_pulldown_dis(s_gpio, pin);
+    gpio_ll_pullup_dis(s_gpio, pin);
+    esp_rom_gpio_connect_out_signal(pin, signal, false, false);
+}
+
+static void spi_pin_in(int pin, uint32_t signal)
+{
+    gpio_ll_func_sel(s_gpio, (uint8_t)pin, PIN_FUNC_GPIO);
+    gpio_ll_output_disable(s_gpio, pin);
+    gpio_ll_input_enable(s_gpio, pin);
+    gpio_ll_pulldown_dis(s_gpio, pin);
+    gpio_ll_pullup_dis(s_gpio, pin);
+    esp_rom_gpio_connect_in_signal(pin, signal, false);
+}
+
+int hal_spi_open(const char *host, int sclk, int mosi, int miso, int cs,
+                 uint32_t hz, uint8_t mode)
+{
+    if (!host || strcmp(host, "fspi") != 0 || mode > 3 || hz < 1000 || hz > 40000000)
+        return HAL_ERR_INVALID;
+    if (!hal_gpio_valid(sclk) || !hal_gpio_valid(mosi) || !hal_gpio_valid(cs) ||
+        (miso >= 0 && !hal_gpio_valid(miso)) || sclk == mosi || sclk == cs ||
+        mosi == cs || (miso >= 0 && (miso == sclk || miso == mosi || miso == cs)))
+        return HAL_ERR_PIN;
+    int er = spi_lock(1000);
+    if (er < 0) return er;
+    if (s_spi_refs && (s_spi_sclk != sclk || s_spi_mosi != mosi || s_spi_miso != miso)) {
+        tk_unl_mtx(s_spi_mtx);
+        return HAL_ERR_BUSY;
+    }
+    for (int i = 0; i < SPI_DEVICES; ++i) {
+        spi_device_t *d = &s_spi_devices[i];
+        if (!d->active || d->cs != cs) continue;
+        if (d->hz != hz || d->mode != mode || d->refs == UINT8_MAX) {
+            tk_unl_mtx(s_spi_mtx);
+            return HAL_ERR_BUSY;
+        }
+        ++d->refs;
+        ++s_spi_refs;
+        tk_unl_mtx(s_spi_mtx);
+        return i;
+    }
+    int slot = -1;
+    for (int i = 0; i < SPI_DEVICES; ++i)
+        if (!s_spi_devices[i].active) { slot = i; break; }
+    if (slot < 0) {
+        tk_unl_mtx(s_spi_mtx);
+        return HAL_ERR_BUSY;
+    }
+    if (!s_spi_refs) {
+        PERIPH_RCC_ATOMIC() {
+            spi_ll_enable_bus_clock(SPI2_HOST, true);
+            spi_ll_reset_register(SPI2_HOST);
+        }
+        spi_ll_enable_clock(SPI2_HOST, true);
+        spi_dev_t *hw = SPI_LL_GET_HW(1); // SPI2_HOST is register index 1
+        spi_ll_set_clk_source(hw, SPI_CLK_SRC_DEFAULT); // APB, 80 MHz
+        spi_ll_master_init(hw);
+        spi_ll_enable_int(hw);
+        spi_ll_set_int_stat(hw);
+        spi_ll_clear_int_stat(hw);
+        spi_ll_set_mosi_delay(hw, 0, 0);
+        spi_ll_set_half_duplex(hw, false);
+        spi_ll_set_tx_lsbfirst(hw, false);
+        spi_ll_set_rx_lsbfirst(hw, false);
+        spi_ll_set_dummy(hw, 0);
+        spi_ll_set_command_bitlen(hw, 0);
+        spi_ll_set_addr_bitlen(hw, 0);
+        spi_line_mode_t line = { .cmd_lines = 1, .addr_lines = 1, .data_lines = 1 };
+        spi_ll_master_set_line_mode(hw, line);
+        spi_ll_enable_mosi(hw, true);
+        spi_ll_enable_miso(hw, miso >= 0);
+        spi_pin_out(sclk, FSPICLK_OUT_IDX);
+        spi_pin_out(mosi, FSPID_OUT_IDX);
+        if (miso >= 0) spi_pin_in(miso, FSPIQ_IN_IDX);
+        s_spi_sclk = sclk;
+        s_spi_mosi = mosi;
+        s_spi_miso = miso;
+    }
+    gpio_ll_func_sel(s_gpio, (uint8_t)cs, PIN_FUNC_GPIO);
+    gpio_ll_od_disable(s_gpio, cs);
+    esp_rom_gpio_connect_out_signal(cs, SIG_GPIO_OUT_IDX, false, false);
+    gpio_ll_set_level(s_gpio, cs, 1);
+    gpio_ll_output_enable(s_gpio, cs);
+    s_spi_devices[slot] = (spi_device_t){ .active = true, .cs = cs, .hz = hz, .mode = mode, .refs = 1 };
+    ++s_spi_refs;
+    tk_unl_mtx(s_spi_mtx);
+    return slot;
 }
 
 int hal_spi_transfer(int device, const uint8_t *tx, uint8_t *rx, size_t len, uint32_t timeout_ms)
 {
-    (void)device; (void)tx; (void)rx; (void)len; (void)timeout_ms;
-    return HAL_ERR_UNSUPPORTED;
+    if (device < 0 || device >= SPI_DEVICES || len == 0 || len > SPI_MAX_BYTES || timeout_ms == 0)
+        return HAL_ERR_INVALID;
+    uint64_t deadline = hal_time_us() + (uint64_t)timeout_ms * 1000;
+    int er = spi_lock(timeout_ms);
+    if (er < 0) return er;
+    spi_device_t d = s_spi_devices[device];
+    if (!d.active || (rx && s_spi_miso < 0)) {
+        tk_unl_mtx(s_spi_mtx);
+        return HAL_ERR_INVALID;
+    }
+    spi_dev_t *hw = SPI_LL_GET_HW(1);
+    spi_ll_master_set_mode(hw, d.mode);
+    spi_ll_master_set_clock(hw, APB_HZ, (int)d.hz, 128);
+    gpio_ll_set_level(s_gpio, d.cs, 0);
+    int result = (int)len;
+    for (size_t off = 0; off < len; off += SPI_FIFO_BYTES) {
+        size_t n = len - off;
+        if (n > SPI_FIFO_BYTES) n = SPI_FIFO_BYTES;
+        uint8_t data[SPI_FIFO_BYTES] = { 0 };
+        if (tx) memcpy(data, tx + off, n);
+        spi_ll_set_mosi_bitlen(hw, n * 8);
+        spi_ll_set_miso_bitlen(hw, n * 8);
+        spi_ll_write_buffer_byte(hw, 0, data, (int)n);
+        hw->cmd.update = 1;
+        while (hw->cmd.update && hal_time_us() < deadline) { }
+        if (hw->cmd.update) { result = HAL_ERR_TIMEOUT; break; }
+        // The completion flag is sticky. Never accept a previous chunk's flag
+        // (or the init-time set) as completion of this transfer.
+        spi_ll_clear_int_stat(hw);
+        spi_ll_user_start(hw);
+        while (!spi_ll_usr_is_done(hw) && hal_time_us() < deadline) { }
+        if (!spi_ll_usr_is_done(hw)) { result = HAL_ERR_TIMEOUT; break; }
+        if (rx) spi_ll_read_buffer_byte(hw, 0, rx + off, (int)n);
+        spi_ll_clear_int_stat(hw);
+    }
+    gpio_ll_set_level(s_gpio, d.cs, 1);
+    if (hal_time_us() >= deadline) result = HAL_ERR_TIMEOUT;
+    tk_unl_mtx(s_spi_mtx);
+    return result;
 }
 
 int hal_spi_close(int device)
 {
-    (void)device;
-    return HAL_ERR_UNSUPPORTED;
+    if (device < 0 || device >= SPI_DEVICES) return HAL_ERR_INVALID;
+    int er = spi_lock(1000);
+    if (er < 0) return er;
+    spi_device_t *d = &s_spi_devices[device];
+    if (!d->active || !d->refs) {
+        tk_unl_mtx(s_spi_mtx);
+        return HAL_ERR_INVALID;
+    }
+    --d->refs;
+    --s_spi_refs;
+    if (!d->refs) {
+        gpio_ll_set_level(s_gpio, d->cs, 1);
+        memset(d, 0, sizeof(*d));
+    }
+    if (!s_spi_refs) {
+        spi_ll_enable_clock(SPI2_HOST, false);
+        PERIPH_RCC_ATOMIC() { spi_ll_enable_bus_clock(SPI2_HOST, false); }
+        s_spi_sclk = s_spi_mosi = s_spi_miso = -1;
+    }
+    tk_unl_mtx(s_spi_mtx);
+    return HAL_OK;
 }
 
 // ---------- start-up ----------
 
 ER hal_mtk_init(void)
 {
+    T_CMTX spi_cmtx = { .exinf = NULL, .mtxatr = TA_TFIFO | TA_INHERIT, .ceilpri = 0 };
+    s_spi_mtx = tk_cre_mtx(&spi_cmtx);
+    if (s_spi_mtx < E_OK) return (ER)s_spi_mtx;
     for (int p = 0; p < NPINS; p++) s_pwm_ch[p] = 0;
     for (int i = 0; i < PULSE_SLOTS; i++) {
         s_pulse[i].pin = -1;

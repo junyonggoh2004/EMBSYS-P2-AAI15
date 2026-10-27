@@ -1,0 +1,10 @@
+18:49:59 flood start: 50 msg/s on pico/s3-001/cmd for 60 s
+18:50:09 t=   10s sent=425 heartbeat_age=10.3s telemetry_age= 0.9s
+18:50:19 t=   20s sent=846 heartbeat_age= 0.3s telemetry_age= 0.3s
+18:50:29 t=   30s sent=1270 heartbeat_age= 0.3s telemetry_age= 0.3s
+18:50:39 t=   40s sent=1690 heartbeat_age= 0.3s telemetry_age= 0.2s
+18:50:49 t=   50s sent=2111 heartbeat_age=10.3s telemetry_age= 1.1s
+18:50:59 t=   60s sent=2533 heartbeat_age= 0.3s telemetry_age= 0.2s
+18:51:09 t=   70s sent=2533 heartbeat_age= 0.3s telemetry_age= 0.2s
+18:51:19 t=   80s sent=2533 heartbeat_age= 0.3s telemetry_age= 0.2s
+18:51:31 PASS: node kept its heartbeat through 2533 messages and 30 s after

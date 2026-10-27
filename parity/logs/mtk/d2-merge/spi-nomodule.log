@@ -1,0 +1,34 @@
+18:39:32 --- SPIID
+18:39:32 [SPIID] INVALID raw=000000; check module and wiring
+18:39:33 [MQTT] Status: Connected, Broker: 172.20.10.5
+18:39:33 [SCHED    230520ms] run_all: running=0
+18:39:34 [SCHED    231521ms] run_all: running=0
+18:39:34 --- SPICHECK EF4016
+18:39:34 [SPICHECK] ERROR probe=-9 read1=-9 read2=-9 close=0
+18:39:35 [SCHED    232522ms] run_all: running=0
+18:39:36 [SCHED    233523ms] run_all: running=0
+18:39:36 --- SPIBENCH 9 1
+18:39:36 [SPIBENCH] ERROR expected SPIBENCH <mode 0..3> <hz 1000000..20000000>
+18:39:37 [SCHED    234524ms] run_all: running=0
+18:39:37 --- SPICHECK 0
+18:39:37 [SPI] ERROR expected <SPI command> <six-digit JEDEC ID>
+18:39:38 [MQTT] Status: Connected, Broker: 172.20.10.5
+18:39:38 [SCHED    235525ms] run_all: running=0
+18:39:38 --- TASKS
+18:39:38 [TASK] SchedulerTask    id=7  core=1 pri=21 stack_free=11292 B ran_on_core0=0 ran_on_core1=522
+18:39:38 [TASK] MQTTTask         id=8  core=0 pri=22 stack_free=14284 B ran_on_core0=20663 ran_on_core1=0
+18:39:38 [TASK] ControlTask      id=9  core=1 pri=23 stack_free=3084 B ran_on_core0=0 ran_on_core1=6651
+18:39:38 [TASK] InferenceTask    id=10 core=1 pri=23 stack_free=6460 B ran_on_core0=0 ran_on_core1=13
+18:39:38 [TASK] ApplicationTask  id=11 core=1 pri=23 stack_free=3420 B ran_on_core0=0 ran_on_core1=0
+18:39:38 [TASK] BenchmarkTask    id=12 core=1 pri=24 stack_free=2108 B ran_on_core0=0 ran_on_core1=2
+18:39:38 [TASK] MonitorTask      id=13 core=1 pri=24 stack_free=3260 B ran_on_core0=0 ran_on_core1=236
+18:39:38 [TASK] sched_mbf  free=12912 B dropped=0
+18:39:38 [TASK] pub_mbf    free=10944 B dropped=311
+18:39:38 [TASK] infer_mbf  free=336 B dropped=0
+18:39:38 [TASK] app_mbf    free=544 B dropped=0
+18:39:38 [TASK] bench_mbf  free=512 B dropped=0
+18:39:38 [TASK] heap_free=34260 B min_free=18052 B largest=24576 B console_rx_irqs=131 console_rx_dropped=0
+18:39:38 [TASK] SchedulerTask cycles=522 mean_us=2185 p95_us=<5000 max_us=29436
+18:39:39 [SCHED    236526ms] run_all: running=0
+18:39:39 [SCHED    237527ms] run_all: running=0
+18:39:41 [SCHED    238528ms] run_all: running=0

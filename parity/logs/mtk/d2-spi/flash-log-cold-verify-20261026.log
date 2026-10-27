@@ -1,0 +1,2 @@
+# sent: SPILOGVERIFY
+[TFLITE] Model loaded OK![SPILOGVERIFY] PASS address=3FF100 bytes=80 crc=valid synthetic=1; no write
