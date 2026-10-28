@@ -4,6 +4,16 @@ Branch: `d3` (from `s3-port-d2`)
 Implementation date: 2026-10-18  
 Owner: Cody for the application contracts and acceptance interpretation
 
+**28 October 2026 runtime update.** The implementation tables below describe the
+18 October Arduino/native checkpoint. The active micro T-Kernel build now has
+ApplicationTask event/reset/status glue in `runtime_mtk.c`, a typed eight-item
+application message buffer, bounded result publication and portable dispatch
+tests. See the dated update in [D3_TASKS.md](D3_TASKS.md) and the application
+smoke check in [README.md](README.md). Target build/image, queue/resource/core
+evidence and real entrance acceptance remain unrun. The reviewed timing,
+identity/time-basis and quality-validation findings remain open; descriptions
+of frozen semantics below are historical, not a new acceptance claim.
+
 This document records what was planned and executed from the three Cody PRDs. It does not mark physical sensor, crosstalk, WCET or live MQTT evidence complete without a target-board run.
 
 ## Delivery plan and result

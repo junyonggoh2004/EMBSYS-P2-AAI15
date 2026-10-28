@@ -44,7 +44,9 @@ if python3 -c "" 2>/dev/null; then SYSPY=python3; else SYSPY=python; fi
 PY=.venv/bin/python
 [ -x "$PY" ] || PY=.venv/Scripts/python.exe
 [ -x "$PY" ] || PY=$SYSPY
-PORT=${PORT:-$($PY -c "from serial.tools import list_ports; print(next((p.device for p in list_ports.comports() if p.vid == 0x303A), ''))" 2>/dev/null)}
+# Board-independent commands (purity/build/image) also run before pyserial is
+# installed. A failed optional discovery must not exit the set -e wrapper.
+PORT=${PORT:-$($PY -c "from serial.tools import list_ports; print(next((p.device for p in list_ports.comports() if p.vid == 0x303A), ''))" 2>/dev/null || true)}
 
 need_port() { [ -n "$PORT" ] || { echo "No ESP32-S3 found on USB. Plug it in (or set PORT=/dev/cu.usbmodemXXXX, or PORT=COM5 on Windows)."; exit 1; }; }
 idf_env() {

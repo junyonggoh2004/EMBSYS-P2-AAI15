@@ -348,7 +348,7 @@ Cody directly owns timing/window contracts, EventRecord and application/occupanc
 | F8/F15: radar and auxiliary sensors | Cody's presence/expiry and feature-contract ownership is documented | Sitt/Brendan supply radar draining/parsing; Cody agrees sensor roles with Jun Yong/Sitt |
 | D2 logging handoff | D2's provisional codec and physical synthetic-record recovery evidence are retained | Cody and Brendan/JY agree event/result mappings, publication-enqueue status and the bounded ApplicationTask log handoff; run T-23 |
 
-This baseline merge does not close F9, F10, R2, R5, the D3 hardware checklist or D2 T-23. The current µT-Kernel ApplicationTask remains a placeholder. Preserve core 1/priority 23, check stack and internal-RAM headroom, and use µT-Kernel objects for the new task glue. No D3 target timing, linked-image or core-residency pass is claimed by this merge.
+This baseline merge does not close F9, F10, R2, R5, the D3 hardware checklist or D2 T-23. Subsequent source work on 28 October replaces the µT-Kernel ApplicationTask placeholder with typed event/reset/status processing, bounded publisher requests and application benchmark samples. Its core 1/priority 23/4 KiB stack is preserved, its kernel message storage stays internal (192-byte growth in the native layout; target size reported by `TASKS`), and portable state/formatting lives in EdgeCore BSS mapped to PSRAM. Native dispatch tests cover publication failure, reset ordering and malformed input. Target build/image, core/stack/heap and queue-overflow evidence remain pending; the reviewed timing/identity/quality defects and D2 log handoff remain open. No feedback status is closed by this source port.
 
 **Decisions needed:**
 
@@ -367,6 +367,7 @@ This baseline merge does not close F9, F10, R2, R5, the D3 hardware checklist or
 
 | Date | By | Change |
 |---|---|---|
+| 2026-10-28 | Cody/Codex runtime port | Added AGENTS.md and µT-Kernel ApplicationTask event/reset/status glue with typed FIFO, nonblocking publication, portable dispatch/state and native tests. Preserved task placement/stack and SPI command dispatch. Hardware/image/resource gates, reviewed behavior findings and D2 logging remain open. |
 | 2026-10-28 | Cody/Codex baseline merge | Merged current D1/D2 `main` into `d3`; retained main's setup, measured F6 and D2 evidence, and restored Cody's D3/D6 progress and ownership as branch-specific notes. ApplicationTask migration, reviewed behavior fixes, hardware acceptance and D2 logging remain open; no feedback item is closed by this merge. |
 | 2026-10-18 | Cody/Codex implementation (historical D3) | Added portable timing/configuration, EventRecord and occupancy modules, rule-to-event submission, typed Arduino queue integration and native tests. The earlier branch recorded F9/F10/R2/R5 as partial code progress; µT-Kernel and multi-node/reset acceptance remain open. |
 | 2026-10-18 | Cody/Codex ownership drafts (historical D3) | Added the D3 execution checklist and Cody ownership/PRD documents, separating application contracts and acceptance from low-level driver, scheduler, inference and platform implementation. |

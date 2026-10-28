@@ -151,6 +151,9 @@ void runtime_alive(rt_task_t t)
 static uint32_t s_mbf_sched[MBF_BYTES(SCHED_MBF_MSGS, sizeof(sched_msg_t)) / 4];
 static uint32_t s_mbf_pub[MBF_BYTES(PUB_MBF_MSGS, sizeof(pub_msg_t)) / 4];
 static uint32_t s_mbf_infer[MBF_BYTES(INFER_MBF_MSGS, INFER_MSG_MAX) / 4];
+/* Preserve the course port's internal-RAM kernel-buffer boundary. The typed
+ * envelope adds 192 bytes over eight former 64-byte items in native tests;
+ * larger processing/formatting state stays in EdgeCore's external BSS. */
 static uint32_t s_mbf_app[MBF_BYTES(APP_MBF_MSGS, APP_MSG_MAX) / 4];
 static uint32_t s_mbf_bench[MBF_BYTES(BENCH_MBF_MSGS, sizeof(bench_msg_t)) / 4];
 
@@ -167,6 +170,13 @@ bool runtime_send(ID mbf, const void *msg, INT size)
     for (size_t i = 0; i < sizeof s_mbfs / sizeof s_mbfs[0]; i++)
         if (*s_mbfs[i].id == mbf) __atomic_add_fetch(&s_mbfs[i].dropped, 1, __ATOMIC_RELAXED);
     return false;
+}
+
+bool runtime_submit_event(const event_record_t *event)
+{
+    if (!event) return false;
+    application_message_t message = { .kind = APPLICATION_MESSAGE_EVENT, .event = *event };
+    return runtime_send(app_mbf, &message, sizeof message);
 }
 
 // ---------- MQTT handlers (task 30 registers them) ----------
@@ -312,6 +322,15 @@ static void control_task(INT stacd, void *exinf)
 
         if (strcasecmp(line, "TASKS") == 0) {   // platform commands, not part of the REPL
             runtime_print_tasks();
+        } else if (strncasecmp(line, "APP ", 4) == 0 || strcasecmp(line, "APP") == 0) {
+            application_message_t request;
+            if (!application_command_parse(line, hal_time_us(), &request)) {
+                puts("[APP] usage: APP RESET | APP STATUS | APP EVENT <id> <seq> <entry|exit|incomplete|false>");
+            } else {
+                bool queued = runtime_send(app_mbf, &request, sizeof request);
+                printf("[APP] request=%u synthetic=%u queued=%u\n", (unsigned)request.kind,
+                       request.kind == APPLICATION_MESSAGE_EVENT ? 1u : 0u, queued ? 1u : 0u);
+            }
         } else if (strcasecmp(line, "WIFISCAN") == 0) {
             mqtt_wifi_scan();
         } else if (strcasecmp(line, "WIFIDROP") == 0) {
@@ -406,12 +425,56 @@ static void inference_task(INT stacd, void *exinf)
 
 // ---------- ApplicationTask (D6 application logic) ----------
 
+static bool application_publish(const char *payload, size_t len, void *context)
+{
+    (void)context;
+    T_RFLG flags;
+    if (tk_ref_flg(net_flg, &flags) != E_OK || !(flags.flgptn & NET_MQTT_UP)) return false;
+    pub_msg_t out = { .op = PUB_PUBLISH, .qos = 1 };
+    int n = snprintf(out.topic, sizeof out.topic, "pico/%s/application/event", runtime_node_id());
+    if (n < 0 || (size_t)n >= sizeof out.topic || len >= sizeof out.payload) return false;
+    memcpy(out.payload, payload, len);
+    out.payload[len] = 0;
+    out.len = (uint16_t)len;
+    return runtime_send(pub_mbf, &out, sizeof out);
+}
+
 static void application_task(INT stacd, void *exinf)
 {
     (void)stacd; (void)exinf;
-    static uint8_t item[APP_MSG_MAX];
+    application_message_t message;
     for (;;) {
-        if (tk_rcv_mbf(app_mbf, item, TMO_FEVR) > 0) runtime_alive(RT_APPLICATION);
+        INT bytes = tk_rcv_mbf(app_mbf, &message, TMO_FEVR);
+        if (bytes <= 0) continue;
+        uint64_t started = hal_time_us();
+        runtime_alive(RT_APPLICATION);
+        application_dispatch_report_t report;
+        if (!application_dispatch_handle(&message, (size_t)bytes, started,
+                                          application_publish, NULL, &report)) {
+            printf("[APP] malformed message bytes=%d total=%u\n", (int)bytes,
+                   (unsigned)report.stats.malformed);
+            continue;
+        }
+        if (message.kind == APPLICATION_MESSAGE_EVENT) {
+            const application_result_t *r = &report.result;
+            printf("[APP] id=%u seq=%u result=%u class=%s via=%s occupancy=%ld->%ld degraded=%u reason=%s publish=%u\n",
+                   (unsigned)message.event.event_id, (unsigned)message.event.source_seq,
+                   (unsigned)r->code, event_class_name(r->decided_class),
+                   r->decision_source == APP_DECISION_ML ? "ml" :
+                   r->decision_source == APP_DECISION_RULE ? "rule" : "none",
+                   (long)r->occupancy_before, (long)r->occupancy_after,
+                   r->degraded ? 1u : 0u, r->reason ? r->reason : "-",
+                   (unsigned)report.publish_status);
+            /* D2 can add its agreed log handoff here, after publication enqueue.
+             * No flash write or provisional field mapping is introduced here. */
+            runtime_bench("application_event", (uint32_t)(hal_time_us() - started));
+        } else {
+            printf("[APP] %s occupancy=%ld processed=%u resets=%u malformed=%u publish_enqueued=%u publish_failed=%u\n",
+                   message.kind == APPLICATION_MESSAGE_RESET ? "reset" : "status",
+                   (long)report.occupancy, (unsigned)report.stats.processed,
+                   (unsigned)report.stats.resets, (unsigned)report.stats.malformed,
+                   (unsigned)report.stats.publish_enqueued, (unsigned)report.stats.publish_failed);
+        }
     }
 }
 
@@ -562,6 +625,8 @@ static void monitor_task(INT stacd, void *exinf)
 
 void runtime_print_tasks(void)
 {
+    printf("[TASK] app_message=%u B app_buffer=%u B\n",
+           (unsigned)sizeof(application_message_t), (unsigned)sizeof s_mbf_app);
     for (int t = 0; t < RT_NTASKS; t++) {
         const rt_task_def_t *d = &s_tasks[t];
         T_RTSK r;
@@ -636,6 +701,9 @@ ER runtime_start(void)
     CHECK("net_flg", flg);
     net_flg = flg;
     CHECK("inference reply buffer and mutex", inference_mtk_init());
+
+    application_dispatch_init();
+    event_record_set_sink(runtime_submit_event);
 
     // Idle tasks first, one per processor, so neither dispatcher is ever left
     // without a ready task.

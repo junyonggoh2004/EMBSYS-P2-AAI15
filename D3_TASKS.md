@@ -2,8 +2,24 @@
 
 Contract and integration owner: **Cody**  
 Implementation owners: Sitt for sensor/hardware timing, Brendan for SchedulerTask sequencing/ordering, Hasif for platform/runtime and RTOS/queue benchmarking  
-Branch: `d3`, based on `s3-port-d2`  
-Status date: 2026-10-18
+Branch: `d3`, including the current D1/D2 `main` baseline
+Status date: 2026-10-28 (runtime-port update; original checklist retained below)
+
+## 28 October: micro T-Kernel ApplicationTask port
+
+- [x] Add root `AGENTS.md` with ownership, runtime, RAM and verification boundaries.
+- [x] Replace the application message-draining placeholder with typed event/reset/status consumption; register the EventRecord sink before producers start.
+- [x] Use zero-wait message sends and existing per-buffer drop accounting; keep all occupancy/reset mutation in ApplicationTask.
+- [x] Preserve core 1, priority 23 and 4 KiB stack. Keep kernel message storage internal (192-byte growth in the native layout; verify target size with `TASKS`) and processing/formatting state in EdgeCore BSS mapped to PSRAM.
+- [x] Offer each processed result to the existing publisher, record enqueue failure independently of occupancy, and retain BenchmarkTask's SPI commands.
+- [x] Native dispatch tests cover result publication/refusal, duplicate/stale/invalid outcomes, ordered reset and malformed commands/messages. Existing policy behavior is retained, not certified as the final application contract.
+- [ ] Build on the pinned SDK, inspect the linked image and PSRAM allocation, then run 4a, 5-neg, MQTT and synthetic application smoke cases. Use `TASKS` to prove core residency, stack/heap margin and full-buffer drops.
+- [ ] Fix reviewed one-shot self-rearming, periodic timeout recovery, disabled-stream and deadline semantics; settle identity, cross-node clocks and quality validation. This task-glue port does not close those findings.
+- [ ] Agree D2 field mappings and implement its bounded log handoff; no application flash writes are introduced by this port.
+
+The original phase checkboxes below record earlier work and remaining evidence.
+The typed Arduino handoff is now also implemented in micro T-Kernel source, but
+no target/hardware checkbox is promoted on native-test evidence alone.
 
 D3 covers periodic, one-shot, event-driven and logical-sequence timing. The professor feedback makes the entrance path the acceptance case: radar presence opens an observation window, two HC-SR04 sensors are sampled in a defined order without blocking SchedulerTask or causing crosstalk, and the timing is proven under the complete workload.
 
