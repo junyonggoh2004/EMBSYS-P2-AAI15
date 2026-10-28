@@ -50,6 +50,11 @@ void timing_state_init(timing_state_t *state, const timing_config_t *config,
                        uint64_t now_us, bool arm_now);
 bool timing_state_trigger(timing_state_t *state, uint64_t now_us);
 timing_status_t timing_state_poll(timing_state_t *state, uint64_t now_us);
+/* Consume a due execution or timeout. Periodic state advances to a future
+ * anchored slot, including after timeout; non-periodic state completes.
+ * Deadlines cover lateness plus acquisition; completion at the deadline is
+ * allowed. The earlier nonzero timeout/window bound applies. No driver is
+ * preempted; the caller must suppress a sample that completes too late. */
 void timing_state_complete(timing_state_t *state, uint64_t now_us);
 uint32_t timing_state_wait_ms(const timing_state_t *state, uint64_t now_us,
                               uint32_t maximum_ms);

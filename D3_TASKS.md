@@ -14,12 +14,24 @@ Status date: 2026-10-28 (runtime-port update; original checklist retained below)
 - [x] Offer each processed result to the existing publisher, record enqueue failure independently of occupancy, and retain BenchmarkTask's SPI commands.
 - [x] Native dispatch tests cover result publication/refusal, duplicate/stale/invalid outcomes, ordered reset and malformed commands/messages. Existing policy behavior is retained, not certified as the final application contract.
 - [ ] Build on the pinned SDK, inspect the linked image and PSRAM allocation, then run 4a, 5-neg, MQTT and synthetic application smoke cases. Use `TASKS` to prove core residency, stack/heap margin and full-buffer drops.
-- [ ] Fix reviewed one-shot self-rearming, periodic timeout recovery, disabled-stream and deadline semantics; settle identity, cross-node clocks and quality validation. This task-glue port does not close those findings.
+- [x] Fix reviewed one-shot self-rearming, periodic timeout recovery, disabled-stream and deadline semantics in the shared C implementation; retain native regression evidence (see the timing update below).
+- [ ] Settle identity, cross-node clocks and quality validation. The task-glue and timing fixes do not close those application-contract findings.
 - [ ] Agree D2 field mappings and implement its bounded log handoff; no application flash writes are introduced by this port.
 
 The original phase checkboxes below record earlier work and remaining evidence.
 The typed Arduino handoff is now also implemented in micro T-Kernel source, but
 no target/hardware checkbox is promoted on native-test evidence alone.
+
+## 28 October: shared timing correctness update
+
+- [x] Keep timing behavior in EdgeCore and platform/kernel objects below the HAL boundary. Pico's manifest lists the shared modules; the IDF build discovers them with `CONFIGURE_DEPENDS`.
+- [x] Separate explicit `TRIGGER` from completed-sample notifications. Automatic handoff arms only another event-driven sensor with a matching `timing.trigger_source`; a one-shot cannot rearm itself by publishing.
+- [x] Consume a periodic timeout by advancing to the next future anchored slot, without a catch-up burst. Non-periodic timeouts complete until explicitly triggered again.
+- [x] Honor `timing.enabled=0` for stream startup, polling and scheduler wakeups.
+- [x] Apply the earlier applicable nonzero timeout/window bound to lateness plus acquisition. Completion exactly at the deadline is accepted; a late synchronous response is discarded before rule/publication/source-handoff processing. This reports a timeout; it cannot cancel or shorten a blocking driver call.
+- [x] Validate timing before hardware installation and reset the RUN-edge state on scheduler clear.
+- [x] Add native integration tests linking the real scheduler, timing state and output publisher with mocked hardware/network/rule consumers. Cover one-shot rearm, periodic recovery/skip-ahead, event-source handoff, deadline boundaries, invalid config, disabled streams and clear/reconfigure.
+- [ ] Run these behaviors on the pinned Pico/S3 toolchains and active micro T-Kernel board, then measure the full entrance workload. The 50 ms interpretation, asynchronous sonar capture, crosstalk, skipped/deadline metrics and hardware acceptance remain open with their owners.
 
 D3 covers periodic, one-shot, event-driven and logical-sequence timing. The professor feedback makes the entrance path the acceptance case: radar presence opens an observation window, two HC-SR04 sensors are sampled in a defined order without blocking SchedulerTask or causing crosstalk, and the timing is proven under the complete workload.
 

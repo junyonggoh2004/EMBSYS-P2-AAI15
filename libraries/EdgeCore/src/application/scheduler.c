@@ -36,6 +36,7 @@ typedef struct {
 } active_sensor_t;
 
 static active_sensor_t g_sensors[MAX_ACTIVE];
+static bool s_prev_running;
 
 /* Map enum -> name used by bus_lookup */
 static inline const char* proto_name(proto_t p) {
@@ -70,6 +71,7 @@ void scheduler_reset(void) {
         }
     }
     memset(g_sensors, 0, sizeof(g_sensors));
+    s_prev_running = false;
     SLOG("reset: cleared %d slots", (int)MAX_ACTIVE);
 }
 void scheduler_dump(void) {
@@ -97,6 +99,11 @@ void scheduler_dump(void) {
 }
 /* Add one config block as a new active sensor */
 int scheduler_add_config(const app_cfg_t *cfg_in) {
+    const char *timing_error = NULL;
+    if (!cfg_in || !timing_config_validate(&cfg_in->timing, &timing_error)) {
+        printf("[SCHED] invalid timing: %s\n", timing_error ? timing_error : "null config");
+        return -5;
+    }
     if (cfg_in->cfg_error[0]) {
         printf("[SCHED] config %s refused: %s\n", cfg_in->name, cfg_in->cfg_error);
         return -5;
@@ -219,7 +226,7 @@ void scheduler_apply_config(const app_cfg_t *cfg) {
     (void)scheduler_add_config(cfg);
 }
 
-int scheduler_trigger(const char *source, uint64_t timestamp_us) {
+static int trigger_matching(const char *source, uint64_t timestamp_us, bool automatic) {
     if (!source || !*source) return 0;
     int armed = 0;
     for (int i = 0; i < MAX_ACTIVE; i++) {
@@ -228,13 +235,24 @@ int scheduler_trigger(const char *source, uint64_t timestamp_us) {
         bool matches_name = strcmp(source, S->cfg_copy.name) == 0;
         bool matches_source = S->cfg_copy.timing_trigger_source[0] &&
                               strcmp(source, S->cfg_copy.timing_trigger_source) == 0;
-        if ((matches_name || matches_source) && timing_state_trigger(&S->timing, timestamp_us)) {
+        bool matches = automatic ? (S->cfg_copy.timing.mode == TIMING_MODE_EVENT_DRIVEN &&
+                                     matches_source && !matches_name) :
+                                    (matches_name || matches_source);
+        if (matches && timing_state_trigger(&S->timing, timestamp_us)) {
             armed++;
             SLOG("trigger[%d/%s]: source=%s deadline=%llu", i, S->cfg_copy.name, source,
                  (unsigned long long)S->timing.deadline_us);
         }
     }
     return armed;
+}
+
+int scheduler_trigger(const char *source, uint64_t timestamp_us) {
+    return trigger_matching(source, timestamp_us, false);
+}
+
+int scheduler_on_sample(const char *source, uint64_t timestamp_us) {
+    return trigger_matching(source, timestamp_us, true);
 }
 
 /* Tick all sensors */
@@ -251,7 +269,6 @@ void scheduler_run_all(bool running) {
         }
     }
 
-    static bool s_prev_running = false;
     if (running && !s_prev_running) {
         uint64_t now_edge = hal_time_us();
         for (int j = 0; j < MAX_ACTIVE; j++) if (g_sensors[j].in_use) {
@@ -271,14 +288,15 @@ void scheduler_run_all(bool running) {
         if (!S->in_use || !S->bus) continue;
 
         const app_cfg_t *cfg = &S->cfg_copy;
+        bool active = running && cfg->timing.enabled;
 
         // Stream transitions
         if (cfg->mode == sample_mode_stream) {
-            if (running && !S->streaming) {
+            if (active && !S->streaming) {
                 SLOG("stream[%d/%s]: START", i, cfg->name);
                 if (S->bus->stream_start) S->bus->stream_start(S->ctx);
                 S->streaming = true;
-            } else if (!running && S->streaming) {
+            } else if (!active && S->streaming) {
                 SLOG("stream[%d/%s]: STOP", i, cfg->name);
                 if (S->bus->stream_stop) S->bus->stream_stop(S->ctx);
                 S->streaming = false;
@@ -289,18 +307,19 @@ void scheduler_run_all(bool running) {
             S->streaming = false;
         }
 
-        if (!running) continue;
+        if (!active) continue;
 
         int n = 0;                 // neutral (no error unless we polled)
         bool did_poll = false;
 
 if (cfg->mode == sample_mode_poll) {
+    now = hal_time_us(); /* prior sensor publication may have armed this one */
     timing_status_t timing_status = timing_state_poll(&S->timing, now);
     if (timing_status == TIMING_STATUS_TIMEOUT) {
         printf("[TIMING] sensor=%s status=timeout armed_us=%llu deadline_us=%llu\n",
                cfg->name, (unsigned long long)S->timing.armed_us,
                (unsigned long long)S->timing.deadline_us);
-        S->timing.status = TIMING_STATUS_COMPLETE;
+        timing_state_complete(&S->timing, now);
     } else if (timing_status == TIMING_STATUS_DUE) {
         int64_t dt_us = (int64_t)(S->timing.due_us - now); // due - now
         // More than one period late means at least one sample was skipped:
@@ -320,6 +339,11 @@ if (cfg->mode == sample_mode_poll) {
         did_poll = true;
         n = S->bus->poll_once ? S->bus->poll_once(S->ctx, buf, sizeof(buf)) : -1;
         now = hal_time_us();
+        if (timing_state_poll(&S->timing, now) == TIMING_STATUS_TIMEOUT) {
+            printf("[TIMING] sensor=%s status=timeout phase=acquisition deadline_us=%llu\n",
+                   cfg->name, (unsigned long long)S->timing.deadline_us);
+            n = 0; /* a complete but late response is not a valid sample */
+        }
         timing_state_complete(&S->timing, now);
     }
 }
@@ -361,7 +385,7 @@ uint32_t scheduler_next_due_ms(bool running, uint32_t max_ms) {
     uint32_t wait = max_ms;
     for (int i = 0; i < MAX_ACTIVE; i++) {
         const active_sensor_t *S = &g_sensors[i];
-        if (!S->in_use || !S->bus) continue;
+        if (!S->in_use || !S->bus || !S->cfg_copy.timing.enabled) continue;
         if (S->cfg_copy.mode == sample_mode_stream) {
             if (wait > 10) wait = 10;
             continue;

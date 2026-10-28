@@ -158,7 +158,9 @@ mosquitto_pub -h <IP_ADDRESS> -t "pico/<Node_Number>/config" -m "BEGINCFG|name=G
 | | `gpio.trig_us` | How long to hold trigger pin to initiate reading (microseconds) | `gpio.trig_us=10` |
 | | `gpio.pulse_timeout_us` | Timeout (microseconds) | `gpio.pulse_timeout_us=25000` |
 
-Periodic sensors fire immediately when `RUN` starts, then skip missed periods rather than replaying a burst. A one-shot sensor fires once on `RUN` and may be re-armed with `TRIGGER <sensor-name>`. An event-driven sensor remains idle until a completed sample from `timing.trigger_source` arrives, or until the same `TRIGGER` command is used. One-shot and event-driven timing require `mode=poll`. Invalid fields reject the new block before it is installed.
+Periodic sensors fire immediately when `RUN` starts, then skip missed periods rather than replaying a burst; a missed timeout advances to a future slot instead of disabling the sensor. A one-shot sensor fires once on `RUN` and may be re-armed with `TRIGGER <sensor-name>`. An event-driven sensor remains idle until a completed sample from another sensor matching `timing.trigger_source` arrives, or until an explicit `TRIGGER` command is used. Publishing a sensor's own sample cannot automatically rearm it. One-shot and event-driven timing require `mode=poll`. `timing.enabled=0` disables streaming as well as polling. Invalid fields reject the new block before it is installed.
+
+The configured timeout bounds lateness plus acquisition. For non-periodic work, the earlier applicable nonzero timeout/window bound wins; a zero timeout leaves the window bound in force. Completion exactly on the deadline is allowed. If a synchronous bus read finishes late, its bytes are discarded before rules, MQTT and source handoff run. This does not preempt the driver: acquisition can still hold SchedulerTask until the driver's own timeout. The asynchronous two-sonar capture/guard design and the final entrance timing budget remain separate D3 acceptance work.
 
 Example logical hand-off from radar to a bounded observation:
 

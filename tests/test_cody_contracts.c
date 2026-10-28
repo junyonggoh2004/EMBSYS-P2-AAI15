@@ -56,6 +56,31 @@ static void test_timing(void) {
     assert(timing_state_trigger(&s, 3000000));
     assert(!timing_state_trigger(&s, 3000001));
     assert(timing_state_poll(&s, 3000000) == TIMING_STATUS_DUE);
+    assert(s.deadline_us == 3020000); /* timeout 20ms wins over 50ms window */
+    assert(timing_state_poll(&s, 3020000) == TIMING_STATUS_DUE);
+    assert(timing_state_poll(&s, 3020001) == TIMING_STATUS_TIMEOUT);
+    assert(s.timeouts == 1);
+    assert(timing_state_poll(&s, 3020002) == TIMING_STATUS_TIMEOUT);
+    assert(s.timeouts == 1); /* only count the transition once */
+    timing_state_complete(&s, 3020002);
+    assert(s.status == TIMING_STATUS_COMPLETE && s.executions == 0);
+    assert(timing_state_trigger(&s, 4000000));
+    assert(timing_state_poll(&s, 4000000) == TIMING_STATUS_DUE);
+    timing_state_complete(&s, 4020000);
+    assert(s.status == TIMING_STATUS_COMPLETE && s.executions == 1);
+
+    driven.timeout_ms = 0;
+    timing_state_init(&s, &driven, 0, false);
+    assert(timing_state_trigger(&s, 5000000));
+    assert(s.deadline_us == 5050000); /* window-only bound */
+
+    periodic.interval_ms = 0;
+    assert(!timing_config_validate(&periodic, &reason));
+    timing_state_init(&s, &periodic, 6000000, true);
+    assert(s.status == TIMING_STATUS_DISABLED);
+    assert(!timing_state_trigger(&s, 6000000));
+    timing_state_complete(&s, 6000000); /* no divide by zero on invalid state */
+    assert(s.status == TIMING_STATUS_DISABLED);
 }
 
 static void test_application(void) {

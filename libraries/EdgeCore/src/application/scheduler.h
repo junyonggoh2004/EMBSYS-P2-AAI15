@@ -46,6 +46,11 @@ uint32_t scheduler_next_due_ms(bool running, uint32_t max_ms);
  * or timing.trigger_source. Returns the number newly armed. */
 int scheduler_trigger(const char *source, uint64_t timestamp_us);
 
+/* Completed samples arm only other event-driven sensors whose explicit
+ * timing.trigger_source matches. Unlike TRIGGER this cannot rearm a one-shot
+ * by its own sensor name or retrigger the publishing sensor itself. */
+int scheduler_on_sample(const char *source, uint64_t timestamp_us);
+
 // ---------------------------------------------------------------------
 // Compatibility shim for legacy single-sensor mode
 // (only define this if app.h already declares scheduler_run_step)

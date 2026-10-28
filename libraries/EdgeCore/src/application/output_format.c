@@ -10,6 +10,7 @@ void output_emit_hex(const app_cfg_t *cfg,
                      const char *src_str,
                      const uint8_t *buf, int n)
 {
+    (void)cfg;
     if (!proto_str) proto_str = "";
     if (!src_str)   src_str   = "";
     if (!buf || n <= 0) return;
@@ -26,7 +27,7 @@ void output_emit_hex(const app_cfg_t *cfg,
 
     // A completed source sample is also a logical timing event. This arms any
     // event-driven sensor configured with timing.trigger_source=<src_str>.
-    (void)scheduler_trigger(src_str, hal_time_us());
+    (void)scheduler_on_sample(src_str, hal_time_us());
 
     // 3) MQTT: raw bytes (binary payload)
     (void)mqtt_pub_bytes(src_str, buf, (size_t)n, /*qos*/1, /*retain*/false);
