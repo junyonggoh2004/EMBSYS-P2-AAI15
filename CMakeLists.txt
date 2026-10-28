@@ -63,6 +63,7 @@ add_executable(project_v3
     ${EDGECORE}/bus/uart.c
     ${EDGECORE}/bus/gpio.c
     ${EDGECORE}/bus/spi.c
+    ${EDGECORE}/flash/w25q32.c
 
     ${EDGECORE}/rule_engine/rules.c
     ${EDGECORE}/rule_engine/rule_expr.c

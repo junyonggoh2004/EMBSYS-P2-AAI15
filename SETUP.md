@@ -1,6 +1,6 @@
 # Pico Reference and ESP32-S3 Arduino Setup
 
-Sections 0–13 are the complete guide for getting the existing Pico reference firmware running on your own hardware, from an empty machine to a board that is confirmed working. They cover what to install, wire, build, flash and verify. The separate ESP32-S3 Arduino setup plan follows section 13.
+Sections 0–13 are the complete guide for getting the existing Pico reference firmware running on your own hardware, from an empty machine to a board that is confirmed working. They cover what to install, wire, build, flash and verify. The separate ESP32-S3 Arduino setup plan follows section 13. Since Tribunal 1 the D1 firmware on the ESP32-S3 runs on µT-Kernel 3 SMP: its setup is the last section, [ESP32-S3 on µT-Kernel 3 SMP](#esp32-s3-on-µt-kernel-3-smp-tasks-2534). The ESP32-S3 Arduino sections remain for the FreeRTOS baseline build and the D2 SPI work.
 
 The Pico procedure was verified end to end on macOS (Apple Silicon) on 2026-09-18. Windows and Linux notes are marked wherever a step differs. The minimal ESP32-S3 Arduino sketch was verified on one physical board on 2026-10-13; broader board integration remains pending.
 
@@ -407,9 +407,9 @@ Test only: GPIO1↔GPIO2 (UART loopback, I2C removed), GPIO5↔GPIO6 (GPIO loopb
 
 Configs for each device are in the README sensor table. Verified so far on this board: GY-511 (`4c-mag`), loopback UART, GPIO and PWM; the HC-SR04 and radar need the divider and the radar module respectively.
 
-### D2 SPI planning note
+### D2 SPI pins
 
-D2's verified loopback fixture uses SPI2/FSPI with SCLK GPIO11, MOSI GPIO12, MISO GPIO13, and CS GPIO10; connect GPIO12 directly to GPIO13 only for loopback and leave the TFT disconnected. The proposed W25Q32 fixture uses the same four signals plus 3.3 V and GND, but its module markings and power requirements must be checked before wiring. The earlier TFT experiment used SCLK GPIO12, MOSI GPIO11, CS GPIO10, DC GPIO9, reset GPIO8, and backlight GPIO13; it is a different, optional fixture and cannot coexist with the loopback/MISO wiring. Keep GPIO19/20 for native USB, keep boot/strapping pins available, and do not use flash/PSRAM-connected pins. Follow [D2_SPI_TODO.md](D2_SPI_TODO.md) for validation, fault, benchmark, and evidence gates.
+D2's verified loopback fixture uses SPI2/FSPI with SCLK GPIO11, MOSI GPIO12, MISO GPIO13, and CS GPIO10; connect GPIO12 directly to GPIO13 only for loopback and leave the TFT disconnected. The W25Q32 fixture uses the same four signals plus 3.3 V and GND; it was traced and verified on the µT-Kernel build on 25 October (JEDEC `EF4016`), and its tests are in [D2 SPI checks on µT-Kernel](#d2-spi-checks-on-µt-kernel). The loopback jumper and the module are never connected at the same time. The earlier TFT experiment used SCLK GPIO12, MOSI GPIO11, CS GPIO10, DC GPIO9, reset GPIO8, and backlight GPIO13; it is a different, optional fixture and cannot coexist with the loopback/MISO wiring. Keep GPIO19/20 for native USB, keep boot/strapping pins available, and do not use flash/PSRAM-connected pins. Follow [D2_SPI_TODO.md](D2_SPI_TODO.md) for validation, fault, benchmark, and evidence gates.
 
 ### Compile, upload and monitor the minimal sketch (Task 9)
 
@@ -512,3 +512,83 @@ sh tools/s3.sh test 4a && sh tools/s3.sh test 4b && sh tools/s3.sh test 4c-uart
 ```
 
 The clean-clone part was run on 2026-10-14 from `s3-port` before the merge (see the task 7 clean install). Task 23 is done when the team merges, tags, and repeats these commands on the tag.
+
+## ESP32-S3 on µT-Kernel 3 SMP (tasks 25–34)
+
+Since Tribunal 1 the D1 firmware runs on the course µT-Kernel 3 SMP port instead of Arduino-ESP32 and FreeRTOS ([MTK_REDESIGN.md](MTK_REDESIGN.md)). The project is [`esp32s3_mtk/`](esp32s3_mtk/), a native ESP-IDF project; the Arduino build above stays as the FreeRTOS baseline. D2's SPI runs on this build as well ([D2 SPI checks on µT-Kernel](#d2-spi-checks-on-µt-kernel)).
+
+### Pinned versions (task 25)
+
+| Item | Version | Why pinned |
+|---|---|---|
+| Course port `sirfonzie/mtk3smp-esp32s3` | commit `e92874d` (submodule `esp32s3_mtk/third_party/mtk3smp-esp32s3`, unmodified) | The course port named in the change requirement |
+| ESP-IDF | `v6.1-dev-2300-g17a74c925c` (commit `17a74c925c`) | The exact revision the port is qualified on; it replaces IDF's FreeRTOS scheduler, so another revision would need its qualification rerun |
+| Compiler | `xtensa-esp-elf-gcc 15.2.0` (`esp-15.2.0_20251204`), installed by IDF's `install.sh` | Same reason |
+| esp-mqtt | `espressif/mqtt` 1.1.0, locked in `esp32s3_mtk/dependencies.lock` | esp-mqtt left IDF for the component registry in v6 |
+| TFLite Micro | `espressif/esp-tflite-micro` 1.4.0, locked in the same file | The release Arduino-ESP32 3.3.12 bundles, so inference compares like for like with the FreeRTOS build |
+
+`sh tools/mtk.sh setup` clones ESP-IDF into `~/esp/esp-idf-v6.1` (set `IDF_DIR` to change it), checks out the pinned commit and its submodules, installs the toolchain for the ESP32-S3, creates the Python test environment and copies the credentials template. `sh tools/mtk.sh check` prints the three pinned versions, refuses a mismatch, and builds the firmware.
+
+```sh
+git submodule update --init esp32s3_mtk/third_party/mtk3smp-esp32s3
+sh tools/mtk.sh setup        # once, about 15 minutes and 2 GB
+sh tools/mtk.sh check        # course port, ESP-IDF and compiler versions, then a build
+sh tools/mtk.sh flash        # build and flash over the board's USB-C port
+sh tools/mtk.sh monitor      # console: type HELP, TASKS or a config line (Ctrl+C to leave)
+```
+
+Wi-Fi settings go in `esp32s3_mtk/main/wifi_credentials.h` (copy the `.example`; gitignored), with the same fields as the Arduino build. `MQTT_HOST` is compiled in, so after the laptop changes network (a different hotspot or router gives it a new IP address) put the new address there and flash again.
+
+### Testing on µT-Kernel (tasks 27–32)
+
+The parity scripts are the same as for the Arduino build; `tools/mtk.sh` passes them the board and writes the logs to `parity/logs/mtk/`. Results are in [PARITY.md §4](parity/PARITY.md).
+
+```sh
+sh tools/mtk.sh haltest                  # HAL test firmware, then the normal firmware is flashed back
+sh tools/mtk.sh test 4a                  # any wiring-free stage: 4a, 5-neg, t03, t04, t06, t10
+sh tools/mtk.sh compare 4a               # the Pico's and this build's output for the stage
+sh tools/mtk.sh mqtt <laptop-ip>         # also: model, flood, endurance
+MOSQ_CONF=~/mosq.conf sh tools/mtk.sh faults <laptop-ip>
+sh tools/mtk.sh timing                   # NFR1
+sh tools/mtk.sh wcet                     # SchedulerTask cycle time
+sh tools/mtk.sh purity                   # no FreeRTOS, Arduino or esp_driver_* use in our code, then the image check
+sh tools/mtk.sh image                    # the built firmware links no FreeRTOS kernel code
+```
+
+For the broker-loss part of `faults`, start Mosquitto as `/opt/homebrew/sbin/mosquitto -c ~/mosq.conf -v` (the test stops and restarts it by that name) and set `MOSQ_CONF`; without it the other eight checks still run. Keep the laptop awake and its lid open during `endurance` (30 minutes): on battery, a closed lid puts the Mac to sleep, the test stops reading the board and the broker goes offline. If `flash` reports "No serial data received" or "TX path seems down", `mtk.sh` resets the board and retries once by itself. When a board goes back from the µT-Kernel build to the Arduino build, erase the flash first (`idf.py -C esp32s3_mtk -p <port> erase-flash` after `. ~/esp/esp-idf-v6.1/export.sh`): the µT-Kernel `model` partition overlaps the Arduino build's LittleFS partition, and a stored model would sit inside the Arduino file system. The other direction needs nothing, because the µT-Kernel model store ignores any slot without its CRC-checked header.
+
+Two behaviours of the course port affect testing (MTK_REDESIGN.md §8 and §10): its radio sometimes stops receiving for a minute or more, including right after a reset, so a network test that runs during such a window fails until the link returns; and the port's kernel and shim must run from IRAM for flash writes to be safe, which `components/edge_mtk/port_iram.lf` arranges.
+
+### Hardware checks on µT-Kernel (jumpers and sensors)
+
+These stages need wires or sensors. Rows 8 to 10 (GY-511 and HC-SR04) passed on 2026-10-21; the others are the ones PARITY.md §4 still lists as hardware pending. Do them in this order, which needs the fewest wiring changes. Unplug the USB cable before changing any wire, close any open monitor before a test, and run each command from the repository root. Pin positions on the board are in the [pinout](README.md#board-pinout); the sensor wiring is the same as for the Arduino build ([README Part E](README.md#part-e-real-sensors)).
+
+| # | Wiring | Command | Pass |
+|---|---|---|---|
+| 1 | MH light sensor: VCC to 3V3, GND to GND, DO to GPIO1. During the run, cover the sensor with your hand and uncover it a few times | `sh tools/mtk.sh test 4d-ir` | `7/7 passed` |
+| 2 | Add a jumper wire from GPIO5 to GPIO6 (the light sensor can stay) | `sh tools/mtk.sh haltest` | `32/32 passed` and no `SKIP` line |
+| 3 | Same jumper | `sh tools/mtk.sh test 4b` | `25/25 passed` |
+| 4 | Same jumper | `sh tools/mtk.sh test t02` | `7/7 passed` |
+| 5 | Remove the light sensor and the GPIO5–GPIO6 jumper; add a jumper from GPIO1 to GPIO2 | `sh tools/mtk.sh test 4c-uart` | `8/8 passed` |
+| 6 | Same jumper | `sh tools/mtk.sh test t08` | `26/26 passed` |
+| 7 | Same jumper | `sh tools/mtk.sh test t09` | `5/5 passed` |
+| 8 | Remove the jumper. GY-511: VIN to 3V3, GND to GND, SDA to GPIO1, SCL to GPIO2. To watch it first: `sh tools/mtk.sh live mag` (identity `H43`, total acceleration about 1 g, heading changing as you turn it flat, away from the laptop) | `sh tools/mtk.sh test 4c-mag` | `15/15 passed` |
+| 9 | Remove the GY-511. HC-SR04, 3 V module as in the kit: VCC to 3V3, GND to GND, Trig to GPIO1, Echo to GPIO2, wired straight (a 5 V module needs VCC to 5V and Echo through a divider: Echo to one resistor to GPIO2, GPIO2 to two resistors in series to GND, three equal resistors of 1 to 10 kΩ). Move your hand towards and away from it during the run. To watch it first: `sh tools/mtk.sh live sonic` (distance in cm following your hand) | `sh tools/mtk.sh test 4c-sonic` | `4/4 passed` |
+| 10 | Same wiring; move an object in and out of 30 cm | `sh tools/mtk.sh test sonic-rule` | `7/7 passed` |
+
+Each run writes `parity/logs/mtk/<stage>.log`. A stage that fails prints the step and what it expected; keep the log. Never connect a 5 V HC-SR04's Echo straight to a GPIO: it outputs 5 V and the ESP32-S3's pins take 3.3 V at most. The 3 V module's Echo is 3.3 V and goes straight to the pin.
+
+### D2 SPI checks on µT-Kernel
+
+D2 (Brendan and Jy) added SPI to this build: the SPI2 register-level HAL in `hal_mtk.c`, the W25Q32 device layer and a provisional event-log codec in `libraries/EdgeCore/src/flash/`, and console commands that BenchmarkTask runs. The checks use one of two fixtures; unplug the USB cable before changing them and never connect both. SPI uses only GPIO10 to GPIO13, so nothing else has to be removed. Console commands are typed in `sh tools/mtk.sh monitor`. Brendan's results and logs are in [D2_SPI_TODO.md](D2_SPI_TODO.md) and [`parity/logs/mtk/d2-spi/`](parity/logs/mtk/d2-spi/).
+
+| # | Wiring | Command | Pass |
+|---|---|---|---|
+| 1 | None (runs on the laptop) | `sh tools/d2_host_test.sh` | `w25q32/log mock: PASS (device faults, codec, CRC, recovery, torn slot, full log)` |
+| 2 | A jumper wire from GPIO12 to GPIO13 | `sh tools/mtk.sh spi` | `22/22 passed` |
+| 3 | Same jumper | `sh tools/mtk.sh spi-fault` | `6/6 passed` |
+| 4 | Same jumper | `sh tools/mtk.sh spi-bench 0 10000000`, and the same with `1 10000000`, `2 10000000`, `0 20000000` and `3 20000000` for the five recorded configurations | `PASS:` followed by the report path under `parity/logs/mtk/d2-spi/` (about 30 s each) |
+| 5 | Remove the jumper; nothing on GPIO10 to GPIO13 | console: `SPICHECK EF4016` | `[SPICHECK] ERROR probe=-9 ...`: a missing module is reported as absent (`HAL_ERR_ABSENT`), never as data |
+| 6 | W25Q32 module: VCC to 3V3, GND to GND, CS to GPIO10, CLK to GPIO11, DI to GPIO12, DO to GPIO13 | console: `SPIID`, `SPICHECK EF4016`, `SPISCAN EF4016` | `[SPIID] raw=EF4016`, `[SPICHECK] PASS read-only ...`, and `[SPISCAN] BLANK` on an unused module (`NONBLANK` on Brendan's, which holds the test data below) |
+
+All six are read-only on the module. `SPIPROGRAM EF4016` and `SPILOGWRITE EF4016 3FF100` are one-time writes that Brendan ran on his module on 25 and 26 October: the device layer refuses to program anything that is not blank, so on his module they only report an error, and on another module they must not be run until a scratch address has been agreed with him. `SPIVERIFY EF4016` and `SPILOGVERIFY` re-read that test data without writing.

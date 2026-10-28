@@ -4,8 +4,8 @@ This file is the single record of the professor's feedback on the Week 6 design 
 
 | | |
 |---|---|
-| Tracker branch | `s3-port-d2` (the team's working branch; D1 is also merged into `main`) |
-| Last updated | 2026-10-18, by Hasif |
+| Tracker branch | `d3`, incorporating the current D1/D2 baseline from `main` |
+| Last updated | 2026-10-28, D3 baseline merge and branch-specific progress restored; D1/D2 evidence retained |
 | Feedback received | After the Week 6 design review submission (before 2026-10-18) |
 | Reviewed document | Week 6 Design Review "P2-AAI15", local copy `ESP_P2_AAI15 (2).pdf` |
 | Next event | Tribunal 1, Monday 2026-10-19 (see section 1) |
@@ -25,11 +25,11 @@ This file is the single record of the professor's feedback on the Week 6 design 
 | D5 | Benchmarking programme (B1–B6) | Hasif, Sitt |
 | D6 | End-to-end use case: people-flow and occupancy monitoring at an entrance | Whole team |
 
-**Sub-module owners named in the Week 6 review**, which the Tribunal asks each member to speak for: Hasif, ESP32-S3 platform, HAL, ControlTask, MQTTTask and the rule engine; Sitt, sensor drivers (GPIO, I²C, UART, SPI) and the bus mutexes; Brendan, SchedulerTask configuration, validation and timing, and MonitorTask; Jun Yong, InferenceTask, model storage and inference; Cody, ApplicationTask, BenchmarkTask-facing integration, integration acceptance and validation. This historical label does not assign Cody every low-level benchmark implementation; the authoritative boundary is stated in section 14.
+**Sub-module owners in the Week 6 review**, which the Tribunal asks each member to speak for: Hasif, ESP32-S3 platform, HAL, ControlTask, MQTTTask and the rule engine; Sitt, sensor drivers (GPIO, I²C, UART, SPI) and the bus mutexes; Brendan, SchedulerTask configuration, validation and timing, and MonitorTask; Jun Yong, InferenceTask, model storage and inference; Cody, ApplicationTask, BenchmarkTask, integration and validation.
 
 **Tribunal 1** (prof's email): Monday 2026-10-19 on Zoom at 11:00; a 15-minute brief on a requirement change, then a 90-minute recorded group discussion of its impact on resources, memory, processing time, hardware constraints and module dependencies, in which every member explains their own sub-module. Documents (.doc or .pdf): `[Group ID]_PreTri1` before 11:00, `[Group ID]_ImmTri1` by 13:10, `[Group ID]_PostTri1` by 2026-10-23 23:59; the recording is uploaded as soon as possible. This tracker is the source for the feedback-related parts of those documents. Confirm whether the group ID is `AAI15` or `P2-AAI15`.
 
-**Where the evidence lives.** D1 results: [parity/PARITY.md §3](parity/PARITY.md#3-esp32-s3-results-tasks-13-to-21) and `parity/logs/s3/`. Board and wiring: [SETUP.md](SETUP.md). Pico-to-S3 changes and defects D-01 to D-15: [PORTABILITY.md](PORTABILITY.md). D2 work: [D2_SPI_TODO.md](D2_SPI_TODO.md), [D2_SPI_DESIGN_NOTES.md](D2_SPI_DESIGN_NOTES.md), [D2_EVENT_RECORD_DESIGN.md](D2_EVENT_RECORD_DESIGN.md), `parity/logs/d2-spi/`.
+**Where the evidence lives.** D1 results: [parity/PARITY.md §3](parity/PARITY.md#3-esp32-s3-results-tasks-13-to-21) and `parity/logs/s3/` for the Arduino/FreeRTOS build, and [§4](parity/PARITY.md#4-esp32-s3-on-µt-kernel-3-smp-tasks-24-to-34) and `parity/logs/mtk/` for the µT-Kernel 3 SMP build required since Tribunal 1 ([MTK_REDESIGN.md](MTK_REDESIGN.md)). Board and wiring: [SETUP.md](SETUP.md). Pico-to-S3 changes and defects D-01 to D-15: [PORTABILITY.md](PORTABILITY.md). D2 work: [D2_SPI_TODO.md](D2_SPI_TODO.md), [D2_SPI_DESIGN_NOTES.md](D2_SPI_DESIGN_NOTES.md), [D2_EVENT_RECORD_DESIGN.md](D2_EVENT_RECORD_DESIGN.md), `parity/logs/d2-spi/`.
 
 ## 2. The feedback, word for word
 
@@ -72,29 +72,29 @@ This file is the single record of the professor's feedback on the Week 6 design 
 | F1 | Requirements testable; three-node design reasonable | none | none | ✅ | [F1](#f1-requirements-and-architecture-praise) |
 | F2 | Pin selection sound | none | none | ✅ | [F2](#f2-pin-selection-praise) |
 | F3 | Artefacts contradict each other | D1 | Hasif | ✅ | [F3](#f3-contradictions-between-artefacts) |
-| F4 | Own wiring diagram per node | D6, D2 | Cody (integration), Sitt, Brendan | 🟡 | [F4](#f4-wiring-diagram-per-node) |
-| F5 | Echo-timing method; no blocking wait | D3 | Cody (contract), Sitt/Hasif (implementation) | ❌ | [F5](#f5-echo-timing-method) |
-| F6 | Measure SchedulerTask WCET | D3, D5 | Cody (acceptance), Hasif/Sitt (measurement) | 🟡 | [F6](#f6-schedulertask-wcet) |
-| F7 | HC-SR04 trigger order and spacing | D3 | Cody (contract), Brendan/Sitt (implementation) | ❌ | [F7](#f7-hc-sr04-trigger-order-and-spacing) |
-| F8 | LD2450 UART drain, buffer, presence | D6 | Cody (contract), Sitt/Brendan | ❌ | [F8](#f8-ld2450-uart-handling) |
-| F9 | One observation-window owner; event record with ID | D6 | Cody (lead), Brendan/Hasif | 🟡 | [F9](#f9-observation-window-owner-and-event-record) |
-| F10 | Event IDs, de-duplication, occupancy after reset | D6 | Cody (lead), Hasif/Brendan | 🟡 | [F10](#f10-event-ids-de-duplication-and-occupancy-persistence) |
+| F4 | Own wiring diagram per node | D6, D2 | Team, Brendan | 🟡 | [F4](#f4-wiring-diagram-per-node) |
+| F5 | Echo-timing method; no blocking wait | D3 | Cody | ❌ | [F5](#f5-echo-timing-method) |
+| F6 | Measure SchedulerTask WCET | D3, D5 | Cody, Hasif | ✅ | [F6](#f6-schedulertask-wcet) |
+| F7 | HC-SR04 trigger order and spacing | D3 | Cody | ❌ | [F7](#f7-hc-sr04-trigger-order-and-spacing) |
+| F8 | LD2450 UART drain, buffer, presence | D6 | Team | ❌ | [F8](#f8-ld2450-uart-handling) |
+| F9 | One observation-window owner; event record with ID | D6 | Team | ❌ | [F9](#f9-observation-window-owner-and-event-record) |
+| F10 | Event IDs, de-duplication, occupancy after reset | D6 | Team | ❌ | [F10](#f10-event-ids-de-duplication-and-occupancy-persistence) |
 | F11 | Separate model upload from inference; chunk protocol | D4 | Brendan, Jun Yong | 🟡 | [F11](#f11-model-upload-separation-and-chunk-protocol) |
 | F12 | MQTT topics, payloads, commands, validation | D1 | Hasif | ✅ | [F12](#f12-mqtt-interface-and-validation) |
 | F13 | Queue sizes, drop policy, offline pub_q | D1 | Hasif | ✅ | [F13](#f13-queue-sizes-and-drop-policy) |
 | F14 | Diagrams: placeholder hardware, old task names | D1 | Hasif | ✅ | [F14](#f14-diagrams) |
-| F15 | Role of TSL2561 and GY-511 | D6 | Cody (decision), Jun Yong/Sitt | ❌ | [F15](#f15-role-of-the-tsl2561-and-gy-511) |
+| F15 | Role of TSL2561 and GY-511 | D6 | Team | ❌ | [F15](#f15-role-of-the-tsl2561-and-gy-511) |
 | F16 | NFR1 p95 or maximum bound | D5 | Hasif | ✅ | [F16](#f16-nfr1-jitter-bound) |
 | F17 | Fault table: critical vs DEGRADED | D1 | Hasif | ✅ | [F17](#f17-fault-table) |
-| R1 | Risk: SchedulerTask timing at 50 ms with all sensors | D3, D5 | Cody (criteria/interpretation), Hasif/Sitt/Brendan (evidence) | ❌ | [R1](#r1-schedulertask-timing-at-50-ms) |
-| R2 | Risk: entry/exit order over MQTT | D6 | Cody (lead), Brendan/Hasif | 🟡 | [R2](#r2-entryexit-order-over-mqtt) |
+| R1 | Risk: SchedulerTask timing at 50 ms with all sensors | D3, D5 | Cody, Hasif | ❌ | [R1](#r1-schedulertask-timing-at-50-ms) |
+| R2 | Risk: entry/exit order over MQTT | D6 | Team | ❌ | [R2](#r2-entryexit-order-over-mqtt) |
 | R3 | Risk: labelled events for NFR10 | D4, D6 | Brendan, Jun Yong | ❌ | [R3](#r3-labelled-events-for-nfr10) |
 | R4 | Risk: model upload and flash writes during sampling | D4, D2 | Brendan, Jun Yong | 🟡 | [R4](#r4-model-upload-and-flash-writes-during-sampling) |
-| R5 | Risk: occupancy integrity under duplicates and resets | D6 | Cody (lead), Hasif | 🟡 | [R5](#r5-occupancy-integrity) |
-| C1 | Resolve inconsistencies, then prove sampling before ML | D3, D6 | Cody (integration gate), team | 🟡 | [C1](#c1-sampling-path-before-ml) |
+| R5 | Risk: occupancy integrity under duplicates and resets | D6 | Team | ❌ | [R5](#r5-occupancy-integrity) |
+| C1 | Resolve inconsistencies, then prove sampling before ML | D3, D6 | Cody, team | 🟡 | [C1](#c1-sampling-path-before-ml) |
 | C2 | The project must be in C | D1 | Hasif, team | 🟡 | [C2](#c2-use-of-c) |
 
-**Totals:** ✅ 8 · 🟡 10 · ❌ 6. Every open (❌) item belongs to D3, D4 or D6. Of the D1 and D5 items, only F6 (a measurement run on the board) and C2 (the professor's confirmation) remain.
+**Totals:** ✅ 9 · 🟡 5 · ❌ 10. Every open (❌) item belongs to D3, D4 or D6. Of the D1 and D5 items, only C2 (the professor's confirmation) remains.
 
 ## 4. Item details
 
@@ -113,10 +113,10 @@ Feedback: several artefacts contradict each other; resolve these first. Affects:
 Feedback: replace the stock DevKitC-1 pinout with your own wiring diagram for each node. Status 🟡. Done: the D1 sensor node's pin table and wiring diagram ([SETUP.md, Pin, power and wiring](SETUP.md#pin-power-and-wiring-task-8)) and the board pinout image (`Pinout_Super_Mini_S3.png`). Open: diagrams for the other two nodes (D6) and the W25Q32 fixture (D2, in Brendan's list). Next action: D6 agrees each node's devices, then each diagram is drawn from the SETUP format.
 
 ### F5. Echo-timing method
-Feedback: the echo-timing method is not stated; a blocking wait can take 25–38 ms on timeout, so two ultrasonic sensors cannot both be sampled every 50 ms; time ECHO with RMT/MCPWM capture or timestamped edge interrupts that notify the task. Status ❌. Fact: the D1 pulse driver (`measure_pulse_us` in `libraries/EdgeCore/src/bus/gpio.c`) busy-waits inside SchedulerTask, for up to its 25 ms timeout when nothing answers. Next action (D3): replace it with capture or timestamped edge interrupts; the D1 edge ISR for counters (`hal_gpio_count_edges`) is the starting point. Section 8 measures the current cost.
+Feedback: the echo-timing method is not stated; a blocking wait can take 25–38 ms on timeout, so two ultrasonic sensors cannot both be sampled every 50 ms; time ECHO with RMT/MCPWM capture or timestamped edge interrupts that notify the task. Status ❌. Fact: the D1 pulse driver (`measure_pulse_us` in `libraries/EdgeCore/src/bus/gpio.c`) busy-waits inside SchedulerTask, for up to its 25 ms timeout when nothing answers. Next action (D3): replace it with capture or timestamped edge interrupts; the D1 edge ISR for counters (`hal_gpio_count_edges`) is the starting point. Section 8 measures the current cost. Update 2026-10-20 (D1 task 29, µT-Kernel redesign): on the µT-Kernel build the busy-wait is gone. `hal_gpio_measure_pulse` timestamps both echo edges in the GPIO interrupt and the measuring task sleeps on an event flag; a lower-priority task on core 1 ran 563,596 loops during an echo wait against 0 during a busy-wait ([29-echo-and-wcet.txt](parity/logs/mtk/29-echo-and-wcet.txt), HAL test). The wait still lasts up to the timeout inside SchedulerTask's cycle, so the sampling plan for two sensors per window (F7, R1) stays with D3.
 
 ### F6. SchedulerTask WCET
-Feedback: measure SchedulerTask WCET. Status 🟡. Done: SchedulerTask measures the work of every wake-up and `TASKS` reports the count, mean, p95 bucket and maximum; `parity/wcet_test.py` runs six load scenarios (section 8). Open: the run itself, which needs the board. Next action: `sh tools/s3.sh flash`, then `.venv/bin/python parity/wcet_test.py`; copy the table into section 8 and set ✅.
+Feedback: measure SchedulerTask WCET. Status 🟡. Done: SchedulerTask measures the work of every wake-up and `TASKS` reports the count, mean, p95 bucket and maximum; `parity/wcet_test.py` runs six load scenarios (section 8). Open: the run itself, which needs the board. Next action: `sh tools/s3.sh flash`, then `.venv/bin/python parity/wcet_test.py`; copy the table into section 8 and set ✅. Update 2026-10-20: measured on the µT-Kernel build and on the FreeRTOS build for comparison (section 8, [PARITY.md §4](parity/PARITY.md#4-esp32-s3-on-µt-kernel-3-smp-tasks-24-to-34)); status ✅.
 
 ### F7. HC-SR04 trigger order and spacing
 Feedback: define trigger spacing and order for the two HC-SR04s to avoid crosstalk (review §8.3), since entry/exit direction depends on which fires first. Status ❌. Nothing defined yet. Next action (D3): choose the order and minimum spacing (an echo can last up to 25 ms), and test crosstalk with both sensors facing the entrance.
@@ -125,10 +125,10 @@ Feedback: define trigger spacing and order for the two HC-SR04s to avoid crossta
 Feedback: the LD2450 streams at 256,000 baud but is read only when due; specify who drains UART1 and how often, the RX buffer size, and how presence is derived. Status ❌. Fact: the D1 UART driver reads only when a sample is due, with the default RX buffer. Next action (D6): assign a task to drain UART1 continuously, size its buffer for the frame rate, and define the presence rule from the radar frames.
 
 ### F9. Observation-window owner and event record
-Feedback: review §6.1 and §6.4 disagree on which node builds the observation window; assemble the event on the sensor node and publish one timestamped record with an event ID instead of reassembling raw 20 Hz readings over MQTT (review A9). Status 🟡. `EventRecord` v1 is now an 80-byte, fixed-size, versioned, pointer-free C contract with identity, window timestamps, features and quality/classification fields; `event:<class>` rules submit it through the typed application queue. The real radar/two-sonar sensor-node window assembler and MQTT wire encoding are still open. Evidence: `tools/cody_test.sh` and [CODY_PRD_IMPLEMENTATION.md](CODY_PRD_IMPLEMENTATION.md).
+Feedback: review §6.1 and §6.4 disagree on which node builds the observation window; assemble the event on the sensor node and publish one timestamped record with an event ID instead of reassembling raw 20 Hz readings over MQTT (review A9). Status ❌. Related: D2's flash-log record already carries an event sequence number ([D2_EVENT_RECORD_DESIGN.md](D2_EVENT_RECORD_DESIGN.md)). Next action (D6): rewrite §6.1 and §6.4 so the sensor node owns the window, and define the record (event ID, node ID, start and end time, features).
 
 ### F10. Event IDs, de-duplication and occupancy persistence
-Feedback: decide now on event IDs and de-duplication for QoS 1 delivery, and whether the FR18 occupancy count survives a processing-node reset. Status 🟡. ApplicationTask now keeps a bounded 32-ID de-duplication history, rejects non-increasing per-source sequence/timestamps and updates occupancy exactly once. The current event ID is a boot-local counter with stable source hash; boot identity and persistence/reconciliation remain open team decisions. The implementation deliberately resets occupancy and de-duplication state on reboot rather than silently claiming persistence.
+Feedback: decide now on event IDs and de-duplication for QoS 1 delivery, and whether the FR18 occupancy count survives a processing-node reset. Status ❌. The review says persistence "remains a design decision". Next action (D6): an event ID of node ID plus boot ID plus sequence, de-duplicated at the processing node; decide whether the count is stored (LittleFS or W25Q32) or rebuilt.
 
 ### F11. Model upload separation and chunk protocol
 Feedback: infer_q carries both events and model chunks, and flash writes suspend the cache on both cores, which can disturb sampling (NFR1); separate model upload from inference, and define the chunk protocol (size, sequence, CRC, atomic switch-over). Status 🟡. Done in the D1 code: uploads never use infer_q, and the size check, CRC32 and atomic switch-over exist (section 7). Open (D4): enforce chunk order, update the review's description, and measure flash writes against live sampling (R4).
@@ -152,25 +152,25 @@ Feedback: NFR1 uses the mean interval, which hides jitter; add a p95 or maximum 
 Feedback: add a fault table separating critical faults from DEGRADED. Status ✅ (section 11). Next action: paste it into the review's statechart section. No deliverable owns fault handling yet; the team should assign it.
 
 ### R1. SchedulerTask timing at 50 ms
-Risk: SchedulerTask timing with two ultrasonic sensors, radar UART and I²C sensors at the 50 ms window rate. Status ❌. Depends on F5, F6 and F8 and needs the entrance hardware. The F6 scenarios already include two ultrasonic reads with no echo, the worst case of the current driver.
+Risk: SchedulerTask timing with two ultrasonic sensors, radar UART and I²C sensors at the 50 ms window rate. Status ❌. Depends on F5, F6 and F8 and needs the entrance hardware. The F6 scenarios already include two ultrasonic reads with no echo, the worst case of the current driver. Update 2026-10-20: measured (section 8). Two no-echo reads take 52.0 ms on average and 53.5 ms at most per cycle on the µT-Kernel build, more than the 50 ms window, so the risk is confirmed; one read takes at most 26.7 ms.
 
 ### R2. Entry/exit order over MQTT
-Risk: correct entry/exit ordering when readings travel over MQTT between nodes. Status 🟡. The application contract now rejects duplicate and reordered source sequence/timestamps, and consumes one complete EventRecord rather than raw samples. The sensor-node assembler, wire schema and delayed/reordered MQTT injection test are still required.
+Risk: correct entry/exit ordering when readings travel over MQTT between nodes. Status ❌. Removed by design once F9 moves window assembly to the sensor node, so ordering never depends on MQTT delivery.
 
 ### R3. Labelled events for NFR10
 Risk: collecting enough labelled entrance events to reach NFR10 (80% accuracy) for all four classes. Status ❌. No dataset yet; it is shared by D4 and D6.
 
 ### R4. Model upload and flash writes during sampling
-Risk: model upload and flash writes running alongside live sampling. Status 🟡. Model upload is proven on the S3 (`model_test.py` 9/9) but not under measured live sampling. Brendan's T-23 combined run (SPI flash writes, sampling and inference) covers the rest.
+Risk: model upload and flash writes running alongside live sampling. Status 🟡. Model upload is proven on the S3 (`model_test.py` 9/9) but not under measured live sampling. Brendan's T-23 combined run (SPI flash writes, sampling and inference) covers the rest. Update 2026-10-20 (D1 task 31): on the µT-Kernel build an upload is written to the flash slot not in use while sampling and inference continue (`mqtt_test.py` 27/27, `model_test.py` 8/9, [PARITY.md §4](parity/PARITY.md#4-esp32-s3-on-µt-kernel-3-smp-tasks-24-to-34)). Each flash write briefly parks the other core, and the course port needed its kernel and shim moved into IRAM before writes were safe while Wi-Fi was active ([MTK_REDESIGN.md §8](MTK_REDESIGN.md#8-memory-plan)).
 
 ### R5. Occupancy integrity
-Risk: occupancy count integrity under duplicate messages and node resets. Status 🟡. Native tests prove duplicate/reordered/stale records do not mutate occupancy, incomplete/false are no-ops and exit cannot make the count negative. Reboot persistence/reconciliation and target-board replay evidence remain open.
+Risk: occupancy count integrity under duplicate messages and node resets. Status ❌. Follows F10.
 
 ### C1. Sampling path before ML
 Feedback: resolve the inconsistencies first, then prove the sampling path on real hardware before investing further in ML optimisation. Status 🟡. The generic sampling path is proven on the S3 (NFR1 timing, 30-minute endurance run, all D1 parity stages). The entrance sampling path (two ultrasonic sensors and the radar) is not.
 
 ### C2. Use of C
-Feedback: the project must be in C. Status 🟡: the boundary is documented (section 13), but the team and the professor must confirm it. Next action: ask the professor whether the thin C++ Arduino layer is acceptable.
+Feedback: the project must be in C. Status 🟡: the boundary is documented (section 13), but the team and the professor must confirm it. Next action: ask the professor whether the thin C++ Arduino layer is acceptable. Update 2026-10-20: the µT-Kernel build has no Arduino layer; its platform code is C apart from the TFLite Micro wrapper (section 13).
 
 ## 5. Corrected hardware and naming (F3)
 
@@ -219,7 +219,7 @@ All sizes are the implemented values in `libraries/EdgeS3/src/runtime_s3.cpp`. N
 | `sched_q` | `sched_msg_t`: kind, 96 B topic, 2,048 B text (about 2.2 KB) | 6 | MQTTTask, ControlTask → SchedulerTask | MQTT 0 ms; console 100 ms | Newest dropped and logged (`inbound queue full`, `scheduler busy, line dropped`) |
 | `pub_q` | `pub_msg_t`: op, 160 B topic, 512 B payload (about 680 B) | 16 | SchedulerTask and runtime → MQTTTask | 0 ms | Newest dropped and logged |
 | `infer_q` | 64 B | 4 | SchedulerTask → InferenceTask | provisional | Provisional: InferenceTask is a placeholder until D4; inference currently runs from the rule action in SchedulerTask |
-| `app_q` | `event_record_t`: 80 B fixed-size v1 record | 8 | Rule/EventRecord producer → ApplicationTask | 0 ms | Newest rejected; producer logs `queued=0`, occupancy is unchanged |
+| `app_q` | 64 B | 8 | SchedulerTask → ApplicationTask | provisional | Provisional until D6 and the D2 event log |
 | `bench_q` | `bench_msg_t`: 24 B name, 32-bit µs value | 16 | Timed sections → BenchmarkTask | 0 ms | Newest dropped |
 
 **Offline (FR21).** While MQTT is disconnected, sampling, rules and console output continue, and publications are refused at the source instead of being queued, so `pub_q` never fills with stale data. On reconnection the node re-subscribes and republishes its retained presence. Readings taken while offline are therefore not delivered later; if the use case needs them, D6 must add a bounded store-and-forward buffer. Measured: 20 samples taken during a 10 s Wi-Fi drop; reconnection 1.6–2.2 s after Wi-Fi or the broker returned; a 60 s flood of 2,547 messages with no reset.
@@ -230,14 +230,18 @@ All sizes are the implemented values in `libraries/EdgeS3/src/runtime_s3.cpp`. N
 
 SchedulerTask measures the work it does on each wake-up: messages, sensor reads, rules, and model and inference polling. `TASKS` prints `SchedulerTask cycles=… mean_us=… p95_us=… max_us=…` and then resets the statistics. The maximum is the largest observed cycle, not a proven bound. `parity/wcet_test.py` runs these scenarios for 20 s each:
 
-| Scenario | cycles | mean µs | p95 µs | max µs |
-|---|---|---|---|---|
-| Idle, sampling on, no sensors | pending | | | |
-| 8 digital inputs at 50 ms | pending | | | |
-| 1 digital input + rule at 50 ms | pending | | | |
-| 1 HC-SR04 at 50 ms, no echo (25 ms timeout) | pending | | | |
-| 2 HC-SR04 at 50 ms, no echo | pending | | | |
-| Inference rule at 50 ms | pending | | | |
+Measured on 2026-10-20 on the HW-747 with Wi-Fi and MQTT connected (`parity/logs/mtk/wcet.log`, `parity/logs/s3/wcet.log`):
+
+| Scenario | FreeRTOS cycles | FreeRTOS mean | FreeRTOS p95 | FreeRTOS max | µT-Kernel cycles | µT-Kernel mean | µT-Kernel p95 | µT-Kernel max |
+|---|---|---|---|---|---|---|---|---|
+| Idle, sampling on, no sensors | 25 | 229 | <250 | 244 | 25 | 188 | <250 | 320 |
+| 8 digital inputs at 50 ms | 1,643 | 1,447 | <5,000 | 7,006 | 748 | 1,595 | <5,000 | 3,838 |
+| 1 digital input + rule at 50 ms | 794 | 692 | <2,500 | 2,336 | 410 | 1,024 | <2,500 | 1,698 |
+| 1 HC-SR04 at 50 ms, no echo (25 ms timeout) | 281 | 25,522 | <50,000 | 26,098 | 277 | 26,168 | <50,000 | 26,704 |
+| 2 HC-SR04 at 50 ms, no echo | 315 | 45,776 | >50,000 | 52,257 | 277 | 51,979 | >50,000 | 53,511 |
+| Inference rule at 50 ms | 428 | 1,608 | <2,500 | 2,541 | 415 | 1,964 | <5,000 | 3,033 |
+
+On both runtimes two ultrasonic reads with no echo take longer than the 50 ms window, because each read waits for its 25 ms timeout inside SchedulerTask's cycle. On µT-Kernel the CPU is free during that wait (the HAL test's spinner ran 563,596 loops), on FreeRTOS it busy-waits. The inference cycle is longer on µT-Kernel, where each invocation crosses to InferenceTask and back and the build uses the port's default `-Og` optimisation where Arduino-ESP32 uses `-Os`: one invocation takes about 500 µs against 265–280 µs on the Arduino build, measured in the same session. How much of the difference each factor causes was not measured. In the multi-sensor scenarios the FreeRTOS build woke SchedulerTask about twice as often in the same 20 s, so its mean is spread over more, shorter cycles.
 
 Components measured earlier: rule evaluation 77–646 µs per sample (`[TRACE] Total Rule Eval` on the light-sensor run); inference 242–462 µs per invocation (D1 task 20). The pulse driver busy-waits inside SchedulerTask for up to 25 ms when no echo returns, so two ultrasonic sensors with no echo would use about 50 ms of every 50 ms window. That confirms the risk in F5 and R1, and the scenarios above will show it directly.
 
@@ -254,7 +258,7 @@ flowchart LR
     ST -- pub_q --> MT
     MT -- "model chunks" --> MS["Model storage<br/>LittleFS, CRC32"]
     ST -. "infer_q (planned, D4)" .-> IT["InferenceTask p2 core 1"]
-    ST -- "EventRecord v1 / app_q" --> AT["ApplicationTask p2 core 1<br/>dedup + occupancy"]
+    ST -. "app_q (planned, D6)" .-> AT["ApplicationTask p2 core 1"]
     AT -. "planned, D2" .-> FL["W25Q32 flash (SPI)"]
     ST -- bench_q --> BT["BenchmarkTask p1 core 1"]
     MON["MonitorTask (loop) p1<br/>stack, heap, watchdog"]
@@ -306,17 +310,17 @@ A recoverable fault keeps the node in DEGRADED: it continues sampling and report
 
 ## 12. D2 feedback status
 
-Brendan's [D2_SPI_TODO.md](D2_SPI_TODO.md) records how D2 answers the parts of this feedback that touch SPI. The statuses below are as recorded in that file at commit `548d2e3` (2026-10-17). D2 owns these items; update them there first, then here.
+Brendan's [D2_SPI_TODO.md](D2_SPI_TODO.md) is the current D2 checklist. The D2 status below was refreshed on 25 October 2026 for the µT-Kernel transport and physical W25Q32 checks; event logging and live concurrency remain open.
 
 | D2 item (from D2_SPI_TODO.md) | Tracker item | Status |
 |---|---|---|
-| Retain one shared SPI bus protected by `spi_mutex` | F2 | ✅ Implemented with a FreeRTOS mutex |
+| Retain one shared SPI bus protected by `spi_mutex` | F2 | ✅ Migrated SPI2 backend uses a bounded µT-Kernel `TA_INHERIT` mutex; target contention test remains open |
 | Keep flash logging out of SchedulerTask; perform it through ApplicationTask | F11, R4 | ❌ Open |
 | Define capacity, timeout, overflow response and drop policy for every logging or benchmarking queue | F13 | ❌ Open; a provisional log queue (capacity 8, drop newest) is drafted in [D2_EVENT_RECORD_DESIGN.md](D2_EVENT_RECORD_DESIGN.md) |
-| Measure p95 and maximum sampling/transfer latency in addition to means | F16 | ❌ Open for SPI transfers (sampling is covered by section 10) |
+| Measure p95 and maximum sampling/transfer latency in addition to means | F16 | 🟡 Five 8–1024-byte µT-Kernel loopback reports include p95/p99/max; live flash-write and sampling timing remains open (T-23) |
 | Demonstrate model activity and SPI flash writes alongside live sampling | R4 | ❌ Open (D2 T-23) |
 | Replace placeholder artwork with a per-node wiring diagram including the W25Q32 | F4 | ❌ Open |
-| Confirm failed or delayed SPI logging never stops occupancy processing or causes a valid-looking reading | F17 | ❌ Open |
+| Confirm failed or delayed SPI logging never stops occupancy processing or causes a valid-looking reading | F17 | 🟡 Physical absent-device rejection passed; application logging and live failure isolation remain open |
 
 ## 13. Use of C (C2)
 
@@ -326,20 +330,36 @@ C++ is limited to a thin platform layer of five files, about 1,800 lines (`libra
 
 Removing C++ entirely would mean replacing Arduino with the ESP-IDF C drivers, which conflicts with D1's Arduino requirement and repeats verified work. D2 also chose to keep `SPIClass` and record the C/C++ boundary (D2_SPI_TODO.md). Recommendation: keep this boundary, and confirm with the professor that "in C" refers to the application code.
 
+**µT-Kernel build (since Tribunal 1).** The platform layer that replaces the Arduino one (`esp32s3_mtk/components/edge_mtk/` and `main/`) is C: the console, HAL, µT-Kernel runtime, Wi-Fi and MQTT, and model store, about 2,700 lines. The one C++ file is `inference_mtk.cpp` (about 350 lines), because TensorFlow Lite Micro's interface is C++; it exposes C functions behind `inference_engine/tflite_wrapper.h`, as on the Pico.
+
 ## 14. Decisions needed and change log
 
-**Cody's Week 8 ownership.** Cody directly owns the D3 timing and application-level integration contract; the D6 end-to-end application contract; EventRecord, ApplicationTask, occupancy and output semantics; and the acceptance criteria and evidence interpretation for integrated behaviour. He coordinates sensor timing with Sitt, scheduling/ordering with Brendan, MQTT/runtime/platform behaviour with Hasif and inference behaviour with Jun Yong. He does not directly own every low-level driver, all benchmarking implementation or all platform internals. The exact responsibility map is [CODY_WEEK8_SUBMODULE.md](CODY_WEEK8_SUBMODULE.md), and the D3 execution/evidence checklist is [D3_TASKS.md](D3_TASKS.md).
+### D3/D6 branch progress and ownership (28 October 2026)
+
+The current `main` tracker and its measured D1/D2 results are preserved, including the completed F6 baseline measurement. Cody's portable D3 timing, EventRecord and occupancy modules, native tests, and earlier Arduino ApplicationTask integration are retained on this branch. See [D3_TASKS.md](D3_TASKS.md), [CODY_WEEK8_SUBMODULE.md](CODY_WEEK8_SUBMODULE.md) and [CODY_PRD_IMPLEMENTATION.md](CODY_PRD_IMPLEMENTATION.md) for the 18 October implementation and ownership record. Those documents describe the earlier runtime; they do not establish that the D3 ApplicationTask runs on µT-Kernel.
+
+Cody directly owns timing/window contracts, EventRecord and application/occupancy/output semantics, integration acceptance criteria and evidence interpretation. Sitt owns sensor-driver work, Brendan owns SchedulerTask sequencing, Hasif supports platform/MQTT/runtime integration and measurements, and Jun Yong owns inference integration. Cody coordinates and reviews those interfaces rather than taking over every low-level implementation.
+
+| D3/D6 item | Retained progress | Remaining gate |
+|---|---|---|
+| F5/F7/R1: acquisition and sequencing | Main's interrupt-driven µT-Kernel echo evidence and D3 timing contracts | Approve the 50 ms boundary, asynchronous scheduler behavior, two-sonar order/guard and crosstalk; measure the complete workload |
+| F9: sensor-node EventRecord | An 80-byte pointer-free record, rule sink and native tests | Complete the real observation-window assembler and MQTT schema; port the typed handoff into the 64-byte-limit µT-Kernel `app_mbf` |
+| F10/R2/R5: event identity and occupancy | Boot-local IDs, bounded duplicate/reorder handling and a native-tested occupancy state machine | Agree node/boot/sequence identity, cross-node time and reset/persistence policy; close review defects and prove replay behavior on the target |
+| F8/F15: radar and auxiliary sensors | Cody's presence/expiry and feature-contract ownership is documented | Sitt/Brendan supply radar draining/parsing; Cody agrees sensor roles with Jun Yong/Sitt |
+| D2 logging handoff | D2's provisional codec and physical synthetic-record recovery evidence are retained | Cody and Brendan/JY agree event/result mappings, publication-enqueue status and the bounded ApplicationTask log handoff; run T-23 |
+
+This baseline merge does not close F9, F10, R2, R5, the D3 hardware checklist or D2 T-23. The current µT-Kernel ApplicationTask remains a placeholder. Preserve core 1/priority 23, check stack and internal-RAM headroom, and use µT-Kernel objects for the new task glue. No D3 target timing, linked-image or core-residency pass is claimed by this merge.
 
 **Decisions needed:**
 
 | Decision | Owner | Blocks |
 |---|---|---|
 | Is the thin C++ Arduino layer acceptable under "must be in C"? | Professor (ask Hasif) | C2 |
-| Sensor node builds the observation window; freeze EventRecord v1 | Cody (decision lead), Brendan/Hasif/Jun Yong review | F9, R2 |
-| Event ID, de-duplication and occupancy reset/persistence policy | Cody (decision lead), Hasif/Brendan support | F10, R5 |
-| Keep or drop the TSL2561 and GY-511 | Cody (application decision), Jun Yong/Sitt evidence | F15 |
-| LD2450 drain task, buffer and presence rule | Cody (presence contract), Sitt/Brendan implementation | F8, R1 |
-| Echo capture outcomes and HC-SR04 ordering contract | Cody (contract/acceptance), Sitt/Hasif/Brendan implementation and measurement | F5, F7, R1 |
+| Which node builds the observation window; the event record format | D6 team | F9, R2 |
+| Event ID, de-duplication, occupancy persistence | D6 team | F10, R5 |
+| Keep or drop the TSL2561 and GY-511 | D6 team | F15 |
+| LD2450 drain task, buffer and presence rule | D6 team | F8, R1 |
+| Echo capture method and HC-SR04 trigger order | D3 (Cody) | F5, F7, R1 |
 | Who owns fault handling (no deliverable does yet) | Team | F17 follow-up |
 | Group ID format for the Tribunal files (`AAI15` or `P2-AAI15`) | Team | Tribunal 1 |
 
@@ -347,8 +367,8 @@ Removing C++ entirely would mean replacing Arduino with the ESP-IDF C drivers, w
 
 | Date | By | Change |
 |---|---|---|
-| 2026-10-18 | Cody/Codex implementation | Implemented portable D3 timing modes/config validation and D6 EventRecord/ApplicationTask/occupancy semantics; added rule-to-event and typed queue integration plus native tests. F9, F10, R2 and R5 moved from open to partly resolved; physical/multi-node/reset evidence remains open. |
-| 2026-10-18 | Cody/Codex draft | Corrected the Cody ownership boundary from the D1/D3/D6 PRDs: Cody owns integration contracts, application semantics, acceptance criteria and evidence interpretation; Sitt/Hasif/Brendan retain low-level driver, benchmark/platform and scheduler implementation ownership. No feedback status changed. |
-| 2026-10-18 | Cody/Codex draft | Added `D3_TASKS.md`: 23 tasks covering requirement freeze, mode semantics, non-blocking Echo capture, two-sensor sequencing, radar hand-off, WCET/timing/fault tests, documentation and evidence gates. No feedback status changed. |
-| 2026-10-18 | Cody/Codex draft | Assigned Cody as D6 application/integration decision lead without moving low-level module ownership. Added `CODY_WEEK8_SUBMODULE.md` with the EventRecord, ApplicationTask, occupancy, benchmark, dependency and evidence responsibilities. No feedback status changed; team confirmation and implementation evidence remain required. |
+| 2026-10-28 | Cody/Codex baseline merge | Merged current D1/D2 `main` into `d3`; retained main's setup, measured F6 and D2 evidence, and restored Cody's D3/D6 progress and ownership as branch-specific notes. ApplicationTask migration, reviewed behavior fixes, hardware acceptance and D2 logging remain open; no feedback item is closed by this merge. |
+| 2026-10-18 | Cody/Codex implementation (historical D3) | Added portable timing/configuration, EventRecord and occupancy modules, rule-to-event submission, typed Arduino queue integration and native tests. The earlier branch recorded F9/F10/R2/R5 as partial code progress; µT-Kernel and multi-node/reset acceptance remain open. |
+| 2026-10-18 | Cody/Codex ownership drafts (historical D3) | Added the D3 execution checklist and Cody ownership/PRD documents, separating application contracts and acceptance from low-level driver, scheduler, inference and platform implementation. |
 | 2026-10-18 | Hasif | Tracker created on `s3-port-d2`. F3, F12, F13, F14, F16 and F17 resolved; F6 instrumented (`TASKS` cycle statistics, `parity/wcet_test.py`), run pending; `parity/timing_test.py` reports p95, maximum and skipped samples; D2 status recorded from D2_SPI_TODO.md at `548d2e3`. Before this update: ✅ 2, 🟡 8, ❌ 14. After: ✅ 8, 🟡 6, ❌ 10. |
+| 2026-10-20 | Hasif | D1 µT-Kernel 3 SMP redesign (tasks 24–34, [MTK_REDESIGN.md](MTK_REDESIGN.md)): F6 measured on both runtimes and set ✅ (section 8); evidence added to F5 (interrupt-driven echo wait), R1 (two no-echo reads exceed the 50 ms window), R4 (uploads during sampling) and C2 (the µT-Kernel platform layer is C). |

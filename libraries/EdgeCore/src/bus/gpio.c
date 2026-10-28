@@ -99,41 +99,15 @@ static void set_input(int pin, const char *pull_str) {
     }
 }
 
-/* Measure a pulse on echo_pin after driving trig_pin */
+/* Measure a pulse on echo_pin after driving trig_pin. The timing itself is
+   in the HAL (hal_gpio_measure_pulse), so an RTOS target can sleep while it
+   waits for the echo instead of spinning. */
 static int measure_pulse_us(int trig_pin, int echo_pin,
                             uint32_t trig_us, uint32_t timeout_us)
 {
     if (trig_us == 0)        trig_us        = 10;
     if (timeout_us == 0)     timeout_us     = 30000;
-
-    // ensure both are initialised
-    hal_gpio_mode(trig_pin, HAL_GPIO_OUTPUT);   // driven low
-    (void)echo_pin;   // input mode and pull are set once in init_cfg
-
-    hal_delay_us(2);
-
-    // send trigger pulse
-    hal_gpio_write(trig_pin, 1);
-    hal_delay_us(trig_us);
-    hal_gpio_write(trig_pin, 0);
-
-    // wait for echo HIGH
-    uint64_t t0 = hal_time_us();
-    while (hal_gpio_read(echo_pin) <= 0) {
-        if (hal_time_us() - t0 > timeout_us)
-            return -1;
-    }
-
-    // echo HIGH -> measure width
-    uint64_t start = hal_time_us();
-    while (hal_gpio_read(echo_pin) > 0) {
-        if (hal_time_us() - start > timeout_us)
-            break;
-    }
-    uint64_t end = hal_time_us();
-    int32_t width = (int32_t)(end - start);
-    if (width < 0) width = 0;
-    return (int)width; // microseconds
+    return hal_gpio_measure_pulse(trig_pin, echo_pin, trig_us, timeout_us);
 }
 
 /* ----------------------------------------------------------------------------

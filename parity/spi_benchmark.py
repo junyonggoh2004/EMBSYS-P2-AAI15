@@ -31,40 +31,46 @@ def percentile(samples, percentage):
     return ordered[lower] * (1 - fraction) + ordered[min(lower + 1, len(ordered) - 1)] * fraction
 
 
-def capture(port, mode, hz, timeout, output):
+def capture(port, mode, hz, timeout, output, runtime):
     samples = {size: [] for size in SIZES}
     summaries = {}
     begin = None
     end = None
     deadline = time.monotonic() + timeout
-    with serial.Serial(port, 115200, timeout=0.5) as device, output.open("w", encoding="utf-8") as raw:
+    with serial.Serial(port, 115200, timeout=0.5, write_timeout=2) as device, output.open("w", encoding="utf-8") as raw:
         device.dtr = False
         device.rts = False
-        device.reset_input_buffer()
-        ready_deadline = time.monotonic() + 10
-        next_ping = 0
-        while time.monotonic() < ready_deadline:
-            if time.monotonic() >= next_ping:
-                device.write(b"PING\r\n")
-                next_ping = time.monotonic() + 1
-            line = device.readline().decode(errors="replace").strip()
-            if line:
-                raw.write(line + "\n")
-                raw.flush()
-            if line.startswith(PREFIX + "READY"):
-                break
+        if runtime == "arduino":
+            device.reset_input_buffer()
+            ready_deadline = time.monotonic() + 10
+            next_ping = 0
+            while time.monotonic() < ready_deadline:
+                if time.monotonic() >= next_ping:
+                    device.write(b"PING\r\n")
+                    next_ping = time.monotonic() + 1
+                line = device.readline().decode(errors="replace").strip()
+                if line:
+                    raw.write(line + "\n")
+                    raw.flush()
+                if line.startswith(PREFIX + "READY"):
+                    break
+            else:
+                raise TimeoutError("Benchmark sketch did not announce READY")
+            device.write(f"BENCH {mode} {hz}\r\n".encode())
         else:
-            raise TimeoutError("Benchmark sketch did not announce READY")
-        device.write(f"BENCH {mode} {hz}\r\n".encode())
+            # Opening native USB can reset the ESP32-S3. Wait until the
+            # µT-Kernel ControlTask has started before sending its command.
+            time.sleep(3)
+            device.write(f"SPIBENCH {mode} {hz}\r\n".encode())
         while time.monotonic() < deadline:
             line = device.readline().decode(errors="replace").strip()
             if not line:
                 continue
             raw.write(line + "\n")
             raw.flush()
-            if not line.startswith(PREFIX):
+            if PREFIX not in line:
                 continue
-            message = line[len(PREFIX):]
+            message = line[line.index(PREFIX) + len(PREFIX):]
             if message.startswith("ERROR"):
                 raise RuntimeError(message)
             if message.startswith("BEGIN "):
@@ -94,7 +100,7 @@ def capture(port, mode, hz, timeout, output):
     return begin, summaries, samples, end
 
 
-def write_results(folder, begin, summaries, samples, end, port):
+def write_results(folder, begin, summaries, samples, end, port, runtime):
     if begin is None or begin["attempts"] != 1000 or begin["warmups"] < 10:
         raise ValueError("Missing or invalid benchmark header")
     if begin["sclk"] != 11 or begin["mosi"] != 12 or begin["miso"] != 13 or begin["cs"] != 10:
@@ -137,7 +143,7 @@ def write_results(folder, begin, summaries, samples, end, port):
         "git_commit": commit,
         "board": "ESP32-S3 Super Mini / HW-747",
         "fixture": "GPIO12 MOSI to GPIO13 MISO; TFT disconnected",
-        "backend": "EdgeS3 SPIClass HAL",
+        "backend": "µT-Kernel SPI2 register-level HAL" if runtime == "mtk" else "EdgeS3 SPIClass HAL",
         "begin": begin,
         "end": end,
         "results": rows,
@@ -159,7 +165,7 @@ def write_results(folder, begin, summaries, samples, end, port):
         f"- Attempts: {begin['attempts']} per size after {begin['warmups']} warm-ups",
         f"- Result: {'PASS' if passed else 'FAIL'}",
         "- Observed resets: 0 (a complete BEGIN-to-END capture; an interrupted run fails instead of producing a PASS report)",
-        f"- Free heap: {begin['heap_before']} B before; {end['heap_after']} B after in the dedicated benchmark sketch",
+        f"- Free heap: {begin['heap_before']} B before; {end['heap_after']} B after in the {'µT-Kernel firmware' if runtime == 'mtk' else 'dedicated benchmark sketch'}",
         "",
         "| Bytes | Median µs | p95 µs | p99 µs | Max µs | B/s | HAL errors | Timeouts | Mismatch transactions | Mismatch bytes | Transaction error rate | Byte error rate |",
         "|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
@@ -183,15 +189,18 @@ def main():
     parser.add_argument("--mode", type=int, default=0)
     parser.add_argument("--hz", type=int, default=10_000_000)
     parser.add_argument("--timeout", type=int, default=180)
+    parser.add_argument("--runtime", choices=("arduino", "mtk"), default="arduino")
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
-    if args.mode not in range(4) or not 1000 <= args.hz <= 20_000_000:
-        parser.error("mode must be 0–3 and clock must be 1 kHz–20 MHz")
-    folder = args.output or Path("parity/logs/d2-spi") / datetime.now().strftime("bench-%Y%m%d-%H%M%S")
+    minimum_hz = 1_000_000 if args.runtime == "mtk" else 1000
+    if args.mode not in range(4) or not minimum_hz <= args.hz <= 20_000_000:
+        parser.error(f"mode must be 0–3 and clock must be {minimum_hz}–20 MHz")
+    root = Path("parity/logs/mtk/d2-spi" if args.runtime == "mtk" else "parity/logs/d2-spi")
+    folder = args.output or root / datetime.now().strftime("bench-%Y%m%d-%H%M%S")
     folder.mkdir(parents=True, exist_ok=False)
     try:
-        begin, summaries, samples, end = capture(args.port, args.mode, args.hz, args.timeout, folder / "serial.log")
-        passed = write_results(folder, begin, summaries, samples, end, args.port)
+        begin, summaries, samples, end = capture(args.port, args.mode, args.hz, args.timeout, folder / "serial.log", args.runtime)
+        passed = write_results(folder, begin, summaries, samples, end, args.port, args.runtime)
     except (OSError, ValueError, RuntimeError, TimeoutError) as exc:
         print(f"Benchmark failed: {exc}. Partial log: {folder / 'serial.log'}", file=sys.stderr)
         return 1

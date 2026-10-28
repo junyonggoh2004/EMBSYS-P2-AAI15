@@ -97,6 +97,16 @@ int hal_gpio_toggle(int pin);
 // Returns HAL_OK, HAL_ERR_PIN, or HAL_ERR_UNSUPPORTED if no timer is free.
 int hal_gpio_pulse(int pin, uint32_t ms);
 
+// Measures one HC-SR04-style echo: drives trig high for trig_us, then returns
+// how long echo stays high, in microseconds. An echo that is already high when
+// the trigger ends counts as starting then. Returns HAL_ERR_TIMEOUT (-1) if no
+// echo starts within timeout_us of the trigger; an echo still high after
+// timeout_us is reported as timeout_us + 1 (reference defect D-07, kept for
+// parity). Blocks for at most about 2 x timeout_us: an RTOS target sleeps
+// while it waits (an interrupt timestamps the edges); the Pico busy-waits, as
+// the reference firmware does.
+int hal_gpio_measure_pulse(int trig, int echo, uint32_t trig_us, uint32_t timeout_us);
+
 // Counts both edges on pin from an interrupt, so no edge is lost between
 // samples. enable=false stops counting. Returns HAL_OK, HAL_ERR_PIN, or
 // HAL_ERR_UNSUPPORTED if the pin cannot interrupt.
