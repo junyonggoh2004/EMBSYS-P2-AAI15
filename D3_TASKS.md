@@ -51,6 +51,27 @@ no target/hardware checkbox is promoted on native-test evidence alone.
 - [ ] Integrate the real sensor-node window assembler with evidence-backed timestamps/quality and the agreed canonical identity. This guard deliberately does not supply or approve an observation-window policy, nor does it turn a point decision into a real entrance event.
 - [ ] Capture target/core/resource and physical multi-sensor evidence after the producer exists; D2 logging/retention and numeric mappings remain separate gates.
 
+## 28 October: target smoke-test preparation
+
+- [x] Add `parity/application_test.py` and `sh tools/mtk.sh app-test`: synthetic entry/exit/floor/duplicate/reorder checks, malformed commands, unverified-rule rejection and task placement/storage checks, with timestamped raw logs and volatile-state cleanup.
+- [x] Keep the test wiring-free (GPIO8 input only), exclude flash programming, and label host Git metadata separately from firmware provenance. Do not infer a physical entrance/overflow/timing/T-23 pass from synthetic plumbing.
+- [x] Unit-test partial serial reads, noisy/stale replies, required-pattern timeouts, reset/fault detection and incorrect task placement/buffer sizes without a serial dependency or board.
+- [ ] Build/flash the pinned micro T-Kernel image, run `image`, then execute `app-test`, 4a, 5-neg and MQTT on the actual target. Retain image, core, stack/heap and raw serial evidence; no ESP32-S3 or pinned SDK is available in the current development environment.
+
+### Decisions needed before real observation integration
+
+| Contract | Decision still needed | Owners to coordinate |
+|---|---|---|
+| 50 ms boundary | Per-sensor versus pair/window, start/end measurement points and acceptance percentiles/maxima/misses | Cody, Brendan, Sitt, Hasif |
+| Observation producer | Radar transition/expiry, A/guard/B states, window duration and closure, timeout/ambiguity outcomes | Cody, Brendan, Sitt |
+| Canonical identity | Node/boot/sequence source, reboot uniqueness and source-hash collision handling | Cody, Brendan, Hasif |
+| Time basis | Mapping sensor-node monotonic windows to processing-node freshness/order checks | Cody, Hasif, Brendan |
+| Reset/replay | Volatile/persistent/external-restore occupancy and bounded replay/dedup guarantees | Cody/team, Hasif |
+| D2 handoff | Approved event/result/reason mapping, queue owner/capacity and retention/full behavior | Cody, Brendan/Jun Yong |
+
+These are open decisions, not selected defaults. Keep real-window and flash
+integration gated on the agreed contract and measured hardware evidence.
+
 D3 covers periodic, one-shot, event-driven and logical-sequence timing. The professor feedback makes the entrance path the acceptance case: radar presence opens an observation window, two HC-SR04 sensors are sampled in a defined order without blocking SchedulerTask or causing crosstalk, and the timing is proven under the complete workload.
 
 This checklist is the authoritative execution list for D3. Update the related feedback items in [WEEK6_FEEDBACK_RESPONSE.md](WEEK6_FEEDBACK_RESPONSE.md) only after the evidence named here exists.

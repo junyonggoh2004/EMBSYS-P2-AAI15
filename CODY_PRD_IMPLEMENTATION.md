@@ -24,6 +24,13 @@ producer supplies evidence-backed quality. Explicit `APP EVENT` remains a
 synthetic positive fixture. Descriptions of frozen semantics below are historical,
 not a new acceptance claim.
 
+**Target test preparation.** `sh tools/mtk.sh app-test` now drives the synthetic
+application and unverified-rule smoke cases and checks actual task/core/message
+storage reports. Its serial/parser failure tests run offline in
+`tools/cody_test.sh`. It clears volatile test state, writes no flash, and saves
+raw logs with host revision metadata. It has not run on a connected board here;
+matching firmware build/image provenance and physical acceptance remain open.
+
 This document records what was planned and executed from the three Cody PRDs. It does not mark physical sensor, crosstalk, WCET or live MQTT evidence complete without a target-board run.
 
 ## Delivery plan and result

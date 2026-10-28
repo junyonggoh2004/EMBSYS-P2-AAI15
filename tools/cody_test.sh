@@ -51,3 +51,7 @@ cc -std=c11 -Wall -Wextra -Werror \
   libraries/EdgeCore/src/application/application_dispatch.c \
   -o "$PROVENANCE_OUT"
 "$PROVENANCE_OUT"
+
+# Test the target runner's parsing/failure behavior without pyserial or a board.
+if command -v python3 >/dev/null 2>&1; then SMOKE_PY=python3; else SMOKE_PY=python; fi
+"$SMOKE_PY" -m unittest discover -s tests -p test_application_smoke.py
