@@ -245,13 +245,13 @@ action=batch: infer.set:0:$f0 | infer.set:1:$f1 | infer.set:2:$f2 | infer.run:gp
 
 #### D6 application events
 
-A rule can submit a fixed, versioned `EventRecord` to `ApplicationTask` with `event:entry`, `event:exit`, `event:incomplete`, or `event:false`. The submission is non-blocking; occupancy is mutated only by `ApplicationTask`.
+A rule can submit a fixed, versioned decision record to `ApplicationTask` with `event:entry`, `event:exit`, `event:incomplete`, or `event:false`. The submission is non-blocking; occupancy is mutated only by `ApplicationTask`. A rule firing alone does not prove a completed entrance observation. These actions set only `RULE_VALID`, use the 64-bit decision timestamp as a point (`start == end`), and print `observation=unverified`. Entry/exit decisions from this path are rejected with `reason=quality` and do not change occupancy. Incomplete/false decisions remain no-ops. A real sensor-node assembler must submit its own EventRecord with evidence-backed sequence/timing quality through `event_record_submit`; that assembler is still an open D3 integration dependency.
 
 ```text
 BEGINRULE|name=DOOR_ENTRY|source=SONAR_A|calc=near=u16le(0)|when=near<3000|action=event:entry|ENDRULE
 ```
 
-For an integration check without pretending it is real sensor evidence, the ESP32-S3 console also accepts `APP EVENT <id> <sequence> <class>` and `APP RESET`. Results are logged and published to `pico/<node>/application/event` at QoS 1.
+The example above tests decision handoff and quality rejection, not people counting. For an explicit synthetic integration check, the ESP32-S3 console accepts `APP EVENT <id> <sequence> <class>`, `APP RESET` and `APP STATUS`. The console fixture supplies test quality flags deliberately and can exercise occupancy transitions; it is not physical entrance evidence. Processed results are offered to `pico/<node>/application/event` at QoS 1; enqueue success is not a broker acknowledgement.
 
 ### 4. Configuration & Profiling
 

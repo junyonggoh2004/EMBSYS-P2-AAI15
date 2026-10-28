@@ -170,8 +170,10 @@ static void fire_action_text(const rule_t *R, const char *a, double value, uint3
     }
 
     /* ---------------- event:<class> ----------------
-       Turns a rule decision into the fixed D6 EventRecord contract. The
-       ApplicationTask sink is non-blocking and owns occupancy mutation. */
+       A point-in-time rule decision is not a completed observation window.
+       Keep the handoff observable without inventing acquisition evidence.
+       ApplicationTask rejects entry/exit until a real window producer supplies
+       its sequence/timing quality through the EventRecord sink. */
     if (!strncmp(a, "event:", 6)) {
         const char *name = a + 6;
         event_class_t event_class = EVENT_CLASS_UNKNOWN;
@@ -184,21 +186,19 @@ static void fire_action_text(const rule_t *R, const char *a, double value, uint3
             return;
         }
         static uint32_t source_seq;
-        uint64_t end_us = (uint64_t)ts_ms * 1000u;
+        uint64_t end_us = hal_time_us(); /* decision time, not a reconstructed window */
         event_record_t event = {0};
         event.schema_version = EVENT_RECORD_SCHEMA_VERSION;
         event.event_id = event_record_next_id();
         event.source_id = event_source_id(R->source);
         event.source_seq = ++source_seq;
-        event.window_start_us = end_us > 1u ? end_us - 1u : 1u;
-        event.window_end_us = end_us ? end_us : 1u;
+        event.window_start_us = end_us;
+        event.window_end_us = end_us;
         event.features[0] = (float)value;
-        event.quality_flags = EVENT_QUALITY_SEQUENCE_COMPLETE |
-                              EVENT_QUALITY_TIMING_VALID |
-                              EVENT_QUALITY_RULE_VALID;
+        event.quality_flags = EVENT_QUALITY_RULE_VALID;
         event.valid = 1u;
         event.rule_class = (uint8_t)event_class;
-        printf("[RULE] %s: event=%s id=%u queued=%u\n", R->name,
+        printf("[RULE] %s: event=%s id=%u observation=unverified queued=%u\n", R->name,
                event_class_name(event_class), (unsigned)event.event_id,
                event_record_submit(&event) ? 1u : 0u);
         return;

@@ -12,6 +12,15 @@ cc -std=c11 -Wall -Wextra -Werror \
   -o "$OUT"
 "$OUT"
 
+SAFETY_OUT=${TMPDIR:-/tmp}/cody_event_safety_tests
+cc -std=c11 -Wall -Wextra -Werror \
+  -I libraries/EdgeCore/src \
+  tests/test_event_safety.c \
+  libraries/EdgeCore/src/application/event_record.c \
+  libraries/EdgeCore/src/application/application_state.c \
+  -o "$SAFETY_OUT"
+"$SAFETY_OUT"
+
 DISPATCH_OUT=${TMPDIR:-/tmp}/cody_dispatch_tests
 cc -std=c11 -Wall -Wextra -Werror \
   -I libraries/EdgeCore/src \
@@ -31,3 +40,14 @@ cc -std=c11 -Wall -Wextra -Werror -DSCHED_DEBUG=0 \
   libraries/EdgeCore/src/application/output_format.c \
   -o "$SCHEDULER_OUT"
 "$SCHEDULER_OUT"
+
+PROVENANCE_OUT=${TMPDIR:-/tmp}/cody_rule_provenance_tests
+cc -std=c11 -Wall -Wextra -Werror \
+  -I libraries/EdgeCore/src \
+  tests/test_rule_event_provenance.c \
+  libraries/EdgeCore/src/rule_engine/rule_action.c \
+  libraries/EdgeCore/src/application/event_record.c \
+  libraries/EdgeCore/src/application/application_state.c \
+  libraries/EdgeCore/src/application/application_dispatch.c \
+  -o "$PROVENANCE_OUT"
+"$PROVENANCE_OUT"

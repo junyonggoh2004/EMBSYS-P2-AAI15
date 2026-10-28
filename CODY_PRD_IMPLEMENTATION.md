@@ -13,8 +13,16 @@ smoke check in [README.md](README.md). Target build/image, queue/resource/core
 evidence and real entrance acceptance remain unrun. A subsequent shared-C timing
 update fixes one-shot self-rearming, periodic timeout recovery, disabled streams
 and deadline enforcement, with native scheduler/publisher regression tests.
-Identity/time-basis and quality-validation findings remain open; descriptions
-of frozen semantics below are historical, not a new acceptance claim.
+Local event validation now rejects non-finite/malformed data and stale or
+ambiguous occupancy changes, bounds occupancy increments and scopes RAM
+duplicates to `(source_id, event_id)`, with native regression tests. Canonical
+node/boot identity, cross-node time, real-window/quality provenance and
+persistence remain open. Rule event actions now report only `RULE_VALID` at a
+64-bit point-in-time decision; they no longer invent a complete timed window.
+Their entry/exit results are rejected until the real upstream observation
+producer supplies evidence-backed quality. Explicit `APP EVENT` remains a
+synthetic positive fixture. Descriptions of frozen semantics below are historical,
+not a new acceptance claim.
 
 This document records what was planned and executed from the three Cody PRDs. It does not mark physical sensor, crosstalk, WCET or live MQTT evidence complete without a target-board run.
 
@@ -106,4 +114,4 @@ sh tools/s3.sh flash
 sh tools/s3.sh monitor
 ```
 
-Then run `APP RESET`, submit the four application classes and duplicate/reorder cases, configure a rule with `action=event:entry`, and capture the `[APP]`, `[BENCH]` and MQTT output. These synthetic commands validate integration plumbing only; the real sensor-to-rule-to-EventRecord path is the evidence required for final D6 acceptance.
+On the active micro T-Kernel build, use `tools/mtk.sh` for flash/monitor (the commands above record the older Arduino checkpoint). Run `APP RESET`, submit the four synthetic application classes and duplicate/reorder cases, and inspect `APP STATUS`, `[APP]`, `[BENCH]` and MQTT output. A rule with `action=event:entry` now tests decision handoff and quality rejection: it must not increment occupancy without a completed observation. These fixtures validate plumbing only; the real sensor-to-window-to-EventRecord path is required for final D6 acceptance.

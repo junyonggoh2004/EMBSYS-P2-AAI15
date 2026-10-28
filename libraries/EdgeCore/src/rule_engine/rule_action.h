@@ -8,7 +8,8 @@
 extern "C" {
 #endif
 
-// Action dispatcher (moved from rules.c, logic unchanged)
+// C-facing action dispatcher. event:<class> reports a rule decision only;
+// it cannot establish observation-window completion/timing quality.
 void fire_action(const rule_t *R, double value, uint32_t ts_ms);
 
 #ifdef __cplusplus

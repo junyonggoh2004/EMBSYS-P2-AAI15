@@ -78,6 +78,14 @@ static void test_processing_and_publication(void)
     assert(r.result.code == APP_RESULT_REJECTED && r.occupancy == 1);
     assert(publishes == r.stats.processed);
 
+    /* A source quality flag must survive dispatch as a rejected result, even
+     * when its timestamp looks fresh and the rule calls it an entry. */
+    event = command("APP EVENT 8 8 entry", 7700000);
+    event.event.quality_flags |= EVENT_QUALITY_STALE;
+    r = handle(&event, 7700100);
+    assert(r.result.code == APP_RESULT_REJECTED && r.occupancy == 1);
+    assert(strstr(payload, "\"result\":4") && strstr(payload, "\"occupancy\":1"));
+
     unsigned before = publishes;
     event = command("APP STATUS", 8000000);
     r = handle(&event, 8000000);
@@ -90,6 +98,9 @@ static void test_processing_and_publication(void)
     event = command("APP EVENT 1 1 entry", 8000000);
     r = handle(&event, 8000100);
     assert(r.result.code == APP_RESULT_APPLIED && r.occupancy == 1);
+    event.event.source_id = 2; /* same event ID, another current local source */
+    r = handle(&event, 8000200);
+    assert(r.result.code == APP_RESULT_APPLIED && r.occupancy == 2);
 }
 
 static void test_bad_messages_and_commands(void)

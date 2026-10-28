@@ -32,6 +32,9 @@ compile_commands.json
 .DS_Store
 Thumbs.db
 
+# Local agent instructions
+/AGENTS.md
+
 # Python bytecode cache
 __pycache__/
 

@@ -7,7 +7,7 @@ Status date: 2026-10-28 (runtime-port update; original checklist retained below)
 
 ## 28 October: micro T-Kernel ApplicationTask port
 
-- [x] Add root `AGENTS.md` with ownership, runtime, RAM and verification boundaries.
+- [x] Maintain local root `AGENTS.md` with ownership, runtime, RAM and verification boundaries; it is ignored and excluded from the shared checkout.
 - [x] Replace the application message-draining placeholder with typed event/reset/status consumption; register the EventRecord sink before producers start.
 - [x] Use zero-wait message sends and existing per-buffer drop accounting; keep all occupancy/reset mutation in ApplicationTask.
 - [x] Preserve core 1, priority 23 and 4 KiB stack. Keep kernel message storage internal (192-byte growth in the native layout; verify target size with `TASKS`) and processing/formatting state in EdgeCore BSS mapped to PSRAM.
@@ -15,7 +15,8 @@ Status date: 2026-10-28 (runtime-port update; original checklist retained below)
 - [x] Native dispatch tests cover result publication/refusal, duplicate/stale/invalid outcomes, ordered reset and malformed commands/messages. Existing policy behavior is retained, not certified as the final application contract.
 - [ ] Build on the pinned SDK, inspect the linked image and PSRAM allocation, then run 4a, 5-neg, MQTT and synthetic application smoke cases. Use `TASKS` to prove core residency, stack/heap margin and full-buffer drops.
 - [x] Fix reviewed one-shot self-rearming, periodic timeout recovery, disabled-stream and deadline semantics in the shared C implementation; retain native regression evidence (see the timing update below).
-- [ ] Settle identity, cross-node clocks and quality validation. The task-glue and timing fixes do not close those application-contract findings.
+- [x] Add finite-field, validity/reserved-byte, stale/ambiguous quality and occupancy-capacity checks, plus source-scoped duplicate keys (see the event-safety update below).
+- [ ] Settle canonical node/boot identity, cross-node clocks and real observation/quality provenance. Local validation fixes do not close those application-contract findings.
 - [ ] Agree D2 field mappings and implement its bounded log handoff; no application flash writes are introduced by this port.
 
 The original phase checkboxes below record earlier work and remaining evidence.
@@ -32,6 +33,23 @@ no target/hardware checkbox is promoted on native-test evidence alone.
 - [x] Validate timing before hardware installation and reset the RUN-edge state on scheduler clear.
 - [x] Add native integration tests linking the real scheduler, timing state and output publisher with mocked hardware/network/rule consumers. Cover one-shot rearm, periodic recovery/skip-ahead, event-source handoff, deadline boundaries, invalid config, disabled streams and clear/reconfigure.
 - [ ] Run these behaviors on the pinned Pico/S3 toolchains and active micro T-Kernel board, then measure the full entrance workload. The 50 ms interpretation, asynchronous sonar capture, crosstalk, skipped/deadline metrics and hardware acceptance remain open with their owners.
+
+## 28 October: local event-safety update
+
+- [x] Reject non-finite confidence/features, invalid boolean/reserved bytes and explicit STALE records. Reject non-finite/out-of-range classifier thresholds without changing occupancy.
+- [x] Reject entry/exit decisions with AMBIGUOUS or SENSOR_TIMEOUT quality, missing sequence/timing quality, or exhausted `int32_t` occupancy capacity. An overflow failure remains distinct from an applied event.
+- [x] Scope the bounded 32-item RAM duplicate history to `(source_id, event_id)` instead of event ID alone. This adds 128 bytes to EdgeCore BSS; the EventRecord layout remains 80 bytes and result enums are unchanged.
+- [x] Native tests cover finite-value boundaries, malformed fields, stale/ambiguous/timeout entry and exit, independent sources using the same event ID, history wrap, source capacity, invalid classifier policy and occupancy overflow. Dispatch tests verify rejected-quality publication and independent-source processing.
+- [ ] Agree a canonical node/boot/sequence identity, cross-node time basis, source-name/hash collision handling, replay/reset/persistence policy and numeric D2 reason mappings. Source-scoped local keys do not solve these contracts; no schema or persistence decision is introduced here.
+- [ ] Replace synthetic rule-window quality assertions with the real sensor-node observation assembler, then retain multi-node and physical entrance evidence. Do not claim exactly-once occupancy across reboots or final quality provenance from these native tests.
+
+## 28 October: rule-decision provenance guard
+
+- [x] Remove fabricated sequence-complete/timing-valid flags and the invented one-microsecond window from `event:<class>` actions. They report only a rule decision at the full 64-bit decision time and print `observation=unverified`.
+- [x] Verify that repeated raw rule entry/exit decisions are rejected without changing occupancy; incomplete/false decisions remain no-ops. Explicit `APP EVENT` fixtures still exercise synthetic positive transitions.
+- [x] Add native tests linking the actual rule-action, EventRecord, dispatch and occupancy modules. Cover persistent true rules, all four classes, clock values beyond 32-bit millisecond rollover, invalid classes, full-sink single-offer behavior and an explicitly assembled completed-window fixture.
+- [ ] Integrate the real sensor-node window assembler with evidence-backed timestamps/quality and the agreed canonical identity. This guard deliberately does not supply or approve an observation-window policy, nor does it turn a point decision into a real entrance event.
+- [ ] Capture target/core/resource and physical multi-sensor evidence after the producer exists; D2 logging/retention and numeric mappings remain separate gates.
 
 D3 covers periodic, one-shot, event-driven and logical-sequence timing. The professor feedback makes the entrance path the acceptance case: radar presence opens an observation window, two HC-SR04 sensors are sampled in a defined order without blocking SchedulerTask or causing crosstalk, and the timing is proven under the complete workload.
 

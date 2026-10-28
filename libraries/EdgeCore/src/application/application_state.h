@@ -39,10 +39,17 @@ typedef struct {
     uint64_t last_window_end_us;
 } application_source_state_t;
 
+/* Current local source-scoped key. Does not provide node/boot uniqueness or
+ * persistence; those remain separate D3/D6 contracts. */
+typedef struct {
+    uint32_t source_id;
+    uint32_t event_id;
+} application_event_identity_t;
+
 typedef struct {
     application_policy_t policy;
     int32_t occupancy;
-    uint32_t recent_event_ids[APPLICATION_DEDUP_HISTORY];
+    application_event_identity_t recent_events[APPLICATION_DEDUP_HISTORY];
     uint8_t recent_count;
     uint8_t recent_next;
     application_source_state_t sources[APPLICATION_SOURCE_HISTORY];

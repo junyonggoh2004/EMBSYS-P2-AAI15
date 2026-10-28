@@ -1,14 +1,17 @@
 #include "application/application_state.h"
+#include <math.h>
 #include <string.h>
 
-static bool seen_event(const application_state_t *state, uint32_t event_id) {
+static bool seen_event(const application_state_t *state, const event_record_t *event) {
     for (uint8_t i = 0; i < state->recent_count; i++)
-        if (state->recent_event_ids[i] == event_id) return true;
+        if (state->recent_events[i].source_id == event->source_id &&
+            state->recent_events[i].event_id == event->event_id) return true;
     return false;
 }
 
-static void remember_event(application_state_t *state, uint32_t event_id) {
-    state->recent_event_ids[state->recent_next] = event_id;
+static void remember_event(application_state_t *state, const event_record_t *event) {
+    state->recent_events[state->recent_next] =
+        (application_event_identity_t){event->source_id, event->event_id};
     state->recent_next = (uint8_t)((state->recent_next + 1u) % APPLICATION_DEDUP_HISTORY);
     if (state->recent_count < APPLICATION_DEDUP_HISTORY) state->recent_count++;
 }
@@ -42,6 +45,14 @@ application_result_t application_process_event(application_state_t *state,
     out.occupancy_before = state->occupancy;
     out.occupancy_after = state->occupancy;
 
+    if (!isfinite(state->policy.ml_min_confidence) ||
+        state->policy.ml_min_confidence < 0.0f || state->policy.ml_min_confidence > 1.0f) {
+        state->rejected++;
+        out.reason = "policy";
+        out.degraded = true;
+        return out;
+    }
+
     const char *validation = NULL;
     if (!event_record_validate(event, now_us, state->policy.freshness_ms, &validation)) {
         state->rejected++;
@@ -49,7 +60,7 @@ application_result_t application_process_event(application_state_t *state,
         out.degraded = true;
         return out;
     }
-    if (seen_event(state, event->event_id)) {
+    if (seen_event(state, event)) {
         state->duplicates++;
         out.code = APP_RESULT_DUPLICATE;
         out.reason = "duplicate";
@@ -71,7 +82,7 @@ application_result_t application_process_event(application_state_t *state,
         out.code = APP_RESULT_REORDERED;
         out.reason = "reordered";
         out.degraded = true;
-        remember_event(state, event->event_id);
+        remember_event(state, event);
         return out;
     }
 
@@ -90,23 +101,32 @@ application_result_t application_process_event(application_state_t *state,
         state->rejected++;
         out.reason = "no classification";
         out.degraded = true;
-        remember_event(state, event->event_id);
+        remember_event(state, event);
         return out;
     }
 
     if ((decided == EVENT_CLASS_ENTRY || decided == EVENT_CLASS_EXIT) &&
         ((event->quality_flags & (EVENT_QUALITY_SEQUENCE_COMPLETE | EVENT_QUALITY_TIMING_VALID)) !=
          (EVENT_QUALITY_SEQUENCE_COMPLETE | EVENT_QUALITY_TIMING_VALID) ||
-         (event->quality_flags & EVENT_QUALITY_SENSOR_TIMEOUT))) {
+         (event->quality_flags & (EVENT_QUALITY_SENSOR_TIMEOUT | EVENT_QUALITY_AMBIGUOUS)))) {
         state->rejected++;
         out.decided_class = decided;
         out.reason = "quality";
         out.degraded = true;
-        remember_event(state, event->event_id);
+        remember_event(state, event);
         return out;
     }
 
-    remember_event(state, event->event_id);
+    if (decided == EVENT_CLASS_ENTRY && state->occupancy == INT32_MAX) {
+        state->rejected++;
+        out.decided_class = decided;
+        out.reason = "occupancy capacity";
+        out.degraded = true;
+        remember_event(state, event);
+        return out;
+    }
+
+    remember_event(state, event);
     if (source) {
         source->source_id = event->source_id;
         source->last_seq = event->source_seq;
