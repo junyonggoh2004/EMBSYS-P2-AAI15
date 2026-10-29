@@ -34,6 +34,12 @@ Thumbs.db
 
 # Local agent instructions
 /AGENTS.md
+/.agents/
+
+# Local research skills, installation metadata and generated research documents
+/.aider-desk/skills/research*
+/skills-lock.json
+/d3-integration-research/
 
 # Python bytecode cache
 __pycache__/

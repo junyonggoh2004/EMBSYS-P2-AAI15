@@ -28,6 +28,10 @@
 #include <string.h>
 #include <strings.h>
 
+#ifdef EDGE_MTK_RUNTIME_TEST
+/* Native integration tests replace SDK/kernel boundaries, not task logic. */
+#include "mtk_runtime_test.h"
+#else
 #include <tk/tkernel.h>
 #include "esp_heap_caps.h"
 #include "esp_rom_sys.h"
@@ -36,6 +40,7 @@
 #include "hal/mwdt_ll.h"
 #include "hal/timg_ll.h"
 #include "hal/wdt_hal.h"
+#endif
 
 #include "hal/hal.h"
 #include "application/scheduler.h"
@@ -655,7 +660,11 @@ void runtime_print_tasks(void)
 static void idle_task(INT stacd, void *exinf)
 {
     (void)stacd; (void)exinf;
+#ifdef EDGE_MTK_RUNTIME_TEST
+    abort(); /* The host fixture must never execute a hardware idle task. */
+#else
     for (;;) asm volatile ("waiti 0" ::: "memory");
+#endif
 }
 
 #define CHECK(what, expr) do {                                              \

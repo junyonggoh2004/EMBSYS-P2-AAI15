@@ -330,6 +330,12 @@ void cfg_parse_end(app_cfg_t *cfg) {
         config_error(cfg, "one-shot/event timing requires poll mode");
         return;
     }
+    if (cfg->proto == proto_gpio && cfg->gpio_mode &&
+        strcmp(cfg->gpio_mode, "pulse") == 0 && cfg->gpio_trig >= 0 &&
+        cfg->gpio_trig == cfg->gpio_echo) {
+        config_error(cfg, "gpio.trig and gpio.echo must differ");
+        return;
+    }
     if (cfg->proto != proto_spi) return;
 
     if (strcmp(cfg->spi_host, "spi2") == 0)

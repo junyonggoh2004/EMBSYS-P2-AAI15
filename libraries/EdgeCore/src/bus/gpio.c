@@ -220,6 +220,11 @@ static int gpio_init_cfg(const sensor_cfg_t *scfg, void **ctx_out)
             free(ctx);
             return -3;
         }
+        if (ctx->g.gpio_trig == ctx->g.gpio_echo) {
+            printf("[GPIO] %s: gpio.trig and gpio.echo must differ\n", ctx->g.name);
+            free(ctx);
+            return -3;
+        }
         if (!hal_gpio_valid(ctx->g.gpio_trig) || !hal_gpio_valid(ctx->g.gpio_echo)) {
             printf("[GPIO] %s: pin %d or %d not available on this board\n",
                    ctx->g.name, ctx->g.gpio_trig, ctx->g.gpio_echo);

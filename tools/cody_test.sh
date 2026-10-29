@@ -12,6 +12,16 @@ cc -std=c11 -Wall -Wextra -Werror \
   -o "$OUT"
 "$OUT"
 
+GPIO_OUT=${TMPDIR:-/tmp}/cody_gpio_pulse_config_tests
+cc -std=c11 -Wall -Wextra -Werror \
+  -I libraries/EdgeCore/src \
+  tests/test_gpio_pulse_config.c \
+  libraries/EdgeCore/src/bus/gpio.c \
+  libraries/EdgeCore/src/application/config_parser.c \
+  libraries/EdgeCore/src/application/timing_contract.c \
+  -o "$GPIO_OUT"
+"$GPIO_OUT"
+
 SAFETY_OUT=${TMPDIR:-/tmp}/cody_event_safety_tests
 cc -std=c11 -Wall -Wextra -Werror \
   -I libraries/EdgeCore/src \
@@ -55,3 +65,6 @@ cc -std=c11 -Wall -Wextra -Werror \
 # Test the target runner's parsing/failure behavior without pyserial or a board.
 if command -v python3 >/dev/null 2>&1; then SMOKE_PY=python3; else SMOKE_PY=python; fi
 "$SMOKE_PY" -m unittest discover -s tests -p test_application_smoke.py
+
+# Execute actual application/control runtime bodies with test-only kernel/SDK seams.
+sh tools/mtk_runtime_test.sh

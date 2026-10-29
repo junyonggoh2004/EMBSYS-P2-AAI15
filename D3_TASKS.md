@@ -3,7 +3,14 @@
 Contract and integration owner: **Cody**  
 Implementation owners: Sitt for sensor/hardware timing, Brendan for SchedulerTask sequencing/ordering, Hasif for platform/runtime and RTOS/queue benchmarking  
 Branch: `d3`, including the current D1/D2 `main` baseline
-Status date: 2026-10-28 (runtime-port update; original checklist retained below)
+Status date: 2026-10-29 (pulse-pin validation update; original checklist retained below)
+
+## 29 October: pulse Trigger/Echo validation
+
+- [x] Reject pulse configurations with identical Trigger/Echo pins at parser completion and defensively in the GPIO driver before changing pin modes.
+- [x] Add native regression coverage through the real parser and GPIO driver: identical pins fail without hardware setup, distinct pins succeed, digital inputs remain valid, and existing missing/unavailable-pin rejection is preserved. Included in `sh tools/cody_test.sh`.
+- [x] Run Cody/native runtime, D2 host, HAL-boundary and micro T-Kernel source-purity checks. These pass; existing unrelated compiler warnings remain.
+- [ ] Validate the target image and hardware behavior. `sh tools/mtk.sh check` still reports the pinned ESP-IDF installation missing. Cross-sensor pin ownership and asynchronous capture remain open.
 
 ## 28 October: micro T-Kernel ApplicationTask port
 
@@ -57,6 +64,20 @@ no target/hardware checkbox is promoted on native-test evidence alone.
 - [x] Keep the test wiring-free (GPIO8 input only), exclude flash programming, and label host Git metadata separately from firmware provenance. Do not infer a physical entrance/overflow/timing/T-23 pass from synthetic plumbing.
 - [x] Unit-test partial serial reads, noisy/stale replies, required-pattern timeouts, reset/fault detection and incorrect task placement/buffer sizes without a serial dependency or board.
 - [ ] Build/flash the pinned micro T-Kernel image, run `image`, then execute `app-test`, 4a, 5-neg and MQTT on the actual target. Retain image, core, stack/heap and raw serial evidence; no ESP32-S3 or pinned SDK is available in the current development environment.
+
+## 28 October: native micro T-Kernel runtime-glue checks
+
+- [x] Compile and exercise the actual `runtime_mtk.c` application/control bodies with explicit test-only kernel/SDK boundaries. Target builds keep the original headers and hardware idle instruction.
+- [x] Check startup failure before task creation, typed buffer creation, registered EventRecord sink and requested ApplicationTask core/priority/stack attributes.
+- [x] Exercise eight-item capacity, deep-copied producer data, drop-newest event/reset behavior and real `runtime_send` diagnostic accounting against a bounded queue model.
+- [x] Exercise actual publisher topic/QoS/payload handoff, offline/full publisher failures, duplicate retries without repeated occupancy updates, full benchmark-buffer drops, malformed message lengths and FIFO console reset/event/status requests.
+- [ ] Prove real kernel queue/scheduling behavior, SDK ABI, image contents, stack/heap margin and measured core residency on the pinned target. Native test doubles do not close those hardware gates.
+
+The pinned SDK and target remain unavailable. Only about 2.3 GiB of disk space
+was free at this check, so a large SDK/toolchain installation was not attempted.
+The native runtime fixture avoids downloading a substitute toolchain or claiming
+a target build. Install/use the qualified environment on a machine with sufficient
+space and connect the ESP32-S3 before the pending board gates.
 
 ### Decisions needed before real observation integration
 
@@ -140,7 +161,8 @@ Evidence: state table plus positive/negative examples in the configuration docum
 
 - [x] List every new configuration key, type, unit, range and default.
 - [x] Reject unsupported mode/protocol combinations before changing active hardware.
-- [ ] Validate that trigger/echo pins differ and that both sensors do not conflict with reserved or active pins.
+- [x] Reject identical Trigger/Echo pins before hardware setup, with parser and real-driver native regression coverage.
+- [ ] Validate cross-sensor active-pin conflicts; retain the existing per-board reserved-pin checks and obtain target evidence.
 - [-] Bound periods, timeouts and window durations; pair guard intervals still await the physical design. Queue depths remain the D1 provisional values.
 - [x] Refuse an invalid block before it is installed; existing active sensor slots remain unchanged.
 

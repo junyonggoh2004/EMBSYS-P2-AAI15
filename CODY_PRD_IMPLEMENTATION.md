@@ -31,7 +31,21 @@ storage reports. Its serial/parser failure tests run offline in
 raw logs with host revision metadata. It has not run on a connected board here;
 matching firmware build/image provenance and physical acceptance remain open.
 
+**Native runtime boundary checks.** `sh tools/mtk_runtime_test.sh` now compiles
+the real micro T-Kernel runtime C task bodies with test-only kernel/SDK seams.
+It checks queue capacity/drop accounting, FIFO resets, actual publication
+handoff/refusal and occupancy behavior. It also records the creation attributes
+requested for ApplicationTask. These are native integration checks, not real
+kernel scheduling, target ABI, core residency or stack measurements; the full
+target gates remain open. `tools/cody_test.sh` includes this fixture.
+
 This document records what was planned and executed from the three Cody PRDs. It does not mark physical sensor, crosstalk, WCET or live MQTT evidence complete without a target-board run.
+
+**29 October 2026 pulse-pin validation.** Pulse configurations now reject an
+identical Trigger/Echo pin at parser completion and again in the GPIO driver,
+before pin modes change. `tools/cody_test.sh` exercises the real parser/driver
+with mocked HAL calls. Cross-sensor ownership, asynchronous capture and target
+acceptance remain open; the pinned ESP-IDF installation is still unavailable.
 
 ## Delivery plan and result
 
