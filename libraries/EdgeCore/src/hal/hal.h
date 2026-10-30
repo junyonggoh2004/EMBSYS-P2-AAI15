@@ -107,6 +107,28 @@ int hal_gpio_pulse(int pin, uint32_t ms);
 // the reference firmware does.
 int hal_gpio_measure_pulse(int trig, int echo, uint32_t trig_us, uint32_t timeout_us);
 
+// Asynchronous pulse acquisition, owned by the scheduler's task/core. Start
+// waits only for the bounded trigger (1..1000 us); poll/cancel never wait.
+// timeout_us bounds the whole acquisition from trigger start. Already-high
+// Echo and an occupied capture resource return BUSY without firing a trigger.
+// No callback may mutate scheduler/application state. A backend may support
+// one capture at a time; BUSY must not steal the active sensor's capture.
+// Configure Echo as an input before start. Start does not repurpose that pin.
+// Unsupported targets retain the legacy synchronous API above.
+#define HAL_PULSE_PENDING 1
+typedef struct {
+    uint64_t rise_us;
+    uint64_t fall_us;
+    uint32_t width_us;
+} hal_pulse_result_t;
+int hal_gpio_capture_start(int trig, int echo, uint32_t trig_us, uint32_t timeout_us);
+// Returns HAL_OK with a complete result, HAL_PULSE_PENDING, or HAL_ERR_*.
+// Success/error consumes the capture; pending retains it. Late or incomplete
+// pulses are errors, never valid widths. Timestamp units are monotonic us.
+int hal_gpio_capture_poll(int echo, hal_pulse_result_t *result);
+// Idempotent for an inactive pin; must not cancel another pin's capture.
+void hal_gpio_capture_cancel(int echo);
+
 // Counts both edges on pin from an interrupt, so no edge is lost between
 // samples. enable=false stops counting. Returns HAL_OK, HAL_ERR_PIN, or
 // HAL_ERR_UNSUPPORTED if the pin cannot interrupt.

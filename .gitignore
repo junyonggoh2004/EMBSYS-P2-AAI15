@@ -34,7 +34,20 @@ Thumbs.db
 
 # Local agent instructions
 /AGENTS.md
+/agents.md
+/skills.md
 /.agents/
+
+# Local planning and research notes (kept on disk, excluded from commits)
+/CODY_PRD_IMPLEMENTATION.md
+/CODY_WEEK8_SUBMODULE.md
+/D2_D4_RESEARCH_CONTEXT.md
+/D2_EVENT_RECORD_DESIGN.md
+/D2_SPI_DESIGN_NOTES.md
+/D2_SPI_ESP32S3_RESEARCH.md
+/D2_SPI_TODO.md
+/D3_TASKS.md
+/D4_EMBEDDED_ML_RESEARCH.md
 
 # Local research skills, installation metadata and generated research documents
 /.aider-desk/skills/research*

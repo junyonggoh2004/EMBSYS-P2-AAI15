@@ -261,6 +261,7 @@ int hal_gpio_count_edges(int pin, bool enable)
 {
     if (!hal_gpio_valid(pin)) return HAL_ERR_PIN;
     if (!s_gpio_irq) return HAL_ERR_UNSUPPORTED;
+    if (pin == s_echo_pin) return HAL_ERR_BUSY;
     if (enable) {
         gpio_ll_intr_disable(s_gpio, pin);
         s_edges[pin] = 0;
@@ -295,6 +296,8 @@ static void echo_disarm(int pin)
     s_echo_pin = -1;
 }
 
+#include "pulse_capture_mtk.h"
+
 // The reference busy-wait, used only where the task cannot sleep (no GPIO
 // interrupt yet, or called outside a task).
 static int measure_pulse_busy(int echo, uint32_t timeout_us, uint64_t t0)
@@ -310,6 +313,7 @@ static int measure_pulse_busy(int echo, uint32_t timeout_us, uint64_t t0)
 int hal_gpio_measure_pulse(int trig, int echo, uint32_t trig_us, uint32_t timeout_us)
 {
     if (!hal_gpio_valid(trig) || !hal_gpio_valid(echo)) return HAL_ERR_TIMEOUT;
+    if (s_capture_active) return HAL_ERR_BUSY;
     hal_gpio_mode(trig, HAL_GPIO_OUTPUT);           // driven low
     esp_rom_delay_us(2);
 

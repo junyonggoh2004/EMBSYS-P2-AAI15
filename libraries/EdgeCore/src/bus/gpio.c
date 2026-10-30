@@ -17,6 +17,7 @@ typedef struct {
     uint32_t       counter;     // edge counter (for "counter" mode)
     bool           irq_count;   // counter mode: edges counted by interrupt
     bool           inited;
+    bool           pulse_pending;
 } gpio_ctx_t;
 
 
@@ -309,20 +310,26 @@ static int gpio_probe(void *ctx_)
         (void)hal_gpio_read(ctx->g.gpio_pin);
         return 0;
     } else if (mode_is_pulse(ctx)) {
-        int us = measure_pulse_us(ctx->g.gpio_trig,
-                                  ctx->g.gpio_echo,
-                                  (uint32_t)ctx->g.gpio_trig_us,
-                                  (uint32_t)ctx->g.gpio_pulse_timeout_us);
-        (void)us; // timeout is still "sensor present"
+        // Configuration/probe must not trigger or wait on an observation.
+        // A GPIO pin's presence does not establish that a sonar is connected.
         return 0;
     }
     return 0;
+}
+
+static void gpio_cancel(void *ctx_)
+{
+    gpio_ctx_t *ctx = ctx_;
+    if (!ctx || !ctx->pulse_pending) return;
+    hal_gpio_capture_cancel(ctx->g.gpio_echo);
+    ctx->pulse_pending = false;
 }
 
 static void gpio_deinit(void *ctx_)
 {
     gpio_ctx_t *ctx = (gpio_ctx_t *)ctx_;
     if (!ctx) return;
+    gpio_cancel(ctx);
     if (ctx->irq_count) {
         (void)hal_gpio_count_edges(ctx->g.gpio_pin, false);
     }
@@ -389,10 +396,31 @@ static int gpio_poll_once(void *ctx_, uint8_t *buf, size_t cap)
         return 4;
 
     } else if (mode_is_pulse(ctx)) {
-        int us = measure_pulse_us(ctx->g.gpio_trig,
+        if (cap < 3) return -2; // do not start hardware without output space
+        if (!ctx->pulse_pending) {
+            int rc = hal_gpio_capture_start(ctx->g.gpio_trig, ctx->g.gpio_echo,
+                                           (uint32_t)ctx->g.gpio_trig_us,
+                                           (uint32_t)ctx->g.gpio_pulse_timeout_us);
+            if (rc == HAL_OK) {
+                ctx->pulse_pending = true;
+                return BUS_POLL_PENDING;
+            }
+            if (rc != HAL_ERR_UNSUPPORTED) return rc;
+        }
+        int us;
+        if (ctx->pulse_pending) {
+            hal_pulse_result_t result;
+            int rc = hal_gpio_capture_poll(ctx->g.gpio_echo, &result);
+            if (rc == HAL_PULSE_PENDING) return BUS_POLL_PENDING;
+            gpio_cancel(ctx);
+            if (rc != HAL_OK) return rc; // no valid-distance tag on failure
+            us = result.width_us > 65535u ? 65535 : (int)result.width_us;
+        } else {
+            us = measure_pulse_us(ctx->g.gpio_trig,
                                   ctx->g.gpio_echo,
                                   (uint32_t)ctx->g.gpio_trig_us,
                                   (uint32_t)ctx->g.gpio_pulse_timeout_us);
+        }
         if (us <= 0) {
             if (cap < 1) return -2;
             buf[0] = 0x00;   // timeout/no pulse
@@ -452,5 +480,6 @@ const bus_t bus_gpio = {
     .probe        = gpio_probe,
     .poll_once    = gpio_poll_once,
     .stream_start = gpio_stream_start,
-    .stream_stop  = gpio_stream_stop
+    .stream_stop  = gpio_stream_stop,
+    .cancel       = gpio_cancel
 };

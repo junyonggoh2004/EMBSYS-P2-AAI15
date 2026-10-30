@@ -14,6 +14,7 @@ typedef struct {
     char name[16];
     uint32_t delay_us;
     unsigned polls, starts, stops;
+    unsigned pending_polls, cancels;
 } fixture_t;
 
 static uint64_t now_us;
@@ -39,15 +40,20 @@ static int poll(void *context, uint8_t *buf, size_t cap)
     fixture_t *f = context;
     assert(cap);
     ++f->polls;
+    if (f->pending_polls) {
+        --f->pending_polls;
+        return BUS_POLL_PENDING;
+    }
     now_us += f->delay_us;
     buf[0] = 1;
     return 1;
 }
 static void start(void *context) { ++((fixture_t *)context)->starts; }
 static void stop(void *context) { ++((fixture_t *)context)->stops; }
+static void cancel(void *context) { ++((fixture_t *)context)->cancels; }
 static const bus_t bus = {
     .name = "gpio", .init_cfg = init, .deinit = deinit, .poll_once = poll,
-    .stream_start = start, .stream_stop = stop
+    .stream_start = start, .stream_stop = stop, .cancel = cancel
 };
 const bus_t *bus_lookup(const char *name) { (void)name; return &bus; }
 bool mqtt_follow_remote_source(const char *node, const char *source, const char *alias)
@@ -193,6 +199,42 @@ static void test_periodic_skip_and_invalid_config(void)
     assert(fixture_count == 1); /* invalid config did not touch hardware */
 }
 
+static void test_pending_acquisition(void)
+{
+    reset();
+    app_cfg_t sonar = config("SONAR", TIMING_MODE_ONE_SHOT);
+    app_cfg_t other = config("OTHER", TIMING_MODE_PERIODIC);
+    assert(scheduler_add_config(&sonar) == 0);
+    assert(scheduler_add_config(&other) == 1);
+    fixtures[0]->pending_polls = 2;
+    uint64_t before = now_us;
+    scheduler_run_all(true);
+    assert(now_us == before && samples == 1); // other sensor still serviced
+    assert(scheduler_next_due_ms(true, 1000) == 1); // no due-state busy loop
+    assert(scheduler_trigger("SONAR", now_us) == 0); // no second arm
+    now_us += 1000;
+    scheduler_run_all(true);
+    assert(samples == 1);
+    now_us += 1000;
+    scheduler_run_all(true);
+    assert(samples == 2 && fixtures[0]->polls == 3);
+    scheduler_run_all(true);
+    assert(fixtures[0]->polls == 3); // completed one-shot remains complete
+
+    assert(scheduler_trigger("SONAR", now_us) == 1);
+    fixtures[0]->pending_polls = 100;
+    scheduler_run_all(true);
+    now_us += 20001;
+    scheduler_run_all(true);
+    assert(fixtures[0]->cancels == 1 && samples == 2); // deadline cancels
+    assert(scheduler_trigger("SONAR", now_us) == 1);
+    scheduler_run_all(true);
+    scheduler_run_all(false);
+    assert(fixtures[0]->cancels == 2); // STOP cancels exactly once
+    scheduler_run_all(false);
+    assert(fixtures[0]->cancels == 2);
+}
+
 int main(void)
 {
     test_one_shot();
@@ -202,6 +244,7 @@ int main(void)
     test_event_source_and_timeout();
     test_clear_while_running();
     test_periodic_skip_and_invalid_config();
+    test_pending_acquisition();
     reset();
     puts("scheduler timing: PASS (one-shot, timeout recovery, disabled stream, deadline, source handoff)");
     return 0;

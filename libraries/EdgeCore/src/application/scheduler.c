@@ -2,7 +2,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
+#include <ctype.h>
 #include "hal/hal.h"
+#include "application/scheduler.h"
+#include "application/pulse_sequence.h"
 #include "application/output_format.h"
 #include "bus/bus_common.h"
 #include "bus/bus_if.h"
@@ -29,14 +33,45 @@ typedef struct {
     void *ctx;
     app_cfg_t cfg_copy;         // keep a private copy
     bool streaming;
+    bool pending;
     timing_state_t timing;
     uint32_t overruns;          // samples skipped because the scheduler fell behind
     uint32_t last_overrun_log_ms;
+    uint32_t acquisition_errors, last_error_log_ms;
     bool in_use;
 } active_sensor_t;
 
 static active_sensor_t g_sensors[MAX_ACTIVE];
 static bool s_prev_running;
+static pulse_sequence_t s_pair;
+static unsigned s_pair_slots[2];
+static bool s_pair_reported = true;
+
+static void pair_report(void)
+{
+    if (s_pair_reported || pulse_sequence_active(&s_pair)) return;
+    printf("[PAIR] state=%s outcome=%u elapsed_us=%llu window_us=%u\n",
+           s_pair.state == PULSE_SEQUENCE_COMPLETE ? "complete" :
+           s_pair.state == PULSE_SEQUENCE_CANCELLED ? "cancelled" : "failed",
+           (unsigned)s_pair.outcome,
+           (unsigned long long)(s_pair.finished_us - s_pair.started_us),
+           (unsigned)s_pair.config.window_us);
+    for (unsigned i = 0; i < 2; ++i) {
+        const pulse_sequence_sample_t *sample = &s_pair.samples[i];
+        printf("[PAIR] sensor=%c name=%s attempted=%u valid=%u status=%d rise_us=%llu fall_us=%llu width_us=%u\n",
+               'A' + i, g_sensors[s_pair_slots[i]].cfg_copy.name,
+               sample->attempted ? 1u : 0u, sample->valid ? 1u : 0u, sample->status,
+               (unsigned long long)sample->pulse.rise_us,
+               (unsigned long long)sample->pulse.fall_us, (unsigned)sample->pulse.width_us);
+    }
+    s_pair_reported = true;
+}
+
+void scheduler_pair_cancel(void)
+{
+    pulse_sequence_cancel(&s_pair, hal_time_us());
+    pair_report();
+}
 
 /* Map enum -> name used by bus_lookup */
 static inline const char* proto_name(proto_t p) {
@@ -58,6 +93,8 @@ int scheduler_count(void) {
 
 /* Initialize scheduler */
 void scheduler_reset(void) {
+    scheduler_pair_cancel();
+    memset(&s_pair, 0, sizeof s_pair);
     /* Contexts are opaque to the scheduler. Give each driver a chance to
        stop hardware activity and release platform resources before CLEAR. */
     for (int i = 0; i < MAX_ACTIVE; i++) {
@@ -94,10 +131,98 @@ void scheduler_dump(void) {
                        (unsigned)c->spi_tx_len, (unsigned)c->spi_read_len,
                        (unsigned)c->spi_timeout_ms);
             }
+            printf("[SENSOR] name=%s pending=%u timeouts=%u errors=%u overruns=%u\n",
+                   c->name, g_sensors[i].pending ? 1u : 0u,
+                   (unsigned)g_sensors[i].timing.timeouts,
+                   (unsigned)g_sensors[i].acquisition_errors,
+                   (unsigned)g_sensors[i].overruns);
         }
     }
 }
 /* Add one config block as a new active sensor */
+static bool pulse_config(const app_cfg_t *c)
+{
+    return c->proto == proto_gpio && c->gpio_mode && !strcmp(c->gpio_mode, "pulse");
+}
+
+static int pair_start(void *context, unsigned sensor, uint32_t timeout_us)
+{
+    (void)context;
+    const app_cfg_t *c = &g_sensors[s_pair_slots[sensor]].cfg_copy;
+    return hal_gpio_capture_start(c->gpio_trig, c->gpio_echo,
+                                  c->gpio_trig_us > 0 ? (uint32_t)c->gpio_trig_us : 10u,
+                                  timeout_us);
+}
+static int pair_poll(void *context, unsigned sensor, hal_pulse_result_t *pulse)
+{
+    (void)context;
+    return hal_gpio_capture_poll(g_sensors[s_pair_slots[sensor]].cfg_copy.gpio_echo, pulse);
+}
+static void pair_cancel(void *context, unsigned sensor)
+{
+    (void)context;
+    hal_gpio_capture_cancel(g_sensors[s_pair_slots[sensor]].cfg_copy.gpio_echo);
+}
+
+int scheduler_pair_command(const char *args)
+{
+    if (!args) return HAL_ERR_INVALID;
+    if (s_prev_running || pulse_sequence_active(&s_pair)) return HAL_ERR_BUSY;
+    char names[2][32], order[2], guard[32], extra;
+    if (sscanf(args, "%31s %31s %1s %31s %c", names[0], names[1], order, guard, &extra) != 4 ||
+        (order[0] != 'A' && order[0] != 'B')) return HAL_ERR_INVALID;
+    for (const char *p = guard; *p; ++p) if (!isdigit((unsigned char)*p)) return HAL_ERR_INVALID;
+    errno = 0;
+    unsigned long guard_us = strtoul(guard, NULL, 10);
+    if (errno == ERANGE || guard_us > UINT32_MAX) return HAL_ERR_INVALID;
+    unsigned slots[2] = {MAX_ACTIVE, MAX_ACTIVE};
+    for (unsigned i = 0; i < MAX_ACTIVE; ++i) {
+        if (!g_sensors[i].in_use) continue;
+        for (unsigned n = 0; n < 2; ++n) {
+            if (!strcmp(g_sensors[i].cfg_copy.name, names[n])) {
+                if (slots[n] != MAX_ACTIVE) return HAL_ERR_INVALID; // ambiguous name
+                slots[n] = i;
+            }
+        }
+    }
+    pulse_sequence_config_t config = {
+        .first = order[0] == 'A' ? 0u : 1u, .guard_us = (uint32_t)guard_us,
+        .window_us = PULSE_SEQUENCE_WINDOW_MAX_US,
+        .error_policy = PULSE_SEQUENCE_FAIL_FAST // diagnostic stops on its first error
+    };
+    if (slots[0] == MAX_ACTIVE || slots[1] == MAX_ACTIVE || slots[0] == slots[1])
+        return HAL_ERR_INVALID;
+    for (unsigned n = 0; n < 2; ++n) {
+        const active_sensor_t *sensor = &g_sensors[slots[n]];
+        if (!pulse_config(&sensor->cfg_copy) || sensor->pending) return HAL_ERR_INVALID;
+        config.timeout_us[n] = sensor->cfg_copy.gpio_pulse_timeout_us > 0 ?
+                               (uint32_t)sensor->cfg_copy.gpio_pulse_timeout_us : 30000u;
+    }
+    const pulse_sequence_ops_t ops = {pair_start, pair_poll, pair_cancel};
+    int rc = pulse_sequence_begin(&s_pair, &config, &ops, NULL, hal_time_us());
+    if (rc != HAL_OK) return rc;
+    memcpy(s_pair_slots, slots, sizeof slots);
+    s_pair_reported = false;
+    printf("[PAIR] armed A=%s B=%s first=%s guard_us=%u window_us=%u\n",
+           names[0], names[1], order, (unsigned)config.guard_us, (unsigned)config.window_us);
+    return HAL_OK;
+}
+
+static size_t config_pins(const app_cfg_t *c, int pins[4])
+{
+    switch (c->proto) {
+    case proto_gpio:
+        if (pulse_config(c)) { pins[0] = c->gpio_trig; pins[1] = c->gpio_echo; return 2; }
+        pins[0] = c->gpio_pin; return 1;
+    case proto_i2c: pins[0] = c->i2c_sda; pins[1] = c->i2c_scl; return 2;
+    case proto_uart: pins[0] = c->uart_tx; pins[1] = c->uart_rx; return 2;
+    case proto_spi:
+        pins[0] = c->spi_sclk; pins[1] = c->spi_mosi;
+        pins[2] = c->spi_miso; pins[3] = c->spi_cs; return 4;
+    default: return 0;
+    }
+}
+
 int scheduler_add_config(const app_cfg_t *cfg_in) {
     const char *timing_error = NULL;
     if (!cfg_in || !timing_config_validate(&cfg_in->timing, &timing_error)) {
@@ -107,6 +232,25 @@ int scheduler_add_config(const app_cfg_t *cfg_in) {
     if (cfg_in->cfg_error[0]) {
         printf("[SCHED] config %s refused: %s\n", cfg_in->name, cfg_in->cfg_error);
         return -5;
+    }
+    // A new configuration must not repurpose an armed pulse pin. Shared I2C
+    // and SPI bus pins remain allowed where neither sensor is a pulse device.
+    int new_pins[4];
+    size_t new_count = config_pins(cfg_in, new_pins);
+    for (int i = 0; i < MAX_ACTIVE; ++i) {
+        const active_sensor_t *existing = &g_sensors[i];
+        if (!existing->in_use || (!pulse_config(cfg_in) && !pulse_config(&existing->cfg_copy))) continue;
+        int old_pins[4];
+        size_t old_count = config_pins(&existing->cfg_copy, old_pins);
+        for (size_t a = 0; a < new_count; ++a) {
+            for (size_t b = 0; b < old_count; ++b) {
+                if (new_pins[a] >= 0 && new_pins[a] == old_pins[b]) {
+                    printf("[SCHED] config %s refused: pulse pin %d is used by %s\n",
+                           cfg_in->name, new_pins[a], existing->cfg_copy.name);
+                    return -5;
+                }
+            }
+        }
     }
     for (int i = 0; i < MAX_ACTIVE; i++) {
         if (!g_sensors[i].in_use) {
@@ -257,6 +401,13 @@ int scheduler_on_sample(const char *source, uint64_t timestamp_us) {
 
 /* Tick all sensors */
 void scheduler_run_all(bool running) {
+    if (pulse_sequence_active(&s_pair)) {
+        if (running) scheduler_pair_cancel();
+        else {
+            pulse_sequence_step(&s_pair, hal_time_us());
+            pair_report();
+        }
+    }
     uint8_t buf[128];
     {   // at most once per second, so a fast caller does not flood the console
         static uint32_t s_last_log_ms;
@@ -307,7 +458,11 @@ void scheduler_run_all(bool running) {
             S->streaming = false;
         }
 
-        if (!active) continue;
+        if (!active) {
+            if (S->pending && S->bus->cancel) S->bus->cancel(S->ctx);
+            S->pending = false;
+            continue;
+        }
 
         int n = 0;                 // neutral (no error unless we polled)
         bool did_poll = false;
@@ -316,6 +471,8 @@ if (cfg->mode == sample_mode_poll) {
     now = hal_time_us(); /* prior sensor publication may have armed this one */
     timing_status_t timing_status = timing_state_poll(&S->timing, now);
     if (timing_status == TIMING_STATUS_TIMEOUT) {
+        if (S->pending && S->bus->cancel) S->bus->cancel(S->ctx);
+        S->pending = false;
         printf("[TIMING] sensor=%s status=timeout armed_us=%llu deadline_us=%llu\n",
                cfg->name, (unsigned long long)S->timing.armed_us,
                (unsigned long long)S->timing.deadline_us);
@@ -326,7 +483,7 @@ if (cfg->mode == sample_mode_poll) {
         // report it (rate-limited) instead of slowing down silently (T-04).
         uint32_t late_ms = (uint32_t)(-dt_us / 1000);
         uint32_t period_ms = cfg->timing.interval_ms;
-        if (cfg->timing.mode == TIMING_MODE_PERIODIC && S->timing.due_us != 0 &&
+        if (!S->pending && cfg->timing.mode == TIMING_MODE_PERIODIC && S->timing.due_us != 0 &&
             late_ms > (uint32_t)((float)period_ms * 1.1f)) {
             S->overruns++;
             uint32_t now_ms = hal_time_ms();
@@ -340,11 +497,13 @@ if (cfg->mode == sample_mode_poll) {
         n = S->bus->poll_once ? S->bus->poll_once(S->ctx, buf, sizeof(buf)) : -1;
         now = hal_time_us();
         if (timing_state_poll(&S->timing, now) == TIMING_STATUS_TIMEOUT) {
+            if (S->bus->cancel) S->bus->cancel(S->ctx);
             printf("[TIMING] sensor=%s status=timeout phase=acquisition deadline_us=%llu\n",
                    cfg->name, (unsigned long long)S->timing.deadline_us);
             n = 0; /* a complete but late response is not a valid sample */
         }
-        timing_state_complete(&S->timing, now);
+        S->pending = n == BUS_POLL_PENDING;
+        if (!S->pending) timing_state_complete(&S->timing, now);
     }
 }
 
@@ -353,6 +512,7 @@ else {
             SLOG("stream[%d/%s]: poll_once()", i, cfg->name);
             did_poll = true;
             n = S->bus->poll_once ? S->bus->poll_once(S->ctx, buf, sizeof(buf)) : -1;
+            S->pending = n == BUS_POLL_PENDING;
             SLOG("stream[%d/%s]: result=%d", i, cfg->name, n);
         }
 
@@ -361,8 +521,14 @@ else {
                 const char *p = proto_name(cfg->proto);
                 SLOG("publish[%d/%s]: %d bytes via %s", i, cfg->name, n, p);
                 publisher_emit_hex(cfg, p, cfg->name, buf, n);
-            } else if (n < 0) {
-                SLOG("error[%d/%s]: poll returned %d", i, cfg->name, n);
+            } else if (n < 0 && n != BUS_POLL_PENDING) {
+                ++S->acquisition_errors;
+                uint32_t error_ms = hal_time_ms();
+                if (S->acquisition_errors == 1 || error_ms - S->last_error_log_ms >= 1000u) {
+                    printf("[SENSOR] name=%s error=%d total=%u\n", cfg->name, n,
+                           (unsigned)S->acquisition_errors);
+                    S->last_error_log_ms = error_ms;
+                }
             }
         }
     }
@@ -380,12 +546,20 @@ void scheduler_run_step(const app_cfg_t *cfg, bool running) {
  * now), capped at max_ms. A streaming sensor keeps it at 10 ms. Lets an RTOS
  * task sleep exactly until there is work instead of a fixed loop delay. */
 uint32_t scheduler_next_due_ms(bool running, uint32_t max_ms) {
-    if (!running) return max_ms;
     uint64_t now = hal_time_us();
     uint32_t wait = max_ms;
+    if (pulse_sequence_active(&s_pair)) {
+        uint32_t pair_wait = (pulse_sequence_wait_us(&s_pair, now, 1000000u) + 999u) / 1000u;
+        if (pair_wait < wait) wait = pair_wait;
+    }
+    if (!running) return wait;
     for (int i = 0; i < MAX_ACTIVE; i++) {
         const active_sensor_t *S = &g_sensors[i];
         if (!S->in_use || !S->bus || !S->cfg_copy.timing.enabled) continue;
+        if (S->pending) {
+            if (wait > 1) wait = 1;
+            continue;
+        }
         if (S->cfg_copy.mode == sample_mode_stream) {
             if (wait > 10) wait = 10;
             continue;

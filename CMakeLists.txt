@@ -49,6 +49,7 @@ add_executable(project_v3
     ${EDGECORE}/application/scheduler.c
     ${EDGECORE}/application/output_format.c
     ${EDGECORE}/application/timing_contract.c
+    ${EDGECORE}/application/pulse_sequence.c
     ${EDGECORE}/application/event_record.c
     ${EDGECORE}/application/application_state.c
     ${EDGECORE}/application/application_dispatch.c
@@ -63,6 +64,7 @@ add_executable(project_v3
     ${EDGECORE}/bus/i2c.c
     ${EDGECORE}/bus/uart.c
     ${EDGECORE}/bus/gpio.c
+    ${EDGECORE}/hal/pulse_capture.c
     ${EDGECORE}/bus/spi.c
     ${EDGECORE}/flash/w25q32.c
 

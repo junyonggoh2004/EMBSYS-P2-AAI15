@@ -5,7 +5,7 @@ This file is the single record of the professor's feedback on the Week 6 design 
 | | |
 |---|---|
 | Tracker branch | `d3`, incorporating the current D1/D2 baseline from `main` |
-| Last updated | 2026-10-28, D3 baseline merge and branch-specific progress restored; D1/D2 evidence retained |
+| Last updated | 2026-10-30, D3 asynchronous pulse source/native tests added; target acceptance and D1/D2 statuses unchanged |
 | Feedback received | After the Week 6 design review submission (before 2026-10-18) |
 | Reviewed document | Week 6 Design Review "P2-AAI15", local copy `ESP_P2_AAI15 (2).pdf` |
 | Next event | Tribunal 1, Monday 2026-10-19 (see section 1) |
@@ -29,7 +29,7 @@ This file is the single record of the professor's feedback on the Week 6 design 
 
 **Tribunal 1** (prof's email): Monday 2026-10-19 on Zoom at 11:00; a 15-minute brief on a requirement change, then a 90-minute recorded group discussion of its impact on resources, memory, processing time, hardware constraints and module dependencies, in which every member explains their own sub-module. Documents (.doc or .pdf): `[Group ID]_PreTri1` before 11:00, `[Group ID]_ImmTri1` by 13:10, `[Group ID]_PostTri1` by 2026-10-23 23:59; the recording is uploaded as soon as possible. This tracker is the source for the feedback-related parts of those documents. Confirm whether the group ID is `AAI15` or `P2-AAI15`.
 
-**Where the evidence lives.** D1 results: [parity/PARITY.md §3](parity/PARITY.md#3-esp32-s3-results-tasks-13-to-21) and `parity/logs/s3/` for the Arduino/FreeRTOS build, and [§4](parity/PARITY.md#4-esp32-s3-on-µt-kernel-3-smp-tasks-24-to-34) and `parity/logs/mtk/` for the µT-Kernel 3 SMP build required since Tribunal 1 ([MTK_REDESIGN.md](MTK_REDESIGN.md)). Board and wiring: [SETUP.md](SETUP.md). Pico-to-S3 changes and defects D-01 to D-15: [PORTABILITY.md](PORTABILITY.md). D2 work: [D2_SPI_TODO.md](D2_SPI_TODO.md), [D2_SPI_DESIGN_NOTES.md](D2_SPI_DESIGN_NOTES.md), [D2_EVENT_RECORD_DESIGN.md](D2_EVENT_RECORD_DESIGN.md), `parity/logs/d2-spi/`.
+**Where the evidence lives.** D1 results: [parity/PARITY.md §3](parity/PARITY.md#3-esp32-s3-results-tasks-13-to-21) and `parity/logs/s3/` for the Arduino/FreeRTOS build, and [§4](parity/PARITY.md#4-esp32-s3-on-µt-kernel-3-smp-tasks-24-to-34) and `parity/logs/mtk/` for the µT-Kernel 3 SMP build required since Tribunal 1 ([MTK_REDESIGN.md](MTK_REDESIGN.md)). Board and wiring: [SETUP.md](SETUP.md). Pico-to-S3 changes and defects D-01 to D-15: [PORTABILITY.md](PORTABILITY.md). D2 work: D2_SPI_TODO.md (local note), D2_SPI_DESIGN_NOTES.md (local note), D2_EVENT_RECORD_DESIGN.md (local note), `parity/logs/d2-spi/`.
 
 ## 2. The feedback, word for word
 
@@ -125,7 +125,7 @@ Feedback: define trigger spacing and order for the two HC-SR04s to avoid crossta
 Feedback: the LD2450 streams at 256,000 baud but is read only when due; specify who drains UART1 and how often, the RX buffer size, and how presence is derived. Status ❌. Fact: the D1 UART driver reads only when a sample is due, with the default RX buffer. Next action (D6): assign a task to drain UART1 continuously, size its buffer for the frame rate, and define the presence rule from the radar frames.
 
 ### F9. Observation-window owner and event record
-Feedback: review §6.1 and §6.4 disagree on which node builds the observation window; assemble the event on the sensor node and publish one timestamped record with an event ID instead of reassembling raw 20 Hz readings over MQTT (review A9). Status ❌. Related: D2's flash-log record already carries an event sequence number ([D2_EVENT_RECORD_DESIGN.md](D2_EVENT_RECORD_DESIGN.md)). Next action (D6): rewrite §6.1 and §6.4 so the sensor node owns the window, and define the record (event ID, node ID, start and end time, features).
+Feedback: review §6.1 and §6.4 disagree on which node builds the observation window; assemble the event on the sensor node and publish one timestamped record with an event ID instead of reassembling raw 20 Hz readings over MQTT (review A9). Status ❌. Related: D2's flash-log record already carries an event sequence number (D2_EVENT_RECORD_DESIGN.md (local note)). Next action (D6): rewrite §6.1 and §6.4 so the sensor node owns the window, and define the record (event ID, node ID, start and end time, features).
 
 ### F10. Event IDs, de-duplication and occupancy persistence
 Feedback: decide now on event IDs and de-duplication for QoS 1 delivery, and whether the FR18 occupancy count survives a processing-node reset. Status ❌. The review says persistence "remains a design decision". Next action (D6): an event ID of node ID plus boot ID plus sequence, de-duplicated at the processing node; decide whether the count is stored (LittleFS or W25Q32) or rebuilt.
@@ -137,7 +137,7 @@ Feedback: infer_q carries both events and model chunks, and flash writes suspend
 Feedback: list the MQTT topics, payloads and commands, and how configuration messages are validated. Status ✅ (section 6). Evidence: `mqtt_test.py` 27/27, `5-neg` 27/27, `net_fault_test.py` 9/9. Next action: paste section 6 into the review.
 
 ### F13. Queue sizes and drop policy
-Feedback: all five queues say "Needs validation" for length and overflow (review §8.3); give provisional sizes and drop policies, including pub_q behaviour while offline (FR21). Status ✅ (section 7). Evidence: `flood_test.py` and `net_fault_test.py`. D2 adds its own log queue (capacity 8, drop newest) in [D2_EVENT_RECORD_DESIGN.md](D2_EVENT_RECORD_DESIGN.md). Next action: paste section 7 into the review.
+Feedback: all five queues say "Needs validation" for length and overflow (review §8.3); give provisional sizes and drop policies, including pub_q behaviour while offline (FR21). Status ✅ (section 7). Evidence: `flood_test.py` and `net_fault_test.py`. D2 adds its own log queue (capacity 8, drop newest) in D2_EVENT_RECORD_DESIGN.md (local note). Next action: paste section 7 into the review.
 
 ### F14. Diagrams
 Feedback: the interaction diagram shows placeholder hardware ("e.g. BME280") and ConfigTask/SensorTask remnants remain. Status ✅. Section 9 gives the corrected diagram with the real task names, priorities, cores, queues and hardware. Next action: redraw the review's diagram from it.
@@ -310,13 +310,13 @@ A recoverable fault keeps the node in DEGRADED: it continues sampling and report
 
 ## 12. D2 feedback status
 
-Brendan's [D2_SPI_TODO.md](D2_SPI_TODO.md) is the current D2 checklist. The D2 status below was refreshed on 25 October 2026 for the µT-Kernel transport and physical W25Q32 checks; event logging and live concurrency remain open.
+Brendan's D2_SPI_TODO.md (local note) is the current D2 checklist. The D2 status below was refreshed on 25 October 2026 for the µT-Kernel transport and physical W25Q32 checks; event logging and live concurrency remain open.
 
 | D2 item (from D2_SPI_TODO.md) | Tracker item | Status |
 |---|---|---|
 | Retain one shared SPI bus protected by `spi_mutex` | F2 | ✅ Migrated SPI2 backend uses a bounded µT-Kernel `TA_INHERIT` mutex; target contention test remains open |
 | Keep flash logging out of SchedulerTask; perform it through ApplicationTask | F11, R4 | ❌ Open |
-| Define capacity, timeout, overflow response and drop policy for every logging or benchmarking queue | F13 | ❌ Open; a provisional log queue (capacity 8, drop newest) is drafted in [D2_EVENT_RECORD_DESIGN.md](D2_EVENT_RECORD_DESIGN.md) |
+| Define capacity, timeout, overflow response and drop policy for every logging or benchmarking queue | F13 | ❌ Open; a provisional log queue (capacity 8, drop newest) is drafted in D2_EVENT_RECORD_DESIGN.md (local note) |
 | Measure p95 and maximum sampling/transfer latency in addition to means | F16 | 🟡 Five 8–1024-byte µT-Kernel loopback reports include p95/p99/max; live flash-write and sampling timing remains open (T-23) |
 | Demonstrate model activity and SPI flash writes alongside live sampling | R4 | ❌ Open (D2 T-23) |
 | Replace placeholder artwork with a per-node wiring diagram including the W25Q32 | F4 | ❌ Open |
@@ -336,7 +336,7 @@ Removing C++ entirely would mean replacing Arduino with the ESP-IDF C drivers, w
 
 ### D3/D6 branch progress and ownership (28 October 2026)
 
-The current `main` tracker and its measured D1/D2 results are preserved, including the completed F6 baseline measurement. Cody's portable D3 timing, EventRecord and occupancy modules, native tests, and earlier Arduino ApplicationTask integration are retained on this branch. See [D3_TASKS.md](D3_TASKS.md), [CODY_WEEK8_SUBMODULE.md](CODY_WEEK8_SUBMODULE.md) and [CODY_PRD_IMPLEMENTATION.md](CODY_PRD_IMPLEMENTATION.md) for the 18 October implementation and ownership record. Those documents describe the earlier runtime; they do not establish that the D3 ApplicationTask runs on µT-Kernel.
+The current `main` tracker and its measured D1/D2 results are preserved, including the completed F6 baseline measurement. Cody's portable D3 timing, EventRecord and occupancy modules, native tests, and earlier Arduino ApplicationTask integration are retained on this branch. See D3_TASKS.md (local note), CODY_WEEK8_SUBMODULE.md (local note) and CODY_PRD_IMPLEMENTATION.md (local note) for the 18 October implementation and ownership record. Those documents describe the earlier runtime; they do not establish that the D3 ApplicationTask runs on µT-Kernel.
 
 Cody directly owns timing/window contracts, EventRecord and application/occupancy/output semantics, integration acceptance criteria and evidence interpretation. Sitt owns sensor-driver work, Brendan owns SchedulerTask sequencing, Hasif supports platform/MQTT/runtime integration and measurements, and Jun Yong owns inference integration. Cody coordinates and reviews those interfaces rather than taking over every low-level implementation.
 
@@ -367,6 +367,8 @@ This baseline merge does not close F9, F10, R2, R5, the D3 hardware checklist or
 
 | Date | By | Change |
 |---|---|---|
+| 2026-10-30 | Cody/Codex pair sequencing | User clarified that 50 ms covers a whole A/guard/B pair. Added portable configurable sequence engine and stopped-mode one-shot PAIR diagnostic through SchedulerTask; native tests cover order/guard/deadline boundaries, faults/cancellation and actual MTK capture integration against mocked registers. Acoustic guard and physical evidence remain open; no status is promoted and no entrance/occupancy event is synthesized. |
+| 2026-10-30 | Cody/Codex asynchronous acquisition | Added MTK pulse start/poll/cancel, pending scheduler lifecycle, timeout/error diagnostics and STOP/CLEAR cleanup. Native tests exercise actual capture functions against mocked registers/clock and the real shared scheduler/GPIO driver together. Pinned ESP-IDF/board unavailable; F5/F7/R1/C1 remain open. One capture slot; A/guard/B, radar windows and physical evidence remain pending. Planning notes are now local/ignored; shared links are labeled accordingly. |
 | 2026-10-29 | Cody/Codex pulse-pin validation | Reject identical GPIO pulse Trigger/Echo pins at parser completion and defensively in the driver before changing pin modes. Real parser/driver native regressions and Cody, D2 host, HAL-boundary and source-purity checks pass. Pinned SDK is missing; target verification, cross-sensor pin conflicts, non-blocking capture and physical timing remain open. No feedback status is closed. |
 | 2026-10-28 | Cody/Codex native runtime checks | Added native integration of actual micro T-Kernel application/control task bodies with modeled kernel/SDK boundaries: startup failure, typed capacity, deep copies, drop-newest event/reset handling, publisher/benchmark refusal, duplicate occupancy, malformed lengths and FIFO commands. Target ABI, actual scheduling/core/stack evidence and physical acceptance remain open; SDK/board unavailable and disk capacity constrained. |
 | 2026-10-28 | Cody/Codex target test preparation | Added wiring-free `mtk.sh app-test` for synthetic application transitions, duplicate/reorder/malformed cases, unverified-rule rejection and task/core/message-storage reports, with raw host-revision-tagged logs and volatile-state cleanup. Offline runner tests added. No board, linked-image, physical entrance, overflow, timing or D2 T-23 pass is claimed; outstanding integration decisions are listed in D3_TASKS.md. |

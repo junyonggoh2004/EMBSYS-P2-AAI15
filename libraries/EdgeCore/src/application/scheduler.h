@@ -61,6 +61,13 @@ void scheduler_run_step(const app_cfg_t *cfg, bool running);
 int  scheduler_count(void);
 void scheduler_dump(void);
 
+/* One-shot pair diagnostic while ordinary sampling is stopped. args:
+ * <sensor_A> <sensor_B> <A|B> <guard_us>. Timeouts come from their GPIO
+ * configs; both timeouts plus guard must fit the confirmed 50 ms pair limit.
+ * Prints timestamped [PAIR] results only; no rules/MQTT/occupancy handoff. */
+int scheduler_pair_command(const char *args);
+void scheduler_pair_cancel(void);
+
 #ifdef __cplusplus
 }
 #endif

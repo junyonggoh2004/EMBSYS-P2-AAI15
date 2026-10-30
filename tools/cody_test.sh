@@ -17,10 +17,26 @@ cc -std=c11 -Wall -Wextra -Werror \
   -I libraries/EdgeCore/src \
   tests/test_gpio_pulse_config.c \
   libraries/EdgeCore/src/bus/gpio.c \
+  libraries/EdgeCore/src/hal/pulse_capture.c \
+  libraries/EdgeCore/src/application/scheduler.c \
+  libraries/EdgeCore/src/application/pulse_sequence.c \
+  libraries/EdgeCore/src/application/output_format.c \
   libraries/EdgeCore/src/application/config_parser.c \
   libraries/EdgeCore/src/application/timing_contract.c \
   -o "$GPIO_OUT"
 "$GPIO_OUT"
+
+PULSE_OUT=${TMPDIR:-/tmp}/cody_mtk_pulse_tests
+cc -std=c11 -Wall -Wextra -Werror -I libraries/EdgeCore/src \
+  tests/test_mtk_pulse_capture.c libraries/EdgeCore/src/hal/pulse_capture.c \
+  libraries/EdgeCore/src/application/pulse_sequence.c -o "$PULSE_OUT"
+"$PULSE_OUT"
+
+SEQUENCE_OUT=${TMPDIR:-/tmp}/cody_pulse_sequence_tests
+cc -std=c11 -Wall -Wextra -Werror -I libraries/EdgeCore/src \
+  tests/test_pulse_sequence.c libraries/EdgeCore/src/application/pulse_sequence.c \
+  -o "$SEQUENCE_OUT"
+"$SEQUENCE_OUT"
 
 SAFETY_OUT=${TMPDIR:-/tmp}/cody_event_safety_tests
 cc -std=c11 -Wall -Wextra -Werror \
@@ -46,6 +62,8 @@ cc -std=c11 -Wall -Wextra -Werror -DSCHED_DEBUG=0 \
   -I libraries/EdgeCore/src \
   tests/test_scheduler_timing.c \
   libraries/EdgeCore/src/application/scheduler.c \
+  libraries/EdgeCore/src/application/pulse_sequence.c \
+  libraries/EdgeCore/src/hal/pulse_capture.c \
   libraries/EdgeCore/src/application/timing_contract.c \
   libraries/EdgeCore/src/application/output_format.c \
   -o "$SCHEDULER_OUT"

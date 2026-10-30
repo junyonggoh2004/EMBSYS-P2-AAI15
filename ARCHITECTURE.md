@@ -4,6 +4,33 @@ Status: draft for team review, 2026-10-03, prepared by Hasif. The README makes t
 
 Requirements, the parity table and every test ID cited here are defined in [parity/PARITY.md](parity/PARITY.md). The Pico reference is the tag `pico-reference`.
 
+**D3 source update, 30 October 2026 (target unverified).** On the active
+µT-Kernel build, GPIO pulse acquisition uses `hal_gpio_capture_start/poll/cancel`.
+SchedulerTask retains pending work and requests a wake-up after at most 1 ms,
+servicing other sensors and console messages between capture checks. Other
+synchronous drivers can still delay those checks. STOP/deadline/CLEAR cancel
+the resource. The existing core-local GPIO ISR timestamps rise/fall; poll masks
+that pin's interrupt while reading the 64-bit pair. One shared capture slot is
+supported; competing requests and already-high Echo return busy without firing.
+Whole-acquisition timeout and late/missing edges are errors, never valid-distance
+samples. The default 10 µs trigger remains synchronous (bounded to 1000 µs by
+the backend). Pico/Arduino retain their historical synchronous path. No
+A/guard/B sequencer or real observation-window producer is supplied by this
+change. Native lifecycle/integration tests pass; the pinned image, physical
+capture/crosstalk and WCET acceptance remain open.
+
+**D3 pair diagnostic, 30 October 2026.** `pulse_sequence.[ch]` now provides
+finite A/guard/B or B/guard/A sequencing with explicit timeouts and guard, a
+50,000 µs whole-pair ceiling, monotonic timestamps and one capture owner at a
+time. SchedulerTask runs it through `PAIR <A> <B> <A|B> <guard_us>` while normal
+sampling is stopped, using two configured GPIO pulse sensors. STOP/CLEAR/RUN
+cancel before resource reuse. The one-shot diagnostic prints results without
+feeding rules, MQTT or ApplicationTask. The portable engine also supports
+collect-both error policy for future callers; the diagnostic uses fail-fast.
+No acoustic guard, radar/window classifier or canonical identity is inferred.
+Shared pair state resides in EdgeCore's PSRAM-mapped BSS; target allocation,
+stack margin and service timing still require the pinned build and hardware.
+
 > **Runtime superseded (Tribunal 1, 19 Oct 2026).** This freeze describes the Arduino/FreeRTOS runtime of tasks 11–22, which is now the measured baseline. The change requirement moved D1 onto µT-Kernel 3 SMP on the course port: the task table, kernel objects, core assignment and interrupt handling that replace sections 6, 7 and 10 are in [MTK_REDESIGN.md](MTK_REDESIGN.md) §3–§5, and the two-slot model store that replaces section 11's storage is in §3 there. Requirements, defect dispositions, the HAL interface and the hardware layout below are unchanged; section 4's ESP32-S3 implementation column describes the Arduino backend, and the µT-Kernel backend for the same interface is mapped in [PORTABILITY.md §6](PORTABILITY.md#6-the-µt-kernel-3-smp-build-tasks-2434).
 
 ## 1. Team roles and subsystem ownership
@@ -65,7 +92,7 @@ The contract, with units, return values, blocking limits and ISR rules, is [libr
 
 Platform drivers sit beside the HAL rather than inside it: I2C (`hardware/i2c.h`) becomes `Wire`, UART (`hardware/uart.h`) becomes `HardwareSerial` on UART1, D2 SPI uses a `SPIClass` adapter behind `bus_spi`, the network (`cyw43_arch`, lwIP MQTT) becomes Arduino `WiFi` plus the MQTT library in section 10, flash (`hardware/flash.h`) becomes the model store in section 11, and the TFLite Micro port becomes an Arduino build of the library.
 
-D2 extended `bus_t` with a `deinit` lifecycle callback and added typed SPI errors. SPI bus ownership, locking, device handles and platform error translation stay in the ESP32-S3 backend. The current `SPIClass` implementation uses synchronous byte transfers, not DMA; its timeout is checked after a transfer, while mutex acquisition has a bounded wait. Shared application code sees validated configuration, the common registry, and explicit success/error results. Device-response verification must be added by the W25Q32 layer: generic SPI cannot detect an absent slave from a completed clocking operation. The detailed gates are [D2_SPI_TODO.md](D2_SPI_TODO.md) and [D2_SPI_DESIGN_NOTES.md](D2_SPI_DESIGN_NOTES.md).
+D2 extended `bus_t` with a `deinit` lifecycle callback and added typed SPI errors. SPI bus ownership, locking, device handles and platform error translation stay in the ESP32-S3 backend. The current `SPIClass` implementation uses synchronous byte transfers, not DMA; its timeout is checked after a transfer, while mutex acquisition has a bounded wait. Shared application code sees validated configuration, the common registry, and explicit success/error results. Device-response verification must be added by the W25Q32 layer: generic SPI cannot detect an absent slave from a completed clocking operation. The detailed gates are D2_SPI_TODO.md (local note) and D2_SPI_DESIGN_NOTES.md (local note).
 
 The D1 design currently has three documented ESP-IDF exceptions, as the README requires. `esp_timer_get_time` is used because Arduino `micros()` is 32-bit and wraps after about 71 minutes, while the reference relies on 64-bit time. `esp_task_wdt` is used because Arduino offers no per-task watchdog. `esp_partition` is used because Arduino has no raw partition interface (section 11). Each stays below the boundary and is tested in its task. D2 retained Arduino `SPIClass`; it introduced no `spi_master` exception. The accepted limitation is that a synchronous SPI transaction cannot be preempted by the configured timeout.
 
@@ -288,4 +315,4 @@ Periodic mode executes immediately on `RUN` and advances from the prior deadline
 
 `ApplicationTask` is the sole occupancy writer. It validates the versioned, pointer-free EventRecord; rejects duplicate, stale and reordered records; chooses ML only when marked valid and above the confidence threshold, otherwise falls back to a valid rule result; and applies entry/exit/incomplete/false semantics without allowing a negative count. MQTT output failure is DEGRADED and never rolls back the committed occupancy transition. The current count and 32-entry de-duplication history are RAM-only, so persistence across reset remains an explicit open decision.
 
-The exact schema, validation rules, executed tests and remaining hardware-owner dependencies are recorded in [CODY_PRD_IMPLEMENTATION.md](CODY_PRD_IMPLEMENTATION.md).
+The exact schema, validation rules, executed tests and remaining hardware-owner dependencies are recorded in CODY_PRD_IMPLEMENTATION.md (local note).
