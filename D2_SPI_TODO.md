@@ -1,6 +1,6 @@
 # D2 — ESP32-S3 SPI Support To-Do List
 
-- Branch: `s3-port-d2`
+- Branch: D2 checkpoint merged into `main`; `s3-port-d2` remains the D2 work branch.
 - Updated baseline: D1 `s3-port` at `ba81f18`, merged into D2 by `9a421ef`; D1 µT-Kernel redesign `main` at `1f41dac` fast-forwarded into D2 on 25 October 2026. The D2 checkpoints through `f535a45` were pushed to `origin/s3-port-d2` on 26 October 2026.
 - Team: Brendan and Jy
 - Status (25 October 2026): the **µT-Kernel** SPI HAL passed 22/22 REPL/configuration/loopback/lifecycle checks, 6/6 connected fault checks, and five 8–1024-byte benchmark configurations (40,000 measured transfers, zero HAL errors or byte mismatches) on COM5. The physical W25QXX breakout returned JEDEC `EF4016`, passed the W25Q32 device-layer probe/read, and its initially blank final 4 KiB sector was approved as disposable scratch. A single 16-byte page-program at `0x3FF000` passed blank check, status polling, readback, ESP-reset and full USB power-cycle retention without erase. With all flash wires removed, the device layer returned `HAL_ERR_ABSENT (-9)`. The earlier Arduino/FreeRTOS results are retained as comparison baselines. Event logging, D3/D6 schema agreement, concurrent T-23 performance, and final integration remain open.
@@ -9,8 +9,16 @@
 
 - **Merged into `main` as a D2 checkpoint** (pull request from this branch: `d61185b` plus a documentation commit by Hasif). This is not a D2 completion claim; the open items below are unchanged.
 - **Checked before the merge (Hasif):** a clean recursive clone built the µT-Kernel, HAL-test, Wi-Fi-repro, Arduino and Pico targets; `sh tools/d2_host_test.sh` passed; purity passed on 51 files and the image check found no FreeRTOS kernel code. On the HW-747 with Wi-Fi and MQTT running, the D1 suite passed with its previous results (HAL test 27/27, 4a 14/14, 5-neg 27/27, t03, t04, t06, t10, `mqtt` 27/27, `model` 8/9, `faults` 9/9, `flood`), and `SPICHECK EF4016` with no module returned `probe=-9`. Evidence: [parity/logs/mtk/d2-merge/](parity/logs/mtk/d2-merge/). This was the first D2 run with Wi-Fi on: free internal heap about 34 KB, lowest 18,052 B (D2 adds 6.9 KB of static internal RAM, mostly the benchmark buffers).
-- **For D2 to confirm on `main`:** the SPI suite, connected faults and one benchmark with the GPIO12↔GPIO13 jumper, and the read-only `SPICHECK`, `SPIVERIFY` and `SPILOGVERIFY` on the module. Two points to decide: the S3's SPI2 cannot clock below 78.1 kHz (80 MHz ÷ 16 ÷ 64), so the accepted 1 kHz minimum runs at 78.1 kHz; and whether the 4 KB `s_latencies` buffer moves to PSRAM.
+- **For D2 to confirm on `main`:** the 28 October GPIO12↔GPIO13 loopback rerun passed 22/22 SPI checks, 6/6 connected fault checks at the corrected 78,125 Hz minimum, and one 8–1024-byte benchmark with 8,000 transfers and no errors or mismatches. The 4 KB `s_latencies` buffer is in PSRAM; [DIRAM fell from 334,511 to 330,511 bytes](parity/logs/mtk/d2-spi/size-20261028.md) and external RAM rose from 130,736 to 134,736 bytes. Host, source-purity and linked-image checks passed. After reconnecting the W25Q32, the read-only `SPICHECK`, `SPIVERIFY` and `SPILOGVERIFY` rerun also passed. The real application log and T-23 remain open.
 - `tools/mtk.sh` now prints its whole help again (the new D2 lines had pushed the last lines past the fixed range).
+
+## 28 October loopback regression on the merged `main` baseline
+
+- [x] Flash the rebuilt µT-Kernel image to COM5 and recover normal boot with a USB power cycle after the flasher left the board in ROM download mode. The first suite attempt received no firmware response and is not counted as a SPI result.
+- [x] Run the [22/22 SPI suite](parity/logs/mtk/d2-spi/spi-20261028-after-powercycle.log) and [6/6 connected fault suite](parity/logs/mtk/d2-spi/fault-connected-20261028-corrected-label.log). The 78,124 Hz request is rejected, while 78,125 Hz returns the expected loopback bytes. The fault test's initial long source label was shortened to fit the firmware's displayed name limit.
+- [x] Run one [10 MHz, mode-0 benchmark](parity/logs/mtk/d2-spi/bench-20261028-rejoined/RESULTS.md): 1,000 measured transfers per size after 10 warm-ups, 8–1024 bytes, zero HAL errors and zero byte mismatches, stable free heap (96,648 B). The host capture script now rejoins a sample line interrupted by a periodic SchedulerTask status message; it still checks all 8,000 recorded samples against each firmware total and maximum. Partial capture attempts were removed from the evidence folder.
+- [x] With the loopback removed and the W25Q32 reconnected, rerun read-only [SPIID and SPICHECK](parity/logs/mtk/d2-spi/flash-readonly-20261028.log), [SPIVERIFY](parity/logs/mtk/d2-spi/flash-pattern-verify-20261028.log) and [SPILOGVERIFY](parity/logs/mtk/d2-spi/flash-log-verify-20261028.log) on the changed image. JEDEC `EF4016`, the retained 16-byte pattern and the 80-byte synthetic record with valid CRC all passed; no external-flash write or erase was sent.
+- [ ] Capture `TASKS` with Wi-Fi **connected** and retain `heap_free`, `min_free` and BenchmarkTask `stack_free`. The gitignored `wifi_credentials.h` was filled locally and compiled into the image after disabling a stale `ccache` hit, but this network rejected association with ESP-IDF reason 210 (no AP with compatible security). An [interim, disconnected-Wi-Fi-driver TASKS reading](parity/logs/mtk/d2-spi/tasks-wifi-attempt-20261028.log) reports `heap_free=48564 B`, `min_free=46760 B`, and BenchmarkTask `stack_free=2364 B`; it is not connected-Wi-Fi evidence. Retry when a 2.4 GHz WPA2-Personal network is available. Do not commit the credentials file.
 
 ## Handoff status — 26 October 2026
 
@@ -30,7 +38,7 @@
 
 - [x] Add an 80-byte provisional event codec, CRC-32 golden vector, 128-byte non-erasing slots, reboot scan, torn-slot skip, readback verification and explicit full-area result in D2-owned flash files. The host mock passes applied/no-change/duplicate/reordered/rejected records and program-failure recovery. Pico and µT-Kernel builds pass. See [the format and limits](D2_EVENT_RECORD_DESIGN.md#on-flash-format-awaiting-d3d6-agreement).
 - [x] Push the D2-only implementation and the previous hardware/benchmark checkpoint to `origin/s3-port-d2` at `f535a45`; the push was fast-forward and did not include unrelated local Task 7 deletions or Tribunal draft artifacts.
-- [ ] Obtain D3/D6 approval of node/boot identity, result and reason mappings, then integrate a bounded log handoff into their µT-Kernel `ApplicationTask`. The current D3 branch is unmerged and the team-owned runtime has no event-log call site. The later flash-only fixture added console dispatch in `runtime_mtk.c`; it did not modify D3/D6 event processing or add an application log call site.
+- [ ] Obtain D3/D6 approval of node/boot identity, result and reason mappings, then integrate a bounded log handoff into their µT-Kernel `ApplicationTask`. The fetched `d3` branch now has a µT-Kernel `ApplicationTask`, but is unmerged into `main` and has no D2 event-log call site. The earlier flash-only fixture added console dispatch in `runtime_mtk.c`; it did not modify D3/D6 event processing or add an application log call site.
 - [x] With a new explicit hardware-write plan and approval, test one synthetic, rejected D2 log record in a fresh slot at `0x3FF100`. The 80-byte write, immediate readback, cold power-cycle recovery and preservation of the earlier 16-byte pattern passed on 26 October. This proves the physical codec/log allocator path, not real D3/D6 event integration. Do not repeat either program command.
 - [ ] Run T-23 and final integration/regression evidence after the application handoff exists. The 30-slot, no-erase scratch layout is a proof fixture; event rate, retention, full/wrap/erase policy and production capacity remain open.
 
@@ -50,7 +58,7 @@ The ESP32-S3 implementation must support validated runtime host, SCLK, MOSI, opt
 
 For the Week 6 system design, the real-device proof is a W25Q32 SPI flash on the processing node. `ApplicationTask` must record event data after publishing the occupancy result; a flash failure must be reported without interrupting live monitoring. The generic SPI transport remains device-independent, while W25Q32 commands and event-log policy belong in a device/application layer above it.
 
-Under [Tribunal 1 Change Requirement 3](TRIBUNAL_1_CHANGE_REQUIREMENT_3_CONTEXT.md), the final firmware must also use µT-Kernel 3 SMP for application tasks, scheduling, communication and synchronization. D2 cannot retain an application FreeRTOS SPI mutex or log queue. The existing C driver/HAL contract and logical record design may be reused if the actual course port supports the required SPI, timing and synchronization behavior; verify that support rather than assuming Arduino `SPIClass` or a specific µT-Kernel API is available. The exact runtime migration is team-wide, while D2 owns proving its SPI and event-log behavior on the migrated build.
+Under Tribunal 1 Change Requirement 3 (see the tracked [µT-Kernel redesign](MTK_REDESIGN.md)), the final firmware must also use µT-Kernel 3 SMP for application tasks, scheduling, communication and synchronization. D2 cannot retain an application FreeRTOS SPI mutex or log queue. The existing C driver/HAL contract and logical record design may be reused if the actual course port supports the required SPI, timing and synchronization behavior; verify that support rather than assuming Arduino `SPIClass` or a specific µT-Kernel API is available. The exact runtime migration is team-wide, while D2 owns proving its SPI and event-log behavior on the migrated build.
 
 ## 25 October branch-sync checkpoint and revised priorities
 
@@ -134,7 +142,7 @@ The team-wide [Week 6 feedback tracker](WEEK6_FEEDBACK_RESPONSE.md) is the sourc
 
 ## D2 migration gate for Change Requirement 3
 
-The [pre-tribunal and live-discussion context](TRIBUNAL_1_CHANGE_REQUIREMENT_3_CONTEXT.md) records team decisions and open risks; it was not evidence that the course port worked on this ESP32-S3. Since then, the migrated D2 SPI backend has built and passed the target checks linked above. The checklist below retains the original migration gates for traceability; checked historical Arduino items do not substitute for the µT-Kernel evidence. The team-wide runtime migration is led by Hasif, while D2 still needs an agreed application-log integration owner.
+The Tribunal 1 discussion recorded team decisions and open risks; it was not evidence that the course port worked on this ESP32-S3. The tracked [µT-Kernel redesign](MTK_REDESIGN.md) documents the implementation. Since then, the migrated D2 SPI backend has built and passed the target checks linked above. The checklist below retains the original migration gates for traceability; checked historical Arduino items do not substitute for the µT-Kernel evidence. The team-wide runtime migration is led by Hasif, while D2 still needs an agreed application-log integration owner.
 
 ### Without the W25Q32 module
 
@@ -272,7 +280,7 @@ Validation checklist:
 
 - [x] Host is supported and normalized (`fspi`, with `spi2` alias).
 - [x] Mode is 0–3 and transfer bit order is fixed/documented as MSB-first in the HAL contract; mode validation and loopback checks passed.
-- [ ] Clock is within an approved minimum/maximum; 1 kHz and 40 MHz 2-byte loopback boundary checks passed, but the team-approved maximum remains.
+- [ ] Clock is within an approved minimum/maximum; the historical 1 kHz and 40 MHz 2-byte loopback boundary checks passed, but 1 kHz actually ran at SPI2's 78,125 Hz floor. The implementation now rejects requests below 78,125 Hz; rerun the updated target boundary case and obtain team approval for the maximum.
 - [x] Pins pass `hal_gpio_valid()`, are not reserved, and are unique where required.
 - [x] MISO is configured whenever RX bytes are requested.
 - [x] CS is valid; no-CS operation is rejected.

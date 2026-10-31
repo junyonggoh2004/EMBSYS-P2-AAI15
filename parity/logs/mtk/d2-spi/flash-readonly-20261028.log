@@ -1,0 +1,5 @@
+# sent: SPIID
+[TFLITE]   Arena:   2908 / 65536 bytes used
+[SPIID] raw=EF4016; verify against chip marking before writes
+# sent: SPICHECK EF4016
+[SPICHECK] PASS read-only id=EF4016 address=000000 bytes=16 data=FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
