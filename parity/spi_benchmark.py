@@ -23,6 +23,12 @@ def fields(line):
     return {key: int(value) for key, value in re.findall(r"([a-z_]+)=(\d+)", line)}
 
 
+def sample_value_count(message):
+    if " values=" not in message:
+        return 0
+    return len(message.split(" values=", 1)[1].split(","))
+
+
 def percentile(samples, percentage):
     ordered = sorted(samples)
     rank = (len(ordered) - 1) * percentage / 100
@@ -36,6 +42,7 @@ def capture(port, mode, hz, timeout, output, runtime):
     summaries = {}
     begin = None
     end = None
+    pending_samples = None
     deadline = time.monotonic() + timeout
     with serial.Serial(port, 115200, timeout=0.5, write_timeout=2) as device, output.open("w", encoding="utf-8") as raw:
         device.dtr = False
@@ -68,9 +75,26 @@ def capture(port, mode, hz, timeout, output, runtime):
                 continue
             raw.write(line + "\n")
             raw.flush()
-            if PREFIX not in line:
-                continue
-            message = line[line.index(PREFIX) + len(PREFIX):]
+            if pending_samples is not None:
+                # SchedulerTask can print into the middle of a sample line.
+                # Rejoin only that known status line; the summary totals below
+                # still validate every reconstructed sample.
+                if line.startswith(PREFIX):
+                    raise ValueError("Benchmark sample line ended before 50 values")
+                pending_samples += line.split("[SCHED", 1)[0]
+                if sample_value_count(pending_samples) < 50:
+                    continue
+                message = pending_samples
+                pending_samples = None
+            else:
+                if PREFIX not in line:
+                    continue
+                message = line[line.index(PREFIX) + len(PREFIX):]
+                if message.startswith("SAMPLES "):
+                    message = message.split("[SCHED", 1)[0]
+                    if sample_value_count(message) < 50:
+                        pending_samples = message
+                        continue
             if message.startswith("ERROR"):
                 raise RuntimeError(message)
             if message.startswith("BEGIN "):

@@ -21,7 +21,7 @@ typedef enum {
 
 #define APP_SPI_TX_MAX          64u
 #define APP_SPI_RX_MAX         128u
-#define APP_SPI_HZ_MIN        1000u
+#define APP_SPI_HZ_MIN       78125u
 #define APP_SPI_HZ_MAX    40000000u
 #define APP_SPI_TIMEOUT_MAX  10000u
 

@@ -1,0 +1,15 @@
+# Wi-Fi credentials compiled; connection failed with ESP-IDF reason 210 (incompatible security). Not connected-Wi-Fi evidence.
+[TASK] SchedulerTask    id=7  core=1 pri=21 stack_free=14716 B ran_on_core0=0 ran_on_core1=7
+[TASK] MQTTTask         id=8  core=0 pri=22 stack_free=14284 B ran_on_core0=671 ran_on_core1=0
+[TASK] ControlTask      id=9  core=1 pri=23 stack_free=3084 B ran_on_core0=0 ran_on_core1=80
+[TASK] InferenceTask    id=10 core=1 pri=23 stack_free=6540 B ran_on_core0=0 ran_on_core1=1
+[TASK] ApplicationTask  id=11 core=1 pri=23 stack_free=3420 B ran_on_core0=0 ran_on_core1=0
+[TASK] BenchmarkTask    id=12 core=1 pri=24 stack_free=2364 B ran_on_core0=0 ran_on_core1=0
+[TASK] MonitorTask      id=13 core=1 pri=24 stack_free=3308 B ran_on_core0=0 ran_on_core1=7
+[TASK] sched_mbf  free=12912 B dropped=0
+[TASK] pub_mbf    free=10944 B dropped=0
+[TASK] infer_mbf  free=336 B dropped=0
+[TASK] app_mbf    free=544 B dropped=0
+[TASK] bench_mbf  free=512 B dropped=0
+[TASK] heap_free=48564 B min_free=46760 B largest=31744 B console_rx_irqs=1 console_rx_dropped=0
+[TASK] SchedulerTask cycles=7 mean_us=158 p95_us=<250 max_us=221
