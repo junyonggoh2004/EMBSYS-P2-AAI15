@@ -88,8 +88,11 @@ static void transition(entrance_window_t *w, unsigned mask)
 {
     switch (w->stage) {
     case 0: if (!mask) w->stage = 1; else w->ambiguous = true; break;
-    case 1: if (mask == 1) w->stage = 2; else if (mask == 2) w->stage = 5;
-            else if (mask == 3) w->ambiguous = true; break;
+    case 1:
+        if (mask == 1) w->stage = 2;
+        else if (mask == 2) w->stage = 5;
+        else if (mask == 3) w->ambiguous = true;
+        break;
     case 2: if (mask == 3) w->stage = 3; else if (mask != 1) w->ambiguous = true; break;
     case 3: if (mask == 2) w->stage = 4; else if (mask != 3) w->ambiguous = true; break;
     case 4: if (!mask) w->stage = 7; else if (mask != 2) w->ambiguous = true; break;
