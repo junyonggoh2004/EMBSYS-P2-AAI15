@@ -39,7 +39,7 @@ def main():
               baseline + running)
 
         # Failed additions must leave the already-running device intact.
-        for name, hz in (("clock-too-low", 999), ("clock-too-high", 40000001)):
+        for name, hz in (("clock-too-low", 78124), ("clock-too-high", 40000001)):
             response = command(ser, config(name.upper().replace("-", "_"),
                                            **{"spi.hz": str(hz)}), 0.8, log)
             after = read_for(ser, 1.2, log)
@@ -50,7 +50,7 @@ def main():
         command(ser, "STOP", 0.5, log)
         command(ser, "CLEAR", 0.5, log)
 
-        for name, hz in (("clock-min-1khz", 1000), ("clock-max-40mhz", 40000000)):
+        for name, hz in (("clock-min-78125", 78125), ("clock-max-40mhz", 40000000)):
             sensor = name.upper().replace("-", "_")
             configured = command(ser, config(sensor, **{"spi.hz": str(hz)}), 1.0, log)
             output = command(ser, "RUN", 2.0, log)
@@ -61,7 +61,7 @@ def main():
             command(ser, "CLEAR", 0.5, log)
 
         configured = command(ser, config("FORCED_TIMEOUT", **{
-            "spi.hz": "1000", "spi.timeout_ms": "1",
+            "spi.hz": "78125", "spi.timeout_ms": "1",
             "spi.tx": " ".join(str(i) for i in range(64)),
             "spi.read_len": "128"}), 1.0, log)
         output = command(ser, "RUN", 2.0, log)

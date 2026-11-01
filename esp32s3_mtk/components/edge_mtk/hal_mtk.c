@@ -833,7 +833,7 @@ static void spi_pin_in(int pin, uint32_t signal)
 int hal_spi_open(const char *host, int sclk, int mosi, int miso, int cs,
                  uint32_t hz, uint8_t mode)
 {
-    if (!host || strcmp(host, "fspi") != 0 || mode > 3 || hz < 1000 || hz > 40000000)
+    if (!host || strcmp(host, "fspi") != 0 || mode > 3 || hz < 78125 || hz > 40000000)
         return HAL_ERR_INVALID;
     if (!hal_gpio_valid(sclk) || !hal_gpio_valid(mosi) || !hal_gpio_valid(cs) ||
         (miso >= 0 && !hal_gpio_valid(miso)) || sclk == mosi || sclk == cs ||

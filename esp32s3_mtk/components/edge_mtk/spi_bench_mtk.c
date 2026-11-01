@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include <tk/tkernel.h>
+#include "esp_attr.h"
 #include "esp_heap_caps.h"
 #include "flash/w25q32.h"
 #include "flash/d2_event_log.h"
@@ -21,7 +22,7 @@
 
 static const size_t s_sizes[] = { 8, 16, 32, 64, 128, 256, 512, 1024 };
 static uint8_t s_tx[MAX_BYTES], s_rx[MAX_BYTES];
-static uint32_t s_latencies[ATTEMPTS];
+EXT_RAM_BSS_ATTR static uint32_t s_latencies[ATTEMPTS];
 static const uint8_t s_flash_test_pattern[16] = {
     'D', '2', '-', 'S', 'P', 'I', '-', 'W', '2', '5', 'Q', '3', '2', '-', '0', '1'
 };
