@@ -198,7 +198,7 @@ D3 replaces the Pico's fixed one-second loop with configurable timing per sensor
 | D3-4 | Radar presence opens the observation window | LD2450 decoding and draining, window open, confirm, close, expiry and cooldown, the A, guard, B pairs and the entry and exit patterns, one event per window. | Laptop tests of radar framing, the window policy and the path to occupancy; walk-through entries and exits on the board. | Done in code (`WINDOW`); board run pending | Cody. [entrance_window.c](libraries/EdgeCore/src/application/entrance_window.c), [ld2450.c](libraries/EdgeCore/src/application/ld2450.c), [uart.c](libraries/EdgeCore/src/bus/uart.c) |
 | D3-5 | Measure the two-sonar order and guard | Physical trigger order and guard spacing that avoids crosstalk; direction of travel. | Crosstalk and direction measurements. | Not started: board | Cody and Sitt |
 | D3-6 | Requested-against-measured timing table | 10, 50, 100, 500, 1000 and 2000 ms with timing error, jitter and sample count; one-shot and event-driven shown working. | The requirements-document table and the mode demonstrations. | Not started: board (`sh tools/mtk.sh timing` covers periodic) | Shares runs and scripts with D5's B3 benchmark |
-| D3-7 | Entrance workload timing | The full `WINDOW` workload with p95, p99, maximum, skipped samples and SchedulerTask cycle times (R1, F6). | Measured tables. | Not started: board | Cody and Brendan |
+| D3-7 | Entrance workload timing | The full `WINDOW` workload with p95, p99, maximum, skipped samples and SchedulerTask cycle times (R1, F6). | Measured tables. | Timing counters and read-only report in code; board measurements pending | Cody and Brendan |
 | D3-8 | ApplicationTask on µT-Kernel (shared with D6) | Typed 104-byte messages through `app_mbf` (eight messages, no wait, drop newest), validation, duplicate rejection, occupancy, schema-v2 result publishing and the `APP` commands; core 1, priority 23, 4 KB stack; the boot counter in NVS at start-up. | Native runtime and identity tests; `sh tools/mtk.sh app-test` and `TASKS` on the board. | Done in code; `app-test` on the board pending | Cody. [runtime_mtk.c](esp32s3_mtk/components/edge_mtk/runtime_mtk.c), [identity_mtk.c](esp32s3_mtk/components/edge_mtk/identity_mtk.c), [event_identity.c](libraries/EdgeCore/src/application/event_identity.c), [application_dispatch.c](libraries/EdgeCore/src/application/application_dispatch.c), [application_state.c](libraries/EdgeCore/src/application/application_state.c), [event_record.h](libraries/EdgeCore/src/application/event_record.h) |
 | D3-9 | Faults never look like readings | Timeouts, missing sensors, busy capture, full queues and invalid configuration are explicit errors. | Laptop tests; the same cases on the board. | Laptop tests done; board pending | Cody. [tests/](tests/) |
 | D3-10 | D1 regression on the D3 firmware | First a clean boot (the NVS boot counter is written before the tasks start, which has not run on the board yet), then the D1 suite on the exact D3 commit. | A normal boot and the same results as before D3. | Pending: board | Hasif |
@@ -357,6 +357,38 @@ These are read-only on the module. Never run `SPIPROGRAM` or `SPILOGWRITE` witho
 | One HC-SR04 (Part E wiring) | `sh tools/mtk.sh test t06` with nothing connected, then `test 4c-sonic` and `test sonic-rule` with the sensor | `7/7`, `4/4`, `7/7 passed` |
 | Two HC-SR04s on separate Trigger and Echo pins, each configured with `gpio.pulse_timeout_us` small enough for the pair to fit 50 ms | `STOP`, then `PAIR <A> <B> A <guard_us>` | one `[PAIR] state=complete outcome=0` line and an A and a B record with their widths |
 | Both HC-SR04s and the LD2450 radar (raw UART at 256000 baud) | `STOP`, then `WINDOW <A> <B> <radar> <guard_us> <A_mm> <B_mm> <xmin> <xmax> <ymin> <ymax>`, `RUN`, then walk through | `SHOW` lists the window state and decoder counts; each crossing prints one `[APP]` event (entry, exit or incomplete) |
+
+| None, after the trial and `STOP` | `sh tools/mtk.sh window-report --note "fixture and trial description"` | read-only raw/JSON snapshots under `parity/logs/mtk/d3/`; physical acceptance remains pending |
+
+**Window timing evidence (1 November 2026).** The controller now retains
+cumulative pair count, valid/failed/cancelled outcomes, deadline misses,
+skipped slots, min/mean/max duration and p95/p99 upper bounds in 1 ms buckets.
+Durations include cooldown captures, failures and cancelled/overdue attempts;
+an over-budget tail is represented as `>50000`, not clipped into a passing
+percentile. These fixed-size counters/histogram stay in EdgeCore's PSRAM-mapped
+BSS. They reset on WINDOW configuration or CLEAR, not when queried. Early
+turnaround/incomplete closure has its own reason and does not count as a
+two-second window deadline.
+
+After the desired trials, type `STOP` in the serial console and exit the
+monitor, then collect before CLEAR or another WINDOW configuration:
+
+```sh
+sh tools/mtk.sh window-report --note "fixture and trial description"
+```
+
+The equivalent manual console query is `WINDOW STATUS`; the host collector
+uses an eight-digit request nonce to reject old/mixed USB replies. Reporting
+is refused during RUN or an active PAIR diagnostic so serial printing cannot
+disturb the timed capture. The collector sends only WINDOW STATUS, requests no
+reset and saves raw `.log` plus structured `.json` under `parity/logs/mtk/d3/`.
+It records timing outcomes, event/fault/drop counts and calibration/pin/zone
+settings. It rejects incomplete/inconsistent reports and reset output. Empty
+sample sets retain null timing assessments, and JSON acceptance remains `not_evaluated`;
+bucket bounds are not exact percentiles or a physical-accuracy certificate.
+Host Git metadata is labeled separately from the unverified firmware revision;
+retain matching build/flash/image, board/wiring and workload evidence. Target
+RAM, timing, core residency and physical qualification remain open.
 
 A timing-mode example: a sensor read every 100 ms and a second one that reads only after it.
 ```

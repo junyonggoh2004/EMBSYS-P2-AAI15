@@ -71,6 +71,9 @@ void scheduler_pair_cancel(void);
  * All physical values are explicit; RUN starts service, STOP/CLEAR disable it. */
 int scheduler_window_command(const char *args);
 void scheduler_window_stop(void);
+/* Read-only framed snapshot. Refuses RUN/active PAIR so serial reporting
+ * cannot disturb a 50 ms capture. Nonce ties host evidence to this request. */
+int scheduler_window_report(uint32_t token);
 
 #ifdef __cplusplus
 }

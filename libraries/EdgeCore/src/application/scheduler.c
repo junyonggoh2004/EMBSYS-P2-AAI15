@@ -54,10 +54,55 @@ static unsigned s_window_slots[3];
 static ld2450_decoder_t s_radar;
 static ld2450_zone_t s_zone;
 static uint32_t s_radar_dropped;
+static uint32_t s_radar_dropped_start;
 static uint64_t s_radar_service_us;
 static uint64_t s_window_warmup_until;
 
 void scheduler_window_stop(void) { entrance_window_stop(&s_window, hal_time_us()); }
+
+int scheduler_window_report(uint32_t token)
+{
+    if (s_prev_running || pulse_sequence_active(&s_pair) || s_window.pair_pending) return HAL_ERR_BUSY;
+    const entrance_metrics_t *m = &s_window.metrics;
+    bool configured = s_window.config.pair.window_us != 0;
+    char p95[16], p99[16];
+    uint32_t bounds[2] = {entrance_window_percentile_us(&s_window, 95), entrance_window_percentile_us(&s_window, 99)};
+    if (bounds[0] == UINT32_MAX) strcpy(p95, ">50000");
+    else snprintf(p95, sizeof p95, "%u", (unsigned)bounds[0]);
+    if (bounds[1] == UINT32_MAX) strcpy(p99, ">50000");
+    else snprintf(p99, sizeof p99, "%u", (unsigned)bounds[1]);
+    printf("[WINDOW_REPORT] token=%08x kind=state version=1 configured=%u enabled=%u state=%u events=%u dropped=%u radar_frames=%u malformed=%u rx_dropped=%u rx_dropped_start=%u identity=%u event_schema=%u now_us=%llu\n",
+           (unsigned)token, configured ? 1u : 0u, s_window.enabled ? 1u : 0u, (unsigned)s_window.state,
+           (unsigned)s_window.events, (unsigned)s_window.drops, (unsigned)s_radar.frames,
+           (unsigned)s_radar.malformed, (unsigned)s_radar_dropped, (unsigned)s_radar_dropped_start,
+           event_identity_ready() ? 1u : 0u,
+           EVENT_RECORD_SCHEMA_VERSION, (unsigned long long)hal_time_us());
+    printf("[WINDOW_REPORT] token=%08x kind=timing pairs=%u valid=%u failed=%u cancelled=%u deadline_misses=%u skipped=%u min_us=%u mean_us=%u max_us=%u p95_le_us=%s p99_le_us=%s\n",
+           (unsigned)token, (unsigned)m->pairs, (unsigned)m->valid, (unsigned)m->failed,
+           (unsigned)m->cancelled, (unsigned)m->deadline_misses, (unsigned)m->skipped,
+           (unsigned)m->min_us, m->pairs ? (unsigned)(m->sum_us / m->pairs) : 0u,
+           (unsigned)m->max_us, p95, p99);
+    printf("[WINDOW_REPORT] token=%08x kind=events entry=%u exit=%u incomplete=%u false_events=%u window_deadlines=%u radar_stale=%u window_faults=%u\n",
+           (unsigned)token, (unsigned)m->entry, (unsigned)m->exit, (unsigned)m->incomplete,
+           (unsigned)m->false_events, (unsigned)m->window_deadlines, (unsigned)m->radar_stale,
+           (unsigned)m->window_faults);
+    printf("[WINDOW_REPORT] token=%08x kind=config period_us=%u window_us=%u pair_limit_us=%u clear_us=%u radar_stale_us=%u max_pairs=%u guard_us=%u timeout_a_us=%u timeout_b_us=%u occupied_a_mm=%u occupied_b_mm=%u\n",
+           (unsigned)token, ENTRANCE_PERIOD_US, ENTRANCE_WINDOW_US, PULSE_SEQUENCE_WINDOW_MAX_US,
+           ENTRANCE_CLEAR_US, ENTRANCE_RADAR_STALE_US, ENTRANCE_MAX_PAIRS,
+           (unsigned)s_window.config.pair.guard_us, (unsigned)s_window.config.pair.timeout_us[0],
+           (unsigned)s_window.config.pair.timeout_us[1], (unsigned)s_window.config.occupied_mm[0],
+           (unsigned)s_window.config.occupied_mm[1]);
+    const app_cfg_t *a = &g_sensors[s_window_slots[0]].cfg_copy;
+    const app_cfg_t *b = &g_sensors[s_window_slots[1]].cfg_copy;
+    const app_cfg_t *r = &g_sensors[s_window_slots[2]].cfg_copy;
+    printf("[WINDOW_REPORT] token=%08x kind=geometry a_name=%s a_trig=%d a_echo=%d b_name=%s b_trig=%d b_echo=%d radar_name=%s radar_tx=%d radar_rx=%d xmin=%ld xmax=%ld ymin=%ld ymax=%ld\n",
+           (unsigned)token, configured ? a->name : "-", configured ? a->gpio_trig : -1,
+           configured ? a->gpio_echo : -1, configured ? b->name : "-", configured ? b->gpio_trig : -1,
+           configured ? b->gpio_echo : -1, configured ? r->name : "-", configured ? r->uart_tx : -1,
+           configured ? r->uart_rx : -1, (long)s_zone.xmin, (long)s_zone.xmax, (long)s_zone.ymin, (long)s_zone.ymax);
+    printf("[WINDOW_REPORT] token=%08x kind=end\n", (unsigned)token);
+    return HAL_OK;
+}
 
 static void pair_report(void)
 {
@@ -107,6 +152,9 @@ int scheduler_count(void) {
 void scheduler_reset(void) {
     scheduler_window_stop();
     memset(&s_window, 0, sizeof s_window);
+    memset(&s_radar, 0, sizeof s_radar);
+    memset(&s_zone, 0, sizeof s_zone);
+    s_radar_dropped = s_radar_dropped_start = 0;
     scheduler_pair_cancel();
     memset(&s_pair, 0, sizeof s_pair);
     /* Contexts are opaque to the scheduler. Give each driver a chance to
@@ -329,6 +377,7 @@ int scheduler_window_command(const char *args)
     s_zone = (ld2450_zone_t){values[3], values[4], values[5], values[6]};
     memset(&s_radar, 0, sizeof s_radar);
     s_radar_dropped = dropped;
+    s_radar_dropped_start = dropped;
     s_radar_service_us = hal_time_us();
     s_window_warmup_until = s_radar_service_us + 60001u;
     s_window = candidate;
