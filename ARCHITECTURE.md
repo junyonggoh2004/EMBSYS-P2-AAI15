@@ -10,8 +10,8 @@ sink; only fully evidenced crossings change occupancy. All window/decoder state
 lives in EdgeCore BSS, mapped to PSRAM. Schema-v2 EventRecord adds canonical
 node/boot identity and clock-domain rejection; the application buffer grows
 128 bytes in the native layout. Startup-only NVS boot allocation lives in
-`identity_mtk.c`, never SchedulerTask. Exact policy, commands, resource changes
-and remaining target gates are at the top of README. D2 flash format is unchanged.
+`identity_mtk.c`, never SchedulerTask. The exact policy, commands, resource changes
+and remaining target gates are in README section 4. D2 flash format is unchanged.
 
 Status: draft for team review, 2026-10-03, prepared by Hasif. The README makes this task the gate before tasks 11 to 23, so it closes only when tasks 7 to 9 are finished, section 5 holds the confirmed pin layout, and the team has reviewed every section (recorded in section 15).
 
@@ -307,9 +307,9 @@ Any later change to a decision in this document needs a recorded engineering jus
 |---|---|---|---|
 | | | | |
 
-## 16. D3 timing and D6 application contract (`d3`)
+## 16. D3 timing and D6 application contract
 
-This section supersedes the fixed-delay assumption for the application-facing path. The low-level HC-SR04 driver is still blocking and remains an explicit Sitt/Hasif dependency; the new contract does not misrepresent that driver as complete.
+This section supersedes the fixed-delay assumption for the application-facing path. On the µT-Kernel build the HC-SR04 read is asynchronous: SchedulerTask starts an interrupt capture and collects the echo width on a later wake-up, and a missing or late echo is an error, never a distance. The Pico and Arduino builds keep the blocking read. README section 4 lists what is still open.
 
 ```mermaid
 flowchart LR
@@ -317,15 +317,15 @@ flowchart LR
     SCH -->|"sample completed"| RULE["Rule / classifier"]
     SCH -->|"matching trigger_source"| TARGET["Event-driven target"]
     RULE -->|"event: class"| ER["EventRecord v1, 80 B"]
-    ER --> AQ[["app_q, 8 records"]]
+    ER --> AQ[["app_mbf, 8 messages"]]
     AQ --> APP["ApplicationTask"]
     APP -->|"exactly-once transition"| OCC["Volatile occupancy"]
-    APP -->|"best effort, QoS 1"| PQ[["pub_q"]]
-    APP --> BQ[["bench_q"]]
+    APP -->|"best effort, QoS 1"| PQ[["pub_mbf"]]
+    APP --> BQ[["bench_mbf"]]
 ```
 
 Periodic mode executes immediately on `RUN` and advances from the prior deadline, skipping missed slots. One-shot executes once per arm. Event-driven work is armed by a matching completed source sample or the `TRIGGER` command and must remain inside its configured window. Configuration is validated before the sensor is installed; unsupported modes, ranges and event windows are refused.
 
 `ApplicationTask` is the sole occupancy writer. It validates the versioned, pointer-free EventRecord; rejects duplicate, stale and reordered records; chooses ML only when marked valid and above the confidence threshold, otherwise falls back to a valid rule result; and applies entry/exit/incomplete/false semantics without allowing a negative count. MQTT output failure is DEGRADED and never rolls back the committed occupancy transition. The current count and 32-entry de-duplication history are RAM-only, so persistence across reset remains an explicit open decision.
 
-The exact schema, validation rules, executed tests and remaining hardware-owner dependencies are recorded in CODY_PRD_IMPLEMENTATION.md (local note).
+The record layout is in `libraries/EdgeCore/src/application/event_record.h`, the validation and occupancy rules in `application_state.c` and `application_dispatch.c`, the tests in `tests/` (`sh tools/cody_test.sh`), and the remaining hardware dependencies in README section 4.

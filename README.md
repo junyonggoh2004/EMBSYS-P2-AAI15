@@ -1,143 +1,6 @@
-# D1 ESP32-S3 Port with D2 SPI Extension
+# D1 ESP32-S3 Port with the D2 SPI and D3 Timing Extensions
 
-**Current D3 checkpoint — 1 November 2026 (source/native verified; target pending).**
-The agreed adaptive entrance-window controller is connected to the shared
-scheduler, LD2450 UART decoder, pair engine and ApplicationTask event sink.
-Its policy is a 50 ms whole-pair limit, nominal 100 ms pair period, 2 s maximum
-window / 20 attempts, 200 ms clearance with at least three valid clear pairs,
-300 ms radar expiry and closure after three consecutive failed pairs. First
-in-zone presence opens the window; another in-zone report at least 50 ms later
-confirms it. Repeated presence does not extend the deadline. Multi-target radar,
-missed slots, UART loss/corruption or essential sensor faults prevent occupancy
-changes. Both sonars are collected after an individual failure; an invalid/no-echo
-sample never means clear. Entry requires clear → A-only → both → B-only → clear;
-exit is the reverse. Other/insufficient patterns are incomplete. The physical
-fixture must support these observable states; fast crossings, non-overlapping
-beams and tailgating still need qualification. This is a rule-based baseline;
-the eight features currently hold diagnostic window statistics, not a trained
-D4 feature contract.
-
-Configure two GPIO pulse sensors and one dedicated raw UART radar source, then:
-
-```text
-STOP
-WINDOW <A> <B> <radar> <guard_us> <A_mm> <B_mm> <xmin> <xmax> <ymin> <ymax>
-RUN
-SHOW
-```
-
-Replace placeholders with configured sensor names and measured geometry. A/B
-thresholds are occupied distances in millimetres (1..4000); the radar rectangle
-uses signed millimetres and requires min < max on each axis. Radar must use
-256000 baud, 8N1, raw mode, no pre-write/post-delay and unshared UART pins.
-Other ultrasonic transmitters are refused while configuring WINDOW. Existing
-`gpio.pulse_timeout_us` values plus the supplied guard must fit 50,000 µs.
-No physical guard or timeout is selected automatically. WINDOW takes over the
-three selected sources while RUN is active; their generic publishers are
-suppressed, while other configured sensors continue. Configuration observes a
-60 ms quiet startup interval; individual-module cooldown can skip a 100 ms slot
-instead of triggering too soon. Such skips make the window ambiguous. Completed
-windows enter cooldown: fresh no-target radar plus confirmed clear sonar is
-required before rearming. STOP, CLEAR and accepted sensor reconfiguration cancel
-and disable the controller. Reissue WINDOW after STOP to enable it again.
-
-LD2450 reports are decoded incrementally (including partial reads/resync) using
-the [Hi-Link protocol](https://device.report/m/4724663b9656799560c29bc06a1b7910f4eb185d4575e546e301da03c3d2a869).
-The radar service drains up to 128 ready bytes per tick without the generic
-UART driver's timed read/pre-write path. Ring/FIFO loss and malformed frames
-degrade an open window. Buffered data is discarded after a 300 ms service gap
-instead of presenting old reports as fresh. The protocol has no report CRC;
-framing checks cannot prove arbitrary payload integrity. SHOW exposes window
-state, events/drops, decoder frames/errors and UART loss.
-
-**Schema v2 and boot identity.** The in-process EventRecord is now 96 bytes
-(formerly 80); its native typed application message is 104 bytes and eight-item
-buffer 864 bytes, 128 bytes more than the previous native layout. TASKS must
-verify target sizes and RAM/stack margin before acceptance. New real events use
-the factory MAC as a 64-bit node ID, a 32-bit durable boot counter and a 32-bit
-sequence; allocation stops at exhaustion. The counter is committed during startup
-before producers run, using the [ESP-IDF NVS API](https://docs.espressif.com/projects/esp-idf/en/stable/esp32s3/api-reference/storage/nvs_flash.html).
-Failure leaves WINDOW disabled. Wi-Fi no longer automatically erases NVS on
-initialization failure, because doing so could reuse event identities. Preserve
-NVS during normal flashing: destructive erase/restoration requires an explicit
-identity-recovery plan and is outside the uniqueness guarantee. APP RESET/CLEAR
-do not reset identity allocation. Occupancy/deduplication remain volatile; this
-does not implement persistence of the count across receiver resets.
-
-Application results publish schema 2 with canonical identity, source-monotonic
-window times and quality flags. Synthetic console and unverified rule fixtures
-retain zero node/boot fields and cannot claim canonical identity. Unmapped
-remote-clock records and future local timestamps are rejected; no remote-event
-decoder or clock synchronization is enabled by this change. Consumers must not
-compare another node's uptime with their own. The D2 80-byte flash codec remains
-separate and unchanged; no application flash-log handoff is enabled here.
-
-Run `sh tools/cody_test.sh`, `sh tools/d2_host_test.sh` and `sh tools/mtk.sh purity`.
-Native tests cover actual scheduler/UART boundaries, framing and resync, entry/
-exit/rearm, fault closure, refused output, boot commit failure/reboot identity,
-schema-v2 deduplication and clock rejection. These do not establish SDK ABI,
-NVS power-cycle behavior, physical accuracy, crosstalk, 50 ms workload margin or
-core/stack/heap acceptance. The pinned target build and README section 4 board
-tests remain required. Earlier dated checkpoints below describe their historical
-layouts and integration state.
-
-Branch `d3`: Cody's D3/D6 work on the current D1 (tasks 1–34) and D2 SPI checkpoint from `main`. This is the Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) ported to the ESP32-S3 Super Mini. Since Tribunal 1 the firmware runs on µT-Kernel 3 SMP through the course port ([MTK_REDESIGN.md](MTK_REDESIGN.md)), and D2's SPI runs on it too; the earlier Arduino-ESP32/FreeRTOS port stays as the measured baseline. The same configuration lines, console commands, MQTT topics, output format and ML model work on both boards, because both builds compile the same shared code.
-
-**D3 integration status (28 October 2026).** ApplicationTask now has µT-Kernel task glue in `esp32s3_mtk/components/edge_mtk/runtime_mtk.c`: EventRecord submission uses an eight-item, nonblocking `app_mbf`; its item is sized from `application_message_t` (an 80-byte event plus a kind field/alignment, 88 bytes in native tests). ApplicationTask processes events and queued reset/status requests on core 1, priority 23, with the existing 4 KiB stack. Portable processing/formatting state stays in EdgeCore BSS mapped to PSRAM. The kernel application buffer stays internal, growing by 192 bytes in the native layout; the target size is reported by `TASKS`, and the stack is unchanged. Native tests pass; target compilation, linked-image inspection, resource/core measurements and hardware acceptance remain pending. Shared-C timing corrections now prevent one-shot self-rearming, recover periodic timeouts, honor disabled streams and discard deadline-exceeding responses; `tools/cody_test.sh` includes scheduler/publisher integration regressions. Synchronous drivers are not preempted. Local validation now rejects non-finite/malformed fields and stale or ambiguous occupancy changes, prevents integer-capacity overflow, and scopes RAM duplicates to source/event pairs (+128 bytes of EdgeCore BSS, unchanged 80-byte EventRecord). Canonical node/boot identity, cross-node time, real-window quality provenance, persistence, asynchronous sonar capture and D2 application logging remain open. Use [section 4](#4-set-up-and-test-from-scratch-d1-and-d2) for the active µT-Kernel setup and tests; the Cody documents retain the earlier implementation history.
-
-**Rule decision guard.** `event:entry` and `event:exit` now submit unverified point decisions rather than inventing a completed observation window. They carry only `RULE_VALID`, print `observation=unverified`, and are rejected by ApplicationTask with `reason=quality` without changing occupancy. The real sensor-node assembler must submit a completed EventRecord with evidence-backed sequence/timing quality; this remains open. `APP EVENT` is the explicit synthetic positive fixture.
-
-**Application smoke check.** Run `sh tools/cody_test.sh` for the portable contract and dispatch tests. Once this revision has been built/flashed, use `sh tools/mtk.sh monitor`, then `APP RESET`, `APP EVENT 1 1 entry`, the same event again, `APP EVENT 2 2 exit`, and `APP STATUS`. Expected occupancy is 0 → 1 → 1 → 0; reset/status completion is printed by ApplicationTask, after it consumes the request. `APP EVENT` is a synthetic plumbing fixture, not a real entrance observation. `publish=1` means enqueued and `publish=2` means enqueue failed/offline; neither is a broker acknowledgement. Repeat with MQTT offline and inspect `APP STATUS` and `TASKS` for publication failures, message drops, stacks, heap and ApplicationTask core residency. Real entrance, overflow and D2 T-23 acceptance still require target evidence.
-
-**Native runtime integration.** `sh tools/mtk_runtime_test.sh` compiles the actual micro T-Kernel application/control task bodies against test-only kernel/SDK boundaries. It checks typed FIFO capacity/deep copies, event/reset drops, publication and benchmark refusal, duplicate handling and malformed lengths. It is included in `tools/cody_test.sh`. These native results do not establish SDK ABI compatibility, real scheduling/core residency, target stack headroom or physical acceptance.
-
-**Automated application smoke check.** After `sh tools/mtk.sh check`, `sh tools/mtk.sh flash` and `sh tools/mtk.sh image`, run `sh tools/mtk.sh app-test` (or `PORT=<usb-port> sh tools/mtk.sh app-test`). This clears volatile sensor/rule configuration and occupancy, checks synthetic entry/exit/floor/duplicate/reorder cases, rejects an unverified GPIO8 rule decision, and validates ApplicationTask's core 1/priority 23 report and typed eight-item buffer sizing. GPIO8 is an input; no jumper or flash-program command is needed. Cleanup stops and clears the probe and resets synthetic occupancy. Timestamped serial logs go to `parity/logs/mtk/d3-application-*.log`; they label the host Git revision/dirty state, not a verified firmware identity, so retain matching build/flash/image evidence separately. This smoke test does not certify queue overflow, real entrance events, the timing budget or D2 T-23. Its parser/failure-path unit tests run offline through `tools/cody_test.sh`.
-
-**D3 pulse-pin validation (29 October 2026).** GPIO pulse configurations require different `gpio.trig` and `gpio.echo` pins. The parser and driver reject a shared pin before hardware setup; native parser/driver regressions run with `sh tools/cody_test.sh`. Physical timing acceptance remains open; the asynchronous update below adds active-sensor pulse-pin conflict checks.
-
-**D3 asynchronous pulse acquisition (30 October 2026; target acceptance pending).** The active µT-Kernel GPIO pulse path now starts interrupt capture and returns pending instead of waiting for Echo inside SchedulerTask. SchedulerTask requests another wake-up after at most 1 ms while continuing other sensors and command handling (other synchronous drivers can still delay service); STOP, deadline expiry and CLEAR cancel it. The existing GPIO ISR timestamps the edges, and register access stays in the platform HAL. Scheduler installation rejects pulse-pin overlap with active GPIO/I2C/UART/SPI sensors before hardware setup. Only one capture is supported at a time: overlapping requests return an explicit busy error rather than stealing a capture. This does not implement acoustic guard spacing or an observation-window sequencer. The trigger itself remains a bounded busy wait of at most 1000 µs. Capture timeout bounds the whole acquisition from trigger start; already-high Echo, missing/late edges and unavailable capture never produce a valid distance. `SHOW` reports pending, timing timeouts, acquisition errors and overruns; repeated acquisition-error messages are rate-limited. Pico/Arduino retain their synchronous fallback and baseline invalid no-echo frame. Native tests exercise the actual MTK capture functions with mocked registers/clock and the real shared scheduler/GPIO driver together; they do not prove physical edge behavior or target ABI/timing.
-
-The next board session follows section 4: `sh tools/mtk.sh check`, `flash`, `purity`, `image`, `test 4a`, `test 5-neg`, `mqtt <broker-ip>` and `app-test`. Then run `test t06` and a real sonar check, inspect `SHOW`/`TASKS`, and verify STOP/CLEAR during a pending echo. T-06 accepts either the historical invalid frame or the new explicit timeout and rejects a valid-width frame with no sensor attached. Retain the build revision/image, serial output, core residency, stack/heap and timing evidence. A/guard/B sequencing, radar-window formation, node/boot identity, cross-node time, D2 mappings/log handoff and the 50 ms workload criteria remain open; synthetic application fixtures do not close these gates.
-
-Planning/research documents and local agent/skill guidance are intentionally ignored by Git. References labeled “local note” require that local file; shared setup, implementation status and commands remain in this README, the feedback tracker and source/tests.
-
-**D3 pair sequencing (30 October 2026; source/native checkpoint).** The confirmed
-50 ms requirement applies to one complete A/guard/B pair. The portable
-`application/pulse_sequence.[ch]` engine supports either first sensor, explicit
-per-sensor timeouts, an explicit guard, cancellation and timestamp validation.
-It rejects timeouts-plus-guard budgets above 50,000 µs and stops when runtime
-delay exhausts the window. Missing edges, busy capture and malformed timestamps
-remain invalid observations. The shared SchedulerTask integration adds a
-one-shot diagnostic command, with all pair state in EdgeCore BSS:
-
-```text
-STOP
-PAIR <sensor_A> <sensor_B> <A|B> <measured_guard_us>
-```
-
-First install two ordinary `proto=gpio`, `gpio.mode=pulse` sensor configurations
-with distinct valid Trigger/Echo pins and explicit `gpio.pulse_timeout_us` values.
-The command takes those configured timeouts; their sum plus the supplied guard
-must fit 50,000 µs. The 30,000 µs default for each sensor cannot fit a pair.
-Replace the command placeholders with the configured sensor names, chosen first
-sensor and a guard established for the physical fixture. No guard is selected
-by this implementation. Ordinary sampling must remain stopped during the
-diagnostic. `PAIR` reports request 0 when accepted, then one terminal `[PAIR]`
-summary and A/B records containing attempted/valid/status, edge timestamps and
-width. COMPLETE/outcome 0 requires two valid captures; other outcomes are
-capture error (1), window expiry (2), clock error (3) or cancellation (4).
-Sample status 2 means unattempted, 3 cancelled; valid=0 never represents a
-valid pulse. STOP, CLEAR and RUN cancel an active diagnostic; RUN then resumes
-normal sampling. The diagnostic fails on the first capture error, never repeats
-automatically, and emits no rules, MQTT event or occupancy update.
-
-Native tests exercise both orders, exact guard/50 ms boundaries, budget refusal,
-timeouts, malformed timestamps, busy ownership, cancellation, the actual MTK
-capture functions with mocked registers, and the real scheduler/GPIO adapter.
-`sh tools/cody_test.sh` runs them. Target build/image, crosstalk measurements and
-physical timing acceptance remain pending. Radar-triggered/repeating windows,
-real entrance classification/EventRecord formation, identity/clock contracts
-and D2 logging are subsequent integration gates.
+Branch `main`: D1 (tasks 1–34), the D2 SPI checkpoint and the D3 timing checkpoint. This is the Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) ported to the ESP32-S3 Super Mini. Since Tribunal 1 the firmware runs on µT-Kernel 3 SMP through the course port ([MTK_REDESIGN.md](MTK_REDESIGN.md)), and D2's SPI and D3's timing run on it too; the earlier Arduino-ESP32/FreeRTOS port stays as the measured baseline. The same configuration lines, console commands, MQTT topics, output format and ML model work on both boards, because both builds compile the same shared code.
 
 ## Contents
 
@@ -145,13 +8,11 @@ and D2 logging are subsequent integration gates.
 |---|---|
 | [1. Start here](#1-start-here) | What the firmware runs on (µT-Kernel 3 SMP), the 7 commands to try, and every result next to the FreeRTOS baseline |
 | [Feedback tracker](WEEK6_FEEDBACK_RESPONSE.md) | Every professor feedback item on the Week 6 design review: owner, status, evidence, next action |
-| D3 tasks (local note) | Cody's timing checklist: contracts, ultrasonic sequencing, application handoff, tests and acceptance evidence |
-| Cody Week 8 ownership (local note) | D3/D6 application contracts, module-owner boundaries and integration responsibilities |
-| Cody PRD implementation (local note) | Earlier portable-code/native-test results and Arduino integration history; current µT-Kernel task glue is implemented, with target acceptance pending |
 | [2. D1 task checklist](#2-d1-task-checklist) | Tasks 1–23 with status and dev notes; [execution model](#execution-model); [tasks 24–34: µT-Kernel 3 SMP redesign](#d1-redesign-port-to-µt-kernel-3-smp-tasks-2434) |
 | [µT-Kernel redesign plan](MTK_REDESIGN.md) | Change requirement, FreeRTOS-to-µT-Kernel mapping, core assignment, compliance matrix |
 | [3. D2 task checklist](#3-d2-task-checklist) | D2 SPI tasks D2-1 to D2-11 with status, the checks before the merge, how to run the SPI tests, what D2 still needs; full list in [D2_SPI_TODO.md](D2_SPI_TODO.md) |
-| [4. Set up and test from scratch](#4-set-up-and-test-from-scratch-d1-and-d2) | Step-by-step on a new Mac for the µT-Kernel build (D1 and D2) |
+| [4. D3 task checklist](#4-d3-task-checklist) | How the timing modes, the radar entrance window and event identity work, D3 tasks D3-1 to D3-12 with status, the D3 commands and tests |
+| [5. Set up and test from scratch](#5-set-up-and-test-from-scratch-d1-to-d3) | Step-by-step on a new Mac for the µT-Kernel build (D1 to D3) |
 | &nbsp;&nbsp;[Part A: Install](#part-a-install) | Steps 1–4: tools, project, ESP-IDF and the course port, version check |
 | &nbsp;&nbsp;[Part B: Wi-Fi and broker](#part-b-wi-fi-and-broker) | Steps 5–7: laptop IP, Wi-Fi file, MQTT broker |
 | &nbsp;&nbsp;[Board pinout](#board-pinout) | Super Mini pin diagram and how to hold the board |
@@ -159,9 +20,10 @@ and D2 logging are subsequent integration gates.
 | &nbsp;&nbsp;[Part D: Tests](#part-d-tests) | Steps 11–22: every wiring-free test and what it shows |
 | &nbsp;&nbsp;[Part E: Real sensors](#part-e-real-sensors) | GY-511, HC-SR04, the light sensor and jumper tests; why no resistor |
 | &nbsp;&nbsp;[Part F: D2 SPI](#part-f-d2-spi) | Host test, loopback suite and benchmark, read-only W25Q32 checks |
-| [5. Using any sensor](#5-using-any-sensor-config-cheat-sheet) | Wiring and the config line for every sensor type, including SPI, and rules |
-| [6. Completion rule](#6-completion-rule) | When a task counts as done |
-| [7. Arduino/FreeRTOS baseline](#7-arduinofreertos-baseline-set-up-and-test-reference) | The earlier build's step-by-step setup and tests, Mac and Windows |
+| &nbsp;&nbsp;[Part G: D3 timing and application](#part-g-d3-timing-and-application) | Laptop tests, the application smoke test, a timing-mode example, `PAIR` and `WINDOW` |
+| [6. Using any sensor](#6-using-any-sensor-config-cheat-sheet) | Wiring and the config line for every sensor type, including SPI, and rules |
+| [7. Completion rule](#7-completion-rule) | When a task counts as done |
+| [8. Arduino/FreeRTOS baseline](#8-arduinofreertos-baseline-set-up-and-test-reference) | The earlier build's step-by-step setup and tests, Mac and Windows |
 
 Other documents: [WEEK6_FEEDBACK_RESPONSE.md](WEEK6_FEEDBACK_RESPONSE.md) (professor feedback tracker), [D2_SPI_TODO.md](D2_SPI_TODO.md) (D2 tasks), [SETUP.md](SETUP.md) (board and environment details), [parity/PARITY.md](parity/PARITY.md) (requirements and evidence), [PORTABILITY.md](PORTABILITY.md) (Pico to S3 changes and defects), [ARCHITECTURE.md](ARCHITECTURE.md) (task design), [project_v3/README.md](project_v3/README.md) (full config syntax).
 
@@ -170,7 +32,7 @@ Other documents: [WEEK6_FEEDBACK_RESPONSE.md](WEEK6_FEEDBACK_RESPONSE.md) (profe
 
 # 1. Start here
 
-**What D1 runs on.** Since Tribunal 1 (19 Oct 2026) the D1 firmware runs on µT-Kernel 3 SMP through the course port: [`esp32s3_mtk/`](esp32s3_mtk/) is an ESP-IDF project in which every application task is a µT-Kernel task pinned to a core, and the FreeRTOS scheduler never starts. The design, the FreeRTOS-to-µT-Kernel mapping, the core assignment and the clause-by-clause compliance matrix are in [MTK_REDESIGN.md](MTK_REDESIGN.md) (tasks 24–34). The Arduino-ESP32/FreeRTOS build (`esp32s3_edge/`, `tools/s3.sh`) stays as the measured baseline. D2's SPI runs on the µT-Kernel build as well; its tasks and tests are in [section 3](#3-d2-task-checklist).
+**What D1 runs on.** Since Tribunal 1 (19 Oct 2026) the D1 firmware runs on µT-Kernel 3 SMP through the course port: [`esp32s3_mtk/`](esp32s3_mtk/) is an ESP-IDF project in which every application task is a µT-Kernel task pinned to a core, and the FreeRTOS scheduler never starts. The design, the FreeRTOS-to-µT-Kernel mapping, the core assignment and the clause-by-clause compliance matrix are in [MTK_REDESIGN.md](MTK_REDESIGN.md) (tasks 24–34). The Arduino-ESP32/FreeRTOS build (`esp32s3_edge/`, `tools/s3.sh`) stays as the measured baseline. D2's SPI runs on the µT-Kernel build as well; its tasks and tests are in [section 3](#3-d2-task-checklist). D3's timing modes and entrance window are in [section 4](#4-d3-task-checklist).
 
 **Why it is the same firmware.** All platform-independent code (config parser, scheduler, REPL, rule engine, GPIO/I2C/UART drivers, MQTT payload handling, inference manager) is one library, [`libraries/EdgeCore/`](libraries/EdgeCore/), compiled unchanged by the Pico build and both S3 builds; `tools/check_hal_boundary.sh` proves it uses no Pico, Arduino or ESP-IDF calls. Only the HAL ([Pico](project_v3/platform/pico/hal_pico.c), [S3 on µT-Kernel](esp32s3_mtk/components/edge_mtk/hal_mtk.c), [S3 on Arduino](libraries/EdgeS3/src/hal_esp32s3.cpp)) and the platform services differ. The same test scripts run against every build with the same expected output; only pin numbers are mapped.
 
@@ -294,7 +156,7 @@ The full checklist with every gate and its evidence is [D2_SPI_TODO.md](D2_SPI_T
 | D2-5 | Benchmark 8–1024-byte transfers (T-19, NFR-08) | 10 warm-ups and 1,000 measured transfers per size in five clock and mode configurations; median, p95, p99, maximum, throughput, errors, mismatches and heap. | Zero errors and zero mismatched bytes; reports kept. | Done | Brendan and Jy. 40,000 transfers on each runtime; 1024 bytes at 10 MHz take a median 1,045 µs on µT-Kernel against 2,281 µs on Arduino. [Reports](parity/logs/mtk/d2-spi/), [spi_benchmark.py](parity/spi_benchmark.py). [Phase 5](D2_SPI_TODO.md#phase-5--benchmark-and-retained-evidence) |
 | D2-6 | Prove the W25Q32 device layer on hardware (T-20, T-21) | A device layer above the generic transport: JEDEC probe, read, page program with blank check, status polling and readback, no erase; host mock tests for the faults. | JEDEC ID, read, one approved scratch write, retention over a reset and a power cycle, missing module refused. | Done | Brendan and Jy. JEDEC `EF4016`. [w25q32.c](libraries/EdgeCore/src/flash/w25q32.c), [test_w25q32.c](tests/test_w25q32.c) (`sh tools/d2_host_test.sh`), [flash logs](parity/logs/mtk/d2-spi/). [Hardware acceptance](D2_SPI_TODO.md#with-the-w25q32-module--hardware-acceptance) |
 | D2-7 | Event-record codec and flash log | A versioned 80-byte record with CRC-32 in 128-byte slots, a reboot scan that skips torn slots, append with readback and an explicit full result; freeze the fields once D3 and D6 agree the event identity and result codes. | Host tests pass; a synthetic record is written, read back and recovered after a power cycle; the format is agreed. | In progress: provisional format proven; D3/D6 agreement pending | Brendan and Jy. [d2_event_log.h](libraries/EdgeCore/src/flash/d2_event_log.h), [D2_EVENT_RECORD_DESIGN.md](D2_EVENT_RECORD_DESIGN.md), [write](parity/logs/mtk/d2-spi/flash-log-write-once-20261026.log) and [cold recovery](parity/logs/mtk/d2-spi/flash-log-cold-verify-20261026.log) logs |
-| D2-8 | Log every processed event from ApplicationTask | After publishing, offer each processed event to a bounded µT-Kernel log handoff (capacity 8, no wait, drop newest with a counter); write and read it back outside SchedulerTask; report a flash failure without stopping monitoring. | A real application event is stored and retrieved; a flash failure changes no occupancy and stops no sampling. | Not started on `main`: D3's µT-Kernel ApplicationTask is on the unmerged `d3` branch; D3/D6 contract agreement and the D2 log call site remain open | Brendan and Jy, with Cody (D3) |
+| D2-8 | Log every processed event from ApplicationTask | After publishing, offer each processed event to a bounded µT-Kernel log handoff (capacity 8, no wait, drop newest with a counter); write and read it back outside SchedulerTask; report a flash failure without stopping monitoring. | A real application event is stored and retrieved; a flash failure changes no occupancy and stops no sampling. | Not started: D3's µT-Kernel ApplicationTask is now on `main` (section 4); D3/D6 contract agreement and the D2 log call site remain open | Brendan and Jy, with Cody (D3) |
 | D2-9 | Concurrent run (T-23) | Flash logging, live sampling and inference together on µT-Kernel: flash-write and lock latency, sampling p95, maximum and skips, log-queue high water and drops, stacks, heap and resets. | No reset, watchdog, missed sample or corruption; numbers compared with the D1 baseline. | Not started: needs D2-8 | Brendan and Jy |
 | D2-10 | D1 regression on the D2 firmware | Rerun the D1 suite on the D2 build with Wi-Fi and MQTT running. | The same results as before D2. | Done for the checkpoint merge; timing and endurance not rerun | Hasif, 27 Oct: HAL test 27/27, 4a 14/14, 5-neg 27/27, t03, t04, t06, t10, `mqtt` 27/27, `model` 8/9, `faults` 9/9, `flood`; about 34 KB of heap free. [Logs](parity/logs/mtk/d2-merge/) |
 | D2-11 | Documentation, review and merge | The implemented schema and limits in every document, the PARITY results, a wiring diagram of the processing node, team review, clean-clone reproduction and the merge. | Every evidence link resolves on `main`; team sign-off. | In progress: checkpoint merged to `main` and documents updated; wiring diagram, review and sign-off pending | Brendan and Jy; merge by Hasif. [Phase 7](D2_SPI_TODO.md#phase-7--documentation-and-merge-gate) |
@@ -303,14 +165,56 @@ The full checklist with every gate and its evidence is [D2_SPI_TODO.md](D2_SPI_T
 
 **Run it.** The SPI checks use one of two fixtures, never both at once. With a jumper wire from GPIO12 to GPIO13: `sh tools/mtk.sh spi` (configuration, loopback, sharing, refusals and 100 open/close cycles, 22/22), `sh tools/mtk.sh spi-fault` (6/6) and `sh tools/mtk.sh spi-bench [mode] [hz]` (1,000 transfers at each size from 8 to 1024 bytes). With the W25Q32 module on 3V3, GND, CS GPIO10, CLK GPIO11, DI GPIO12 and DO GPIO13: the read-only console commands `SPIID`, `SPICHECK EF4016` and `SPISCAN EF4016`. Wiring, expected output and the one-time write commands not to repeat are in [SETUP.md](SETUP.md#d2-spi-checks-on-µt-kernel).
 
-**What D2 still needs.** The flash log is not yet written from `ApplicationTask`, which on `main` is still the D1 placeholder that drains `app_mbf`. The unmerged `d3` branch now has a µT-Kernel `ApplicationTask`; after D3/D6 agree the event contract, D2 adds its bounded log handoff, runs T-23 (flash logging with live sampling and inference) and closes its checklist in [D2_SPI_TODO.md](D2_SPI_TODO.md). SPI2's 80 MHz clock has a 16 × 64 maximum divider, so the shared configuration limit and µT-Kernel HAL reject requests below 78,125 Hz. The updated target `spi-fault` boundary test passed on 28 October.
+**What D2 still needs.** The flash log is not yet written from `ApplicationTask`, which on `main` is still the D1 placeholder that drains `app_mbf`. ApplicationTask now runs D3's event logic on µT-Kernel ([section 4](#4-d3-task-checklist)); after D3/D6 agree the event contract, D2 adds its bounded log handoff, runs T-23 (flash logging with live sampling and inference) and closes its checklist in [D2_SPI_TODO.md](D2_SPI_TODO.md). SPI2's 80 MHz clock has a 16 × 64 maximum divider, so the shared configuration limit and µT-Kernel HAL reject requests below 78,125 Hz. The updated target `spi-fault` boundary test passed on 28 October.
 
 
 ---
 
-# 4. Set up and test from scratch (D1 and D2)
+# 4. D3 task checklist
 
-Follow these steps in order on a Mac (Linux works the same way). They build, flash and test the firmware on `main`: D1 on µT-Kernel 3 SMP with D2's SPI. Each step says what you should see. On Windows, install ESP-IDF at commit `17a74c925c`, load it with its PowerShell `export.ps1` and give `IDF_PATH` forward slashes, as Brendan did ([D2_SPI_TODO.md](D2_SPI_TODO.md)); the Arduino baseline in [section 7](#7-arduinofreertos-baseline-set-up-and-test-reference) has full Windows steps.
+D3 replaces the Pico's fixed one-second loop with configurable timing per sensor (owner: Cody; integration and merge by Hasif on 1 Nov 2026). The requirements document asks for periodic, one-shot and event-driven execution and a logical sequence in which one sensor's event opens a window for another, with the requested interval measured against the actual interval on real hardware. Its evidence is a requested-against-measured timing table at 10, 50, 100, 500, 1000 and 2000 ms (timing error, jitter and sample count) and at least one working event-driven or logical sequence. The professor's feedback makes the entrance the acceptance case: radar presence opens a window, then two HC-SR04s are read in a fixed order, without crosstalk, with the whole pair inside 50 ms.
+
+**How it works.** Every sensor keeps its own timing, set in its configuration line; nothing changes for sensors that do not set it, because `periodic` is the default and `freq_hz` still works.
+
+| Mode | The sensor reads | Keys |
+|---|---|---|
+| Periodic (default) | Every `timing.interval_ms`, from `RUN`; a missed period is skipped, never replayed as a burst | `timing.mode=periodic`, `timing.interval_ms` (or the older `freq_hz`) |
+| One-shot | Once per `RUN` or `TRIGGER <name>`, then waits to be armed again | `timing.mode=one_shot` |
+| Event-driven | Only after the named source sensor completes a reading, or on `TRIGGER`, inside its window | `timing.mode=event_driven`, `timing.trigger_source=<name>`, `timing.window_ms` |
+
+`timing.timeout_ms` bounds lateness plus acquisition and `timing.enabled=0` switches a sensor off; invalid timing is refused before any hardware changes ([project_v3/README.md](project_v3/README.md) lists every key). On the µT-Kernel build an HC-SR04 read no longer holds SchedulerTask: the trigger fires, the GPIO interrupt timestamps the echo, and SchedulerTask collects the width on a later wake-up while it serves other sensors; a missing or late echo is reported as an error, never as a distance. `PAIR <A> <B> <A|B> <guard_us>` (with sampling stopped) reads two configured HC-SR04s in the chosen order with a guard between them and refuses any pair whose timeouts and guard exceed 50,000 µs. `WINDOW` (below) runs the whole entrance sequence from the radar. Processed events reach ApplicationTask as typed 104-byte messages through `app_mbf`; it validates them, rejects duplicates, keeps the occupancy count and publishes each result on `pico/<node>/application/event`. `APP RESET`, `APP STATUS` and `APP EVENT <id> <seq> <entry|exit|incomplete|false>` drive it with synthetic events for testing. A rule action `event:entry` or `event:exit` only submits an unverified point decision, which ApplicationTask rejects with `reason=quality` without changing occupancy; only `WINDOW` events and `APP EVENT` fixtures change the count. In the `[APP]` lines `publish=1` means the result was queued for MQTT and `publish=2` that queueing failed (for example offline); neither is a broker acknowledgement.
+
+**Changes D1 users will notice.** `HELP` lists `TRIGGER` and `PAIR`. On the µT-Kernel build an HC-SR04 with no echo now prints `[SENSOR] name=<name> error=-1` instead of publishing the empty `00` frame; `t06` accepts either and fails on any valid-looking width. Real echoes still publish the same 3-byte width frame. The Pico and Arduino builds keep the blocking read. At every start the firmware also writes a boot counter to NVS (below); if that fails it prints `[BOOT] durable event identity unavailable: WINDOW disabled` and D1 carries on. The Wi-Fi start-up no longer erases NVS by itself: if the console shows `[WIFI] NVS requires explicit recovery`, erase the flash (`idf.py -C esp32s3_mtk -p <port> erase-flash`) and flash again, which also restarts the boot counter, so event identities from before the erase can repeat.
+
+**Entrance window (`WINDOW`).** With two HC-SR04s (A and B) and an LD2450 radar configured, `STOP`, then `WINDOW <A> <B> <radar> <guard_us> <A_mm> <B_mm> <xmin> <xmax> <ymin> <ymax>`, then `RUN`. The A and B values are the occupied distances in millimetres (1 to 4000) and the four radar values a signed millimetre rectangle (min below max). The radar must be a raw UART source at 256000 baud, 8N1, on pins no other sensor uses, and the two sonars' `gpio.pulse_timeout_us` plus the guard must fit 50,000 µs; no guard or timeout is chosen automatically. The first in-zone radar report opens a window and a second one at least 50 ms later confirms it. The window then reads an A, guard, B pair every 100 ms for at most 2 s or 20 pairs, needs 200 ms and at least three valid clear pairs to close, expires 300 ms after the radar loses the target, and closes after three failed pairs in a row; repeated presence does not extend it. Entry is clear, A only, both, B only, clear; exit is the reverse; anything else is incomplete. Several radar targets, a missed slot, a UART loss or corrupt frame, or a failed essential sensor make the window ambiguous, and an ambiguous window never changes occupancy; a missing echo never counts as clear. Each finished window gives one event to ApplicationTask. While it runs, `WINDOW` owns its three sensors and their normal output is suppressed; other sensors keep running. `SHOW` reports the window state, events and drops, decoder frames and errors, and UART loss. `STOP`, `CLEAR` or reconfiguring one of its sensors cancels it; send `WINDOW` again after `STOP`. This is the rule-based baseline: the event's eight feature values are window statistics, not a trained D4 feature set.
+
+**Event identity (schema v2).** The event record is 96 bytes (80 before). Real events carry the factory MAC as a 64-bit node ID, a 32-bit boot counter kept in NVS and a 32-bit sequence, and results are published as schema 2 with that identity, the source's window times and quality flags. Synthetic `APP EVENT` and rule events keep zero node and boot fields. Records from another node's clock and future local timestamps are rejected; no remote-event decoder or clock synchronisation exists yet. `APP RESET` and `CLEAR` do not reset identity; occupancy and duplicate history stay in RAM only. D2's 80-byte flash record is unchanged, so its mapping to schema v2 is part of D2-7.
+
+| # | Task | Required work | Acceptance evidence | Status | Dev notes |
+|---:|---|---|---|---|---|
+| D3-1 | Define the timing modes and their configuration | Periodic, one-shot and event-driven semantics; the `timing.*` keys; refusal of invalid timing and of shared Trigger/Echo or conflicting pins before hardware setup. | Parser and scheduler regressions. | Done (laptop tests); open: how a runtime change affects an active window | Cody. [timing_contract.c](libraries/EdgeCore/src/application/timing_contract.c), [scheduler.c](libraries/EdgeCore/src/application/scheduler.c), [config_parser.c](libraries/EdgeCore/src/application/config_parser.c) |
+| D3-2 | Read the HC-SR04 without blocking SchedulerTask | Asynchronous capture start, poll and cancel in the µT-Kernel HAL; STOP, CLEAR and deadlines cancel a pending read; one capture at a time, a second request is refused as busy. | Laptop tests with the real capture functions and mocked registers; on the board `t06`, `4c-sonic`, `sonic-rule` and STOP/CLEAR during a pending echo. | Done in code; board acceptance pending | Cody. [pulse_capture_mtk.h](esp32s3_mtk/components/edge_mtk/pulse_capture_mtk.h), [hal.h](libraries/EdgeCore/src/hal/hal.h), [gpio.c](libraries/EdgeCore/src/bus/gpio.c) |
+| D3-3 | Logical sequence: sonar A, guard, sonar B within 50 ms | Sequence engine with either order, explicit timeouts and guard, cancellation and timestamp checks; the `PAIR` diagnostic. | Laptop tests of both orders, the 50 ms budget, faults and cancellation; a `PAIR` run on the board. | Done as a manual diagnostic; board run pending | Cody. [pulse_sequence.c](libraries/EdgeCore/src/application/pulse_sequence.c) |
+| D3-4 | Radar presence opens the observation window | LD2450 decoding and draining, window open, confirm, close, expiry and cooldown, the A, guard, B pairs and the entry and exit patterns, one event per window. | Laptop tests of radar framing, the window policy and the path to occupancy; walk-through entries and exits on the board. | Done in code (`WINDOW`); board run pending | Cody. [entrance_window.c](libraries/EdgeCore/src/application/entrance_window.c), [ld2450.c](libraries/EdgeCore/src/application/ld2450.c), [uart.c](libraries/EdgeCore/src/bus/uart.c) |
+| D3-5 | Measure the two-sonar order and guard | Physical trigger order and guard spacing that avoids crosstalk; direction of travel. | Crosstalk and direction measurements. | Not started: board | Cody and Sitt |
+| D3-6 | Requested-against-measured timing table | 10, 50, 100, 500, 1000 and 2000 ms with timing error, jitter and sample count; one-shot and event-driven shown working. | The requirements-document table and the mode demonstrations. | Not started: board (`sh tools/mtk.sh timing` covers periodic) | Shares runs and scripts with D5's B3 benchmark |
+| D3-7 | Entrance workload timing | The full `WINDOW` workload with p95, p99, maximum, skipped samples and SchedulerTask cycle times (R1, F6). | Measured tables. | Not started: board | Cody and Brendan |
+| D3-8 | ApplicationTask on µT-Kernel (shared with D6) | Typed 104-byte messages through `app_mbf` (eight messages, no wait, drop newest), validation, duplicate rejection, occupancy, schema-v2 result publishing and the `APP` commands; core 1, priority 23, 4 KB stack; the boot counter in NVS at start-up. | Native runtime and identity tests; `sh tools/mtk.sh app-test` and `TASKS` on the board. | Done in code; `app-test` on the board pending | Cody. [runtime_mtk.c](esp32s3_mtk/components/edge_mtk/runtime_mtk.c), [identity_mtk.c](esp32s3_mtk/components/edge_mtk/identity_mtk.c), [event_identity.c](libraries/EdgeCore/src/application/event_identity.c), [application_dispatch.c](libraries/EdgeCore/src/application/application_dispatch.c), [application_state.c](libraries/EdgeCore/src/application/application_state.c), [event_record.h](libraries/EdgeCore/src/application/event_record.h) |
+| D3-9 | Faults never look like readings | Timeouts, missing sensors, busy capture, full queues and invalid configuration are explicit errors. | Laptop tests; the same cases on the board. | Laptop tests done; board pending | Cody. [tests/](tests/) |
+| D3-10 | D1 regression on the D3 firmware | First a clean boot (the NVS boot counter is written before the tasks start, which has not run on the board yet), then the D1 suite on the exact D3 commit. | A normal boot and the same results as before D3. | Pending: board | Hasif |
+| D3-11 | Agree the open contracts | What the 50 ms covers; how the radar opens and closes a window; node, boot and sequence identity; the time base between nodes; occupancy reset and replay; the D2 log handoff. | An agreed table, recorded here. | In progress: the window policy and the node, boot and sequence identity are agreed and in code (above); the time base between nodes, occupancy persistence and the D2 mapping are open | Cody, Brendan, Sitt, Hasif, Jun Yong |
+| D3-12 | Documentation, review and merge | This section, the feedback tracker and ARCHITECTURE.md §16; build from a clean clone; merge. | Every link resolves on `main`; team sign-off. | In progress: checkpoint on `main`, integrated 1 Nov with a clean-clone build; board evidence and sign-off pending | Hasif |
+
+**Tests.** `sh tools/cody_test.sh` runs D3's twelve laptop suites (contracts, GPIO pulse configuration, µT-Kernel capture, pulse sequence, entrance window, event identity, UART ready drain, event safety, application dispatch, scheduler timing, rule provenance and the µT-Kernel application glue); `sh tools/mtk_runtime_test.sh` runs the last one alone. On the board, `sh tools/mtk.sh app-test` checks the application path without wiring and must end with `Application smoke PASS` ([section 5, Part G](#part-g-d3-timing-and-application)).
+
+**Who waits on it.** D2's flash event logging (D2-8, D2-9), D5's B3 timing benchmark, and D6, the end-to-end use case.
+
+
+---
+
+# 5. Set up and test from scratch (D1 to D3)
+
+Follow these steps in order on a Mac (Linux works the same way). They build, flash and test the firmware on `main`: D1 on µT-Kernel 3 SMP with D2's SPI and D3's timing. Each step says what you should see. On Windows, install ESP-IDF at commit `17a74c925c`, load it with its PowerShell `export.ps1` and give `IDF_PATH` forward slashes, as Brendan did ([D2_SPI_TODO.md](D2_SPI_TODO.md)); the Arduino baseline in [section 8](#8-arduinofreertos-baseline-set-up-and-test-reference) has full Windows steps.
 
 ## What D1 and D2 are
 
@@ -443,12 +347,30 @@ An S3 pin can take at most 3.3 V. The GY-511, the kit's 3 V HC-SR04, the MH boar
 
 These are read-only on the module. Never run `SPIPROGRAM` or `SPILOGWRITE` without agreeing a scratch address with Brendan ([SETUP.md](SETUP.md#d2-spi-checks-on-µt-kernel)).
 
-If every step matched, this laptop has built and flashed the µT-Kernel firmware and verified the listed D2 SPI checks. D2's real application logging and concurrent T-23 run remain open.
+## Part G: D3 timing and application
+
+| Wiring | Command | You should see |
+|---|---|---|
+| None (runs on the laptop) | `sh tools/cody_test.sh` | twelve `PASS` lines, ending `micro T-Kernel application glue: PASS` |
+| None | `sh tools/mtk.sh app-test` | `Application smoke PASS` (it clears sensors, rules and occupancy first) |
+| None | in `sh tools/mtk.sh monitor`: `APP RESET`, `APP EVENT 1 1 entry`, the same line again, `APP EVENT 2 2 exit`, `APP STATUS` | occupancy 0, 1, 1 (the repeat is rejected as a duplicate), 0 |
+| One HC-SR04 (Part E wiring) | `sh tools/mtk.sh test t06` with nothing connected, then `test 4c-sonic` and `test sonic-rule` with the sensor | `7/7`, `4/4`, `7/7 passed` |
+| Two HC-SR04s on separate Trigger and Echo pins, each configured with `gpio.pulse_timeout_us` small enough for the pair to fit 50 ms | `STOP`, then `PAIR <A> <B> A <guard_us>` | one `[PAIR] state=complete outcome=0` line and an A and a B record with their widths |
+| Both HC-SR04s and the LD2450 radar (raw UART at 256000 baud) | `STOP`, then `WINDOW <A> <B> <radar> <guard_us> <A_mm> <B_mm> <xmin> <xmax> <ymin> <ymax>`, `RUN`, then walk through | `SHOW` lists the window state and decoder counts; each crossing prints one `[APP]` event (entry, exit or incomplete) |
+
+A timing-mode example: a sensor read every 100 ms and a second one that reads only after it.
+```
+BEGINCFG|name=SRC|proto=gpio|gpio.mode=digital|gpio.pin=8|gpio.pull=up|mode=poll|timing.mode=periodic|timing.interval_ms=100|ENDCFG
+BEGINCFG|name=FOLLOW|proto=gpio|gpio.mode=digital|gpio.pin=9|gpio.pull=up|mode=poll|timing.mode=event_driven|timing.trigger_source=SRC|timing.window_ms=50|ENDCFG
+RUN
+```
+
+If every step matched, this laptop has built and flashed the µT-Kernel firmware and verified the listed D2 SPI and D3 checks. D2's real application logging and concurrent T-23 run, and D3's board evidence (section 4), remain open.
 
 
 ---
 
-# 5. Using any sensor (config cheat sheet)
+# 6. Using any sensor (config cheat sheet)
 
 The node is not plug-and-play: each sensor needs **one config line** that tells it the protocol, the pins and how to read it. No code change and no re-flash: wire the sensor, send the line, type `RUN`.
 
@@ -488,16 +410,16 @@ BEGINRULE|name=DARK|source=LIGHT|calc=s=u8(0)|when=s==1|action=log:it is dark|EN
 
 ---
 
-# 6. Completion rule
+# 7. Completion rule
 
 A task is not complete merely because code compiles or a single happy-path demonstration works. It is complete only when its acceptance evidence is recorded, relevant requirements and assumptions are updated, and any failure or limitation is either fixed or explicitly documented with an owner and disposition.
 
 
 ---
 
-# 7. Arduino/FreeRTOS baseline: set up and test (reference)
+# 8. Arduino/FreeRTOS baseline: set up and test (reference)
 
-These are the steps for the earlier Arduino-ESP32/FreeRTOS build (`esp32s3_edge/`, `tools/s3.sh`), kept as the measured baseline (task 21, [PARITY.md §3](parity/PARITY.md#3-esp32-s3-results-tasks-13-to-21)), with Windows commands. The board pinout is in [section 4](#board-pinout). Going from the µT-Kernel build back to this one, erase the flash first ([SETUP.md](SETUP.md#testing-on-µt-kernel-tasks-2732)).
+These are the steps for the earlier Arduino-ESP32/FreeRTOS build (`esp32s3_edge/`, `tools/s3.sh`), kept as the measured baseline (task 21, [PARITY.md §3](parity/PARITY.md#3-esp32-s3-results-tasks-13-to-21)), with Windows commands. The board pinout is in [section 5](#board-pinout). Going from the µT-Kernel build back to this one, erase the flash first ([SETUP.md](SETUP.md#testing-on-µt-kernel-tasks-2732)).
 
 
 ---
@@ -606,7 +528,7 @@ Close the monitor first (Ctrl+C): a test and the monitor cannot use the USB port
 
 ## Baseline Part E: Real sensors
 
-Use one sensor at a time. No breadboard and no resistor are needed for these two (see "Why no resistor" in section 4).
+Use one sensor at a time. No breadboard and no resistor are needed for these two (see "Why no resistor" in section 5).
 
 ### Step 25. GY-511 compass and accelerometer (I2C)
 
