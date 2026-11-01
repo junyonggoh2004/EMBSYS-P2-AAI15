@@ -5,7 +5,7 @@ This file is the single record of the professor's feedback on the Week 6 design 
 | | |
 |---|---|
 | Tracker branch | `d3`, incorporating the current D1/D2 baseline from `main` |
-| Last updated | 2026-10-30, D3 asynchronous pulse source/native tests added; target acceptance and D1/D2 statuses unchanged |
+| Last updated | 2026-11-01, adaptive window/schema-v2 source and native evidence; physical acceptance still open |
 | Feedback received | After the Week 6 design review submission (before 2026-10-18) |
 | Reviewed document | Week 6 Design Review "P2-AAI15", local copy `ESP_P2_AAI15 (2).pdf` |
 | Next event | Tribunal 1, Monday 2026-10-19 (see section 1) |
@@ -367,6 +367,7 @@ This baseline merge does not close F9, F10, R2, R5, the D3 hardware checklist or
 
 | Date | By | Change |
 |---|---|---|
+| 2026-11-01 | Cody/Codex adaptive window | Implemented the user-approved adaptive window/fault policy, live LD2450 ready-drain integration and one canonical event per finalized window. Schema v2 adds boot/node identity and rejects unmapped remote clocks. Boot counter is committed before producer startup; automatic NVS erase was removed. Native scheduler-to-occupancy, framing/loss, window/fault, identity and ABI-size tests added. Physical guard/geometry, target build/RAM/core/NVS power-cycle and full workload acceptance remain pending; no hardware feedback status is closed. |
 | 2026-10-30 | Cody/Codex pair sequencing | User clarified that 50 ms covers a whole A/guard/B pair. Added portable configurable sequence engine and stopped-mode one-shot PAIR diagnostic through SchedulerTask; native tests cover order/guard/deadline boundaries, faults/cancellation and actual MTK capture integration against mocked registers. Acoustic guard and physical evidence remain open; no status is promoted and no entrance/occupancy event is synthesized. |
 | 2026-10-30 | Cody/Codex asynchronous acquisition | Added MTK pulse start/poll/cancel, pending scheduler lifecycle, timeout/error diagnostics and STOP/CLEAR cleanup. Native tests exercise actual capture functions against mocked registers/clock and the real shared scheduler/GPIO driver together. Pinned ESP-IDF/board unavailable; F5/F7/R1/C1 remain open. One capture slot; A/guard/B, radar windows and physical evidence remain pending. Planning notes are now local/ignored; shared links are labeled accordingly. |
 | 2026-10-29 | Cody/Codex pulse-pin validation | Reject identical GPIO pulse Trigger/Echo pins at parser completion and defensively in the driver before changing pin modes. Real parser/driver native regressions and Cody, D2 host, HAL-boundary and source-purity checks pass. Pinned SDK is missing; target verification, cross-sensor pin conflicts, non-blocking capture and physical timing remain open. No feedback status is closed. |

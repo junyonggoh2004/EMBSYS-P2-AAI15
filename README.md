@@ -1,5 +1,86 @@
 # D1 ESP32-S3 Port with D2 SPI Extension
 
+**Current D3 checkpoint — 1 November 2026 (source/native verified; target pending).**
+The agreed adaptive entrance-window controller is connected to the shared
+scheduler, LD2450 UART decoder, pair engine and ApplicationTask event sink.
+Its policy is a 50 ms whole-pair limit, nominal 100 ms pair period, 2 s maximum
+window / 20 attempts, 200 ms clearance with at least three valid clear pairs,
+300 ms radar expiry and closure after three consecutive failed pairs. First
+in-zone presence opens the window; another in-zone report at least 50 ms later
+confirms it. Repeated presence does not extend the deadline. Multi-target radar,
+missed slots, UART loss/corruption or essential sensor faults prevent occupancy
+changes. Both sonars are collected after an individual failure; an invalid/no-echo
+sample never means clear. Entry requires clear → A-only → both → B-only → clear;
+exit is the reverse. Other/insufficient patterns are incomplete. The physical
+fixture must support these observable states; fast crossings, non-overlapping
+beams and tailgating still need qualification. This is a rule-based baseline;
+the eight features currently hold diagnostic window statistics, not a trained
+D4 feature contract.
+
+Configure two GPIO pulse sensors and one dedicated raw UART radar source, then:
+
+```text
+STOP
+WINDOW <A> <B> <radar> <guard_us> <A_mm> <B_mm> <xmin> <xmax> <ymin> <ymax>
+RUN
+SHOW
+```
+
+Replace placeholders with configured sensor names and measured geometry. A/B
+thresholds are occupied distances in millimetres (1..4000); the radar rectangle
+uses signed millimetres and requires min < max on each axis. Radar must use
+256000 baud, 8N1, raw mode, no pre-write/post-delay and unshared UART pins.
+Other ultrasonic transmitters are refused while configuring WINDOW. Existing
+`gpio.pulse_timeout_us` values plus the supplied guard must fit 50,000 µs.
+No physical guard or timeout is selected automatically. WINDOW takes over the
+three selected sources while RUN is active; their generic publishers are
+suppressed, while other configured sensors continue. Configuration observes a
+60 ms quiet startup interval; individual-module cooldown can skip a 100 ms slot
+instead of triggering too soon. Such skips make the window ambiguous. Completed
+windows enter cooldown: fresh no-target radar plus confirmed clear sonar is
+required before rearming. STOP, CLEAR and accepted sensor reconfiguration cancel
+and disable the controller. Reissue WINDOW after STOP to enable it again.
+
+LD2450 reports are decoded incrementally (including partial reads/resync) using
+the [Hi-Link protocol](https://device.report/m/4724663b9656799560c29bc06a1b7910f4eb185d4575e546e301da03c3d2a869).
+The radar service drains up to 128 ready bytes per tick without the generic
+UART driver's timed read/pre-write path. Ring/FIFO loss and malformed frames
+degrade an open window. Buffered data is discarded after a 300 ms service gap
+instead of presenting old reports as fresh. The protocol has no report CRC;
+framing checks cannot prove arbitrary payload integrity. SHOW exposes window
+state, events/drops, decoder frames/errors and UART loss.
+
+**Schema v2 and boot identity.** The in-process EventRecord is now 96 bytes
+(formerly 80); its native typed application message is 104 bytes and eight-item
+buffer 864 bytes, 128 bytes more than the previous native layout. TASKS must
+verify target sizes and RAM/stack margin before acceptance. New real events use
+the factory MAC as a 64-bit node ID, a 32-bit durable boot counter and a 32-bit
+sequence; allocation stops at exhaustion. The counter is committed during startup
+before producers run, using the [ESP-IDF NVS API](https://docs.espressif.com/projects/esp-idf/en/stable/esp32s3/api-reference/storage/nvs_flash.html).
+Failure leaves WINDOW disabled. Wi-Fi no longer automatically erases NVS on
+initialization failure, because doing so could reuse event identities. Preserve
+NVS during normal flashing: destructive erase/restoration requires an explicit
+identity-recovery plan and is outside the uniqueness guarantee. APP RESET/CLEAR
+do not reset identity allocation. Occupancy/deduplication remain volatile; this
+does not implement persistence of the count across receiver resets.
+
+Application results publish schema 2 with canonical identity, source-monotonic
+window times and quality flags. Synthetic console and unverified rule fixtures
+retain zero node/boot fields and cannot claim canonical identity. Unmapped
+remote-clock records and future local timestamps are rejected; no remote-event
+decoder or clock synchronization is enabled by this change. Consumers must not
+compare another node's uptime with their own. The D2 80-byte flash codec remains
+separate and unchanged; no application flash-log handoff is enabled here.
+
+Run `sh tools/cody_test.sh`, `sh tools/d2_host_test.sh` and `sh tools/mtk.sh purity`.
+Native tests cover actual scheduler/UART boundaries, framing and resync, entry/
+exit/rearm, fault closure, refused output, boot commit failure/reboot identity,
+schema-v2 deduplication and clock rejection. These do not establish SDK ABI,
+NVS power-cycle behavior, physical accuracy, crosstalk, 50 ms workload margin or
+core/stack/heap acceptance. The pinned target build and README section 4 board
+tests remain required. Earlier dated checkpoints below describe their historical
+layouts and integration state.
+
 Branch `d3`: Cody's D3/D6 work on the current D1 (tasks 1–34) and D2 SPI checkpoint from `main`. This is the Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) ported to the ESP32-S3 Super Mini. Since Tribunal 1 the firmware runs on µT-Kernel 3 SMP through the course port ([MTK_REDESIGN.md](MTK_REDESIGN.md)), and D2's SPI runs on it too; the earlier Arduino-ESP32/FreeRTOS port stays as the measured baseline. The same configuration lines, console commands, MQTT topics, output format and ML model work on both boards, because both builds compile the same shared code.
 
 **D3 integration status (28 October 2026).** ApplicationTask now has µT-Kernel task glue in `esp32s3_mtk/components/edge_mtk/runtime_mtk.c`: EventRecord submission uses an eight-item, nonblocking `app_mbf`; its item is sized from `application_message_t` (an 80-byte event plus a kind field/alignment, 88 bytes in native tests). ApplicationTask processes events and queued reset/status requests on core 1, priority 23, with the existing 4 KiB stack. Portable processing/formatting state stays in EdgeCore BSS mapped to PSRAM. The kernel application buffer stays internal, growing by 192 bytes in the native layout; the target size is reported by `TASKS`, and the stack is unchanged. Native tests pass; target compilation, linked-image inspection, resource/core measurements and hardware acceptance remain pending. Shared-C timing corrections now prevent one-shot self-rearming, recover periodic timeouts, honor disabled streams and discard deadline-exceeding responses; `tools/cody_test.sh` includes scheduler/publisher integration regressions. Synchronous drivers are not preempted. Local validation now rejects non-finite/malformed fields and stale or ambiguous occupancy changes, prevents integer-capacity overflow, and scopes RAM duplicates to source/event pairs (+128 bytes of EdgeCore BSS, unchanged 80-byte EventRecord). Canonical node/boot identity, cross-node time, real-window quality provenance, persistence, asynchronous sonar capture and D2 application logging remain open. Use [section 4](#4-set-up-and-test-from-scratch-d1-and-d2) for the active µT-Kernel setup and tests; the Cody documents retain the earlier implementation history.

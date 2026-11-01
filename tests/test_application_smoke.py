@@ -56,7 +56,7 @@ class ApplicationSmokeTests(unittest.TestCase):
 
     @staticmethod
     def tasks(core=1, priority=23, core0=0, core1=17, stack=2300,
-              message=88, buffer=736):
+              message=104, buffer=864):
         return [
             f"[TASK] app_message={message} B app_buffer={buffer} B",
             f"[TASK] ApplicationTask  id=8  core={core} pri={priority} stack_free={stack} B "
@@ -65,8 +65,8 @@ class ApplicationSmokeTests(unittest.TestCase):
 
     def test_task_placement_and_kernel_storage(self):
         result = validate_tasks(self.tasks())
-        self.assertEqual(result["message_bytes"], 88)
-        self.assertEqual(result["buffer_bytes"], 736)
+        self.assertEqual(result["message_bytes"], 104)
+        self.assertEqual(result["buffer_bytes"], 864)
         for changes in [{"core": 0}, {"priority": 22}, {"core0": 1}, {"core1": 0},
                         {"stack": 0}, {"message": 64, "buffer": 544}, {"buffer": 704}]:
             with self.subTest(changes=changes), self.assertRaises(CheckFailure):

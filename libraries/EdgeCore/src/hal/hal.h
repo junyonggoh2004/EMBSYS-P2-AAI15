@@ -178,6 +178,7 @@ int hal_uart_write(int port, const uint8_t *data, size_t len);
 // Next received byte (0..255), or HAL_ERR_TIMEOUT if none is waiting.
 // Never blocks.
 int hal_uart_read_byte(int port);
+uint32_t hal_uart_rx_dropped(int port); // cumulative loss; UINT32_MAX = unavailable
 
 // ---------- SPI (used by bus/spi.c) ----------
 

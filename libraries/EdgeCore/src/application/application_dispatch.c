@@ -39,12 +39,17 @@ bool application_dispatch_handle(const application_message_t *message, size_t by
          * Every processed result is offered, including rejected/duplicate ones.
          * No publisher callback means no attempt, rather than delivery success. */
         int n = snprintf(s_payload, sizeof s_payload,
-                         "{\"schema\":1,\"event_id\":%u,\"source_id\":%u,\"source_seq\":%u,"
-                         "\"class\":\"%s\",\"result\":%u,\"occupancy\":%ld,\"degraded\":%s}",
+                         "{\"schema\":2,\"node_id\":\"%016llx\",\"boot_id\":%u,\"event_id\":%u,\"source_id\":%u,\"source_seq\":%u,"
+                         "\"class\":\"%s\",\"result\":%u,\"occupancy\":%ld,\"degraded\":%s,"
+                         "\"window_start_us\":%llu,\"window_end_us\":%llu,\"clock\":\"source_monotonic\","
+                         "\"quality_flags\":%u,\"model_version\":%u}",
+                         (unsigned long long)e->node_id, (unsigned)e->boot_id,
                          (unsigned)e->event_id, (unsigned)e->source_id,
                          (unsigned)e->source_seq, event_class_name(report->result.decided_class),
                          (unsigned)report->result.code, (long)report->result.occupancy_after,
-                         report->result.degraded ? "true" : "false");
+                         report->result.degraded ? "true" : "false",
+                         (unsigned long long)e->window_start_us, (unsigned long long)e->window_end_us,
+                         (unsigned)e->quality_flags, (unsigned)e->model_version);
         if (publish) {
             bool queued = n > 0 && (size_t)n < sizeof s_payload &&
                           publish(s_payload, (size_t)n, context);

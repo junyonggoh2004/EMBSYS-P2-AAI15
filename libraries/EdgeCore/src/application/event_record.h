@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-#define EVENT_RECORD_SCHEMA_VERSION 1u
+#define EVENT_RECORD_SCHEMA_VERSION 2u
 #define EVENT_FEATURE_COUNT 8u
 
 typedef enum {
@@ -28,7 +28,8 @@ typedef enum {
     EVENT_QUALITY_STALE = 1u << 3,
     EVENT_QUALITY_AMBIGUOUS = 1u << 4,
     EVENT_QUALITY_ML_VALID = 1u << 5,
-    EVENT_QUALITY_RULE_VALID = 1u << 6
+    EVENT_QUALITY_RULE_VALID = 1u << 6,
+    EVENT_QUALITY_SENSOR_FAULT = 1u << 7
 } event_quality_flag_t;
 
 /* Fixed-size, pointer-free application contract shared by scheduler,
@@ -48,6 +49,9 @@ typedef struct {
     uint8_t rule_class;
     uint8_t ml_class;
     uint8_t reserved;
+    uint64_t node_id;      /* zero only for legacy local/synthetic producers */
+    uint32_t boot_id;      /* durable monotonic boot counter */
+    uint32_t clock_domain; /* 0 = this node's monotonic clock; 1 = remote/unmapped */
 } event_record_t;
 
 /* Requires finite confidence/features, valid==1, reserved==0 and no STALE

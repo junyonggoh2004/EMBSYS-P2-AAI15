@@ -37,6 +37,8 @@ typedef struct {
     uint32_t source_id;
     uint32_t last_seq;
     uint64_t last_window_end_us;
+    uint64_t node_id;
+    uint32_t boot_id;
 } application_source_state_t;
 
 /* Current local source-scoped key. Does not provide node/boot uniqueness or
@@ -44,6 +46,8 @@ typedef struct {
 typedef struct {
     uint32_t source_id;
     uint32_t event_id;
+    uint64_t node_id;
+    uint32_t boot_id;
 } application_event_identity_t;
 
 typedef struct {

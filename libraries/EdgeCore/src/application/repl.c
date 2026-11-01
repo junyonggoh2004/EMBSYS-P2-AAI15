@@ -128,6 +128,7 @@ void repl_show_help(void) {
     printf("  RUN / STOP                 - control sampling\n");
     printf("  TRIGGER <sensor|source>     - arm one-shot/event-driven sensor(s)\n");
     printf("  PAIR <A> <B> <A|B> <guard_us> - one stopped-mode sonar pair diagnostic (50 ms)\n");
+    puts("  WINDOW <A> <B> <radar> <guard_us> <A_mm> <B_mm> <xmin> <xmax> <ymin> <ymax>");
     printf("  CLEAR                      - clear sensors + rules\n");
     printf("  SHOW / SHOWRULES           - show sensors / rules\n");
     printf("  CLEARRULES                 - clear only rules\n");
@@ -243,7 +244,11 @@ void repl_handle_line(char *line, bool *running, bool *cfg_ready) {
             printf("RULE: begin\n");
         }
         else if (strcmp(cmd, "run") == 0) { scheduler_pair_cancel(); *running = true; printf("RUN\n"); }
-        else if (strcmp(cmd, "stop") == 0) { scheduler_pair_cancel(); *running = false; printf("STOP\n"); }
+        else if (strcmp(cmd, "stop") == 0) { scheduler_window_stop(); scheduler_pair_cancel(); *running = false; printf("STOP\n"); }
+        else if (!strncasecmp(line, "WINDOW ", 7) || !strcasecmp(line, "WINDOW")) {
+            int rc = *running ? HAL_ERR_BUSY : scheduler_window_command(line_len > 6 ? line + 7 : "");
+            printf("[WINDOW] request=%d\n", rc);
+        }
         else if (strncasecmp(line, "PAIR ", 5) == 0 || !strcasecmp(line, "PAIR")) {
             int rc = *running ? HAL_ERR_BUSY : scheduler_pair_command(line_len > 4 ? line + 5 : "");
             printf("[PAIR] request=%d\n", rc);

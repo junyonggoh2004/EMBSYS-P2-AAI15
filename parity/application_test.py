@@ -83,7 +83,7 @@ def validate_tasks(lines):
     if not sizes:
         raise CheckFailure("TASKS: missing typed application message sizes")
     message, buffer = map(int, sizes.groups())
-    if message < 84 or buffer != 8 * (4 + ((message + 3) & ~3)):
+    if message < 100 or buffer != 8 * (4 + ((message + 3) & ~3)):
         raise CheckFailure(f"TASKS: incorrect typed message storage {sizes.group(0)}")
     return {"core": core, "priority": priority, "stack_free": stack_free,
             "ran_on_core0": core0, "ran_on_core1": core1,

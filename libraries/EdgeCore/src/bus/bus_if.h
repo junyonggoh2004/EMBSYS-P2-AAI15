@@ -24,6 +24,8 @@ typedef struct {
     void (*stream_start)(void *ctx);
     void (*stream_stop)(void *ctx);
     void (*cancel)(void *ctx); // optional: STOP/deadline cancellation, no free
+    int (*read_ready)(void *ctx, uint8_t *buf, size_t cap); // bounded, no wait/pre-write
+    uint32_t (*rx_dropped)(void *ctx); // UINT32_MAX if backend cannot report loss
 } bus_t;
 
 const bus_t *bus_lookup(const char *name);

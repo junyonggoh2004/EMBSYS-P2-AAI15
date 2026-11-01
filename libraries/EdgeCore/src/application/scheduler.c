@@ -7,6 +7,9 @@
 #include "hal/hal.h"
 #include "application/scheduler.h"
 #include "application/pulse_sequence.h"
+#include "application/entrance_window.h"
+#include "application/event_identity.h"
+#include "application/ld2450.h"
 #include "application/output_format.h"
 #include "bus/bus_common.h"
 #include "bus/bus_if.h"
@@ -46,6 +49,15 @@ static bool s_prev_running;
 static pulse_sequence_t s_pair;
 static unsigned s_pair_slots[2];
 static bool s_pair_reported = true;
+static entrance_window_t s_window;
+static unsigned s_window_slots[3];
+static ld2450_decoder_t s_radar;
+static ld2450_zone_t s_zone;
+static uint32_t s_radar_dropped;
+static uint64_t s_radar_service_us;
+static uint64_t s_window_warmup_until;
+
+void scheduler_window_stop(void) { entrance_window_stop(&s_window, hal_time_us()); }
 
 static void pair_report(void)
 {
@@ -93,6 +105,8 @@ int scheduler_count(void) {
 
 /* Initialize scheduler */
 void scheduler_reset(void) {
+    scheduler_window_stop();
+    memset(&s_window, 0, sizeof s_window);
     scheduler_pair_cancel();
     memset(&s_pair, 0, sizeof s_pair);
     /* Contexts are opaque to the scheduler. Give each driver a chance to
@@ -112,6 +126,10 @@ void scheduler_reset(void) {
     SLOG("reset: cleared %d slots", (int)MAX_ACTIVE);
 }
 void scheduler_dump(void) {
+    printf("[WINDOW] enabled=%u state=%u events=%u dropped=%u radar_frames=%u malformed=%u rx_dropped=%u identity=%u\n",
+           s_window.enabled ? 1u : 0u, (unsigned)s_window.state,
+           (unsigned)s_window.events, (unsigned)s_window.drops, (unsigned)s_radar.frames,
+           (unsigned)s_radar.malformed, (unsigned)s_radar_dropped, event_identity_ready() ? 1u : 0u);
     for (int i = 0; i < MAX_ACTIVE; i++) {
         if (g_sensors[i].in_use) {
             const app_cfg_t *c = &g_sensors[i].cfg_copy;
@@ -147,27 +165,27 @@ static bool pulse_config(const app_cfg_t *c)
 
 static int pair_start(void *context, unsigned sensor, uint32_t timeout_us)
 {
-    (void)context;
-    const app_cfg_t *c = &g_sensors[s_pair_slots[sensor]].cfg_copy;
+    const unsigned *slots = context ? context : s_pair_slots;
+    const app_cfg_t *c = &g_sensors[slots[sensor]].cfg_copy;
     return hal_gpio_capture_start(c->gpio_trig, c->gpio_echo,
                                   c->gpio_trig_us > 0 ? (uint32_t)c->gpio_trig_us : 10u,
                                   timeout_us);
 }
 static int pair_poll(void *context, unsigned sensor, hal_pulse_result_t *pulse)
 {
-    (void)context;
-    return hal_gpio_capture_poll(g_sensors[s_pair_slots[sensor]].cfg_copy.gpio_echo, pulse);
+    const unsigned *slots = context ? context : s_pair_slots;
+    return hal_gpio_capture_poll(g_sensors[slots[sensor]].cfg_copy.gpio_echo, pulse);
 }
 static void pair_cancel(void *context, unsigned sensor)
 {
-    (void)context;
-    hal_gpio_capture_cancel(g_sensors[s_pair_slots[sensor]].cfg_copy.gpio_echo);
+    const unsigned *slots = context ? context : s_pair_slots;
+    hal_gpio_capture_cancel(g_sensors[slots[sensor]].cfg_copy.gpio_echo);
 }
 
 int scheduler_pair_command(const char *args)
 {
     if (!args) return HAL_ERR_INVALID;
-    if (s_prev_running || pulse_sequence_active(&s_pair)) return HAL_ERR_BUSY;
+    if (s_prev_running || pulse_sequence_active(&s_pair) || s_window.enabled) return HAL_ERR_BUSY;
     char names[2][32], order[2], guard[32], extra;
     if (sscanf(args, "%31s %31s %1s %31s %c", names[0], names[1], order, guard, &extra) != 4 ||
         (order[0] != 'A' && order[0] != 'B')) return HAL_ERR_INVALID;
@@ -206,6 +224,162 @@ int scheduler_pair_command(const char *args)
     printf("[PAIR] armed A=%s B=%s first=%s guard_us=%u window_us=%u\n",
            names[0], names[1], order, (unsigned)config.guard_us, (unsigned)config.window_us);
     return HAL_OK;
+}
+
+
+static bool window_emit(const entrance_result_t *r, void *context)
+{
+    (void)context;
+    event_record_t event = {0};
+    if (!event_identity_next(&event.node_id, &event.boot_id, &event.source_seq)) {
+        puts("[WINDOW] identity exhausted/unavailable: event refused");
+        return false;
+    }
+    event.schema_version = EVENT_RECORD_SCHEMA_VERSION;
+    event.event_id = event.source_seq;
+    event.source_id = 0x57494e44u; /* one WINDOW service per provisioned node */
+    event.window_start_us = r->start_us; event.window_end_us = r->end_us;
+    event.quality_flags = r->quality_flags;
+    event.rule_class = (uint8_t)r->classification;
+    event.valid = 1;
+    event.features[0] = (float)r->pairs; event.features[1] = (float)r->valid_pairs;
+    event.features[2] = (float)r->failed_pairs; event.features[3] = (float)r->min_mm[0];
+    event.features[4] = (float)r->min_mm[1]; event.features[5] = (float)r->max_pair_us;
+    event.features[6] = (float)r->reason; event.features[7] = (float)r->skipped;
+    bool queued = event_record_submit(&event);
+    printf("[WINDOW] seq=%u class=%s reason=%u pairs=%u valid=%u failed=%u queued=%u\n",
+           (unsigned)event.source_seq, event_class_name(r->classification), (unsigned)r->reason,
+           r->pairs, r->valid_pairs, r->failed_pairs, queued ? 1u : 0u);
+    return queued;
+}
+
+static size_t config_pins(const app_cfg_t *, int pins[4]);
+
+int scheduler_window_command(const char *args)
+{
+    if (!args || strlen(args) >= 256) return HAL_ERR_INVALID;
+    if (s_prev_running || s_window.enabled || pulse_sequence_active(&s_pair)) return HAL_ERR_BUSY;
+    if (!event_identity_ready()) return HAL_ERR_IO;
+    char text[256], *tokens[10], *save;
+    strcpy(text, args);
+    unsigned count = 0;
+    char *token = strtok_r(text, " \t", &save);
+    while (token && count < 10) { tokens[count++] = token; token = strtok_r(NULL, " \t", &save); }
+    if (token || count != 10) return HAL_ERR_INVALID;
+    int32_t values[7];
+    for (unsigned i = 0; i < 7; ++i) {
+        char *end;
+        errno = 0;
+        long long v = strtoll(tokens[3 + i], &end, 10);
+        if (errno || *end || v < INT32_MIN || v > INT32_MAX) return HAL_ERR_INVALID;
+        values[i] = (int32_t)v;
+    }
+    if (values[0] < 0 || values[1] <= 0 || values[1] > 4000 || values[2] <= 0 || values[2] > 4000 ||
+        values[3] < -32767 || values[4] > 32767 || values[3] >= values[4] ||
+        values[5] < -32767 || values[6] > 32767 || values[5] >= values[6]) return HAL_ERR_INVALID;
+    unsigned slots[3] = {MAX_ACTIVE, MAX_ACTIVE, MAX_ACTIVE};
+    for (unsigned i = 0; i < MAX_ACTIVE; ++i) if (g_sensors[i].in_use) {
+        for (unsigned n = 0; n < 3; ++n) if (!strcmp(g_sensors[i].cfg_copy.name, tokens[n])) {
+            if (slots[n] != MAX_ACTIVE) return HAL_ERR_INVALID;
+            slots[n] = i;
+        }
+    }
+    for (unsigned n = 0; n < 3; ++n) if (slots[n] == MAX_ACTIVE) return HAL_ERR_INVALID;
+    if (slots[0] == slots[1] || slots[0] == slots[2] || slots[1] == slots[2]) return HAL_ERR_INVALID;
+    entrance_config_t config = { .pair = {.first=0, .guard_us=(uint32_t)values[0],
+        .window_us=PULSE_SEQUENCE_WINDOW_MAX_US, .error_policy=PULSE_SEQUENCE_COLLECT_BOTH},
+        .occupied_mm={(uint32_t)values[1], (uint32_t)values[2]} };
+    for (unsigned n = 0; n < 2; ++n) {
+        const active_sensor_t *sensor = &g_sensors[slots[n]];
+        if (!pulse_config(&sensor->cfg_copy) || sensor->pending) return HAL_ERR_INVALID;
+        config.pair.timeout_us[n] = sensor->cfg_copy.gpio_pulse_timeout_us > 0 ?
+            (uint32_t)sensor->cfg_copy.gpio_pulse_timeout_us : 30000u;
+    }
+    for (unsigned i = 0; i < MAX_ACTIVE; ++i) if (g_sensors[i].in_use && i != slots[0] && i != slots[1] &&
+        pulse_config(&g_sensors[i].cfg_copy)) return HAL_ERR_BUSY; // no stray ultrasonic transmitter
+    active_sensor_t *radar = &g_sensors[slots[2]];
+    const app_cfg_t *c = &radar->cfg_copy;
+    if (c->proto != proto_uart || !radar->bus->read_ready || !radar->bus->rx_dropped ||
+        c->uart_baud != 256000 || c->uart_bits != 8 || c->uart_stop != 1 ||
+        (c->uart_parity != 'N' && c->uart_parity != 'n') || c->uart_line_mode ||
+        c->uart_pre_len || c->uart_post_delay_ms) return HAL_ERR_INVALID;
+    for (unsigned i = 0; i < MAX_ACTIVE; ++i) {
+        if (!g_sensors[i].in_use || i == slots[2]) continue;
+        int pins[4];
+        size_t n = config_pins(&g_sensors[i].cfg_copy, pins);
+        for (size_t p = 0; p < n; ++p)
+            if (pins[p] >= 0 && (pins[p] == c->uart_tx || pins[p] == c->uart_rx)) return HAL_ERR_BUSY;
+    }
+    const pulse_sequence_ops_t ops = {pair_start, pair_poll, pair_cancel};
+    entrance_window_t candidate = {0};
+    int rc = entrance_window_configure(&candidate, &config, &ops, s_window_slots, window_emit, NULL);
+    if (rc != HAL_OK) return rc;
+    uint32_t dropped = radar->bus->rx_dropped(radar->ctx);
+    if (dropped == UINT32_MAX) return HAL_ERR_UNSUPPORTED;
+    uint8_t discard[128];
+    unsigned drained = 0;
+    for (unsigned i = 0; i < 4; ++i) {
+        int n = radar->bus->read_ready(radar->ctx, discard, sizeof discard);
+        if (n < 0) return n;
+        drained += (unsigned)n;
+        if (n < (int)sizeof discard) break;
+    }
+    if (drained == 512) return HAL_ERR_BUSY; // retry after bounded stale-buffer drain
+    memcpy(s_window_slots, slots, sizeof slots);
+    s_zone = (ld2450_zone_t){values[3], values[4], values[5], values[6]};
+    memset(&s_radar, 0, sizeof s_radar);
+    s_radar_dropped = dropped;
+    s_radar_service_us = hal_time_us();
+    s_window_warmup_until = s_radar_service_us + 60001u;
+    s_window = candidate;
+    puts("[WINDOW] configured; RUN enables radar acquisition, STOP/CLEAR cancels");
+    return HAL_OK;
+}
+
+static void radar_report(unsigned targets, uint64_t now, void *context)
+{
+    (void)context;
+    entrance_window_radar(&s_window, targets, now);
+}
+static void window_service(void)
+{
+    active_sensor_t *radar = &g_sensors[s_window_slots[2]];
+    uint64_t now = hal_time_us();
+    uint32_t dropped = radar->bus->rx_dropped(radar->ctx);
+    uint8_t bytes[128];
+    if (now < s_window_warmup_until) {
+        (void)radar->bus->read_ready(radar->ctx, bytes, sizeof bytes);
+        s_radar_service_us = now;
+        return;
+    }
+    if (dropped != s_radar_dropped || now < s_radar_service_us ||
+        now - s_radar_service_us >= ENTRANCE_RADAR_STALE_US) {
+        s_radar_dropped = dropped;
+        s_radar.used = 0;
+        entrance_window_fault(&s_window);
+        // Byte rings have no source timestamp. Discard old backlog after a
+        // service gap/loss instead of renewing freshness with buffered frames.
+        for (unsigned i = 0; i < 4; ++i)
+            if (radar->bus->read_ready(radar->ctx, bytes, sizeof bytes) < (int)sizeof bytes) break;
+        s_radar_service_us = now;
+        entrance_window_step(&s_window, now);
+        return;
+    }
+    s_radar_service_us = now;
+    int n = radar->bus->read_ready(radar->ctx, bytes, sizeof bytes);
+    dropped = radar->bus->rx_dropped(radar->ctx);
+    if (dropped != s_radar_dropped) {
+        s_radar_dropped = dropped;
+        s_radar.used = 0;
+        entrance_window_fault(&s_window);
+        for (unsigned i = 0; i < 4; ++i)
+            if (radar->bus->read_ready(radar->ctx, bytes, sizeof bytes) < (int)sizeof bytes) break;
+        n = 0;
+    }
+    uint32_t bad = s_radar.malformed;
+    if (n > 0) ld2450_feed(&s_radar, &s_zone, bytes, (size_t)n, hal_time_us(), radar_report, NULL);
+    if (n < 0 || bad != s_radar.malformed) entrance_window_fault(&s_window);
+    entrance_window_step(&s_window, hal_time_us());
 }
 
 static size_t config_pins(const app_cfg_t *c, int pins[4])
@@ -254,6 +428,7 @@ int scheduler_add_config(const app_cfg_t *cfg_in) {
     }
     for (int i = 0; i < MAX_ACTIVE; i++) {
         if (!g_sensors[i].in_use) {
+            scheduler_window_stop();
             active_sensor_t *S = &g_sensors[i];
             memset(S, 0, sizeof(*S));
             S->cfg_copy = *cfg_in;
@@ -401,6 +576,8 @@ int scheduler_on_sample(const char *source, uint64_t timestamp_us) {
 
 /* Tick all sensors */
 void scheduler_run_all(bool running) {
+    if (!running && s_prev_running) scheduler_window_stop();
+    if (running && s_window.enabled) window_service();
     if (pulse_sequence_active(&s_pair)) {
         if (running) scheduler_pair_cancel();
         else {
@@ -437,6 +614,8 @@ void scheduler_run_all(bool running) {
     for (int i = 0; i < MAX_ACTIVE; i++) {
         active_sensor_t *S = &g_sensors[i];
         if (!S->in_use || !S->bus) continue;
+        if (s_window.enabled && (i == (int)s_window_slots[0] || i == (int)s_window_slots[1] ||
+                                 i == (int)s_window_slots[2])) continue;
 
         const app_cfg_t *cfg = &S->cfg_copy;
         bool active = running && cfg->timing.enabled;
@@ -553,9 +732,15 @@ uint32_t scheduler_next_due_ms(bool running, uint32_t max_ms) {
         if (pair_wait < wait) wait = pair_wait;
     }
     if (!running) return wait;
+    if (s_window.enabled) {
+        uint32_t window_wait = (entrance_window_wait_us(&s_window, now, 10000u) + 999u) / 1000u;
+        if (window_wait < wait) wait = window_wait;
+    }
     for (int i = 0; i < MAX_ACTIVE; i++) {
         const active_sensor_t *S = &g_sensors[i];
         if (!S->in_use || !S->bus || !S->cfg_copy.timing.enabled) continue;
+        if (s_window.enabled && (i == (int)s_window_slots[0] || i == (int)s_window_slots[1] ||
+                                 i == (int)s_window_slots[2])) continue;
         if (S->pending) {
             if (wait > 1) wait = 1;
             continue;

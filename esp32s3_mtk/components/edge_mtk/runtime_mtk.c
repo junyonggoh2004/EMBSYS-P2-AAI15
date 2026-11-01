@@ -157,7 +157,7 @@ static uint32_t s_mbf_sched[MBF_BYTES(SCHED_MBF_MSGS, sizeof(sched_msg_t)) / 4];
 static uint32_t s_mbf_pub[MBF_BYTES(PUB_MBF_MSGS, sizeof(pub_msg_t)) / 4];
 static uint32_t s_mbf_infer[MBF_BYTES(INFER_MBF_MSGS, INFER_MSG_MAX) / 4];
 /* Preserve the course port's internal-RAM kernel-buffer boundary. The typed
- * envelope adds 192 bytes over eight former 64-byte items in native tests;
+ * schema-v2 envelope adds 320 bytes over eight former 64-byte items in native tests;
  * larger processing/formatting state stays in EdgeCore's external BSS. */
 static uint32_t s_mbf_app[MBF_BYTES(APP_MBF_MSGS, APP_MSG_MAX) / 4];
 static uint32_t s_mbf_bench[MBF_BYTES(BENCH_MBF_MSGS, sizeof(bench_msg_t)) / 4];

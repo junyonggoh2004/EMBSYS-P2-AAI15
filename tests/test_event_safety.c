@@ -52,7 +52,7 @@ static void test_nonfinite_and_malformed(void)
 static void test_quality_does_not_change_occupancy(void)
 {
     const uint32_t flags[] = {EVENT_QUALITY_STALE, EVENT_QUALITY_AMBIGUOUS,
-                              EVENT_QUALITY_SENSOR_TIMEOUT};
+                              EVENT_QUALITY_SENSOR_TIMEOUT, EVENT_QUALITY_SENSOR_FAULT};
     for (size_t i = 0; i < sizeof flags / sizeof flags[0]; ++i) {
         application_state_t s;
         application_state_init(&s, NULL);
@@ -136,13 +136,42 @@ static void test_policy_and_occupancy_bounds(void)
     assert(r.code == APP_RESULT_APPLIED && s.occupancy == INT32_MAX - 1);
 }
 
+static void test_canonical_identity_and_clocks(void)
+{
+    application_state_t s;
+    application_state_init(&s, NULL);
+    event_record_t e = entry(1, 1, 1);
+    e.node_id = 0x1234; e.boot_id = 1;
+    assert(application_process_event(&s,&e,1002000).code == APP_RESULT_APPLIED);
+    assert(application_process_event(&s,&e,1002000).code == APP_RESULT_DUPLICATE);
+    e.node_id = 0x5678;
+    assert(application_process_event(&s,&e,1002000).code == APP_RESULT_APPLIED);
+    e.node_id = 0x1234; e.boot_id = 2;
+    assert(application_process_event(&s,&e,1002000).code == APP_RESULT_APPLIED);
+    e.boot_id = 1; e.event_id = e.source_seq = 2;
+    assert(application_process_event(&s,&e,1002000).code == APP_RESULT_REORDERED);
+    e.boot_id = 3; e.quality_flags |= EVENT_QUALITY_AMBIGUOUS;
+    assert(application_process_event(&s,&e,1002000).code == APP_RESULT_REJECTED);
+    e.boot_id = 2; e.event_id = e.source_seq = 3;
+    e.quality_flags &= ~EVENT_QUALITY_AMBIGUOUS;
+    assert(application_process_event(&s,&e,1002000).code == APP_RESULT_REORDERED);
+    e.boot_id = 4; e.clock_domain = 1;
+    const char *reason;
+    assert(!event_record_validate(&e,1002000,5000,&reason) && !strcmp(reason,"unmapped clock"));
+    e.clock_domain = 0;
+    assert(!event_record_validate(&e,1000000,5000,&reason) && !strcmp(reason,"future"));
+    e.boot_id = 0;
+    assert(!event_record_validate(&e,1002000,5000,&reason));
+}
+
 int main(void)
 {
     test_nonfinite_and_malformed();
     test_quality_does_not_change_occupancy();
     test_source_scoped_deduplication();
     test_policy_and_occupancy_bounds();
-    assert(sizeof(event_record_t) == 80);
+    test_canonical_identity_and_clocks();
+    assert(sizeof(event_record_t) == 96);
     printf("event safety: PASS (finite fields, quality rejection, source-scoped duplicates, occupancy bounds; state=%zu B)\n",
            sizeof(application_state_t));
     return 0;

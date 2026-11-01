@@ -22,12 +22,16 @@ bool event_record_validate(const event_record_t *event, uint64_t now_us,
     else if (!event->event_id || !event->source_id || !event->source_seq) why = "identity";
     else if (event->valid != 1u) why = "invalid";
     else if (event->reserved) why = "reserved";
+    else if ((!event->node_id != !event->boot_id) ||
+             (event->node_id && event->event_id != event->source_seq)) why = "canonical identity";
+    else if (event->clock_domain) why = "unmapped clock";
     else if (!event->window_start_us || event->window_end_us < event->window_start_us) why = "window";
     else if (!valid_class(event->rule_class) || !valid_class(event->ml_class)) why = "class";
     else if (!isfinite(event->ml_confidence) || event->ml_confidence < 0.0f ||
              event->ml_confidence > 1.0f) why = "confidence";
     else if (!finite_features(event)) why = "features";
     else if (event->quality_flags & EVENT_QUALITY_STALE) why = "stale";
+    else if (event->window_end_us > now_us) why = "future";
     else if (freshness_ms && now_us > event->window_end_us &&
              now_us - event->window_end_us > (uint64_t)freshness_ms * 1000u) why = "stale";
     if (reason) *reason = why;

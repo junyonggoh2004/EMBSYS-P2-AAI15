@@ -1,6 +1,8 @@
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
+#include "application/event_identity.h"
+#include "application/application_state.h"
 #include "bus/bus_common.h"
 #include "bus/bus_if.h"
 #include "hal/hal.h"
@@ -43,7 +45,23 @@ uint64_t hal_time_us(void) { return now_us; }
 uint32_t hal_time_ms(void) { return (uint32_t)(now_us / 1000); }
 void hal_delay_ms(uint32_t ms) { (void)ms; }
 void hal_delay_us(uint32_t us) { (void)us; }
-const bus_t *bus_lookup(const char *name) { (void)name; return &bus_gpio; }
+static uint8_t radar_data[30];
+static size_t radar_length;
+static uint32_t radar_drops;
+static int radar_dummy;
+static int radar_init(const sensor_cfg_t *c, void **ctx)
+{ (void)c; *ctx=&radar_dummy; return 0; }
+static void radar_deinit(void *ctx) { (void)ctx; }
+static int radar_ready(void *ctx,uint8_t *data,size_t cap)
+{
+    (void)ctx; assert(cap>=radar_length);
+    memcpy(data,radar_data,radar_length);
+    int n=(int)radar_length; radar_length=0; return n;
+}
+static uint32_t radar_dropped(void *ctx) { (void)ctx; return radar_drops; }
+static const bus_t radar_bus={.name="uart",.init_cfg=radar_init,.deinit=radar_deinit,
+    .read_ready=radar_ready,.rx_dropped=radar_dropped};
+const bus_t *bus_lookup(const char *name) { return !strcmp(name,"uart")?&radar_bus:&bus_gpio; }
 bool mqtt_follow_remote_source(const char *node, const char *source, const char *alias)
 { (void)node; (void)source; (void)alias; return true; }
 bool mqtt_pub_bytes(const char *source, const uint8_t *data, size_t len, int qos, bool retain)
@@ -264,6 +282,69 @@ static void test_scheduler_pair_diagnostic(void)
     assert(capture_cancels == cancelled + 4);
 }
 
+static unsigned window_events;
+static event_record_t window_event;
+static bool window_sink(const event_record_t *event)
+{ ++window_events; window_event=*event; return true; }
+static void feed_radar(void)
+{
+    memset(radar_data,0,sizeof radar_data);
+    radar_data[0]=0xaa; radar_data[1]=0xff; radar_data[2]=3;
+    radar_data[5]=0x80; radar_data[6]=0xe8; radar_data[7]=0x83;
+    radar_data[10]=0x40; radar_data[11]=1;
+    radar_data[28]=0x55; radar_data[29]=0xcc;
+    radar_length=sizeof radar_data;
+}
+static void window_pair(uint64_t now,unsigned mask)
+{
+    now_us=now; feed_radar(); scheduler_run_all(true);
+    uint32_t width=mask&1?580:5800;
+    capture_result=(hal_pulse_result_t){now+100,now+100+width,width};
+    capture_poll_rc=HAL_OK;
+    now_us=now+6000; scheduler_run_all(true);
+    now_us=now+7000; scheduler_run_all(true);
+    width=mask&2?580:5800;
+    capture_result=(hal_pulse_result_t){now+7100,now+7100+width,width};
+    now_us=now+13000; scheduler_run_all(true);
+}
+static void test_radar_to_application(void)
+{
+    scheduler_reset(); now_us=900000;
+    assert(scheduler_window_command("A B RADAR 1000 500 500 -500 500 0 2000")==HAL_ERR_IO);
+    assert(event_identity_install(0x123456,7));
+    app_cfg_t a=config(8,9), b=config(10,11), r={0};
+    snprintf(a.name,sizeof a.name,"A"); snprintf(b.name,sizeof b.name,"B");
+    a.gpio_pulse_timeout_us=b.gpio_pulse_timeout_us=12000;
+    snprintf(r.name,sizeof r.name,"RADAR"); r.proto=proto_uart;
+    r.timing=(timing_config_t){TIMING_MODE_PERIODIC,100,0,0,true};
+    r.uart_tx=12; r.uart_rx=13; r.uart_baud=256000; r.uart_bits=8;
+    r.uart_parity='N'; r.uart_stop=1;
+    assert(scheduler_add_config(&a)==0 && scheduler_add_config(&b)==1 && scheduler_add_config(&r)==2);
+    assert(scheduler_window_command("A B RADAR 30000 500 500 -500 500 0 2000")==HAL_ERR_INVALID);
+    assert(scheduler_window_command("A B RADAR 1000 500 500 -500 500 0 2000")==HAL_OK);
+    event_record_set_sink(window_sink);
+    const unsigned masks[]={0,1,3,2,0,0,0};
+    unsigned raw=sonar_samples+other_samples;
+    for(unsigned n=0;n<7;++n) window_pair(1000000+n*100000,masks[n]);
+    assert(window_events==1 && window_event.rule_class==EVENT_CLASS_ENTRY);
+    assert(window_event.node_id==0x123456 && window_event.boot_id==7 && window_event.source_seq==1);
+    assert(raw==sonar_samples+other_samples); // selected devices are not also generic publishers
+    application_state_t app; application_state_init(&app,NULL);
+    assert(application_process_event(&app,&window_event,now_us).code==APP_RESULT_APPLIED && app.occupancy==1);
+    assert(application_process_event(&app,&window_event,now_us).code==APP_RESULT_DUPLICATE);
+    scheduler_window_stop(); scheduler_run_all(false);
+    now_us=1900000;
+    assert(scheduler_window_command("A B RADAR 1000 500 500 -500 500 0 2000")==HAL_OK);
+    for(unsigned n=0;n<7;++n) {
+        if(n==2) ++radar_drops;
+        window_pair(2000000+n*100000,masks[n]);
+    }
+    assert(window_events==2 && window_event.rule_class==EVENT_CLASS_INCOMPLETE);
+    application_process_event(&app,&window_event,now_us);
+    assert(app.occupancy==1);
+    scheduler_reset(); event_record_set_sink(NULL);
+}
+
 int main(void)
 {
     test_parser();
@@ -271,6 +352,7 @@ int main(void)
     test_async_lifecycle();
     test_scheduler_with_real_gpio();
     test_scheduler_pair_diagnostic();
+    test_radar_to_application();
     puts("GPIO pulse configuration/lifecycle: PASS (real scheduler/driver, async service, timeout, STOP/CLEAR)");
     return 0;
 }

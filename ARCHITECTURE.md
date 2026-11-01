@@ -1,5 +1,18 @@
 # D1 Architecture Freeze (Task 10)
 
+**1 November D3 update (target unverified).** The shared `entrance_window`
+controller now owns a configured A/B pair plus a dedicated LD2450 source while
+RUN is active. Radar is drained without waiting; valid in-zone frames enable a
+finite 2 s / 20-attempt window of nominal 100 ms pairs with 50 ms acquisition
+budgets. Clearance, confirmation, timeout, ambiguity, cooldown and cancellation
+are explicit. Its result is offered once to ApplicationTask through the typed
+sink; only fully evidenced crossings change occupancy. All window/decoder state
+lives in EdgeCore BSS, mapped to PSRAM. Schema-v2 EventRecord adds canonical
+node/boot identity and clock-domain rejection; the application buffer grows
+128 bytes in the native layout. Startup-only NVS boot allocation lives in
+`identity_mtk.c`, never SchedulerTask. Exact policy, commands, resource changes
+and remaining target gates are at the top of README. D2 flash format is unchanged.
+
 Status: draft for team review, 2026-10-03, prepared by Hasif. The README makes this task the gate before tasks 11 to 23, so it closes only when tasks 7 to 9 are finished, section 5 holds the confirmed pin layout, and the team has reviewed every section (recorded in section 15).
 
 Requirements, the parity table and every test ID cited here are defined in [parity/PARITY.md](parity/PARITY.md). The Pico reference is the tag `pico-reference`.

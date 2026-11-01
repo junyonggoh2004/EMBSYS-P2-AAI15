@@ -670,6 +670,7 @@ static void uart_isr(UINT intno)
     uart_port_ctx_t *u = intno == ETS_UART2_INTR_SOURCE ? &s_uart[0] : &s_uart[1];
     uart_dev_t *hw = UART_LL_GET_HW(u->num);
     uint32_t st = uart_ll_get_intsts_mask(hw);
+    if (st & UART_INTR_RXFIFO_OVF) ++u->dropped;
     uint32_t n;
     while ((n = uart_ll_get_rxfifo_len(hw)) > 0) {
         uint8_t b;
@@ -783,6 +784,7 @@ void hal_mtk_uart_internal_loopback(int port, bool on)
 }
 
 uint32_t hal_mtk_uart_dropped(int port) { return s_uart[port & 1].dropped; }
+uint32_t hal_uart_rx_dropped(int port) { return __atomic_load_n(&s_uart[port & 1].dropped, __ATOMIC_ACQUIRE); }
 
 // ---------- SPI ----------
 // SPI2/FSPI, polled 64-byte FIFO chunks. CS is kept low across the entire

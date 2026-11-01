@@ -19,6 +19,11 @@ cc -std=c11 -Wall -Wextra -Werror \
   libraries/EdgeCore/src/bus/gpio.c \
   libraries/EdgeCore/src/hal/pulse_capture.c \
   libraries/EdgeCore/src/application/scheduler.c \
+  libraries/EdgeCore/src/application/entrance_window.c \
+  libraries/EdgeCore/src/application/event_identity.c \
+  libraries/EdgeCore/src/application/ld2450.c \
+  libraries/EdgeCore/src/application/event_record.c \
+  libraries/EdgeCore/src/application/application_state.c \
   libraries/EdgeCore/src/application/pulse_sequence.c \
   libraries/EdgeCore/src/application/output_format.c \
   libraries/EdgeCore/src/application/config_parser.c \
@@ -37,6 +42,24 @@ cc -std=c11 -Wall -Wextra -Werror -I libraries/EdgeCore/src \
   tests/test_pulse_sequence.c libraries/EdgeCore/src/application/pulse_sequence.c \
   -o "$SEQUENCE_OUT"
 "$SEQUENCE_OUT"
+
+WINDOW_OUT=${TMPDIR:-/tmp}/cody_entrance_window_tests
+cc -std=c11 -Wall -Wextra -Werror -I libraries/EdgeCore/src \
+  tests/test_entrance_window.c libraries/EdgeCore/src/application/entrance_window.c \
+  libraries/EdgeCore/src/application/pulse_sequence.c libraries/EdgeCore/src/application/event_identity.c \
+  libraries/EdgeCore/src/application/application_state.c libraries/EdgeCore/src/application/event_record.c \
+  libraries/EdgeCore/src/application/ld2450.c -o "$WINDOW_OUT"
+"$WINDOW_OUT"
+
+IDENTITY_OUT=${TMPDIR:-/tmp}/cody_event_identity_tests
+cc -std=c11 -Wall -Wextra -Werror -I libraries/EdgeCore/src -I tests \
+  tests/test_event_identity.c -o "$IDENTITY_OUT"
+"$IDENTITY_OUT"
+
+UART_OUT=${TMPDIR:-/tmp}/cody_uart_ready_tests
+cc -std=c11 -Wall -Wextra -Werror -I libraries/EdgeCore/src \
+  tests/test_uart_ready.c libraries/EdgeCore/src/bus/uart.c -o "$UART_OUT"
+"$UART_OUT"
 
 SAFETY_OUT=${TMPDIR:-/tmp}/cody_event_safety_tests
 cc -std=c11 -Wall -Wextra -Werror \
@@ -62,6 +85,10 @@ cc -std=c11 -Wall -Wextra -Werror -DSCHED_DEBUG=0 \
   -I libraries/EdgeCore/src \
   tests/test_scheduler_timing.c \
   libraries/EdgeCore/src/application/scheduler.c \
+  libraries/EdgeCore/src/application/entrance_window.c \
+  libraries/EdgeCore/src/application/event_identity.c \
+  libraries/EdgeCore/src/application/ld2450.c \
+  libraries/EdgeCore/src/application/event_record.c \
   libraries/EdgeCore/src/application/pulse_sequence.c \
   libraries/EdgeCore/src/hal/pulse_capture.c \
   libraries/EdgeCore/src/application/timing_contract.c \

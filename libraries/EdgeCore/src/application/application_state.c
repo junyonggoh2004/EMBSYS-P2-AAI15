@@ -4,22 +4,25 @@
 
 static bool seen_event(const application_state_t *state, const event_record_t *event) {
     for (uint8_t i = 0; i < state->recent_count; i++)
-        if (state->recent_events[i].source_id == event->source_id &&
+        if (state->recent_events[i].node_id == event->node_id &&
+            state->recent_events[i].boot_id == event->boot_id &&
+            (event->node_id || state->recent_events[i].source_id == event->source_id) &&
             state->recent_events[i].event_id == event->event_id) return true;
     return false;
 }
 
 static void remember_event(application_state_t *state, const event_record_t *event) {
     state->recent_events[state->recent_next] =
-        (application_event_identity_t){event->source_id, event->event_id};
+        (application_event_identity_t){event->source_id, event->event_id, event->node_id, event->boot_id};
     state->recent_next = (uint8_t)((state->recent_next + 1u) % APPLICATION_DEDUP_HISTORY);
     if (state->recent_count < APPLICATION_DEDUP_HISTORY) state->recent_count++;
 }
 
-static application_source_state_t *source_state(application_state_t *state, uint32_t source_id) {
+static application_source_state_t *source_state(application_state_t *state, const event_record_t *event) {
     application_source_state_t *empty = NULL;
     for (uint8_t i = 0; i < APPLICATION_SOURCE_HISTORY; i++) {
-        if (state->sources[i].source_id == source_id) return &state->sources[i];
+        if (state->sources[i].source_id == event->source_id &&
+            state->sources[i].node_id == event->node_id) return &state->sources[i];
         if (!state->sources[i].source_id && !empty) empty = &state->sources[i];
     }
     return empty;
@@ -67,7 +70,7 @@ application_result_t application_process_event(application_state_t *state,
         return out;
     }
 
-    application_source_state_t *source = source_state(state, event->source_id);
+    application_source_state_t *source = source_state(state, event);
     if (!source) {
         state->rejected++;
         out.reason = "source capacity";
@@ -75,9 +78,12 @@ application_result_t application_process_event(application_state_t *state,
         return out;
     }
     bool reordered = source && source->source_id &&
-                     (event->source_seq <= source->last_seq ||
-                      event->window_end_us < source->last_window_end_us);
-    if (reordered && !state->policy.accept_reordered) {
+                     (event->boot_id < source->boot_id ||
+                      (event->boot_id == source->boot_id &&
+                       (event->source_seq <= source->last_seq ||
+                        event->window_end_us < source->last_window_end_us)));
+    if (reordered && (!state->policy.accept_reordered ||
+                      (event->node_id && event->boot_id < source->boot_id))) {
         state->reordered++;
         out.code = APP_RESULT_REORDERED;
         out.reason = "reordered";
@@ -85,8 +91,18 @@ application_result_t application_process_event(application_state_t *state,
         remember_event(state, event);
         return out;
     }
+    if (event->node_id && event->boot_id > source->boot_id) {
+        // Observe the new epoch even if this event is degraded/rejected;
+        // an older boot must never become current again after such a report.
+        source->node_id = event->node_id;
+        source->source_id = event->source_id;
+        source->boot_id = event->boot_id;
+        source->last_seq = 0;
+        source->last_window_end_us = 0;
+    }
 
     event_class_t decided = EVENT_CLASS_UNKNOWN;
+    out.degraded = (event->quality_flags & (EVENT_QUALITY_SENSOR_TIMEOUT | EVENT_QUALITY_SENSOR_FAULT | EVENT_QUALITY_AMBIGUOUS)) != 0;
     if (state->policy.prefer_ml && (event->quality_flags & EVENT_QUALITY_ML_VALID) &&
         event->ml_class != EVENT_CLASS_UNKNOWN &&
         event->ml_confidence >= state->policy.ml_min_confidence) {
@@ -96,7 +112,7 @@ application_result_t application_process_event(application_state_t *state,
                event->rule_class != EVENT_CLASS_UNKNOWN) {
         decided = (event_class_t)event->rule_class;
         out.decision_source = APP_DECISION_RULE;
-        out.degraded = (event->quality_flags & EVENT_QUALITY_ML_VALID) != 0u;
+        out.degraded |= (event->quality_flags & EVENT_QUALITY_ML_VALID) != 0u;
     } else {
         state->rejected++;
         out.reason = "no classification";
@@ -108,7 +124,7 @@ application_result_t application_process_event(application_state_t *state,
     if ((decided == EVENT_CLASS_ENTRY || decided == EVENT_CLASS_EXIT) &&
         ((event->quality_flags & (EVENT_QUALITY_SEQUENCE_COMPLETE | EVENT_QUALITY_TIMING_VALID)) !=
          (EVENT_QUALITY_SEQUENCE_COMPLETE | EVENT_QUALITY_TIMING_VALID) ||
-         (event->quality_flags & (EVENT_QUALITY_SENSOR_TIMEOUT | EVENT_QUALITY_AMBIGUOUS)))) {
+         (event->quality_flags & (EVENT_QUALITY_SENSOR_TIMEOUT | EVENT_QUALITY_SENSOR_FAULT | EVENT_QUALITY_AMBIGUOUS)))) {
         state->rejected++;
         out.decided_class = decided;
         out.reason = "quality";
@@ -129,6 +145,8 @@ application_result_t application_process_event(application_state_t *state,
     remember_event(state, event);
     if (source) {
         source->source_id = event->source_id;
+        source->node_id = event->node_id;
+        source->boot_id = event->boot_id;
         source->last_seq = event->source_seq;
         source->last_window_end_us = event->window_end_us;
     }
