@@ -43,6 +43,10 @@ static void test_nonfinite_and_malformed(void)
     e.reserved = 1;
     assert(!event_record_validate(&e, 1002000, 5000, &reason));
     e = entry(1, 1, 1);
+    e.quality_flags |= 1u << 8; /* undefined schema-v2 quality bit */
+    assert(!event_record_validate(&e, 1002000, 5000, &reason));
+    assert(!strcmp(reason, "quality flags"));
+    e = entry(1, 1, 1);
     assert(event_record_validate(&e, 1002000, 5000, &reason));
     e.ml_confidence = 1.0f;
     e.features[0] = -123.5f; /* finite negative features are legitimate */
@@ -75,6 +79,17 @@ static void test_quality_does_not_change_occupancy(void)
         e.quality_flags &= ~required[i];
         application_result_t r = application_process_event(&s, &e, 1002000);
         assert(r.code == APP_RESULT_REJECTED && r.degraded && s.occupancy == 0);
+    }
+    for (uint8_t class_id = EVENT_CLASS_ENTRY; class_id <= EVENT_CLASS_EXIT; ++class_id) {
+        application_state_t s;
+        application_state_init(&s, NULL);
+        s.occupancy = 3;
+        event_record_t e = entry(1, 1, 1);
+        e.rule_class = class_id;
+        e.quality_flags |= 1u << 31;
+        application_result_t r = application_process_event(&s, &e, 1002000);
+        assert(r.code == APP_RESULT_REJECTED && r.degraded && s.occupancy == 3);
+        assert(!strcmp(r.reason, "quality flags"));
     }
 }
 

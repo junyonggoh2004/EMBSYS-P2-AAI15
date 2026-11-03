@@ -428,7 +428,6 @@ int scheduler_add_config(const app_cfg_t *cfg_in) {
     }
     for (int i = 0; i < MAX_ACTIVE; i++) {
         if (!g_sensors[i].in_use) {
-            scheduler_window_stop();
             active_sensor_t *S = &g_sensors[i];
             memset(S, 0, sizeof(*S));
             S->cfg_copy = *cfg_in;
@@ -459,6 +458,7 @@ int scheduler_add_config(const app_cfg_t *cfg_in) {
                 S->ctx = NULL;
                 printf("[SCHED] added MQTT-remote: local=%s <- %s/%s\n",
                        cfg_in->name, remote_node, remote_source);
+                scheduler_window_stop();
                 return i;
             }
 
@@ -530,6 +530,7 @@ int scheduler_add_config(const app_cfg_t *cfg_in) {
             }
 
             printf("[SCHED] added: %s on %s\n", S->cfg_copy.name, pname); // keep your legacy line too
+            scheduler_window_stop();
             return i; // index
         }
     }

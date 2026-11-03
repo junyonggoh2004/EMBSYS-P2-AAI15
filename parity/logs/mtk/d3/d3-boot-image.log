@@ -1,0 +1,5 @@
+Revision: 7e8f6cf526b8a184e069bda3d907cb34dab64d90
+Command: sh tools/mtk.sh image
+ok    esp32s3_mtk/build/esp32s3_mtk.elf: no FreeRTOS scheduler, tick, task or start-up code linked; µT-Kernel start-up and dispatcher present; 47 FreeRTOS API functions served by the course shim on µT-Kernel
+
+Exit status: 0

@@ -54,8 +54,9 @@ typedef struct {
     uint32_t clock_domain; /* 0 = this node's monotonic clock; 1 = remote/unmapped */
 } event_record_t;
 
-/* Requires finite confidence/features, valid==1, reserved==0 and no STALE
- * flag. Freshness arithmetic still assumes a common monotonic time basis;
+/* Requires finite confidence/features, valid==1, reserved==0, defined
+ * schema-v2 quality flags and no STALE flag. Freshness arithmetic still
+ * assumes a common monotonic time basis;
  * a cross-node clock/identity contract must be agreed before remote use. */
 bool event_record_validate(const event_record_t *event, uint64_t now_us,
                            uint32_t freshness_ms, const char **reason);

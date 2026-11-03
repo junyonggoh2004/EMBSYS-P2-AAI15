@@ -54,3 +54,6 @@ esp32s3_mtk/haltest/managed_components/
 esp32s3_mtk/wifirepro/sdkconfig
 esp32s3_mtk/wifirepro/sdkconfig.old
 esp32s3_mtk/wifirepro/managed_components/
+
+# ESP32-S3 Wi-Fi credentials and libraries installed into the sketchbook by Library Manager
+wifi_credentials.h

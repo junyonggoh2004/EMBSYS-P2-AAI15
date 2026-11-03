@@ -1,0 +1,316 @@
+course port: e92874d50d3a2968566f9628018f4c096c01f3d9   (pinned e92874d50d3a2968566f9628018f4c096c01f3d9)
+ESP-IDF:     v6.1-dev-2300-g17a74c925c   (pinned v6.1-dev-2300-g17a74c925c)
+compiler:    esp-15.2.0_20251204   (pinned esp-15.2.0_20251204)
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/bt/host/nimble/Kconfig.in:1420: BT_NIMBLE_MESH_PROVISIONER: 'default 0' is not a valid bool value (only 'y' and 'n' are allowed). Value is treated as 'n'.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/fatfs/Kconfig:230: FATFS_PRINT_LLI: 'default 0' is not a valid bool value (only 'y' and 'n' are allowed). Value is treated as 'n'.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/fatfs/Kconfig:235: FATFS_PRINT_FLOAT: 'default 0' is not a valid bool value (only 'y' and 'n' are allowed). Value is treated as 'n'.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/bootloader/Kconfig.projbuild:386: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/bootloader/Kconfig.projbuild:426: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/bt/host/nimble/Kconfig.in:1015: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/bt/controller/esp32c3/Kconfig.in:617: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/esp_hw_support/./lowpower/port/esp32p4/Kconfig.p4_rev3_mspi_workaround:6: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/esp_mm/Kconfig:20: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/esp_system/./port/soc/esp32s3/Kconfig.memory:21: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/openthread/Kconfig:106: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/bt/sdkconfig.rename.esp32s3:4: duplicate rename mapping for CONFIG_BT_NIMBLE_COEX_PHY_CODED_TX_RX_TLIM_EN: previous target CONFIG_BT_LE_COEX_PHY_CODED_TX_RX_TLIM_EN, new target CONFIG_BT_CTRL_COEX_PHY_CODED_TX_RX_TLIM_EN - last mapping is used
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/bt/sdkconfig.rename.esp32s3:5: duplicate rename mapping for CONFIG_BT_NIMBLE_COEX_PHY_CODED_TX_RX_TLIM_DIS: previous target CONFIG_BT_LE_COEX_PHY_CODED_TX_RX_TLIM_DIS, new target CONFIG_BT_CTRL_COEX_PHY_CODED_TX_RX_TLIM_DIS - last mapping is used
+Loading defaults file /Users/tanyilin/Downloads/EMBSYS-P2-AAI15/esp32s3_mtk/sdkconfig.defaults...
+NOTE: Kconfig parser version: 1
+NOTE: Kconfig defaults policy: use sdkconfig
+NOTE: Status: Finished with notifications
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/esp_system/Kconfig:339: ESP_TASK_WDT_CHECK_IDLE_TASK_CPU0 has user-set value n from /var/folders/h_/7n7nk94s1cbfp4q8yjmlslmm0000gn/T/kconfgen_tmp7dzgnm3d but is not visible (disabled dependency)
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/esp_system/Kconfig:350: ESP_TASK_WDT_CHECK_IDLE_TASK_CPU1 has user-set value n from /var/folders/h_/7n7nk94s1cbfp4q8yjmlslmm0000gn/T/kconfgen_tmp7dzgnm3d but is not visible (disabled dependency)
+CMake Warning (deprecated) at managed_components/espressif__esp-nn/CMakeLists.txt:1 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+This warning is for project developers.  Use -Wno-author or -Wno-deprecated
+to suppress it.
+
+CMake Warning (deprecated) at managed_components/espressif__esp-tflite-micro/CMakeLists.txt:3 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+This warning is for project developers.  Use -Wno-author or -Wno-deprecated
+to suppress it.
+
+CMake Warning at /Users/tanyilin/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:106 (message):
+  Private include directory
+  '/Users/tanyilin/esp/esp-idf-v6.1/components/esp_wifi/wifi_apps/roaming_app/include'
+  belongs to component esp_wifi but is being used by component
+  wpa_supplicant.  It is recommended to define the component dependency for
+  wpa_supplicant on the component esp_wifi, i.e.  'idf_component_register(...
+  PRIV_REQUIRES esp_wifi)' in the CMakeLists.txt of wpa_supplicant, and
+  specify the included directory as idf_component_register(...
+  PRIV_INCLUDE_DIRS <dir relative to component>) in the CMakeLists.txt of
+  component esp_wifi.
+Call Stack (most recent call first):
+  /Users/tanyilin/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:130 (__component_validation_check_include_dirs)
+  /Users/tanyilin/esp/esp-idf-v6.1/CMakeLists.txt:353 (__component_validation_run_checks)
+
+
+CMake Warning at /Users/tanyilin/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:106 (message):
+  Private include directory
+  '/Users/tanyilin/esp/esp-idf-v6.1/components/esp_wifi/wifi_apps/roaming_app/src'
+  belongs to component esp_wifi but is being used by component
+  wpa_supplicant.  It is recommended to define the component dependency for
+  wpa_supplicant on the component esp_wifi, i.e.  'idf_component_register(...
+  PRIV_REQUIRES esp_wifi)' in the CMakeLists.txt of wpa_supplicant, and
+  specify the included directory as idf_component_register(...
+  PRIV_INCLUDE_DIRS <dir relative to component>) in the CMakeLists.txt of
+  component esp_wifi.
+Call Stack (most recent call first):
+  /Users/tanyilin/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:130 (__component_validation_check_include_dirs)
+  /Users/tanyilin/esp/esp-idf-v6.1/CMakeLists.txt:353 (__component_validation_run_checks)
+
+
+CMake Warning at /Users/tanyilin/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:106 (message):
+  Private include directory
+  '/Users/tanyilin/esp/esp-idf-v6.1/components/wpa_supplicant/src' belongs to
+  component wpa_supplicant but is being used by component esp_wifi.  It is
+  recommended to define the component dependency for esp_wifi on the
+  component wpa_supplicant, i.e.  'idf_component_register(...  PRIV_REQUIRES
+  wpa_supplicant)' in the CMakeLists.txt of esp_wifi, and specify the
+  included directory as idf_component_register(...  PRIV_INCLUDE_DIRS <dir
+  relative to component>) in the CMakeLists.txt of component wpa_supplicant.
+Call Stack (most recent call first):
+  /Users/tanyilin/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:130 (__component_validation_check_include_dirs)
+  /Users/tanyilin/esp/esp-idf-v6.1/CMakeLists.txt:353 (__component_validation_run_checks)
+
+
+CMake Warning at /Users/tanyilin/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:106 (message):
+  Private include directory
+  '/Users/tanyilin/esp/esp-idf-v6.1/components/wpa_supplicant/esp_supplicant/src'
+  belongs to component wpa_supplicant but is being used by component
+  esp_wifi.  It is recommended to define the component dependency for
+  esp_wifi on the component wpa_supplicant, i.e.  'idf_component_register(...
+  PRIV_REQUIRES wpa_supplicant)' in the CMakeLists.txt of esp_wifi, and
+  specify the included directory as idf_component_register(...
+  PRIV_INCLUDE_DIRS <dir relative to component>) in the CMakeLists.txt of
+  component wpa_supplicant.
+Call Stack (most recent call first):
+  /Users/tanyilin/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:130 (__component_validation_check_include_dirs)
+  /Users/tanyilin/esp/esp-idf-v6.1/CMakeLists.txt:353 (__component_validation_run_checks)
+
+
+In file included from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15/esp32s3_mtk/components/edge_mtk/runtime_mtk.c:51:
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:33:52: warning: '/*' within comment [-Wcomment]
+   33 |  * Call once after mqtt_init(). Subscribes to model/* topics. */
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:36:48: warning: '/*' within comment [-Wcomment]
+   36 | /* Call from mqtt_incoming_data_cb when a model/* topic is detected. */
+In file included from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15/esp32s3_mtk/components/edge_mtk/net_mtk.c:35:
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:33:52: warning: '/*' within comment [-Wcomment]
+   33 |  * Call once after mqtt_init(). Subscribes to model/* topics. */
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:36:48: warning: '/*' within comment [-Wcomment]
+   36 | /* Call from mqtt_incoming_data_cb when a model/* topic is detected. */
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c: In function 'scheduler_reset':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:27:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   27 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:126:5: note: in expansion of macro 'SLOG'
+  126 |     SLOG("reset: cleared %d slots", (int)MAX_ACTIVE);
+      |     ^~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c: In function 'scheduler_add_config':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:27:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   27 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:467:17: note: in expansion of macro 'SLOG'
+  467 |                 SLOG("add[%d]: UNKNOWN proto for %s", i, cfg_in->name);
+      |                 ^~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:27:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   27 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:473:17: note: in expansion of macro 'SLOG'
+  473 |                 SLOG("add[%d]: UNKNOWN proto for %s", i, cfg_in->name);
+      |                 ^~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:27:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   27 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:495:17: note: in expansion of macro 'SLOG'
+  495 |                 SLOG("add[%d]: init_cfg FAILED for %s on %s", i, cfg_in->name, pname);
+      |                 ^~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:27:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   27 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:507:17: note: in expansion of macro 'SLOG'
+  507 |                 SLOG("add[%d]: %s on %s freq=%.3fHz mode=%s I2C(sda=%d,scl=%d,addr=0x%02X,reg=0x%X,len=%u)",
+      |                 ^~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:27:12: warning: format '%X' expects argument of type 'unsigned int', but argument 11 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   27 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:507:17: note: in expansion of macro 'SLOG'
+  507 |                 SLOG("add[%d]: %s on %s freq=%.3fHz mode=%s I2C(sda=%d,scl=%d,addr=0x%02X,reg=0x%X,len=%u)",
+      |                 ^~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:27:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   27 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:513:17: note: in expansion of macro 'SLOG'
+  513 |                 SLOG("add[%d]: %s on %s freq=%.3fHz mode=%s UART(tx=%d,rx=%d,baud=%u)",
+      |                 ^~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:27:12: warning: format '%u' expects argument of type 'unsigned int', but argument 10 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   27 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:513:17: note: in expansion of macro 'SLOG'
+  513 |                 SLOG("add[%d]: %s on %s freq=%.3fHz mode=%s UART(tx=%d,rx=%d,baud=%u)",
+      |                 ^~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:27:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   27 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:518:17: note: in expansion of macro 'SLOG'
+  518 |                 SLOG("add[%d]: %s on %s freq=%.3fHz mode=poll SPI(host=%s,sclk=%d,mosi=%d,miso=%d,cs=%d,hz=%u,mode=%u,tx=%u,rx=%u,timeout=%ums)",
+      |                 ^~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:27:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   27 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:525:17: note: in expansion of macro 'SLOG'
+  525 |                 SLOG("add[%d]: %s on %s freq=%.3fHz mode=%s method=%s GPIO(pin=%d)",
+      |                 ^~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:27:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   27 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:536:5: note: in expansion of macro 'SLOG'
+  536 |     SLOG("add: no free slots");
+      |     ^~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c: In function 'scheduler_apply_config':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:27:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   27 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:543:5: note: in expansion of macro 'SLOG'
+  543 |     SLOG("apply_config (compat): reset+add %s", cfg->name);
+      |     ^~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c: In function 'trigger_matching':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:27:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   27 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:562:13: note: in expansion of macro 'SLOG'
+  562 |             SLOG("trigger[%d/%s]: source=%s deadline=%llu", i, S->cfg_copy.name, source,
+      |             ^~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c: In function 'scheduler_run_all':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:27:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   27 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:594:13: note: in expansion of macro 'SLOG'
+  594 |             SLOG("run_all: running=%u", running?1u:0u);
+      |             ^~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:27:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   27 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:606:13: note: in expansion of macro 'SLOG'
+  606 |             SLOG("arm[%d/%s]: mode=%s armed=%u", j, g_sensors[j].cfg_copy.name,
+      |             ^~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:27:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   27 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:626:17: note: in expansion of macro 'SLOG'
+  626 |                 SLOG("stream[%d/%s]: START", i, cfg->name);
+      |                 ^~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:27:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   27 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:630:17: note: in expansion of macro 'SLOG'
+  630 |                 SLOG("stream[%d/%s]: STOP", i, cfg->name);
+      |                 ^~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:27:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   27 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:635:13: note: in expansion of macro 'SLOG'
+  635 |             SLOG("stream[%d/%s]: STOP (leaving stream mode)", i, cfg->name);
+      |             ^~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:27:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   27 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:691:13: note: in expansion of macro 'SLOG'
+  691 |             SLOG("stream[%d/%s]: poll_once()", i, cfg->name);
+      |             ^~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:27:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   27 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:695:13: note: in expansion of macro 'SLOG'
+  695 |             SLOG("stream[%d/%s]: result=%d", i, cfg->name, n);
+      |             ^~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:27:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   27 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:701:17: note: in expansion of macro 'SLOG'
+  701 |                 SLOG("publish[%d/%s]: %d bytes via %s", i, cfg->name, n, p);
+      |                 ^~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c: In function 'scheduler_run_step':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:27:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   27 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:719:5: note: in expansion of macro 'SLOG'
+  719 |     SLOG("run_step: enter (running=%u)", running?1u:0u);
+      |     ^~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:27:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   27 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/application/scheduler.c:721:5: note: in expansion of macro 'SLOG'
+  721 |     SLOG("run_step: exit");
+      |     ^~~~
+In file included from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/inference_engine/inference_manager.c:11:
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:33:52: warning: '/*' within comment [-Wcomment]
+   33 |  * Call once after mqtt_init(). Subscribes to model/* topics. */
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:36:48: warning: '/*' within comment [-Wcomment]
+   36 | /* Call from mqtt_incoming_data_cb when a model/* topic is detected. */
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/bt/host/nimble/Kconfig.in:1420: BT_NIMBLE_MESH_PROVISIONER: 'default 0' is not a valid bool value (only 'y' and 'n' are allowed). Value is treated as 'n'.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/fatfs/Kconfig:230: FATFS_PRINT_LLI: 'default 0' is not a valid bool value (only 'y' and 'n' are allowed). Value is treated as 'n'.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/fatfs/Kconfig:235: FATFS_PRINT_FLOAT: 'default 0' is not a valid bool value (only 'y' and 'n' are allowed). Value is treated as 'n'.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/bootloader/Kconfig.projbuild:386: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/bootloader/Kconfig.projbuild:426: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/bt/host/nimble/Kconfig.in:1015: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/bt/controller/esp32c3/Kconfig.in:617: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/esp_hw_support/./lowpower/port/esp32p4/Kconfig.p4_rev3_mspi_workaround:6: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/esp_mm/Kconfig:20: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/esp_system/./port/soc/esp32s3/Kconfig.memory:21: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/openthread/Kconfig:106: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+Bootloader binary size 0x5220 bytes. 0x2de0 bytes (36%) free.
+esp32s3_mtk.bin binary size 0x1395d0 bytes. Smallest app partition is 0x2f0000 bytes. 0x1b6a30 bytes (58%) free.
+Project build complete. To flash, run:
