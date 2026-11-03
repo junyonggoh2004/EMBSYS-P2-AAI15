@@ -1,0 +1,300 @@
+02:46:18 [SCHED    155966ms] run_all: running=1
+02:46:18 [shim] qcreate(st) h=0x3fce701c len=6 sz=4 ne=70 nf=71
+02:46:18 Unknown: 
+02:46:19 [SCHED    157436ms] run_all: running=1
+02:46:20 --- cfg-sonic: BEGINCFG|name=HCSR04|proto=gpio|gpio.mode=pulse|mode=poll|freq_hz=2|gpio.trig=1|gpio.echo=2|gpio.trig_us=10|gpio.pulse_timeout_us=25000|ENDCFG
+02:46:20 OK: Config applied (inline, delim='|')
+02:46:20 [SCHED    157986ms] add[0]: HCSR04 on gpio freq=2.000Hz mode=poll method=pulse GPIO(pin=-1)
+02:46:20 [SCHED] added: HCSR04 on gpio
+02:46:20 CFG: ok (added #0: HCSR04)
+02:46:20 [SCHED    157987ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:20 proto=gpio src=HCSR04 len=3 ts=157987 : 3A 01 01
+02:46:20 E (3355928638) esp-tls: [sock=54] select() timeout
+02:46:20 E (3355928639) transport_base: Failed to open a new connection: 32774
+02:46:20 E (3355928639) mqtt_client: Error transport connect
+02:46:20 [SCHED    158487ms] run_all: running=1
+02:46:20 [SCHED    158490ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:20 proto=gpio src=HCSR04 len=3 ts=158490 : 8F 07 01
+02:46:21 [SCHED    158999ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:21 proto=gpio src=HCSR04 len=3 ts=158999 : 44 21 01
+02:46:21 [SCHED    159500ms] run_all: running=1
+02:46:21 [SCHED    159510ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:21 proto=gpio src=HCSR04 len=3 ts=159510 : C3 23 01
+02:46:22 [SCHED    160020ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:22 proto=gpio src=HCSR04 len=3 ts=160020 : A3 21 01
+02:46:22 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:46:22 [SCHED    160521ms] run_all: running=1
+02:46:22 [SCHED    160523ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:22 proto=gpio src=HCSR04 len=3 ts=160523 : 8C 03 01
+02:46:22 --- sonic-read: RUN
+02:46:22 RUN
+02:46:23 [SCHED    161034ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:23 proto=gpio src=HCSR04 len=3 ts=161034 : 45 23 01
+02:46:23 [SCHED    161535ms] run_all: running=1
+02:46:23 [SCHED    161545ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:23 proto=gpio src=HCSR04 len=3 ts=161545 : 06 22 01
+02:46:24 [SCHED    162055ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:24 proto=gpio src=HCSR04 len=3 ts=162055 : 7A 23 01
+02:46:24 [SCHED    162555ms] run_all: running=1
+02:46:24 [SCHED    162567ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:24 proto=gpio src=HCSR04 len=3 ts=162567 : 75 2A 01
+02:46:25 [SCHED    163069ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:25 proto=gpio src=HCSR04 len=3 ts=163069 : 85 03 01
+02:46:25 [shim] qcreate(st) h=0x3fce701c len=6 sz=4 ne=72 nf=73
+02:46:25 [SCHED    163569ms] run_all: running=1
+02:46:25 [SCHED    163571ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:25 proto=gpio src=HCSR04 len=3 ts=163571 : 9E 02 01
+02:46:26 [SCHED    164083ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:26 proto=gpio src=HCSR04 len=3 ts=164083 : 52 2C 01
+02:46:26 [SCHED    164584ms] run_all: running=1
+02:46:26 [SCHED    164594ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:26 proto=gpio src=HCSR04 len=3 ts=164594 : 7F 22 01
+02:46:27 [SCHED    165103ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:27 proto=gpio src=HCSR04 len=3 ts=165103 : 42 21 01
+02:46:27 E (3355935647) esp-tls: [sock=54] select() timeout
+02:46:27 E (3355935648) transport_base: Failed to open a new connection: 32774
+02:46:27 E (3355935648) mqtt_client: Error transport connect
+02:46:27 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:46:27 [SCHED    165604ms] run_all: running=1
+02:46:27 [SCHED    165606ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:27 proto=gpio src=HCSR04 len=3 ts=165607 : D7 05 01
+02:46:28 [SCHED    166108ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:28 proto=gpio src=HCSR04 len=3 ts=166108 : 6E 02 01
+02:46:28 [SCHED    166609ms] run_all: running=1
+02:46:28 [SCHED    166620ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:28 proto=gpio src=HCSR04 len=3 ts=166620 : 30 27 01
+02:46:29 [SCHED    167131ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:29 proto=gpio src=HCSR04 len=3 ts=167131 : 80 27 01
+02:46:30 [SCHED    167632ms] run_all: running=1
+02:46:30 [SCHED    167642ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:30 proto=gpio src=HCSR04 len=3 ts=167642 : F4 22 01
+02:46:30 [SCHED    168144ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:30 proto=gpio src=HCSR04 len=3 ts=168145 : 65 06 01
+02:46:31 [SCHED    168645ms] run_all: running=1
+02:46:31 [SCHED    168647ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:31 proto=gpio src=HCSR04 len=3 ts=168647 : EE 01 01
+02:46:31 [SCHED    169149ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:31 proto=gpio src=HCSR04 len=3 ts=169149 : E5 02 01
+02:46:31 [SCHED    169649ms] run_all: running=1
+02:46:31 [SCHED    169659ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:31 proto=gpio src=HCSR04 len=3 ts=169659 : 5D 23 01
+02:46:32 [SCHED    170168ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:32 proto=gpio src=HCSR04 len=3 ts=170168 : 40 21 01
+02:46:32 [shim] qcreate(st) h=0x3fce701c len=6 sz=4 ne=74 nf=75
+02:46:32 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:46:33 [SCHED    170669ms] run_all: running=1
+02:46:33 [SCHED    170672ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:33 proto=gpio src=HCSR04 len=3 ts=170672 : 61 07 01
+02:46:33 [SCHED    171173ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:33 proto=gpio src=HCSR04 len=3 ts=171174 : ED 01 01
+02:46:34 [SCHED    171674ms] run_all: running=1
+02:46:34 [SCHED    171676ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:34 proto=gpio src=HCSR04 len=3 ts=171676 : 7F 04 01
+02:46:34 [SCHED    172187ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:34 proto=gpio src=HCSR04 len=3 ts=172187 : B6 21 01
+02:46:34 E (3355942656) esp-tls: [sock=54] select() timeout
+02:46:34 E (3355942657) transport_base: Failed to open a new connection: 32774
+02:46:34 E (3355942657) mqtt_client: Error transport connect
+02:46:35 [SCHED    172687ms] run_all: running=1
+02:46:35 [SCHED    172690ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:35 proto=gpio src=HCSR04 len=3 ts=172690 : F2 06 01
+02:46:35 [SCHED    173191ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:35 proto=gpio src=HCSR04 len=3 ts=173192 : DE 01 01
+02:46:36 [SCHED    173692ms] run_all: running=1
+02:46:36 [SCHED    173694ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:36 proto=gpio src=HCSR04 len=3 ts=173694 : 35 04 01
+02:46:36 [SCHED    174206ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:36 proto=gpio src=HCSR04 len=3 ts=174206 : 68 2C 01
+02:46:37 [SCHED    174707ms] run_all: running=1
+02:46:37 [SCHED    174709ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:37 proto=gpio src=HCSR04 len=3 ts=174709 : A7 04 01
+02:46:37 [SCHED    175211ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:37 proto=gpio src=HCSR04 len=3 ts=175212 : B0 01 01
+02:46:37 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:46:38 [SCHED    175712ms] run_all: running=1
+02:46:38 [SCHED    175722ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:38 proto=gpio src=HCSR04 len=3 ts=175722 : 5D 23 01
+02:46:38 [SCHED    176232ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:38 proto=gpio src=HCSR04 len=3 ts=176232 : 25 23 01
+02:46:39 [SCHED    176732ms] run_all: running=1
+02:46:39 [SCHED    176735ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:39 proto=gpio src=HCSR04 len=3 ts=176735 : C7 05 01
+02:46:39 [shim] qcreate(st) h=0x3fce701c len=6 sz=4 ne=76 nf=77
+02:46:39 [SCHED    177236ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:39 proto=gpio src=HCSR04 len=3 ts=177236 : 4C 01 01
+02:46:40 [SCHED    177737ms] run_all: running=1
+02:46:40 [SCHED    177739ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:40 proto=gpio src=HCSR04 len=3 ts=177739 : 4A 04 01
+02:46:40 [SCHED    178251ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:40 proto=gpio src=HCSR04 len=3 ts=178251 : A4 2A 01
+02:46:41 [SCHED    178751ms] run_all: running=1
+02:46:41 [SCHED    178762ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:41 proto=gpio src=HCSR04 len=3 ts=178762 : AD 27 01
+02:46:41 E (3355949665) esp-tls: [sock=54] select() timeout
+02:46:41 E (3355949666) transport_base: Failed to open a new connection: 32774
+02:46:41 E (3355949666) mqtt_client: Error transport connect
+02:46:41 [SCHED    179264ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:41 proto=gpio src=HCSR04 len=3 ts=179264 : AC 01 01
+02:46:42 [SCHED    179765ms] run_all: running=1
+02:46:42 [SCHED    179767ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:42 proto=gpio src=HCSR04 len=3 ts=179767 : F7 02 01
+02:46:42 [SCHED    180270ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:42 proto=gpio src=HCSR04 len=3 ts=180270 : 59 08 01
+02:46:42 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:46:43 [SCHED    180771ms] run_all: running=1
+02:46:43 [SCHED    180773ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:43 proto=gpio src=HCSR04 len=3 ts=180773 : C0 04 01
+02:46:43 [SCHED    181275ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:43 proto=gpio src=HCSR04 len=3 ts=181275 : 56 01 01
+02:46:44 [SCHED    181776ms] run_all: running=1
+02:46:44 [SCHED    181778ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:44 proto=gpio src=HCSR04 len=3 ts=181778 : D8 04 01
+02:46:44 [SCHED    182288ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:44 proto=gpio src=HCSR04 len=3 ts=182288 : 67 22 01
+02:46:45 [SCHED    182788ms] run_all: running=1
+02:46:45 [SCHED    182791ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:45 proto=gpio src=HCSR04 len=3 ts=182791 : E2 06 01
+02:46:45 [SCHED    183292ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:45 proto=gpio src=HCSR04 len=3 ts=183293 : 43 02 01
+02:46:46 [SCHED    183793ms] run_all: running=1
+02:46:46 [SCHED    183795ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:46 proto=gpio src=HCSR04 len=3 ts=183795 : 44 04 01
+02:46:46 [shim] qcreate(st) h=0x3fce701c len=6 sz=4 ne=78 nf=79
+02:46:46 [SCHED    184306ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:46 proto=gpio src=HCSR04 len=3 ts=184306 : DF 27 01
+02:46:47 [SCHED    184807ms] run_all: running=1
+02:46:47 [SCHED    184809ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:47 proto=gpio src=HCSR04 len=3 ts=184809 : 54 04 01
+02:46:47 [SCHED    185310ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:47 proto=gpio src=HCSR04 len=3 ts=185311 : BA 01 01
+02:46:47 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:46:48 [SCHED    185811ms] run_all: running=1
+02:46:48 [SCHED    185815ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:48 proto=gpio src=HCSR04 len=3 ts=185815 : 18 0B 01
+02:46:48 E (3355956674) esp-tls: [sock=54] select() timeout
+02:46:48 E (3355956675) transport_base: Failed to open a new connection: 32774
+02:46:48 E (3355956675) mqtt_client: Error transport connect
+02:46:48 [SCHED    186326ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:48 proto=gpio src=HCSR04 len=3 ts=186326 : C5 27 01
+02:46:49 [SCHED    186827ms] run_all: running=1
+02:46:49 [SCHED    186829ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:49 proto=gpio src=HCSR04 len=3 ts=186829 : 7B 02 01
+02:46:49 [SCHED    187330ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:49 proto=gpio src=HCSR04 len=3 ts=187330 : 50 01 01
+02:46:50 [SCHED    187831ms] run_all: running=1
+02:46:50 [SCHED    187843ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:50 proto=gpio src=HCSR04 len=3 ts=187843 : 9D 2C 01
+02:46:50 [SCHED    188353ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:50 proto=gpio src=HCSR04 len=3 ts=188354 : 27 21 01
+02:46:51 [SCHED    188854ms] run_all: running=1
+02:46:51 [SCHED    188864ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:51 proto=gpio src=HCSR04 len=3 ts=188864 : 59 21 01
+02:46:51 [SCHED    189366ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:51 proto=gpio src=HCSR04 len=3 ts=189366 : B8 02 01
+02:46:52 [SCHED    189866ms] run_all: running=1
+02:46:52 [SCHED    189875ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:52 proto=gpio src=HCSR04 len=3 ts=189876 : D5 21 01
+02:46:52 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:46:52 [SCHED    190377ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:52 proto=gpio src=HCSR04 len=3 ts=190377 : B6 01 01
+02:46:53 [SCHED    190878ms] run_all: running=1
+02:46:53 [SCHED    190904ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:53 proto=gpio src=HCSR04 len=3 ts=190905 : A9 61 01
+02:46:53 [shim] qcreate(st) h=0x3fce701c len=6 sz=4 ne=80 nf=81
+02:46:53 [SCHED    191415ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:53 proto=gpio src=HCSR04 len=3 ts=191415 : 1F 22 01
+02:46:54 [SCHED    191915ms] run_all: running=1
+02:46:54 [SCHED    191916ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:54 proto=gpio src=HCSR04 len=3 ts=191916 : 4B 02 01
+02:46:54 [SCHED    192426ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:54 proto=gpio src=HCSR04 len=3 ts=192427 : F5 20 01
+02:46:55 [SCHED    192927ms] run_all: running=1
+02:46:55 [SCHED    192937ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:55 proto=gpio src=HCSR04 len=3 ts=192937 : 44 23 01
+02:46:55 E (3355963683) esp-tls: [sock=54] select() timeout
+02:46:55 E (3355963684) transport_base: Failed to open a new connection: 32774
+02:46:55 E (3355963684) mqtt_client: Error transport connect
+02:46:55 [SCHED    193446ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:55 proto=gpio src=HCSR04 len=3 ts=193447 : 8A 21 01
+02:46:56 [SCHED    193947ms] run_all: running=1
+02:46:56 [SCHED    193956ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:56 proto=gpio src=HCSR04 len=3 ts=193957 : C1 21 01
+02:46:56 [SCHED    194467ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:56 proto=gpio src=HCSR04 len=3 ts=194467 : BF 21 01
+02:46:57 [SCHED    194967ms] run_all: running=1
+02:46:57 [SCHED    194976ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:57 proto=gpio src=HCSR04 len=3 ts=194976 : 49 21 01
+02:46:57 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:46:57 [SCHED    195487ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:57 proto=gpio src=HCSR04 len=3 ts=195487 : 31 23 01
+02:46:58 [SCHED    195987ms] run_all: running=1
+02:46:58 [SCHED    195999ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:58 proto=gpio src=HCSR04 len=3 ts=195999 : 4B 2A 01
+02:46:58 [SCHED    196509ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:58 proto=gpio src=HCSR04 len=3 ts=196509 : 6C 22 01
+02:46:59 [SCHED    197009ms] run_all: running=1
+02:46:59 [SCHED    197019ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:59 proto=gpio src=HCSR04 len=3 ts=197019 : 2C 21 01
+02:46:59 [SCHED    197528ms] publish[0/HCSR04]: 3 bytes via gpio
+02:46:59 proto=gpio src=HCSR04 len=3 ts=197529 : 27 21 01
+02:47:00 [SCHED    198029ms] run_all: running=1
+02:47:00 [SCHED    198039ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:00 proto=gpio src=HCSR04 len=3 ts=198039 : 45 21 01
+02:47:00 [shim] qcreate(st) h=0x3fce701c len=6 sz=4 ne=82 nf=83
+02:47:00 [SCHED    198548ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:00 proto=gpio src=HCSR04 len=3 ts=198549 : 46 21 01
+02:47:01 [SCHED    199049ms] run_all: running=1
+02:47:01 [SCHED    199058ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:01 proto=gpio src=HCSR04 len=3 ts=199058 : 7B 21 01
+02:47:01 [SCHED    199568ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:01 proto=gpio src=HCSR04 len=3 ts=199569 : 44 21 01
+02:47:02 [SCHED    200069ms] run_all: running=1
+02:47:02 [SCHED    200078ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:02 proto=gpio src=HCSR04 len=3 ts=200079 : 47 21 01
+02:47:02 E (3355970692) esp-tls: [sock=54] select() timeout
+02:47:02 E (3355970693) transport_base: Failed to open a new connection: 32774
+02:47:02 E (3355970693) mqtt_client: Error transport connect
+02:47:02 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:47:02 [SCHED    200589ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:02 proto=gpio src=HCSR04 len=3 ts=200589 : 94 23 01
+02:47:03 [SCHED    201090ms] run_all: running=1
+02:47:03 [SCHED    201100ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:03 proto=gpio src=HCSR04 len=3 ts=201100 : D5 21 01
+02:47:04 [SCHED    201610ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:04 proto=gpio src=HCSR04 len=3 ts=201610 : 1E 22 01
+02:47:04 [SCHED    202110ms] run_all: running=1
+02:47:04 [SCHED    202119ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:04 proto=gpio src=HCSR04 len=3 ts=202119 : 76 21 01
+02:47:04 [SCHED    202630ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:04 proto=gpio src=HCSR04 len=3 ts=202630 : BF 21 01
+02:47:05 [SCHED    203130ms] run_all: running=1
+02:47:05 [SCHED    203139ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:05 proto=gpio src=HCSR04 len=3 ts=203139 : FC 20 01
+02:47:05 [SCHED    203649ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:05 proto=gpio src=HCSR04 len=3 ts=203650 : 26 21 01
+02:47:06 [SCHED    204150ms] run_all: running=1
+02:47:06 [SCHED    204160ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:06 proto=gpio src=HCSR04 len=3 ts=204160 : 8D 21 01
+02:47:07 [SCHED    204670ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:07 proto=gpio src=HCSR04 len=3 ts=204670 : BA 21 01
+02:47:07 [SCHED    205170ms] run_all: running=1
+02:47:07 [SCHED    205180ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:07 proto=gpio src=HCSR04 len=3 ts=205180 : 3F 21 01
+02:47:07 [shim] qcreate(st) h=0x3fce701c len=6 sz=4 ne=84 nf=85
+02:47:07 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:47:08 [SCHED    205689ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:08 proto=gpio src=HCSR04 len=3 ts=205690 : 8B 21 01
+02:47:08 --- stop-sonic: STOP
+02:47:08 STOP
+02:47:09 [SCHED    207040ms] run_all: running=0
+02:47:09 E (3355977701) esp-tls: [sock=54] select() timeout
+02:47:09 E (3355977702) transport_base: Failed to open a new connection: 32774
+02:47:09 E (3355977702) mqtt_client: Error transport connect
+02:47:10 [SCHED    208041ms] run_all: running=0
+02:47:10 --- clear-sonic: CLEAR
+02:47:11 [SCHED    208619ms] reset: cleared 8 slots
+02:47:11 [RULE] reset
+02:47:11 CLEARED
+02:47:11 [SCHED    209624ms] run_all: running=0
+02:47:12 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:47:13 [SCHED    210625ms] run_all: running=0

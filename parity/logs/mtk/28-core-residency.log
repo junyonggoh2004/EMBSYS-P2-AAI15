@@ -1,0 +1,23 @@
+# Task 28: core residency after 20 s of sampling (DIG GPIO6 at 20 Hz, LIGHT sensor GPIO1 at 10 Hz), 2026-10-20 05:02, HW-747, esp32s3_mtk on the course port e92874d.
+# ran_on_coreN counts the loop iterations each task ran on core N (tk_get_prc()). Every task appears only under its assigned core.
+CLEARED
+CFG: ok (added #0: DIG)
+CFG: ok (added #1: LIGHT)
+RUN
+STOP
+[TASK] SchedulerTask    id=6  core=1 pri=21 stack_free=13868 B ran_on_core0=0 ran_on_core1=593
+[TASK] MQTTTask         id=7  core=0 pri=22 stack_free=7452 B ran_on_core0=44 ran_on_core1=0
+[TASK] ControlTask      id=8  core=1 pri=23 stack_free=3132 B ran_on_core0=0 ran_on_core1=666
+[TASK] InferenceTask    id=9  core=1 pri=23 stack_free=7484 B ran_on_core0=0 ran_on_core1=0
+[TASK] ApplicationTask  id=10 core=1 pri=23 stack_free=3420 B ran_on_core0=0 ran_on_core1=0
+[TASK] BenchmarkTask    id=11 core=1 pri=24 stack_free=2364 B ran_on_core0=0 ran_on_core1=0
+[TASK] MonitorTask      id=12 core=1 pri=24 stack_free=3308 B ran_on_core0=0 ran_on_core1=44
+[TASK] sched_mbf  free=12912 B dropped=0
+[TASK] pub_mbf    free=10944 B dropped=0
+[TASK] infer_mbf  free=272 B dropped=0
+[TASK] app_mbf    free=544 B dropped=0
+[TASK] bench_mbf  free=512 B dropped=0
+[TASK] heap_free=197996 B min_free=197996 B largest=155648 B console_rx_irqs=9 console_rx_dropped=0
+[TASK] SchedulerTask cycles=593 mean_us=376 p95_us=<500 max_us=52008
+CLEARED
+# samples received: DIG 397, LIGHT 199

@@ -1,0 +1,12 @@
+{
+  "kernel": {
+    "url": "https://github.com/sirfonzie/mtk3smp-esp32s3.git",
+    "commit": "e92874d50d3a2968566f9628018f4c096c01f3d9",
+    "course_source_confirmed": false
+  },
+  "esp_idf": {
+    "url": "https://github.com/espressif/esp-idf.git",
+    "commit": "17a74c925caeaf43075e48ff5cbb8a5c7e506fa1",
+    "qualified_version": "v6.1-dev-2300-g17a74c925c"
+  }
+}

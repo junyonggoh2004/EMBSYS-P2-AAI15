@@ -1,0 +1,346 @@
+21:04:34 [SCHED   3706097ms] run_all: running=0
+21:04:35 [SCHED   3707097ms] run_all: running=0
+21:04:36 [SCHED   3708097ms] run_all: running=0
+21:04:36 --- clear-ir: CLEAR
+21:04:37 [SCHED   3709098ms] reset: cleared 8 slots
+21:04:37 [RULE] reset
+21:04:37 CLEARED
+21:04:37 [SCHED   3709098ms] run_all: running=0
+21:04:38 [SCHED   3710098ms] run_all: running=0
+21:04:38 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+21:04:39 [SCHED   3711098ms] run_all: running=0
+21:04:39 --- cfg-ir: BEGINCFG|name=IR|proto=gpio|gpio.mode=digital|gpio.pin=16|gpio.pull=up|mode=poll|freq_hz=2|ENDCFG
+21:04:40 [SCHED   3712099ms] run_all: running=0
+21:04:41 OK: Config applied (inline, delim='|')
+21:04:41 [SCHED   3713099ms] add[0]: IR on gpio freq=2.000Hz mode=poll method=digital GPIO(pin=16)
+21:04:41 [SCHED] added: IR on gpio
+21:04:41 CFG: ok (added #0: IR)
+21:04:41 [SCHED   3713100ms] run_all: running=0
+21:04:41 --- cfg-irinv: BEGINCFG|name=IRINV|proto=gpio|gpio.mode=digital|gpio.pin=16|gpio.pull=up|gpio.invert=1|mode=poll|freq_hz=2|ENDCFG
+21:04:42 [SCHED   3714100ms] run_all: running=0
+21:04:43 OK: Config applied (inline, delim='|')
+21:04:43 [SCHED   3715101ms] add[1]: IRINV on gpio freq=2.000Hz mode=poll method=digital GPIO(pin=16)
+21:04:43 [SCHED] added: IRINV on gpio
+21:04:43 CFG: ok (added #1: IRINV)
+21:04:43 [SCHED   3715101ms] run_all: running=0
+21:04:43 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+21:04:44 [SCHED   3716102ms] run_all: running=0
+21:04:44 --- cfg-ircnt: BEGINCFG|name=IRCNT|proto=gpio|gpio.mode=counter|gpio.pin=16|gpio.pull=up|mode=poll|freq_hz=2|ENDCFG
+21:04:45 [SCHED   3717102ms] run_all: running=0
+21:04:46 OK: Config applied (inline, delim='|')
+21:04:46 [SCHED   3718103ms] add[2]: IRCNT on gpio freq=2.000Hz mode=poll method=counter GPIO(pin=16)
+21:04:46 [SCHED] added: IRCNT on gpio
+21:04:46 CFG: ok (added #2: IRCNT)
+21:04:46 [SCHED   3718103ms] run_all: running=0
+21:04:47 --- ir-run: RUN
+21:04:47 RUN
+21:04:47 [SCHED   3719103ms] run_all: running=1
+21:04:47 [SCHED   3719104ms] arm[0/IR]: next_run reset to NOW
+21:04:47 [SCHED   3719104ms] arm[1/IRINV]: next_run reset to NOW
+21:04:47 [SCHED   3719104ms] arm[2/IRCNT]: next_run reset to NOW
+21:04:47 [SCHED   3719104ms] publish[0/IR]: 3 bytes via gpio
+21:04:47 proto=gpio src=IR len=3 ts=3719104 : 01 75 17
+21:04:47 [SCHED   3719104ms] publish[1/IRINV]: 3 bytes via gpio
+21:04:47 proto=gpio src=IRINV len=3 ts=3719104 : 00 A3 0F
+21:04:47 [SCHED   3719104ms] publish[2/IRCNT]: 4 bytes via gpio
+21:04:47 proto=gpio src=IRCNT len=4 ts=3719105 : 00 00 00 00
+21:04:48 [SCHED   3720105ms] run_all: running=1
+21:04:48 [SCHED   3720105ms] publish[0/IR]: 3 bytes via gpio
+21:04:48 proto=gpio src=IR len=3 ts=3720105 : 01 5E 1B
+21:04:48 [SCHED   3720105ms] publish[1/IRINV]: 3 bytes via gpio
+21:04:48 proto=gpio src=IRINV len=3 ts=3720105 : 00 8C 13
+21:04:48 [SCHED   3720105ms] publish[2/IRCNT]: 4 bytes via gpio
+21:04:48 proto=gpio src=IRCNT len=4 ts=3720106 : 00 00 00 00
+21:04:48 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+21:04:49 [SCHED   3721106ms] run_all: running=1
+21:04:49 [SCHED   3721106ms] publish[0/IR]: 3 bytes via gpio
+21:04:49 proto=gpio src=IR len=3 ts=3721106 : 01 47 1F
+21:04:49 [SCHED   3721106ms] publish[1/IRINV]: 3 bytes via gpio
+21:04:49 proto=gpio src=IRINV len=3 ts=3721106 : 00 75 17
+21:04:49 [SCHED   3721107ms] publish[2/IRCNT]: 4 bytes via gpio
+21:04:49 proto=gpio src=IRCNT len=4 ts=3721107 : 00 00 00 00
+21:04:50 [SCHED   3722107ms] run_all: running=1
+21:04:50 [SCHED   3722107ms] publish[0/IR]: 3 bytes via gpio
+21:04:50 proto=gpio src=IR len=3 ts=3722107 : 01 30 23
+21:04:50 [SCHED   3722107ms] publish[1/IRINV]: 3 bytes via gpio
+21:04:50 proto=gpio src=IRINV len=3 ts=3722107 : 00 5E 1B
+21:04:50 [SCHED   3722107ms] publish[2/IRCNT]: 4 bytes via gpio
+21:04:50 proto=gpio src=IRCNT len=4 ts=3722108 : 00 00 00 00
+21:04:51 [SCHED   3723108ms] run_all: running=1
+21:04:51 [SCHED   3723108ms] publish[0/IR]: 3 bytes via gpio
+21:04:51 proto=gpio src=IR len=3 ts=3723108 : 01 19 27
+21:04:51 [SCHED   3723108ms] publish[1/IRINV]: 3 bytes via gpio
+21:04:51 proto=gpio src=IRINV len=3 ts=3723108 : 00 47 1F
+21:04:51 [SCHED   3723108ms] publish[2/IRCNT]: 4 bytes via gpio
+21:04:51 proto=gpio src=IRCNT len=4 ts=3723108 : 00 00 00 00
+21:04:52 [SCHED   3724109ms] run_all: running=1
+21:04:52 [SCHED   3724109ms] publish[0/IR]: 3 bytes via gpio
+21:04:52 proto=gpio src=IR len=3 ts=3724109 : 01 02 2B
+21:04:52 [SCHED   3724109ms] publish[1/IRINV]: 3 bytes via gpio
+21:04:52 proto=gpio src=IRINV len=3 ts=3724109 : 00 30 23
+21:04:52 [SCHED   3724109ms] publish[2/IRCNT]: 4 bytes via gpio
+21:04:52 proto=gpio src=IRCNT len=4 ts=3724109 : 00 00 00 00
+21:04:53 [SCHED   3725110ms] run_all: running=1
+21:04:53 [SCHED   3725110ms] publish[0/IR]: 3 bytes via gpio
+21:04:53 proto=gpio src=IR len=3 ts=3725110 : 01 EB 2E
+21:04:53 [SCHED   3725110ms] publish[1/IRINV]: 3 bytes via gpio
+21:04:53 proto=gpio src=IRINV len=3 ts=3725110 : 00 19 27
+21:04:53 [SCHED   3725110ms] publish[2/IRCNT]: 4 bytes via gpio
+21:04:53 proto=gpio src=IRCNT len=4 ts=3725110 : 00 00 00 00
+21:04:53 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+21:04:54 [SCHED   3726111ms] run_all: running=1
+21:04:54 [SCHED   3726111ms] publish[0/IR]: 3 bytes via gpio
+21:04:54 proto=gpio src=IR len=3 ts=3726111 : 01 D4 32
+21:04:54 [SCHED   3726111ms] publish[1/IRINV]: 3 bytes via gpio
+21:04:54 proto=gpio src=IRINV len=3 ts=3726111 : 00 02 2B
+21:04:54 [SCHED   3726111ms] publish[2/IRCNT]: 4 bytes via gpio
+21:04:54 proto=gpio src=IRCNT len=4 ts=3726112 : 00 00 00 00
+21:04:55 [SCHED   3727112ms] run_all: running=1
+21:04:55 [SCHED   3727112ms] publish[0/IR]: 3 bytes via gpio
+21:04:55 proto=gpio src=IR len=3 ts=3727112 : 01 BD 36
+21:04:55 [SCHED   3727112ms] publish[1/IRINV]: 3 bytes via gpio
+21:04:55 proto=gpio src=IRINV len=3 ts=3727112 : 00 EB 2E
+21:04:55 [SCHED   3727112ms] publish[2/IRCNT]: 4 bytes via gpio
+21:04:55 proto=gpio src=IRCNT len=4 ts=3727112 : 00 00 00 00
+21:04:56 [SCHED   3728113ms] run_all: running=1
+21:04:56 [SCHED   3728113ms] publish[0/IR]: 3 bytes via gpio
+21:04:56 proto=gpio src=IR len=3 ts=3728113 : 01 A6 3A
+21:04:56 [SCHED   3728113ms] publish[1/IRINV]: 3 bytes via gpio
+21:04:56 proto=gpio src=IRINV len=3 ts=3728113 : 00 D4 32
+21:04:56 [SCHED   3728113ms] publish[2/IRCNT]: 4 bytes via gpio
+21:04:56 proto=gpio src=IRCNT len=4 ts=3728113 : 00 00 00 00
+21:04:57 [SCHED   3729114ms] run_all: running=1
+21:04:57 [SCHED   3729114ms] publish[0/IR]: 3 bytes via gpio
+21:04:57 proto=gpio src=IR len=3 ts=3729114 : 01 8F 3E
+21:04:57 [SCHED   3729114ms] publish[1/IRINV]: 3 bytes via gpio
+21:04:57 proto=gpio src=IRINV len=3 ts=3729114 : 00 BD 36
+21:04:57 [SCHED   3729114ms] publish[2/IRCNT]: 4 bytes via gpio
+21:04:57 proto=gpio src=IRCNT len=4 ts=3729114 : 00 00 00 00
+21:04:58 [SCHED   3730115ms] run_all: running=1
+21:04:58 [SCHED   3730115ms] publish[0/IR]: 3 bytes via gpio
+21:04:58 proto=gpio src=IR len=3 ts=3730115 : 01 78 42
+21:04:58 [SCHED   3730115ms] publish[1/IRINV]: 3 bytes via gpio
+21:04:58 proto=gpio src=IRINV len=3 ts=3730115 : 00 A6 3A
+21:04:58 [SCHED   3730115ms] publish[2/IRCNT]: 4 bytes via gpio
+21:04:58 proto=gpio src=IRCNT len=4 ts=3730115 : 00 00 00 00
+21:04:58 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+21:04:59 [SCHED   3731116ms] run_all: running=1
+21:04:59 [SCHED   3731116ms] publish[0/IR]: 3 bytes via gpio
+21:04:59 proto=gpio src=IR len=3 ts=3731116 : 01 61 46
+21:04:59 [SCHED   3731116ms] publish[1/IRINV]: 3 bytes via gpio
+21:04:59 proto=gpio src=IRINV len=3 ts=3731116 : 00 8F 3E
+21:04:59 [SCHED   3731116ms] publish[2/IRCNT]: 4 bytes via gpio
+21:04:59 proto=gpio src=IRCNT len=4 ts=3731116 : 00 00 00 00
+21:05:00 [SCHED   3732117ms] run_all: running=1
+21:05:00 [SCHED   3732117ms] publish[0/IR]: 3 bytes via gpio
+21:05:00 proto=gpio src=IR len=3 ts=3732117 : 01 4A 4A
+21:05:00 [SCHED   3732117ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:00 proto=gpio src=IRINV len=3 ts=3732117 : 00 78 42
+21:05:00 [SCHED   3732117ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:00 proto=gpio src=IRCNT len=4 ts=3732117 : 00 00 00 00
+21:05:01 [SCHED   3733118ms] run_all: running=1
+21:05:01 [SCHED   3733118ms] publish[0/IR]: 3 bytes via gpio
+21:05:01 proto=gpio src=IR len=3 ts=3733118 : 01 33 4E
+21:05:01 [SCHED   3733118ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:01 proto=gpio src=IRINV len=3 ts=3733118 : 00 61 46
+21:05:01 [SCHED   3733118ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:01 proto=gpio src=IRCNT len=4 ts=3733118 : 00 00 00 00
+21:05:02 [SCHED   3734119ms] run_all: running=1
+21:05:02 [SCHED   3734119ms] publish[0/IR]: 3 bytes via gpio
+21:05:02 proto=gpio src=IR len=3 ts=3734119 : 01 1C 52
+21:05:02 [SCHED   3734119ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:02 proto=gpio src=IRINV len=3 ts=3734119 : 00 4A 4A
+21:05:02 [SCHED   3734119ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:02 proto=gpio src=IRCNT len=4 ts=3734119 : 00 00 00 00
+21:05:03 [SCHED   3735120ms] run_all: running=1
+21:05:03 [SCHED   3735120ms] publish[0/IR]: 3 bytes via gpio
+21:05:03 proto=gpio src=IR len=3 ts=3735120 : 01 05 56
+21:05:03 [SCHED   3735120ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:03 proto=gpio src=IRINV len=3 ts=3735120 : 00 33 4E
+21:05:03 [SCHED   3735120ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:03 proto=gpio src=IRCNT len=4 ts=3735120 : 00 00 00 00
+21:05:03 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+21:05:04 [SCHED   3736121ms] run_all: running=1
+21:05:04 [SCHED   3736121ms] publish[0/IR]: 3 bytes via gpio
+21:05:04 proto=gpio src=IR len=3 ts=3736121 : 01 EE 59
+21:05:04 [SCHED   3736121ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:04 proto=gpio src=IRINV len=3 ts=3736121 : 00 1C 52
+21:05:04 [SCHED   3736121ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:04 proto=gpio src=IRCNT len=4 ts=3736121 : 00 00 00 00
+21:05:05 [SCHED   3737122ms] run_all: running=1
+21:05:05 [SCHED   3737122ms] publish[0/IR]: 3 bytes via gpio
+21:05:05 proto=gpio src=IR len=3 ts=3737122 : 01 D7 5D
+21:05:05 [SCHED   3737122ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:05 proto=gpio src=IRINV len=3 ts=3737122 : 00 05 56
+21:05:05 [SCHED   3737122ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:05 proto=gpio src=IRCNT len=4 ts=3737122 : 00 00 00 00
+21:05:06 [SCHED   3738123ms] run_all: running=1
+21:05:06 [SCHED   3738123ms] publish[0/IR]: 3 bytes via gpio
+21:05:06 proto=gpio src=IR len=3 ts=3738123 : 01 C0 61
+21:05:06 [SCHED   3738123ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:06 proto=gpio src=IRINV len=3 ts=3738123 : 00 EE 59
+21:05:06 [SCHED   3738123ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:06 proto=gpio src=IRCNT len=4 ts=3738123 : 00 00 00 00
+21:05:07 [SCHED   3739124ms] run_all: running=1
+21:05:07 [SCHED   3739124ms] publish[0/IR]: 3 bytes via gpio
+21:05:07 proto=gpio src=IR len=3 ts=3739124 : 01 A9 65
+21:05:07 [SCHED   3739124ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:07 proto=gpio src=IRINV len=3 ts=3739124 : 00 D7 5D
+21:05:07 [SCHED   3739124ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:07 proto=gpio src=IRCNT len=4 ts=3739124 : 00 00 00 00
+21:05:08 [SCHED   3740125ms] run_all: running=1
+21:05:08 [SCHED   3740125ms] publish[0/IR]: 3 bytes via gpio
+21:05:08 proto=gpio src=IR len=3 ts=3740125 : 01 92 69
+21:05:08 [SCHED   3740125ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:08 proto=gpio src=IRINV len=3 ts=3740125 : 00 C0 61
+21:05:08 [SCHED   3740125ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:08 proto=gpio src=IRCNT len=4 ts=3740125 : 00 00 00 00
+21:05:08 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+21:05:09 [SCHED   3741126ms] run_all: running=1
+21:05:09 [SCHED   3741126ms] publish[0/IR]: 3 bytes via gpio
+21:05:09 proto=gpio src=IR len=3 ts=3741126 : 01 7B 6D
+21:05:09 [SCHED   3741126ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:09 proto=gpio src=IRINV len=3 ts=3741126 : 00 A9 65
+21:05:09 [SCHED   3741126ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:09 proto=gpio src=IRCNT len=4 ts=3741126 : 00 00 00 00
+21:05:10 [SCHED   3742127ms] run_all: running=1
+21:05:10 [SCHED   3742127ms] publish[0/IR]: 3 bytes via gpio
+21:05:10 proto=gpio src=IR len=3 ts=3742127 : 01 64 71
+21:05:10 [SCHED   3742127ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:10 proto=gpio src=IRINV len=3 ts=3742127 : 00 92 69
+21:05:10 [SCHED   3742127ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:10 proto=gpio src=IRCNT len=4 ts=3742127 : 00 00 00 00
+21:05:11 [SCHED   3743128ms] run_all: running=1
+21:05:11 [SCHED   3743128ms] publish[0/IR]: 3 bytes via gpio
+21:05:11 proto=gpio src=IR len=3 ts=3743128 : 01 4D 75
+21:05:11 [SCHED   3743128ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:11 proto=gpio src=IRINV len=3 ts=3743128 : 00 7B 6D
+21:05:11 [SCHED   3743128ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:11 proto=gpio src=IRCNT len=4 ts=3743128 : 00 00 00 00
+21:05:12 [SCHED   3744129ms] run_all: running=1
+21:05:12 [SCHED   3744129ms] publish[0/IR]: 3 bytes via gpio
+21:05:12 proto=gpio src=IR len=3 ts=3744129 : 01 36 79
+21:05:12 [SCHED   3744129ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:12 proto=gpio src=IRINV len=3 ts=3744129 : 00 64 71
+21:05:12 [SCHED   3744129ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:12 proto=gpio src=IRCNT len=4 ts=3744129 : 00 00 00 00
+21:05:13 [SCHED   3745129ms] run_all: running=1
+21:05:13 [SCHED   3745130ms] publish[0/IR]: 3 bytes via gpio
+21:05:13 proto=gpio src=IR len=3 ts=3745130 : 01 1F 7D
+21:05:13 [SCHED   3745130ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:13 proto=gpio src=IRINV len=3 ts=3745130 : 00 4D 75
+21:05:13 [SCHED   3745130ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:13 proto=gpio src=IRCNT len=4 ts=3745130 : 00 00 00 00
+21:05:13 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+21:05:14 [SCHED   3746130ms] run_all: running=1
+21:05:14 [SCHED   3746131ms] publish[0/IR]: 3 bytes via gpio
+21:05:14 proto=gpio src=IR len=3 ts=3746131 : 01 08 81
+21:05:14 [SCHED   3746131ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:14 proto=gpio src=IRINV len=3 ts=3746131 : 00 36 79
+21:05:14 [SCHED   3746131ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:14 proto=gpio src=IRCNT len=4 ts=3746131 : 00 00 00 00
+21:05:15 [SCHED   3747131ms] run_all: running=1
+21:05:15 [SCHED   3747132ms] publish[0/IR]: 3 bytes via gpio
+21:05:15 proto=gpio src=IR len=3 ts=3747132 : 01 F1 84
+21:05:15 [SCHED   3747132ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:15 proto=gpio src=IRINV len=3 ts=3747132 : 00 1F 7D
+21:05:15 [SCHED   3747132ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:15 proto=gpio src=IRCNT len=4 ts=3747132 : 00 00 00 00
+21:05:16 [SCHED   3748132ms] run_all: running=1
+21:05:16 [SCHED   3748133ms] publish[0/IR]: 3 bytes via gpio
+21:05:16 proto=gpio src=IR len=3 ts=3748133 : 01 D9 88
+21:05:16 [SCHED   3748133ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:16 proto=gpio src=IRINV len=3 ts=3748133 : 00 08 81
+21:05:16 [SCHED   3748133ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:16 proto=gpio src=IRCNT len=4 ts=3748133 : 00 00 00 00
+21:05:17 [SCHED   3749133ms] run_all: running=1
+21:05:17 [SCHED   3749133ms] publish[0/IR]: 3 bytes via gpio
+21:05:17 proto=gpio src=IR len=3 ts=3749134 : 01 C2 8C
+21:05:17 [SCHED   3749134ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:17 proto=gpio src=IRINV len=3 ts=3749134 : 00 F1 84
+21:05:17 [SCHED   3749134ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:17 proto=gpio src=IRCNT len=4 ts=3749134 : 00 00 00 00
+21:05:18 [SCHED   3750134ms] run_all: running=1
+21:05:18 [SCHED   3750134ms] publish[0/IR]: 3 bytes via gpio
+21:05:18 proto=gpio src=IR len=3 ts=3750135 : 01 AB 90
+21:05:18 [SCHED   3750135ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:18 proto=gpio src=IRINV len=3 ts=3750135 : 00 DA 88
+21:05:18 [SCHED   3750135ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:18 proto=gpio src=IRCNT len=4 ts=3750135 : 00 00 00 00
+21:05:18 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+21:05:19 [SCHED   3751135ms] run_all: running=1
+21:05:19 [SCHED   3751135ms] publish[0/IR]: 3 bytes via gpio
+21:05:19 proto=gpio src=IR len=3 ts=3751136 : 01 94 94
+21:05:19 [SCHED   3751136ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:19 proto=gpio src=IRINV len=3 ts=3751136 : 00 C3 8C
+21:05:19 [SCHED   3751136ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:19 proto=gpio src=IRCNT len=4 ts=3751136 : 00 00 00 00
+21:05:20 [SCHED   3752136ms] run_all: running=1
+21:05:20 [SCHED   3752136ms] publish[0/IR]: 3 bytes via gpio
+21:05:20 proto=gpio src=IR len=3 ts=3752137 : 01 7D 98
+21:05:20 [SCHED   3752137ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:20 proto=gpio src=IRINV len=3 ts=3752137 : 00 AC 90
+21:05:20 [SCHED   3752137ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:20 proto=gpio src=IRCNT len=4 ts=3752137 : 00 00 00 00
+21:05:21 [SCHED   3753137ms] run_all: running=1
+21:05:21 [SCHED   3753137ms] publish[0/IR]: 3 bytes via gpio
+21:05:21 proto=gpio src=IR len=3 ts=3753138 : 01 66 9C
+21:05:21 [SCHED   3753138ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:21 proto=gpio src=IRINV len=3 ts=3753138 : 00 95 94
+21:05:21 [SCHED   3753138ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:21 proto=gpio src=IRCNT len=4 ts=3753138 : 00 00 00 00
+21:05:22 [SCHED   3754138ms] run_all: running=1
+21:05:22 [SCHED   3754138ms] publish[0/IR]: 3 bytes via gpio
+21:05:22 proto=gpio src=IR len=3 ts=3754139 : 01 4F A0
+21:05:22 [SCHED   3754139ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:22 proto=gpio src=IRINV len=3 ts=3754139 : 00 7E 98
+21:05:22 [SCHED   3754139ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:22 proto=gpio src=IRCNT len=4 ts=3754139 : 00 00 00 00
+21:05:23 [SCHED   3755139ms] run_all: running=1
+21:05:23 [SCHED   3755139ms] publish[0/IR]: 3 bytes via gpio
+21:05:23 proto=gpio src=IR len=3 ts=3755139 : 01 38 A4
+21:05:23 [SCHED   3755140ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:23 proto=gpio src=IRINV len=3 ts=3755140 : 00 67 9C
+21:05:23 [SCHED   3755140ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:23 proto=gpio src=IRCNT len=4 ts=3755140 : 00 00 00 00
+21:05:23 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+21:05:24 [SCHED   3756140ms] run_all: running=1
+21:05:24 [SCHED   3756140ms] publish[0/IR]: 3 bytes via gpio
+21:05:24 proto=gpio src=IR len=3 ts=3756141 : 01 21 A8
+21:05:24 [SCHED   3756141ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:24 proto=gpio src=IRINV len=3 ts=3756141 : 00 50 A0
+21:05:24 [SCHED   3756141ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:24 proto=gpio src=IRCNT len=4 ts=3756141 : 00 00 00 00
+21:05:25 [SCHED   3757141ms] run_all: running=1
+21:05:25 [SCHED   3757141ms] publish[0/IR]: 3 bytes via gpio
+21:05:25 proto=gpio src=IR len=3 ts=3757142 : 01 0A AC
+21:05:25 [SCHED   3757142ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:25 proto=gpio src=IRINV len=3 ts=3757142 : 00 39 A4
+21:05:25 [SCHED   3757142ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:25 proto=gpio src=IRCNT len=4 ts=3757142 : 00 00 00 00
+21:05:26 [SCHED   3758142ms] run_all: running=1
+21:05:26 [SCHED   3758142ms] publish[0/IR]: 3 bytes via gpio
+21:05:26 proto=gpio src=IR len=3 ts=3758142 : 01 F3 AF
+21:05:26 [SCHED   3758143ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:26 proto=gpio src=IRINV len=3 ts=3758143 : 00 22 A8
+21:05:26 [SCHED   3758143ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:26 proto=gpio src=IRCNT len=4 ts=3758143 : 00 00 00 00
+21:05:27 [SCHED   3759143ms] run_all: running=1
+21:05:27 [SCHED   3759144ms] publish[0/IR]: 3 bytes via gpio
+21:05:27 proto=gpio src=IR len=3 ts=3759144 : 01 DC B3
+21:05:27 [SCHED   3759144ms] publish[1/IRINV]: 3 bytes via gpio
+21:05:27 proto=gpio src=IRINV len=3 ts=3759144 : 00 0B AC
+21:05:27 [SCHED   3759144ms] publish[2/IRCNT]: 4 bytes via gpio
+21:05:27 proto=gpio src=IRCNT len=4 ts=3759144 : 00 00 00 00
+21:05:27 --- stop-ir: STOP
+21:05:28 STOP
+21:05:28 [SCHED   3760144ms] run_all: running=0
+21:05:28 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+21:05:29 [SCHED   3761145ms] run_all: running=0
+21:05:30 --- clear-ir-end: CLEAR
+21:05:30 [SCHED   3762145ms] reset: cleared 8 slots
+21:05:30 [RULE] reset
+21:05:30 CLEARED
+21:05:30 [SCHED   3762145ms] run_all: running=0
+21:05:31 [SCHED   3763145ms] run_all: running=0
+21:05:32 [SCHED   3764146ms] run_all: running=0

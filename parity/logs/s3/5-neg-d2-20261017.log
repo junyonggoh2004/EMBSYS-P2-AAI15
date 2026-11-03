@@ -1,0 +1,277 @@
+15:09:04 [SCHED     82011ms] run_all: running=0
+15:09:05 [SCHED     83690ms] run_all: running=0
+15:09:06 --- clear-0: CLEAR
+15:09:06 [SCHED     84278ms] reset: cleared 8 slots
+15:09:06 [RULE] reset
+15:09:06 CLEARED
+15:09:07 [SCHED     85278ms] run_all: running=0
+15:09:08 [SCHED     86278ms] run_all: running=0
+15:09:09 --- neg-proto: BEGINCFG|name=BADP|proto=bogus|mode=poll|freq_hz=1|ENDCFG
+15:09:09 OK: Config applied (inline, delim='|')
+15:09:09 [SCHED] config BADP refused: unsupported proto 'bogus'
+15:09:09 CFG: add failed (-5)
+15:09:10 [SCHED     87935ms] run_all: running=0
+15:09:11 [SCHED     88935ms] run_all: running=0
+15:09:11 --- neg-i2c-nodev: BEGINCFG|name=NODEV|proto=i2c|mode=poll|freq_hz=1|i2c.sda=1|i2c.scl=2|i2c.addr=0x29|i2c.pre=0x80 0x03|i2c.reg=0x8A|i2c.reg_size=1|i2c.read_len=1|i2c.restart=1|ENDCFG
+15:09:11 OK: Config applied (inline, delim='|')
+15:09:11 [I2C] pre_len=2 : 80 03
+15:09:11 [I2C] pre write failed (sz=2 err=-4)
+15:09:11 [I2C] init pre-writes failed r=-4
+15:09:11 [SCHED     89563ms] add[0]: init_cfg FAILED for NODEV on i2c
+15:09:11 CFG: add failed (-2)
+15:09:12 [SCHED     90564ms] run_all: running=0
+15:09:13 [SCHED     91564ms] run_all: running=0
+15:09:14 --- neg-nopin: BEGINCFG|name=NOPIN|proto=gpio|gpio.mode=digital|mode=poll|freq_hz=1|ENDCFG
+15:09:14 OK: Config applied (inline, delim='|')
+15:09:14 [GPIO] NOPIN: gpio.pin is required
+15:09:14 [SCHED     92239ms] add[0]: init_cfg FAILED for NOPIN on gpio
+15:09:14 CFG: add failed (-2)
+15:09:15 [SCHED     93239ms] run_all: running=0
+15:09:16 [SCHED     94239ms] run_all: running=0
+15:09:17 --- clear-1: CLEAR
+15:09:17 [SCHED     94884ms] reset: cleared 8 slots
+15:09:17 [RULE] reset
+15:09:17 CLEARED
+15:09:18 [SCHED     95884ms] run_all: running=0
+15:09:19 [SCHED     96884ms] run_all: running=0
+15:09:19 --- slot-1: BEGINCFG|name=S1|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+15:09:19 OK: Config applied (inline, delim='|')
+15:09:19 [SCHED     97523ms] add[0]: S1 on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=6)
+15:09:19 [SCHED] added: S1 on gpio
+15:09:19 CFG: ok (added #0: S1)
+15:09:20 [SCHED     98523ms] run_all: running=0
+15:09:21 [SCHED     99523ms] run_all: running=0
+15:09:22 --- slot-2: BEGINCFG|name=S2|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+15:09:22 OK: Config applied (inline, delim='|')
+15:09:22 [SCHED    100154ms] add[1]: S2 on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=6)
+15:09:22 [SCHED] added: S2 on gpio
+15:09:22 CFG: ok (added #1: S2)
+15:09:23 [SCHED    101154ms] run_all: running=0
+15:09:24 [SCHED    102154ms] run_all: running=0
+15:09:24 --- slot-3: BEGINCFG|name=S3|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+15:09:25 OK: Config applied (inline, delim='|')
+15:09:25 [SCHED    102809ms] add[2]: S3 on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=6)
+15:09:25 [SCHED] added: S3 on gpio
+15:09:25 CFG: ok (added #2: S3)
+15:09:26 [SCHED    103809ms] run_all: running=0
+15:09:26 [SCHED    104809ms] run_all: running=0
+15:09:27 --- slot-4: BEGINCFG|name=S4|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+15:09:27 OK: Config applied (inline, delim='|')
+15:09:27 [SCHED    105451ms] add[3]: S4 on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=6)
+15:09:27 [SCHED] added: S4 on gpio
+15:09:27 CFG: ok (added #3: S4)
+15:09:28 [SCHED    106451ms] run_all: running=0
+15:09:29 [SCHED    107451ms] run_all: running=0
+15:09:30 --- slot-5: BEGINCFG|name=S5|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+15:09:30 OK: Config applied (inline, delim='|')
+15:09:30 [SCHED    108104ms] add[4]: S5 on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=6)
+15:09:30 [SCHED] added: S5 on gpio
+15:09:30 CFG: ok (added #4: S5)
+15:09:31 [SCHED    109104ms] run_all: running=0
+15:09:32 [SCHED    110104ms] run_all: running=0
+15:09:32 --- slot-6: BEGINCFG|name=S6|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+15:09:33 OK: Config applied (inline, delim='|')
+15:09:33 [SCHED    110756ms] add[5]: S6 on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=6)
+15:09:33 [SCHED] added: S6 on gpio
+15:09:33 CFG: ok (added #5: S6)
+15:09:33 [SCHED    111756ms] run_all: running=0
+15:09:34 [SCHED    112756ms] run_all: running=0
+15:09:35 --- slot-7: BEGINCFG|name=S7|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+15:09:35 OK: Config applied (inline, delim='|')
+15:09:35 [SCHED    113401ms] add[6]: S7 on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=6)
+15:09:35 [SCHED] added: S7 on gpio
+15:09:35 CFG: ok (added #6: S7)
+15:09:36 [SCHED    114401ms] run_all: running=0
+15:09:37 [SCHED    115401ms] run_all: running=0
+15:09:38 --- slot-8: BEGINCFG|name=S8|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+15:09:38 OK: Config applied (inline, delim='|')
+15:09:38 [SCHED    116032ms] add[7]: S8 on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=6)
+15:09:38 [SCHED] added: S8 on gpio
+15:09:38 CFG: ok (added #7: S8)
+15:09:39 [SCHED    117032ms] run_all: running=0
+15:09:40 [SCHED    118032ms] run_all: running=0
+15:09:40 --- neg-slots: BEGINCFG|name=S9|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+15:09:40 OK: Config applied (inline, delim='|')
+15:09:40 [SCHED    118651ms] add: no free slots
+15:09:40 [SCHED] no free slots
+15:09:40 CFG: add failed (-10)
+15:09:41 [SCHED    119652ms] run_all: running=0
+15:09:42 [SCHED    120652ms] run_all: running=0
+15:09:43 --- neg-rule-nosource: BEGINRULE|name=RN|calc=x=u8(0)|when=1|action=log:x|ENDRULE
+15:09:43 [RULE] missing source=
+15:09:43 RULE: parse error
+15:09:44 [SCHED    122283ms] run_all: running=0
+15:09:45 [SCHED    123283ms] run_all: running=0
+15:09:46 --- rule-1: BEGINRULE|name=R1|source=S1|calc=x=u8(0)|when=1|action=log:ok1|ENDRULE
+15:09:46 [RULE] added name=R1 src=S1 vars=1 action=log:ok1
+15:09:46 RULE: ok
+15:09:47 [SCHED    124899ms] run_all: running=0
+15:09:48 [SCHED    125899ms] run_all: running=0
+15:09:48 --- rule-2: BEGINRULE|name=R2|source=S1|calc=x=u8(0)|when=1|action=log:ok2|ENDRULE
+15:09:48 [RULE] added name=R2 src=S1 vars=1 action=log:ok2
+15:09:48 RULE: ok
+15:09:49 [SCHED    127530ms] run_all: running=0
+15:09:50 [SCHED    128530ms] run_all: running=0
+15:09:51 --- rule-3: BEGINRULE|name=R3|source=S1|calc=x=u8(0)|when=1|action=log:ok3|ENDRULE
+15:09:51 [RULE] added name=R3 src=S1 vars=1 action=log:ok3
+15:09:51 RULE: ok
+15:09:52 [SCHED    130217ms] run_all: running=0
+15:09:53 [SCHED    131217ms] run_all: running=0
+15:09:53 --- neg-badpin: BEGINRULE|name=RB|source=S1|calc=x=u8(0)|when=1|action=gpio:X=HIGH|ENDRULE
+15:09:54 [RULE] bad pin in action 'gpio:X=HIGH'
+15:09:54 RULE: parse error
+15:09:55 [SCHED    132835ms] run_all: running=0
+15:09:56 [SCHED    133835ms] run_all: running=0
+15:09:56 --- rule-4: BEGINRULE|name=R4|source=S1|calc=x=u8(0)|when=1|action=log:ok4|ENDRULE
+15:09:56 [RULE] added name=R4 src=S1 vars=1 action=log:ok4
+15:09:56 RULE: ok
+15:09:57 [SCHED    135511ms] run_all: running=0
+15:09:58 [SCHED    136511ms] run_all: running=0
+15:09:59 --- neg-rule-full: BEGINRULE|name=R5|source=S1|calc=x=u8(0)|when=1|action=log:no|ENDRULE
+15:09:59 [RULE] table full
+15:09:59 RULE: parse error
+15:10:00 [SCHED    138148ms] run_all: running=0
+15:10:01 [SCHED    139148ms] run_all: running=0
+15:10:01 --- neg-run: RUN
+15:10:01 RUN
+15:10:01 [SCHED    139764ms] arm[0/S1]: next_run reset to NOW
+15:10:01 [SCHED    139764ms] arm[1/S2]: next_run reset to NOW
+15:10:01 [SCHED    139764ms] arm[2/S3]: next_run reset to NOW
+15:10:01 [SCHED    139764ms] arm[3/S4]: next_run reset to NOW
+15:10:01 [SCHED    139764ms] arm[4/S5]: next_run reset to NOW
+15:10:01 [SCHED    139764ms] arm[5/S6]: next_run reset to NOW
+15:10:01 [SCHED    139764ms] arm[6/S7]: next_run reset to NOW
+15:10:01 [SCHED    139765ms] arm[7/S8]: next_run reset to NOW
+15:10:01 [SCHED    139765ms] publish[0/S1]: 3 bytes via gpio
+15:10:01 proto=gpio src=S1 len=3 ts=139765 : 00 03 A5
+15:10:01 [RULE] R1: ok1 (value=0.000 ts=139765)
+15:10:01 [RULE] R2: ok2 (value=0.000 ts=139765)
+15:10:01 [RULE] R3: ok3 (value=0.000 ts=139765)
+15:10:01 [RULE] R4: ok4 (value=0.000 ts=139765)
+15:10:01 [TRACE] Total Rule Eval (S1): 1007us
+15:10:01 [SCHED    139766ms] publish[1/S2]: 3 bytes via gpio
+15:10:01 proto=gpio src=S2 len=3 ts=139766 : 00 BC 9A
+15:10:01 [SCHED    139767ms] publish[2/S3]: 3 bytes via gpio
+15:10:01 proto=gpio src=S3 len=3 ts=139767 : 00 5D 90
+15:10:01 [SCHED    139767ms] publish[3/S4]: 3 bytes via gpio
+15:10:01 proto=gpio src=S4 len=3 ts=139767 : 00 0C 86
+15:10:02 [SCHED    139767ms] publish[4/S5]: 3 bytes via gpio
+15:10:02 proto=gpio src=S5 len=3 ts=139767 : 00 AF 7B
+15:10:02 [SCHED    139767ms] publish[5/S6]: 3 bytes via gpio
+15:10:02 proto=gpio src=S6 len=3 ts=139767 : 00 53 71
+15:10:02 [SCHED    139768ms] publish[6/S7]: 3 bytes via gpio
+15:10:02 proto=gpio src=S7 len=3 ts=139768 : 00 FF 66
+15:10:02 [SCHED    139768ms] publish[7/S8]: 3 bytes via gpio
+15:10:02 proto=gpio src=S8 len=3 ts=139768 : 00 B8 5C
+15:10:02 [SCHED    140765ms] run_all: running=1
+15:10:02 [SCHED    140765ms] publish[0/S1]: 3 bytes via gpio
+15:10:02 proto=gpio src=S1 len=3 ts=140765 : 00 EB A8
+15:10:02 [RULE] R1: ok1 (value=0.000 ts=140765)
+15:10:02 [RULE] R2: ok2 (value=0.000 ts=140765)
+15:10:02 [RULE] R3: ok3 (value=0.000 ts=140765)
+15:10:02 [RULE] R4: ok4 (value=0.000 ts=140765)
+15:10:02 [TRACE] Total Rule Eval (S1): 903us
+15:10:02 [SCHED    140767ms] publish[1/S2]: 3 bytes via gpio
+15:10:02 proto=gpio src=S2 len=3 ts=140767 : 00 A5 9E
+15:10:02 [SCHED    140767ms] publish[2/S3]: 3 bytes via gpio
+15:10:03 proto=gpio src=S3 len=3 ts=140767 : 00 46 94
+15:10:03 [SCHED    140767ms] publish[3/S4]: 3 bytes via gpio
+15:10:03 proto=gpio src=S4 len=3 ts=140767 : 00 F4 89
+15:10:03 [SCHED    140768ms] publish[4/S5]: 3 bytes via gpio
+15:10:03 proto=gpio src=S5 len=3 ts=140768 : 00 98 7F
+15:10:03 [SCHED    140768ms] publish[5/S6]: 3 bytes via gpio
+15:10:03 proto=gpio src=S6 len=3 ts=140768 : 00 3C 75
+15:10:03 [SCHED    140768ms] publish[6/S7]: 3 bytes via gpio
+15:10:03 proto=gpio src=S7 len=3 ts=140768 : 00 E7 6A
+15:10:03 [SCHED    140769ms] publish[7/S8]: 3 bytes via gpio
+15:10:03 proto=gpio src=S8 len=3 ts=140769 : 00 A1 60
+15:10:03 [SCHED    141765ms] run_all: running=1
+15:10:03 [SCHED    141766ms] publish[0/S1]: 3 bytes via gpio
+15:10:03 proto=gpio src=S1 len=3 ts=141766 : 00 D4 AC
+15:10:03 [RULE] R1: ok1 (value=0.000 ts=141766)
+15:10:03 [RULE] R2: ok2 (value=0.000 ts=141766)
+15:10:03 [RULE] R3: ok3 (value=0.000 ts=141766)
+15:10:03 [RULE] R4: ok4 (value=0.000 ts=141766)
+15:10:03 [TRACE] Total Rule Eval (S1): 921us
+15:10:03 [SCHED    141767ms] publish[1/S2]: 3 bytes via gpio
+15:10:03 proto=gpio src=S2 len=3 ts=141767 : 00 8D A2
+15:10:03 [SCHED    141767ms] publish[2/S3]: 3 bytes via gpio
+15:10:04 proto=gpio src=S3 len=3 ts=141768 : 00 2E 98
+15:10:04 [SCHED    141768ms] publish[3/S4]: 3 bytes via gpio
+15:10:04 proto=gpio src=S4 len=3 ts=141768 : 00 DD 8D
+15:10:04 [SCHED    141768ms] publish[4/S5]: 3 bytes via gpio
+15:10:04 proto=gpio src=S5 len=3 ts=141768 : 00 80 83
+15:10:04 [SCHED    141768ms] publish[5/S6]: 3 bytes via gpio
+15:10:04 proto=gpio src=S6 len=3 ts=141768 : 00 24 79
+15:10:04 [SCHED    141769ms] publish[6/S7]: 3 bytes via gpio
+15:10:04 proto=gpio src=S7 len=3 ts=141769 : 00 D0 6E
+15:10:04 [SCHED    141769ms] publish[7/S8]: 3 bytes via gpio
+15:10:04 proto=gpio src=S8 len=3 ts=141769 : 00 89 64
+15:10:04 [SCHED    142766ms] run_all: running=1
+15:10:04 [SCHED    142766ms] publish[0/S1]: 3 bytes via gpio
+15:10:04 proto=gpio src=S1 len=3 ts=142766 : 00 BC B0
+15:10:04 [RULE] R1: ok1 (value=0.000 ts=142766)
+15:10:04 [RULE] R2: ok2 (value=0.000 ts=142766)
+15:10:04 [RULE] R3: ok3 (value=0.000 ts=142766)
+15:10:04 [RULE] R4: ok4 (value=0.000 ts=142766)
+15:10:04 [TRACE] Total Rule Eval (S1): 895us
+15:10:04 [SCHED    142767ms] publish[1/S2]: 3 bytes via gpio
+15:10:04 proto=gpio src=S2 len=3 ts=142767 : 00 75 A6
+15:10:04 [SCHED    142768ms] publish[2/S3]: 3 bytes via gpio
+15:10:05 proto=gpio src=S3 len=3 ts=142768 : 00 17 9C
+15:10:05 [SCHED    142768ms] publish[3/S4]: 3 bytes via gpio
+15:10:05 proto=gpio src=S4 len=3 ts=142768 : 00 C5 91
+15:10:05 [SCHED    142768ms] publish[4/S5]: 3 bytes via gpio
+15:10:05 proto=gpio src=S5 len=3 ts=142768 : 00 68 87
+15:10:05 [SCHED    142769ms] publish[5/S6]: 3 bytes via gpio
+15:10:05 proto=gpio src=S6 len=3 ts=142769 : 00 0D 7D
+15:10:05 [SCHED    142769ms] publish[6/S7]: 3 bytes via gpio
+15:10:05 proto=gpio src=S7 len=3 ts=142769 : 00 B8 72
+15:10:05 [SCHED    142769ms] publish[7/S8]: 3 bytes via gpio
+15:10:05 proto=gpio src=S8 len=3 ts=142769 : 00 71 68
+15:10:05 [SCHED    143767ms] run_all: running=1
+15:10:05 [SCHED    143767ms] publish[0/S1]: 3 bytes via gpio
+15:10:05 proto=gpio src=S1 len=3 ts=143767 : 00 A5 B4
+15:10:05 [RULE] R1: ok1 (value=0.000 ts=143767)
+15:10:05 [RULE] R2: ok2 (value=0.000 ts=143767)
+15:10:05 [RULE] R3: ok3 (value=0.000 ts=143767)
+15:10:05 [RULE] R4: ok4 (value=0.000 ts=143767)
+15:10:05 [TRACE] Total Rule Eval (S1): 883us
+15:10:05 [SCHED    143768ms] publish[1/S2]: 3 bytes via gpio
+15:10:05 proto=gpio src=S2 len=3 ts=143768 : 00 5E AA
+15:10:05 [SCHED    143768ms] publish[2/S3]: 3 bytes via gpio
+15:10:06 proto=gpio src=S3 len=3 ts=143769 : 00 FF 9F
+15:10:06 [SCHED    143769ms] publish[3/S4]: 3 bytes via gpio
+15:10:06 proto=gpio src=S4 len=3 ts=143769 : 00 AE 95
+15:10:06 [SCHED    143769ms] publish[4/S5]: 3 bytes via gpio
+15:10:06 proto=gpio src=S5 len=3 ts=143769 : 00 51 8B
+15:10:06 [SCHED    143769ms] publish[5/S6]: 3 bytes via gpio
+15:10:06 proto=gpio src=S6 len=3 ts=143769 : 00 F5 80
+15:10:06 [SCHED    143770ms] publish[6/S7]: 3 bytes via gpio
+15:10:06 proto=gpio src=S7 len=3 ts=143770 : 00 A1 76
+15:10:06 [SCHED    143770ms] publish[7/S8]: 3 bytes via gpio
+15:10:06 proto=gpio src=S8 len=3 ts=143770 : 00 5A 6C
+15:10:06 --- stop-neg: STOP
+15:10:06 STOP
+15:10:07 [SCHED    145187ms] run_all: running=0
+15:10:08 [SCHED    146187ms] run_all: running=0
+15:10:08 --- clearrules-neg: CLEARRULES
+15:10:09 [RULE] reset
+15:10:10 [SCHED    147797ms] run_all: running=0
+15:10:10 [SCHED    148797ms] run_all: running=0
+15:10:11 --- neg-badexpr: BEGINRULE|name=RX|source=S1|calc=x=u8(0)|when=x>>>|action=log:x|ENDRULE
+15:10:11 [RULE] bad when= expression 'x>>>'
+15:10:11 RULE: parse error
+15:10:12 [SCHED    150436ms] run_all: running=0
+15:10:13 [SCHED    151436ms] run_all: running=0
+15:10:14 --- clear-2: CLEAR
+15:10:14 [SCHED    152082ms] reset: cleared 8 slots
+15:10:14 [RULE] reset
+15:10:14 CLEARED
+15:10:15 [SCHED    153082ms] run_all: running=0
+15:10:16 [SCHED    154082ms] run_all: running=0
+15:10:16 --- neg-toolong: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+15:10:16 Line too long
+15:10:16 Unknown: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+15:10:17 [SCHED    155716ms] run_all: running=0
+15:10:18 [SCHED    156716ms] run_all: running=0

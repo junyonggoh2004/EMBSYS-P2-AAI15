@@ -1,0 +1,19 @@
+# Task 29, 2026-10-20 05:16, HW-747, µT-Kernel 3 SMP build (course port e92874d).
+# HAL test (sh tools/mtk.sh haltest): echo capture by GPIO interrupt + event flag; the measuring task sleeps.
+[HALTEST] PASS echo-width-self measured 5256 us for a 5 ms PULSE (alarm resolution 1 ms)
+[HALTEST] PASS echo-none-times-out returned -1 after 25734 us
+[HALTEST] PASS echo-stuck-high-reports-timeout returned 25001 (D-07: the timeout reported as a width)
+[HALTEST] PASS echo-wait-releases-cpu spinner: sleep 539007, echo wait 560109, busy-wait 0
+
+# t06 (no-echo frame, one-wire with no sensor): 7/7 passed. Raw log: parity/logs/mtk/t06.log
+
+# wcet (sh tools/mtk.sh wcet): SchedulerTask cycle time per scenario. A pulse read still takes the echo time, but the task sleeps through it (echo-wait-releases-cpu above).
+scenario                                                 cycles  mean us    p95 us   max us
+idle, sampling on, no sensors                                25       48      <100       97
+8 digital inputs at 50 ms                                   414     1985     <2500     2561
+1 digital input + rule at 50 ms                             418      460     <1000      981
+1 HC-SR04 pulse read at 50 ms, no echo (timeout 25 ms)      277    25965    <50000    26441
+2 HC-SR04 pulse reads at 50 ms, no echo                     278    51676    >50000    52488
+inference rule at 50 ms                                     418      717     <1000     1078
+
+Raw log: parity/logs/mtk/wcet.log

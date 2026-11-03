@@ -1,0 +1,385 @@
+17:53:07 [SCHED    351462ms] run_all: running=0
+17:53:07 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:53:08 [SCHED    353176ms] run_all: running=0
+17:53:09 --- clear-t08: CLEAR
+17:53:09 [SCHED    353722ms] reset: cleared 8 slots
+17:53:09 [RULE] reset
+17:53:09 CLEARED
+17:53:10 [SCHED    354722ms] run_all: running=0
+17:53:11 [SCHED    355722ms] run_all: running=0
+17:53:11 --- cfg-7e2: BEGINCFG|name=U7E2|proto=uart|uart.tx=1|uart.rx=2|uart.baud=115200|uart.bits=7|uart.parity=E|uart.stop=2|uart.pre=0x41 0x42|uart.post_delay_ms=5|uart.read_len=2|mode=poll|freq_hz=2|ENDCFG
+17:53:12 OK: Config applied (inline, delim='|')
+17:53:12 [SCHED    356321ms] add[0]: U7E2 on uart freq=2.000Hz mode=poll UART(tx=1,rx=2,baud=115200)
+17:53:12 [SCHED] added: U7E2 on uart
+17:53:12 CFG: ok (added #0: U7E2)
+17:53:12 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:53:12 [SCHED    357322ms] run_all: running=0
+17:53:14 [SCHED    358322ms] run_all: running=0
+17:53:14 --- run-7e2: RUN
+17:53:14 RUN
+17:53:14 [SCHED    358900ms] arm[0/U7E2]: next_run reset to NOW
+17:53:14 [SCHED    358906ms] publish[0/U7E2]: 2 bytes via uart
+17:53:14 proto=uart src=U7E2 len=2 ts=358906 : 41 42
+17:53:15 [SCHED    359407ms] run_all: running=1
+17:53:15 [SCHED    359413ms] publish[0/U7E2]: 2 bytes via uart
+17:53:15 proto=uart src=U7E2 len=2 ts=359413 : 41 42
+17:53:15 [SCHED    359920ms] publish[0/U7E2]: 2 bytes via uart
+17:53:15 proto=uart src=U7E2 len=2 ts=359920 : 41 42
+17:53:16 [SCHED    360421ms] run_all: running=1
+17:53:16 [SCHED    360427ms] publish[0/U7E2]: 2 bytes via uart
+17:53:16 proto=uart src=U7E2 len=2 ts=360427 : 41 42
+17:53:16 [SCHED    360934ms] publish[0/U7E2]: 2 bytes via uart
+17:53:16 proto=uart src=U7E2 len=2 ts=360934 : 41 42
+17:53:17 [SCHED    361435ms] run_all: running=1
+17:53:17 [SCHED    361441ms] publish[0/U7E2]: 2 bytes via uart
+17:53:17 proto=uart src=U7E2 len=2 ts=361441 : 41 42
+17:53:17 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:53:17 [SCHED    361948ms] publish[0/U7E2]: 2 bytes via uart
+17:53:17 proto=uart src=U7E2 len=2 ts=361948 : 41 42
+17:53:17 --- stop-7e2: STOP
+17:53:17 STOP
+17:53:18 [SCHED    362985ms] run_all: running=0
+17:53:19 [SCHED    363985ms] run_all: running=0
+17:53:20 --- clear-7e2: CLEAR
+17:53:20 [SCHED    364573ms] reset: cleared 8 slots
+17:53:20 [RULE] reset
+17:53:20 CLEARED
+17:53:21 [SCHED    365573ms] run_all: running=0
+17:53:22 [SCHED    366573ms] run_all: running=0
+17:53:22 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:53:22 --- cfg-partial: BEGINCFG|name=UPART|proto=uart|uart.tx=1|uart.rx=2|uart.baud=115200|uart.pre=0x12 0x34 0x56|uart.post_delay_ms=5|uart.read_len=8|mode=poll|freq_hz=2|ENDCFG
+17:53:22 OK: Config applied (inline, delim='|')
+17:53:22 [SCHED    367179ms] add[0]: UPART on uart freq=2.000Hz mode=poll UART(tx=1,rx=2,baud=115200)
+17:53:22 [SCHED] added: UPART on uart
+17:53:22 CFG: ok (added #0: UPART)
+17:53:23 [SCHED    368180ms] run_all: running=0
+17:53:24 [SCHED    369180ms] run_all: running=0
+17:53:25 --- run-partial: RUN
+17:53:25 RUN
+17:53:25 [SCHED    369764ms] arm[0/UPART]: next_run reset to NOW
+17:53:25 [SCHED    369772ms] publish[0/UPART]: 6 bytes via uart
+17:53:25 proto=uart src=UPART len=6 ts=369772 : 12 34 56 12 34 56
+17:53:25 [SCHED    370273ms] run_all: running=1
+17:53:26 [SCHED    370281ms] publish[0/UPART]: 3 bytes via uart
+17:53:26 proto=uart src=UPART len=3 ts=370281 : 12 34 56
+17:53:26 [SCHED    370790ms] publish[0/UPART]: 3 bytes via uart
+17:53:26 proto=uart src=UPART len=3 ts=370790 : 12 34 56
+17:53:26 [SCHED    371291ms] run_all: running=1
+17:53:26 [SCHED    371299ms] publish[0/UPART]: 3 bytes via uart
+17:53:26 proto=uart src=UPART len=3 ts=371299 : 12 34 56
+17:53:27 [SCHED    371808ms] publish[0/UPART]: 3 bytes via uart
+17:53:27 proto=uart src=UPART len=3 ts=371808 : 12 34 56
+17:53:27 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:53:27 [SCHED    372309ms] run_all: running=1
+17:53:27 [SCHED    372317ms] publish[0/UPART]: 3 bytes via uart
+17:53:27 proto=uart src=UPART len=3 ts=372317 : 12 34 56
+17:53:28 [SCHED    372826ms] publish[0/UPART]: 3 bytes via uart
+17:53:28 proto=uart src=UPART len=3 ts=372826 : 12 34 56
+17:53:28 --- stop-partial: STOP
+17:53:28 STOP
+17:53:29 [SCHED    373866ms] run_all: running=0
+17:53:30 [SCHED    374866ms] run_all: running=0
+17:53:31 --- clear-partial: CLEAR
+17:53:31 [SCHED    375456ms] reset: cleared 8 slots
+17:53:31 [RULE] reset
+17:53:31 CLEARED
+17:53:32 [SCHED    376456ms] run_all: running=0
+17:53:32 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:53:33 [SCHED    377456ms] run_all: running=0
+17:53:33 --- cfg-line: BEGINCFG|name=ULINE|proto=uart|uart.tx=1|uart.rx=2|uart.baud=115200|uart.line_mode=1|uart.pre=0x41 0x42 0x0A 0x43 0x44 0x0A|uart.post_delay_ms=5|uart.read_len=16|mode=poll|freq_hz=2|ENDCFG
+17:53:33 OK: Config applied (inline, delim='|')
+17:53:33 [SCHED    378044ms] add[0]: ULINE on uart freq=2.000Hz mode=poll UART(tx=1,rx=2,baud=115200)
+17:53:33 [SCHED] added: ULINE on uart
+17:53:33 CFG: ok (added #0: ULINE)
+17:53:34 [SCHED    379045ms] run_all: running=0
+17:53:35 [SCHED    380045ms] run_all: running=0
+17:53:36 --- run-line: RUN
+17:53:36 RUN
+17:53:36 [SCHED    380612ms] arm[0/ULINE]: next_run reset to NOW
+17:53:36 [SCHED    380618ms] publish[0/ULINE]: 3 bytes via uart
+17:53:36 proto=uart src=ULINE len=3 ts=380618 : 41 42 0A
+17:53:36 [SCHED    381119ms] run_all: running=1
+17:53:36 [SCHED    381125ms] publish[0/ULINE]: 3 bytes via uart
+17:53:36 proto=uart src=ULINE len=3 ts=381125 : 43 44 0A
+17:53:37 [SCHED    381632ms] publish[0/ULINE]: 3 bytes via uart
+17:53:37 proto=uart src=ULINE len=3 ts=381632 : 41 42 0A
+17:53:37 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:53:37 [SCHED    382133ms] run_all: running=1
+17:53:37 [SCHED    382139ms] publish[0/ULINE]: 3 bytes via uart
+17:53:37 proto=uart src=ULINE len=3 ts=382139 : 43 44 0A
+17:53:38 [SCHED    382646ms] publish[0/ULINE]: 3 bytes via uart
+17:53:38 proto=uart src=ULINE len=3 ts=382646 : 41 42 0A
+17:53:38 [SCHED    383147ms] run_all: running=1
+17:53:38 [SCHED    383153ms] publish[0/ULINE]: 3 bytes via uart
+17:53:38 proto=uart src=ULINE len=3 ts=383153 : 43 44 0A
+17:53:39 [SCHED    383660ms] publish[0/ULINE]: 3 bytes via uart
+17:53:39 proto=uart src=ULINE len=3 ts=383660 : 41 42 0A
+17:53:39 --- stop-line: STOP
+17:53:39 STOP
+17:53:40 [SCHED    384713ms] run_all: running=0
+17:53:41 [SCHED    385713ms] run_all: running=0
+17:53:41 --- clear-line: CLEAR
+17:53:42 [SCHED    386310ms] reset: cleared 8 slots
+17:53:42 [RULE] reset
+17:53:42 CLEARED
+17:53:42 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:53:42 [SCHED    387310ms] run_all: running=0
+17:53:44 [SCHED    388310ms] run_all: running=0
+17:53:44 --- cfg-more: BEGINCFG|name=UMORE|proto=uart|uart.tx=1|uart.rx=2|uart.baud=115200|uart.pre=0x01 0x02 0x03 0x04 0x05 0x06 0x07 0x08 0x09 0x0A 0x0B 0x0C 0x0D 0x0E 0x0F 0x10|uart.post_delay_ms=5|uart.read_len=8|mode=poll|freq_hz=2|ENDCFG
+17:53:44 OK: Config applied (inline, delim='|')
+17:53:44 [SCHED    388907ms] add[0]: UMORE on uart freq=2.000Hz mode=poll UART(tx=1,rx=2,baud=115200)
+17:53:44 [SCHED] added: UMORE on uart
+17:53:44 CFG: ok (added #0: UMORE)
+17:53:45 [SCHED    389908ms] run_all: running=0
+17:53:46 [SCHED    390908ms] run_all: running=0
+17:53:47 --- run-more: RUN
+17:53:47 RUN
+17:53:47 [SCHED    391483ms] arm[0/UMORE]: next_run reset to NOW
+17:53:47 [SCHED    391489ms] publish[0/UMORE]: 8 bytes via uart
+17:53:47 proto=uart src=UMORE len=8 ts=391489 : 01 02 03 04 05 06 07 08
+17:53:47 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:53:47 [SCHED    391990ms] run_all: running=1
+17:53:47 [SCHED    391996ms] publish[0/UMORE]: 8 bytes via uart
+17:53:47 proto=uart src=UMORE len=8 ts=391996 : 09 0A 0B 0C 0D 0E 0F 10
+17:53:48 [SCHED    392503ms] publish[0/UMORE]: 8 bytes via uart
+17:53:48 proto=uart src=UMORE len=8 ts=392503 : 01 02 03 04 05 06 07 08
+17:53:48 [SCHED    393004ms] run_all: running=1
+17:53:48 [SCHED    393010ms] publish[0/UMORE]: 8 bytes via uart
+17:53:48 proto=uart src=UMORE len=8 ts=393010 : 09 0A 0B 0C 0D 0E 0F 10
+17:53:49 [SCHED    393517ms] publish[0/UMORE]: 8 bytes via uart
+17:53:49 proto=uart src=UMORE len=8 ts=393517 : 01 02 03 04 05 06 07 08
+17:53:49 [SCHED    394018ms] run_all: running=1
+17:53:49 [SCHED    394024ms] publish[0/UMORE]: 8 bytes via uart
+17:53:49 proto=uart src=UMORE len=8 ts=394024 : 09 0A 0B 0C 0D 0E 0F 10
+17:53:50 [SCHED    394531ms] publish[0/UMORE]: 8 bytes via uart
+17:53:50 proto=uart src=UMORE len=8 ts=394531 : 01 02 03 04 05 06 07 08
+17:53:50 [SCHED    395032ms] run_all: running=1
+17:53:50 [SCHED    395038ms] publish[0/UMORE]: 8 bytes via uart
+17:53:50 proto=uart src=UMORE len=8 ts=395038 : 09 0A 0B 0C 0D 0E 0F 10
+17:53:51 [SCHED    395545ms] publish[0/UMORE]: 8 bytes via uart
+17:53:51 proto=uart src=UMORE len=8 ts=395545 : 01 02 03 04 05 06 07 08
+17:53:51 --- stop-more: STOP
+17:53:51 STOP
+17:53:52 [SCHED    396620ms] run_all: running=0
+17:53:52 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:53:53 [SCHED    397620ms] run_all: running=0
+17:53:53 --- clear-more: CLEAR
+17:53:53 [SCHED    398203ms] reset: cleared 8 slots
+17:53:53 [RULE] reset
+17:53:53 CLEARED
+17:53:54 [SCHED    399203ms] run_all: running=0
+17:53:55 [SCHED    400203ms] run_all: running=0
+17:53:56 --- cfg-quiet: BEGINCFG|name=UQUIET|proto=uart|uart.tx=1|uart.rx=2|uart.baud=115200|uart.read_len=8|mode=poll|freq_hz=2|ENDCFG
+17:53:56 OK: Config applied (inline, delim='|')
+17:53:56 [SCHED    400792ms] add[0]: UQUIET on uart freq=2.000Hz mode=poll UART(tx=1,rx=2,baud=115200)
+17:53:56 [SCHED] added: UQUIET on uart
+17:53:56 CFG: ok (added #0: UQUIET)
+17:53:57 [SCHED    401793ms] run_all: running=0
+17:53:57 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:53:58 [SCHED    402793ms] run_all: running=0
+17:53:59 --- run-quiet: RUN
+17:53:59 RUN
+17:53:59 [SCHED    403370ms] arm[0/UQUIET]: next_run reset to NOW
+17:53:59 [SCHED    403872ms] run_all: running=1
+17:54:00 [SCHED    404878ms] run_all: running=1
+17:54:01 [SCHED    405884ms] run_all: running=1
+17:54:02 --- stop-quiet: STOP
+17:54:02 STOP
+17:54:02 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:54:03 [SCHED    407472ms] run_all: running=0
+17:54:04 [SCHED    408472ms] run_all: running=0
+17:54:04 --- clear-quiet: CLEAR
+17:54:04 [SCHED    409050ms] reset: cleared 8 slots
+17:54:04 [RULE] reset
+17:54:04 CLEARED
+17:54:05 [SCHED    410050ms] run_all: running=0
+17:54:06 [SCHED    411050ms] run_all: running=0
+17:54:07 --- cfg-flood: BEGINCFG|name=UOVF|proto=uart|uart.tx=1|uart.rx=2|uart.baud=115200|uart.pre=0x20 0x21 0x22 0x23 0x24 0x25 0x26 0x27 0x28 0x29 0x2A 0x2B 0x2C 0x2D 0x2E 0x2F|uart.post_delay_ms=1|uart.read_len=4|mode=poll|freq_hz=20|ENDCFG
+17:54:07 OK: Config applied (inline, delim='|')
+17:54:07 [SCHED    411643ms] add[0]: UOVF on uart freq=20.000Hz mode=poll UART(tx=1,rx=2,baud=115200)
+17:54:07 [SCHED] added: UOVF on uart
+17:54:07 CFG: ok (added #0: UOVF)
+17:54:07 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:54:08 [SCHED    412644ms] run_all: running=0
+17:54:09 [SCHED    413644ms] run_all: running=0
+17:54:09 --- run-flood: RUN
+17:54:09 RUN
+17:54:09 [SCHED    414224ms] arm[0/UOVF]: next_run reset to NOW
+17:54:09 [SCHED    414226ms] publish[0/UOVF]: 4 bytes via uart
+17:54:09 proto=uart src=UOVF len=4 ts=414226 : 20 21 22 23
+17:54:09 [SCHED    414279ms] publish[0/UOVF]: 4 bytes via uart
+17:54:09 proto=uart src=UOVF len=4 ts=414279 : 24 25 26 27
+17:54:10 [SCHED    414332ms] publish[0/UOVF]: 4 bytes via uart
+17:54:10 proto=uart src=UOVF len=4 ts=414332 : 28 29 2A 2B
+17:54:10 [SCHED    414385ms] publish[0/UOVF]: 4 bytes via uart
+17:54:10 proto=uart src=UOVF len=4 ts=414385 : 2C 2D 2E 2F
+17:54:10 [SCHED    414438ms] publish[0/UOVF]: 4 bytes via uart
+17:54:10 proto=uart src=UOVF len=4 ts=414438 : 20 21 22 23
+17:54:10 [SCHED    414491ms] publish[0/UOVF]: 4 bytes via uart
+17:54:10 proto=uart src=UOVF len=4 ts=414491 : 24 25 26 27
+17:54:10 [SCHED    414544ms] publish[0/UOVF]: 4 bytes via uart
+17:54:10 proto=uart src=UOVF len=4 ts=414544 : 28 29 2A 2B
+17:54:10 [SCHED    414597ms] publish[0/UOVF]: 4 bytes via uart
+17:54:10 proto=uart src=UOVF len=4 ts=414597 : 2C 2D 2E 2F
+17:54:10 [SCHED    414648ms] run_all: running=1
+17:54:10 [SCHED    414650ms] publish[0/UOVF]: 4 bytes via uart
+17:54:10 proto=uart src=UOVF len=4 ts=414650 : 20 21 22 23
+17:54:10 [SCHED    414703ms] publish[0/UOVF]: 4 bytes via uart
+17:54:10 proto=uart src=UOVF len=4 ts=414703 : 24 25 26 27
+17:54:10 [SCHED    414756ms] publish[0/UOVF]: 4 bytes via uart
+17:54:10 proto=uart src=UOVF len=4 ts=414756 : 28 29 2A 2B
+17:54:10 [SCHED    414809ms] publish[0/UOVF]: 4 bytes via uart
+17:54:10 proto=uart src=UOVF len=4 ts=414809 : 2C 2D 2E 2F
+17:54:10 [SCHED    414862ms] publish[0/UOVF]: 4 bytes via uart
+17:54:10 proto=uart src=UOVF len=4 ts=414862 : 20 21 22 23
+17:54:10 [SCHED    414915ms] publish[0/UOVF]: 4 bytes via uart
+17:54:10 proto=uart src=UOVF len=4 ts=414915 : 24 25 26 27
+17:54:10 [SCHED    414968ms] publish[0/UOVF]: 4 bytes via uart
+17:54:10 proto=uart src=UOVF len=4 ts=414968 : 28 29 2A 2B
+17:54:10 [SCHED    415021ms] publish[0/UOVF]: 4 bytes via uart
+17:54:10 proto=uart src=UOVF len=4 ts=415021 : 2C 2D 2E 2F
+17:54:10 [SCHED    415074ms] publish[0/UOVF]: 4 bytes via uart
+17:54:10 proto=uart src=UOVF len=4 ts=415074 : 20 21 22 23
+17:54:10 [SCHED    415127ms] publish[0/UOVF]: 4 bytes via uart
+17:54:10 proto=uart src=UOVF len=4 ts=415127 : 24 25 26 27
+17:54:10 [SCHED    415180ms] publish[0/UOVF]: 4 bytes via uart
+17:54:10 proto=uart src=UOVF len=4 ts=415180 : 28 29 2A 2B
+17:54:10 [SCHED    415233ms] publish[0/UOVF]: 4 bytes via uart
+17:54:10 proto=uart src=UOVF len=4 ts=415233 : 2C 2D 2E 2F
+17:54:10 [SCHED    415286ms] publish[0/UOVF]: 4 bytes via uart
+17:54:10 proto=uart src=UOVF len=4 ts=415286 : 20 21 22 23
+17:54:10 [SCHED    415339ms] publish[0/UOVF]: 4 bytes via uart
+17:54:10 proto=uart src=UOVF len=4 ts=415339 : 24 25 26 27
+17:54:11 [SCHED    415392ms] publish[0/UOVF]: 4 bytes via uart
+17:54:11 proto=uart src=UOVF len=4 ts=415392 : 28 29 2A 2B
+17:54:11 [SCHED    415445ms] publish[0/UOVF]: 4 bytes via uart
+17:54:11 proto=uart src=UOVF len=4 ts=415445 : 2C 2D 2E 2F
+17:54:11 [SCHED    415498ms] publish[0/UOVF]: 4 bytes via uart
+17:54:11 proto=uart src=UOVF len=4 ts=415498 : 20 21 22 23
+17:54:11 [SCHED    415551ms] publish[0/UOVF]: 4 bytes via uart
+17:54:11 proto=uart src=UOVF len=4 ts=415551 : 24 25 26 27
+17:54:11 [SCHED    415604ms] publish[0/UOVF]: 4 bytes via uart
+17:54:11 proto=uart src=UOVF len=4 ts=415604 : 28 29 2A 2B
+17:54:11 [SCHED    415655ms] run_all: running=1
+17:54:11 [SCHED    415657ms] publish[0/UOVF]: 4 bytes via uart
+17:54:11 proto=uart src=UOVF len=4 ts=415657 : 2C 2D 2E 2F
+17:54:11 [SCHED    415710ms] publish[0/UOVF]: 4 bytes via uart
+17:54:11 proto=uart src=UOVF len=4 ts=415710 : 20 21 22 23
+17:54:11 [SCHED    415763ms] publish[0/UOVF]: 4 bytes via uart
+17:54:11 proto=uart src=UOVF len=4 ts=415763 : 24 25 26 27
+17:54:11 [SCHED    415816ms] publish[0/UOVF]: 4 bytes via uart
+17:54:11 proto=uart src=UOVF len=4 ts=415816 : 28 29 2A 2B
+17:54:11 [SCHED    415869ms] publish[0/UOVF]: 4 bytes via uart
+17:54:11 proto=uart src=UOVF len=4 ts=415869 : 2C 2D 2E 2F
+17:54:11 [SCHED    415922ms] publish[0/UOVF]: 4 bytes via uart
+17:54:11 proto=uart src=UOVF len=4 ts=415922 : 20 21 22 23
+17:54:11 [SCHED    415975ms] publish[0/UOVF]: 4 bytes via uart
+17:54:11 proto=uart src=UOVF len=4 ts=415975 : 24 25 26 27
+17:54:11 [SCHED    416028ms] publish[0/UOVF]: 4 bytes via uart
+17:54:11 proto=uart src=UOVF len=4 ts=416028 : 28 29 2A 2B
+17:54:11 [SCHED    416081ms] publish[0/UOVF]: 4 bytes via uart
+17:54:11 proto=uart src=UOVF len=4 ts=416081 : 2C 2D 2E 2F
+17:54:11 [SCHED    416134ms] publish[0/UOVF]: 4 bytes via uart
+17:54:11 proto=uart src=UOVF len=4 ts=416134 : 20 21 22 23
+17:54:11 [SCHED    416187ms] publish[0/UOVF]: 4 bytes via uart
+17:54:11 proto=uart src=UOVF len=4 ts=416187 : 24 25 26 27
+17:54:11 [SCHED    416240ms] publish[0/UOVF]: 4 bytes via uart
+17:54:11 proto=uart src=UOVF len=4 ts=416240 : 28 29 2A 2B
+17:54:12 [SCHED    416293ms] publish[0/UOVF]: 4 bytes via uart
+17:54:12 proto=uart src=UOVF len=4 ts=416293 : 2C 2D 2E 2F
+17:54:12 [SCHED    416346ms] publish[0/UOVF]: 4 bytes via uart
+17:54:12 proto=uart src=UOVF len=4 ts=416346 : 20 21 22 23
+17:54:12 [SCHED    416399ms] publish[0/UOVF]: 4 bytes via uart
+17:54:12 proto=uart src=UOVF len=4 ts=416399 : 24 25 26 27
+17:54:12 [SCHED    416452ms] publish[0/UOVF]: 4 bytes via uart
+17:54:12 proto=uart src=UOVF len=4 ts=416452 : 28 29 2A 2B
+17:54:12 [SCHED    416505ms] publish[0/UOVF]: 4 bytes via uart
+17:54:12 proto=uart src=UOVF len=4 ts=416505 : 2C 2D 2E 2F
+17:54:12 [SCHED    416558ms] publish[0/UOVF]: 4 bytes via uart
+17:54:12 proto=uart src=UOVF len=4 ts=416558 : 20 21 22 23
+17:54:12 [SCHED    416611ms] publish[0/UOVF]: 4 bytes via uart
+17:54:12 proto=uart src=UOVF len=4 ts=416611 : 24 25 26 27
+17:54:12 [SCHED    416662ms] run_all: running=1
+17:54:12 [SCHED    416664ms] publish[0/UOVF]: 4 bytes via uart
+17:54:12 proto=uart src=UOVF len=4 ts=416664 : 28 29 2A 2B
+17:54:12 [SCHED    416717ms] publish[0/UOVF]: 4 bytes via uart
+17:54:12 proto=uart src=UOVF len=4 ts=416717 : 2C 2D 2E 2F
+17:54:12 [SCHED    416770ms] publish[0/UOVF]: 4 bytes via uart
+17:54:12 proto=uart src=UOVF len=4 ts=416770 : 20 21 22 23
+17:54:12 [SCHED    416823ms] publish[0/UOVF]: 4 bytes via uart
+17:54:12 proto=uart src=UOVF len=4 ts=416823 : 24 25 26 27
+17:54:12 [SCHED    416876ms] publish[0/UOVF]: 4 bytes via uart
+17:54:12 proto=uart src=UOVF len=4 ts=416876 : 28 29 2A 2B
+17:54:12 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:54:12 [SCHED    416929ms] publish[0/UOVF]: 4 bytes via uart
+17:54:12 proto=uart src=UOVF len=4 ts=416929 : 2C 2D 2E 2F
+17:54:12 [SCHED    416982ms] publish[0/UOVF]: 4 bytes via uart
+17:54:12 proto=uart src=UOVF len=4 ts=416982 : 20 21 22 23
+17:54:12 [SCHED    417035ms] publish[0/UOVF]: 4 bytes via uart
+17:54:12 proto=uart src=UOVF len=4 ts=417035 : 24 25 26 27
+17:54:12 [SCHED    417088ms] publish[0/UOVF]: 4 bytes via uart
+17:54:12 proto=uart src=UOVF len=4 ts=417088 : 28 29 2A 2B
+17:54:12 [SCHED    417141ms] publish[0/UOVF]: 4 bytes via uart
+17:54:12 proto=uart src=UOVF len=4 ts=417141 : 2C 2D 2E 2F
+17:54:12 [SCHED    417194ms] publish[0/UOVF]: 4 bytes via uart
+17:54:12 proto=uart src=UOVF len=4 ts=417194 : 20 21 22 23
+17:54:12 [SCHED    417247ms] publish[0/UOVF]: 4 bytes via uart
+17:54:12 proto=uart src=UOVF len=4 ts=417247 : 24 25 26 27
+17:54:12 [SCHED    417300ms] publish[0/UOVF]: 4 bytes via uart
+17:54:12 proto=uart src=UOVF len=4 ts=417300 : 28 29 2A 2B
+17:54:13 [SCHED    417353ms] publish[0/UOVF]: 4 bytes via uart
+17:54:13 proto=uart src=UOVF len=4 ts=417353 : 2C 2D 2E 2F
+17:54:13 [SCHED    417406ms] publish[0/UOVF]: 4 bytes via uart
+17:54:13 proto=uart src=UOVF len=4 ts=417406 : 20 21 22 23
+17:54:13 [SCHED    417459ms] publish[0/UOVF]: 4 bytes via uart
+17:54:13 proto=uart src=UOVF len=4 ts=417459 : 24 25 26 27
+17:54:13 [SCHED    417512ms] publish[0/UOVF]: 4 bytes via uart
+17:54:13 proto=uart src=UOVF len=4 ts=417512 : 28 29 2A 2B
+17:54:13 [SCHED    417565ms] publish[0/UOVF]: 4 bytes via uart
+17:54:13 proto=uart src=UOVF len=4 ts=417565 : 2C 2D 2E 2F
+17:54:13 [SCHED    417618ms] publish[0/UOVF]: 4 bytes via uart
+17:54:13 proto=uart src=UOVF len=4 ts=417618 : 20 21 22 23
+17:54:13 [SCHED    417669ms] run_all: running=1
+17:54:13 [SCHED    417671ms] publish[0/UOVF]: 4 bytes via uart
+17:54:13 proto=uart src=UOVF len=4 ts=417671 : 24 25 26 27
+17:54:13 [SCHED    417724ms] publish[0/UOVF]: 4 bytes via uart
+17:54:13 proto=uart src=UOVF len=4 ts=417724 : 28 29 2A 2B
+17:54:13 [SCHED    417777ms] publish[0/UOVF]: 4 bytes via uart
+17:54:13 proto=uart src=UOVF len=4 ts=417777 : 2C 2D 2E 2F
+17:54:13 [SCHED    417830ms] publish[0/UOVF]: 4 bytes via uart
+17:54:13 proto=uart src=UOVF len=4 ts=417830 : 20 21 22 23
+17:54:13 [SCHED    417883ms] publish[0/UOVF]: 4 bytes via uart
+17:54:13 proto=uart src=UOVF len=4 ts=417883 : 24 25 26 27
+17:54:13 [SCHED    417936ms] publish[0/UOVF]: 4 bytes via uart
+17:54:13 proto=uart src=UOVF len=4 ts=417936 : 28 29 2A 2B
+17:54:13 [SCHED    417989ms] publish[0/UOVF]: 4 bytes via uart
+17:54:13 proto=uart src=UOVF len=4 ts=417989 : 2C 2D 2E 2F
+17:54:13 [SCHED    418042ms] publish[0/UOVF]: 4 bytes via uart
+17:54:13 proto=uart src=UOVF len=4 ts=418042 : 20 21 22 23
+17:54:13 [SCHED    418095ms] publish[0/UOVF]: 4 bytes via uart
+17:54:13 proto=uart src=UOVF len=4 ts=418095 : 24 25 26 27
+17:54:13 [SCHED    418148ms] publish[0/UOVF]: 4 bytes via uart
+17:54:13 proto=uart src=UOVF len=4 ts=418148 : 28 29 2A 2B
+17:54:13 [SCHED    418201ms] publish[0/UOVF]: 4 bytes via uart
+17:54:13 proto=uart src=UOVF len=4 ts=418201 : 2C 2D 2E 2F
+17:54:13 [SCHED    418254ms] publish[0/UOVF]: 4 bytes via uart
+17:54:13 proto=uart src=UOVF len=4 ts=418254 : 20 21 22 23
+17:54:13 [SCHED    418307ms] publish[0/UOVF]: 4 bytes via uart
+17:54:13 proto=uart src=UOVF len=4 ts=418307 : 24 25 26 27
+17:54:13 --- stop-flood: STOP
+17:54:14 STOP
+17:54:14 [SCHED    419335ms] run_all: running=0
+17:54:16 [SCHED    420335ms] run_all: running=0
+17:54:16 --- alive-t08: SHOW
+17:54:16 [SHOW] sampling=0
+17:54:16 [SCHED] #0 name=UOVF proto=uart mode=poll freq=20.000Hz
+17:54:16 [RULE] count=0
+17:54:17 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+17:54:17 [SCHED    421924ms] run_all: running=0
+17:54:18 [SCHED    422924ms] run_all: running=0
+17:54:19 --- clear-t08-end: CLEAR
+17:54:19 [SCHED    423511ms] reset: cleared 8 slots
+17:54:19 [RULE] reset
+17:54:19 CLEARED
+17:54:20 [SCHED    424511ms] run_all: running=0
+17:54:21 [SCHED    425511ms] run_all: running=0

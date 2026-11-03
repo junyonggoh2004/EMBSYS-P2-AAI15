@@ -1,0 +1,81 @@
+12:45:08 [SCHED    162691ms] run_all: running=0
+12:45:09 [SCHED    163692ms] run_all: running=0
+12:45:10 [SCHED    164692ms] run_all: running=0
+12:45:10 --- cfg-uart-a: BEGINCFG|name=ULOOP|proto=uart|uart.tx=16|uart.rx=17|uart.baud=115200|uart.pre=0xA5 0x5A|uart.post_delay_ms=5|uart.read_len=2|mode=poll|freq_hz=2|ENDCFG
+12:45:11 [SCHED    165692ms] run_all: running=0
+12:45:12 [SCHED    166693ms] run_all: running=0
+12:45:12 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+12:45:12 [MQTT] reconnect err=-4
+12:45:13 OK: Config applied (inline, delim='|')
+12:45:13 [SCHED    167699ms] add[0]: ULOOP on uart freq=2.000Hz mode=poll UART(tx=16,rx=17,baud=115200)
+12:45:13 [SCHED] added: ULOOP on uart
+12:45:13 CFG: ok (added #0: ULOOP)
+12:45:13 [SCHED    167699ms] run_all: running=0
+12:45:13 --- uart-echo-a: RUN
+12:45:14 RUN
+12:45:14 [SCHED    168700ms] run_all: running=1
+12:45:14 [SCHED    168700ms] arm[0/ULOOP]: next_run reset to NOW
+12:45:14 [SCHED    168705ms] publish[0/ULOOP]: 2 bytes via uart
+12:45:14 proto=uart src=ULOOP len=2 ts=168705 : 00 A5
+12:45:15 [SCHED    169705ms] run_all: running=1
+12:45:15 [SCHED    169710ms] publish[0/ULOOP]: 2 bytes via uart
+12:45:15 proto=uart src=ULOOP len=2 ts=169710 : 5A A5
+12:45:16 [SCHED    170711ms] run_all: running=1
+12:45:16 [SCHED    170716ms] publish[0/ULOOP]: 2 bytes via uart
+12:45:16 proto=uart src=ULOOP len=2 ts=170716 : 5A A5
+12:45:17 [SCHED    171716ms] run_all: running=1
+12:45:17 [SCHED    171721ms] publish[0/ULOOP]: 2 bytes via uart
+12:45:17 proto=uart src=ULOOP len=2 ts=171721 : 5A A5
+12:45:17 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+12:45:17 [MQTT] reconnect err=-4
+12:45:17 --- stop-a: STOP
+12:45:18 STOP
+12:45:18 [SCHED    172722ms] run_all: running=0
+12:45:19 [SCHED    173722ms] run_all: running=0
+12:45:20 [SCHED    174722ms] run_all: running=0
+12:45:20 --- clear-a: CLEAR
+12:45:21 [SCHED    175722ms] reset: cleared 8 slots
+12:45:21 [RULE] reset
+12:45:21 CLEARED
+12:45:21 [SCHED    175723ms] run_all: running=0
+12:45:22 [SCHED    176723ms] run_all: running=0
+12:45:22 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+12:45:22 [MQTT] reconnect err=-4
+12:45:22 --- cfg-uart-b: BEGINCFG|name=ULOOP2|proto=uart|uart.tx=16|uart.rx=17|uart.baud=115200|uart.pre=0x12 0x34 0x56|uart.post_delay_ms=5|uart.read_len=3|mode=poll|freq_hz=2|ENDCFG
+12:45:23 [SCHED    177723ms] run_all: running=0
+12:45:24 [SCHED    178724ms] run_all: running=0
+12:45:25 OK: Config applied (inline, delim='|')
+12:45:25 [SCHED    179730ms] add[0]: ULOOP2 on uart freq=2.000Hz mode=poll UART(tx=16,rx=17,baud=115200)
+12:45:25 [SCHED] added: ULOOP2 on uart
+12:45:25 CFG: ok (added #0: ULOOP2)
+12:45:25 [SCHED    179730ms] run_all: running=0
+12:45:25 --- uart-echo-b: RUN
+12:45:26 RUN
+12:45:26 [SCHED    180730ms] run_all: running=1
+12:45:26 [SCHED    180731ms] arm[0/ULOOP2]: next_run reset to NOW
+12:45:26 [SCHED    180736ms] publish[0/ULOOP2]: 3 bytes via uart
+12:45:26 proto=uart src=ULOOP2 len=3 ts=180736 : 12 34 56
+12:45:27 [SCHED    181736ms] run_all: running=1
+12:45:27 [SCHED    181741ms] publish[0/ULOOP2]: 3 bytes via uart
+12:45:27 proto=uart src=ULOOP2 len=3 ts=181741 : 12 34 56
+12:45:27 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+12:45:27 [MQTT] reconnect err=-4
+12:45:28 [SCHED    182742ms] run_all: running=1
+12:45:28 [SCHED    182747ms] publish[0/ULOOP2]: 3 bytes via uart
+12:45:28 proto=uart src=ULOOP2 len=3 ts=182747 : 12 34 56
+12:45:29 [SCHED    183747ms] run_all: running=1
+12:45:29 [SCHED    183752ms] publish[0/ULOOP2]: 3 bytes via uart
+12:45:29 proto=uart src=ULOOP2 len=3 ts=183752 : 12 34 56
+12:45:29 --- stop-b: STOP
+12:45:30 STOP
+12:45:30 [SCHED    184753ms] run_all: running=0
+12:45:31 [SCHED    185753ms] run_all: running=0
+12:45:32 [SCHED    186753ms] run_all: running=0
+12:45:32 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+12:45:32 [MQTT] reconnect err=-4
+12:45:32 --- clear-b: CLEAR
+12:45:33 [SCHED    187753ms] reset: cleared 8 slots
+12:45:33 [RULE] reset
+12:45:33 CLEARED
+12:45:33 [SCHED    187754ms] run_all: running=0
+12:45:34 [SCHED    188754ms] run_all: running=0

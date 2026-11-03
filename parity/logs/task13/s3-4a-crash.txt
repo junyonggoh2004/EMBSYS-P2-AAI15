@@ -1,0 +1,25 @@
+D-14 evidence - ESP32-S3 stage 4a, first run, 2026-10-13 15:38 (before the task 18 fix)
+Firmware: esp32s3_edge (task 13 runtime), SchedulerTask stack 16384 B.
+The raw serial log of this run was overwritten by the re-run; these lines were
+copied from the same session's terminal output.
+
+15:38:34 --- rule-infer: BEGINRULE|name=R_INF|source=DIG|calc=s=u8(0)|when=1|action=batch: infer.set:0:1.0 \| infer.run|ENDRULE
+15:38:34 RULE: ok
+15:38:36 --- run-data: RUN
+15:38:36 proto=gpio src=DIG len=3 ts=39555 : 00 8A 28
+15:38:36 [RULE] R_LOG: pin low (value=0.000 ts=39555)
+15:38:36 Guru Meditation Error: Core  1 panic'ed (Unhandled debug exception).
+15:38:36 Debug exception reason: Stack canary watchpoint triggered (SchedulerTask)
+15:38:37 Backtrace: 0x40056f65:0x3fcbf630 0x42005a72:0x3fcbf640 0x42008036:0x3fcc3de0 0x42003a03:0x3fcc3f00 0x42003a91:0x3fcc4050 0x42004579:0x3fcc4070 0x42002f33:0x3fcc4130 0x4037c525:0x3fcc42e0
+15:38:37 Rebooting...
+
+Backtrace decoded with xtensa-esp32s3-elf-addr2line against that build:
+  fire_action          libraries/EdgeCore/src/rule_engine/rule_action.c:136   (rule_t sub_rule = *R;)
+  rules_on_sample      libraries/EdgeCore/src/rule_engine/rules.c:309
+  output_emit_hex      libraries/EdgeCore/src/application/output_format.c:24
+  publisher_emit_hex   libraries/EdgeCore/src/application/output_format.c:45
+  scheduler_run_all    libraries/EdgeCore/src/application/scheduler.c:264
+  scheduler_task       libraries/EdgeS3/src/runtime_s3.cpp:108
+
+sizeof(rule_t) = 17184 bytes (host build of rules.h). Pico 2 W main stack:
+__StackBottom 0x20081800 to __StackTop 0x20082000 = 2048 bytes (build/project_v3.elf.map).

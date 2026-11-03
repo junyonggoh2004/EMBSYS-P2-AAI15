@@ -1,0 +1,442 @@
+02:47:17 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:47:18 [SCHED    215682ms] run_all: running=0
+02:47:19 [SCHED    216995ms] run_all: running=0
+02:47:19 --- clear-sr: CLEAR
+02:47:19 [SCHED    217549ms] reset: cleared 8 slots
+02:47:19 [RULE] reset
+02:47:19 CLEARED
+02:47:20 [SCHED    218554ms] run_all: running=0
+02:47:21 [shim] qcreate(st) h=0x3fce701c len=6 sz=4 ne=88 nf=89
+02:47:21 [SCHED    219555ms] run_all: running=0
+02:47:22 --- cfg-sr: BEGINCFG|name=HCSR04|proto=gpio|gpio.mode=pulse|mode=poll|freq_hz=2|gpio.trig=1|gpio.echo=2|gpio.trig_us=10|gpio.pulse_timeout_us=25000|ENDCFG
+02:47:22 OK: Config applied (inline, delim='|')
+02:47:22 [SCHED    220147ms] add[0]: HCSR04 on gpio freq=2.000Hz mode=poll method=pulse GPIO(pin=-1)
+02:47:22 [SCHED] added: HCSR04 on gpio
+02:47:22 CFG: ok (added #0: HCSR04)
+02:47:22 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:47:23 [SCHED    221147ms] run_all: running=0
+02:47:23 E (3355991724) esp-tls: [sock=54] select() timeout
+02:47:23 E (3355991725) transport_base: Failed to open a new connection: 32774
+02:47:23 E (3355991725) mqtt_client: Error transport connect
+02:47:24 [SCHED    222148ms] run_all: running=0
+02:47:25 --- rule-near: BEGINRULE|name=R_NEAR|source=HCSR04|calc=w=u16le(0)|when=w<1740|action=log:near|ENDRULE
+02:47:25 [RULE] added name=R_NEAR src=HCSR04 vars=1 action=log:near
+02:47:25 RULE: ok
+02:47:26 [SCHED    223730ms] run_all: running=0
+02:47:27 [SCHED    224731ms] run_all: running=0
+02:47:27 --- rule-far: BEGINRULE|name=R_FAR|source=HCSR04|calc=w=u16le(0)|when=w>=1740|action=log:far|ENDRULE
+02:47:27 [RULE] added name=R_FAR src=HCSR04 vars=1 action=log:far
+02:47:27 RULE: ok
+02:47:27 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:47:28 [shim] qcreate(st) h=0x3fce701c len=6 sz=4 ne=90 nf=91
+02:47:28 [SCHED    226319ms] run_all: running=0
+02:47:29 [SCHED    227320ms] run_all: running=0
+02:47:30 --- sonic-rules-run: RUN
+02:47:30 RUN
+02:47:30 [SCHED    227903ms] arm[0/HCSR04]: next_run reset to NOW
+02:47:30 [SCHED    227904ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:30 proto=gpio src=HCSR04 len=3 ts=227904 : F5 02 01
+02:47:30 [RULE] R_NEAR: near (value=757.000 ts=227904)
+02:47:30 [TRACE] Total Rule Eval (HCSR04): 571us
+02:47:30 E (3355998733) esp-tls: [sock=54] select() timeout
+02:47:30 E (3355998734) transport_base: Failed to open a new connection: 32774
+02:47:30 E (3355998734) mqtt_client: Error transport connect
+02:47:30 [SCHED    228405ms] run_all: running=1
+02:47:30 [SCHED    228407ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:30 proto=gpio src=HCSR04 len=3 ts=228407 : 0C 05 01
+02:47:30 [RULE] R_NEAR: near (value=1292.000 ts=228407)
+02:47:30 [TRACE] Total Rule Eval (HCSR04): 526us
+02:47:31 [SCHED    228909ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:31 proto=gpio src=HCSR04 len=3 ts=228910 : FC 01 01
+02:47:31 [RULE] R_NEAR: near (value=508.000 ts=228910)
+02:47:31 [TRACE] Total Rule Eval (HCSR04): 468us
+02:47:31 [SCHED    229410ms] run_all: running=1
+02:47:31 [SCHED    229412ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:31 proto=gpio src=HCSR04 len=3 ts=229412 : B8 02 01
+02:47:31 [RULE] R_NEAR: near (value=696.000 ts=229412)
+02:47:31 [TRACE] Total Rule Eval (HCSR04): 511us
+02:47:32 [SCHED    229923ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:32 proto=gpio src=HCSR04 len=3 ts=229923 : 78 23 01
+02:47:32 [RULE] R_FAR: far (value=9080.000 ts=229923)
+02:47:32 [TRACE] Total Rule Eval (HCSR04): 350us
+02:47:32 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:47:32 [SCHED    230424ms] run_all: running=1
+02:47:32 [SCHED    230434ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:32 proto=gpio src=HCSR04 len=3 ts=230434 : 51 22 01
+02:47:32 [RULE] R_FAR: far (value=8785.000 ts=230434)
+02:47:32 [TRACE] Total Rule Eval (HCSR04): 490us
+02:47:33 [SCHED    230937ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:33 proto=gpio src=HCSR04 len=3 ts=230937 : 38 04 01
+02:47:33 [RULE] R_NEAR: near (value=1080.000 ts=230937)
+02:47:33 [TRACE] Total Rule Eval (HCSR04): 491us
+02:47:33 [SCHED    231438ms] run_all: running=1
+02:47:33 [SCHED    231448ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:33 proto=gpio src=HCSR04 len=3 ts=231448 : 2E 23 01
+02:47:33 [RULE] R_FAR: far (value=9006.000 ts=231448)
+02:47:33 [TRACE] Total Rule Eval (HCSR04): 566us
+02:47:34 [SCHED    231950ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:34 proto=gpio src=HCSR04 len=3 ts=231950 : 3A 01 01
+02:47:34 [RULE] R_NEAR: near (value=314.000 ts=231950)
+02:47:34 [TRACE] Total Rule Eval (HCSR04): 343us
+02:47:34 [SCHED    232451ms] run_all: running=1
+02:47:34 [SCHED    232461ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:34 proto=gpio src=HCSR04 len=3 ts=232461 : E3 22 01
+02:47:34 [RULE] R_FAR: far (value=8931.000 ts=232461)
+02:47:34 [TRACE] Total Rule Eval (HCSR04): 494us
+02:47:35 [SCHED    232973ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:35 proto=gpio src=HCSR04 len=3 ts=232973 : 37 27 01
+02:47:35 [RULE] R_FAR: far (value=10039.000 ts=232973)
+02:47:35 [TRACE] Total Rule Eval (HCSR04): 495us
+02:47:35 [shim] qcreate(st) h=0x3fce701c len=6 sz=4 ne=92 nf=93
+02:47:35 [SCHED    233474ms] run_all: running=1
+02:47:35 [SCHED    233486ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:35 proto=gpio src=HCSR04 len=3 ts=233487 : 9A 2C 01
+02:47:35 [RULE] R_FAR: far (value=11418.000 ts=233487)
+02:47:35 [TRACE] Total Rule Eval (HCSR04): 519us
+02:47:36 [SCHED    233998ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:36 proto=gpio src=HCSR04 len=3 ts=233998 : A8 27 01
+02:47:36 [RULE] R_FAR: far (value=10152.000 ts=233998)
+02:47:36 [TRACE] Total Rule Eval (HCSR04): 480us
+02:47:36 [SCHED    234499ms] run_all: running=1
+02:47:36 [SCHED    234501ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:36 proto=gpio src=HCSR04 len=3 ts=234501 : 03 03 01
+02:47:36 [RULE] R_NEAR: near (value=771.000 ts=234501)
+02:47:36 [TRACE] Total Rule Eval (HCSR04): 515us
+02:47:37 [SCHED    235012ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:37 proto=gpio src=HCSR04 len=3 ts=235012 : ED 21 01
+02:47:37 [RULE] R_FAR: far (value=8685.000 ts=235012)
+02:47:37 [TRACE] Total Rule Eval (HCSR04): 505us
+02:47:37 E (3356005742) esp-tls: [sock=54] select() timeout
+02:47:37 E (3356005743) transport_base: Failed to open a new connection: 32774
+02:47:37 E (3356005743) mqtt_client: Error transport connect
+02:47:37 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:47:37 [SCHED    235513ms] run_all: running=1
+02:47:37 [SCHED    235523ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:37 proto=gpio src=HCSR04 len=3 ts=235523 : D2 21 01
+02:47:37 [RULE] R_FAR: far (value=8658.000 ts=235523)
+02:47:37 [TRACE] Total Rule Eval (HCSR04): 537us
+02:47:38 [SCHED    236025ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:38 proto=gpio src=HCSR04 len=3 ts=236025 : 14 02 01
+02:47:38 [RULE] R_NEAR: near (value=532.000 ts=236025)
+02:47:38 [TRACE] Total Rule Eval (HCSR04): 371us
+02:47:38 [SCHED    236526ms] run_all: running=1
+02:47:38 [SCHED    236528ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:38 proto=gpio src=HCSR04 len=3 ts=236528 : DF 04 01
+02:47:38 [RULE] R_NEAR: near (value=1247.000 ts=236528)
+02:47:38 [TRACE] Total Rule Eval (HCSR04): 509us
+02:47:39 [SCHED    237040ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:39 proto=gpio src=HCSR04 len=3 ts=237040 : 1D 27 01
+02:47:39 [RULE] R_FAR: far (value=10013.000 ts=237040)
+02:47:39 [TRACE] Total Rule Eval (HCSR04): 486us
+02:47:39 [SCHED    237541ms] run_all: running=1
+02:47:39 [SCHED    237543ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:39 proto=gpio src=HCSR04 len=3 ts=237543 : 43 02 01
+02:47:39 [RULE] R_NEAR: near (value=579.000 ts=237543)
+02:47:39 [TRACE] Total Rule Eval (HCSR04): 507us
+02:47:40 [SCHED    238053ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:40 proto=gpio src=HCSR04 len=3 ts=238053 : 3B 21 01
+02:47:40 [RULE] R_FAR: far (value=8507.000 ts=238053)
+02:47:40 [TRACE] Total Rule Eval (HCSR04): 370us
+02:47:40 [SCHED    238554ms] run_all: running=1
+02:47:40 [SCHED    238564ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:40 proto=gpio src=HCSR04 len=3 ts=238564 : 3A 21 01
+02:47:40 [RULE] R_FAR: far (value=8506.000 ts=238564)
+02:47:40 [TRACE] Total Rule Eval (HCSR04): 510us
+02:47:41 [SCHED    239074ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:41 proto=gpio src=HCSR04 len=3 ts=239074 : 04 22 01
+02:47:41 [RULE] R_FAR: far (value=8708.000 ts=239074)
+02:47:41 [TRACE] Total Rule Eval (HCSR04): 478us
+02:47:41 [SCHED    239575ms] run_all: running=1
+02:47:41 [SCHED    239585ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:41 proto=gpio src=HCSR04 len=3 ts=239585 : 64 22 01
+02:47:41 [RULE] R_FAR: far (value=8804.000 ts=239585)
+02:47:41 [TRACE] Total Rule Eval (HCSR04): 510us
+02:47:42 [SCHED    240095ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:42 proto=gpio src=HCSR04 len=3 ts=240096 : 8B 21 01
+02:47:42 [RULE] R_FAR: far (value=8587.000 ts=240096)
+02:47:42 [TRACE] Total Rule Eval (HCSR04): 401us
+02:47:42 [shim] qcreate(st) h=0x3fce701c len=6 sz=4 ne=94 nf=95
+02:47:42 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:47:42 [SCHED    240596ms] run_all: running=1
+02:47:42 [SCHED    240606ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:42 proto=gpio src=HCSR04 len=3 ts=240606 : 50 22 01
+02:47:42 [RULE] R_FAR: far (value=8784.000 ts=240606)
+02:47:42 [TRACE] Total Rule Eval (HCSR04): 516us
+02:47:43 [SCHED    241116ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:43 proto=gpio src=HCSR04 len=3 ts=241117 : 77 21 01
+02:47:43 [RULE] R_FAR: far (value=8567.000 ts=241117)
+02:47:43 [TRACE] Total Rule Eval (HCSR04): 416us
+02:47:43 [SCHED    241617ms] run_all: running=1
+02:47:43 [SCHED    241627ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:43 proto=gpio src=HCSR04 len=3 ts=241627 : 09 22 01
+02:47:43 [RULE] R_FAR: far (value=8713.000 ts=241627)
+02:47:43 [TRACE] Total Rule Eval (HCSR04): 515us
+02:47:44 [SCHED    242138ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:44 proto=gpio src=HCSR04 len=3 ts=242138 : BF 21 01
+02:47:44 [RULE] R_FAR: far (value=8639.000 ts=242138)
+02:47:44 [TRACE] Total Rule Eval (HCSR04): 446us
+02:47:44 E (3356012751) esp-tls: [sock=54] select() timeout
+02:47:44 E (3356012752) transport_base: Failed to open a new connection: 32774
+02:47:44 E (3356012752) mqtt_client: Error transport connect
+02:47:45 [SCHED    242638ms] run_all: running=1
+02:47:45 [SCHED    242648ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:45 proto=gpio src=HCSR04 len=3 ts=242648 : AD 23 01
+02:47:45 [RULE] R_FAR: far (value=9133.000 ts=242648)
+02:47:45 [TRACE] Total Rule Eval (HCSR04): 517us
+02:47:45 [SCHED    243159ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:45 proto=gpio src=HCSR04 len=3 ts=243159 : BE 21 01
+02:47:45 [RULE] R_FAR: far (value=8638.000 ts=243159)
+02:47:45 [TRACE] Total Rule Eval (HCSR04): 442us
+02:47:46 [SCHED    243659ms] run_all: running=1
+02:47:46 [SCHED    243669ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:46 proto=gpio src=HCSR04 len=3 ts=243669 : FC 22 01
+02:47:46 [RULE] R_FAR: far (value=8956.000 ts=243669)
+02:47:46 [TRACE] Total Rule Eval (HCSR04): 505us
+02:47:46 [SCHED    244179ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:46 proto=gpio src=HCSR04 len=3 ts=244180 : 76 21 01
+02:47:46 [RULE] R_FAR: far (value=8566.000 ts=244180)
+02:47:46 [TRACE] Total Rule Eval (HCSR04): 497us
+02:47:47 [SCHED    244681ms] run_all: running=1
+02:47:47 [SCHED    244691ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:47 proto=gpio src=HCSR04 len=3 ts=244691 : 90 21 01
+02:47:47 [RULE] R_FAR: far (value=8592.000 ts=244691)
+02:47:47 [TRACE] Total Rule Eval (HCSR04): 485us
+02:47:47 [SCHED    245201ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:47 proto=gpio src=HCSR04 len=3 ts=245202 : 5C 21 01
+02:47:47 [RULE] R_FAR: far (value=8540.000 ts=245202)
+02:47:47 [TRACE] Total Rule Eval (HCSR04): 494us
+02:47:47 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:47:48 [SCHED    245702ms] run_all: running=1
+02:47:48 [SCHED    245712ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:48 proto=gpio src=HCSR04 len=3 ts=245712 : 0B 22 01
+02:47:48 [RULE] R_FAR: far (value=8715.000 ts=245712)
+02:47:48 [TRACE] Total Rule Eval (HCSR04): 399us
+02:47:48 [SCHED    246221ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:48 proto=gpio src=HCSR04 len=3 ts=246222 : 11 21 01
+02:47:48 [RULE] R_FAR: far (value=8465.000 ts=246222)
+02:47:48 [TRACE] Total Rule Eval (HCSR04): 496us
+02:47:49 [SCHED    246722ms] run_all: running=1
+02:47:49 [SCHED    246732ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:49 proto=gpio src=HCSR04 len=3 ts=246732 : 93 23 01
+02:47:49 [RULE] R_FAR: far (value=9107.000 ts=246732)
+02:47:49 [TRACE] Total Rule Eval (HCSR04): 484us
+02:47:49 [SCHED    247243ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:49 proto=gpio src=HCSR04 len=3 ts=247243 : BD 21 01
+02:47:49 [RULE] R_FAR: far (value=8637.000 ts=247243)
+02:47:49 [TRACE] Total Rule Eval (HCSR04): 497us
+02:47:49 [shim] qcreate(st) h=0x3fce701c len=6 sz=4 ne=96 nf=97
+02:47:50 [SCHED    247743ms] run_all: running=1
+02:47:50 [SCHED    247753ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:50 proto=gpio src=HCSR04 len=3 ts=247753 : 37 22 01
+02:47:50 [RULE] R_FAR: far (value=8759.000 ts=247753)
+02:47:50 [TRACE] Total Rule Eval (HCSR04): 518us
+02:47:50 [SCHED    248264ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:50 proto=gpio src=HCSR04 len=3 ts=248264 : 37 22 01
+02:47:50 [RULE] R_FAR: far (value=8759.000 ts=248264)
+02:47:50 [TRACE] Total Rule Eval (HCSR04): 498us
+02:47:51 [SCHED    248765ms] run_all: running=1
+02:47:51 [SCHED    248775ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:51 proto=gpio src=HCSR04 len=3 ts=248775 : 09 22 01
+02:47:51 [RULE] R_FAR: far (value=8713.000 ts=248775)
+02:47:51 [TRACE] Total Rule Eval (HCSR04): 516us
+02:47:51 [SCHED    249286ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:51 proto=gpio src=HCSR04 len=3 ts=249286 : 23 22 01
+02:47:51 [RULE] R_FAR: far (value=8739.000 ts=249286)
+02:47:51 [TRACE] Total Rule Eval (HCSR04): 501us
+02:47:51 E (3356019760) esp-tls: [sock=54] select() timeout
+02:47:51 E (3356019761) transport_base: Failed to open a new connection: 32774
+02:47:51 E (3356019761) mqtt_client: Error transport connect
+02:47:52 [SCHED    249787ms] run_all: running=1
+02:47:52 [SCHED    249797ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:52 proto=gpio src=HCSR04 len=3 ts=249797 : 44 21 01
+02:47:52 [RULE] R_FAR: far (value=8516.000 ts=249797)
+02:47:52 [TRACE] Total Rule Eval (HCSR04): 532us
+02:47:52 [SCHED    250307ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:52 proto=gpio src=HCSR04 len=3 ts=250308 : 2C 21 01
+02:47:52 [RULE] R_FAR: far (value=8492.000 ts=250308)
+02:47:52 [TRACE] Total Rule Eval (HCSR04): 494us
+02:47:52 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:47:53 [SCHED    250807ms] run_all: running=1
+02:47:53 [SCHED    250817ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:53 proto=gpio src=HCSR04 len=3 ts=250817 : 43 21 01
+02:47:53 [RULE] R_FAR: far (value=8515.000 ts=250817)
+02:47:53 [TRACE] Total Rule Eval (HCSR04): 497us
+02:47:53 [SCHED    251327ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:53 proto=gpio src=HCSR04 len=3 ts=251328 : 90 21 01
+02:47:53 [RULE] R_FAR: far (value=8592.000 ts=251328)
+02:47:53 [TRACE] Total Rule Eval (HCSR04): 488us
+02:47:54 [SCHED    251829ms] run_all: running=1
+02:47:54 [SCHED    251839ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:54 proto=gpio src=HCSR04 len=3 ts=251839 : A8 21 01
+02:47:54 [RULE] R_FAR: far (value=8616.000 ts=251839)
+02:47:54 [TRACE] Total Rule Eval (HCSR04): 501us
+02:47:54 [SCHED    252349ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:54 proto=gpio src=HCSR04 len=3 ts=252350 : 8F 21 01
+02:47:54 [RULE] R_FAR: far (value=8591.000 ts=252350)
+02:47:54 [TRACE] Total Rule Eval (HCSR04): 489us
+02:47:55 [SCHED    252851ms] run_all: running=1
+02:47:55 [SCHED    252861ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:55 proto=gpio src=HCSR04 len=3 ts=252861 : 61 23 01
+02:47:55 [RULE] R_FAR: far (value=9057.000 ts=252861)
+02:47:55 [TRACE] Total Rule Eval (HCSR04): 514us
+02:47:55 [SCHED    253372ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:55 proto=gpio src=HCSR04 len=3 ts=253372 : BD 21 01
+02:47:55 [RULE] R_FAR: far (value=8637.000 ts=253372)
+02:47:55 [TRACE] Total Rule Eval (HCSR04): 495us
+02:47:56 [SCHED    253873ms] run_all: running=1
+02:47:56 [SCHED    253882ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:56 proto=gpio src=HCSR04 len=3 ts=253883 : 47 21 01
+02:47:56 [RULE] R_FAR: far (value=8519.000 ts=253883)
+02:47:56 [TRACE] Total Rule Eval (HCSR04): 375us
+02:47:56 [shim] qcreate(st) h=0x3fce701c len=6 sz=4 ne=98 nf=99
+02:47:56 [SCHED    254392ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:56 proto=gpio src=HCSR04 len=3 ts=254393 : 90 21 01
+02:47:56 [RULE] R_FAR: far (value=8592.000 ts=254393)
+02:47:56 [TRACE] Total Rule Eval (HCSR04): 499us
+02:47:57 [SCHED    254894ms] run_all: running=1
+02:47:57 [SCHED    254903ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:57 proto=gpio src=HCSR04 len=3 ts=254904 : 44 21 01
+02:47:57 [RULE] R_FAR: far (value=8516.000 ts=254904)
+02:47:57 [TRACE] Total Rule Eval (HCSR04): 428us
+02:47:57 [SCHED    255413ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:57 proto=gpio src=HCSR04 len=3 ts=255414 : 2B 21 01
+02:47:57 [RULE] R_FAR: far (value=8491.000 ts=255414)
+02:47:57 [TRACE] Total Rule Eval (HCSR04): 497us
+02:47:57 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:47:58 [SCHED    255914ms] run_all: running=1
+02:47:58 [SCHED    255924ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:58 proto=gpio src=HCSR04 len=3 ts=255924 : 44 21 01
+02:47:58 [RULE] R_FAR: far (value=8516.000 ts=255924)
+02:47:58 [TRACE] Total Rule Eval (HCSR04): 526us
+02:47:58 E (3356026769) esp-tls: [sock=54] select() timeout
+02:47:58 E (3356026770) transport_base: Failed to open a new connection: 32774
+02:47:58 E (3356026770) mqtt_client: Error transport connect
+02:47:58 [SCHED    256433ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:58 proto=gpio src=HCSR04 len=3 ts=256434 : 41 21 01
+02:47:58 [RULE] R_FAR: far (value=8513.000 ts=256434)
+02:47:58 [TRACE] Total Rule Eval (HCSR04): 513us
+02:47:59 [SCHED    256934ms] run_all: running=1
+02:47:59 [SCHED    256944ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:59 proto=gpio src=HCSR04 len=3 ts=256944 : 53 22 01
+02:47:59 [RULE] R_FAR: far (value=8787.000 ts=256944)
+02:47:59 [TRACE] Total Rule Eval (HCSR04): 459us
+02:47:59 [SCHED    257454ms] publish[0/HCSR04]: 3 bytes via gpio
+02:47:59 proto=gpio src=HCSR04 len=3 ts=257455 : 76 21 01
+02:47:59 [RULE] R_FAR: far (value=8566.000 ts=257455)
+02:47:59 [TRACE] Total Rule Eval (HCSR04): 505us
+02:48:00 [SCHED    257956ms] run_all: running=1
+02:48:00 [SCHED    257966ms] publish[0/HCSR04]: 3 bytes via gpio
+02:48:00 proto=gpio src=HCSR04 len=3 ts=257966 : AB 21 01
+02:48:00 [RULE] R_FAR: far (value=8619.000 ts=257966)
+02:48:00 [TRACE] Total Rule Eval (HCSR04): 396us
+02:48:00 [SCHED    258476ms] publish[0/HCSR04]: 3 bytes via gpio
+02:48:00 proto=gpio src=HCSR04 len=3 ts=258476 : B4 22 01
+02:48:00 [RULE] R_FAR: far (value=8884.000 ts=258476)
+02:48:00 [TRACE] Total Rule Eval (HCSR04): 498us
+02:48:01 [SCHED    258976ms] run_all: running=1
+02:48:01 [SCHED    258986ms] publish[0/HCSR04]: 3 bytes via gpio
+02:48:01 proto=gpio src=HCSR04 len=3 ts=258986 : 75 21 01
+02:48:01 [RULE] R_FAR: far (value=8565.000 ts=258986)
+02:48:01 [TRACE] Total Rule Eval (HCSR04): 487us
+02:48:01 [SCHED    259497ms] publish[0/HCSR04]: 3 bytes via gpio
+02:48:01 proto=gpio src=HCSR04 len=3 ts=259497 : 19 23 01
+02:48:01 [RULE] R_FAR: far (value=8985.000 ts=259497)
+02:48:01 [TRACE] Total Rule Eval (HCSR04): 503us
+02:48:02 [SCHED    259997ms] run_all: running=1
+02:48:02 [SCHED    260007ms] publish[0/HCSR04]: 3 bytes via gpio
+02:48:02 proto=gpio src=HCSR04 len=3 ts=260007 : 50 23 01
+02:48:02 [RULE] R_FAR: far (value=9040.000 ts=260007)
+02:48:02 [TRACE] Total Rule Eval (HCSR04): 392us
+02:48:02 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:48:02 [SCHED    260519ms] publish[0/HCSR04]: 3 bytes via gpio
+02:48:02 proto=gpio src=HCSR04 len=3 ts=260519 : 53 27 01
+02:48:02 [RULE] R_FAR: far (value=10067.000 ts=260519)
+02:48:02 [TRACE] Total Rule Eval (HCSR04): 491us
+02:48:03 [SCHED    261020ms] run_all: running=1
+02:48:03 [SCHED    261030ms] publish[0/HCSR04]: 3 bytes via gpio
+02:48:03 proto=gpio src=HCSR04 len=3 ts=261030 : 28 22 01
+02:48:03 [RULE] R_FAR: far (value=8744.000 ts=261030)
+02:48:03 [TRACE] Total Rule Eval (HCSR04): 364us
+02:48:03 [shim] qcreate(st) h=0x3fce701c len=6 sz=4 ne=100 nf=101
+02:48:03 [SCHED    261540ms] publish[0/HCSR04]: 3 bytes via gpio
+02:48:03 proto=gpio src=HCSR04 len=3 ts=261540 : 0E 22 01
+02:48:03 [RULE] R_FAR: far (value=8718.000 ts=261540)
+02:48:03 [TRACE] Total Rule Eval (HCSR04): 509us
+02:48:04 [SCHED    262041ms] run_all: running=1
+02:48:04 [SCHED    262050ms] publish[0/HCSR04]: 3 bytes via gpio
+02:48:04 proto=gpio src=HCSR04 len=3 ts=262051 : 30 21 01
+02:48:04 [RULE] R_FAR: far (value=8496.000 ts=262051)
+02:48:04 [TRACE] Total Rule Eval (HCSR04): 423us
+02:48:04 [SCHED    262560ms] publish[0/HCSR04]: 3 bytes via gpio
+02:48:04 proto=gpio src=HCSR04 len=3 ts=262561 : 16 21 01
+02:48:04 [RULE] R_FAR: far (value=8470.000 ts=262561)
+02:48:04 [TRACE] Total Rule Eval (HCSR04): 501us
+02:48:05 [SCHED    263061ms] run_all: running=1
+02:48:05 [SCHED    263071ms] publish[0/HCSR04]: 3 bytes via gpio
+02:48:05 proto=gpio src=HCSR04 len=3 ts=263071 : 61 21 01
+02:48:05 [RULE] R_FAR: far (value=8545.000 ts=263071)
+02:48:05 [TRACE] Total Rule Eval (HCSR04): 544us
+02:48:05 E (3356033778) esp-tls: [sock=54] select() timeout
+02:48:05 E (3356033779) transport_base: Failed to open a new connection: 32774
+02:48:05 E (3356033779) mqtt_client: Error transport connect
+02:48:06 [SCHED    263581ms] publish[0/HCSR04]: 3 bytes via gpio
+02:48:06 proto=gpio src=HCSR04 len=3 ts=263582 : 91 21 01
+02:48:06 [RULE] R_FAR: far (value=8593.000 ts=263582)
+02:48:06 [TRACE] Total Rule Eval (HCSR04): 514us
+02:48:06 [SCHED    264083ms] run_all: running=1
+02:48:06 [SCHED    264093ms] publish[0/HCSR04]: 3 bytes via gpio
+02:48:06 proto=gpio src=HCSR04 len=3 ts=264093 : F4 21 01
+02:48:06 [RULE] R_FAR: far (value=8692.000 ts=264093)
+02:48:06 [TRACE] Total Rule Eval (HCSR04): 501us
+02:48:07 [SCHED    264603ms] publish[0/HCSR04]: 3 bytes via gpio
+02:48:07 proto=gpio src=HCSR04 len=3 ts=264604 : 62 21 01
+02:48:07 [RULE] R_FAR: far (value=8546.000 ts=264604)
+02:48:07 [TRACE] Total Rule Eval (HCSR04): 450us
+02:48:07 [SCHED    265104ms] run_all: running=1
+02:48:07 [SCHED    265114ms] publish[0/HCSR04]: 3 bytes via gpio
+02:48:07  F4 21 01
+02:48:07 [RULE] R_FAR: far (value=8692.000 ts=265114)
+02:48:07 [TRACE] Total Rule Eval (HCSR04): 504us
+02:48:07 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:48:07 [SCHED    265625ms] publish[0/HCSR04]: 3 bytes via gpio
+02:48:07 proto=gpio src=HCSR04 len=3 ts=265625 : 94 21 01
+02:48:07 [RULE] R_FAR: far (value=8596.000 ts=265625)
+02:48:07 [TRACE] Total Rule Eval (HCSR04): 509us
+02:48:08 [SCHED    266125ms] run_all: running=1
+02:48:08 [SCHED    266135ms] publish[0/HCSR04]: 3 bytes via gpio
+02:48:08 proto=gpio src=HCSR04 len=3 ts=266135 : 40 22 01
+02:48:08 [RULE] R_FAR: far (value=8768.000 ts=266135)
+02:48:08 [TRACE] Total Rule Eval (HCSR04): 474us
+02:48:08 [SCHED    266646ms] publish[0/HCSR04]: 3 bytes via gpio
+02:48:08 proto=gpio src=HCSR04 len=3 ts=266646 : 8C 22 01
+02:48:08 [RULE] R_FAR: far (value=8844.000 ts=266646)
+02:48:08 [TRACE] Total Rule Eval (HCSR04): 480us
+02:48:09 [SCHED    267147ms] run_all: running=1
+02:48:09 [SCHED    267157ms] publish[0/HCSR04]: 3 bytes via gpio
+02:48:09 proto=gpio src=HCSR04 len=3 ts=267157 : 51 23 01
+02:48:09 [RULE] R_FAR: far (value=9041.000 ts=267157)
+02:48:09 [TRACE] Total Rule Eval (HCSR04): 508us
+02:48:10 [SCHED    267668ms] publish[0/HCSR04]: 3 bytes via gpio
+02:48:10 proto=gpio src=HCSR04 len=3 ts=267668 : 0E 22 01
+02:48:10 [RULE] R_FAR: far (value=8718.000 ts=267668)
+02:48:10 [TRACE] Total Rule Eval (HCSR04): 481us
+02:48:10 [SCHED    268169ms] run_all: running=1
+02:48:10 [SCHED    268178ms] publish[0/HCSR04]: 3 bytes via gpio
+02:48:10 proto=gpio src=HCSR04 len=3 ts=268179 : FC 20 01
+02:48:10 [RULE] R_FAR: far (value=8444.000 ts=268179)
+02:48:10 [TRACE] Total Rule Eval (HCSR04): 459us
+02:48:10 --- stop-sr: STOP
+02:48:10 STOP
+02:48:10 [shim] qcreate(st) h=0x3fce701c len=6 sz=4 ne=102 nf=103
+02:48:11 [SCHED    269203ms] run_all: running=0
+02:48:12 [SCHED    270204ms] run_all: running=0
+02:48:12 E (3356040787) esp-tls: [sock=54] select() timeout
+02:48:12 E (3356040788) transport_base: Failed to open a new connection: 32774
+02:48:12 E (3356040788) mqtt_client: Error transport connect
+02:48:12 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:48:13 --- clear-sr-end: CLEAR
+02:48:13 [SCHED    270789ms] reset: cleared 8 slots
+02:48:13 [RULE] reset
+02:48:13 CLEARED
+02:48:14 [SCHED    271794ms] run_all: running=0
+02:48:15 [SCHED    272795ms] run_all: running=0

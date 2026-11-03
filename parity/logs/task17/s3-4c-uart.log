@@ -1,0 +1,86 @@
+16:27:06 [SCHED      6047ms] run_all: running=0
+16:27:07 [SCHED      7209ms] run_all: running=0
+16:27:07 --- cfg-uart-a: BEGINCFG|name=ULOOP|proto=uart|uart.tx=1|uart.rx=2|uart.baud=115200|uart.pre=0xA5 0x5A|uart.post_delay_ms=5|uart.read_len=2|mode=poll|freq_hz=2|ENDCFG
+16:27:07 OK: Config applied (inline, delim='|')
+16:27:07 [SCHED      7785ms] add[0]: ULOOP on uart freq=2.000Hz mode=poll UART(tx=1,rx=2,baud=115200)
+16:27:07 [SCHED] added: ULOOP on uart
+16:27:07 CFG: ok (added #0: ULOOP)
+16:27:08 [SCHED      8786ms] run_all: running=0
+16:27:09 [SCHED      9786ms] run_all: running=0
+16:27:10 --- uart-echo-a: RUN
+16:27:10 RUN
+16:27:10 [SCHED     10375ms] arm[0/ULOOP]: next_run reset to NOW
+16:27:10 [SCHED     10381ms] publish[0/ULOOP]: 2 bytes via uart
+16:27:10 proto=uart src=ULOOP len=2 ts=10381 : A5 5A
+16:27:10 [SCHED     10881ms] run_all: running=1
+16:27:10 [SCHED     10887ms] publish[0/ULOOP]: 2 bytes via uart
+16:27:10 proto=uart src=ULOOP len=2 ts=10887 : A5 5A
+16:27:11 [SCHED     11394ms] publish[0/ULOOP]: 2 bytes via uart
+16:27:11 proto=uart src=ULOOP len=2 ts=11394 : A5 5A
+16:27:11 [SCHED     11894ms] run_all: running=1
+16:27:11 [SCHED     11900ms] publish[0/ULOOP]: 2 bytes via uart
+16:27:11 proto=uart src=ULOOP len=2 ts=11900 : A5 5A
+16:27:12 [SCHED     12407ms] publish[0/ULOOP]: 2 bytes via uart
+16:27:12 proto=uart src=ULOOP len=2 ts=12407 : A5 5A
+16:27:12 [SCHED     12907ms] run_all: running=1
+16:27:12 [SCHED     12913ms] publish[0/ULOOP]: 2 bytes via uart
+16:27:12 proto=uart src=ULOOP len=2 ts=12913 : A5 5A
+16:27:13 [SCHED     13420ms] publish[0/ULOOP]: 2 bytes via uart
+16:27:13 proto=uart src=ULOOP len=2 ts=13420 : A5 5A
+16:27:14 [SCHED     13920ms] run_all: running=1
+16:27:14 [SCHED     13926ms] publish[0/ULOOP]: 2 bytes via uart
+16:27:14 proto=uart src=ULOOP len=2 ts=13926 : A5 5A
+16:27:14 [SCHED     14433ms] publish[0/ULOOP]: 2 bytes via uart
+16:27:14 proto=uart src=ULOOP len=2 ts=14433 : A5 5A
+16:27:14 --- stop-a: STOP
+16:27:14 STOP
+16:27:15 [SCHED     15509ms] run_all: running=0
+16:27:16 [SCHED     16509ms] run_all: running=0
+16:27:17 --- clear-a: CLEAR
+16:27:17 [SCHED     17108ms] reset: cleared 8 slots
+16:27:17 [RULE] reset
+16:27:17 CLEARED
+16:27:18 [SCHED     18108ms] run_all: running=0
+16:27:19 [SCHED     19108ms] run_all: running=0
+16:27:19 --- cfg-uart-b: BEGINCFG|name=ULOOP2|proto=uart|uart.tx=1|uart.rx=2|uart.baud=115200|uart.pre=0x12 0x34 0x56|uart.post_delay_ms=5|uart.read_len=3|mode=poll|freq_hz=2|ENDCFG
+16:27:19 OK: Config applied (inline, delim='|')
+16:27:19 [SCHED     19712ms] add[0]: ULOOP2 on uart freq=2.000Hz mode=poll UART(tx=1,rx=2,baud=115200)
+16:27:19 [SCHED] added: ULOOP2 on uart
+16:27:19 CFG: ok (added #0: ULOOP2)
+16:27:20 [SCHED     20713ms] run_all: running=0
+16:27:21 [SCHED     21713ms] run_all: running=0
+16:27:22 --- uart-echo-b: RUN
+16:27:22 RUN
+16:27:22 [SCHED     22304ms] arm[0/ULOOP2]: next_run reset to NOW
+16:27:22 [SCHED     22310ms] publish[0/ULOOP2]: 3 bytes via uart
+16:27:22 proto=uart src=ULOOP2 len=3 ts=22310 : 12 34 56
+16:27:22 [SCHED     22810ms] run_all: running=1
+16:27:22 [SCHED     22816ms] publish[0/ULOOP2]: 3 bytes via uart
+16:27:22 proto=uart src=ULOOP2 len=3 ts=22816 : 12 34 56
+16:27:23 [SCHED     23323ms] publish[0/ULOOP2]: 3 bytes via uart
+16:27:23 proto=uart src=ULOOP2 len=3 ts=23323 : 12 34 56
+16:27:23 [SCHED     23823ms] run_all: running=1
+16:27:23 [SCHED     23829ms] publish[0/ULOOP2]: 3 bytes via uart
+16:27:23 proto=uart src=ULOOP2 len=3 ts=23829 : 12 34 56
+16:27:24 [SCHED     24336ms] publish[0/ULOOP2]: 3 bytes via uart
+16:27:24 proto=uart src=ULOOP2 len=3 ts=24336 : 12 34 56
+16:27:24 [SCHED     24836ms] run_all: running=1
+16:27:24 [SCHED     24842ms] publish[0/ULOOP2]: 3 bytes via uart
+16:27:24 proto=uart src=ULOOP2 len=3 ts=24842 : 12 34 56
+16:27:25 [SCHED     25349ms] publish[0/ULOOP2]: 3 bytes via uart
+16:27:25 proto=uart src=ULOOP2 len=3 ts=25349 : 12 34 56
+16:27:25 [SCHED     25849ms] run_all: running=1
+16:27:25 [SCHED     25855ms] publish[0/ULOOP2]: 3 bytes via uart
+16:27:25 proto=uart src=ULOOP2 len=3 ts=25855 : 12 34 56
+16:27:26 [SCHED     26362ms] publish[0/ULOOP2]: 3 bytes via uart
+16:27:26 proto=uart src=ULOOP2 len=3 ts=26362 : 12 34 56
+16:27:26 --- stop-b: STOP
+16:27:26 STOP
+16:27:27 [SCHED     27449ms] run_all: running=0
+16:27:28 [SCHED     28449ms] run_all: running=0
+16:27:29 --- clear-b: CLEAR
+16:27:29 [SCHED     29049ms] reset: cleared 8 slots
+16:27:29 [RULE] reset
+16:27:29 CLEARED
+16:27:30 [SCHED     30049ms] run_all: running=0
+16:27:31 [SCHED     31049ms] run_all: running=0

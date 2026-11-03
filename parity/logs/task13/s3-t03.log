@@ -1,0 +1,50 @@
+15:43:52 [SCHED    164107ms] run_all: running=0
+15:43:53 [SCHED    165830ms] run_all: running=0
+15:43:54 --- clear-t03: CLEAR
+15:43:54 [SCHED    166376ms] reset: cleared 8 slots
+15:43:54 [RULE] reset
+15:43:54 CLEARED
+15:43:55 [SCHED    167376ms] run_all: running=0
+15:43:56 [SCHED    168376ms] run_all: running=0
+15:43:56 --- cfg-t03: BEGINCFG|name=BADPIN|proto=gpio|gpio.mode=digital|gpio.pin=99|mode=poll|freq_hz=1|ENDCFG
+15:43:56 OK: Config applied (inline, delim='|')
+15:43:56 [SCHED    168973ms] add[0]: BADPIN on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=99)
+15:43:56 [SCHED] added: BADPIN on gpio
+15:43:56 CFG: ok (added #0: BADPIN)
+15:43:57 [SCHED    169973ms] run_all: running=0
+15:43:58 [SCHED    170973ms] run_all: running=0
+15:43:59 [SCHED    171973ms] run_all: running=0
+15:44:00 --- run-t03: RUN
+15:44:00 RUN
+15:44:00 [SCHED    172116ms] arm[0/BADPIN]: next_run reset to NOW
+15:44:00 [SCHED    172117ms] publish[0/BADPIN]: 3 bytes via gpio
+15:44:00 proto=gpio src=BADPIN len=3 ts=172117 : 00 48 0C
+15:44:01 [SCHED    173117ms] run_all: running=1
+15:44:01 [SCHED    173117ms] publish[0/BADPIN]: 3 bytes via gpio
+15:44:01 proto=gpio src=BADPIN len=3 ts=173117 : 00 30 10
+15:44:02 [SCHED    174117ms] run_all: running=1
+15:44:02 [SCHED    174118ms] publish[0/BADPIN]: 3 bytes via gpio
+15:44:02 proto=gpio src=BADPIN len=3 ts=174118 : 00 19 14
+15:44:03 [SCHED    175118ms] run_all: running=1
+15:44:03 [SCHED    175118ms] publish[0/BADPIN]: 3 bytes via gpio
+15:44:03 proto=gpio src=BADPIN len=3 ts=175118 : 00 01 18
+15:44:04 [SCHED    176118ms] run_all: running=1
+15:44:04 [SCHED    176119ms] publish[0/BADPIN]: 3 bytes via gpio
+15:44:04 proto=gpio src=BADPIN len=3 ts=176119 : 00 EA 1B
+15:44:04 --- stop-t03: STOP
+15:44:04 STOP
+15:44:05 [SCHED    177278ms] run_all: running=0
+15:44:06 [SCHED    178278ms] run_all: running=0
+15:44:06 --- alive-t03: SHOW
+15:44:06 [SHOW] sampling=0
+15:44:06 [SCHED] #0 name=BADPIN proto=gpio mode=poll freq=1.000Hz
+15:44:06 [RULE] count=0
+15:44:07 [SCHED    179866ms] run_all: running=0
+15:44:08 [SCHED    180866ms] run_all: running=0
+15:44:09 [SCHED    181866ms] run_all: running=0
+15:44:09 --- clear-t03-end: CLEAR
+15:44:10 [SCHED    182002ms] reset: cleared 8 slots
+15:44:10 [RULE] reset
+15:44:10 CLEARED
+15:44:10 [SCHED    183002ms] run_all: running=0
+15:44:11 [SCHED    184002ms] run_all: running=0

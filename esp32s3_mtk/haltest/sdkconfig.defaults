@@ -1,0 +1,2 @@
+# Settings on top of ../sdkconfig.defaults: the shared partition table.
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="../partitions.csv"

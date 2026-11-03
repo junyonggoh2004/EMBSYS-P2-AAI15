@@ -1,0 +1,8 @@
+# The shared code's static data (rule table, parser scratch, sensor contexts)
+# goes to the 2 MB PSRAM; see sdkconfig.defaults. Nothing in EdgeCore runs in
+# an interrupt handler or while the flash cache is off.
+[mapping:edgecore_extram]
+archive: libedgecore.a
+entries:
+    if ESP_ALLOW_BSS_SEG_EXTERNAL_MEMORY = y:
+        * (extram_bss)

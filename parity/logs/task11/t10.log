@@ -1,0 +1,82 @@
+15:58:21 [SCHED    142932ms] run_all: running=0
+15:58:22 Unknown: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+15:58:22 [SCHED    143932ms] run_all: running=0
+15:58:23 --- clear-t10: CLEAR
+15:58:23 [SCHED    144932ms] reset: cleared 8 slots
+15:58:23 [RULE] reset
+15:58:23 CLEARED
+15:58:23 [SCHED    144933ms] run_all: running=0
+15:58:24 [SCHED    145933ms] run_all: running=0
+15:58:24 [MQTT] conn status=256
+15:58:25 [SCHED    146933ms] run_all: running=0
+15:58:25 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:58:25 --- cfg-t10: BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=22|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+15:58:26 [SCHED    147934ms] run_all: running=0
+15:58:27 OK: Config applied (inline, delim='|')
+15:58:27 [SCHED    148935ms] add[0]: DIG on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=22)
+15:58:27 [SCHED] added: DIG on gpio
+15:58:27 CFG: ok (added #0: DIG)
+15:58:27 [SCHED    148935ms] run_all: running=0
+15:58:28 --- rule-false: BEGINRULE|name=RF|source=DIG|calc=s=u8(0)|when=s==1|action=log:should not fire|ENDRULE
+15:58:28 [SCHED    149936ms] run_all: running=0
+15:58:29 [RULE] added name=RF src=DIG vars=1 action=log:should not fire
+15:58:29 RULE: ok
+15:58:29 [SCHED    150937ms] run_all: running=0
+15:58:29 [MQTT] conn status=256
+15:58:30 [SCHED    151938ms] run_all: running=0
+15:58:30 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:58:30 --- rule-true: BEGINRULE|name=RT|source=DIG|calc=s=u8(0)|when=s==0|action=log:control fired|ENDRULE
+15:58:31 [SCHED    152938ms] run_all: running=0
+15:58:32 [RULE] added name=RT src=DIG vars=1 action=log:control fired
+15:58:32 RULE: ok
+15:58:32 [SCHED    153939ms] run_all: running=0
+15:58:33 [SCHED    154939ms] run_all: running=0
+15:58:33 --- run-t10: RUN
+15:58:34 RUN
+15:58:34 [SCHED    155940ms] run_all: running=1
+15:58:34 [SCHED    155940ms] arm[0/DIG]: next_run reset to NOW
+15:58:34 [SCHED    155940ms] publish[0/DIG]: 3 bytes via gpio
+15:58:34 proto=gpio src=DIG len=3 ts=155940 : 00 5D 1B
+15:58:34 [RULE] RT: control fired (value=0.000 ts=155940)
+15:58:34 [TRACE] Total Rule Eval (DIG): 269us
+15:58:34 [MQTT] conn status=256
+15:58:35 [SCHED    156941ms] run_all: running=1
+15:58:35 [SCHED    156942ms] publish[0/DIG]: 3 bytes via gpio
+15:58:35 proto=gpio src=DIG len=3 ts=156942 : 00 47 1F
+15:58:35 [RULE] RT: control fired (value=0.000 ts=156942)
+15:58:35 [TRACE] Total Rule Eval (DIG): 261us
+15:58:35 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:58:36 [SCHED    157942ms] run_all: running=1
+15:58:36 [SCHED    157943ms] publish[0/DIG]: 3 bytes via gpio
+15:58:36 proto=gpio src=DIG len=3 ts=157943 : 00 2F 23
+15:58:36 [RULE] RT: control fired (value=0.000 ts=157943)
+15:58:36 [TRACE] Total Rule Eval (DIG): 199us
+15:58:37 [SCHED    158943ms] run_all: running=1
+15:58:37 [SCHED    158943ms] publish[0/DIG]: 3 bytes via gpio
+15:58:37 proto=gpio src=DIG len=3 ts=158944 : 00 18 27
+15:58:37 [RULE] RT: control fired (value=0.000 ts=158944)
+15:58:37 [TRACE] Total Rule Eval (DIG): 197us
+15:58:38 [SCHED    159944ms] run_all: running=1
+15:58:38 [SCHED    159944ms] publish[0/DIG]: 3 bytes via gpio
+15:58:38 proto=gpio src=DIG len=3 ts=159944 : 00 01 2B
+15:58:38 [RULE] RT: control fired (value=0.000 ts=159944)
+15:58:38 [TRACE] Total Rule Eval (DIG): 162us
+15:58:39 [SCHED    160945ms] run_all: running=1
+15:58:39 [SCHED    160945ms] publish[0/DIG]: 3 bytes via gpio
+15:58:39 proto=gpio src=DIG len=3 ts=160945 : 00 EA 2E
+15:58:39 [RULE] RT: control fired (value=0.000 ts=160945)
+15:58:39 [TRACE] Total Rule Eval (DIG): 153us
+15:58:39 [MQTT] conn status=256
+15:58:39 --- stop-t10: STOP
+15:58:40 STOP
+15:58:40 [SCHED    161946ms] run_all: running=0
+15:58:40 [MQTT] Status: Disconnected, Broker: 192.168.1.136
+15:58:41 [SCHED    162947ms] run_all: running=0
+15:58:42 --- clear-t10-end: CLEAR
+15:58:42 [SCHED    163947ms] reset: cleared 8 slots
+15:58:42 [RULE] reset
+15:58:42 CLEARED
+15:58:42 [SCHED    163947ms] run_all: running=0
+15:58:43 [SCHED    164947ms] run_all: running=0
+15:58:44 [SCHED    165948ms] run_all: running=0
+15:58:44 [MQTT] conn status=256

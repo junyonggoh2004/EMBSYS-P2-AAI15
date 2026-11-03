@@ -1,0 +1,3 @@
+# sent: SPICHECK EF4016
+[TFLITE]   Outputs: 1 tensor(s), 16 total element(s)
+[SPICHECK] ERROR probe=-9 read1=-9 read2=-9 close=0

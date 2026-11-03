@@ -1,0 +1,188 @@
+02:12:07 [SCHED     66386ms] run_all: running=0
+02:12:08 E (3355837833) esp-tls: [sock=54] select() timeout
+02:12:08 E (3355837834) transport_base: Failed to open a new connection: 32774
+02:12:08 E (3355837834) mqtt_client: Error transport connect
+02:12:08 [SCHED     67902ms] run_all: running=0
+02:12:09 --- clear-mag: CLEAR
+02:12:09 [SCHED     68448ms] reset: cleared 8 slots
+02:12:09 [RULE] reset
+02:12:09 CLEARED
+02:12:10 [SCHED     69452ms] run_all: running=0
+02:12:11 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:12:11 [SCHED     70453ms] run_all: running=0
+02:12:11 --- cfg-mag-id: BEGINCFG|name=MAGID|proto=i2c|mode=poll|freq_hz=1|i2c.sda=1|i2c.scl=2|i2c.addr=0x1E|i2c.reg=0x0A|i2c.reg_size=1|i2c.read_len=3|i2c.restart=1|ENDCFG
+02:12:11 OK: Config applied (inline, delim='|')
+02:12:11 [I2C] pre_len=0 :
+02:12:11 [SCHED     71024ms] add[0]: MAGID on i2c freq=1.000Hz mode=poll I2C(sda=1,scl=2,addr=0x1E,reg=0xA,len=3)
+02:12:11 [SCHED] added: MAGID on i2c
+02:12:11 CFG: ok (added #0: MAGID)
+02:12:12 [SCHED     72025ms] run_all: running=0
+02:12:13 [shim] qcreate(st) h=0x3fce6fc4 len=6 sz=4 ne=46 nf=47
+02:12:13 [SCHED     73026ms] run_all: running=0
+02:12:14 --- cfg-acc: BEGINCFG|name=ACC|proto=i2c|mode=poll|freq_hz=1|i2c.sda=1|i2c.scl=2|i2c.addr=0x19|i2c.pre=0x20 0x57|i2c.reg=0xA8|i2c.reg_size=1|i2c.read_len=6|i2c.restart=1|ENDCFG
+02:12:14 OK: Config applied (inline, delim='|')
+02:12:14 [I2C] pre_len=2 : 20 57
+02:12:14 [SCHED     73604ms] add[1]: ACC on i2c freq=1.000Hz mode=poll I2C(sda=1,scl=2,addr=0x19,reg=0xA8,len=6)
+02:12:14 [SCHED] added: ACC on i2c
+02:12:14 CFG: ok (added #1: ACC)
+02:12:15 E (3355844842) esp-tls: [sock=54] select() timeout
+02:12:15 E (3355844843) transport_base: Failed to open a new connection: 32774
+02:12:15 E (3355844843) mqtt_client: Error transport connect
+02:12:15 [SCHED     74605ms] run_all: running=0
+02:12:16 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:12:16 [SCHED     75606ms] run_all: running=0
+02:12:16 --- cfg-mag: BEGINCFG|name=MAG|proto=i2c|mode=poll|freq_hz=1|i2c.sda=1|i2c.scl=2|i2c.addr=0x1E|i2c.pre=0x00 0x10 0x01 0xE0 0x02 0x00|i2c.reg=0x03|i2c.reg_size=1|i2c.read_len=6|i2c.restart=1|ENDCFG
+02:12:17 OK: Config applied (inline, delim='|')
+02:12:17 [I2C] pre_len=6 : 00 10 01 E0 02 00
+02:12:17 [SCHED     76197ms] add[2]: MAG on i2c freq=1.000Hz mode=poll I2C(sda=1,scl=2,addr=0x1E,reg=0x3,len=6)
+02:12:17 [SCHED] added: MAG on i2c
+02:12:17 CFG: ok (added #2: MAG)
+02:12:18 [SCHED     77198ms] run_all: running=0
+02:12:19 [SCHED     78199ms] run_all: running=0
+02:12:19 --- run-mag: RUN
+02:12:19 RUN
+02:12:19 [SCHED     78785ms] arm[0/MAGID]: next_run reset to NOW
+02:12:19 [SCHED     78785ms] arm[1/ACC]: next_run reset to NOW
+02:12:19 [SCHED     78785ms] arm[2/MAG]: next_run reset to NOW
+02:12:19 [SCHED     78786ms] publish[0/MAGID]: 3 bytes via i2c
+02:12:19 proto=i2c src=MAGID len=3 ts=78786 : 48 34 33
+02:12:19 [SCHED     78787ms] publish[1/ACC]: 6 bytes via i2c
+02:12:19 proto=i2c src=ACC len=6 ts=78787 : C0 BE 80 03 40 0D
+02:12:19 [SCHED     78788ms] publish[2/MAG]: 6 bytes via i2c
+02:12:19 proto=i2c src=MAG len=6 ts=78788 : 00 04 00 00 FF AC
+02:12:20 [shim] qcreate(st) h=0x3fce7010 len=6 sz=4 ne=48 nf=49
+02:12:20 [SCHED     79787ms] run_all: running=1
+02:12:20 [SCHED     79788ms] publish[0/MAGID]: 3 bytes via i2c
+02:12:20 proto=i2c src=MAGID len=3 ts=79788 : 48 34 33
+02:12:20 [SCHED     79789ms] publish[1/ACC]: 6 bytes via i2c
+02:12:20 proto=i2c src=ACC len=6 ts=79790 : 80 BF 40 03 C0 0C
+02:12:20 [SCHED     79791ms] publish[2/MAG]: 6 bytes via i2c
+02:12:20 proto=i2c src=MAG len=6 ts=79791 : 00 04 00 00 FF AD
+02:12:21 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:12:21 [SCHED     80789ms] run_all: running=1
+02:12:21 [SCHED     80790ms] publish[0/MAGID]: 3 bytes via i2c
+02:12:21 proto=i2c src=MAGID len=3 ts=80790 : 48 34 33
+02:12:21 [SCHED     80791ms] publish[1/ACC]: 6 bytes via i2c
+02:12:21 proto=i2c src=ACC len=6 ts=80791 : 80 BF 40 03 00 0D
+02:12:21 [SCHED     80793ms] publish[2/MAG]: 6 bytes via i2c
+02:12:21 proto=i2c src=MAG len=6 ts=80793 : 00 05 00 01 FF AB
+02:12:22 E (3355851851) esp-tls: [sock=54] select() timeout
+02:12:22 E (3355851852) transport_base: Failed to open a new connection: 32774
+02:12:22 E (3355851852) mqtt_client: Error transport connect
+02:12:22 [SCHED     81791ms] run_all: running=1
+02:12:22 [SCHED     81792ms] publish[0/MAGID]: 3 bytes via i2c
+02:12:22 proto=i2c src=MAGID len=3 ts=81792 : 48 34 33
+02:12:22 [SCHED     81793ms] publish[1/ACC]: 6 bytes via i2c
+02:12:22 proto=i2c src=ACC len=6 ts=81794 : 40 BF C0 03 80 0D
+02:12:22 [SCHED     81795ms] publish[2/MAG]: 6 bytes via i2c
+02:12:22 proto=i2c src=MAG len=6 ts=81795 : 00 05 00 00 FF AB
+02:12:23 [SCHED     82793ms] run_all: running=1
+02:12:23 [SCHED     82794ms] publish[0/MAGID]: 3 bytes via i2c
+02:12:23 proto=i2c src=MAGID len=3 ts=82794 : 48 34 33
+02:12:23 [SCHED     82795ms] publish[1/ACC]: 6 bytes via i2c
+02:12:23 proto=i2c src=ACC len=6 ts=82795 : 80 BF C0 03 80 0D
+02:12:23 [SCHED     82797ms] publish[2/MAG]: 6 bytes via i2c
+02:12:23 proto=i2c src=MAG len=6 ts=82797 : 00 05 00 00 FF AB
+02:12:24 [SCHED     83795ms] run_all: running=1
+02:12:24 [SCHED     83796ms] publish[0/MAGID]: 3 bytes via i2c
+02:12:24 proto=i2c src=MAGID len=3 ts=83796 : 48 34 33
+02:12:24 [SCHED     83797ms] publish[1/ACC]: 6 bytes via i2c
+02:12:24 proto=i2c src=ACC len=6 ts=83797 : 40 BF C0 03 00 0D
+02:12:24 [SCHED     83799ms] publish[2/MAG]: 6 bytes via i2c
+02:12:24 proto=i2c src=MAG len=6 ts=83799 : 00 06 00 00 FF AB
+02:12:24 --- stop-mag: STOP
+02:12:24 STOP
+02:12:25 [SCHED     84960ms] run_all: running=0
+02:12:26 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:12:26 [SCHED     85961ms] run_all: running=0
+02:12:27 [shim] qcreate(st) h=0x3fce7010 len=6 sz=4 ne=50 nf=51
+02:12:27 --- clear-mag-2: CLEAR
+02:12:27 [SCHED     86530ms] reset: cleared 8 slots
+02:12:27 [RULE] reset
+02:12:27 CLEARED
+02:12:28 [SCHED     87535ms] run_all: running=0
+02:12:29 E (3355858860) esp-tls: [sock=54] select() timeout
+02:12:29 E (3355858861) transport_base: Failed to open a new connection: 32774
+02:12:29 E (3355858861) mqtt_client: Error transport connect
+02:12:29 [SCHED     88536ms] run_all: running=0
+02:12:29 --- cfg-norestart: BEGINCFG|name=MAGNR|proto=i2c|mode=poll|freq_hz=1|i2c.sda=1|i2c.scl=2|i2c.addr=0x1E|i2c.reg=0x0A|i2c.reg_size=1|i2c.read_len=3|i2c.restart=0|ENDCFG
+02:12:30 OK: Config applied (inline, delim='|')
+02:12:30 [I2C] pre_len=0 :
+02:12:30 [SCHED     89127ms] add[0]: MAGNR on i2c freq=1.000Hz mode=poll I2C(sda=1,scl=2,addr=0x1E,reg=0xA,len=3)
+02:12:30 [SCHED] added: MAGNR on i2c
+02:12:30 CFG: ok (added #0: MAGNR)
+02:12:30 [SCHED     90127ms] run_all: running=0
+02:12:31 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:12:31 [SCHED     91128ms] run_all: running=0
+02:12:32 --- run-norestart: RUN
+02:12:32 RUN
+02:12:32 [SCHED     91714ms] arm[0/MAGNR]: next_run reset to NOW
+02:12:32 [SCHED     91715ms] publish[0/MAGNR]: 3 bytes via i2c
+02:12:32 proto=i2c src=MAGNR len=3 ts=91715 : 48 34 33
+02:12:33 [SCHED     92715ms] run_all: running=1
+02:12:33 [SCHED     92716ms] publish[0/MAGNR]: 3 bytes via i2c
+02:12:33 proto=i2c src=MAGNR len=3 ts=92716 : 48 34 33
+02:12:34 [shim] qcreate(st) h=0x3fce6fc4 len=6 sz=4 ne=52 nf=53
+02:12:34 [SCHED     93717ms] run_all: running=1
+02:12:34 [SCHED     93718ms] publish[0/MAGNR]: 3 bytes via i2c
+02:12:34 proto=i2c src=MAGNR len=3 ts=93718 : 48 34 33
+02:12:35 [SCHED     94719ms] run_all: running=1
+02:12:35 [SCHED     94720ms] publish[0/MAGNR]: 3 bytes via i2c
+02:12:35 proto=i2c src=MAGNR len=3 ts=94720 : 48 34 33
+02:12:36 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:12:36 --- stop-nr: STOP
+02:12:36 STOP
+02:12:36 E (3355865869) esp-tls: [sock=54] select() timeout
+02:12:36 E (3355865870) transport_base: Failed to open a new connection: 32774
+02:12:36 E (3355865870) mqtt_client: Error transport connect
+02:12:37 [SCHED     96349ms] run_all: running=0
+02:12:38 [SCHED     97350ms] run_all: running=0
+02:12:38 --- clear-nr: CLEAR
+02:12:38 [SCHED     97940ms] reset: cleared 8 slots
+02:12:38 [RULE] reset
+02:12:38 CLEARED
+02:12:39 [SCHED     98945ms] run_all: running=0
+02:12:40 [SCHED     99946ms] run_all: running=0
+02:12:41 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:12:41 [shim] qcreate(st) h=0x3fce6fc4 len=6 sz=4 ne=54 nf=55
+02:12:41 --- cfg-ghost: BEGINCFG|name=GHOST|proto=i2c|mode=poll|freq_hz=1|i2c.sda=1|i2c.scl=2|i2c.addr=0x2A|i2c.reg=0x00|i2c.reg_size=1|i2c.read_len=1|i2c.restart=1|ENDCFG
+02:12:41 OK: Config applied (inline, delim='|')
+02:12:41 [I2C] pre_len=0 :
+02:12:41 [SCHED    100533ms] add[0]: GHOST on i2c freq=1.000Hz mode=poll I2C(sda=1,scl=2,addr=0x2A,reg=0x0,len=1)
+02:12:41 [SCHED] added: GHOST on i2c
+02:12:41 CFG: ok (added #0: GHOST)
+02:12:42 [SCHED    101533ms] run_all: running=0
+02:12:43 E (3355872878) esp-tls: [sock=54] select() timeout
+02:12:43 E (3355872879) transport_base: Failed to open a new connection: 32774
+02:12:43 E (3355872879) mqtt_client: Error transport connect
+02:12:43 [SCHED    102534ms] run_all: running=0
+02:12:43 --- run-ghost: RUN
+02:12:44 RUN
+02:12:44 [SCHED    103120ms] arm[0/GHOST]: next_run reset to NOW
+02:12:44 [I2C] read_blocking failed err=-4
+02:12:44 [SCHED    103121ms] error[0/GHOST]: poll returned -4
+02:12:44 [SCHED    104121ms] run_all: running=1
+02:12:44 [I2C] read_blocking failed err=-4
+02:12:44 [SCHED    104122ms] error[0/GHOST]: poll returned -4
+02:12:45 [SCHED    105122ms] run_all: running=1
+02:12:45 [I2C] read_blocking failed err=-4
+02:12:45 [SCHED    105123ms] error[0/GHOST]: poll returned -4
+02:12:46 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:12:46 [SCHED    106123ms] run_all: running=1
+02:12:46 [I2C] read_blocking failed err=-4
+02:12:47 [SCHED    106124ms] error[0/GHOST]: poll returned -4
+02:12:47 --- stop-ghost: STOP
+02:12:47 STOP
+02:12:48 [shim] qcreate(st) h=0x3fce6fc4 len=6 sz=4 ne=56 nf=57
+02:12:48 [SCHED    107751ms] run_all: running=0
+02:12:49 [SCHED    108752ms] run_all: running=0
+02:12:50 --- clear-ghost: CLEAR
+02:12:50 [SCHED    109346ms] reset: cleared 8 slots
+02:12:50 [RULE] reset
+02:12:50 CLEARED
+02:12:50 E (3355879887) esp-tls: [sock=54] select() timeout
+02:12:50 E (3355879888) transport_base: Failed to open a new connection: 32774
+02:12:50 E (3355879888) mqtt_client: Error transport connect
+02:12:51 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:12:51 [SCHED    110351ms] run_all: running=0
+02:12:52 [SCHED    111352ms] run_all: running=0

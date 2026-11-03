@@ -1,0 +1,5 @@
+build_mtk/
+sdkconfig
+sdkconfig.old
+tools/local.env.ps1
+managed_components/

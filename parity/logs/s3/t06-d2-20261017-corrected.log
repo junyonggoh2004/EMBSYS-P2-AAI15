@@ -1,0 +1,65 @@
+15:44:11 [SCHED     53865ms] run_all: running=0
+15:44:12 [SCHED     54914ms] run_all: running=0
+15:44:12 --- clear-t06: CLEAR
+15:44:13 [SCHED     55490ms] reset: cleared 8 slots
+15:44:13 [RULE] reset
+15:44:13 CLEARED
+15:44:13 [SCHED     56490ms] run_all: running=0
+15:44:14 [SCHED     57490ms] run_all: running=0
+15:44:15 --- cfg-ow: BEGINCFG|name=OW|proto=gpio|gpio.mode=onewire|gpio.pin=6|mode=poll|freq_hz=2|ENDCFG
+15:44:15 OK: Config applied (inline, delim='|')
+15:44:15 [SCHED     58126ms] add[0]: OW on gpio freq=2.000Hz mode=poll method=onewire GPIO(pin=6)
+15:44:15 [SCHED] added: OW on gpio
+15:44:15 CFG: ok (added #0: OW)
+15:44:16 [SCHED     59126ms] run_all: running=0
+15:44:17 [SCHED     60126ms] run_all: running=0
+15:44:18 --- cfg-son: BEGINCFG|name=SON|proto=gpio|gpio.mode=pulse|gpio.trig=4|gpio.echo=7|gpio.pull=down|gpio.pulse_timeout_us=25000|mode=poll|freq_hz=2|ENDCFG
+15:44:18 OK: Config applied (inline, delim='|')
+15:44:18 [SCHED     60807ms] add[1]: SON on gpio freq=2.000Hz mode=poll method=pulse GPIO(pin=-1)
+15:44:18 [SCHED] added: SON on gpio
+15:44:18 CFG: ok (added #1: SON)
+15:44:19 [SCHED     61808ms] run_all: running=0
+15:44:20 [SCHED     62808ms] run_all: running=0
+15:44:20 --- run-t06: RUN
+15:44:20 RUN
+15:44:20 [SCHED     63419ms] arm[0/OW]: next_run reset to NOW
+15:44:20 [SCHED     63419ms] arm[1/SON]: next_run reset to NOW
+15:44:20 [SCHED     63447ms] publish[1/SON]: 1 bytes via gpio
+15:44:20 proto=gpio src=SON len=1 ts=63447 : 00
+15:44:21 [SCHED     63923ms] run_all: running=1
+15:44:21 [SCHED     63973ms] publish[1/SON]: 1 bytes via gpio
+15:44:21 proto=gpio src=SON len=1 ts=63973 : 00
+15:44:21 [SCHED     64499ms] publish[1/SON]: 1 bytes via gpio
+15:44:21 proto=gpio src=SON len=1 ts=64499 : 00
+15:44:22 [SCHED     64930ms] run_all: running=1
+15:44:22 [SCHED     65025ms] publish[1/SON]: 1 bytes via gpio
+15:44:22 proto=gpio src=SON len=1 ts=65025 : 00
+15:44:23 [SCHED     65551ms] publish[1/SON]: 1 bytes via gpio
+15:44:23 proto=gpio src=SON len=1 ts=65551 : 00
+15:44:23 [SCHED     65938ms] run_all: running=1
+15:44:23 [SCHED     66077ms] publish[1/SON]: 1 bytes via gpio
+15:44:23 proto=gpio src=SON len=1 ts=66077 : 00
+15:44:24 [SCHED     66603ms] publish[1/SON]: 1 bytes via gpio
+15:44:24 proto=gpio src=SON len=1 ts=66603 : 00
+15:44:24 [SCHED     66946ms] run_all: running=1
+15:44:24 [SCHED     67129ms] publish[1/SON]: 1 bytes via gpio
+15:44:24 proto=gpio src=SON len=1 ts=67129 : 00
+15:44:25 --- stop-t06: STOP
+15:44:25 [SCHED     67655ms] publish[1/SON]: 1 bytes via gpio
+15:44:25 proto=gpio src=SON len=1 ts=67655 : 00
+15:44:25 STOP
+15:44:26 [SCHED     68656ms] run_all: running=0
+15:44:27 [SCHED     69656ms] run_all: running=0
+15:44:27 --- alive-t06: SHOW
+15:44:27 [SHOW] sampling=0
+15:44:27 [SCHED] #0 name=OW proto=gpio mode=poll freq=2.000Hz
+15:44:27 [SCHED] #1 name=SON proto=gpio mode=poll freq=2.000Hz
+15:44:27 [RULE] count=0
+15:44:28 [SCHED     71280ms] run_all: running=0
+15:44:29 [SCHED     72280ms] run_all: running=0
+15:44:30 --- clear-t06-end: CLEAR
+15:44:30 [SCHED     72918ms] reset: cleared 8 slots
+15:44:30 [RULE] reset
+15:44:30 CLEARED
+15:44:31 [SCHED     73918ms] run_all: running=0
+15:44:32 [SCHED     74918ms] run_all: running=0

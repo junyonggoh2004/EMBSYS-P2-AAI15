@@ -1,0 +1,27 @@
+18:51:53 --- STOP
+18:51:54 STOP
+18:51:54 [MQTT] Status: Connected, Broker: 172.20.10.5
+18:51:55 [SCHED    205891ms] run_all: running=0
+18:51:55 --- CLEAR
+18:51:55 [SCHED    205928ms] reset: cleared 8 slots
+18:51:55 [RULE] reset
+18:51:55 CLEARED
+18:51:56 [SCHED    206934ms] run_all: running=0
+18:51:56 --- TASKS
+18:51:56 [TASK] SchedulerTask    id=7  core=1 pri=21 stack_free=11164 B ran_on_core0=0 ran_on_core1=4531
+18:51:56 [TASK] MQTTTask         id=8  core=0 pri=22 stack_free=8700 B ran_on_core0=17374 ran_on_core1=0
+18:51:56 [TASK] ControlTask      id=9  core=1 pri=23 stack_free=3084 B ran_on_core0=0 ran_on_core1=2853
+18:51:56 [TASK] InferenceTask    id=10 core=1 pri=23 stack_free=6460 B ran_on_core0=0 ran_on_core1=3
+18:51:56 [TASK] ApplicationTask  id=11 core=1 pri=23 stack_free=3420 B ran_on_core0=0 ran_on_core1=0
+18:51:56 [TASK] BenchmarkTask    id=12 core=1 pri=24 stack_free=2364 B ran_on_core0=0 ran_on_core1=0
+18:51:56 [TASK] MonitorTask      id=13 core=1 pri=24 stack_free=3308 B ran_on_core0=0 ran_on_core1=206
+18:51:56 [TASK] sched_mbf  free=12912 B dropped=0
+18:51:56 [TASK] pub_mbf    free=10944 B dropped=234
+18:51:56 [TASK] infer_mbf  free=336 B dropped=0
+18:51:56 [TASK] app_mbf    free=544 B dropped=0
+18:51:56 [TASK] bench_mbf  free=512 B dropped=0
+18:51:56 [TASK] heap_free=34268 B min_free=19048 B largest=24576 B console_rx_irqs=26 console_rx_dropped=0
+18:51:56 [TASK] SchedulerTask cycles=4422 mean_us=349 p95_us=<1000 max_us=58312
+18:51:57 [SCHED    207935ms] run_all: running=0
+18:51:58 [SCHED    208936ms] run_all: running=0
+18:51:59 [SCHED    209937ms] run_all: running=0

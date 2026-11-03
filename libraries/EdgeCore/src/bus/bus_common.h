@@ -1,0 +1,135 @@
+// include/bus/bus_common.h
+#ifndef BUS_COMMON_H
+#define BUS_COMMON_H
+
+#include <stdint.h>
+#include <stdbool.h>
+#include "hal/hal.h"
+#include "application/timing_contract.h"
+// Milliseconds since boot (monotonic)
+static inline uint32_t app_now_ms(void) {
+    return hal_time_ms();
+}
+// ---------- enums ----------
+typedef enum {
+    proto_i2c  = 0,
+    proto_uart = 1,
+    proto_gpio = 2,
+    proto_mqtt = 3,
+    proto_spi  = 4
+} proto_t;
+
+#define APP_SPI_TX_MAX          64u
+#define APP_SPI_RX_MAX         128u
+#define APP_SPI_HZ_MIN       78125u
+#define APP_SPI_HZ_MAX    40000000u
+#define APP_SPI_TIMEOUT_MAX  10000u
+
+typedef enum {
+    sample_mode_poll   = 0,
+    sample_mode_stream = 1
+} sample_mode_t;
+
+typedef enum {
+    I2C_SENSOR_RAW = 0, I2C_SENSOR_AHT, I2C_SENSOR_TSL2561
+} i2c_sensor_t;
+
+// ---------- global parsed config ----------
+typedef struct {
+    // common
+    proto_t        proto;
+    sample_mode_t  mode;
+    char           name[32];      // <-- array so REPL can write into it
+    float       freq_hz;
+    timing_config_t timing;
+    bool           timing_interval_explicit;
+    char           timing_trigger_source[32];
+
+    // -------- I2C --------
+    int            i2c_sda;
+    i2c_sensor_t   i2c_sensor;         // optional device protocol; raw is default
+    int            i2c_scl;
+    uint32_t       i2c_baud;
+    int            i2c_addr;
+    uint32_t       i2c_reg;
+    int            i2c_reg_size;       // 0..4
+    uint16_t       i2c_read_len;
+    int            i2c_restart;        // 0/1
+
+    uint8_t        i2c_pre[32];         
+    uint8_t        i2c_pre_len;        
+
+    uint32_t       i2c_post_delay_ms;
+
+    // -------- UART --------
+    int            uart_tx;
+    int            uart_rx;
+    uint32_t       uart_baud;
+    int            uart_bits;
+    char           uart_parity;        // 'N','E','O'
+    int            uart_stop;
+    uint16_t       uart_read_len;
+    int            uart_line_mode;     // 0/1
+
+    uint8_t        uart_pre[64];       
+    uint8_t        uart_pre_len;       
+    uint32_t       uart_post_delay_ms;
+    bool           uart_pre_done; 
+
+    // -------- SPI --------
+    char           spi_host[8];       // canonical name: "fspi"
+    int            spi_sclk;
+    int            spi_mosi;
+    int            spi_miso;          // -1 is valid for TX-only devices
+    int            spi_cs;
+    uint32_t       spi_hz;
+    uint8_t        spi_mode;          // CPOL/CPHA mode 0..3, MSB-first
+    uint8_t        spi_tx[APP_SPI_TX_MAX];
+    uint8_t        spi_tx_len;
+    uint16_t       spi_read_len;
+    uint32_t       spi_timeout_ms;
+
+    // -------- GPIO --------
+    const char    *gpio_mode;          // "digital" | "pulse" | "onewire" | "counter"
+    int            gpio_pin;
+    const char    *gpio_pull;          // "up" | "down" | "off"
+    int            gpio_invert;
+    int            gpio_debounce_ms;
+    int            gpio_trig;
+    int            gpio_echo;
+    int            gpio_trig_us;
+    int            gpio_pulse_timeout_us;
+
+    // -------- MQTT --------
+    char      remote_node[32];   // node to follow
+    char      remote_source[32]; // sensor name on that node
+
+    // Set by the parser when a value is invalid; the scheduler then refuses
+    // the config instead of guessing (D-01).
+    char      cfg_error[48];
+} app_cfg_t;
+
+// ---------- scheduler ----------
+void scheduler_apply_config(const app_cfg_t *cfg);
+void scheduler_run_step(const app_cfg_t *cfg, bool running);
+
+// ---------- publisher ----------
+void publisher_emit_hex(const app_cfg_t *cfg,
+                        const char *proto_name,
+                        const char *sensor_name,
+                        const uint8_t *data, int len);
+
+// ---------- config parser (used by repl.c) ----------
+void cfg_parse_begin(void);
+void cfg_parse_line(const char *line, app_cfg_t *cfg);
+void cfg_parse_end(app_cfg_t *cfg);
+
+// ---------- REPL (used by main.c) ----------
+void repl_init_defaults(app_cfg_t *cfg);
+void repl_show_help(void);
+void repl_print_cfg(const app_cfg_t *cfg, bool running);
+void repl_poll(app_cfg_t *cfg, bool *running, bool *cfg_ready);
+bool repl_line_feed(int ch, char *line, size_t cap, size_t *len);
+void repl_handle_line(char *line, bool *running, bool *cfg_ready);
+
+#endif // BUS_COMMON_H

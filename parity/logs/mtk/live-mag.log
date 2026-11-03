@@ -1,0 +1,363 @@
+# live mag run, 2026-10-21 02:11:10, /dev/cu.usbmodem101
+02:11:10 --- STOP
+02:11:10 STOP
+02:11:11 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:11:11 [SCHED     10303ms] run_all: running=0
+02:11:11 --- CLEAR
+02:11:11 [SCHED     10337ms] reset: cleared 8 slots
+02:11:11 [RULE] reset
+02:11:11 CLEARED
+02:11:12 E (3355781709) esp-tls: [sock=54] select() timeout
+02:11:12 E (3355781710) transport_base: Failed to open a new connection: 32774
+02:11:12 E (3355781710) mqtt_client: Error transport connect
+02:11:12 [SCHED     11341ms] run_all: running=0
+02:11:12 --- BEGINCFG|name=MAGID|proto=i2c|mode=poll|freq_hz=1|i2c.sda=1|i2c.scl=2|i2c.addr=0x1E|i2c.reg=0x0A|i2c.reg_size=1|i2c.read_len=3|i2c.restart=1|ENDCFG
+02:11:12 OK: Config applied (inline, delim='|')
+02:11:12 [I2C] pre_len=0 :
+02:11:12 [SCHED     11373ms] add[0]: MAGID on i2c freq=1.000Hz mode=poll I2C(sda=1,scl=2,addr=0x1E,reg=0xA,len=3)
+02:11:12 [SCHED] added: MAGID on i2c
+02:11:12 CFG: ok (added #0: MAGID)
+02:11:13 [SCHED     12374ms] run_all: running=0
+02:11:14 [SCHED     13375ms] run_all: running=0
+02:11:14 --- BEGINCFG|name=ACC|proto=i2c|mode=poll|freq_hz=1|i2c.sda=1|i2c.scl=2|i2c.addr=0x19|i2c.pre=0x20 0x57|i2c.reg=0xA8|i2c.reg_size=1|i2c.read_len=6|i2c.restart=1|ENDCFG
+02:11:14 OK: Config applied (inline, delim='|')
+02:11:14 [I2C] pre_len=2 : 20 57
+02:11:14 [SCHED     13434ms] add[1]: ACC on i2c freq=1.000Hz mode=poll I2C(sda=1,scl=2,addr=0x19,reg=0xA8,len=6)
+02:11:14 [SCHED] added: ACC on i2c
+02:11:14 CFG: ok (added #1: ACC)
+02:11:15 [SCHED     14434ms] run_all: running=0
+02:11:15 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:11:16 [SCHED     15435ms] run_all: running=0
+02:11:16 --- BEGINCFG|name=MAG|proto=i2c|mode=poll|freq_hz=1|i2c.sda=1|i2c.scl=2|i2c.addr=0x1E|i2c.pre=0x00 0x10 0x01 0xE0 0x02 0x00|i2c.reg=0x03|i2c.reg_size=1|i2c.read_len=6|i2c.restart=1|ENDCFG
+02:11:16 OK: Config applied (inline, delim='|')
+02:11:16 [I2C] pre_len=6 : 00 10 01 E0 02 00
+02:11:16 [SCHED     15510ms] add[2]: MAG on i2c freq=1.000Hz mode=poll I2C(sda=1,scl=2,addr=0x1E,reg=0x3,len=6)
+02:11:16 [SCHED] added: MAG on i2c
+02:11:16 CFG: ok (added #2: MAG)
+02:11:17 [shim] qcreate(st) h=0x3fce7194 len=6 sz=4 ne=30 nf=31
+02:11:17 [SCHED     16510ms] run_all: running=0
+02:11:18 [SCHED     17511ms] run_all: running=0
+02:11:18 --- RUN
+02:11:18 RUN
+02:11:18 [SCHED     17571ms] arm[0/MAGID]: next_run reset to NOW
+02:11:18 [SCHED     17571ms] arm[1/ACC]: next_run reset to NOW
+02:11:18 [SCHED     17571ms] arm[2/MAG]: next_run reset to NOW
+02:11:18 [SCHED     17572ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:18 proto=i2c src=MAGID len=3 ts=17572 : 48 34 33
+02:11:18 [SCHED     17573ms] publish[1/ACC]: 6 bytes via i2c
+02:11:18 proto=i2c src=ACC len=6 ts=17573 : 40 BF 80 05 00 0D
+02:11:18 [SCHED     17574ms] publish[2/MAG]: 6 bytes via i2c
+02:11:18 proto=i2c src=MAG len=6 ts=17574 : 00 02 00 00 FF AB
+02:11:19 E (3355788718) esp-tls: [sock=54] select() timeout
+02:11:19 E (3355788719) transport_base: Failed to open a new connection: 32774
+02:11:19 E (3355788719) mqtt_client: Error transport connect
+02:11:19 [SCHED     18572ms] run_all: running=1
+02:11:19 [SCHED     18573ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:19 proto=i2c src=MAGID len=3 ts=18573 : 48 34 33
+02:11:19 [SCHED     18575ms] publish[1/ACC]: 6 bytes via i2c
+02:11:19 proto=i2c src=ACC len=6 ts=18575 : 40 BF C0 05 40 0D
+02:11:19 [SCHED     18576ms] publish[2/MAG]: 6 bytes via i2c
+02:11:19 proto=i2c src=MAG len=6 ts=18576 : 00 01 00 00 FF AB
+02:11:20 [SCHED     19574ms] run_all: running=1
+02:11:20 [SCHED     19575ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:20 proto=i2c src=MAGID len=3 ts=19575 : 48 34 33
+02:11:20 [SCHED     19576ms] publish[1/ACC]: 6 bytes via i2c
+02:11:20 proto=i2c src=ACC len=6 ts=19576 : 00 C0 00 05 C0 0C
+02:11:20 [SCHED     19578ms] publish[2/MAG]: 6 bytes via i2c
+02:11:20 proto=i2c src=MAG len=6 ts=19578 : 00 01 00 00 FF AB
+02:11:21 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:11:21 [SCHED     20576ms] run_all: running=1
+02:11:21 [SCHED     20577ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:21 proto=i2c src=MAGID len=3 ts=20577 : 48 34 33
+02:11:21 [SCHED     20578ms] publish[1/ACC]: 6 bytes via i2c
+02:11:21 proto=i2c src=ACC len=6 ts=20578 : 40 BF 00 05 40 0D
+02:11:21 [SCHED     20580ms] publish[2/MAG]: 6 bytes via i2c
+02:11:21 proto=i2c src=MAG len=6 ts=20580 : 00 02 00 00 FF AC
+02:11:22 [SCHED     21578ms] run_all: running=1
+02:11:22 [SCHED     21579ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:22 proto=i2c src=MAGID len=3 ts=21579 : 48 34 33
+02:11:22 [SCHED     21580ms] publish[1/ACC]: 6 bytes via i2c
+02:11:22 proto=i2c src=ACC len=6 ts=21581 : 40 BF 80 05 40 0D
+02:11:22 [SCHED     21582ms] publish[2/MAG]: 6 bytes via i2c
+02:11:22 proto=i2c src=MAG len=6 ts=21582 : 00 02 FF FF FF AB
+02:11:23 [SCHED     22580ms] run_all: running=1
+02:11:23 [SCHED     22581ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:23 proto=i2c src=MAGID len=3 ts=22581 : 48 34 33
+02:11:23 [SCHED     22582ms] publish[1/ACC]: 6 bytes via i2c
+02:11:23 proto=i2c src=ACC len=6 ts=22583 : 00 C0 00 05 40 0D
+02:11:23 [SCHED     22584ms] publish[2/MAG]: 6 bytes via i2c
+02:11:23 proto=i2c src=MAG len=6 ts=22584 : 00 01 00 01 FF AA
+02:11:24 [shim] qcreate(st) h=0x3fce7194 len=6 sz=4 ne=32 nf=33
+02:11:24 [SCHED     23582ms] run_all: running=1
+02:11:24 [SCHED     23583ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:24 proto=i2c src=MAGID len=3 ts=23583 : 48 34 33
+02:11:24 [SCHED     23584ms] publish[1/ACC]: 6 bytes via i2c
+02:11:24 proto=i2c src=ACC len=6 ts=23585 : 40 BF 40 05 00 0D
+02:11:24 [SCHED     23586ms] publish[2/MAG]: 6 bytes via i2c
+02:11:24 proto=i2c src=MAG len=6 ts=23586 : 00 01 00 01 FF AB
+02:11:25 [SCHED     24584ms] run_all: running=1
+02:11:25 [SCHED     24585ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:25 proto=i2c src=MAGID len=3 ts=24585 : 48 34 33
+02:11:25 [SCHED     24586ms] publish[1/ACC]: 6 bytes via i2c
+02:11:25 proto=i2c src=ACC len=6 ts=24587 : 80 BF 80 05 40 0D
+02:11:25 [SCHED     24588ms] publish[2/MAG]: 6 bytes via i2c
+02:11:25 proto=i2c src=MAG len=6 ts=24588 : 00 01 00 01 FF AB
+02:11:26 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:11:26 E (3355795727) esp-tls: [sock=54] select() timeout
+02:11:26 E (3355795728) transport_base: Failed to open a new connection: 32774
+02:11:26 E (3355795728) mqtt_client: Error transport connect
+02:11:26 [SCHED     25586ms] run_all: running=1
+02:11:26 [SCHED     25587ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:26 proto=i2c src=MAGID len=3 ts=25587 : 48 34 33
+02:11:26 [SCHED     25588ms] publish[1/ACC]: 6 bytes via i2c
+02:11:26 proto=i2c src=ACC len=6 ts=25589 : 80 BF C0 04 40 0D
+02:11:26 [SCHED     25590ms] publish[2/MAG]: 6 bytes via i2c
+02:11:26 proto=i2c src=MAG len=6 ts=25590 : 00 02 00 00 FF AC
+02:11:27 [SCHED     26588ms] run_all: running=1
+02:11:27 [SCHED     26589ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:27 proto=i2c src=MAGID len=3 ts=26589 : 48 34 33
+02:11:27 [SCHED     26590ms] publish[1/ACC]: 6 bytes via i2c
+02:11:27 proto=i2c src=ACC len=6 ts=26590 : 40 C0 40 09 40 17
+02:11:27 [SCHED     26592ms] publish[2/MAG]: 6 bytes via i2c
+02:11:27 proto=i2c src=MAG len=6 ts=26592 : 00 08 FF FF FF B1
+02:11:28 [SCHED     27590ms] run_all: running=1
+02:11:28 [SCHED     27591ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:28 proto=i2c src=MAGID len=3 ts=27591 : 48 34 33
+02:11:28 [SCHED     27592ms] publish[1/ACC]: 6 bytes via i2c
+02:11:28 proto=i2c src=ACC len=6 ts=27592 : 00 C2 00 03 40 0C
+02:11:28 [SCHED     27594ms] publish[2/MAG]: 6 bytes via i2c
+02:11:28 proto=i2c src=MAG len=6 ts=27594 : 00 09 00 01 FF AD
+02:11:29 [SCHED     28592ms] run_all: running=1
+02:11:29 [SCHED     28593ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:29 proto=i2c src=MAGID len=3 ts=28593 : 48 34 33
+02:11:29 [SCHED     28594ms] publish[1/ACC]: 6 bytes via i2c
+02:11:29 proto=i2c src=ACC len=6 ts=28595 : 80 BD 00 FB 80 0F
+02:11:29 [SCHED     28596ms] publish[2/MAG]: 6 bytes via i2c
+02:11:29 proto=i2c src=MAG len=6 ts=28596 : 00 0B 00 00 FF AF
+02:11:30 [SCHED     29594ms] run_all: running=1
+02:11:30 [SCHED     29595ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:30 proto=i2c src=MAGID len=3 ts=29595 : 48 34 33
+02:11:30 [SCHED     29596ms] publish[1/ACC]: 6 bytes via i2c
+02:11:30 proto=i2c src=ACC len=6 ts=29597 : 00 BF 40 02 80 0E
+02:11:30 [SCHED     29598ms] publish[2/MAG]: 6 bytes via i2c
+02:11:30 proto=i2c src=MAG len=6 ts=29598 : 00 03 00 02 FF B1
+02:11:31 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:11:31 [shim] qcreate(st) h=0x3fce7194 len=6 sz=4 ne=34 nf=35
+02:11:31 [SCHED     30596ms] run_all: running=1
+02:11:31 [SCHED     30597ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:31 proto=i2c src=MAGID len=3 ts=30597 : 48 34 33
+02:11:31 [SCHED     30598ms] publish[1/ACC]: 6 bytes via i2c
+02:11:31 proto=i2c src=ACC len=6 ts=30599 : 40 BF C0 04 40 0D
+02:11:31 [SCHED     30600ms] publish[2/MAG]: 6 bytes via i2c
+02:11:31 proto=i2c src=MAG len=6 ts=30600 : 00 02 00 01 FF B1
+02:11:32 [SCHED     31598ms] run_all: running=1
+02:11:32 [SCHED     31599ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:32 proto=i2c src=MAGID len=3 ts=31599 : 48 34 33
+02:11:32 [SCHED     31600ms] publish[1/ACC]: 6 bytes via i2c
+02:11:32 proto=i2c src=ACC len=6 ts=31601 : 80 BF C0 04 C0 0D
+02:11:32 [SCHED     31602ms] publish[2/MAG]: 6 bytes via i2c
+02:11:32 proto=i2c src=MAG len=6 ts=31602 : 00 02 FF FF FF B2
+02:11:33 E (3355802736) esp-tls: [sock=54] select() timeout
+02:11:33 E (3355802737) transport_base: Failed to open a new connection: 32774
+02:11:33 E (3355802737) mqtt_client: Error transport connect
+02:11:33 [SCHED     32600ms] run_all: running=1
+02:11:33 [SCHED     32601ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:33 proto=i2c src=MAGID len=3 ts=32601 : 48 34 33
+02:11:33 [SCHED     32602ms] publish[1/ACC]: 6 bytes via i2c
+02:11:33 proto=i2c src=ACC len=6 ts=32603 : 00 BF 80 04 C0 0D
+02:11:33 [SCHED     32604ms] publish[2/MAG]: 6 bytes via i2c
+02:11:33 proto=i2c src=MAG len=6 ts=32604 : 00 02 00 03 FF B2
+02:11:34 [SCHED     33602ms] run_all: running=1
+02:11:34 [SCHED     33603ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:34 proto=i2c src=MAGID len=3 ts=33603 : 48 34 33
+02:11:34 [SCHED     33604ms] publish[1/ACC]: 6 bytes via i2c
+02:11:34 proto=i2c src=ACC len=6 ts=33604 : 40 C1 C0 0C C0 F5
+02:11:34 [SCHED     33606ms] publish[2/MAG]: 6 bytes via i2c
+02:11:34 proto=i2c src=MAG len=6 ts=33606 : FF FF 00 00 FF C5
+02:11:35 [SCHED     34604ms] run_all: running=1
+02:11:35 [SCHED     34605ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:35 proto=i2c src=MAGID len=3 ts=34605 : 48 34 33
+02:11:35 [SCHED     34607ms] publish[1/ACC]: 6 bytes via i2c
+02:11:35 proto=i2c src=ACC len=6 ts=34607 : 80 BC 00 0C 00 09
+02:11:35 [SCHED     34608ms] publish[2/MAG]: 6 bytes via i2c
+02:11:35 proto=i2c src=MAG len=6 ts=34608 : 00 02 00 00 FF D2
+02:11:36 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:11:36 [SCHED     35606ms] run_all: running=1
+02:11:36 [SCHED     35607ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:36 proto=i2c src=MAGID len=3 ts=35607 : 48 34 33
+02:11:36 [SCHED     35609ms] publish[1/ACC]: 6 bytes via i2c
+02:11:36 proto=i2c src=ACC len=6 ts=35609 : 00 BC 00 07 C0 12
+02:11:36 [SCHED     35610ms] publish[2/MAG]: 6 bytes via i2c
+02:11:36 proto=i2c src=MAG len=6 ts=35610 : FF FF 00 01 FF CD
+02:11:37 [SCHED     36608ms] run_all: running=1
+02:11:37 [SCHED     36609ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:37 proto=i2c src=MAGID len=3 ts=36609 : 48 34 33
+02:11:37 [SCHED     36611ms] publish[1/ACC]: 6 bytes via i2c
+02:11:37 proto=i2c src=ACC len=6 ts=36611 : 40 BD 80 0A C0 0A
+02:11:37 [SCHED     36612ms] publish[2/MAG]: 6 bytes via i2c
+02:11:37 proto=i2c src=MAG len=6 ts=36612 : 00 00 00 00 FF CD
+02:11:38 [shim] qcreate(st) h=0x3fce7194 len=6 sz=4 ne=36 nf=37
+02:11:38 [SCHED     37610ms] run_all: running=1
+02:11:38 [SCHED     37611ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:38 proto=i2c src=MAGID len=3 ts=37611 : 48 34 33
+02:11:38 [SCHED     37612ms] publish[1/ACC]: 6 bytes via i2c
+02:11:38 proto=i2c src=ACC len=6 ts=37613 : 00 BE 00 09 80 0F
+02:11:38 [SCHED     37614ms] publish[2/MAG]: 6 bytes via i2c
+02:11:38 proto=i2c src=MAG len=6 ts=37614 : FF FE 00 00 FF CA
+02:11:39 [SCHED     38612ms] run_all: running=1
+02:11:39 [SCHED     38613ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:39 proto=i2c src=MAGID len=3 ts=38613 : 48 34 33
+02:11:39 [SCHED     38614ms] publish[1/ACC]: 6 bytes via i2c
+02:11:39 proto=i2c src=ACC len=6 ts=38615 : C0 BF 00 0B 80 0A
+02:11:39 [SCHED     38616ms] publish[2/MAG]: 6 bytes via i2c
+02:11:39 proto=i2c src=MAG len=6 ts=38616 : 00 04 00 01 FF C7
+02:11:40 E (3355809745) esp-tls: [sock=54] select() timeout
+02:11:40 E (3355809746) transport_base: Failed to open a new connection: 32774
+02:11:40 E (3355809746) mqtt_client: Error transport connect
+02:11:40 [SCHED     39614ms] run_all: running=1
+02:11:40 [SCHED     39615ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:40 proto=i2c src=MAGID len=3 ts=39615 : 48 34 33
+02:11:40 [SCHED     39616ms] publish[1/ACC]: 6 bytes via i2c
+02:11:40 proto=i2c src=ACC len=6 ts=39617 : C0 BF 40 08 C0 0D
+02:11:40 [SCHED     39618ms] publish[2/MAG]: 6 bytes via i2c
+02:11:40 proto=i2c src=MAG len=6 ts=39618 : FF FE 00 01 FF B6
+02:11:41 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:11:41 [SCHED     40616ms] run_all: running=1
+02:11:41 [SCHED     40617ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:41 proto=i2c src=MAGID len=3 ts=40617 : 48 34 33
+02:11:41 [SCHED     40618ms] publish[1/ACC]: 6 bytes via i2c
+02:11:41 proto=i2c src=ACC len=6 ts=40618 : 40 BF 40 08 00 0E
+02:11:41 [SCHED     40620ms] publish[2/MAG]: 6 bytes via i2c
+02:11:41 proto=i2c src=MAG len=6 ts=40620 : FF FE 00 00 FF B6
+02:11:42 [SCHED     41618ms] run_all: running=1
+02:11:42 [SCHED     41619ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:42 proto=i2c src=MAGID len=3 ts=41619 : 48 34 33
+02:11:42 [SCHED     41620ms] publish[1/ACC]: 6 bytes via i2c
+02:11:42 proto=i2c src=ACC len=6 ts=41620 : C0 B7 C0 04 40 15
+02:11:42 [SCHED     41622ms] publish[2/MAG]: 6 bytes via i2c
+02:11:42 proto=i2c src=MAG len=6 ts=41622 : FF FF 00 01 FF B5
+02:11:43 [SCHED     42620ms] run_all: running=1
+02:11:43 [SCHED     42621ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:43 proto=i2c src=MAGID len=3 ts=42621 : 48 34 33
+02:11:43 [SCHED     42622ms] publish[1/ACC]: 6 bytes via i2c
+02:11:43 proto=i2c src=ACC len=6 ts=42623 : 00 BA 40 04 80 12
+02:11:43 [SCHED     42624ms] publish[2/MAG]: 6 bytes via i2c
+02:11:43 proto=i2c src=MAG len=6 ts=42624 : 00 00 00 02 FF B5
+02:11:44 [SCHED     43622ms] run_all: running=1
+02:11:44 [SCHED     43623ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:44 proto=i2c src=MAGID len=3 ts=43623 : 48 34 33
+02:11:44 [SCHED     43624ms] publish[1/ACC]: 6 bytes via i2c
+02:11:44 proto=i2c src=ACC len=6 ts=43624 : 00 BE 00 03 40 0D
+02:11:44 [SCHED     43626ms] publish[2/MAG]: 6 bytes via i2c
+02:11:44 proto=i2c src=MAG len=6 ts=43626 : 00 02 FF FF FF B3
+02:11:45 [shim] qcreate(st) h=0x3fce7194 len=6 sz=4 ne=38 nf=39
+02:11:45 [SCHED     44624ms] run_all: running=1
+02:11:45 [SCHED     44625ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:45 proto=i2c src=MAGID len=3 ts=44625 : 48 34 33
+02:11:45 [SCHED     44626ms] publish[1/ACC]: 6 bytes via i2c
+02:11:45 proto=i2c src=ACC len=6 ts=44627 : 00 BE 40 03 80 09
+02:11:45 [SCHED     44628ms] publish[2/MAG]: 6 bytes via i2c
+02:11:45 proto=i2c src=MAG len=6 ts=44628 : 00 09 00 02 FF B6
+02:11:46 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:11:46 [SCHED     45626ms] run_all: running=1
+02:11:46 [SCHED     45627ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:46 proto=i2c src=MAGID len=3 ts=45627 : 48 34 33
+02:11:46 [SCHED     45628ms] publish[1/ACC]: 6 bytes via i2c
+02:11:46 proto=i2c src=ACC len=6 ts=45629 : 00 BD 00 05 80 0B
+02:11:46 [SCHED     45630ms] publish[2/MAG]: 6 bytes via i2c
+02:11:46 proto=i2c src=MAG len=6 ts=45630 : 00 0B 00 00 FF D8
+02:11:47 E (3355816754) esp-tls: [sock=54] select() timeout
+02:11:47 E (3355816755) transport_base: Failed to open a new connection: 32774
+02:11:47 E (3355816755) mqtt_client: Error transport connect
+02:11:47 [SCHED     46628ms] run_all: running=1
+02:11:47 [SCHED     46629ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:47 proto=i2c src=MAGID len=3 ts=46629 : 48 34 33
+02:11:47 [SCHED     46630ms] publish[1/ACC]: 6 bytes via i2c
+02:11:47 proto=i2c src=ACC len=6 ts=46631 : 40 D9 00 0F 40 0F
+02:11:47 [SCHED     46632ms] publish[2/MAG]: 6 bytes via i2c
+02:11:47 proto=i2c src=MAG len=6 ts=46632 : 00 05 00 00 00 0C
+02:11:48 [SCHED     47630ms] run_all: running=1
+02:11:48 [SCHED     47631ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:48 proto=i2c src=MAGID len=3 ts=47631 : 48 34 33
+02:11:48 [SCHED     47632ms] publish[1/ACC]: 6 bytes via i2c
+02:11:48 proto=i2c src=ACC len=6 ts=47632 : 80 BB 80 18 80 0A
+02:11:48 [SCHED     47634ms] publish[2/MAG]: 6 bytes via i2c
+02:11:48 proto=i2c src=MAG len=6 ts=47634 : 00 11 00 00 00 3D
+02:11:49 [SCHED     48632ms] run_all: running=1
+02:11:49 [SCHED     48633ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:49 proto=i2c src=MAGID len=3 ts=48633 : 48 34 33
+02:11:49 [SCHED     48634ms] publish[1/ACC]: 6 bytes via i2c
+02:11:49 proto=i2c src=ACC len=6 ts=48634 : 40 E1 40 42 80 F3
+02:11:49 [SCHED     48636ms] publish[2/MAG]: 6 bytes via i2c
+02:11:49 proto=i2c src=MAG len=6 ts=48636 : 00 5C 00 00 00 31
+02:11:50 [SCHED     49634ms] run_all: running=1
+02:11:50 [SCHED     49635ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:50 proto=i2c src=MAGID len=3 ts=49635 : 48 34 33
+02:11:50 [SCHED     49636ms] publish[1/ACC]: 6 bytes via i2c
+02:11:50 proto=i2c src=ACC len=6 ts=49637 : 00 F2 40 2A 80 F0
+02:11:50 [SCHED     49638ms] publish[2/MAG]: 6 bytes via i2c
+02:11:50 proto=i2c src=MAG len=6 ts=49638 : 00 4C 00 00 00 15
+02:11:51 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:11:51 [SCHED     50636ms] run_all: running=1
+02:11:51 [SCHED     50637ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:51 proto=i2c src=MAGID len=3 ts=50637 : 48 34 33
+02:11:51 [SCHED     50638ms] publish[1/ACC]: 6 bytes via i2c
+02:11:51 proto=i2c src=ACC len=6 ts=50638 : C0 CE C0 07 00 25
+02:11:51 [SCHED     50640ms] publish[2/MAG]: 6 bytes via i2c
+02:11:51 proto=i2c src=MAG len=6 ts=50640 : FF FD 00 00 FF E7
+02:11:52 [shim] qcreate(st) h=0x3fce7194 len=6 sz=4 ne=40 nf=41
+02:11:52 [SCHED     51638ms] run_all: running=1
+02:11:52 [SCHED     51639ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:52 proto=i2c src=MAGID len=3 ts=51639 : 48 34 33
+02:11:52 [SCHED     51640ms] publish[1/ACC]: 6 bytes via i2c
+02:11:52 proto=i2c src=ACC len=6 ts=51641 : 40 BC 80 FD C0 E8
+02:11:52 [SCHED     51642ms] publish[2/MAG]: 6 bytes via i2c
+02:11:52 proto=i2c src=MAG len=6 ts=51642 : 00 0B 00 00 FF A1
+02:11:53 [SCHED     52640ms] run_all: running=1
+02:11:53 [SCHED     52641ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:53 proto=i2c src=MAGID len=3 ts=52641 : 48 34 33
+02:11:53 [SCHED     52642ms] publish[1/ACC]: 6 bytes via i2c
+02:11:53 proto=i2c src=ACC len=6 ts=52643 : 80 B9 00 03 40 0D
+02:11:53 [SCHED     52644ms] publish[2/MAG]: 6 bytes via i2c
+02:11:53 proto=i2c src=MAG len=6 ts=52644 : FF EF 00 00 FF D0
+02:11:54 E (3355823763) esp-tls: [sock=54] select() timeout
+02:11:54 E (3355823764) transport_base: Failed to open a new connection: 32774
+02:11:54 E (3355823764) mqtt_client: Error transport connect
+02:11:54 [SCHED     53642ms] run_all: running=1
+02:11:54 [SCHED     53643ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:54 proto=i2c src=MAGID len=3 ts=53643 : 48 34 33
+02:11:54 [SCHED     53644ms] publish[1/ACC]: 6 bytes via i2c
+02:11:54 proto=i2c src=ACC len=6 ts=53645 : C0 C2 40 FE C0 02
+02:11:54 [SCHED     53646ms] publish[2/MAG]: 6 bytes via i2c
+02:11:54 proto=i2c src=MAG len=6 ts=53646 : FF EF 00 01 FF BD
+02:11:55 [SCHED     54644ms] run_all: running=1
+02:11:55 [SCHED     54645ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:55 proto=i2c src=MAGID len=3 ts=54645 : 48 34 33
+02:11:55 [SCHED     54647ms] publish[1/ACC]: 6 bytes via i2c
+02:11:55 proto=i2c src=ACC len=6 ts=54647 : 00 C2 00 03 80 0A
+02:11:55 [SCHED     54648ms] publish[2/MAG]: 6 bytes via i2c
+02:11:55 proto=i2c src=MAG len=6 ts=54648 : 00 04 00 01 FF AC
+02:11:56 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+02:11:56 [SCHED     55646ms] run_all: running=1
+02:11:56 [SCHED     55647ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:56 proto=i2c src=MAGID len=3 ts=55647 : 48 34 33
+02:11:56 [SCHED     55649ms] publish[1/ACC]: 6 bytes via i2c
+02:11:56 proto=i2c src=ACC len=6 ts=55649 : C0 BF C0 08 40 0D
+02:11:56 [SCHED     55650ms] publish[2/MAG]: 6 bytes via i2c
+02:11:56 proto=i2c src=MAG len=6 ts=55650 : FF FE 00 01 FF AD
+02:11:57 [SCHED     56648ms] run_all: running=1
+02:11:57 [SCHED     56649ms] publish[0/MAGID]: 3 bytes via i2c
+02:11:57 proto=i2c src=MAGID len=3 ts=56649 : 48 34 33
+02:11:57 [SCHED     56651ms] publish[1/ACC]: 6 bytes via i2c
+02:11:57 proto=i2c src=ACC len=6 ts=56651 : 00 C0 C0 08 80 0D
+02:11:57 [SCHED     56652ms] publish[2/MAG]: 6 bytes via i2c
+02:11:57 proto=i2c src=MAG len=6 ts=56652 : FF FF 00 00 FF AC
+02:11:58 --- STOP
+02:11:58 STOP
+02:11:59 [SCHED     58290ms] run_all: running=0
+02:11:59 --- CLEAR
+02:11:59 [SCHED     58322ms] reset: cleared 8 slots
+02:11:59 [RULE] reset
+02:11:59 CLEARED
+02:11:59 [shim] qcreate(st) h=0x3fce6fc4 len=6 sz=4 ne=42 nf=43
+02:12:00 [SCHED     59327ms] run_all: running=0

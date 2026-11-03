@@ -1,0 +1,26 @@
+# Task 27 HAL test, 2026-10-20 04:42, HW-747 Super Mini, esp32s3_mtk/haltest on the course port e92874d (µT-Kernel 3 SMP). Raw console log: hal_test.log
+PASS  time-monotonic               2541395 -> 2541396 us
+PASS  time-ms-matches-us           ms=2541 us/1000=2541
+PASS  delay-ms-100                 100002 us
+PASS  delay-ms-1                   1002 us
+PASS  delay-us-500                 502 us
+PASS  console-getc-timeout         ret=-1 after 20506 us
+PASS  gpio-reserved-pins-refused   -1 19 20 22 26 32 49 99
+PASS  gpio-input-pulldown          mode=0 read=0
+PASS  gpio-input-pullup            mode=0 read=1
+PASS  gpio-output-toggle           toggle 1/1 then 0/0
+PASS  pwm-set-and-stop             set=0 set=0 stop=0 read=0
+PASS  pwm-duty-25-self             set 0.25 measured 0.250
+PASS  pwm-duty-50-self             set 0.50 measured 0.501
+PASS  pwm-duty-75-self             set 0.75 measured 0.749
+PASS  pulse-200ms-nonblocking-self returned after 59 us, high 201161 us
+PASS  edge-count-no-loss-self      20000 edges at 19.8 kHz, 20000 counted (er=0)
+PASS  uart-internal-loopback       port=0 got 34/34 bytes
+PASS  i2c-missing-device-nack      bus=0 write=-4 write-nostop=1 read=-4
+SKIP  jumper-measurements          no jumper between GPIO5 and GPIO6
+PASS  test-task-on-core-1          running on core 1
+PASS  selftest-complete            [HALTEST] done failures=0
+PASS  console-echo                 sent 'hello parity 12345'
+PASS  tick-period                  board deltas 999..1001 ms
+PASS  tick-vs-host-clock           board 10000 ms, host 10053 ms
+23/23 passed, 1 skipped. Raw log: parity/logs/mtk/hal_test.log

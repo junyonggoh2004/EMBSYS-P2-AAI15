@@ -1,0 +1,158 @@
+04:39:14 [SCHED    159527ms] run_all: running=0
+04:39:15 --- console: TASKS
+04:39:15 [TASK] SchedulerTask    stack_free=13704 B
+04:39:15 [TASK] MQTTTask         stack_free=5428 B
+04:39:15 [TASK] ControlTask      stack_free=2256 B
+04:39:15 [TASK] InferenceTask    stack_free=7404 B
+04:39:15 [TASK] ApplicationTask  stack_free=3320 B
+04:39:15 [TASK] BenchmarkTask    stack_free=2260 B
+04:39:15 [TASK] heap_free=50120 B min_free=49368 B psram_free=1992832 B
+04:39:15 [SCHED    160527ms] run_all: running=0
+04:39:15 [CFG] cfg_cb payload (first 120): {"configs":[{"name":"BAD",
+04:39:15 [JSON] find_json_end failed
+04:39:15 [CFG] mqtt_json_try_convert_to_inline -> -2
+04:39:15 [CFG] unrecognized payload (no BEGINCFG/BEGINRULE)
+04:39:15 [CMD] SHOW
+04:39:15 [RULE] count=0
+04:39:15 [MQTT] Connecting to 192.168.1.49 port 1883...
+04:39:16 [MQTT] connected to broker
+04:39:16 [MQTT] Subscribing to node wildcard: pico/s3-001/#
+04:39:16 [MQTT] Subscribed OK to: node-wildcard
+04:39:16 [MQTT] Subscribing to broadcast: pico/broadcast/config
+04:39:16 [MQTT] Subscribed OK to: broadcast
+04:39:16 [CMD] SHOW
+04:39:16 [RULE] count=0
+04:39:16 [MQTT] disconnected from broker
+04:39:19 [SCHED    162245ms] run_all: running=0
+04:39:19 [MQTT] Status: Disconnected, Broker: 192.168.1.49
+04:39:19 [SCHED    163245ms] run_all: running=0
+04:39:19 [SCHED    164245ms] run_all: running=0
+04:39:20 [SCHED    165245ms] run_all: running=0
+04:39:20 [MQTT] Connecting to 192.168.1.49 port 1883...
+04:39:21 [MQTT] connected to broker
+04:39:21 [MQTT] Subscribing to node wildcard: pico/s3-001/#
+04:39:21 [MQTT] Subscribed OK to: node-wildcard
+04:39:21 [MQTT] Subscribing to broadcast: pico/broadcast/config
+04:39:21 [MQTT] Subscribed OK to: broadcast
+04:39:23 --- console: STOP
+04:39:23 --- console: CLEAR
+04:39:23 [SCHED    166245ms] run_all: running=0
+04:39:23 [SCHED    167245ms] run_all: running=0
+04:39:23 [MQTT] Status: Connected, Broker: 192.168.1.49
+04:39:23 [SCHED    168245ms] run_all: running=0
+04:39:23 STOP
+04:39:23 [SCHED    168289ms] reset: cleared 8 slots
+04:39:23 [RULE] reset
+04:39:23 CLEARED
+04:39:24 [SCHED    169290ms] run_all: running=0
+04:39:25 [SCHED    170290ms] run_all: running=0
+04:39:25 --- console: BEGINCFG|name=OFFL|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=p
+04:39:25 --- console: RUN
+04:39:25 OK: Config applied (inline, delim='|')
+04:39:25 [SCHED    170350ms] add[0]: OFFL on gpio freq=2.000Hz mode=poll method=digital GPIO(pin=6)
+04:39:25 [SCHED] added: OFFL on gpio
+04:39:25 CFG: ok (added #0: OFFL)
+04:39:25 RUN
+04:39:25 [SCHED    170351ms] arm[0/OFFL]: next_run reset to NOW
+04:39:25 [SCHED    170351ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:25 proto=gpio src=OFFL len=3 ts=170351 : 00 01 00
+04:39:25 [SCHED    170852ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:25 proto=gpio src=OFFL len=3 ts=170852 : 00 F6 01
+04:39:26 [SCHED    171353ms] run_all: running=1
+04:39:26 [SCHED    171353ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:26 proto=gpio src=OFFL len=3 ts=171353 : 00 EB 03
+04:39:26 [SCHED    171854ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:26 proto=gpio src=OFFL len=3 ts=171854 : 00 E0 05
+04:39:27 [SCHED    172355ms] run_all: running=1
+04:39:27 [SCHED    172355ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:27 proto=gpio src=OFFL len=3 ts=172355 : 00 D5 07
+04:39:27 --- console: WIFIDROP
+04:39:27 [WIFI] dropping the connection for 10 s (test)
+04:39:27 [WIFI] not connected: reason 8, see esp_wifi_types.h
+04:39:27 [WIFI] connection lost; reconnecting
+04:39:27 [MQTT] disconnected from broker
+04:39:27 [SCHED    172856ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:27 proto=gpio src=OFFL len=3 ts=172856 : 00 CA 09
+04:39:27 [MQTT] Status: Disconnected, Broker: 192.168.1.49
+04:39:28 [SCHED    173357ms] run_all: running=1
+04:39:28 [SCHED    173357ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:28 proto=gpio src=OFFL len=3 ts=173357 : 00 BF 0B
+04:39:28 [SCHED    173858ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:28 proto=gpio src=OFFL len=3 ts=173858 : 00 B4 0D
+04:39:29 [SCHED    174359ms] run_all: running=1
+04:39:29 [SCHED    174359ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:29 proto=gpio src=OFFL len=3 ts=174359 : 00 A9 0F
+04:39:29 [SCHED    174860ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:29 proto=gpio src=OFFL len=3 ts=174860 : 00 9E 11
+04:39:30 [SCHED    175361ms] run_all: running=1
+04:39:30 [SCHED    175361ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:30 proto=gpio src=OFFL len=3 ts=175361 : 00 93 13
+04:39:30 [SCHED    175862ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:30 proto=gpio src=OFFL len=3 ts=175862 : 00 88 15
+04:39:31 [SCHED    176363ms] run_all: running=1
+04:39:31 [SCHED    176363ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:31 proto=gpio src=OFFL len=3 ts=176363 : 00 7D 17
+04:39:31 [SCHED    176864ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:31 proto=gpio src=OFFL len=3 ts=176864 : 00 72 19
+04:39:32 [SCHED    177365ms] run_all: running=1
+04:39:32 [SCHED    177365ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:32 proto=gpio src=OFFL len=3 ts=177365 : 00 67 1B
+04:39:32 [SCHED    177866ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:32 proto=gpio src=OFFL len=3 ts=177866 : 00 5C 1D
+04:39:32 [MQTT] Status: Disconnected, Broker: 192.168.1.49
+04:39:33 [SCHED    178367ms] run_all: running=1
+04:39:33 [SCHED    178367ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:33 proto=gpio src=OFFL len=3 ts=178367 : 00 51 1F
+04:39:33 [SCHED    178868ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:33 proto=gpio src=OFFL len=3 ts=178868 : 00 46 21
+04:39:34 [SCHED    179369ms] run_all: running=1
+04:39:34 [SCHED    179369ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:34 proto=gpio src=OFFL len=3 ts=179369 : 00 3B 23
+04:39:34 [SCHED    179870ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:34 proto=gpio src=OFFL len=3 ts=179870 : 00 30 25
+04:39:35 [SCHED    180371ms] run_all: running=1
+04:39:35 [SCHED    180371ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:35 proto=gpio src=OFFL len=3 ts=180371 : 00 25 27
+04:39:35 [SCHED    180872ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:35 proto=gpio src=OFFL len=3 ts=180872 : 00 1A 29
+04:39:36 [SCHED    181373ms] run_all: running=1
+04:39:36 [SCHED    181373ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:36 proto=gpio src=OFFL len=3 ts=181373 : 00 0F 2B
+04:39:36 [SCHED    181874ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:36 proto=gpio src=OFFL len=3 ts=181874 : 00 04 2D
+04:39:37 [SCHED    182375ms] run_all: running=1
+04:39:37 [SCHED    182375ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:37 proto=gpio src=OFFL len=3 ts=182375 : 00 F9 2E
+04:39:37 [WIFI] hold over, reconnecting
+04:39:37 [SCHED    182876ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:37 proto=gpio src=OFFL len=3 ts=182876 : 00 EE 30
+04:39:38 [MQTT] Status: Disconnected, Broker: 192.168.1.49
+04:39:38 [SCHED    183377ms] run_all: running=1
+04:39:38 [SCHED    183377ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:38 proto=gpio src=OFFL len=3 ts=183377 : 00 E3 32
+04:39:38 WiFi connected
+04:39:38 [WIFI] ip=192.168.1.14
+04:39:38 [MQTT] Connecting to 192.168.1.49 port 1883...
+04:39:38 [SCHED    183878ms] publish[0/OFFL]: 3 bytes via gpio
+04:39:38 proto=gpio src=OFFL len=3 ts=183878 : 00 D8 34
+04:39:38 [MQTT] connected to broker
+04:39:38 [MQTT] Subscribing to node wildcard: pico/s3-001/#
+04:39:38 [MQTT] Subscribed OK to: node-wildcard
+04:39:38 [MQTT] Subscribing to broadcast: pico/broadcast/config
+04:39:38 [MQTT] Subscribed OK to: broadcast
+04:39:38 --- console: STOP
+04:39:38 --- console: CLEAR
+04:39:38 STOP
+04:39:38 [SCHED    184114ms] reset: cleared 8 slots
+04:39:38 [RULE] reset
+04:39:38 CLEARED
+04:39:39 [SCHED    185115ms] run_all: running=0
+04:39:40 [SCHED    186115ms] run_all: running=0
+04:39:40 --- console: TASKS
+04:39:41 [TASK] SchedulerTask    stack_free=12040 B
+04:39:41 [TASK] MQTTTask         stack_free=5408 B
+04:39:41 [TASK] ControlTask      stack_free=2224 B
+04:39:41 [TASK] InferenceTask    stack_free=7404 B
+04:39:41 [TASK] ApplicationTask  stack_free=3320 B
+04:39:41 [TASK] BenchmarkTask    stack_free=2260 B
+04:39:41 [TASK] heap_free=49964 B min_free=48764 B psram_free=1992792 B

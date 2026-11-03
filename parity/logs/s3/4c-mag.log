@@ -1,0 +1,162 @@
+04:38:27 [MQTT] Status: Connected, Broker: 192.168.1.49
+04:38:28 [SCHED    113906ms] run_all: running=0
+04:38:29 [SCHED    114960ms] run_all: running=0
+04:38:30 --- clear-mag: CLEAR
+04:38:30 [SCHED    115524ms] reset: cleared 8 slots
+04:38:30 [RULE] reset
+04:38:30 CLEARED
+04:38:31 [SCHED    116525ms] run_all: running=0
+04:38:32 [SCHED    117525ms] run_all: running=0
+04:38:32 --- cfg-mag-id: BEGINCFG|name=MAGID|proto=i2c|mode=poll|freq_hz=1|i2c.sda=1|i2c.scl=2|i2c.addr=0x1E|i2c.reg=0x0A|i2c.reg_size=1|i2c.read_len=3|i2c.restart=1|ENDCFG
+04:38:32 OK: Config applied (inline, delim='|')
+04:38:32 [I2C] pre_len=0 :
+04:38:32 [SCHED    118115ms] add[0]: MAGID on i2c freq=1.000Hz mode=poll I2C(sda=1,scl=2,addr=0x1E,reg=0xA,len=3)
+04:38:32 [SCHED] added: MAGID on i2c
+04:38:32 CFG: ok (added #0: MAGID)
+04:38:32 [MQTT] Status: Connected, Broker: 192.168.1.49
+04:38:33 [SCHED    119116ms] run_all: running=0
+04:38:34 [SCHED    120116ms] run_all: running=0
+04:38:35 --- cfg-acc: BEGINCFG|name=ACC|proto=i2c|mode=poll|freq_hz=1|i2c.sda=1|i2c.scl=2|i2c.addr=0x19|i2c.pre=0x20 0x57|i2c.reg=0xA8|i2c.reg_size=1|i2c.read_len=6|i2c.restart=1|ENDCFG
+04:38:35 OK: Config applied (inline, delim='|')
+04:38:35 [I2C] pre_len=2 : 20 57
+04:38:35 [SCHED    120723ms] add[1]: ACC on i2c freq=1.000Hz mode=poll I2C(sda=1,scl=2,addr=0x19,reg=0xA8,len=6)
+04:38:35 [SCHED] added: ACC on i2c
+04:38:35 CFG: ok (added #1: ACC)
+04:38:36 [SCHED    121724ms] run_all: running=0
+04:38:37 [SCHED    122724ms] run_all: running=0
+04:38:37 [MQTT] Status: Connected, Broker: 192.168.1.49
+04:38:38 --- cfg-mag: BEGINCFG|name=MAG|proto=i2c|mode=poll|freq_hz=1|i2c.sda=1|i2c.scl=2|i2c.addr=0x1E|i2c.pre=0x00 0x10 0x01 0xE0 0x02 0x00|i2c.reg=0x03|i2c.reg_size=1|i2c.read_len=6|i2c.restart=1|ENDCFG
+04:38:38 OK: Config applied (inline, delim='|')
+04:38:38 [I2C] pre_len=6 : 00 10 01 E0 02 00
+04:38:38 [SCHED    123317ms] add[2]: MAG on i2c freq=1.000Hz mode=poll I2C(sda=1,scl=2,addr=0x1E,reg=0x3,len=6)
+04:38:38 [SCHED] added: MAG on i2c
+04:38:38 CFG: ok (added #2: MAG)
+04:38:39 [SCHED    124318ms] run_all: running=0
+04:38:40 [SCHED    125318ms] run_all: running=0
+04:38:40 --- run-mag: RUN
+04:38:40 RUN
+04:38:40 [SCHED    125906ms] arm[0/MAGID]: next_run reset to NOW
+04:38:40 [SCHED    125906ms] arm[1/ACC]: next_run reset to NOW
+04:38:40 [SCHED    125906ms] arm[2/MAG]: next_run reset to NOW
+04:38:40 [SCHED    125907ms] publish[0/MAGID]: 3 bytes via i2c
+04:38:40 proto=i2c src=MAGID len=3 ts=125907 : 48 34 33
+04:38:40 [SCHED    125908ms] publish[1/ACC]: 6 bytes via i2c
+04:38:40 proto=i2c src=ACC len=6 ts=125909 : C0 EF 40 40 80 15
+04:38:40 [SCHED    125911ms] publish[2/MAG]: 6 bytes via i2c
+04:38:40 proto=i2c src=MAG len=6 ts=125911 : FD 2B 00 01 04 62
+04:38:41 [SCHED    126908ms] run_all: running=1
+04:38:41 [SCHED    126909ms] publish[0/MAGID]: 3 bytes via i2c
+04:38:41 proto=i2c src=MAGID len=3 ts=126909 : 48 34 33
+04:38:41 [SCHED    126910ms] publish[1/ACC]: 6 bytes via i2c
+04:38:41 proto=i2c src=ACC len=6 ts=126911 : 00 F0 80 40 C0 15
+04:38:41 [SCHED    126913ms] publish[2/MAG]: 6 bytes via i2c
+04:38:41 proto=i2c src=MAG len=6 ts=126913 : FD 29 FF FF 04 62
+04:38:42 [SCHED    127910ms] run_all: running=1
+04:38:42 [SCHED    127911ms] publish[0/MAGID]: 3 bytes via i2c
+04:38:42 proto=i2c src=MAGID len=3 ts=127911 : 48 34 33
+04:38:42 [SCHED    127912ms] publish[1/ACC]: 6 bytes via i2c
+04:38:42 proto=i2c src=ACC len=6 ts=127913 : 00 F0 40 40 C0 15
+04:38:42 [SCHED    127915ms] publish[2/MAG]: 6 bytes via i2c
+04:38:42 proto=i2c src=MAG len=6 ts=127915 : FD 2A FF FF 04 62
+04:38:42 [MQTT] Status: Connected, Broker: 192.168.1.49
+04:38:43 [SCHED    128912ms] run_all: running=1
+04:38:43 [SCHED    128913ms] publish[0/MAGID]: 3 bytes via i2c
+04:38:43 proto=i2c src=MAGID len=3 ts=128913 : 48 34 33
+04:38:43 [SCHED    128914ms] publish[1/ACC]: 6 bytes via i2c
+04:38:43 proto=i2c src=ACC len=6 ts=128915 : 00 F0 40 40 40 15
+04:38:43 [SCHED    128917ms] publish[2/MAG]: 6 bytes via i2c
+04:38:43 proto=i2c src=MAG len=6 ts=128917 : FD 2B FF FF 04 63
+04:38:44 [SCHED    129913ms] run_all: running=1
+04:38:44 [SCHED    129914ms] publish[0/MAGID]: 3 bytes via i2c
+04:38:44 proto=i2c src=MAGID len=3 ts=129914 : 48 34 33
+04:38:44 [SCHED    129917ms] publish[1/ACC]: 6 bytes via i2c
+04:38:44 proto=i2c src=ACC len=6 ts=129917 : 40 F0 40 40 00 16
+04:38:44 [SCHED    129919ms] publish[2/MAG]: 6 bytes via i2c
+04:38:44 proto=i2c src=MAG len=6 ts=129919 : FD 2A 00 00 04 61
+04:38:45 [SCHED    130914ms] run_all: running=1
+04:38:45 [SCHED    130915ms] publish[0/MAGID]: 3 bytes via i2c
+04:38:45 proto=i2c src=MAGID len=3 ts=130915 : 48 34 33
+04:38:45 [SCHED    130919ms] publish[1/ACC]: 6 bytes via i2c
+04:38:45 proto=i2c src=ACC len=6 ts=130919 : 00 F0 40 40 40 15
+04:38:45 [SCHED    130921ms] publish[2/MAG]: 6 bytes via i2c
+04:38:45 proto=i2c src=MAG len=6 ts=130921 : FD 2B 00 00 04 63
+04:38:45 --- stop-mag: STOP
+04:38:45 STOP
+04:38:46 [SCHED    132100ms] run_all: running=0
+04:38:47 [SCHED    133100ms] run_all: running=0
+04:38:47 [MQTT] Status: Connected, Broker: 192.168.1.49
+04:38:48 --- clear-mag-2: CLEAR
+04:38:48 [SCHED    133697ms] reset: cleared 8 slots
+04:38:48 [RULE] reset
+04:38:48 CLEARED
+04:38:49 [SCHED    134698ms] run_all: running=0
+04:38:50 [SCHED    135698ms] run_all: running=0
+04:38:51 --- cfg-norestart: BEGINCFG|name=MAGNR|proto=i2c|mode=poll|freq_hz=1|i2c.sda=1|i2c.scl=2|i2c.addr=0x1E|i2c.reg=0x0A|i2c.reg_size=1|i2c.read_len=3|i2c.restart=0|ENDCFG
+04:38:51 OK: Config applied (inline, delim='|')
+04:38:51 [I2C] pre_len=0 :
+04:38:51 [SCHED    136290ms] add[0]: MAGNR on i2c freq=1.000Hz mode=poll I2C(sda=1,scl=2,addr=0x1E,reg=0xA,len=3)
+04:38:51 [SCHED] added: MAGNR on i2c
+04:38:51 CFG: ok (added #0: MAGNR)
+04:38:52 [SCHED    137291ms] run_all: running=0
+04:38:53 [MQTT] Status: Connected, Broker: 192.168.1.49
+04:38:53 [SCHED    138291ms] run_all: running=0
+04:38:53 --- run-norestart: RUN
+04:38:53 RUN
+04:38:53 [SCHED    138883ms] arm[0/MAGNR]: next_run reset to NOW
+04:38:53 [SCHED    138884ms] publish[0/MAGNR]: 3 bytes via i2c
+04:38:53 proto=i2c src=MAGNR len=3 ts=138884 : 48 34 33
+04:38:54 [SCHED    139885ms] run_all: running=1
+04:38:54 [SCHED    139886ms] publish[0/MAGNR]: 3 bytes via i2c
+04:38:54 proto=i2c src=MAGNR len=3 ts=139886 : 48 34 33
+04:38:55 [SCHED    140887ms] run_all: running=1
+04:38:55 [SCHED    140888ms] publish[0/MAGNR]: 3 bytes via i2c
+04:38:55 proto=i2c src=MAGNR len=3 ts=140888 : 48 34 33
+04:38:56 [SCHED    141889ms] run_all: running=1
+04:38:56 [SCHED    141890ms] publish[0/MAGNR]: 3 bytes via i2c
+04:38:56 proto=i2c src=MAGNR len=3 ts=141890 : 48 34 33
+04:38:57 --- stop-nr: STOP
+04:38:57 STOP
+04:38:58 [MQTT] Status: Connected, Broker: 192.168.1.49
+04:38:58 [SCHED    143524ms] run_all: running=0
+04:38:59 [SCHED    144524ms] run_all: running=0
+04:38:59 --- clear-nr: CLEAR
+04:38:59 [SCHED    145118ms] reset: cleared 8 slots
+04:38:59 [RULE] reset
+04:38:59 CLEARED
+04:39:00 [SCHED    146119ms] run_all: running=0
+04:39:01 [SCHED    147119ms] run_all: running=0
+04:39:02 --- cfg-ghost: BEGINCFG|name=GHOST|proto=i2c|mode=poll|freq_hz=1|i2c.sda=1|i2c.scl=2|i2c.addr=0x2A|i2c.reg=0x00|i2c.reg_size=1|i2c.read_len=1|i2c.restart=1|ENDCFG
+04:39:02 OK: Config applied (inline, delim='|')
+04:39:02 [I2C] pre_len=0 :
+04:39:02 [SCHED    147722ms] add[0]: GHOST on i2c freq=1.000Hz mode=poll I2C(sda=1,scl=2,addr=0x2A,reg=0x0,len=1)
+04:39:02 [SCHED] added: GHOST on i2c
+04:39:02 CFG: ok (added #0: GHOST)
+04:39:02 [MQTT] Status: Connected, Broker: 192.168.1.49
+04:39:03 [SCHED    148723ms] run_all: running=0
+04:39:04 [SCHED    149723ms] run_all: running=0
+04:39:05 --- run-ghost: RUN
+04:39:05 RUN
+04:39:05 [SCHED    150310ms] arm[0/GHOST]: next_run reset to NOW
+04:39:05 [I2C] read_blocking failed err=-4
+04:39:05 [SCHED    150310ms] error[0/GHOST]: poll returned -4
+04:39:06 [SCHED    151311ms] run_all: running=1
+04:39:06 [I2C] read_blocking failed err=-4
+04:39:06 [SCHED    151311ms] error[0/GHOST]: poll returned -4
+04:39:07 [SCHED    152312ms] run_all: running=1
+04:39:07 [I2C] read_blocking failed err=-4
+04:39:07 [SCHED    152312ms] error[0/GHOST]: poll returned -4
+04:39:07 [MQTT] Status: Connected, Broker: 192.168.1.49
+04:39:08 [SCHED    153313ms] run_all: running=1
+04:39:08 [I2C] read_blocking failed err=-4
+04:39:08 [SCHED    153313ms] error[0/GHOST]: poll returned -4
+04:39:08 --- stop-ghost: STOP
+04:39:08 STOP
+04:39:09 [SCHED    154932ms] run_all: running=0
+04:39:10 [SCHED    155932ms] run_all: running=0
+04:39:11 --- clear-ghost: CLEAR
+04:39:11 [SCHED    156526ms] reset: cleared 8 slots
+04:39:11 [RULE] reset
+04:39:11 CLEARED
+04:39:12 [SCHED    157527ms] run_all: running=0
+04:39:13 [MQTT] Status: Connected, Broker: 192.168.1.49
+04:39:13 [SCHED    158527ms] run_all: running=0

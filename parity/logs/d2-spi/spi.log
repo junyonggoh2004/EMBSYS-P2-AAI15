@@ -1,0 +1,1492 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x15 (USB_UART_CHIP_RESET),boot:0x2a (SPI_FAST_FLASH_BOOT)
+Saved PC:0x4037ae32
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x10cc
+load:0x403c8700,len:0xc2c
+load:0x403cb700,len:0x30b0
+entry 0x403c88b8
+[BOOT] esp32s3_edge node s3-001
+[SCHED         7ms] reset: cleared 8 slots
+[MODEL] Model transfer subsystem initialised.
+[MODEL] No saved model; using the built-in one
+[INFER] Inference manager initialised.
+[TFLITE] Unloading previous model state...
+[TFLITE] Unload complete.
+[TFLITE] Verifying FlatBuffer at 0x3c1165e0...
+[TFLITE] Schema version 3 verified.
+[TFLITE] Creating OpResolver...
+[TFLITE] Ops registered.
+[TFLITE] Creating Interpreter (Arena size 65536)...
+[TFLITE] Allocating tensors...
+[TFLITE] Tensors allocated.
+[TFLITE] Model loaded OK!
+[TFLITE]   Inputs:  1 tensor(s), 16 total element(s)
+[TFLITE]   Outputs: 1 tensor(s), 16 total element(s)
+[TFLITE]   Arena:   2908 / 65536 bytes used
+[INFER] Base model loaded: 16 inputs, 16 outputs
+[INFER] Loaded 16 base normalization params and 16 threshold masks
+[WIFI] no credentials; running offline
+
+--- CLEAR
+[SCHED       580ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED       580ms] run_all: running=0
+[SCHED      1580ms] run_all: running=0
+
+--- BEGINCFG|name=SPI_LOOP|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED      1629ms] add[0]: SPI_LOOP on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: SPI_LOOP on spi
+CFG: ok (added #0: SPI_LOOP)
+[SCHED      2630ms] run_all: running=0
+[SCHED      3630ms] run_all: running=0
+
+--- SHOW
+[SHOW] sampling=0
+[SCHED] #0 name=SPI_LOOP proto=spi mode=poll freq=2.000Hz
+[SCHED] #0 SPI host=fspi sclk=11 mosi=12 miso=13 cs=10 hz=10000000 mode=0 tx=2 rx=2 timeout_ms=100
+[RULE] count=0
+[SCHED      4733ms] run_all: running=0
+
+--- RUN
+RUN
+[SCHED      5322ms] arm[0/SPI_LOOP]: next_run reset to NOW
+[SCHED      5322ms] publish[0/SPI_LOOP]: 2 bytes via spi
+proto=spi src=SPI_LOOP len=2 ts=5322 : A5 5A
+[SCHED      5823ms] run_all: running=1
+[SCHED      5823ms] publish[0/SPI_LOOP]: 2 bytes via spi
+proto=spi src=SPI_LOOP len=2 ts=5823 : A5 5A
+[SCHED      6324ms] publish[0/SPI_LOOP]: 2 bytes via spi
+proto=spi src=SPI_LOOP len=2 ts=6324 : A5 5A
+[SCHED      6824ms] run_all: running=1
+[SCHED      6824ms] publish[0/SPI_LOOP]: 2 bytes via spi
+proto=spi src=SPI_LOOP len=2 ts=6824 : A5 5A
+[SCHED      7325ms] publish[0/SPI_LOOP]: 2 bytes via spi
+proto=spi src=SPI_LOOP len=2 ts=7325 : A5 5A
+[SCHED      7825ms] run_all: running=1
+[SCHED      7825ms] publish[0/SPI_LOOP]: 2 bytes via spi
+proto=spi src=SPI_LOOP len=2 ts=7825 : A5 5A
+[SCHED      8326ms] publish[0/SPI_LOOP]: 2 bytes via spi
+proto=spi src=SPI_LOOP len=2 ts=8326 : A5 5A
+[SCHED      8826ms] run_all: running=1
+[SCHED      8826ms] publish[0/SPI_LOOP]: 2 bytes via spi
+proto=spi src=SPI_LOOP len=2 ts=8826 : A5 5A
+[SCHED      9327ms] publish[0/SPI_LOOP]: 2 bytes via spi
+proto=spi src=SPI_LOOP len=2 ts=9327 : A5 5A
+
+--- STOP
+STOP
+[SCHED     10350ms] run_all: running=0
+
+--- CLEAR
+[SCHED     10440ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED     11440ms] run_all: running=0
+
+--- BEGINCFG|name=MODE1|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=1|spi.tx=0x01 0xF1|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     11488ms] add[0]: MODE1 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=1,tx=2,rx=2,timeout=100ms)
+[SCHED] added: MODE1 on spi
+CFG: ok (added #0: MODE1)
+[SCHED     12489ms] run_all: running=0
+
+--- RUN
+RUN
+[SCHED     12550ms] arm[0/MODE1]: next_run reset to NOW
+[SCHED     12550ms] publish[0/MODE1]: 2 bytes via spi
+proto=spi src=MODE1 len=2 ts=12550 : 01 F1
+[SCHED     13051ms] publish[0/MODE1]: 2 bytes via spi
+proto=spi src=MODE1 len=2 ts=13051 : 01 F1
+[SCHED     13551ms] run_all: running=1
+[SCHED     13551ms] publish[0/MODE1]: 2 bytes via spi
+proto=spi src=MODE1 len=2 ts=13551 : 01 F1
+[SCHED     14052ms] publish[0/MODE1]: 2 bytes via spi
+proto=spi src=MODE1 len=2 ts=14052 : 01 F1
+[SCHED     14552ms] run_all: running=1
+[SCHED     14552ms] publish[0/MODE1]: 2 bytes via spi
+proto=spi src=MODE1 len=2 ts=14552 : 01 F1
+
+--- STOP
+STOP
+
+--- CLEAR
+[SCHED     15098ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=MODE2|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=2|spi.tx=0x02 0xF2|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     15612ms] add[0]: MODE2 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=2,tx=2,rx=2,timeout=100ms)
+[SCHED] added: MODE2 on spi
+CFG: ok (added #0: MODE2)
+[SCHED     15612ms] run_all: running=0
+[SCHED     16613ms] run_all: running=0
+
+--- RUN
+RUN
+[SCHED     16660ms] arm[0/MODE2]: next_run reset to NOW
+[SCHED     16660ms] publish[0/MODE2]: 2 bytes via spi
+proto=spi src=MODE2 len=2 ts=16660 : 02 F2
+[SCHED     17161ms] publish[0/MODE2]: 2 bytes via spi
+proto=spi src=MODE2 len=2 ts=17161 : 02 F2
+[SCHED     17661ms] run_all: running=1
+[SCHED     17661ms] publish[0/MODE2]: 2 bytes via spi
+proto=spi src=MODE2 len=2 ts=17661 : 02 F2
+[SCHED     18162ms] publish[0/MODE2]: 2 bytes via spi
+proto=spi src=MODE2 len=2 ts=18162 : 02 F2
+[SCHED     18662ms] run_all: running=1
+[SCHED     18662ms] publish[0/MODE2]: 2 bytes via spi
+proto=spi src=MODE2 len=2 ts=18662 : 02 F2
+
+--- STOP
+STOP
+
+--- CLEAR
+[SCHED     19284ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=MODE3|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=3|spi.tx=0x03 0xF3|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     19820ms] add[0]: MODE3 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=3,tx=2,rx=2,timeout=100ms)
+[SCHED] added: MODE3 on spi
+CFG: ok (added #0: MODE3)
+[SCHED     19821ms] run_all: running=0
+[SCHED     20821ms] run_all: running=0
+
+--- RUN
+RUN
+[SCHED     20883ms] arm[0/MODE3]: next_run reset to NOW
+[SCHED     20883ms] publish[0/MODE3]: 2 bytes via spi
+proto=spi src=MODE3 len=2 ts=20883 : 03 F3
+[SCHED     21384ms] publish[0/MODE3]: 2 bytes via spi
+proto=spi src=MODE3 len=2 ts=21384 : 03 F3
+[SCHED     21884ms] run_all: running=1
+[SCHED     21884ms] publish[0/MODE3]: 2 bytes via spi
+proto=spi src=MODE3 len=2 ts=21884 : 03 F3
+[SCHED     22385ms] publish[0/MODE3]: 2 bytes via spi
+proto=spi src=MODE3 len=2 ts=22385 : 03 F3
+[SCHED     22885ms] run_all: running=1
+[SCHED     22885ms] publish[0/MODE3]: 2 bytes via spi
+proto=spi src=MODE3 len=2 ts=22885 : 03 F3
+
+--- STOP
+STOP
+
+--- CLEAR
+[SCHED     23520ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=SPI_128|proto=spi|mode=poll|freq_hz=1|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63|spi.read_len=128|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     24050ms] add[0]: SPI_128 on spi freq=1.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=64,rx=128,timeout=100ms)
+[SCHED] added: SPI_128 on spi
+CFG: ok (added #0: SPI_128)
+[SCHED     24051ms] run_all: running=0
+[SCHED     25051ms] run_all: running=0
+
+--- RUN
+RUN
+[SCHED     25555ms] arm[0/SPI_128]: next_run reset to NOW
+[SCHED     25555ms] publish[0/SPI_128]: 128 bytes via spi
+proto=spi src=SPI_128 len=128 ts=25555 : 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F 20 21 22 23 24 25 26 27 28 29 2A 2B 2C 2D 2E 2F 30 31 32 33 34 35 36 37 38 39 3A 3B 3C 3D 3E 3F 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[SCHED     26556ms] run_all: running=1
+[SCHED     26556ms] publish[0/SPI_128]: 128 bytes via spi
+proto=spi src=SPI_128 len=128 ts=26556 : 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F 20 21 22 23 24 25 26 27 28 29 2A 2B 2C 2D 2E 2F 30 31 32 33 34 35 36 37 38 39 3A 3B 3C 3D 3E 3F 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[SCHED     27557ms] run_all: running=1
+[SCHED     27557ms] publish[0/SPI_128]: 128 bytes via spi
+proto=spi src=SPI_128 len=128 ts=27557 : 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F 20 21 22 23 24 25 26 27 28 29 2A 2B 2C 2D 2E 2F 30 31 32 33 34 35 36 37 38 39 3A 3B 3C 3D 3E 3F 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+--- STOP
+STOP
+
+--- CLEAR
+[SCHED     28651ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED     28651ms] run_all: running=0
+
+--- BEGINCFG|name=BAD_bad-host|proto=spi|mode=poll|freq_hz=2|spi.host=hspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED] config BAD_bad-host refused: unsupported spi.host
+CFG: add failed (-5)
+[SCHED     30180ms] run_all: running=0
+
+--- BEGINCFG|name=BAD_stream|proto=spi|mode=stream|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED] config BAD_stream refused: spi stream unsupported
+CFG: add failed (-5)
+[SCHED     31235ms] run_all: running=0
+
+--- BEGINCFG|name=BAD_bad-mode|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=4|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED] config BAD_bad-mode refused: spi.mode must be 0..3
+CFG: add failed (-5)
+[SCHED     32290ms] run_all: running=0
+
+--- BEGINCFG|name=BAD_reserved-pin|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=19|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED] config BAD_reserved-pi refused: invalid or reserved SPI pin
+CFG: add failed (-5)
+[SCHED     33360ms] run_all: running=0
+
+--- BEGINCFG|name=BAD_duplicate-pin|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=11|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED] config BAD_duplicate-p refused: SPI pins must be unique
+CFG: add failed (-5)
+[SCHED     34432ms] run_all: running=0
+
+--- BEGINCFG|name=BAD_missing-miso|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=-1|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED] config BAD_missing-mis refused: spi.miso required for RX
+CFG: add failed (-5)
+[SCHED     35477ms] run_all: running=0
+
+--- BEGINCFG|name=BAD_oversize-rx|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=129|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED] config BAD_oversize-rx refused: spi.read_len exceeds 128
+CFG: add failed (-5)
+[SCHED     36541ms] run_all: running=0
+
+--- BEGINCFG|name=BAD_zero-timeout|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=0|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED] config BAD_zero-timeou refused: spi.timeout_ms out of range
+CFG: add failed (-5)
+[SCHED     37610ms] run_all: running=0
+
+--- BEGINCFG|name=BAD_empty|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=|spi.read_len=0|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED] config BAD_empty refused: SPI transfer is empty
+CFG: add failed (-5)
+[SCHED     38664ms] run_all: running=0
+
+--- BEGINCFG|name=SHARE1|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     38714ms] add[0]: SHARE1 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: SHARE1 on spi
+CFG: ok (added #0: SHARE1)
+[SCHED     39715ms] run_all: running=0
+
+--- BEGINCFG|name=SHARE2|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=9|spi.hz=10000000|spi.mode=0|spi.tx=0x12 0x34|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     39776ms] add[1]: SHARE2 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=9,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: SHARE2 on spi
+CFG: ok (added #1: SHARE2)
+[SCHED     40777ms] run_all: running=0
+
+--- BEGINCFG|name=CONFLICT|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=14|spi.mosi=12|spi.miso=13|spi.cs=8|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     40837ms] add[2]: init_cfg FAILED for CONFLICT on spi
+CFG: add failed (-2)
+[SCHED     41837ms] run_all: running=0
+
+--- RUN
+RUN
+[SCHED     41884ms] arm[0/SHARE1]: next_run reset to NOW
+[SCHED     41884ms] arm[1/SHARE2]: next_run reset to NOW
+[SCHED     41884ms] publish[0/SHARE1]: 2 bytes via spi
+proto=spi src=SHARE1 len=2 ts=41884 : A5 5A
+[SCHED     41884ms] publish[1/SHARE2]: 2 bytes via spi
+proto=spi src=SHARE2 len=2 ts=41885 : 12 34
+[SCHED     42385ms] publish[0/SHARE1]: 2 bytes via spi
+proto=spi src=SHARE1 len=2 ts=42385 : A5 5A
+[SCHED     42385ms] publish[1/SHARE2]: 2 bytes via spi
+proto=spi src=SHARE2 len=2 ts=42385 : 12 34
+[SCHED     42886ms] run_all: running=1
+[SCHED     42886ms] publish[0/SHARE1]: 2 bytes via spi
+proto=spi src=SHARE1 len=2 ts=42886 : A5 5A
+[SCHED     42886ms] publish[1/SHARE2]: 2 bytes via spi
+proto=spi src=SHARE2 len=2 ts=42886 : 12 34
+[SCHED     43387ms] publish[0/SHARE1]: 2 bytes via spi
+proto=spi src=SHARE1 len=2 ts=43387 : A5 5A
+[SCHED     43387ms] publish[1/SHARE2]: 2 bytes via spi
+proto=spi src=SHARE2 len=2 ts=43387 : 12 34
+[SCHED     43888ms] run_all: running=1
+[SCHED     43888ms] publish[0/SHARE1]: 2 bytes via spi
+proto=spi src=SHARE1 len=2 ts=43888 : A5 5A
+[SCHED     43888ms] publish[1/SHARE2]: 2 bytes via spi
+proto=spi src=SHARE2 len=2 ts=43888 : 12 34
+[SCHED     44389ms] publish[0/SHARE1]: 2 bytes via spi
+proto=spi src=SHARE1 len=2 ts=44389 : A5 5A
+[SCHED     44389ms] publish[1/SHARE2]: 2 bytes via spi
+proto=spi src=SHARE2 len=2 ts=44389 : 12 34
+[SCHED     44890ms] run_all: running=1
+[SCHED     44890ms] publish[0/SHARE1]: 2 bytes via spi
+proto=spi src=SHARE1 len=2 ts=44890 : A5 5A
+[SCHED     44890ms] publish[1/SHARE2]: 2 bytes via spi
+proto=spi src=SHARE2 len=2 ts=44890 : 12 34
+
+--- STOP
+STOP
+[SCHED     45926ms] run_all: running=0
+
+--- CLEAR
+[SCHED     45988ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED     46988ms] run_all: running=0
+
+--- TASKS
+[TASK] SchedulerTask    stack_free=12864 B
+[TASK] MQTTTask         stack_free=6968 B
+[TASK] ControlTask      stack_free=2264 B
+[TASK] InferenceTask    stack_free=7412 B
+[TASK] ApplicationTask  stack_free=3312 B
+[TASK] BenchmarkTask    stack_free=2252 B
+[TASK] heap_free=95748 B min_free=95312 B psram_free=2029552 B
+[SCHED     47988ms] run_all: running=0
+
+--- BEGINCFG|name=LIFE0|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     48109ms] add[0]: LIFE0 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE0 on spi
+CFG: ok (added #0: LIFE0)
+
+--- CLEAR
+[SCHED     48315ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE1|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     48523ms] add[0]: LIFE1 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE1 on spi
+CFG: ok (added #0: LIFE1)
+
+--- CLEAR
+[SCHED     48738ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE2|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     48947ms] add[0]: LIFE2 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE2 on spi
+CFG: ok (added #0: LIFE2)
+
+--- CLEAR
+[SCHED     49154ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED     49154ms] run_all: running=0
+
+--- BEGINCFG|name=LIFE3|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     49363ms] add[0]: LIFE3 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE3 on spi
+CFG: ok (added #0: LIFE3)
+
+--- CLEAR
+[SCHED     49572ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE4|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     49780ms] add[0]: LIFE4 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE4 on spi
+CFG: ok (added #0: LIFE4)
+
+--- CLEAR
+[SCHED     49987ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE5|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     50197ms] add[0]: LIFE5 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE5 on spi
+CFG: ok (added #0: LIFE5)
+[SCHED     50198ms] run_all: running=0
+
+--- CLEAR
+[SCHED     50411ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE6|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     50627ms] add[0]: LIFE6 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE6 on spi
+CFG: ok (added #0: LIFE6)
+
+--- CLEAR
+[SCHED     50843ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE7|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     51058ms] add[0]: LIFE7 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE7 on spi
+CFG: ok (added #0: LIFE7)
+
+--- CLEAR
+[SCHED     51273ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED     51273ms] run_all: running=0
+
+--- BEGINCFG|name=LIFE8|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     51481ms] add[0]: LIFE8 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE8 on spi
+CFG: ok (added #0: LIFE8)
+
+--- CLEAR
+[SCHED     51688ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE9|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     51898ms] add[0]: LIFE9 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE9 on spi
+CFG: ok (added #0: LIFE9)
+
+--- CLEAR
+[SCHED     52112ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE10|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     52328ms] add[0]: LIFE10 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE10 on spi
+CFG: ok (added #0: LIFE10)
+[SCHED     52329ms] run_all: running=0
+
+--- CLEAR
+[SCHED     52533ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE11|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     52745ms] add[0]: LIFE11 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE11 on spi
+CFG: ok (added #0: LIFE11)
+
+--- CLEAR
+[SCHED     52945ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE12|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     53155ms] add[0]: LIFE12 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE12 on spi
+CFG: ok (added #0: LIFE12)
+
+--- CLEAR
+[SCHED     53358ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED     53358ms] run_all: running=0
+
+--- BEGINCFG|name=LIFE13|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     53564ms] add[0]: LIFE13 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE13 on spi
+CFG: ok (added #0: LIFE13)
+
+--- CLEAR
+[SCHED     53778ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE14|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     53988ms] add[0]: LIFE14 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE14 on spi
+CFG: ok (added #0: LIFE14)
+
+--- CLEAR
+[SCHED     54195ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE15|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     54411ms] add[0]: LIFE15 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE15 on spi
+CFG: ok (added #0: LIFE15)
+[SCHED     54412ms] run_all: running=0
+
+--- CLEAR
+[SCHED     54618ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE16|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     54828ms] add[0]: LIFE16 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE16 on spi
+CFG: ok (added #0: LIFE16)
+
+--- CLEAR
+[SCHED     55042ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE17|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     55251ms] add[0]: LIFE17 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE17 on spi
+CFG: ok (added #0: LIFE17)
+
+--- CLEAR
+[SCHED     55458ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED     55458ms] run_all: running=0
+
+--- BEGINCFG|name=LIFE18|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     55677ms] add[0]: LIFE18 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE18 on spi
+CFG: ok (added #0: LIFE18)
+
+--- CLEAR
+[SCHED     55882ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE19|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     56107ms] add[0]: LIFE19 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE19 on spi
+CFG: ok (added #0: LIFE19)
+
+--- CLEAR
+[SCHED     56314ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE20|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     56522ms] add[0]: LIFE20 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE20 on spi
+CFG: ok (added #0: LIFE20)
+[SCHED     56523ms] run_all: running=0
+
+--- CLEAR
+[SCHED     56726ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE21|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     56848ms] add[0]: LIFE21 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE21 on spi
+CFG: ok (added #0: LIFE21)
+
+--- CLEAR
+[SCHED     57052ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE22|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     57258ms] add[0]: LIFE22 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE22 on spi
+CFG: ok (added #0: LIFE22)
+
+--- CLEAR
+[SCHED     57473ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE23|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     57688ms] add[0]: LIFE23 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE23 on spi
+CFG: ok (added #0: LIFE23)
+[SCHED     57689ms] run_all: running=0
+
+--- CLEAR
+[SCHED     57895ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE24|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     58105ms] add[0]: LIFE24 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE24 on spi
+CFG: ok (added #0: LIFE24)
+
+--- CLEAR
+[SCHED     58319ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE25|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     58528ms] add[0]: LIFE25 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE25 on spi
+CFG: ok (added #0: LIFE25)
+
+--- CLEAR
+[SCHED     58743ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED     58743ms] run_all: running=0
+
+--- BEGINCFG|name=LIFE26|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     58952ms] add[0]: LIFE26 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE26 on spi
+CFG: ok (added #0: LIFE26)
+
+--- CLEAR
+[SCHED     59159ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE27|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     59377ms] add[0]: LIFE27 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE27 on spi
+CFG: ok (added #0: LIFE27)
+
+--- CLEAR
+[SCHED     59583ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE28|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     59792ms] add[0]: LIFE28 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE28 on spi
+CFG: ok (added #0: LIFE28)
+[SCHED     59793ms] run_all: running=0
+
+--- CLEAR
+[SCHED     60020ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE29|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     60226ms] add[0]: LIFE29 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE29 on spi
+CFG: ok (added #0: LIFE29)
+
+--- CLEAR
+[SCHED     60437ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE30|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     60647ms] add[0]: LIFE30 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE30 on spi
+CFG: ok (added #0: LIFE30)
+
+--- CLEAR
+[SCHED     60858ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED     60858ms] run_all: running=0
+
+--- BEGINCFG|name=LIFE31|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     61069ms] add[0]: LIFE31 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE31 on spi
+CFG: ok (added #0: LIFE31)
+
+--- CLEAR
+[SCHED     61277ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE32|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     61487ms] add[0]: LIFE32 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE32 on spi
+CFG: ok (added #0: LIFE32)
+
+--- CLEAR
+[SCHED     61709ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE33|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     61917ms] add[0]: LIFE33 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE33 on spi
+CFG: ok (added #0: LIFE33)
+[SCHED     61918ms] run_all: running=0
+
+--- CLEAR
+[SCHED     62124ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE34|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     62326ms] add[0]: LIFE34 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE34 on spi
+CFG: ok (added #0: LIFE34)
+
+--- CLEAR
+[SCHED     62542ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE35|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     62750ms] add[0]: LIFE35 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE35 on spi
+CFG: ok (added #0: LIFE35)
+
+--- CLEAR
+[SCHED     62957ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED     62957ms] run_all: running=0
+
+--- BEGINCFG|name=LIFE36|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     63175ms] add[0]: LIFE36 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE36 on spi
+CFG: ok (added #0: LIFE36)
+
+--- CLEAR
+[SCHED     63381ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE37|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     63590ms] add[0]: LIFE37 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE37 on spi
+CFG: ok (added #0: LIFE37)
+
+--- CLEAR
+[SCHED     63806ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE38|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     64013ms] add[0]: LIFE38 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE38 on spi
+CFG: ok (added #0: LIFE38)
+[SCHED     64014ms] run_all: running=0
+
+--- CLEAR
+[SCHED     64224ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE39|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     64430ms] add[0]: LIFE39 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE39 on spi
+CFG: ok (added #0: LIFE39)
+
+--- CLEAR
+[SCHED     64637ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE40|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     64844ms] add[0]: LIFE40 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE40 on spi
+CFG: ok (added #0: LIFE40)
+
+--- CLEAR
+[SCHED     65044ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED     65044ms] run_all: running=0
+
+--- BEGINCFG|name=LIFE41|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     65250ms] add[0]: LIFE41 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE41 on spi
+CFG: ok (added #0: LIFE41)
+
+--- CLEAR
+[SCHED     65456ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE42|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     65680ms] add[0]: LIFE42 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE42 on spi
+CFG: ok (added #0: LIFE42)
+
+--- CLEAR
+[SCHED     65894ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE43|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     66110ms] add[0]: LIFE43 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE43 on spi
+CFG: ok (added #0: LIFE43)
+[SCHED     66111ms] run_all: running=0
+
+--- CLEAR
+[SCHED     66317ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE44|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     66527ms] add[0]: LIFE44 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE44 on spi
+CFG: ok (added #0: LIFE44)
+
+--- CLEAR
+[SCHED     66743ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE45|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     66951ms] add[0]: LIFE45 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE45 on spi
+CFG: ok (added #0: LIFE45)
+
+--- CLEAR
+[SCHED     67158ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED     67158ms] run_all: running=0
+
+--- BEGINCFG|name=LIFE46|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     67376ms] add[0]: LIFE46 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE46 on spi
+CFG: ok (added #0: LIFE46)
+
+--- CLEAR
+[SCHED     67581ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE47|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     67791ms] add[0]: LIFE47 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE47 on spi
+CFG: ok (added #0: LIFE47)
+
+--- CLEAR
+[SCHED     67998ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE48|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     68221ms] add[0]: LIFE48 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE48 on spi
+CFG: ok (added #0: LIFE48)
+[SCHED     68222ms] run_all: running=0
+
+--- CLEAR
+[SCHED     68429ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE49|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     68639ms] add[0]: LIFE49 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE49 on spi
+CFG: ok (added #0: LIFE49)
+
+--- CLEAR
+[SCHED     68841ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE50|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     69050ms] add[0]: LIFE50 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE50 on spi
+CFG: ok (added #0: LIFE50)
+
+--- CLEAR
+[SCHED     69261ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED     69261ms] run_all: running=0
+
+--- BEGINCFG|name=LIFE51|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     69478ms] add[0]: LIFE51 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE51 on spi
+CFG: ok (added #0: LIFE51)
+
+--- CLEAR
+[SCHED     69685ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE52|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     69910ms] add[0]: LIFE52 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE52 on spi
+CFG: ok (added #0: LIFE52)
+
+--- CLEAR
+[SCHED     70119ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE53|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     70341ms] add[0]: LIFE53 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE53 on spi
+CFG: ok (added #0: LIFE53)
+[SCHED     70342ms] run_all: running=0
+
+--- CLEAR
+[SCHED     70546ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE54|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     70755ms] add[0]: LIFE54 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE54 on spi
+CFG: ok (added #0: LIFE54)
+
+--- CLEAR
+[SCHED     70962ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE55|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     71183ms] add[0]: LIFE55 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE55 on spi
+CFG: ok (added #0: LIFE55)
+
+--- CLEAR
+[SCHED     71386ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED     71386ms] run_all: running=0
+
+--- BEGINCFG|name=LIFE56|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     71595ms] add[0]: LIFE56 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE56 on spi
+CFG: ok (added #0: LIFE56)
+
+--- CLEAR
+[SCHED     71810ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE57|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     72020ms] add[0]: LIFE57 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE57 on spi
+CFG: ok (added #0: LIFE57)
+
+--- CLEAR
+[SCHED     72222ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE58|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     72429ms] add[0]: LIFE58 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE58 on spi
+CFG: ok (added #0: LIFE58)
+[SCHED     72430ms] run_all: running=0
+
+--- CLEAR
+[SCHED     72636ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE59|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     72843ms] add[0]: LIFE59 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE59 on spi
+CFG: ok (added #0: LIFE59)
+
+--- CLEAR
+[SCHED     73046ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE60|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     73255ms] add[0]: LIFE60 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE60 on spi
+CFG: ok (added #0: LIFE60)
+
+--- CLEAR
+[SCHED     73455ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED     73455ms] run_all: running=0
+
+--- BEGINCFG|name=LIFE61|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     73665ms] add[0]: LIFE61 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE61 on spi
+CFG: ok (added #0: LIFE61)
+
+--- CLEAR
+[SCHED     73879ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE62|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     74095ms] add[0]: LIFE62 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE62 on spi
+CFG: ok (added #0: LIFE62)
+
+--- CLEAR
+[SCHED     74309ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE63|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     74518ms] add[0]: LIFE63 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE63 on spi
+CFG: ok (added #0: LIFE63)
+[SCHED     74519ms] run_all: running=0
+
+--- CLEAR
+[SCHED     74726ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE64|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     74944ms] add[0]: LIFE64 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE64 on spi
+CFG: ok (added #0: LIFE64)
+
+--- CLEAR
+[SCHED     75149ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE65|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     75355ms] add[0]: LIFE65 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE65 on spi
+CFG: ok (added #0: LIFE65)
+
+--- CLEAR
+[SCHED     75574ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED     75574ms] run_all: running=0
+
+--- BEGINCFG|name=LIFE66|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     75782ms] add[0]: LIFE66 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE66 on spi
+CFG: ok (added #0: LIFE66)
+
+--- CLEAR
+[SCHED     75989ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE67|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     76207ms] add[0]: LIFE67 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE67 on spi
+CFG: ok (added #0: LIFE67)
+
+--- CLEAR
+[SCHED     76413ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE68|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     76622ms] add[0]: LIFE68 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE68 on spi
+CFG: ok (added #0: LIFE68)
+[SCHED     76623ms] run_all: running=0
+
+--- CLEAR
+[SCHED     76829ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE69|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     77039ms] add[0]: LIFE69 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE69 on spi
+CFG: ok (added #0: LIFE69)
+
+--- CLEAR
+[SCHED     77246ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE70|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     77456ms] add[0]: LIFE70 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE70 on spi
+CFG: ok (added #0: LIFE70)
+
+--- CLEAR
+[SCHED     77671ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED     77671ms] run_all: running=0
+
+--- BEGINCFG|name=LIFE71|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     77879ms] add[0]: LIFE71 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE71 on spi
+CFG: ok (added #0: LIFE71)
+
+--- CLEAR
+[SCHED     78086ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE72|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     78296ms] add[0]: LIFE72 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE72 on spi
+CFG: ok (added #0: LIFE72)
+
+--- CLEAR
+[SCHED     78510ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE73|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     78720ms] add[0]: LIFE73 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE73 on spi
+CFG: ok (added #0: LIFE73)
+[SCHED     78720ms] run_all: running=0
+
+--- CLEAR
+[SCHED     78926ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE74|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     79136ms] add[0]: LIFE74 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE74 on spi
+CFG: ok (added #0: LIFE74)
+
+--- CLEAR
+[SCHED     79343ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE75|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     79559ms] add[0]: LIFE75 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE75 on spi
+CFG: ok (added #0: LIFE75)
+
+--- CLEAR
+[SCHED     79774ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED     79774ms] run_all: running=0
+
+--- BEGINCFG|name=LIFE76|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     79983ms] add[0]: LIFE76 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE76 on spi
+CFG: ok (added #0: LIFE76)
+
+--- CLEAR
+[SCHED     80190ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE77|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     80407ms] add[0]: LIFE77 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE77 on spi
+CFG: ok (added #0: LIFE77)
+
+--- CLEAR
+[SCHED     80629ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE78|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     80834ms] add[0]: LIFE78 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE78 on spi
+CFG: ok (added #0: LIFE78)
+[SCHED     80835ms] run_all: running=0
+
+--- CLEAR
+[SCHED     81037ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE79|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     81253ms] add[0]: LIFE79 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE79 on spi
+CFG: ok (added #0: LIFE79)
+
+--- CLEAR
+[SCHED     81453ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE80|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     81663ms] add[0]: LIFE80 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE80 on spi
+CFG: ok (added #0: LIFE80)
+
+--- CLEAR
+[SCHED     81877ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED     81877ms] run_all: running=0
+
+--- BEGINCFG|name=LIFE81|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     82087ms] add[0]: LIFE81 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE81 on spi
+CFG: ok (added #0: LIFE81)
+
+--- CLEAR
+[SCHED     82294ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE82|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     82510ms] add[0]: LIFE82 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE82 on spi
+CFG: ok (added #0: LIFE82)
+
+--- CLEAR
+[SCHED     82717ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE83|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     82927ms] add[0]: LIFE83 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE83 on spi
+CFG: ok (added #0: LIFE83)
+[SCHED     82928ms] run_all: running=0
+
+--- CLEAR
+[SCHED     83143ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE84|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     83350ms] add[0]: LIFE84 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE84 on spi
+CFG: ok (added #0: LIFE84)
+
+--- CLEAR
+[SCHED     83573ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE85|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     83781ms] add[0]: LIFE85 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE85 on spi
+CFG: ok (added #0: LIFE85)
+
+--- CLEAR
+[SCHED     83995ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED     83995ms] run_all: running=0
+
+--- BEGINCFG|name=LIFE86|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     84218ms] add[0]: LIFE86 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE86 on spi
+CFG: ok (added #0: LIFE86)
+
+--- CLEAR
+[SCHED     84433ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE87|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     84642ms] add[0]: LIFE87 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE87 on spi
+CFG: ok (added #0: LIFE87)
+
+--- CLEAR
+[SCHED     84859ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE88|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     85065ms] add[0]: LIFE88 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE88 on spi
+CFG: ok (added #0: LIFE88)
+[SCHED     85066ms] run_all: running=0
+
+--- CLEAR
+[SCHED     85280ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE89|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     85487ms] add[0]: LIFE89 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE89 on spi
+CFG: ok (added #0: LIFE89)
+
+--- CLEAR
+[SCHED     85704ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE90|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     85913ms] add[0]: LIFE90 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE90 on spi
+CFG: ok (added #0: LIFE90)
+
+--- CLEAR
+[SCHED     86126ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED     86126ms] run_all: running=0
+
+--- BEGINCFG|name=LIFE91|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     86343ms] add[0]: LIFE91 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE91 on spi
+CFG: ok (added #0: LIFE91)
+
+--- CLEAR
+[SCHED     86550ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE92|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     86759ms] add[0]: LIFE92 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE92 on spi
+CFG: ok (added #0: LIFE92)
+
+--- CLEAR
+[SCHED     86966ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE93|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     87176ms] add[0]: LIFE93 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE93 on spi
+CFG: ok (added #0: LIFE93)
+[SCHED     87177ms] run_all: running=0
+
+--- CLEAR
+[SCHED     87390ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE94|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     87599ms] add[0]: LIFE94 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE94 on spi
+CFG: ok (added #0: LIFE94)
+
+--- CLEAR
+[SCHED     87808ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE95|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     88015ms] add[0]: LIFE95 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE95 on spi
+CFG: ok (added #0: LIFE95)
+
+--- CLEAR
+[SCHED     88223ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+[SCHED     88223ms] run_all: running=0
+
+--- BEGINCFG|name=LIFE96|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     88441ms] add[0]: LIFE96 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE96 on spi
+CFG: ok (added #0: LIFE96)
+
+--- CLEAR
+[SCHED     88647ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE97|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     88861ms] add[0]: LIFE97 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE97 on spi
+CFG: ok (added #0: LIFE97)
+
+--- CLEAR
+[SCHED     89063ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE98|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     89281ms] add[0]: LIFE98 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE98 on spi
+CFG: ok (added #0: LIFE98)
+[SCHED     89282ms] run_all: running=0
+
+--- CLEAR
+[SCHED     89487ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- BEGINCFG|name=LIFE99|proto=spi|mode=poll|freq_hz=2|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000000|spi.mode=0|spi.tx=0xA5 0x5A|spi.read_len=2|spi.timeout_ms=100|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED     89696ms] add[0]: LIFE99 on spi freq=2.000Hz mode=poll SPI(host=fspi,sclk=11,mosi=12,miso=13,cs=10,hz=10000000,mode=0,tx=2,rx=2,timeout=100ms)
+[SCHED] added: LIFE99 on spi
+CFG: ok (added #0: LIFE99)
+
+--- CLEAR
+[SCHED     89911ms] reset: cleared 8 slots
+[RULE] reset
+CLEARED
+
+--- TASKS
+[TASK] SchedulerTask    stack_free=12864 B
+[TASK] MQTTTask         stack_free=6968 B
+[TASK] ControlTask      stack_free=2264 B
+[TASK] InferenceTask    stack_free=7412 B
+[TASK] ApplicationTask  stack_free=3312 B
+[TASK] BenchmarkTask    stack_free=2252 B
+[TASK] heap_free=95748 B min_free=95312 B psram_free=2029552 B
+[SCHED     90912ms] run_all: running=0

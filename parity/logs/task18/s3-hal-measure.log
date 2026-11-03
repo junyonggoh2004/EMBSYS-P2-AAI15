@@ -1,0 +1,46 @@
+16:30:14 [TICK] 38450
+16:30:14 [HALTEST] start
+16:30:14 [HALTEST] PASS time-monotonic 38570826 -> 38570827 us
+16:30:14 [HALTEST] PASS time-ms-matches-us ms=38570 us/1000=38570
+16:30:14 [HALTEST] PASS delay-ms-100 100750 us
+16:30:14 [HALTEST] PASS delay-ms-1 1945 us
+16:30:14 [HALTEST] PASS delay-us-500 502 us
+16:30:14 [HALTEST] PASS console-getc-timeout ret=-1 after 20403 us
+16:30:14 [HALTEST] PASS gpio-reserved-pins-refused -1 19 20 22 26 32 49 99
+16:30:14 [HALTEST] PASS gpio-input-pulldown mode=0 read=0
+16:30:14 [HALTEST] PASS gpio-input-pullup mode=0 read=1
+16:30:14 [HALTEST] PASS gpio-output-toggle toggle 1/1 then 0/0
+16:30:14 [HALTEST] PASS pwm-set-and-stop set=0 set=0 stop=0 read=0
+16:30:14 [HALTEST] PASS pwm-duty-25 set 0.25 measured 0.250
+16:30:14 [HALTEST] PASS pwm-duty-50 set 0.50 measured 0.500
+16:30:14 [HALTEST] PASS pwm-duty-75 set 0.75 measured 0.749
+16:30:14 [HALTEST] PASS pulse-200ms-nonblocking returned after 32 us, high 199071 us
+16:30:14 [SCHED     38982ms] reset: cleared 8 slots
+16:30:14 [RULE] reset
+16:30:14 [SCHED     38982ms] add[0]: S3GPIO on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=4)
+16:30:14 [SCHED] added: S3GPIO on gpio
+16:30:14 [SCHED     38983ms] run_all: running=0
+16:30:14 [HALTEST] PASS gpio-driver-accepts-config scheduler_add_config=0
+16:30:14 [SCHED     38983ms] reset: cleared 8 slots
+16:30:14 [S3] MQTT not ported yet
+16:30:14 [HALTEST] PASS unported-mqtt-reports-offline mqtt_init=false
+16:30:14 [INFER] Inference manager initialised.
+16:30:14 [S3] TFLite Micro not ported yet
+16:30:14 [INFER] Failed to load base model: error 5
+16:30:14 [HALTEST] PASS unported-tflite-reports-no-model load_base_model=false
+16:30:14 [HALTEST] done failures=0
+16:30:14 [ECHO] hello parity 12345
+16:30:15 [TICK] 39449
+16:30:16 [TICK] 40451
+16:30:17 [TICK] 41450
+16:30:18 [TICK] 42449
+16:30:19 [TICK] 43451
+16:30:20 [TICK] 44450
+16:30:21 [TICK] 45449
+16:30:22 [TICK] 46451
+16:30:23 [TICK] 47450
+16:30:24 [TICK] 48449
+16:30:25 [TICK] 49451
+16:30:26 [TICK] 50450
+16:30:27 [TICK] 51449
+16:30:28 [TICK] 52451

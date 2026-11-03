@@ -1,0 +1,108 @@
+18:01:39 [SCHED     57676ms] run_all: running=0
+18:01:40 [SCHED     59413ms] run_all: running=0
+18:01:41 --- clear-t06: CLEAR
+18:01:41 [SCHED     59976ms] reset: cleared 8 slots
+18:01:41 [RULE] reset
+18:01:41 CLEARED
+18:01:42 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:01:42 [SCHED     60977ms] run_all: running=0
+18:01:43 [SCHED     61977ms] run_all: running=0
+18:01:44 --- cfg-ow: BEGINCFG|name=OW|proto=gpio|gpio.mode=onewire|gpio.pin=7|mode=poll|freq_hz=2|ENDCFG
+18:01:44 OK: Config applied (inline, delim='|')
+18:01:44 [SCHED     62562ms] add[0]: OW on gpio freq=2.000Hz mode=poll method=onewire GPIO(pin=7)
+18:01:44 [SCHED] added: OW on gpio
+18:01:44 CFG: ok (added #0: OW)
+18:01:44 [WIFI] not connected: reason 201, network not found (wrong name, or not 2.4 GHz)
+18:01:44 [WIFI] not connected: reason 36, see esp_wifi_types.h
+18:01:44 [WIFI] not connected: reason 3, see esp_wifi_types.h
+18:01:45 [SCHED     63562ms] run_all: running=0
+18:01:46 [SCHED     64562ms] run_all: running=0
+18:01:46 --- cfg-son: BEGINCFG|name=SON|proto=gpio|gpio.mode=pulse|gpio.trig=4|gpio.echo=7|gpio.pull=down|gpio.pulse_timeout_us=25000|mode=poll|freq_hz=2|ENDCFG
+18:01:46 OK: Config applied (inline, delim='|')
+18:01:46 [SCHED     65195ms] add[1]: SON on gpio freq=2.000Hz mode=poll method=pulse GPIO(pin=-1)
+18:01:46 [SCHED] added: SON on gpio
+18:01:46 CFG: ok (added #1: SON)
+18:01:47 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:01:47 [SCHED     66196ms] run_all: running=0
+18:01:48 [SCHED     67196ms] run_all: running=0
+18:01:49 --- run-t06: RUN
+18:01:49 RUN
+18:01:49 [SCHED     67749ms] arm[0/OW]: next_run reset to NOW
+18:01:49 [SCHED     67749ms] arm[1/SON]: next_run reset to NOW
+18:01:49 [SCHED     67777ms] publish[1/SON]: 3 bytes via gpio
+18:01:49 proto=gpio src=SON len=3 ts=67777 : AB 61 01
+18:01:49 [SCHED     68253ms] run_all: running=1
+18:01:49 [SCHED     68303ms] publish[1/SON]: 3 bytes via gpio
+18:01:49 proto=gpio src=SON len=3 ts=68303 : AA 61 01
+18:01:50 [SCHED     68829ms] publish[1/SON]: 3 bytes via gpio
+18:01:50 proto=gpio src=SON len=3 ts=68829 : AA 61 01
+18:01:50 [SCHED     69261ms] run_all: running=1
+18:01:50 [SCHED     69355ms] publish[1/SON]: 3 bytes via gpio
+18:01:50 proto=gpio src=SON len=3 ts=69355 : AA 61 01
+18:01:51 [SCHED     69881ms] publish[1/SON]: 3 bytes via gpio
+18:01:51 proto=gpio src=SON len=3 ts=69881 : AA 61 01
+18:01:51 [SCHED     70269ms] run_all: running=1
+18:01:51 [SCHED     70407ms] publish[1/SON]: 3 bytes via gpio
+18:01:51 proto=gpio src=SON len=3 ts=70407 : AA 61 01
+18:01:52 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:01:52 [SCHED     70933ms] publish[1/SON]: 3 bytes via gpio
+18:01:52 proto=gpio src=SON len=3 ts=70933 : AA 61 01
+18:01:52 [SCHED     71277ms] run_all: running=1
+18:01:52 [SCHED     71459ms] publish[1/SON]: 3 bytes via gpio
+18:01:52 proto=gpio src=SON len=3 ts=71459 : AB 61 01
+18:01:53 [SCHED     71985ms] publish[1/SON]: 3 bytes via gpio
+18:01:53 proto=gpio src=SON len=3 ts=71985 : AA 61 01
+18:01:53 [SCHED     72285ms] run_all: running=1
+18:01:54 [SCHED     72510ms] publish[1/SON]: 3 bytes via gpio
+18:01:54 proto=gpio src=SON len=3 ts=72510 : AA 61 01
+18:01:54 [SCHED     73036ms] publish[1/SON]: 3 bytes via gpio
+18:01:54 proto=gpio src=SON len=3 ts=73036 : A9 61 01
+18:01:54 [SCHED     73293ms] run_all: running=1
+18:01:55 [SCHED     73562ms] publish[1/SON]: 3 bytes via gpio
+18:01:55 proto=gpio src=SON len=3 ts=73562 : AA 61 01
+18:01:55 [SCHED     74088ms] publish[1/SON]: 3 bytes via gpio
+18:01:55 proto=gpio src=SON len=3 ts=74088 : AA 61 01
+18:01:55 [SCHED     74301ms] run_all: running=1
+18:01:56 [SCHED     74614ms] publish[1/SON]: 3 bytes via gpio
+18:01:56 proto=gpio src=SON len=3 ts=74614 : AA 61 01
+18:01:56 [WIFI] not connected: reason 201, network not found (wrong name, or not 2.4 GHz)
+18:01:56 [WIFI] not connected: reason 36, see esp_wifi_types.h
+18:01:56 [WIFI] not connected: reason 3, see esp_wifi_types.h
+18:01:56 [SCHED     75140ms] publish[1/SON]: 3 bytes via gpio
+18:01:56 proto=gpio src=SON len=3 ts=75140 : AA 61 01
+18:01:56 [SCHED     75309ms] run_all: running=1
+18:01:57 [SCHED     75666ms] publish[1/SON]: 3 bytes via gpio
+18:01:57 proto=gpio src=SON len=3 ts=75666 : AB 61 01
+18:01:57 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:01:57 [SCHED     76192ms] publish[1/SON]: 3 bytes via gpio
+18:01:57 proto=gpio src=SON len=3 ts=76192 : AA 61 01
+18:01:57 [SCHED     76317ms] run_all: running=1
+18:01:58 [SCHED     76718ms] publish[1/SON]: 3 bytes via gpio
+18:01:58 proto=gpio src=SON len=3 ts=76718 : AB 61 01
+18:01:58 [SCHED     77244ms] publish[1/SON]: 3 bytes via gpio
+18:01:58 proto=gpio src=SON len=3 ts=77244 : AA 61 01
+18:01:58 [SCHED     77325ms] run_all: running=1
+18:01:59 [SCHED     77770ms] publish[1/SON]: 3 bytes via gpio
+18:01:59 proto=gpio src=SON len=3 ts=77770 : AA 61 01
+18:01:59 --- stop-t06: STOP
+18:01:59 STOP
+18:02:00 [SCHED     79112ms] run_all: running=0
+18:02:01 [SCHED     80112ms] run_all: running=0
+18:02:02 --- alive-t06: SHOW
+18:02:02 [SHOW] sampling=0
+18:02:02 [SCHED] #0 name=OW proto=gpio mode=poll freq=2.000Hz
+18:02:02 [SCHED] #1 name=SON proto=gpio mode=poll freq=2.000Hz
+18:02:02 [RULE] count=0
+18:02:02 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:02:02 [WIFI] not connected: reason 201, network not found (wrong name, or not 2.4 GHz)
+18:02:02 [WIFI] not connected: reason 36, see esp_wifi_types.h
+18:02:03 [WIFI] not connected: reason 3, see esp_wifi_types.h
+18:02:03 [SCHED     81715ms] run_all: running=0
+18:02:04 [SCHED     82715ms] run_all: running=0
+18:02:04 --- clear-t06-end: CLEAR
+18:02:04 [SCHED     83309ms] reset: cleared 8 slots
+18:02:04 [RULE] reset
+18:02:04 CLEARED
+18:02:05 [SCHED     84310ms] run_all: running=0
+18:02:06 [SCHED     85310ms] run_all: running=0
+18:02:07 [MQTT] Status: Disconnected, Broker: 172.20.10.5

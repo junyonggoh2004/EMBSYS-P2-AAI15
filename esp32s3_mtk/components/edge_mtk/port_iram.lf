@@ -1,0 +1,20 @@
+# The course port's FreeRTOS shim and kernel run from internal RAM (D1 task 31).
+#
+# ESP-IDF's IRAM interrupt handlers (Wi-Fi, coexistence, esp_timer) and the C
+# library's locks keep running while a flash write or erase has the cache
+# off, and they call the shim's FromISR functions, which call into the kernel.
+# In the port as published both are in flash and the kernel's wait tables are
+# const data in flash, so a model upload, which writes flash while Wi-Fi
+# traffic arrives, crashed the chip (double exception, then the watchdog
+# reset). The noflash scheme puts the code of both archives in IRAM and their
+# constants in DRAM without modifying the port. Cost: about 32 KB of internal
+# RAM (MTK_REDESIGN.md section 8).
+[mapping:mtk_kernel_noflash]
+archive: libmtkernel.a
+entries:
+    * (noflash)
+
+[mapping:mtk_shim_noflash]
+archive: libfreertos_shim.a
+entries:
+    * (noflash)

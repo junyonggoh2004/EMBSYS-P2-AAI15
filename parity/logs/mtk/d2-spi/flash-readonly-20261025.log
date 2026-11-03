@@ -1,0 +1,6 @@
+# sent: SPIID
+[SPIID] raw=EF4016; verify against chip marking before writes
+# sent: SPICHECK EF4016
+[SPICHECK] PASS read-only id=EF4016 address=000000 bytes=16 data=FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+# sent: SPISCAN EF4016
+[SPISCAN] BLANK sector=3FF000 bytes=4096; no writes made

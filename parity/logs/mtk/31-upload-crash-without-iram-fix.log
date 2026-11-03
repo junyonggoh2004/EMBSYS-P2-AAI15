@@ -1,0 +1,33 @@
+# Task 31: model uploads on the final firmware built WITHOUT components/edge_mtk/port_iram.lf (the course port's shim and kernel left in flash), 2026-10-20 17:56, HW-747, model_test.py: 3/9. Each upload's first flash erase or write froze the chip: the timer-group-0 watchdog reset it (rst:0x7) with the saved PC in _DoubleExceptionVector (xtensa_vectors.S:564 and :568 by addr2line on that build's ELF). The same firmware with the fragment passes model_test.py 8/9 and mqtt_test.py 27/27 with no reset (model.log, mqtt.log). Excerpt; the course port's start-up trace is left out.
+
+17:56:24 [MQTT] Status: Connected, Broker: 172.20.10.5
+17:56:24 [MQTT] Status: Connected, Broker: 172.20.10.5
+17:56:24 [MQTT] Model data on: pico/s3-001/model/start (36 bytes)
+17:56:24 ESP-ROM:esp32s3-20210327
+17:56:24 Build:Mar 27 2021
+17:56:24 rst:0x7 (TG0WDT_SYS_RST),boot:0x28 (SPI_FAST_FLASH_BOOT)
+17:56:24 Saved PC:0x403743c0
+17:56:24 SPIWP:0xee
+17:56:33 [MQTT] Status: Connected, Broker: 172.20.10.5
+17:56:38 [MQTT] Model data on: pico/s3-001/model/start (33 bytes)
+17:56:38 [MODEL] Transfer starting: 16440 bytes, CRC32=0xF6AED6F9
+17:56:38 [MQTT] Model data on: pico/s3-001/model/chunk/0 (1024 bytes)
+17:56:38 [MODEL] Chunk 0: 1024 / 16440 bytes (6%)
+17:56:38 [MQTT] Model data on: pico/s3-001/model/chunk/1 (1024 bytes)
+17:56:46 ESP-ROM:esp32s3-20210327
+17:56:46 Build:Mar 27 2021
+17:56:46 rst:0x7 (TG0WDT_SYS_RST),boot:0x28 (SPI_FAST_FLASH_BOOT)
+17:56:46 Saved PC:0x403743c8
+17:56:46 SPIWP:0xee
+
+# model_test.py result on this build:
+FAIL  valid-upload               missing ['Transfer complete! 16440 bytes verified'] unexpected []
+PASS  infer-after-upload         ok
+FAIL  corrupt-refused            missing ['CRC32 mismatch', 'Previous model kept'] unexpected []
+FAIL  oversized-refused          missing ['Invalid size 300000', 'Previous model kept'] unexpected []
+FAIL  interrupted-restarts       missing ['Previous upload interrupted'] unexpected []
+FAIL  infer-after-bad-uploads    missing ['^\\[INFER\\] invoke=\\d+us'] unexpected []
+FAIL  persists-after-reset       missing ['Auto-load successful'] unexpected []
+PASS  infer-after-reset          ok
+PASS  arena-recorded               Arena:   2908 / 65536 bytes used
+3/9 passed.

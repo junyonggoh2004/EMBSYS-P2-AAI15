@@ -1,458 +1,174 @@
-# Pico-v3: Pico W Distributed IoT Edge Node
+# dev-jy-sensors — configurable ESP32-S3 sensors
 
-**Pico-v3** is a modular, configuration-driven sensor node framework for the Raspberry Pi Pico W. It allows for dynamic runtime configuration of sensors (UART, I2C, GPIO), local data processing using a Reverse Polish Notation (RPN) rule engine, and real-time telemetry via MQTT.
+This workspace now uses the configurable components from **main commit `49677c62c8738493f4e66667d1fe79afc947600d`**, adapted for the current breadboard. Firmware runs on **ESP-IDF with µT-Kernel 3 SMP**. The analysis completed before updating the workspace is in [MAIN_COMPONENT_REVIEW.md](MAIN_COMPONENT_REVIEW.md).
 
----
+## Current status
 
-## 🏗️ Architecture & Design
+| Item | Status |
+|---|---|
+| AHT temperature/humidity, HC-SR04+ distance, Grove TSL2561 light | Confirmed reading together on the corrected ESP-IDF / µT-Kernel firmware in the user-provided 3 November runtime capture |
+| ST7789 LCD | **Not working for now**: dim/white screen, no text; keep existing wiring, display remains disabled |
+| Active firmware | Main's shared EdgeCore + complete µT-Kernel runtime, with optional I²C sensor profiles |
+| Current integrated firmware validation | See [VALIDATION.md](esp32s3_mtk/VALIDATION.md); historical sensor tests are separate from new firmware execution |
 
-The project is designed with a layered architecture to separate hardware abstraction, scheduling logic, and data distribution.
+**Use the wiring tables on this page for this fixture.** The upstream test guides use alternative pin layouts for one-sensor, SPI-flash, radar and loopback fixtures. Their commands are not this breadboard's configuration. In particular, GPIO1/2 are occupied by the two I²C sensors here, and GPIO10 is wired to LCD CS; do not run the upstream SPI/flash tests with the LCD attached.
 
-### System Data Flow
-```mermaid
-graph TD
-    subgraph Hardware
-        S_UART[UART Sensors]
-        S_I2C[I2C Sensors]
-        S_GPIO[GPIO Sensors]
-    end
+## Open and run
 
-    subgraph "Bus Layer (Drivers)"
-        Bus_UART["bus/uart.c"]
-        Bus_I2C["bus/i2c.c"]
-        Bus_GPIO["bus/gpio.c"]
-    end
+1. Open [AAI15-MTK.code-workspace](AAI15-MTK.code-workspace) in VS Code. It selects only `esp32s3_mtk/`.
+2. Connect the ESP32 by USB data cable and close Arduino Serial Monitor. Find its port in Device Manager → Ports (COM & LPT).
+3. Press **Ctrl+Shift+B → MTK: build**.
+4. In Terminal → New Terminal, run these commands **one at a time**. Replace `COM5` with the actual port.
 
-    subgraph "Application Layer"
-        Sched["Scheduler (scheduler.c)"]
-        Output["Output Hub (output_format.c)"]
-    end
-
-    subgraph "Logic & Edge AI"
-        Rules["Rule Engine (rules.c)"]
-        Inference["Inference Mgr (TFLite)"]
-        Flash[(Flash Memory)]
-        MQTT[MQTT Comms]
-    end
-
-    %% Connections
-    S_UART --> Bus_UART
-    S_I2C --> Bus_I2C
-    S_GPIO --> Bus_GPIO
-
-    Bus_UART --> Sched
-    Bus_I2C --> Sched
-    Bus_GPIO --> Sched
-
-    Sched -->|Data Frame| Output
-
-    Output -->|1. Evaluate| Rules
-    Output -->|2. Publish| MQTT
-
-    Rules -->|Action: infer.set/run| Inference
-    Inference -->|Anomaly Loss| Rules
-    
-    MQTT -->|OTA Binary| OTA[OTA Receiver]
-    OTA -->|Write| Flash
-    Flash -->|XIP Map| Inference
-
-    Rules -->|Trigger| Actions["Actions: GPIO / Log / Remote"]
+```powershell
+cd "C:\Users\junyo\OneDrive\Desktop\ES-P2-AAI15\ES-P2-AAI15\esp32s3_mtk"
+powershell.exe -NoProfile -File .\tools\build.ps1 build
+powershell.exe -NoProfile -File .\tools\build.ps1 flash -Port COM5
+powershell.exe -NoProfile -File .\tools\build.ps1 sensors -Port COM5
+powershell.exe -NoProfile -File .\tools\build.ps1 monitor -Port COM5
 ```
 
-### Layer Descriptions
+The **sensors** command loads [config/three_sensors.cfg](config/three_sensors.cfg) through the normal REPL: it sends STOP, CLEAR, three configurations, SHOW and RUN. CLEAR replaces volatile sensors/rules. It checks acknowledgements and stops if a configuration is refused. Close the monitor before running it. The monitor accepts typed commands; **Ctrl+C** closes it.
 
-The firmware is structured into four distinct layers, allowing for modularity and dynamic runtime reconfiguration without recompilation.
+The preset is volatile: load it again after resetting or reflashing. Nothing samples automatically on a fresh boot until configured and RUN is sent. You can instead paste the preset's non-comment lines into the serial monitor, one line at a time.
 
-1.  **Hardware Abstraction Bus Layer (`bus/`)**:
-    *   **Hardware Abstraction**: Drivers for UART, I2C, and GPIO.
-    *   **Standard Interface**: All drivers implement a common `bus_t` interface (`init`, `poll`, `stream`).
-    *   **Responsibility**: Reads raw bytes from hardware and passes them to the scheduler.
+The full framework uses main's **4 MB flash / 2 MB quad PSRAM** layout. Check PSRAM startup and TASKS on the actual board; the small previous sensor-only build did not require PSRAM. Build output is now `esp32s3_mtk/build/esp32s3_mtk.bin`, with the ELF, bootloader and partition table beside it. The build task does not upload automatically.
 
-2.  **Application Layer (`scheduler/`)**:
-    *   **Scheduler (`scheduler.c`)**: Manages the polling frequency of all active sensors.
-    *   **Config Parser (`config_parser.c`)**: Parses text-based configuration blocks.
-    *   **Output Format (`output_format.c`)**: The central hub that distributes sensor data to the Console, Rule Engine, and MQTT.
+## Configurable components and readings
 
-3.  **Rule Engine (`rule_engine/`)**:
-    *   **Logic Core**: Evaluates user-defined logic on incoming sensor data.
-    *   **RPN Evaluator**: Uses a stack-based calculator for efficient expression parsing.
-    *   **Actions**: Triggers physical outputs (GPIO) or alerts based on logic.
+| Sensor | Configuration | Pins / address | Valid raw frame |
+|---|---|---|---|
+| AHT | `proto=i2c`, `i2c.sensor=aht` | SDA1/SCL2, 0x38 | Native six bytes: status + two packed 20-bit values |
+| TSL2561 | `proto=i2c`, `i2c.sensor=tsl2561` | SDA1/SCL2, preset 0x29 | ch0 LE16, ch1 LE16, rounded lux LE32 |
+| HC-SR04+ | Existing `proto=gpio`, `gpio.mode=pulse` | TRIG4/ECHO5 | Existing pulse width LE16 + valid byte |
+| Generic I²C devices | Default `i2c.sensor=raw` | Configured through BEGINCFG | Existing raw register-read behaviour |
 
-4.  **Communication (`mqtt/`)**:
-    *   **Telemetry**: Publishes sensor data to the cloud/broker.
-    *   **Remote Control**: Listens for configuration commands (Text or JSON) over MQTT.
+Profiles implement full sensor commands, bounded busy checks, conversion waits, cancellation and retries. They use the same hardware HAL and SchedulerTask as main. AHT conversion and TSL integration waits return pending work; they do not sleep inside the bus driver. The preset reads every 2 s and gives the I²C acquisitions a 600 ms deadline, distance 100 ms with a 30 ms echo capture limit.
 
----
-
-## ⚙️ Configuration Guide
-
-You can configure the Pico via **USB Serial (REPL)** or **MQTT**.
-
-### 1. Line-Based Configuration (REPL & MQTT)
-Used for defining sensors. Send this block to the serial terminal or the MQTT config topic.
-Terminal should be set to CRLF
-
-**REPL Config Structure (TERMINAL)**
-```ini
-BEGINCFG|name=GY511_ACC|proto=i2c|mode=poll|freq_hz=5|i2c.sda=0|i2c.scl=1|i2c.addr=0x1E|i2c.pre=0x00 0x10 0x02 0x00|i2c.post_delay_ms=2|i2c.reg=0x03|i2c.reg_size=1|i2c.read_len=6|i2c.restart=1|ENDCFG
-```
-`-m` is for inline
-
-**MQTT In-line Config Structure**
-```
-mosquitto_pub -h <IP_ADDRESS> -t "pico/<Node_Number>/config" -m "BEGINCFG|name=GY511_ACC|proto=i2c|mode=poll|freq_hz=5|i2c.sda=0|i2c.scl=1|i2c.addr=0x1E|i2c.pre=0x00 0x10 0x02 0x00|i2c.post_delay_ms=2|i2c.reg=0x03|i2c.reg_size=1|i2c.read_len=6|i2c.restart=1|ENDCFG"
-```
-
-#### Protocol Specific Settings
-
-| Protocol | Key | Description | Example |
-| :--- | :--- | :--- | :--- |
-| **Common** | `name` | Unique ID for the sensor | `name=temp_sensor` |
-| | `proto` | Bus protocol Used | `proto=uart` |
-| | `mode` | Polling or Streaming | `freq_hz=10` |
-| | `freq_hz` | Polling frequency | `mode=poll` |
-| **UART** | `uart.tx`, `uart.rx` | GPIO TX/RX pins | `uart.tx=0` |
-| | `uart.baud` | Baud rate | `uart.baud=115200` |
-| | `uart.bits` | Number of sensor bits | `uart.bits=8` |
-| | `uart.parity` | Parity bits | `uart.parity=N` |
-| | `uart.stop` | Number of stop bit | `uart.stop=1` |
-| | `uart.line_mode` | 0=Raw byte mode, 1=wait for /n | `uart.line_mode=0` |
-| | `uart.read_len` | Read per cycle | `uart.read_len=128` |
-| *Optional UART* | `uart .pre` | Pre byte sent to wake sensor | `uart.pre=0xA5, 0x01` |
-| | `uart.post_delay_ms` | Sleep time after sending pre bytes | `uart.post_delay_ms=50` |
-| **I2C** | `i2c.sda`, `i2c.scl` | GPIO pins | `i2c.sda=4` |
-| | `i2c.baud` | Baud rate | `i2c.baud=400000` |
-| | `i2c.addr` | 7-bit Device Address | `i2c.addr=0x76` |
-| | `i2c.reg` | Register to read | `i2c.reg=0xFA` |
-| | `i2c.reg_size` | Size of register | `i2c.reg_size=1` |
-| | `i2c.read_len` | Bytes to read | `i2c.read_len=6` |
-| | `i2c.restart` | 1=Repeated Start, 0=Stop then Start | `i2c.restart=1` |
-| *Optional I2C* | `i2c .pre` | Pre byte sent to wake sensor | `i2c.pre=0xA5, 0x01` |
-| | `i2c.post_delay_ms` | Sleep time after sending pre bytes | `i2c.post_delay_ms=50` |
-| **GPIO (Digital)** | `gpio.pin` | Pin to read | `gpio.pin=15` |
-| | `gpio.pull` | 1=Up, 2=Down 0=Off/Floating | `gpio.pull=1` |
-| | `gpio.mode` | digital/pulse/onewire/counter | `gpio.mode=digital` |
-| | `gpio.invert` | Logic inversion: 1=True, 0=False | `gpio.mode=0` |
-| | `gpio.debounce_ms` | Debouncing time | `gpio.debounce_ms=100` |
-| **GPIO (Pulse)** | `gpio.trig` | Output pin connected to sensor trig pin | `gpio.trig=16` |
-| | `gpio.echo` | Input pin connected to Echo | `gpio.trig=17` |
-| | `gpio.trig_us` | How long to hold trigger pin to initiate reading (microseconds) | `gpio.trig_us=10` |
-| | `gpio.pulse_timeout_us` | Timeout (microseconds) | `gpio.pulse_timeout_us=25000` |
-
-### 2. JSON File-Based Configuration (MQTT Only)
-You can send a JSON payload to `pico/<node_id>/config -f <filepath_of_json>` to configure sensors programmatically.
-`-f` is for filepath
-
-**Example JSON:**
-```json
-{
-    "configs": [
-        {
-        "name": "LM75_TEMP",
-        "proto": "i2c",
-        "freq_hz": "1",
-        "i2c": {
-        "sda": "4",
-        "scl": "5",
-        "addr": "0x48",
-        "reg": "0x00",
-        "read_len": "2"
-        }}
-    ]
-}
-```
-
----
-
-## 🧠 Edge AI & TFLite Inference Engine
-
-Pico-v3 features a fully dynamic Edge AI pipeline powered by TensorFlow Lite for Microcontrollers (TFLite Micro). It allows you to perform real-time, on-device anomaly detection and classification without needing to recompile the firmware.
-
-### 1. The Inference Pipeline
-
-The ML pipeline operates independently from the main rule engine but can be seamlessly triggered by it:
-1. **Model Loader:** `.tflite` models and normalization parameters are transferred over MQTT and stored in Flash memory.
-2. **Inference Manager:** A wrapper around TFLite Micro that handles input normalization, quantized (INT8)/Float tensor mapping, and executing math.
-3. **Sensor Fusion Slots:** Up to 16 input features can be injected asynchronously by multiple sensors before running an inference pass.
-4. **Dynamic Thresholding:** Supports different thresholds based on which combination of sensors is currently active (Bitmasking).
-
-### 2. Uploading a Model
-
-Models and normalization parameters are uploaded via the `send_model.py` script. 
-
-**Format Requirements:**
-- Model: A standard flatbuffer `.tflite` file (INT8 or FP32). Arena size is capped at 64KB.
-- Parameters: A JSON file (`norm_stats.json`) containing `means`, `stds`, and optionally `thresholds_by_mask` and `score_mode`.
-
-**Example Upload:**
-```bash
-python send_model.py --broker 192.168.50.192 --model autoencoder_int8.tflite --norm norm_stats.json
-```
-*Note: The script uses a 3-phase chunky-transfer protocol over MQTT to safely write the model to the Pico's dedicated flash sector.*
-
-### 3. Using Inference in Rules
-
-You control the inference engine using standard rule actions.
-
-#### Injecting Data (`infer.set`)
-Use `infer.set:<slot_index>:<value>` to inject raw sensor values. The engine automatically applies the appropriate mean/std normalization.
-```ini
-action=infer.set:0:$ax | infer.set:1:$ay
-```
-
-#### Running Math (`infer.run`)
-Use `infer.run` to evaluate the model against the current slot inputs. It computes an Anomaly Loss based on the configured "Score Mode" (see below).
-```ini
-action=infer.run:log:ANOMALY DETECTED!
-```
-*If an anomaly is detected (loss > threshold), the chained action (e.g., `log:...` or `gpio:...`) is executed.*
-
-#### Efficiency (`batch:`)
-Because injecting 10+ features individually is verbose, you can use the `batch:` action modifier to execute multiple injection commands smoothly:
-```ini
-action=batch: infer.set:0:$f0 | infer.set:1:$f1 | infer.set:2:$f2 | infer.run:gpio:15=HIGH
-```
-
-### 4. Configuration & Profiling
-
-#### Score Modes
-You can configure how the Anomaly Loss is calculated from the model outputs:
-*   **MSE (Autoencoder)**: Calculates the Mean Squared Error between the inputs and outputs (reconstruction loss). *(Default)*
-*   **DISTANCE (SVDD)**: Calculates the L2-Norm (magnitude) of the output latent vector.
-*   *Configuring:* Add `"score_mode": "distance"` to your norm JSON before uploading, or send a live MQTT command: `mosquitto_pub -t "pico/<node>/cmd" -m "infer.mode distance"`
-
-#### Profiling and Verification
-You can enable verbose tensor dumping to verify normalizations and view execution limits:
-*   **Command:** `mosquitto_pub -t "pico/<node>/cmd" -m "debug.infer on"`
-*   **Console Output:**
-    ```text
-    [INFER] invoke=1290us | DIST=0.8300 mask=1010 thresh=1.2790 OK
-    [INFER VERBOSE] Inputs  : -2.586 0.000 1.441 ...
-    [INFER VERBOSE] Outputs : 0.000 -1.135 1.135 ...
-    ```
-    *   `invoke=XXXus`: The hardware timer latency for the TFLite math.
-    *   `mask`: The active sensor bitmask (e.g. `1010` means slots 0 and 2 have fresh data).
-
----
-
-## ⚙️ Rule Engine Guide
-
-The Rule Engine allows the Pico to process data locally. Rules are defined using **Reverse Polish Notation (RPN)**.
-
-### REPL Rule Structure (Terminal)
-```ini
-BEGINRULE|name=GY511_MOTION|source=GY511_ACC|calc=mx=s16be(0)|calc=mz=s16be(2)|calc=my=s16be(4)|calc=dx=mx-mx_prev|calc=dy=my-my_prev|calc=dz=mz-mz_prev|calc=motion=sqrt(dx*dx+dy*dy+dz*dz)|when=motion>120|action=log:motion detected|ENDRULE
-```
-### MQTT Inline Rule Structure
-```ini
-mosquitto_pub -h <IP_ADDRESS> -t "pico/<Node_Number>/config" -m "BEGINRULE|name=GY511_MOTION|source=GY511_ACC|calc=mx=s16be(0)|calc=mz=s16be(2)|calc=my=s16be(4)|calc=dx=mx-mx_prev|calc=dy=my-my_prev|calc=dz=mz-mz_prev|calc=motion=sqrt(dx*dx+dy*dy+dz*dz)|when=motion>120|action=log:motion detected|ENDRULE"
-```
-
-### JSON Rule Structure (MQTT Only)
+The console prints supplementary JSON in physical units alongside the framework's raw lines:
 
 ```json
-{
-    "rules": [
-        {
-        "name": "HOT_ALARM",
-        "source": "LM75_TEMP",
-        "calc": [
-            "raw=s16be(0)",
-            "celsius=raw/256"
-        ],
-        "when": "celsius > 30",
-        "action": "log:Temp is high: $value"
-        }
-    ]
-}
+{"sensor":"AHT","timestamp_ms":1234,"temperature_c":25.00,"humidity_pct":50.00,"status":"OK","error":0}
+{"sensor":"LIGHT","timestamp_ms":1240,"light_lux":0,"status":"OK","error":0}
+{"sensor":"DISTANCE","timestamp_ms":1250,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
 ```
 
-### 1. `calc`: Extracting Data
-Defines variables by extracting bytes from the raw sensor frame.
-*   **Byte Extraction:**
-    *   `u8(i)/s8(i)`: Unsigned/Signed 8-bit integer at index `i`.
-    *   `s16le(i)/u16le(i)`: 16-bit (Little Endian) at index `i`.
-    *   `u16be(i)/s16be(i)`: 16-bit (Big Endian) at index `i`.
+These are illustrative formats, not captured board measurements. A failed or missing configured sensor produces JSON `null` and a status; zero lux remains valid. Failed acquisitions do not publish successful raw frames to the rules/MQTT pipeline. Physical-unit JSON is console output; the existing MQTT raw/line topics are preserved. This framework does not emit the old single combined sensor-only JSON object.
 
-**Example:** `calc=temp=s16le(4)/100.0` (Reads 2 bytes at index 4, divides by 100).
+`SHOW` lists the three sensors and their profiles; `TASKS` reports the real runtime tasks, stack headroom, heap and core residency. Main pins **SchedulerTask to physical CPU1**, MQTTTask to CPU0. This supersedes the old bring-up task/core arrangement. HELP, RUN, STOP, CLEAR, rules, timing modes, application events, networking and inference remain available through main's components. Without credentials, the network task runs offline. No LCD driver or automatic SPI test is started.
 
-### 2. `when`: Logic Conditions (RPN)
-A condition that must be true (non-zero) for the action to fire.
-*   **Functions:**
-    *   `abs(x)`: Absolute Value.
-    *   `sqrt(x): Square Root.
-    *   `mag3(x): 3D magnitude (sqrt{x^2+y^2+z^2}).
-*   **Math:** `+`, `-`, `*`, `/`, `%`
-*   **Logical Operators:** `+`, `-`, `*`, `/`, `>`, `<`, `==`, `&&` (AND), `||` (OR).
-*   **Previous Values:** Append `_prev` to a variable name to access its value from the *previous* sample.
+## Repository guide
 
-**Example:** `x-x_prev` (Used to calculate rate of change).
+| Location | Purpose |
+|---|---|
+| `esp32s3_mtk/` | Active configurable ESP-IDF/µT-Kernel target |
+| `libraries/EdgeCore/src/` | Main's shared scheduler, buses, rules, events and inference interfaces, plus optional sensor profiles |
+| `config/three_sensors.cfg` | Current hardware preset; pins can be changed without rebuilding |
+| [MAIN_COMPONENT_REVIEW.md](MAIN_COMPONENT_REVIEW.md) | Component-by-component review, decisions and scope |
+| [docs/MAIN_BRANCH_README.md](docs/MAIN_BRANCH_README.md) | Preserved main guide and upstream feature/test documentation |
+| [docs/SENSOR_BRINGUP_README.md](docs/SENSOR_BRINGUP_README.md) | Previous branch guide, kept as historical documentation |
+| `legacy/esp32s3_sensor_bringup/` | Previous small sensor-only firmware; excluded from the active workspace/build |
+| `legacy/esp32s3_idf_initial/` | Earlier untracked ESP32 experiment, preserved separately |
+| `tools/`, `tests/`, `parity/` | Upstream tooling, host tests and historical target evidence, plus sensor tests |
 
-### 3. `action`: Triggers
-What to do when the condition is met.
-*   **`log:<message>`**: Prints a message to the console/MQTT. $value is replaced by the rule result.
-*   **`gpio:<pin>=HIGH`**: HIGH,Sets GPIO pin high.
-*   **`gpio:<pin>=LOW`**: LOW,Sets GPIO pin low.
-*   **`gpio:<pin>=TOGGLE`**: Toggles the pin state.
-*   **`gpio:<pin>=PULSE`**:<ms>: Pulses the pin HIGH for ms milliseconds.
-*   **`pwm:<pin>=<val>`**: Sets PWM duty. 0.5 (50%) or 75 (75%). pwm:<pin>=OFF disables it.
-*   **` cmd.to:<node>:<CMD>`**: Sends a command to a remote node via MQTT.
-*   **`cfg.to:<node>:<BLK>`**: Sends a Configuration block to a remote node.
----
+Historical guides may describe different fixtures, output formats or build folders. Use this guide and [WIRING.md](esp32s3_mtk/WIRING.md) for the active configuration.
 
-## 🎮 Usage Guide
+## Complete breadboard connections
 
-### Serial Terminal (REPL) Commands
+These tables retain the Version 2 layout. They apply to the ESP32-S3 Super Mini, AHT temperature/humidity module, **3.3 V-compatible HC-SR04+**, Grove TSL2561 and the existing ST7789 display wiring. Disconnect USB before changing connections. Follow the printed pin labels on each module.
 
-*   **`RUN`**: Start the scheduler (begin polling sensors).
-*   **`STOP`**: Stop the scheduler.
-*   **`CLEAR`**: Remove all configured sensors and rules.
-*   **`SHOW`**: Display current configuration and active rules.
-*   **`BEGINCFG ... ENDCFG`**: Enter configuration mode.
-*   **`BEGINRULE ... ENDRULE`**: Enter rule definition mode.
+### Breadboard layout and jumper leads
 
-### MQTT Topics & JSON Injections
-**Config**: `pico/<node_id>/config`: Send JSON or Text configuration blocks.
-**Commands**: `pico/<node_id>/cmd`: Send text commands (`RUN`, `STOP`, `CLEAR`, `SHOW`).
-**Telemetry**: `pico/<node_id>/sensor/<sensor_name>`: JSON data
-**Human Readable** `pico/<node_id>/sensor/<sensor_name>/line`: ASCII TEXT
+- On the terminal strip, **A–E share the same numbered row**. F–J share a separate row on the other side of the centre gap. Adjacent numbered rows are separate.
+- The ESP32 and modules remain outside the breadboard. Each connection can use **device male header → female-to-female lead → male-to-male lead → breadboard hole**. Seat the male-to-male pin fully inside the female connector.
+- The light sensor uses its Grove cable; route its four signal leads to the holes listed below, using adapters as required by the cable ends. Identify leads by signal, rather than assuming a colour or connector orientation.
+- **N1, N2 and N3 are chosen hole names, not printed breadboard coordinates.** Use your selected top hole and the next two consecutive holes in the **same continuous blue/minus power-rail section**. A split in a rail breaks continuity.
+- All grounds are common. Power comes from the ESP32 **3V3** pin; the 5V pin is not used in this layout.
 
-**Example Complete JSON with Config + Rule:**
-```json
-{
-  "configs": [
-    {
-      "name": "LM75_TEMP",
-      "proto": "i2c",
-      "freq_hz": "1",
-      "i2c": {
-        "sda": "4",
-        "scl": "5",
-        "addr": "0x48",
-        "reg": "0x00",
-        "read_len": "2"
-      }
-    }
-  ],
-  "rules": [
-    {
-      "name": "HOT_ALARM",
-      "source": "LM75_TEMP",
-      "calc": [
-        "raw=s16be(0)",
-        "celsius=raw/256"
-      ],
-      "when": "celsius > 30",
-      "action": "log:Temp is high: $value"
-    }
-  ]
-}
-```
+### ESP32-S3 → breadboard
 
+| ESP32 printed pin | Breadboard hole | Purpose | Current firmware |
+|---|---|---|---|
+| 3V3 | A4 | Shared 3.3 V supply | Used |
+| GPIO1 | A5 | Shared I²C SDA for AHT and TSL2561 | Used |
+| GPIO2 | A6 | Shared I²C SCL for AHT and TSL2561 | Used |
+| GND | A7 | Shared ground | Used |
+| GPIO4 | A8 | Ultrasonic TRIG output | Used |
+| GPIO5 | A9 | Ultrasonic ECHO input | Used |
+| GPIO6 | A10 | LCD SPI clock | Retain; LCD disabled |
+| GPIO7 | A11 | LCD SPI MOSI | Retain; LCD disabled |
+| GPIO9 | A12 | LCD reset | Retain; LCD disabled |
+| GPIO8 | A13 | LCD data/command | Retain; LCD disabled |
+| GPIO10 | A14 | LCD chip select | Retain; LCD disabled |
 
-### Sensor Bridging
+### AHT temperature/humidity → breadboard
 
-*Sensor Bridging allows Node A to "listen" to a sensor physically connected to Node B and treat it as if it were its own local sensor. This allows for distributed logic.*
+| AHT printed pin | Breadboard hole | Connected through that row to |
+|---|---|---|
+| VCC / VIN | E4 | ESP32 3V3 at A4 |
+| SDA | E5 | ESP32 GPIO1 at A5 |
+| SCL | E6 | ESP32 GPIO2 at A6 |
+| GND | E7 | ESP32 GND at A7 |
 
----
-**1. Control Flow (Pico 001 --> Pico 002)**
+The AHT uses I²C address **0x38**. Position wires by the module's printed labels; pin order can differ between AHT boards.
 
-**Scenario**: Pico 001 detects a local event and activates a sensor on Pico 002
-```mermaid
-sequenceDiagram
-    participant P1_Rule as Pico 001 Rule Engine
-    participant P1_MQTT as Pico 001 MQTT Client
-    participant Broker as MQTT Broker
-    participant P2_MQTT as Pico 002 MQTT Client
-    participant P2_Parser as Pico 002 Config Parser
-    participant P2_Sched as Pico 002 Scheduler
+### HC-SR04+ ultrasonic → breadboard
 
-    Note over P1_Rule: 1. Rule Trigger
-    P1_Rule->>P1_Rule: Condition Met (e.g. Button Press)
-    P1_Rule->>P1_MQTT: Action: cfg.to:pico-002:BEGINCFG...
-    
-    Note over Broker: 2. Transport
-    P1_MQTT->>Broker: Publish "pico/pico-002/config"
-    Broker->>P2_MQTT: Deliver Payload
-    
-    Note over P2_Parser: 3. Execution
-    P2_MQTT->>P2_Parser: Receive "BEGINCFG..."
-    P2_Parser->>P2_Sched: Add New Sensor (e.g. LED/Alarm)
-    P2_Sched->>P2_Sched: Start Polling/Streaming
-```
----
-**Command Format (RUN, STOP, CLEAR)**
+| Ultrasonic printed pin | Breadboard hole | Connected through that row to |
+|---|---|---|
+| VCC | C4 | ESP32 3V3 at A4 |
+| TRIG | E8 | ESP32 GPIO4 at A8 |
+| ECHO | E9 | ESP32 GPIO5 at A9 |
+| GND | C7 | ESP32 GND at A7 |
 
-Use this to control the state of the scheduler on a remote node.
+This layout uses the identified **HC-SR04+ with 3.3 V operation and a 3.3 V-compatible ECHO output**, so the ECHO voltage divider is omitted. It is not the wiring specification for a standard 5 V HC-SR04.
 
-**A. Inside a Rule (Rule Action)**: Use the `cmd.to` action type.
+### Grove TSL2561 digital light sensor → breadboard
 
-- **Format**: `action=cmd.to:<node_id>:<COMMAND>`
+| Grove cable signal | Breadboard hole | Connected through that row to |
+|---|---|---|
+| VCC | D4 | ESP32 3V3 at A4 |
+| SDA | D5 | ESP32 GPIO1 at A5; shared with AHT |
+| SCL | D6 | ESP32 GPIO2 at A6; shared with AHT |
+| GND | D7 | ESP32 GND at A7 |
 
-- **Example**: `action=cmd.to:pico-002:RUN`
+The TSL2561 shares the I²C bus with the AHT. The profile validates the part ID at its configured address. The preset uses **0x29**; set `i2c.addr` to **0x39** or **0x49** if that is your module's address. These addresses do not conflict with the AHT's 0x38.
 
+### ST7789 TFT LCD → breadboard (retain existing wiring)
 
-**B. Via MQTT**: Publish the command string directly to the cmd topic.
+**LCD is not working for now:** it has shown a dim/white screen without text. Its existing connections can remain while the other sensors are used. The current µT-Kernel firmware does not initialise or update the LCD and leaves GPIO6–10 unused. Keeping it connected does not enable display output.
 
-- **Topic**: `pico/<node_id>/cmd`
+| LCD printed pin | Breadboard hole | Electrical connection | Current firmware |
+|---|---|---|---|
+| GND | Blue rail N2 | Ground via N1 and B7 | Retain |
+| VCC | B4 | ESP32 3V3 via A4 | Retain |
+| SCL | E10 | ESP32 GPIO6 via A10; SPI SCK | Retain; unused |
+| SDA | E11 | ESP32 GPIO7 via A11; SPI MOSI | Retain; unused |
+| RST | E12 | ESP32 GPIO9 via A12 | Retain; unused |
+| DC | E13 | ESP32 GPIO8 via A13 | Retain; unused |
+| CS | E14 | ESP32 GPIO10 via A14 | Retain; unused |
+| BL | Blue rail N3 | Ground; retained active-low BL arrangement | Retain; module-specific |
 
-- **Payload**: `RUN, STOP, CLEAR, or SHOW `
+The LCD's **SCL/SDA labels mean SPI clock/MOSI**, not the I²C SCL/SDA used by the AHT and TSL2561. Do not join those display signals to rows 5/6. No MISO connection is used.
 
-- **Example**: `mosquitto_pub -t "pico/pico-002/cmd" -m "RUN"`
+The BL-to-ground entry preserves the active-low backlight arrangement previously selected for this display module. BL wiring differs between ST7789 breakout boards; this is not a universal ST7789 pinout.
 
----
-**Configuration Injection Format**
+### Ground-rail jumper
 
-*Use this to send a sensor configuration to a remote node (e.g., to turn on a sensor so you can bridge it).*
+| From | To | Lead | Purpose |
+|---|---|---|---|
+| B7 | Blue rail N1 | One male-to-male wire | Connect the blue rail to ESP32 GND through row 7 |
+| LCD GND | Blue rail N2 | LCD connection above | Share the same grounded rail section |
+| LCD BL | Blue rail N3 | LCD connection above | Retain the existing module's BL connection |
 
-**A. Inside a Rule (Rule Action)**: Use the `cfg.to` action type.
+**B7 is ground. B5 is SDA and must not be connected to the ground rail.** N2/N3 are connected through the continuous rail; no extra N1→N2 or N2→N3 jumper is needed within that section.
 
-- **Format**: `action=cfg.to:<node_id>:<FULL_CONFIG_BLOCK>`
+### Resistors
 
-- **Example**: `action=cfg.to:pico-002:BEGINCFG|name=LED|proto=gpio|gpio.mode=digital|gpio.pin=25|ENDCFG`
-    
-**B. Via MQTT:** Publish the config block to the config topic.
+| Connection | Extra resistor in this setup |
+|---|---|
+| HC-SR04+ ECHO → GPIO5 | None for the identified 3.3 V-compatible module |
+| AHT/TSL2561 I²C SDA and SCL | No additional pull-ups with the existing breakout modules' pull-ups; pull-ups must go to 3V3 |
+| LCD signal/BL connections | No new resistor added; preserve the existing breakout arrangement |
 
-- **Topic**: `pico/<node_id>/config`
-
-- **Payload**: `BEGINCFG|...|ENDCFG` (or JSON)
-
-- **Example**: `mosquitto_pub -t "pico/pico-002/config" -m "BEGINCFG|name=TEMP|proto=i2c|...|ENDCFG"`
-
----
-**2. Bridging Data Flow (Pico 002 --> Pico 001)**
-
-**Scenario**: Pico 002 is now running its sensor. Pico 001 subscribes to that data to make decisions.
-```mermaid
-sequenceDiagram
-    participant P2_HW as Pico 002 Hardware
-    participant P2_MQTT as Pico 002 MQTT Client
-    participant Broker as MQTT Broker
-    participant P1_MQTT as Pico 001 MQTT Client
-    participant P1_Bridge as Pico 001 Sensor Bridge
-    participant P1_Rule as Pico 001 Rule Engine
-
-    Note over P2_HW: 1. Physical Sensing
-    P2_HW->>P2_MQTT: Read Sensor & Publish Line
-    P2_MQTT->>Broker: Publish "pico/pico-002/sensor/NAME/line"
-
-    Note over P1_MQTT: 2. Bridge Subscription
-    Broker->>P1_MQTT: Receive Payload (e.g. "001 CE")
-    P1_MQTT->>P1_Bridge: Callback: on_remote_line()
-
-    Note over P1_Bridge: 3. Injection
-    P1_Bridge->>P1_Bridge: Map "pico-002/NAME" -> "VIRTUAL_SENS"
-    P1_Bridge->>P1_Rule: Inject Raw Bytes as "VIRTUAL_SENS"
-
-    Note over P1_Rule: 4. Logic
-    P1_Rule->>P1_Rule: Calc & Action
-```
----
-**Bridge Setup Command**
-
-*To actually bridge (listen to) the remote sensor you just activated, you must send a configuration to the Receiver Node.*
-
-- **Topic**: `pico/<receiver_node_id>/config`
-
-- **Payload**: `BEGINCFG|name=<LOCAL_ALIAS>|proto=mqtt|remote_node=<REMOTE_ID>|remote_source=<REMOTE_SENSOR_NAME>|ENDCFG`
----
+Bare sensors or different breakout revisions may need different power, pull-up or backlight circuitry. These tables describe the current modules and retained wiring.

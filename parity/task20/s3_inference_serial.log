@@ -1,0 +1,131 @@
+﻿[BOOT] esp32s3_edge
+[INFER] Inference manager initialised.
+[TFLITE] Unloading previous model state...
+[TFLITE] Unload complete.
+[TFLITE] Verifying FlatBuffer at 0x3c08cf5c...
+[TFLITE] Schema version 3 verified.
+[TASK] SchedulerTask    stack_free=13872 B
+[TASK] MQTTTask         stack_free=7404 B
+[TASK] ControlTask      stack_free=2256 B
+[TASK] InferenceTask    stack_free=7416 B
+[TASK] ApplicationTask  stack_free=3320 B
+[TASK] BenchmarkTask    stack_free=2260 B
+[TASK] heap_free=105372 B min_free=105316 B
+[TASK] SchedulerTask    stack_free=13872 B
+[TASK] MQTTTask         stack_free=7404 B
+[TASK] ControlTask      stack_free=2256 B
+[TASK] InferenceTask    stack_free=7416 B
+[TASK] ApplicationTask  stack_free=3320 B
+[TASK] BenchmarkTask    stack_free=2260 B
+[TASK] heap_free=105372 B min_free=105316 B
+CFG: ok (added #0: DIG)
+[RULE] added name=R_INF src=DIG vars=1 action=batch: infer.set:0:1.0 \| infer.run
+RULE: ok
+RUN
+proto=gpio src=DIG len=3 ts=362716 : 00 7A 96
+[INFER] invoke=462us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=363217 : 00 6F 98
+[INFER] invoke=247us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=363718 : 00 63 9A
+[INFER] invoke=254us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=364218 : 00 58 9C
+[INFER] invoke=249us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=364719 : 00 4C 9E
+[INFER] invoke=278us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=365219 : 00 41 A0
+[INFER] invoke=247us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=365720 : 00 36 A2
+[INFER] invoke=253us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=366220 : 00 2A A4
+[INFER] invoke=248us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=366721 : 00 1E A6
+[INFER] invoke=256us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=367221 : 00 13 A8
+[INFER] invoke=266us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=367722 : 00 07 AA
+[INFER] invoke=280us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=368222 : 00 FC AB
+[INFER] invoke=283us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=368723 : 00 F1 AD
+[INFER] invoke=278us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=369223 : 00 E5 AF
+[INFER] invoke=243us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=369724 : 00 D9 B1
+[INFER] invoke=274us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=370224 : 00 CE B3
+[INFER] invoke=243us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=370725 : 00 C2 B5
+[INFER] invoke=258us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=371225 : 00 B7 B7
+[INFER] invoke=243us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=371726 : 00 AC B9
+[INFER] invoke=262us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=372226 : 00 A0 BB
+[INFER] invoke=248us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=372727 : 00 94 BD
+[INFER] invoke=262us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=373227 : 00 89 BF
+[INFER] invoke=242us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=373728 : 00 7D C1
+[INFER] invoke=276us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=374228 : 00 72 C3
+[INFER] invoke=243us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=374729 : 00 67 C5
+[INFER] invoke=276us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=375229 : 00 5B C7
+[INFER] invoke=243us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=375730 : 00 4F C9
+[INFER] invoke=253us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=376230 : 00 44 CB
+[INFER] invoke=248us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=376731 : 00 38 CD
+[INFER] invoke=287us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=377231 : 00 2D CF
+[INFER] invoke=249us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=377732 : 00 22 D1
+[INFER] invoke=257us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=378232 : 00 16 D3
+[INFER] invoke=243us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=378733 : 00 0A D5
+[INFER] invoke=282us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=379233 : 00 FF D6
+[INFER] invoke=242us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=379734 : 00 F3 D8
+[INFER] invoke=254us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=380234 : 00 E8 DA
+[INFER] invoke=248us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=380735 : 00 DD DC
+[INFER] invoke=254us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=381235 : 00 D1 DE
+[INFER] invoke=243us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=381736 : 00 C5 E0
+[INFER] invoke=259us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+proto=gpio src=DIG len=3 ts=382236 : 00 BA E2
+[INFER] invoke=242us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+STOP
+[TASK] SchedulerTask    stack_free=10612 B
+[TASK] MQTTTask         stack_free=7404 B
+[TASK] ControlTask      stack_free=2256 B
+[TASK] InferenceTask    stack_free=7416 B
+[TASK] ApplicationTask  stack_free=3320 B
+[TASK] BenchmarkTask    stack_free=2260 B
+[TASK] heap_free=104736 B min_free=104608 B
+
+--- Reset with Serial Monitor open ---
+[BOOT] esp32s3_edge
+[INFER] Inference manager initialised.
+[TFLITE] Unloading previous model state...
+[TFLITE] Unload complete.
+[TFLITE] Verifying FlatBuffer at 0x3c08cf5c...
+[TFLITE] Schema version 3 verified.
+[TFLITE] Creating OpResolver...
+[TFLITE] Ops registered.
+[TFLITE] Creating Interpreter (Arena size 65536)...
+[TFLITE] Allocating tensors...
+[TFLITE] Tensors allocated.
+[TFLITE] Model loaded OK!
+[TFLITE]   Inputs:  1 tensor(s), 16 total element(s)
+[TFLITE]   Outputs: 1 tensor(s), 16 total element(s)
+[TFLITE]   Arena:   2908 / 65536 bytes used
+[INFER] Base model loaded: 16 inputs, 16 outputs
+[INFER] Loaded 16 base normalization params and 16 threshold masks

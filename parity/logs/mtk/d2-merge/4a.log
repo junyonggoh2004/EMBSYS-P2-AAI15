@@ -1,0 +1,326 @@
+18:35:42 I (510) esp_psram: SPI SRAM memory test OK
+18:35:42 I (527) cpu_start: Pro cpu start user code
+18:35:42 I (527) cpu_start: cpu freq: 240000000 Hz
+18:35:42 I (527) app_init: Application information:
+18:35:42 I (527) app_init: Project name:     esp32s3_mtk
+18:35:42 I (528) app_init: ELF file SHA256:  d729b02b4...
+18:35:42 I (528) app_init: ESP-IDF:          v6.1-dev-2300-g17a74c925c
+18:35:42 I (528) efuse_init: Min chip rev:     v0.0
+18:35:42 I (528) efuse_init: Max chip rev:     v0.99 
+18:35:42 I (528) efuse_init: Chip rev:         v0.2
+18:35:42 I (528) heap_init: Initializing. RAM available for dynamic allocation:
+18:35:42 I (529) heap_init: At 3FCD9AE8 len 0000FC28 (63 KiB): RAM
+18:35:42 I (529) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+18:35:42 I (529) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+18:35:42 I (529) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+18:35:42 I (529) esp_psram: Adding pool of 1920K of PSRAM memory to heap allocator
+18:35:42 I (530) spi_flash: detected chip: generic
+18:35:42 I (530) spi_flash: flash io: dio
+18:35:42 [shim] xTaskCreate enter: 'ipc0' prio=24 core=0 stack=1280
+18:35:42 [shim] xTaskCreate: 'ipc0' tk_id=1 pri=1
+18:35:42 [shim] xTaskCreate enter: 'ipc1' prio=24 core=1 stack=1280
+18:35:42 [shim] xTaskCreate: 'ipc1' tk_id=2 pri=1
+18:35:42 [shim] xTaskCreate enter: 'esp_timer' prio=22 core=0 stack=4096
+18:35:42 [shim] xTaskCreate: 'esp_timer' tk_id=3 pri=3
+18:35:42 I (532) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+18:35:42 I (532) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+18:35:42 
+18:35:42 
+18:35:42 [mtkernel] __wrap_esp_startup_start_app: bypassing [FmrtekeeRrTnOeSl]
+18:35:42  c[ocrreu1m:b ]b ycpoalsds ibnogo tF,r eneoR TfOlSi,g hetn-treercionrgd eSrM Pd aptaark
+18:35:42 
+18:35:42 [smp] core0 IPI alloc begin source=79
+18:35:42 [sm[ps]m pc]o rceo1r een0t rIyP,I  parlildo=c d1on
+18:35:42 e [esrmrp=] 0co
+18:35:42 re[1s mwpa]i tcionrge 0f owra ictoirneg0  fIoPrI  caolrleo1c aitnotrer
+18:35:42 ru[pstm ps]e tcuopr
+18:35:42 e1 direct IPI install begin source=80
+18:35:42 [smp] core1 direct IPI install done int=0 level=1
+18:35:42 [smp[]s mcpo]r ec1o rIeP0I  orbesceerivveedr  cuopr e(1F RiOnMt_CrPrUu_pItN TsRe1t)u,p  pcaormkpilnegte
+18:35:42 
+18:35:42 [mtkernel] heap 0x3fcab088..0x3fcb6088 (45056 bytes)
+18:35:42 [mtkernel] calling knl_main()
+18:35:42 SYSTIMER started!
+18:35:42 
+18:35:42 
+18:35:42 microT-Kernel Version 3.00
+18:35:42 
+18:35:42 [BOOT] esp32s3_mtk node s3-001: micro T-Kernel 3 SMP, 2 processors, reset reason: USB
+18:35:42 [BOOT] micro T-Kernel 3 SMP runtime: 7 tasks, 6 message buffers, 1 event flag, 1 cyclic handler
+18:35:42 [WIFI] Connecting to <SSID>
+18:35:42 [SCHED         7ms] reset: cleared 8 slots
+18:35:42 [MODEL] Model transfer subsystem initialised.
+18:35:42 [shim] qcreate(st) h=0x3fcdcdf4 len=32 sz=4 ne=7 nf=8
+18:35:42 [shim] xTaskCreate enter: 'tcpip' prio=18 core=2147483647 stack=3584
+18:35:42 [shim]   tskNO_AFFINITY -> pinning 'tcpip' to core 0 (coprocessor tasks must be pinned)
+18:35:42 [shim] xTaskCreate: 'tcpip' tk_id=14 pri=7
+18:35:42 [shim] qcreate h=0x3c140854 len=32 sz=16 ne=12 nf=13
+18:35:42 [shim] xTaskCreate enter: 'sys_evt' prio=20 core=0 stack=2816
+18:35:42 [shim] xTaskCreate: 'sys_evt' tk_id=15 pri=5
+18:35:42 I (3355770420) pp: pp rom version: e7ae62f
+18:35:42 I (3355770420) net80211: net80211 rom version: e7ae62f
+18:35:42 [shim] qcreate(st) h=0x3fcdf6c8 len=200 sz=8 ne=15 nf=16
+18:35:42 [shim] xTaskCreate enter: 'wifi' prio=23 core=0 stack=3584
+18:35:42 [shim] xTaskCreate: 'wifi' tk_id=16 pri=2
+18:35:42 [MODEL] Loaded saved model: 16440 bytes from flash slot 0
+18:35:42 [INFER] Inference manager initialised.
+18:35:42 [TFLITE] Unloading previous model state...
+18:35:42 [TFLITE] Unload complete.
+18:35:42 [TFLITE] Verifying FlatBuffer at 0x3c108dc0...
+18:35:42 [TFLITE] Schema version 3 verified.
+18:35:42 [TFLITE] Creating OpResolver...
+18:35:42 [TFLITE] Ops registered.
+18:35:42 [TFLITE] Creating Interpreter (Arena size 65536)...
+18:35:42 [TFLITE] Allocating tensors...
+18:35:42 [TFLITE] Tensors allocated.
+18:35:42 I (3355770432) wifi_init: rx ba win: 6
+18:35:42 [TFLITE] Model loaded OK!
+18:35:42 I (3355770432) wifi_init: accept mbox: 6
+18:35:42 [TFLITE]   Inputs:  1 tensor(s), 16 total element(s)
+18:35:42 I (3355770432) wifi_init: tcpip mbox: 32
+18:35:42 [TFLITE]   Outputs: 1 tensor(s), 16 total element(s)
+18:35:42 I (3355770432) wifi_init: udp mbox: 6
+18:35:42 [TFLITE]   Arena:   2908 / 65536 bytes used
+18:35:42 I (3355770433) wifi_init: tcp mbox: 6
+18:35:42 [MON] hardware watchdog armed: 10 s, fed while SchedulerTask, ControlTask and MQTTTask are alive
+18:35:42 [INFER] Base model loaded: 16 inputs, 16 outputs
+18:35:42 I (3355770433) wifi_init: tcp tx win: 5760
+18:35:42 [INFER] Loaded 16 base normalization params and 16 threshold masks
+18:35:42 I (3355770433) wifi_init: tcp rx win: 5760
+18:35:42 I (3355770433) wifi_init: tcp mss: 1440
+18:35:42 I (3355770433) wifi_init: WiFi IRAM OP enabled
+18:35:42 I (3355770433) wifi_init: WiFi RX IRAM OP enabled
+18:35:42 W (-939196862) wifi:Password length matches WPA2 standards, authmode threshold changes from OPEN to WPA2
+18:35:42 I (3355770434) phy_init: phy_version 711,97bcf0a2,Aug 25 2025,19:04:10
+18:35:42 I (3355770473) phy_init: Saving new calibration data due to checksum failure or outdated calibration data, mode(0)
+18:35:42 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:35:43 [SCHED       823ms] run_all: running=0
+18:35:43 [INFER] MODEL_READY detected — starting auto-load...
+18:35:43 [TFLITE] Unloading previous model state...
+18:35:43 [TFLITE] Unload complete.
+18:35:43 [TFLITE] Verifying FlatBuffer at 0x3c321000...
+18:35:43 [TFLITE] Schema version 3 verified.
+18:35:43 [TFLITE] Creating OpResolver...
+18:35:43 [TFLITE] Ops registered.
+18:35:43 [TFLITE] Creating Interpreter (Arena size 65536)...
+18:35:43 [TFLITE] Allocating tensors...
+18:35:43 [TFLITE] Tensors allocated.
+18:35:43 [TFLITE] Model loaded OK!
+18:35:43 [TFLITE]   Inputs:  1 tensor(s), 16 total element(s)
+18:35:43 [TFLITE]   Outputs: 1 tensor(s), 16 total element(s)
+18:35:43 [TFLITE]   Arena:   2908 / 65536 bytes used
+18:35:43 [INFER] Model loaded: 16 inputs, 16 outputs
+18:35:43 [INFER] Auto-load successful.
+18:35:44 [SCHED      1853ms] run_all: running=0
+18:35:44 --- repl-help: HELP
+18:35:44 Commands:
+18:35:44   BEGINCFG ... ENDCFG        - add sensor config (multi-line)
+18:35:44   BEGINCFG|k=v|...|ENDCFG    - add sensor config (inline with '|', supports \|)
+18:35:44   BEGINRULE ... ENDRULE      - add rule (multi-line)
+18:35:44   BEGINRULE|k=v|...|ENDRULE  - add rule (inline with '|', supports \|)
+18:35:44   RUN / STOP                 - control sampling
+18:35:44   CLEAR                      - clear sensors + rules
+18:35:44   SHOW / SHOWRULES           - show sensors / rules
+18:35:44   CLEARRULES                 - clear only rules
+18:35:44   HELP                       - this text
+18:35:44 
+18:35:44 Example inline rule (HMC5883L big-endian X,Z,Y at 0x03):
+18:35:44 BEGINRULE|name=GY511_MAG|source=GY511_ACC|calc=mx=s16be(0)|calc=mz=s16be(2)|calc=my=s16be(4)|calc=mag=sqrt(mx*mx+my*my+mz*mz)|when=mag>350|action=log:MAG change detected|ENDRULE
+18:35:44 [WIFI] not connected: reason 201, network not found (wrong name, or not 2.4 GHz)
+18:35:45 [SCHED      3407ms] run_all: running=0
+18:35:46 [SCHED      4408ms] run_all: running=0
+18:35:47 --- repl-show: SHOW
+18:35:47 [SHOW] sampling=0
+18:35:47 [RULE] count=0
+18:35:47 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:35:48 [SCHED      5998ms] run_all: running=0
+18:35:49 [SCHED      6999ms] run_all: running=0
+18:35:50 --- repl-run: RUN
+18:35:50 RUN
+18:35:51 [SCHED      8589ms] run_all: running=1
+18:35:52 [SCHED      9590ms] run_all: running=1
+18:35:52 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:35:52 --- repl-stop: STOP
+18:35:52 STOP
+18:35:53 [SCHED     11183ms] run_all: running=0
+18:35:54 [SCHED     12184ms] run_all: running=0
+18:35:55 --- repl-unknown: FOO
+18:35:55 Unknown: FOO
+18:35:56 [SCHED     13767ms] run_all: running=0
+18:35:57 [SCHED     14768ms] run_all: running=0
+18:35:57 [WIFI] no reconnect for 15 s; restarting the Wi-Fi driver
+18:35:57 I (3355785505) pp: pp rom version: e7ae62f
+18:35:57 I (3355785505) net80211: net80211 rom version: e7ae62f
+18:35:57 [shim] qcreate(st) h=0x3fce8a18 len=200 sz=8 ne=22 nf=23
+18:35:57 [shim] xTaskCreate enter: 'wifi' prio=23 core=0 stack=3584
+18:35:57 [shim] xTaskCreate: 'wifi' tk_id=17 pri=2
+18:35:57 I (3355785514) wifi_init: rx ba win: 6
+18:35:57 I (3355785514) wifi_init: accept mbox: 6
+18:35:57 I (3355785514) wifi_init: tcpip mbox: 32
+18:35:57 I (3355785514) wifi_init: udp mbox: 6
+18:35:57 I (3355785514) wifi_init: tcp mbox: 6
+18:35:57 I (3355785514) wifi_init: tcp tx win: 5760
+18:35:57 I (3355785514) wifi_init: tcp rx win: 5760
+18:35:57 I (3355785514) wifi_init: tcp mss: 1440
+18:35:57 I (3355785514) wifi_init: WiFi IRAM OP enabled
+18:35:57 I (3355785514) wifi_init: WiFi RX IRAM OP enabled
+18:35:57 W (-939181781) wifi:Password length matches WPA2 standards, authmode threshold changes from OPEN to WPA2
+18:35:57 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:35:57 --- cfg-digital: BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+18:35:57 OK: Config applied (inline, delim='|')
+18:35:57 [SCHED     15432ms] add[0]: DIG on gpio freq=2.000Hz mode=poll method=digital GPIO(pin=6)
+18:35:57 [SCHED] added: DIG on gpio
+18:35:57 CFG: ok (added #0: DIG)
+18:35:58 [SCHED     16433ms] run_all: running=0
+18:35:59 [SCHED     17434ms] run_all: running=0
+18:36:00 --- repl-show-cfg: SHOW
+18:36:00 [SHOW] sampling=0
+18:36:00 [SCHED] #0 name=DIG proto=gpio mode=poll freq=2.000Hz
+18:36:00 [RULE] count=0
+18:36:01 [SCHED     19029ms] run_all: running=0
+18:36:02 [SCHED     20030ms] run_all: running=0
+18:36:02 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:36:03 --- rule-log: BEGINRULE|name=R_LOG|source=DIG|calc=s=u8(0)|when=s==0|action=log:pin low|ENDRULE
+18:36:03 [RULE] added name=R_LOG src=DIG vars=1 action=log:pin low
+18:36:03 RULE: ok
+18:36:04 [SCHED     21621ms] run_all: running=0
+18:36:05 [SCHED     22622ms] run_all: running=0
+18:36:05 --- rule-infer: BEGINRULE|name=R_INF|source=DIG|calc=s=u8(0)|when=1|action=batch: infer.set:0:1.0 \| infer.run|ENDRULE
+18:36:05 [RULE] added name=R_INF src=DIG vars=1 action=batch: infer.set:0:1.0 \| infer.run
+18:36:05 RULE: ok
+18:36:06 [SCHED     24221ms] run_all: running=0
+18:36:07 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:36:07 [SCHED     25222ms] run_all: running=0
+18:36:08 --- run-data: RUN
+18:36:08 RUN
+18:36:08 [SCHED     25812ms] arm[0/DIG]: next_run reset to NOW
+18:36:08 [SCHED     25812ms] publish[0/DIG]: 3 bytes via gpio
+18:36:08 proto=gpio src=DIG len=3 ts=25812 : 00 8C 28
+18:36:08 [RULE] R_LOG: pin low (value=0.000 ts=25812)
+18:36:08 [INFER] invoke=1380us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+18:36:08 [TRACE] Rule Parse + Batch Actions executed in 1999us
+18:36:08 [TRACE] Total Rule Eval (DIG): 2439us
+18:36:08 [SCHED     26314ms] run_all: running=1
+18:36:08 [SCHED     26314ms] publish[0/DIG]: 3 bytes via gpio
+18:36:08 proto=gpio src=DIG len=3 ts=26314 : 00 82 2A
+18:36:08 [RULE] R_LOG: pin low (value=0.000 ts=26314)
+18:36:08 [INFER] invoke=484us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+18:36:08 [TRACE] Rule Parse + Batch Actions executed in 1041us
+18:36:08 [TRACE] Total Rule Eval (DIG): 1420us
+18:36:09 [SCHED     26816ms] publish[0/DIG]: 3 bytes via gpio
+18:36:09 proto=gpio src=DIG len=3 ts=26816 : 00 78 2C
+18:36:09 [RULE] R_LOG: pin low (value=0.000 ts=26816)
+18:36:09 [INFER] invoke=478us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+18:36:09 [TRACE] Rule Parse + Batch Actions executed in 1014us
+18:36:09 [TRACE] Total Rule Eval (DIG): 1380us
+18:36:09 [SCHED     27318ms] run_all: running=1
+18:36:09 [SCHED     27318ms] publish[0/DIG]: 3 bytes via gpio
+18:36:09 proto=gpio src=DIG len=3 ts=27318 : 00 6E 2E
+18:36:09 [RULE] R_LOG: pin low (value=0.000 ts=27318)
+18:36:09 [INFER] invoke=475us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+18:36:09 [TRACE] Rule Parse + Batch Actions executed in 998us
+18:36:09 [TRACE] Total Rule Eval (DIG): 1330us
+18:36:10 [SCHED     27819ms] publish[0/DIG]: 3 bytes via gpio
+18:36:10 proto=gpio src=DIG len=3 ts=27819 : 00 63 30
+18:36:10 [RULE] R_LOG: pin low (value=0.000 ts=27819)
+18:36:10 [INFER] invoke=443us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+18:36:10 [TRACE] Rule Parse + Batch Actions executed in 927us
+18:36:10 [TRACE] Total Rule Eval (DIG): 1226us
+18:36:10 [SCHED     28320ms] run_all: running=1
+18:36:10 [SCHED     28320ms] publish[0/DIG]: 3 bytes via gpio
+18:36:10 proto=gpio src=DIG len=3 ts=28320 : 00 58 32
+18:36:10 [RULE] R_LOG: pin low (value=0.000 ts=28320)
+18:36:10 [INFER] invoke=461us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+18:36:10 [TRACE] Rule Parse + Batch Actions executed in 981us
+18:36:10 [TRACE] Total Rule Eval (DIG): 1318us
+18:36:11 [SCHED     28821ms] publish[0/DIG]: 3 bytes via gpio
+18:36:11 proto=gpio src=DIG len=3 ts=28821 : 00 4D 34
+18:36:11 [RULE] R_LOG: pin low (value=0.000 ts=28821)
+18:36:11 [INFER] invoke=502us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+18:36:11 [TRACE] Rule Parse + Batch Actions executed in 1045us
+18:36:11 [TRACE] Total Rule Eval (DIG): 1416us
+18:36:11 [SCHED     29323ms] run_all: running=1
+18:36:11 [SCHED     29323ms] publish[0/DIG]: 3 bytes via gpio
+18:36:11 proto=gpio src=DIG len=3 ts=29323 : 00 43 36
+18:36:11 [RULE] R_LOG: pin low (value=0.000 ts=29323)
+18:36:11 [INFER] invoke=537us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+18:36:11 [TRACE] Rule Parse + Batch Actions executed in 1104us
+18:36:11 [TRACE] Total Rule Eval (DIG): 1490us
+18:36:12 [SCHED     29825ms] publish[0/DIG]: 3 bytes via gpio
+18:36:12 proto=gpio src=DIG len=3 ts=29825 : 00 39 38
+18:36:12 [RULE] R_LOG: pin low (value=0.000 ts=29825)
+18:36:12 [INFER] invoke=488us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+18:36:12 [TRACE] Rule Parse + Batch Actions executed in 1024us
+18:36:12 [TRACE] Total Rule Eval (DIG): 1399us
+18:36:12 [WIFI] no reconnect for 15 s; restarting the Wi-Fi driver
+18:36:12 I (3355800591) pp: pp rom version: e7ae62f
+18:36:12 I (3355800591) net80211: net80211 rom version: e7ae62f
+18:36:12 [shim] qcreate(st) h=0x3fce76b0 len=200 sz=8 ne=28 nf=29
+18:36:12 [shim] xTaskCreate enter: 'wifi' prio=23 core=0 stack=3584
+18:36:12 [shim] xTaskCreate: 'wifi' tk_id=18 pri=2
+18:36:12 I (3355800600) wifi_init: rx ba win: 6
+18:36:12 I (3355800600) wifi_init: accept mbox: 6
+18:36:12 I (3355800600) wifi_init: tcpip mbox: 32
+18:36:12 I (3355800600) wifi_init: udp mbox: 6
+18:36:12 I (3355800600) wifi_init: tcp mbox: 6
+18:36:12 I (3355800600) wifi_init: tcp tx win: 5760
+18:36:12 I (3355800600) wifi_init: tcp rx win: 5760
+18:36:12 I (3355800600) wifi_init: tcp mss: 1440
+18:36:12 I (3355800600) wifi_init: WiFi IRAM OP enabled
+18:36:12 I (3355800600) wifi_init: WiFi RX IRAM OP enabled
+18:36:12 W (-939166695) wifi:Password length matches WPA2 standards, authmode threshold changes from OPEN to WPA2
+18:36:12 [WIFI] not connected: reason 8, see esp_wifi_types.h
+18:36:12 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:36:12 [SCHED     30327ms] run_all: running=1
+18:36:12 [SCHED     30327ms] publish[0/DIG]: 3 bytes via gpio
+18:36:12 proto=gpio src=DIG len=3 ts=30327 : 00 2F 3A
+18:36:12 [RULE] R_LOG: pin low (value=0.000 ts=30327)
+18:36:12 [INFER] invoke=679us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+18:36:12 [TRACE] Rule Parse + Batch Actions executed in 1288us
+18:36:12 [TRACE] Total Rule Eval (DIG): 1707us
+18:36:13 [SCHED     30828ms] publish[0/DIG]: 3 bytes via gpio
+18:36:13 proto=gpio src=DIG len=3 ts=30828 : 00 24 3C
+18:36:13 [RULE] R_LOG: pin low (value=0.000 ts=30828)
+18:36:13 [INFER] invoke=473us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+18:36:13 [TRACE] Rule Parse + Batch Actions executed in 1009us
+18:36:13 [TRACE] Total Rule Eval (DIG): 1383us
+18:36:13 --- run-stop: STOP
+18:36:13 STOP
+18:36:14 [SCHED     32040ms] run_all: running=0
+18:36:14 I (3355802475) esp_netif_handlers: sta ip: 172.20.10.6, mask: 255.255.255.240, gw: 172.20.10.1
+18:36:14 WiFi connected
+18:36:14 [WIFI] ip=172.20.10.6
+18:36:14 [shim] qcreate h=0x3c151af4 len=1 sz=16 ne=32 nf=33
+18:36:14 [MQTT] Connecting to 172.20.10.5 port 1883...
+18:36:14 [shim] xTaskCreate enter: 'mqtt_task' prio=5 core=2147483647 stack=6144
+18:36:14 [shim]   tskNO_AFFINITY -> pinning 'mqtt_task' to core 0 (coprocessor tasks must be pinned)
+18:36:14 [shim] xTaskCreate: 'mqtt_task' tk_id=19 pri=20
+18:36:14 [shim] qcreate(st) h=0x3fce6d94 len=6 sz=4 ne=36 nf=37
+18:36:15 [SCHED     33041ms] run_all: running=0
+18:36:16 --- repl-showrules: SHOWRULES
+18:36:16 [RULE] count=2
+18:36:16   #0 name=R_LOG src=DIG vars=1 action=log:pin low prev_init=1
+18:36:16   #1 name=R_INF src=DIG vars=1 action=batch: infer.set:0:1.0 \| infer.run prev_init=1
+18:36:16 E (3355804485) esp-tls: [sock=54] select() timeout
+18:36:16 E (3355804486) transport_base: Failed to open a new connection: 32774
+18:36:16 E (3355804486) mqtt_client: Error transport connect
+18:36:17 [SCHED     34646ms] run_all: running=0
+18:36:17 [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:36:18 [SCHED     35647ms] run_all: running=0
+18:36:18 --- repl-clearrules: CLEARRULES
+18:36:18 [RULE] reset
+18:36:19 [SCHED     37242ms] run_all: running=0
+18:36:20 [SCHED     38243ms] run_all: running=0
+18:36:21 --- repl-clear: CLEAR
+18:36:21 [SCHED     38811ms] reset: cleared 8 slots
+18:36:21 [RULE] reset
+18:36:21 CLEARED
+18:36:21 [shim] qcreate(st) h=0x3fce7638 len=6 sz=4 ne=38 nf=39
+18:36:21 [MQTT] connected to broker
+18:36:21 [MQTT] Subscribing to node wildcard: pico/s3-001/#
+18:36:21 [MQTT] Subscribed OK to: node-wildcard
+18:36:21 [MQTT] Subscribing to broadcast: pico/broadcast/config
+18:36:21 [MQTT] Subscribed OK to: broadcast
+18:36:22 [SCHED     39816ms] run_all: running=0
+18:36:22 [MQTT] Status: Connected, Broker: 172.20.10.5
+18:36:23 [SCHED     40817ms] run_all: running=0

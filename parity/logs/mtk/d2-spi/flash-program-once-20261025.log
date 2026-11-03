@@ -1,0 +1,10 @@
+# External W25Q32: one approved 16-byte program; no erase; no automatic program retry
+# sent: SPISCAN EF4016
+[SPISCAN] BLANK sector=3FF000 bytes=4096; no writes made
+# sent: SPIPROGRAM EF4016
+[SPIPROGRAM] PASS address=3FF000 bytes=16 readback=verified erase=none
+# sent: SPIVERIFY EF4016
+[SPIVERIFY] PASS address=3FF000 bytes=16 pattern=retained
+# resetting ESP32-S3 via USB RTS; external flash power remains connected
+# sent: SPIVERIFY EF4016
+[SPIVERIFY] PASS address=3FF000 bytes=16 pattern=retained

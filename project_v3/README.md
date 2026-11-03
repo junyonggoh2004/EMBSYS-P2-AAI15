@@ -2,6 +2,8 @@
 
 **Pico-v3** is a modular, configuration-driven sensor node framework for the Raspberry Pi Pico W. It allows for dynamic runtime configuration of sensors (UART, I2C, GPIO), local data processing using a Reverse Polish Notation (RPN) rule engine, and real-time telemetry via MQTT.
 
+> **D2 branch note:** `s3-port-d2` plans SPI as a fourth hardware interface behind the same registry. SPI is not implemented until the acceptance checklist in [`../D2_SPI_TODO.md`](../D2_SPI_TODO.md) passes; the schema below documents the proposed contract for review.
+
 ---
 
 ## 🏗️ Architecture & Design
@@ -9,48 +11,58 @@
 The project is designed with a layered architecture to separate hardware abstraction, scheduling logic, and data distribution.
 
 ### System Data Flow
-
 ```mermaid
 graph TD
     subgraph Hardware
         S_UART[UART Sensors]
         S_I2C[I2C Sensors]
         S_GPIO[GPIO Sensors]
+        S_SPI["SPI Devices (D2 planned)"]
     end
 
     subgraph "Bus Layer (Drivers)"
-        Bus_UART[bus/uart.c]
-        Bus_I2C[bus/i2c.c]
-        Bus_GPIO[bus/gpio.c]
+        Bus_UART["bus/uart.c"]
+        Bus_I2C["bus/i2c.c"]
+        Bus_GPIO["bus/gpio.c"]
+        Bus_SPI["bus/spi.c (D2 planned)"]
     end
 
     subgraph "Application Layer"
-        Sched[Scheduler (scheduler.c)]
-        Output[Output Hub (output_format.c)]
+        Sched["Scheduler (scheduler.c)"]
+        Output["Output Hub (output_format.c)"]
     end
 
-    subgraph "Logic & Comms"
-        Rules[Rule Engine (rules.c)]
-        MQTT[MQTT Telemetry (mqtt_telemetry.c)]
-        Console[Serial REPL]
+    subgraph "Logic & Edge AI"
+        Rules["Rule Engine (rules.c)"]
+        Inference["Inference Mgr (TFLite)"]
+        Flash[(Flash Memory)]
+        MQTT[MQTT Comms]
     end
 
     %% Connections
     S_UART --> Bus_UART
     S_I2C --> Bus_I2C
     S_GPIO --> Bus_GPIO
+    S_SPI --> Bus_SPI
 
-    Bus_UART -->|Raw Bytes| Sched
-    Bus_I2C -->|Raw Bytes| Sched
-    Bus_GPIO -->|Raw Bytes| Sched
+    Bus_UART --> Sched
+    Bus_I2C --> Sched
+    Bus_GPIO --> Sched
+    Bus_SPI --> Sched
 
     Sched -->|Data Frame| Output
 
-    Output -->|1. Print| Console
-    Output -->|2. Evaluate| Rules
-    Output -->|3. Publish| MQTT
+    Output -->|1. Evaluate| Rules
+    Output -->|2. Publish| MQTT
 
-    Rules -->|Trigger| Actions[Actions: GPIO / Log]
+    Rules -->|Action: infer.set/run| Inference
+    Inference -->|Anomaly Loss| Rules
+    
+    MQTT -->|OTA Binary| OTA[OTA Receiver]
+    OTA -->|Write| Flash
+    Flash -->|XIP Map| Inference
+
+    Rules -->|Trigger| Actions["Actions: GPIO / Log / Remote"]
 ```
 
 ### Layer Descriptions
@@ -58,7 +70,7 @@ graph TD
 The firmware is structured into four distinct layers, allowing for modularity and dynamic runtime reconfiguration without recompilation.
 
 1.  **Hardware Abstraction Bus Layer (`bus/`)**:
-    *   **Hardware Abstraction**: Drivers for UART, I2C, and GPIO.
+    *   **Hardware Abstraction**: Drivers for UART, I2C, and GPIO; D2 adds SPI after its contract and tests are approved.
     *   **Standard Interface**: All drivers implement a common `bus_t` interface (`init`, `poll`, `stream`).
     *   **Responsibility**: Reads raw bytes from hardware and passes them to the scheduler.
 
@@ -105,6 +117,12 @@ mosquitto_pub -h <IP_ADDRESS> -t "pico/<Node_Number>/config" -m "BEGINCFG|name=G
 | | `proto` | Bus protocol Used | `proto=uart` |
 | | `mode` | Polling or Streaming | `freq_hz=10` |
 | | `freq_hz` | Polling frequency | `mode=poll` |
+| **Timing (D3)** | `timing.mode` | `periodic`, `one_shot`, or `event_driven` | `timing.mode=event_driven` |
+| | `timing.interval_ms` | Period in milliseconds; explicit value overrides the legacy `freq_hz` conversion | `timing.interval_ms=50` |
+| | `timing.timeout_ms` | Maximum lateness/acquisition budget; `0` disables this bound | `timing.timeout_ms=20` |
+| | `timing.window_ms` | Event-driven observation-window bound | `timing.window_ms=50` |
+| | `timing.trigger_source` | Sensor name whose completed sample arms this sensor | `timing.trigger_source=RADAR` |
+| | `timing.enabled` | `0` disables or `1` enables the timing state | `timing.enabled=1` |
 | **UART** | `uart.tx`, `uart.rx` | GPIO TX/RX pins | `uart.tx=0` |
 | | `uart.baud` | Baud rate | `uart.baud=115200` |
 | | `uart.bits` | Number of sensor bits | `uart.bits=8` |
@@ -123,6 +141,13 @@ mosquitto_pub -h <IP_ADDRESS> -t "pico/<Node_Number>/config" -m "BEGINCFG|name=G
 | | `i2c.restart` | 1=Repeated Start, 0=Stop then Start | `i2c.restart=1` |
 | *Optional I2C* | `i2c .pre` | Pre byte sent to wake sensor | `i2c.pre=0xA5, 0x01` |
 | | `i2c.post_delay_ms` | Sleep time after sending pre bytes | `i2c.post_delay_ms=50` |
+| **SPI (D2 planned)** | `spi.host` | SPI host/bus selected at runtime | `spi.host=spi2` |
+| | `spi.sclk`, `spi.mosi`, `spi.miso`, `spi.cs` | Runtime signal pin mapping; use `-1` only where the agreed contract permits a missing signal | `spi.sclk=12` |
+| | `spi.hz` | Device clock frequency in hertz | `spi.hz=10000000` |
+| | `spi.mode` | SPI mode 0–3 | `spi.mode=0` |
+| | `spi.tx` | Optional bytes transmitted before/during the read | `spi.tx=0xA5 0x5A` |
+| | `spi.read_len` | Number of receive bytes required | `spi.read_len=2` |
+| | `spi.timeout_ms` | Bounded transaction timeout | `spi.timeout_ms=100` |
 | **GPIO (Digital)** | `gpio.pin` | Pin to read | `gpio.pin=15` |
 | | `gpio.pull` | 1=Up, 2=Down 0=Off/Floating | `gpio.pull=1` |
 | | `gpio.mode` | digital/pulse/onewire/counter | `gpio.mode=digital` |
@@ -132,6 +157,17 @@ mosquitto_pub -h <IP_ADDRESS> -t "pico/<Node_Number>/config" -m "BEGINCFG|name=G
 | | `gpio.echo` | Input pin connected to Echo | `gpio.trig=17` |
 | | `gpio.trig_us` | How long to hold trigger pin to initiate reading (microseconds) | `gpio.trig_us=10` |
 | | `gpio.pulse_timeout_us` | Timeout (microseconds) | `gpio.pulse_timeout_us=25000` |
+
+Periodic sensors fire immediately when `RUN` starts, then skip missed periods rather than replaying a burst; a missed timeout advances to a future slot instead of disabling the sensor. A one-shot sensor fires once on `RUN` and may be re-armed with `TRIGGER <sensor-name>`. An event-driven sensor remains idle until a completed sample from another sensor matching `timing.trigger_source` arrives, or until an explicit `TRIGGER` command is used. Publishing a sensor's own sample cannot automatically rearm it. One-shot and event-driven timing require `mode=poll`. `timing.enabled=0` disables streaming as well as polling. Invalid fields reject the new block before it is installed.
+
+The configured timeout bounds lateness plus acquisition. For non-periodic work, the earlier applicable nonzero timeout/window bound wins; a zero timeout leaves the window bound in force. Completion exactly on the deadline is allowed. If a synchronous bus read finishes late, its bytes are discarded before rules, MQTT and source handoff run. This does not preempt the driver: acquisition can still hold SchedulerTask until the driver's own timeout. The asynchronous two-sonar capture/guard design and the final entrance timing budget remain separate D3 acceptance work.
+
+Example logical hand-off from radar to a bounded observation:
+
+```text
+BEGINCFG|name=RADAR|proto=uart|mode=poll|timing.mode=periodic|timing.interval_ms=50|uart.tx=1|uart.rx=2|uart.baud=256000|uart.read_len=32|ENDCFG
+BEGINCFG|name=SONAR_A|proto=gpio|mode=poll|timing.mode=event_driven|timing.trigger_source=RADAR|timing.window_ms=50|timing.timeout_ms=20|gpio.mode=pulse|gpio.trig=4|gpio.echo=7|gpio.trig_us=10|gpio.pulse_timeout_us=20000|ENDCFG
+```
 
 ### 2. JSON File-Based Configuration (MQTT Only)
 You can send a JSON payload to `pico/<node_id>/config -f <filepath_of_json>` to configure sensors programmatically.
@@ -158,7 +194,88 @@ You can send a JSON payload to `pico/<node_id>/config -f <filepath_of_json>` to 
 
 ---
 
-## 🧠 Rule Engine Guide
+## 🧠 Edge AI & TFLite Inference Engine
+
+Pico-v3 features a fully dynamic Edge AI pipeline powered by TensorFlow Lite for Microcontrollers (TFLite Micro). It allows you to perform real-time, on-device anomaly detection and classification without needing to recompile the firmware.
+
+### 1. The Inference Pipeline
+
+The ML pipeline operates independently from the main rule engine but can be seamlessly triggered by it:
+1. **Model Loader:** `.tflite` models and normalization parameters are transferred over MQTT and stored in Flash memory.
+2. **Inference Manager:** A wrapper around TFLite Micro that handles input normalization, quantized (INT8)/Float tensor mapping, and executing math.
+3. **Sensor Fusion Slots:** Up to 16 input features can be injected asynchronously by multiple sensors before running an inference pass.
+4. **Dynamic Thresholding:** Supports different thresholds based on which combination of sensors is currently active (Bitmasking).
+
+### 2. Uploading a Model
+
+Models and normalization parameters are uploaded via the `send_model.py` script. 
+
+**Format Requirements:**
+- Model: A standard flatbuffer `.tflite` file (INT8 or FP32). Arena size is capped at 64KB.
+- Parameters: A JSON file (`norm_stats.json`) containing `means`, `stds`, and optionally `thresholds_by_mask` and `score_mode`.
+
+**Example Upload:**
+```bash
+python send_model.py --broker 192.168.50.192 --model autoencoder_int8.tflite --norm norm_stats.json
+```
+*Note: The script uses a 3-phase chunky-transfer protocol over MQTT to safely write the model to the Pico's dedicated flash sector.*
+
+### 3. Using Inference in Rules
+
+You control the inference engine using standard rule actions.
+
+#### Injecting Data (`infer.set`)
+Use `infer.set:<slot_index>:<value>` to inject raw sensor values. The engine automatically applies the appropriate mean/std normalization.
+```ini
+action=infer.set:0:$ax | infer.set:1:$ay
+```
+
+#### Running Math (`infer.run`)
+Use `infer.run` to evaluate the model against the current slot inputs. It computes an Anomaly Loss based on the configured "Score Mode" (see below).
+```ini
+action=infer.run:log:ANOMALY DETECTED!
+```
+*If an anomaly is detected (loss > threshold), the chained action (e.g., `log:...` or `gpio:...`) is executed.*
+
+#### Efficiency (`batch:`)
+Because injecting 10+ features individually is verbose, you can use the `batch:` action modifier to execute multiple injection commands smoothly:
+```ini
+action=batch: infer.set:0:$f0 | infer.set:1:$f1 | infer.set:2:$f2 | infer.run:gpio:15=HIGH
+```
+
+#### D6 application events
+
+A rule can submit a fixed, versioned decision record to `ApplicationTask` with `event:entry`, `event:exit`, `event:incomplete`, or `event:false`. The submission is non-blocking; occupancy is mutated only by `ApplicationTask`. A rule firing alone does not prove a completed entrance observation. These actions set only `RULE_VALID`, use the 64-bit decision timestamp as a point (`start == end`), and print `observation=unverified`. Entry/exit decisions from this path are rejected with `reason=quality` and do not change occupancy. Incomplete/false decisions remain no-ops. A real sensor-node assembler must submit its own EventRecord with evidence-backed sequence/timing quality through `event_record_submit`; that assembler is still an open D3 integration dependency.
+
+```text
+BEGINRULE|name=DOOR_ENTRY|source=SONAR_A|calc=near=u16le(0)|when=near<3000|action=event:entry|ENDRULE
+```
+
+The example above tests decision handoff and quality rejection, not people counting. For an explicit synthetic integration check, the ESP32-S3 console accepts `APP EVENT <id> <sequence> <class>`, `APP RESET` and `APP STATUS`. The console fixture supplies test quality flags deliberately and can exercise occupancy transitions; it is not physical entrance evidence. Processed results are offered to `pico/<node>/application/event` at QoS 1; enqueue success is not a broker acknowledgement.
+
+### 4. Configuration & Profiling
+
+#### Score Modes
+You can configure how the Anomaly Loss is calculated from the model outputs:
+*   **MSE (Autoencoder)**: Calculates the Mean Squared Error between the inputs and outputs (reconstruction loss). *(Default)*
+*   **DISTANCE (SVDD)**: Calculates the L2-Norm (magnitude) of the output latent vector.
+*   *Configuring:* Add `"score_mode": "distance"` to your norm JSON before uploading, or send a live MQTT command: `mosquitto_pub -t "pico/<node>/cmd" -m "infer.mode distance"`
+
+#### Profiling and Verification
+You can enable verbose tensor dumping to verify normalizations and view execution limits:
+*   **Command:** `mosquitto_pub -t "pico/<node>/cmd" -m "debug.infer on"`
+*   **Console Output:**
+    ```text
+    [INFER] invoke=1290us | DIST=0.8300 mask=1010 thresh=1.2790 OK
+    [INFER VERBOSE] Inputs  : -2.586 0.000 1.441 ...
+    [INFER VERBOSE] Outputs : 0.000 -1.135 1.135 ...
+    ```
+    *   `invoke=XXXus`: The hardware timer latency for the TFLite math.
+    *   `mask`: The active sensor bitmask (e.g. `1010` means slots 0 and 2 have fresh data).
+
+---
+
+## ⚙️ Rule Engine Guide
 
 The Rule Engine allows the Pico to process data locally. Rules are defined using **Reverse Polish Notation (RPN)**.
 
@@ -281,8 +398,7 @@ What to do when the condition is met.
 **1. Control Flow (Pico 001 --> Pico 002)**
 
 **Scenario**: Pico 001 detects a local event and activates a sensor on Pico 002
-
-```
+```mermaid
 sequenceDiagram
     participant P1_Rule as Pico 001 Rule Engine
     participant P1_MQTT as Pico 001 MQTT Client
@@ -347,7 +463,7 @@ Use this to control the state of the scheduler on a remote node.
 **2. Bridging Data Flow (Pico 002 --> Pico 001)**
 
 **Scenario**: Pico 002 is now running its sensor. Pico 001 subscribes to that data to make decisions.
-```
+```mermaid
 sequenceDiagram
     participant P2_HW as Pico 002 Hardware
     participant P2_MQTT as Pico 002 MQTT Client

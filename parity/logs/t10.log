@@ -1,0 +1,77 @@
+20:13:40 [SCHED    651990ms] run_all: running=0
+20:13:40 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:13:41 [SCHED    652990ms] run_all: running=0
+20:13:41 --- clear-t10: CLEAR
+20:13:42 [SCHED    653990ms] reset: cleared 8 slots
+20:13:42 [RULE] reset
+20:13:42 CLEARED
+20:13:42 [SCHED    653991ms] run_all: running=0
+20:13:43 [SCHED    654991ms] run_all: running=0
+20:13:44 [SCHED    655991ms] run_all: running=0
+20:13:44 --- cfg-t10: BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=22|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+20:13:45 [SCHED    656991ms] run_all: running=0
+20:13:45 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:13:46 OK: Config applied (inline, delim='|')
+20:13:46 [SCHED    657992ms] add[0]: DIG on gpio freq=1.000Hz mode=poll method=digital GPIO(pin=22)
+20:13:46 [SCHED] added: DIG on gpio
+20:13:46 CFG: ok (added #0: DIG)
+20:13:46 [SCHED    657993ms] run_all: running=0
+20:13:47 [SCHED    658993ms] run_all: running=0
+20:13:47 --- rule-false: BEGINRULE|name=RF|source=DIG|calc=s=u8(0)|when=s==1|action=log:should not fire|ENDRULE
+20:13:48 [SCHED    659993ms] run_all: running=0
+20:13:49 [RULE] added name=RF src=DIG vars=1 action=log:should not fire
+20:13:49 RULE: ok
+20:13:49 [SCHED    660994ms] run_all: running=0
+20:13:49 --- rule-true: BEGINRULE|name=RT|source=DIG|calc=s=u8(0)|when=s==0|action=log:control fired|ENDRULE
+20:13:50 [SCHED    661995ms] run_all: running=0
+20:13:50 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:13:51 [RULE] added name=RT src=DIG vars=1 action=log:control fired
+20:13:51 RULE: ok
+20:13:51 [SCHED    662996ms] run_all: running=0
+20:13:52 [SCHED    663996ms] run_all: running=0
+20:13:52 --- run-t10: RUN
+20:13:53 RUN
+20:13:53 [SCHED    664996ms] run_all: running=1
+20:13:53 [SCHED    664996ms] arm[0/DIG]: next_run reset to NOW
+20:13:53 [SCHED    664996ms] publish[0/DIG]: 3 bytes via gpio
+20:13:53 proto=gpio src=DIG len=3 ts=664996 : 00 5C 1B
+20:13:53 [RULE] RT: control fired (value=0.000 ts=664996)
+20:13:53 [TRACE] Total Rule Eval (DIG): 253us
+20:13:54 [SCHED    665997ms] run_all: running=1
+20:13:54 [SCHED    665997ms] publish[0/DIG]: 3 bytes via gpio
+20:13:54 proto=gpio src=DIG len=3 ts=665997 : 00 45 1F
+20:13:54 [RULE] RT: control fired (value=0.000 ts=665997)
+20:13:54 [TRACE] Total Rule Eval (DIG): 186us
+20:13:55 [SCHED    666998ms] run_all: running=1
+20:13:55 [SCHED    666998ms] publish[0/DIG]: 3 bytes via gpio
+20:13:55 proto=gpio src=DIG len=3 ts=666998 : 00 2E 23
+20:13:55 [RULE] RT: control fired (value=0.000 ts=666998)
+20:13:55 [TRACE] Total Rule Eval (DIG): 168us
+20:13:55 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:13:56 [SCHED    667998ms] run_all: running=1
+20:13:56 [SCHED    667999ms] publish[0/DIG]: 3 bytes via gpio
+20:13:56 proto=gpio src=DIG len=3 ts=667999 : 00 17 27
+20:13:56 [RULE] RT: control fired (value=0.000 ts=667999)
+20:13:56 [TRACE] Total Rule Eval (DIG): 159us
+20:13:57 [SCHED    668999ms] run_all: running=1
+20:13:57 [SCHED    668999ms] publish[0/DIG]: 3 bytes via gpio
+20:13:57 proto=gpio src=DIG len=3 ts=668999 : 00 FF 2A
+20:13:57 [RULE] RT: control fired (value=0.000 ts=668999)
+20:13:57 [TRACE] Total Rule Eval (DIG): 162us
+20:13:58 [SCHED    670000ms] run_all: running=1
+20:13:58 [SCHED    670000ms] publish[0/DIG]: 3 bytes via gpio
+20:13:58 proto=gpio src=DIG len=3 ts=670000 : 00 E8 2E
+20:13:58 [RULE] RT: control fired (value=0.000 ts=670000)
+20:13:58 [TRACE] Total Rule Eval (DIG): 157us
+20:13:58 --- stop-t10: STOP
+20:13:59 STOP
+20:13:59 [SCHED    671001ms] run_all: running=0
+20:14:00 [SCHED    672001ms] run_all: running=0
+20:14:00 [MQTT] Status: Disconnected, Broker: 0.0.0.0
+20:14:01 [SCHED    673001ms] run_all: running=0
+20:14:01 --- clear-t10-end: CLEAR
+20:14:02 [SCHED    674001ms] reset: cleared 8 slots
+20:14:02 [RULE] reset
+20:14:02 CLEARED
+20:14:02 [SCHED    674002ms] run_all: running=0
+20:14:03 [SCHED    675002ms] run_all: running=0

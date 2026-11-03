@@ -1,0 +1,23 @@
+Task 6 - Pico reference freeze check
+Checked: 2026-10-02, by Hasif, on macOS (Apple Silicon)
+
+Clean checkout: git clone --recursive --branch s3-port from GitHub at 70ab17e.
+The commit tagged pico-reference differs from 70ab17e only in README.md and parity/,
+and the firmware sources are unchanged since 543a759 (the task 3 build).
+TFLite Micro submodule: dfea53b977f131dc50d7060568ad4fd355d4d71e
+Build: Pico SDK 2.3.0, Arm GNU Toolchain 14.2.Rel1, PICO_BOARD=pico2_w, Release
+
+1. Placeholder credentials (wifi_credentials.h.example), as in task 3:
+   text 639852, data 0, bss 295424 - identical to parity/logs/3-build.txt.
+
+2. The credentials used for the 2026-10-02 MQTT run:
+   the flash image (project_v3.bin, 635740 bytes) is byte-identical to the firmware
+   that passed parity/logs/mqtt.log, after normalising the two values the build embeds:
+   - the absolute source path, which appears in 44 strings (__FILE__ in asserts)
+   - the build date, which the Pico SDK writes into binary info by default
+   Normalised SHA-256 of both images:
+   d89e20448d9a1bead9e6efe224a15faea8a30a0b90e646355ae08230d1646393
+
+Note for later tasks: whole-file hashes of project_v3.uf2, .bin and .elf change with the
+checkout path and the build date, so the task 3 hashes cannot be matched by a later build.
+Compare builds by size and by the normalised image, as above.
