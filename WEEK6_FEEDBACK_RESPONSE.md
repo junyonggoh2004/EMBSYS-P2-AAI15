@@ -122,13 +122,13 @@ Feedback: measure SchedulerTask WCET. Status 🟡. Done: SchedulerTask measures 
 Feedback: define trigger spacing and order for the two HC-SR04s to avoid crosstalk (review §8.3), since entry/exit direction depends on which fires first. Status ❌. Nothing defined yet. Next action (D3): choose the order and minimum spacing (an echo can last up to 25 ms), and test crosstalk with both sensors facing the entrance.
 
 ### F8. LD2450 UART handling
-Feedback: the LD2450 streams at 256,000 baud but is read only when due; specify who drains UART1 and how often, the RX buffer size, and how presence is derived. Status ❌. Fact: the D1 UART driver reads only when a sample is due, with the default RX buffer. Next action (D6): assign a task to drain UART1 continuously, size its buffer for the frame rate, and define the presence rule from the radar frames.
+Feedback: the LD2450 streams at 256,000 baud but is read only when due; specify who drains UART1 and how often, the RX buffer size, and how presence is derived. Status ❌. Fact: the D1 UART driver reads only when a sample is due, with the default RX buffer. D3 update: the `WINDOW` path drains the configured raw UART radar source and incrementally decodes LD2450 frames, with presence, expiry and loss handling. Next action: qualify the drain rate, buffering, radar zone and fault behaviour on the board under the full entrance workload (README D3-4 and D3-7).
 
 ### F9. Observation-window owner and event record
-Feedback: review §6.1 and §6.4 disagree on which node builds the observation window; assemble the event on the sensor node and publish one timestamped record with an event ID instead of reassembling raw 20 Hz readings over MQTT (review A9). Status ❌. Related: D2's flash-log record already carries an event sequence number ([D2_EVENT_RECORD_DESIGN.md](D2_EVENT_RECORD_DESIGN.md)). Next action (D6): rewrite §6.1 and §6.4 so the sensor node owns the window, and define the record (event ID, node ID, start and end time, features).
+Feedback: review §6.1 and §6.4 disagree on which node builds the observation window; assemble the event on the sensor node and publish one timestamped record with an event ID instead of reassembling raw 20 Hz readings over MQTT (review A9). Status ❌. Related: D2's flash-log record already carries an event sequence number ([D2_EVENT_RECORD_DESIGN.md](D2_EVENT_RECORD_DESIGN.md)). D3 update: the sensor-node `WINDOW` path assembles one event per finished radar/sonar observation window. The pointer-free EventRecord is now 96 bytes (schema v2), with node/boot/sequence identity, window times, features and quality flags; ApplicationTask publishes schema-v2 results. Next action: align review §6.1 and §6.4 with this implementation, prove real crossings and faults on the board, and qualify the cross-node receive path and time basis (README D3-4, D3-8 and D3-11).
 
 ### F10. Event IDs, de-duplication and occupancy persistence
-Feedback: decide now on event IDs and de-duplication for QoS 1 delivery, and whether the FR18 occupancy count survives a processing-node reset. Status ❌. The review says persistence "remains a design decision". Next action (D6): an event ID of node ID plus boot ID plus sequence, de-duplicated at the processing node; decide whether the count is stored (LittleFS or W25Q32) or rebuilt.
+Feedback: decide now on event IDs and de-duplication for QoS 1 delivery, and whether the FR18 occupancy count survives a processing-node reset. Status ❌. The review says persistence "remains a design decision". D3 update: real events use the factory MAC node ID, an NVS boot counter and a sequence; ApplicationTask has bounded duplicate/reorder handling. `APP RESET` and `CLEAR` do not reset identity, but occupancy and duplicate history remain in RAM. Next action: prove boot-counter and replay behaviour across resets and a power cycle on the board, agree cross-node time handling, and decide whether occupancy is persisted or rebuilt. NVS erase can allow earlier identities to repeat; durable identity does not make occupancy persistent (README D3-8 and D3-11).
 
 ### F11. Model upload separation and chunk protocol
 Feedback: infer_q carries both events and model chunks, and flash writes suspend the cache on both cores, which can disturb sampling (NFR1); separate model upload from inference, and define the chunk protocol (size, sequence, CRC, atomic switch-over). Status 🟡. Done in the D1 code: uploads never use infer_q, and the size check, CRC32 and atomic switch-over exist (section 7). Open (D4): enforce chunk order, update the review's description, and measure flash writes against live sampling (R4).
@@ -336,30 +336,30 @@ Removing C++ entirely would mean replacing Arduino with the ESP-IDF C drivers, w
 
 ### D3/D6 progress and ownership (1 November 2026)
 
-The D3 checkpoint on `main` carries Cody's timing modes, the asynchronous HC-SR04 capture, the `PAIR` sequence, the radar-triggered entrance window with LD2450 decoding, schema-v2 event identity, the µT-Kernel ApplicationTask with the EventRecord and occupancy logic, and their laptop tests. README section 4 lists the D3 tasks and what still needs the board. No feedback status below is closed by laptop tests alone.
+The D3 checkpoint carries Cody's timing modes, the asynchronous HC-SR04 capture, the `PAIR` sequence, the radar-triggered entrance window with LD2450 decoding, schema-v2 event identity, the µT-Kernel ApplicationTask with the EventRecord and occupancy logic, and their laptop tests. README section 4 lists the D3 tasks and what still needs the board. No feedback status below is closed by laptop tests alone.
 
 Cody directly owns timing/window contracts, EventRecord and application/occupancy/output semantics, integration acceptance criteria and evidence interpretation. Sitt owns sensor-driver work, Brendan owns SchedulerTask sequencing, Hasif supports platform/MQTT/runtime integration and measurements, and Jun Yong owns inference integration. Cody coordinates and reviews those interfaces rather than taking over every low-level implementation.
 
 | D3/D6 item | Retained progress | Remaining gate |
 |---|---|---|
-| F5/F7/R1: acquisition and sequencing | Interrupt-driven echo wait (D1); on µT-Kernel, asynchronous capture and the `PAIR` sequence (D3) | Approve the 50 ms boundary; measure the two-sonar order, guard and crosstalk and the complete workload on the board |
-| F9: sensor-node EventRecord | An 80-byte pointer-free record, the rule sink, the typed `app_mbf` handoff on µT-Kernel and laptop tests | Complete the real observation-window assembler and the MQTT schema |
-| F10/R2/R5: event identity and occupancy | Boot-local IDs, bounded duplicate/reorder handling and a native-tested occupancy state machine | Agree node/boot/sequence identity, cross-node time and reset/persistence policy; close review defects and prove replay behavior on the target |
+| F5/F7/R1: acquisition and sequencing | Interrupt-driven echo wait (D1); on µT-Kernel, asynchronous capture and the `PAIR` sequence (D3) | The configured A, guard, B pair must fit 50 ms; measure the physical order, guard, crosstalk and complete workload on the board |
+| F9: sensor-node EventRecord | The implemented `WINDOW` assembler, a 96-byte schema-v2 EventRecord, typed 104-byte `app_mbf` messages, schema-v2 result publication and laptop tests | Prove real crossings, window quality and result publication on the board; qualify the cross-node receive path and time basis |
+| F10/R2/R5: event identity and occupancy | Factory-MAC node ID, NVS boot counter and sequence, bounded duplicate/reorder handling and a native-tested occupancy state machine | Prove boot-counter and replay behaviour on the target; agree cross-node time and occupancy reset/persistence policy, including identity reuse after NVS erase |
 | F8/F15: radar and auxiliary sensors | LD2450 draining, incremental decoding and presence/expiry in the entrance window (D3, laptop-tested) | Qualify the radar zone and decoder on the board; Cody agrees the remaining sensor roles with Jun Yong and Sitt |
 | D2 logging handoff | D2's provisional codec and physical synthetic-record recovery evidence are retained | Cody and Brendan/JY agree event/result mappings, publication-enqueue status and the bounded ApplicationTask log handoff; run T-23 |
 
-None of this closes F9, F10, R2, R5, the D3 board checklist or D2 T-23. ApplicationTask keeps core 1, priority 23 and its 4 KB stack; its message storage stays in internal RAM (192 B more than before) and its state lives in EdgeCore memory mapped to PSRAM. Node and boot identity, cross-node time, real-window quality, reset and persistence, and the D2 log handoff remain open.
+None of this closes F9, F10, R2, R5, the D3 board checklist or D2 T-23. ApplicationTask keeps core 1, priority 23 and its 4 KB stack; its eight typed 104-byte application messages stay in internal RAM and its state lives in EdgeCore memory mapped to PSRAM. Actual memory placement, stack/heap margin and core residency still need target evidence. The window producer and node/boot/sequence identity are implemented; physical window quality, NVS reset/power-cycle behaviour, cross-node time, occupancy persistence/replay and the D2 log handoff remain open. Remote-clock events are rejected; no remote-event decoder or clock synchronisation is implemented. D2's 80-byte flash record is unchanged and still needs an agreed schema-v2 mapping.
 
 **Decisions needed:**
 
 | Decision | Owner | Blocks |
 |---|---|---|
 | Is the thin C++ Arduino layer acceptable under "must be in C"? | Professor (ask Hasif) | C2 |
-| Which node builds the observation window; the event record format | D6 team | F9, R2 |
-| Event ID, de-duplication, occupancy persistence | D6 team | F10, R5 |
+| Align the review with sensor-node `WINDOW` assembly and schema v2; agree the cross-node receive path and time basis | D6 team | F9, R2 |
+| Occupancy persistence/recovery and replay guarantees across resets and NVS erase | D6 team | F10, R5 |
 | Keep or drop the TSL2561 and GY-511 | D6 team | F15 |
-| LD2450 drain task, buffer and presence rule | D6 team | F8, R1 |
-| Echo capture method and HC-SR04 trigger order | D3 (Cody) | F5, F7, R1 |
+| Qualify the implemented LD2450 drain, buffering and presence policy on hardware | D6 team | F8, R1 |
+| Validate asynchronous echo capture, trigger order and acoustic guard on hardware | D3 (Cody) | F5, F7, R1 |
 | Who owns fault handling (no deliverable does yet) | Team | F17 follow-up |
 | Group ID format for the Tribunal files (`AAI15` or `P2-AAI15`) | Team | Tribunal 1 |
 
@@ -367,6 +367,7 @@ None of this closes F9, F10, R2, R5, the D3 board checklist or D2 T-23. Applicat
 
 | Date | By | Change |
 |---|---|---|
+| 2026-11-03 | Cody | Reconciled the D3 progress notes with the implemented radar/sonar WINDOW path, 96-byte schema-v2 EventRecord, 104-byte application messages and node/boot/sequence identity. Kept board validation, cross-node time, occupancy persistence/replay and D2 mapping gates open; no hardware result or feedback closure is claimed. |
 | 2026-11-01 | Hasif | Took over the D3 integration: merged `main` (with D2's SPI clock floor) into `d3`, fixed the clean-clone build of the shared-code component, restored the D2 and D4 documents and their links, and put the D3 task table in README section 4. D3 merges to `main` as a checkpoint; its board evidence remains open and no feedback status is closed. |
 | 2026-11-01 | Cody | Adaptive entrance windows: the agreed window and fault policy, live LD2450 radar draining and decoding, and one canonical event per finished window. Schema v2 adds node and boot identity and rejects unmapped remote clocks; the boot counter is committed before any producer starts, and the automatic NVS erase in the Wi-Fi start-up was removed. Laptop tests cover the scheduler-to-occupancy path, framing and loss, window faults, identity and message sizes. The physical guard and geometry, the target build, RAM, core and NVS power-cycle behaviour and the full workload remain pending; no hardware feedback status is closed. |
 | 2026-10-30 | Cody | Pair sequencing: the 50 ms budget covers one whole A, guard, B pair. Added a configurable sequence engine and the stopped-mode `PAIR` diagnostic in SchedulerTask; laptop tests cover order, guard and deadline boundaries, faults, cancellation and the µT-Kernel capture functions against mocked registers. The acoustic guard and physical evidence remain open; no status is promoted. |

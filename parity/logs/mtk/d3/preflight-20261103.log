@@ -1,0 +1,8 @@
+Command: sh tools/mtk.sh check
+Revision: f290f56b79d9dbe2af8e36206aa569fde0714f8c
+course port: f290f56b79d9dbe2af8e36206aa569fde0714f8c   (pinned e92874d50d3a2968566f9628018f4c096c01f3d9)
+ESP-IDF:     v6.1-dev-2300-g17a74c925c   (pinned v6.1-dev-2300-g17a74c925c)
+compiler:    esp-15.2.0_20251204   (pinned esp-15.2.0_20251204)
+MISMATCH: run sh tools/mtk.sh setup (and git submodule update)
+
+Exit status: 1
