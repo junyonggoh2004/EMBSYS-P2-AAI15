@@ -16,3 +16,6 @@ idf_component_register(SRCS ${EDGECORE_SRCS}
 #   switch   rule_expr.c parses mse() but never evaluates it (recorded as a
 #            reference defect in parity/PARITY.md)
 target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-error=format -Wno-error=comment -Wno-error=switch)
+
+# Keep interactive serial use readable; sensor JSON and error messages remain.
+target_compile_definitions(${COMPONENT_LIB} PRIVATE SCHED_DEBUG=0)

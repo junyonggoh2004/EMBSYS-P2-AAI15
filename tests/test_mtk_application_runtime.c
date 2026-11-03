@@ -117,6 +117,9 @@ UNUSED_VOID(mtk_spi_flash_log_write)
 UNUSED_VOID(mtk_spi_flash_log_verify)
 UNUSED_VOID(model_transfer_init)
 UNUSED_VOID(model_transfer_poll)
+bool sensor_ml_command(const char *line,bool sampling) { (void)line; (void)sampling; return false; }
+void sensor_ml_invalidate(void) { }
+void sensor_ml_poll(bool sampling) { (void)sampling; }
 UNUSED_VOID(inference_mgr_init)
 UNUSED_VOID(inference_mgr_poll)
 UNUSED_VOID(scheduler_reset)

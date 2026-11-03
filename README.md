@@ -1,8 +1,18 @@
-# dev-jy-sensors — configurable ESP32-S3 sensors
+# dev-jy-ml — configurable sensors and embedded ML
+
+Embedded ML branch: see the [dev-jy-ml deliverables plan](docs/embedded-ml/README.md) for configurable sensor inputs, replaceable pretrained models and the later MQTT milestone. A first implementation is available on `dev-jy-ml`: see the [ML run guide](docs/embedded-ml/RUNNING.md). Board ML verification is pending.
 
 This workspace now uses the configurable components from **main commit `49677c62c8738493f4e66667d1fe79afc947600d`**, adapted for the current breadboard. Firmware runs on **ESP-IDF with µT-Kernel 3 SMP**. The analysis completed before updating the workspace is in [MAIN_COMPONENT_REVIEW.md](MAIN_COMPONENT_REVIEW.md).
 
-## Current status
+## Embedded ML in this branch
+
+The current implementation feeds decoded AHT temperature/humidity, TSL2561 light and HC-SR04+ distance into configurable model bindings. Run **MTK: load sensors and ML** for the full setup, including ultrasonic distance. The LCD remains disabled; existing wiring is unchanged. MQTT ML-result publishing is deferred.
+
+The default pretrained **sine-float** model is a 3,164-byte Float32 dense network (1 → 16 → 16 → 1), trained on synthetic x → sin(x) pairs. The four sensor measurements are scaled to [0,1], averaged and multiplied by 2π; the network predicts the sine of that scalar. It does not predict occupancy or environmental conditions. Runtime alternatives are the 2,704-byte sine-int8 model and the existing 16-input autoencoder demonstration.
+
+See the [model specifications and deliverables](docs/embedded-ml/README.md), [step-by-step user guide](docs/embedded-ml/RUNNING.md) and [validation results](docs/embedded-ml/VALIDATION.md). Firmware builds, host regressions and desktop model inference pass; successful ESP32 ML inference is still awaiting a captured result.
+
+## Current sensor status
 
 | Item | Status |
 |---|---|
