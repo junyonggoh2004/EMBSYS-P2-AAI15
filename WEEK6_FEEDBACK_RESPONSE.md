@@ -4,8 +4,8 @@ This file is the single record of the professor's feedback on the Week 6 design 
 
 | | |
 |---|---|
-| Tracker branch | `s3-port-d2` (the team's working branch; D1 is also merged into `main`) |
-| Last updated | 2026-10-20, by Hasif (D1 µT-Kernel redesign, branch `s3-port-d1-redesign`) |
+| Tracker branch | `main` (D1 and the D2 and D3 checkpoints) |
+| Last updated | 2026-11-01, D3 integrated as a checkpoint for `main`, including the adaptive entrance window and event identity; D1 and D2 statuses unchanged |
 | Feedback received | After the Week 6 design review submission (before 2026-10-18) |
 | Reviewed document | Week 6 Design Review "P2-AAI15", local copy `ESP_P2_AAI15 (2).pdf` |
 | Next event | Tribunal 1, Monday 2026-10-19 (see section 1) |
@@ -334,6 +334,22 @@ Removing C++ entirely would mean replacing Arduino with the ESP-IDF C drivers, w
 
 ## 14. Decisions needed and change log
 
+### D3/D6 progress and ownership (1 November 2026)
+
+The D3 checkpoint on `main` carries Cody's timing modes, the asynchronous HC-SR04 capture, the `PAIR` sequence, the radar-triggered entrance window with LD2450 decoding, schema-v2 event identity, the µT-Kernel ApplicationTask with the EventRecord and occupancy logic, and their laptop tests. README section 4 lists the D3 tasks and what still needs the board. No feedback status below is closed by laptop tests alone.
+
+Cody directly owns timing/window contracts, EventRecord and application/occupancy/output semantics, integration acceptance criteria and evidence interpretation. Sitt owns sensor-driver work, Brendan owns SchedulerTask sequencing, Hasif supports platform/MQTT/runtime integration and measurements, and Jun Yong owns inference integration. Cody coordinates and reviews those interfaces rather than taking over every low-level implementation.
+
+| D3/D6 item | Retained progress | Remaining gate |
+|---|---|---|
+| F5/F7/R1: acquisition and sequencing | Interrupt-driven echo wait (D1); on µT-Kernel, asynchronous capture and the `PAIR` sequence (D3) | Approve the 50 ms boundary; measure the two-sonar order, guard and crosstalk and the complete workload on the board |
+| F9: sensor-node EventRecord | An 80-byte pointer-free record, the rule sink, the typed `app_mbf` handoff on µT-Kernel and laptop tests | Complete the real observation-window assembler and the MQTT schema |
+| F10/R2/R5: event identity and occupancy | Boot-local IDs, bounded duplicate/reorder handling and a native-tested occupancy state machine | Agree node/boot/sequence identity, cross-node time and reset/persistence policy; close review defects and prove replay behavior on the target |
+| F8/F15: radar and auxiliary sensors | LD2450 draining, incremental decoding and presence/expiry in the entrance window (D3, laptop-tested) | Qualify the radar zone and decoder on the board; Cody agrees the remaining sensor roles with Jun Yong and Sitt |
+| D2 logging handoff | D2's provisional codec and physical synthetic-record recovery evidence are retained | Cody and Brendan/JY agree event/result mappings, publication-enqueue status and the bounded ApplicationTask log handoff; run T-23 |
+
+None of this closes F9, F10, R2, R5, the D3 board checklist or D2 T-23. ApplicationTask keeps core 1, priority 23 and its 4 KB stack; its message storage stays in internal RAM (192 B more than before) and its state lives in EdgeCore memory mapped to PSRAM. Node and boot identity, cross-node time, real-window quality, reset and persistence, and the D2 log handoff remain open.
+
 **Decisions needed:**
 
 | Decision | Owner | Blocks |
@@ -351,5 +367,19 @@ Removing C++ entirely would mean replacing Arduino with the ESP-IDF C drivers, w
 
 | Date | By | Change |
 |---|---|---|
+| 2026-11-01 | Hasif | Took over the D3 integration: merged `main` (with D2's SPI clock floor) into `d3`, fixed the clean-clone build of the shared-code component, restored the D2 and D4 documents and their links, and put the D3 task table in README section 4. D3 merges to `main` as a checkpoint; its board evidence remains open and no feedback status is closed. |
+| 2026-11-01 | Cody | Adaptive entrance windows: the agreed window and fault policy, live LD2450 radar draining and decoding, and one canonical event per finished window. Schema v2 adds node and boot identity and rejects unmapped remote clocks; the boot counter is committed before any producer starts, and the automatic NVS erase in the Wi-Fi start-up was removed. Laptop tests cover the scheduler-to-occupancy path, framing and loss, window faults, identity and message sizes. The physical guard and geometry, the target build, RAM, core and NVS power-cycle behaviour and the full workload remain pending; no hardware feedback status is closed. |
+| 2026-10-30 | Cody | Pair sequencing: the 50 ms budget covers one whole A, guard, B pair. Added a configurable sequence engine and the stopped-mode `PAIR` diagnostic in SchedulerTask; laptop tests cover order, guard and deadline boundaries, faults, cancellation and the µT-Kernel capture functions against mocked registers. The acoustic guard and physical evidence remain open; no status is promoted. |
+| 2026-10-30 | Cody | Asynchronous HC-SR04 acquisition: µT-Kernel pulse start, poll and cancel, the pending scheduler state, timeout and error diagnostics and STOP/CLEAR cleanup; laptop tests run the capture functions with mocked registers together with the real scheduler and GPIO driver. One capture at a time; the radar window and physical evidence remain open (F5, F7, R1, C1). |
+| 2026-10-29 | Cody | Pulse-pin validation: identical Trigger and Echo pins are refused by the parser and the driver before any pin mode changes; the parser, driver, D2 host, HAL-boundary and purity checks pass. Target verification and physical timing remain open. |
+| 2026-10-28 | Cody | ApplicationTask glue tests: the actual ApplicationTask and ControlTask bodies run against a modelled kernel (start-up failure, typed capacity, deep copies, drop-newest handling, publisher and benchmark refusal, duplicates, malformed lengths and FIFO commands). Target scheduling, core, stack and physical acceptance remain open. |
+| 2026-10-28 | Cody | Board smoke test: the wiring-free `mtk.sh app-test` checks synthetic entry, exit, duplicate, reorder and malformed cases, unverified-rule rejection and the task, core and buffer reports, with timestamped logs and state cleanup; offline tests of the runner added. No board result is claimed. |
+| 2026-10-28 | Cody | Rule provenance: rule `event:` actions no longer invent a completed window or timing quality; point decisions use the 64-bit clock and cannot change occupancy. Tests cover the real rule, dispatch and state path. The real window assembler, identity, clocks, hardware acceptance and D2 logging remain open. |
+| 2026-10-28 | Cody | Event validation: finite-field, validity, reserved and stale checks; ambiguous occupancy changes and integer overflow refused; duplicate history scoped to source and event (+128 B of EdgeCore memory; the EventRecord stays 80 B). Identity, cross-node time, reset and persistence, real-window quality and the D2 reason mappings remain open. |
+| 2026-10-28 | Cody | Timing corrections: one-shot self-rearming, periodic timeout recovery, disabled streams and acquisition deadlines fixed, with tests through the real scheduler and publisher. Entrance timing, capture evidence, the identity, time and quality contracts and D2 T-23 remain open. |
+| 2026-10-28 | Cody | ApplicationTask ported to µT-Kernel: typed event, reset and status messages through `app_mbf`, nonblocking publication, portable dispatch and state, and laptop tests; task placement, stack and the SPI command dispatch preserved. Board, image and resource checks and D2 logging remain open. |
+| 2026-10-28 | Cody | Merged the D1/D2 `main` into `d3`, keeping main's setup, the F6 measurement and the D2 evidence. The ApplicationTask migration, behaviour fixes, hardware acceptance and D2 logging were still open at that point. |
+| 2026-10-18 | Cody | D3 on the earlier Arduino runtime: portable timing and configuration, the EventRecord and occupancy modules, rule-to-event submission, typed queue integration and native tests (F9, F10, R2 and R5 partial). |
+| 2026-10-18 | Cody | The D3 execution checklist and Cody's ownership notes, separating application contracts and acceptance from the driver, scheduler, inference and platform work. |
 | 2026-10-18 | Hasif | Tracker created on `s3-port-d2`. F3, F12, F13, F14, F16 and F17 resolved; F6 instrumented (`TASKS` cycle statistics, `parity/wcet_test.py`), run pending; `parity/timing_test.py` reports p95, maximum and skipped samples; D2 status recorded from D2_SPI_TODO.md at `548d2e3`. Before this update: ✅ 2, 🟡 8, ❌ 14. After: ✅ 8, 🟡 6, ❌ 10. |
 | 2026-10-20 | Hasif | D1 µT-Kernel 3 SMP redesign (tasks 24–34, [MTK_REDESIGN.md](MTK_REDESIGN.md)): F6 measured on both runtimes and set ✅ (section 8); evidence added to F5 (interrupt-driven echo wait), R1 (two no-echo reads exceed the 50 ms window), R4 (uploads during sampling) and C2 (the µT-Kernel platform layer is C). |

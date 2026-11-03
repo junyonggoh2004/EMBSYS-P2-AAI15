@@ -13,6 +13,10 @@ extern "C" {
 #include "hal/hal.h"
 #include "bus/bus_common.h"
 #include "application/scheduler.h"
+#include "application/timing_contract.h"
+#include "application/event_record.h"
+#include "application/application_state.h"
+#include "application/application_dispatch.h"
 #include "rule_engine/rules.h"
 #include "inference_engine/inference_manager.h"
 

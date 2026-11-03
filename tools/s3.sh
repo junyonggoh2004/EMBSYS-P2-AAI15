@@ -17,6 +17,7 @@
 #   sh tools/s3.sh flood <broker-ip>     MQTT queue saturation
 #   sh tools/s3.sh timing                NFR1 sample period and jitter (about 4 min)
 #   sh tools/s3.sh endurance <broker-ip> NFR6 30-minute run
+#   sh tools/s3.sh cody-test             D3/D6 native contract acceptance tests
 #
 # The port is found by the board's Espressif USB ID; set PORT=... to override.
 # Wi-Fi details go in esp32s3_edge/wifi_credentials.h (copy the .example).
@@ -81,5 +82,6 @@ case "$1" in
              endurance) $PY parity/endurance_test.py --broker "$2" --port "$PORT" ;;
            esac ;;
   timing)  need_port; $PY parity/timing_test.py --board s3 --port "$PORT" ;;
+  cody-test) sh tools/cody_test.sh ;;
   *)       sed -n '2,20p' "$0" ;;
 esac

@@ -9,6 +9,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <tk/tkernel.h>
+#include "application/application_dispatch.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -68,7 +69,7 @@ typedef struct {
 #define APP_MBF_MSGS    8
 #define BENCH_MBF_MSGS  16
 #define INFER_MSG_MAX   80     // infer_mbf request: model pointer and size, or 16 input floats
-#define APP_MSG_MAX     64
+#define APP_MSG_MAX     ((INT)sizeof(application_message_t))
 
 // net_flg bits, set by MQTTTask and the network event handler
 #define NET_WIFI_UP (1u << 0)
@@ -82,6 +83,10 @@ extern ID net_flg;
 // full the newest message is dropped, counted per buffer and reported by
 // TASKS; returns false in that case.
 bool runtime_send(ID mbf, const void *msg, INT size);
+
+/* Copies a complete event into app_mbf without waiting. The single
+ * ApplicationTask consumer owns processing/reset; full queues drop newest. */
+bool runtime_submit_event(const event_record_t *event);
 
 // Wi-Fi and broker settings for MQTTTask. Call before runtime_start();
 // without them the node runs offline.

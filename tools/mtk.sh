@@ -7,6 +7,7 @@
 #   sh tools/mtk.sh build              build esp32s3_mtk
 #   sh tools/mtk.sh flash              build and flash
 #   sh tools/mtk.sh monitor            open the console (Ctrl+C to leave)
+#   sh tools/mtk.sh app-test           synthetic D3 application/core smoke test (clears volatile state)
 #   sh tools/mtk.sh haltest            flash the HAL test firmware, run it, then restore the firmware
 #   sh tools/mtk.sh purity             check our code uses no FreeRTOS, Arduino or esp_driver_* API
 #   sh tools/mtk.sh image              check the built firmware links no FreeRTOS kernel code
@@ -44,7 +45,9 @@ if python3 -c "" 2>/dev/null; then SYSPY=python3; else SYSPY=python; fi
 PY=.venv/bin/python
 [ -x "$PY" ] || PY=.venv/Scripts/python.exe
 [ -x "$PY" ] || PY=$SYSPY
-PORT=${PORT:-$($PY -c "from serial.tools import list_ports; print(next((p.device for p in list_ports.comports() if p.vid == 0x303A), ''))" 2>/dev/null)}
+# Board-independent commands (purity/build/image) also run before pyserial is
+# installed. A failed optional discovery must not exit the set -e wrapper.
+PORT=${PORT:-$($PY -c "from serial.tools import list_ports; print(next((p.device for p in list_ports.comports() if p.vid == 0x303A), ''))" 2>/dev/null || true)}
 
 need_port() { [ -n "$PORT" ] || { echo "No ESP32-S3 found on USB. Plug it in (or set PORT=/dev/cu.usbmodemXXXX, or PORT=COM5 on Windows)."; exit 1; }; }
 idf_env() {
@@ -116,6 +119,7 @@ case "$1" in
            echo "ok    shared code: no SDK calls (check_hal_boundary.sh)"
            if [ -f $PROJ/build/$PROJ.elf ]; then idf_env; sh tools/check_mtk_image.sh; else echo "note  build first to check the firmware image too"; fi ;;
   image)   idf_env; sh tools/check_mtk_image.sh ;;
+  app-test) need_port; $PY parity/application_test.py --port "$PORT" ;;
   test)    need_port; mkdir -p parity/logs/mtk
            $PY parity/parity_test.py --stage "${2:-4a}" --board s3 --port "$PORT" --log "parity/logs/mtk/${2:-4a}.log" ;;
   live)    need_port; [ -n "$2" ] || { echo "usage: sh tools/mtk.sh live sonic|mag [seconds]"; exit 1; }

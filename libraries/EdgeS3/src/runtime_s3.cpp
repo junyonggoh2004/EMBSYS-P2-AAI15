@@ -19,6 +19,7 @@
 #include <EdgeCore.h>
 #include "mqtt/sensor_bridge.h"
 #include "mqtt/mqtt_model_transfer.h"
+#include "application/application_state.h"
 #include "runtime_s3.h"
 
 extern "C" void control_bind_flags(bool *running, bool *cfg_ready);
@@ -38,6 +39,8 @@ QueueHandle_t bench_q;
 EventGroupHandle_t net_events;
 
 static TaskHandle_t h_sched, h_mqtt, h_control, h_infer, h_app, h_bench;
+static application_state_t s_application;
+static portMUX_TYPE s_application_lock = portMUX_INITIALIZER_UNLOCKED;
 
 // MQTT callbacks registered by the S3 MQTT layer (task 19); SchedulerTask
 // calls them so that configuration is only ever applied in this task.
@@ -181,6 +184,36 @@ static void control_task(void *arg) {
 
         if (strcasecmp(line, "TASKS") == 0) {   // platform commands, not part of the REPL
             runtime_print_tasks();
+        } else if (strcasecmp(line, "APP RESET") == 0) {
+            runtime_application_reset();
+            printf("[APP] reset occupancy=0\n");
+        } else if (strncasecmp(line, "APP EVENT ", 10) == 0) {
+            unsigned id = 0, seq = 0;
+            char klass[16] = {0};
+            if (sscanf(line + 10, "%u %u %15s", &id, &seq, klass) != 3) {
+                printf("[APP] usage: APP EVENT <id> <seq> <entry|exit|incomplete|false>\n");
+            } else {
+                event_class_t c = EVENT_CLASS_UNKNOWN;
+                if (!strcasecmp(klass, "entry")) c = EVENT_CLASS_ENTRY;
+                else if (!strcasecmp(klass, "exit")) c = EVENT_CLASS_EXIT;
+                else if (!strcasecmp(klass, "incomplete")) c = EVENT_CLASS_INCOMPLETE;
+                else if (!strcasecmp(klass, "false")) c = EVENT_CLASS_FALSE;
+                uint64_t now = hal_time_us();
+                event_record_t event = {};
+                event.schema_version = EVENT_RECORD_SCHEMA_VERSION;
+                event.event_id = id;
+                event.source_id = 1;
+                event.source_seq = seq;
+                event.window_start_us = now > 1000u ? now - 1000u : 1u;
+                event.window_end_us = now;
+                event.quality_flags = EVENT_QUALITY_SEQUENCE_COMPLETE |
+                                      EVENT_QUALITY_TIMING_VALID |
+                                      EVENT_QUALITY_RULE_VALID;
+                event.valid = c != EVENT_CLASS_UNKNOWN;
+                event.rule_class = (uint8_t)c;
+                printf("[APP] submit id=%u seq=%u class=%s queued=%u\n", id, seq,
+                       event_class_name(c), runtime_submit_event(&event) ? 1u : 0u);
+            }
         } else if (strcasecmp(line, "WIFISCAN") == 0) {
             mqtt_wifi_scan();
         } else if (strcasecmp(line, "WIFIDROP") == 0) {
@@ -215,8 +248,63 @@ static void inference_task(void *arg) {
 
 static void application_task(void *arg) {
     (void)arg;
-    static uint8_t item[64];
-    for (;;) xQueueReceive(app_q, item, portMAX_DELAY);
+    event_record_t event;
+    for (;;) {
+        if (xQueueReceive(app_q, &event, portMAX_DELAY) != pdTRUE) continue;
+        uint64_t started = hal_time_us();
+        portENTER_CRITICAL(&s_application_lock);
+        application_result_t result = application_process_event(&s_application, &event, started);
+        portEXIT_CRITICAL(&s_application_lock);
+
+        printf("[APP] id=%u seq=%u result=%u class=%s via=%s occupancy=%ld->%ld degraded=%u reason=%s\n",
+               (unsigned)event.event_id, (unsigned)event.source_seq, (unsigned)result.code,
+               event_class_name(result.decided_class),
+               result.decision_source == APP_DECISION_ML ? "ml" :
+               result.decision_source == APP_DECISION_RULE ? "rule" : "none",
+               (long)result.occupancy_before, (long)result.occupancy_after,
+               result.degraded ? 1u : 0u, result.reason ? result.reason : "-");
+
+        pub_msg_t out = {};
+        out.op = PUB_PUBLISH;
+        snprintf(out.topic, sizeof out.topic, "pico/%s/application/event", runtime_node_id());
+        int n = snprintf(out.payload, sizeof out.payload,
+                         "{\"schema\":1,\"event_id\":%u,\"source_id\":%u,\"source_seq\":%u,"
+                         "\"class\":\"%s\",\"result\":%u,\"occupancy\":%ld,\"degraded\":%s}",
+                         (unsigned)event.event_id, (unsigned)event.source_id,
+                         (unsigned)event.source_seq, event_class_name(result.decided_class),
+                         (unsigned)result.code, (long)result.occupancy_after,
+                         result.degraded ? "true" : "false");
+        if (n > 0 && (size_t)n < sizeof out.payload &&
+            (xEventGroupGetBits(net_events) & NET_MQTT_UP)) {
+            out.len = (uint16_t)n;
+            out.qos = 1;
+            out.retain = false;
+            if (xQueueSend(pub_q, &out, 0) != pdTRUE)
+                printf("[APP] output degraded: pub_q full id=%u\n", (unsigned)event.event_id);
+        } else if (!(xEventGroupGetBits(net_events) & NET_MQTT_UP)) {
+            printf("[APP] output degraded: MQTT offline id=%u\n", (unsigned)event.event_id);
+        }
+        runtime_bench("application_event", (uint32_t)(hal_time_us() - started));
+    }
+}
+
+extern "C" bool runtime_submit_event(const event_record_t *event) {
+    if (!app_q || !event) return false;
+    return xQueueSend(app_q, event, 0) == pdTRUE;
+}
+
+extern "C" int32_t runtime_occupancy(void) {
+    portENTER_CRITICAL(&s_application_lock);
+    int32_t value = s_application.occupancy;
+    portEXIT_CRITICAL(&s_application_lock);
+    return value;
+}
+
+extern "C" void runtime_application_reset(void) {
+    application_policy_t policy = { 5000u, 0.70f, true, false };
+    portENTER_CRITICAL(&s_application_lock);
+    application_state_init(&s_application, &policy);
+    portEXIT_CRITICAL(&s_application_lock);
 }
 
 // ---------- BenchmarkTask ----------
@@ -241,10 +329,12 @@ extern "C" void runtime_bench(const char *name, uint32_t value_us) {
 // ---------- start-up ----------
 
 extern "C" void runtime_start(void) {
+    runtime_application_reset();
+    event_record_set_sink(runtime_submit_event);
     sched_q   = xQueueCreate(6, sizeof(sched_msg_t));
     pub_q     = xQueueCreate(16, sizeof(pub_msg_t));
     infer_q   = xQueueCreate(4, 64);
-    app_q     = xQueueCreate(8, 64);
+    app_q     = xQueueCreate(8, sizeof(event_record_t));
     bench_q   = xQueueCreate(16, sizeof(bench_msg_t));
     net_events = xEventGroupCreate();
 

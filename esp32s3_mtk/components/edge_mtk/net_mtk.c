@@ -338,8 +338,9 @@ static bool wifi_start(const char *ssid, const char *pass)
 {
     esp_err_t err = nvs_flash_init();       // the Wi-Fi driver keeps PHY calibration in NVS
     if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-        nvs_flash_erase();
-        err = nvs_flash_init();
+        // NVS also contains durable event boot identity. Erasing it here
+        // could reuse an already published identity after reboot.
+        puts("[WIFI] NVS requires explicit recovery; automatic erase disabled");
     }
     if (err != ESP_OK) { printf("[WIFI] nvs_flash_init failed: %d\n", (int)err); return false; }
     if ((err = esp_netif_init()) != ESP_OK) { printf("[WIFI] esp_netif_init failed: %d\n", (int)err); return false; }

@@ -155,6 +155,18 @@ static void uart_stream_stop(void *ctx_) {
     // No special action needed
 }
 
+static int uart_read_ready(void *ctx_, uint8_t *buf, size_t cap)
+{
+    uart_ctx_t *c = ctx_;
+    if (!c || !buf) return HAL_ERR_INVALID;
+    size_t n = 0;
+    int byte;
+    while (n < cap && (byte = hal_uart_read_byte(c->port)) >= 0) buf[n++] = (uint8_t)byte;
+    return (int)n;
+}
+static uint32_t uart_rx_dropped(void *ctx_)
+{ return hal_uart_rx_dropped(((uart_ctx_t *)ctx_)->port); }
+
 /* ----------------------------- Export --------------------------------- */
 const bus_t bus_uart = {
     .name         = "uart",
@@ -163,7 +175,9 @@ const bus_t bus_uart = {
     .probe        = uart_probe,
     .poll_once    = uart_poll_once,
     .stream_start = uart_stream_start,
-    .stream_stop  = uart_stream_stop
+    .stream_stop  = uart_stream_stop,
+    .read_ready   = uart_read_ready,
+    .rx_dropped   = uart_rx_dropped
 };
 
 

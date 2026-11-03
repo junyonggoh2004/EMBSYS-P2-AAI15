@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "hal/hal.h"
+#include "application/timing_contract.h"
 // Milliseconds since boot (monotonic)
 static inline uint32_t app_now_ms(void) {
     return hal_time_ms();
@@ -36,6 +37,9 @@ typedef struct {
     sample_mode_t  mode;
     char           name[32];      // <-- array so REPL can write into it
     float       freq_hz;
+    timing_config_t timing;
+    bool           timing_interval_explicit;
+    char           timing_trigger_source[32];
 
     // -------- I2C --------
     int            i2c_sda;

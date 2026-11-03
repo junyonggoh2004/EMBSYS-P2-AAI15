@@ -9,6 +9,7 @@
 
 #include "edge_mtk.h"
 #include "runtime_mtk.h"
+int identity_mtk_init(void);
 
 #if __has_include("wifi_credentials.h")
 #include "wifi_credentials.h"
@@ -31,6 +32,8 @@ EXPORT INT usermain(void)
     printf("[BOOT] esp32s3_mtk node %s: micro T-Kernel 3 SMP, %d processors, reset reason: %s\n", NODE_ID,
            (int)TK_MAX_CORE, (unsigned)why < sizeof reasons / sizeof reasons[0] ? reasons[why] : "other");
     runtime_set_network(WIFI_SSID, WIFI_PASS, MQTT_HOST, MQTT_PORT, NODE_ID);
+    if (er == E_OK && identity_mtk_init() != 0)
+        puts("[BOOT] durable event identity unavailable: WINDOW disabled; NVS was not erased");
     if (er == E_OK) er = runtime_start();
     if (er != E_OK) printf("[BOOT] start-up stopped: er=%d\n", (int)er);
     tk_slp_tsk(TMO_FEVR);   // usermain must not return: inittask treats it as shutdown

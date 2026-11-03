@@ -10,6 +10,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include "freertos/event_groups.h"
+#include "application/event_record.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -91,6 +92,11 @@ void runtime_print_tasks(void);
 
 // Records a timing sample for BenchmarkTask without blocking the caller.
 void runtime_bench(const char *name, uint32_t value_us);
+
+// Non-blocking D6 hand-off into ApplicationTask. The record is copied.
+bool runtime_submit_event(const event_record_t *event);
+int32_t runtime_occupancy(void);
+void runtime_application_reset(void);
 
 // Called by the S3 MQTT layer (task 19) to register the core's MQTT
 // configuration, command and node-message handlers. SchedulerTask runs them.

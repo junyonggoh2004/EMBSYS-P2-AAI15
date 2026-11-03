@@ -44,6 +44,10 @@ static void spi_error(app_cfg_t *cfg, const char *message) {
         snprintf(cfg->cfg_error, sizeof cfg->cfg_error, "%s", message);
 }
 
+static void config_error(app_cfg_t *cfg, const char *message) {
+    spi_error(cfg, message);
+}
+
 
 static void str_lower(char *s) { for (; *s; ++s) *s = (char)tolower(*s); }
 
@@ -99,6 +103,27 @@ void cfg_parse_line(const char *line_in, app_cfg_t *cfg) {
         cfg->mode = (!strcmp(v,"stream")) ? sample_mode_stream : sample_mode_poll;
     } else if (!strcmp(key, "freq_hz")) {
         cfg->freq_hz = parse_f32(val);
+    } else if (!strcmp(key, "timing.mode")) {
+        char v[20] = {0};
+        strncpy(v, val, sizeof(v) - 1); str_lower(v);
+        if (!strcmp(v, "periodic")) cfg->timing.mode = TIMING_MODE_PERIODIC;
+        else if (!strcmp(v, "one_shot") || !strcmp(v, "oneshot")) cfg->timing.mode = TIMING_MODE_ONE_SHOT;
+        else if (!strcmp(v, "event_driven") || !strcmp(v, "event")) cfg->timing.mode = TIMING_MODE_EVENT_DRIVEN;
+        else config_error(cfg, "unsupported timing.mode");
+    } else if (!strcmp(key, "timing.interval_ms")) {
+        if (!parse_u32_strict(val, &cfg->timing.interval_ms)) config_error(cfg, "invalid timing.interval_ms");
+        else cfg->timing_interval_explicit = true;
+    } else if (!strcmp(key, "timing.timeout_ms")) {
+        if (!parse_u32_strict(val, &cfg->timing.timeout_ms)) config_error(cfg, "invalid timing.timeout_ms");
+    } else if (!strcmp(key, "timing.window_ms")) {
+        if (!parse_u32_strict(val, &cfg->timing.window_ms)) config_error(cfg, "invalid timing.window_ms");
+    } else if (!strcmp(key, "timing.enabled")) {
+        uint32_t enabled = 0;
+        if (!parse_u32_strict(val, &enabled) || enabled > 1u) config_error(cfg, "invalid timing.enabled");
+        else cfg->timing.enabled = enabled != 0u;
+    } else if (!strcmp(key, "timing.trigger_source")) {
+        if (strlen(val) >= sizeof cfg->timing_trigger_source) config_error(cfg, "timing.trigger_source too long");
+        else snprintf(cfg->timing_trigger_source, sizeof cfg->timing_trigger_source, "%s", val);
     } else if (!strcmp(key, "name")) {
         /* up to 15 chars */
         size_t L = strlen(val); if (L > 15) L = 15;
@@ -282,7 +307,36 @@ return;
 
 void cfg_parse_end(app_cfg_t *cfg) {
     s_in_block = 0;
-    if (!cfg || cfg->cfg_error[0] || cfg->proto != proto_spi) return;
+    if (!cfg || cfg->cfg_error[0]) return;
+
+    /* freq_hz remains backwards compatible. An explicit interval wins; the
+       default interval follows freq_hz so old configurations keep working. */
+    if (cfg->timing.mode == TIMING_MODE_PERIODIC && cfg->freq_hz > 0.0f &&
+        !cfg->timing_interval_explicit) {
+        float interval = 1000.0f / cfg->freq_hz;
+        if (interval >= 1.0f && interval <= 600000.0f)
+            cfg->timing.interval_ms = (uint32_t)(interval + 0.5f);
+    }
+    const char *timing_reason = NULL;
+    if (!timing_config_validate(&cfg->timing, &timing_reason)) {
+        config_error(cfg, timing_reason);
+        return;
+    }
+    if (cfg->timing.mode == TIMING_MODE_EVENT_DRIVEN && !cfg->timing_trigger_source[0]) {
+        config_error(cfg, "event timing requires trigger_source");
+        return;
+    }
+    if (cfg->timing.mode != TIMING_MODE_PERIODIC && cfg->mode != sample_mode_poll) {
+        config_error(cfg, "one-shot/event timing requires poll mode");
+        return;
+    }
+    if (cfg->proto == proto_gpio && cfg->gpio_mode &&
+        strcmp(cfg->gpio_mode, "pulse") == 0 && cfg->gpio_trig >= 0 &&
+        cfg->gpio_trig == cfg->gpio_echo) {
+        config_error(cfg, "gpio.trig and gpio.echo must differ");
+        return;
+    }
+    if (cfg->proto != proto_spi) return;
 
     if (strcmp(cfg->spi_host, "spi2") == 0)
         snprintf(cfg->spi_host, sizeof cfg->spi_host, "fspi");

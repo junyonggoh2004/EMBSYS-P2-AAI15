@@ -1,8 +1,48 @@
 # D1 Architecture Freeze (Task 10)
 
+**1 November D3 update (target unverified).** The shared `entrance_window`
+controller now owns a configured A/B pair plus a dedicated LD2450 source while
+RUN is active. Radar is drained without waiting; valid in-zone frames enable a
+finite 2 s / 20-attempt window of nominal 100 ms pairs with 50 ms acquisition
+budgets. Clearance, confirmation, timeout, ambiguity, cooldown and cancellation
+are explicit. Its result is offered once to ApplicationTask through the typed
+sink; only fully evidenced crossings change occupancy. All window/decoder state
+lives in EdgeCore BSS, mapped to PSRAM. Schema-v2 EventRecord adds canonical
+node/boot identity and clock-domain rejection; the application buffer grows
+128 bytes in the native layout. Startup-only NVS boot allocation lives in
+`identity_mtk.c`, never SchedulerTask. The exact policy, commands, resource changes
+and remaining target gates are in README section 4. D2 flash format is unchanged.
+
 Status: draft for team review, 2026-10-03, prepared by Hasif. The README makes this task the gate before tasks 11 to 23, so it closes only when tasks 7 to 9 are finished, section 5 holds the confirmed pin layout, and the team has reviewed every section (recorded in section 15).
 
 Requirements, the parity table and every test ID cited here are defined in [parity/PARITY.md](parity/PARITY.md). The Pico reference is the tag `pico-reference`.
+
+**D3 source update, 30 October 2026 (target unverified).** On the active
+µT-Kernel build, GPIO pulse acquisition uses `hal_gpio_capture_start/poll/cancel`.
+SchedulerTask retains pending work and requests a wake-up after at most 1 ms,
+servicing other sensors and console messages between capture checks. Other
+synchronous drivers can still delay those checks. STOP/deadline/CLEAR cancel
+the resource. The existing core-local GPIO ISR timestamps rise/fall; poll masks
+that pin's interrupt while reading the 64-bit pair. One shared capture slot is
+supported; competing requests and already-high Echo return busy without firing.
+Whole-acquisition timeout and late/missing edges are errors, never valid-distance
+samples. The default 10 µs trigger remains synchronous (bounded to 1000 µs by
+the backend). Pico/Arduino retain their historical synchronous path. No
+A/guard/B sequencer or real observation-window producer is supplied by this
+change. Native lifecycle/integration tests pass; the pinned image, physical
+capture/crosstalk and WCET acceptance remain open.
+
+**D3 pair diagnostic, 30 October 2026.** `pulse_sequence.[ch]` now provides
+finite A/guard/B or B/guard/A sequencing with explicit timeouts and guard, a
+50,000 µs whole-pair ceiling, monotonic timestamps and one capture owner at a
+time. SchedulerTask runs it through `PAIR <A> <B> <A|B> <guard_us>` while normal
+sampling is stopped, using two configured GPIO pulse sensors. STOP/CLEAR/RUN
+cancel before resource reuse. The one-shot diagnostic prints results without
+feeding rules, MQTT or ApplicationTask. The portable engine also supports
+collect-both error policy for future callers; the diagnostic uses fail-fast.
+No acoustic guard, radar/window classifier or canonical identity is inferred.
+Shared pair state resides in EdgeCore's PSRAM-mapped BSS; target allocation,
+stack margin and service timing still require the pinned build and hardware.
 
 > **Runtime superseded (Tribunal 1, 19 Oct 2026).** This freeze describes the Arduino/FreeRTOS runtime of tasks 11–22, which is now the measured baseline. The change requirement moved D1 onto µT-Kernel 3 SMP on the course port: the task table, kernel objects, core assignment and interrupt handling that replace sections 6, 7 and 10 are in [MTK_REDESIGN.md](MTK_REDESIGN.md) §3–§5, and the two-slot model store that replaces section 11's storage is in §3 there. Requirements, defect dispositions, the HAL interface and the hardware layout below are unchanged; section 4's ESP32-S3 implementation column describes the Arduino backend, and the µT-Kernel backend for the same interface is mapped in [PORTABILITY.md §6](PORTABILITY.md#6-the-µt-kernel-3-smp-build-tasks-2434).
 
@@ -266,3 +306,26 @@ Any later change to a decision in this document needs a recorded engineering jus
 | Date | Attendees | Sections reviewed | Decisions and changes |
 |---|---|---|---|
 | | | | |
+
+## 16. D3 timing and D6 application contract
+
+This section supersedes the fixed-delay assumption for the application-facing path. On the µT-Kernel build the HC-SR04 read is asynchronous: SchedulerTask starts an interrupt capture and collects the echo width on a later wake-up, and a missing or late echo is an error, never a distance. The Pico and Arduino builds keep the blocking read. README section 4 lists what is still open.
+
+```mermaid
+flowchart LR
+    SRC["Periodic sensor or trigger source"] --> SCH["Scheduler timing state"]
+    SCH -->|"sample completed"| RULE["Rule / classifier"]
+    SCH -->|"matching trigger_source"| TARGET["Event-driven target"]
+    RULE -->|"event: class"| ER["EventRecord v1, 80 B"]
+    ER --> AQ[["app_mbf, 8 messages"]]
+    AQ --> APP["ApplicationTask"]
+    APP -->|"exactly-once transition"| OCC["Volatile occupancy"]
+    APP -->|"best effort, QoS 1"| PQ[["pub_mbf"]]
+    APP --> BQ[["bench_mbf"]]
+```
+
+Periodic mode executes immediately on `RUN` and advances from the prior deadline, skipping missed slots. One-shot executes once per arm. Event-driven work is armed by a matching completed source sample or the `TRIGGER` command and must remain inside its configured window. Configuration is validated before the sensor is installed; unsupported modes, ranges and event windows are refused.
+
+`ApplicationTask` is the sole occupancy writer. It validates the versioned, pointer-free EventRecord; rejects duplicate, stale and reordered records; chooses ML only when marked valid and above the confidence threshold, otherwise falls back to a valid rule result; and applies entry/exit/incomplete/false semantics without allowing a negative count. MQTT output failure is DEGRADED and never rolls back the committed occupancy transition. The current count and 32-entry de-duplication history are RAM-only, so persistence across reset remains an explicit open decision.
+
+The record layout is in `libraries/EdgeCore/src/application/event_record.h`, the validation and occupancy rules in `application_state.c` and `application_dispatch.c`, the tests in `tests/` (`sh tools/cody_test.sh`), and the remaining hardware dependencies in README section 4.

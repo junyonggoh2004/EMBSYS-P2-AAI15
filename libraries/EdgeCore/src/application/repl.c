@@ -102,6 +102,11 @@ void repl_init_defaults(app_cfg_t *cfg) {
     cfg->proto   = proto_i2c;
     cfg->mode    = sample_mode_poll;
     cfg->freq_hz = 1;
+    cfg->timing.mode = TIMING_MODE_PERIODIC;
+    cfg->timing.interval_ms = 1000;
+    cfg->timing.timeout_ms = 0;
+    cfg->timing.window_ms = 0;
+    cfg->timing.enabled = true;
     strncpy(cfg->name, "SENSOR", sizeof(cfg->name)-1);
     cfg->i2c_sda=4; cfg->i2c_scl=5; cfg->i2c_baud=100000;
     cfg->i2c_addr=0x76; cfg->i2c_reg_size=1; cfg->i2c_read_len=1; cfg->i2c_restart=true;
@@ -121,6 +126,9 @@ void repl_show_help(void) {
     printf("  BEGINRULE ... ENDRULE      - add rule (multi-line)\n");
     printf("  BEGINRULE|k=v|...|ENDRULE  - add rule (inline with '|', supports \\|)\n");
     printf("  RUN / STOP                 - control sampling\n");
+    printf("  TRIGGER <sensor|source>     - arm one-shot/event-driven sensor(s)\n");
+    printf("  PAIR <A> <B> <A|B> <guard_us> - one stopped-mode sonar pair diagnostic (50 ms)\n");
+    puts("  WINDOW <A> <B> <radar> <guard_us> <A_mm> <B_mm> <xmin> <xmax> <ymin> <ymax>");
     printf("  CLEAR                      - clear sensors + rules\n");
     printf("  SHOW / SHOWRULES           - show sensors / rules\n");
     printf("  CLEARRULES                 - clear only rules\n");
@@ -187,7 +195,7 @@ void repl_handle_line(char *line, bool *running, bool *cfg_ready) {
                         printf("CFG: ok (added #%d: %s)\n", idx, s_tmp_cfg.name);
                     else
                         printf("CFG: add failed (%d)\n", idx);
-                    *cfg_ready = true;
+                    if (idx >= 0) *cfg_ready = true;
                 }
             }
             return;
@@ -235,8 +243,24 @@ void repl_handle_line(char *line, bool *running, bool *cfg_ready) {
             s_state = RS_RULE;
             printf("RULE: begin\n");
         }
-        else if (strcmp(cmd, "run") == 0) { *running = true; printf("RUN\n"); }
-        else if (strcmp(cmd, "stop") == 0) { *running = false; printf("STOP\n"); }
+        else if (strcmp(cmd, "run") == 0) { scheduler_pair_cancel(); *running = true; printf("RUN\n"); }
+        else if (strcmp(cmd, "stop") == 0) { scheduler_window_stop(); scheduler_pair_cancel(); *running = false; printf("STOP\n"); }
+        else if (!strncasecmp(line, "WINDOW ", 7) || !strcasecmp(line, "WINDOW")) {
+            int rc = *running ? HAL_ERR_BUSY : scheduler_window_command(line_len > 6 ? line + 7 : "");
+            printf("[WINDOW] request=%d\n", rc);
+        }
+        else if (strncasecmp(line, "PAIR ", 5) == 0 || !strcasecmp(line, "PAIR")) {
+            int rc = *running ? HAL_ERR_BUSY : scheduler_pair_command(line_len > 4 ? line + 5 : "");
+            printf("[PAIR] request=%d\n", rc);
+            if (rc != HAL_OK)
+                puts("[PAIR] STOP first; usage: PAIR <pulse_sensor_A> <pulse_sensor_B> <A|B> <guard_us>; timeouts + guard <= 50000 us");
+        }
+        else if (strncasecmp(line, "TRIGGER ", 8) == 0) {
+            const char *source = line + 8;
+            while (*source == ' ' || *source == '\t') source++;
+            int armed = scheduler_trigger(source, hal_time_us());
+            printf("[TIMING] trigger=%s armed=%d\n", source, armed);
+        }
         else if (strcmp(cmd, "clear") == 0) {
             scheduler_reset();
             rules_reset();
@@ -272,7 +296,7 @@ void repl_handle_line(char *line, bool *running, bool *cfg_ready) {
                 printf("CFG: ok (added #%d: %s)\n", idx, s_tmp_cfg.name);
             else
                 printf("CFG: add failed\n");
-            *cfg_ready = true;
+            if (idx >= 0) *cfg_ready = true;
         } else {
             cfg_parse_line(line, &s_tmp_cfg);
         }

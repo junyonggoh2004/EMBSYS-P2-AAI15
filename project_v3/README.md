@@ -117,6 +117,12 @@ mosquitto_pub -h <IP_ADDRESS> -t "pico/<Node_Number>/config" -m "BEGINCFG|name=G
 | | `proto` | Bus protocol Used | `proto=uart` |
 | | `mode` | Polling or Streaming | `freq_hz=10` |
 | | `freq_hz` | Polling frequency | `mode=poll` |
+| **Timing (D3)** | `timing.mode` | `periodic`, `one_shot`, or `event_driven` | `timing.mode=event_driven` |
+| | `timing.interval_ms` | Period in milliseconds; explicit value overrides the legacy `freq_hz` conversion | `timing.interval_ms=50` |
+| | `timing.timeout_ms` | Maximum lateness/acquisition budget; `0` disables this bound | `timing.timeout_ms=20` |
+| | `timing.window_ms` | Event-driven observation-window bound | `timing.window_ms=50` |
+| | `timing.trigger_source` | Sensor name whose completed sample arms this sensor | `timing.trigger_source=RADAR` |
+| | `timing.enabled` | `0` disables or `1` enables the timing state | `timing.enabled=1` |
 | **UART** | `uart.tx`, `uart.rx` | GPIO TX/RX pins | `uart.tx=0` |
 | | `uart.baud` | Baud rate | `uart.baud=115200` |
 | | `uart.bits` | Number of sensor bits | `uart.bits=8` |
@@ -151,6 +157,17 @@ mosquitto_pub -h <IP_ADDRESS> -t "pico/<Node_Number>/config" -m "BEGINCFG|name=G
 | | `gpio.echo` | Input pin connected to Echo | `gpio.trig=17` |
 | | `gpio.trig_us` | How long to hold trigger pin to initiate reading (microseconds) | `gpio.trig_us=10` |
 | | `gpio.pulse_timeout_us` | Timeout (microseconds) | `gpio.pulse_timeout_us=25000` |
+
+Periodic sensors fire immediately when `RUN` starts, then skip missed periods rather than replaying a burst; a missed timeout advances to a future slot instead of disabling the sensor. A one-shot sensor fires once on `RUN` and may be re-armed with `TRIGGER <sensor-name>`. An event-driven sensor remains idle until a completed sample from another sensor matching `timing.trigger_source` arrives, or until an explicit `TRIGGER` command is used. Publishing a sensor's own sample cannot automatically rearm it. One-shot and event-driven timing require `mode=poll`. `timing.enabled=0` disables streaming as well as polling. Invalid fields reject the new block before it is installed.
+
+The configured timeout bounds lateness plus acquisition. For non-periodic work, the earlier applicable nonzero timeout/window bound wins; a zero timeout leaves the window bound in force. Completion exactly on the deadline is allowed. If a synchronous bus read finishes late, its bytes are discarded before rules, MQTT and source handoff run. This does not preempt the driver: acquisition can still hold SchedulerTask until the driver's own timeout. The asynchronous two-sonar capture/guard design and the final entrance timing budget remain separate D3 acceptance work.
+
+Example logical hand-off from radar to a bounded observation:
+
+```text
+BEGINCFG|name=RADAR|proto=uart|mode=poll|timing.mode=periodic|timing.interval_ms=50|uart.tx=1|uart.rx=2|uart.baud=256000|uart.read_len=32|ENDCFG
+BEGINCFG|name=SONAR_A|proto=gpio|mode=poll|timing.mode=event_driven|timing.trigger_source=RADAR|timing.window_ms=50|timing.timeout_ms=20|gpio.mode=pulse|gpio.trig=4|gpio.echo=7|gpio.trig_us=10|gpio.pulse_timeout_us=20000|ENDCFG
+```
 
 ### 2. JSON File-Based Configuration (MQTT Only)
 You can send a JSON payload to `pico/<node_id>/config -f <filepath_of_json>` to configure sensors programmatically.
@@ -225,6 +242,16 @@ Because injecting 10+ features individually is verbose, you can use the `batch:`
 ```ini
 action=batch: infer.set:0:$f0 | infer.set:1:$f1 | infer.set:2:$f2 | infer.run:gpio:15=HIGH
 ```
+
+#### D6 application events
+
+A rule can submit a fixed, versioned decision record to `ApplicationTask` with `event:entry`, `event:exit`, `event:incomplete`, or `event:false`. The submission is non-blocking; occupancy is mutated only by `ApplicationTask`. A rule firing alone does not prove a completed entrance observation. These actions set only `RULE_VALID`, use the 64-bit decision timestamp as a point (`start == end`), and print `observation=unverified`. Entry/exit decisions from this path are rejected with `reason=quality` and do not change occupancy. Incomplete/false decisions remain no-ops. A real sensor-node assembler must submit its own EventRecord with evidence-backed sequence/timing quality through `event_record_submit`; that assembler is still an open D3 integration dependency.
+
+```text
+BEGINRULE|name=DOOR_ENTRY|source=SONAR_A|calc=near=u16le(0)|when=near<3000|action=event:entry|ENDRULE
+```
+
+The example above tests decision handoff and quality rejection, not people counting. For an explicit synthetic integration check, the ESP32-S3 console accepts `APP EVENT <id> <sequence> <class>`, `APP RESET` and `APP STATUS`. The console fixture supplies test quality flags deliberately and can exercise occupancy transitions; it is not physical entrance evidence. Processed results are offered to `pico/<node>/application/event` at QoS 1; enqueue success is not a broker acknowledgement.
 
 ### 4. Configuration & Profiling
 

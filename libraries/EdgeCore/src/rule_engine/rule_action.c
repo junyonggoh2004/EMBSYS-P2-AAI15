@@ -7,6 +7,7 @@
 #include "mqtt/mqtt_telemetry.h"
 #include "rule_engine/rule_action.h"
 #include "inference_engine/inference_manager.h"
+#include "application/event_record.h"
 
 extern bool rules_get_var(const rule_t *R, const char *name, double *out);
 
@@ -165,6 +166,41 @@ static void fire_action_text(const rule_t *R, const char *a, double value, uint3
         }
         int64_t dt = (int64_t)(hal_time_us() - t_start);
         printf("[TRACE] Rule Parse + Batch Actions executed in %lldus\n", (long long)dt);
+        return;
+    }
+
+    /* ---------------- event:<class> ----------------
+       A point-in-time rule decision is not a completed observation window.
+       Keep the handoff observable without inventing acquisition evidence.
+       ApplicationTask rejects entry/exit until a real window producer supplies
+       its sequence/timing quality through the EventRecord sink. */
+    if (!strncmp(a, "event:", 6)) {
+        const char *name = a + 6;
+        event_class_t event_class = EVENT_CLASS_UNKNOWN;
+        if (!strcasecmp(name, "entry")) event_class = EVENT_CLASS_ENTRY;
+        else if (!strcasecmp(name, "exit")) event_class = EVENT_CLASS_EXIT;
+        else if (!strcasecmp(name, "incomplete")) event_class = EVENT_CLASS_INCOMPLETE;
+        else if (!strcasecmp(name, "false")) event_class = EVENT_CLASS_FALSE;
+        if (event_class == EVENT_CLASS_UNKNOWN) {
+            printf("[RULE] %s: invalid event class '%s'\n", R->name, name);
+            return;
+        }
+        static uint32_t source_seq;
+        uint64_t end_us = hal_time_us(); /* decision time, not a reconstructed window */
+        event_record_t event = {0};
+        event.schema_version = EVENT_RECORD_SCHEMA_VERSION;
+        event.event_id = event_record_next_id();
+        event.source_id = event_source_id(R->source);
+        event.source_seq = ++source_seq;
+        event.window_start_us = end_us;
+        event.window_end_us = end_us;
+        event.features[0] = (float)value;
+        event.quality_flags = EVENT_QUALITY_RULE_VALID;
+        event.valid = 1u;
+        event.rule_class = (uint8_t)event_class;
+        printf("[RULE] %s: event=%s id=%u observation=unverified queued=%u\n", R->name,
+               event_class_name(event_class), (unsigned)event.event_id,
+               event_record_submit(&event) ? 1u : 0u);
         return;
     }
 

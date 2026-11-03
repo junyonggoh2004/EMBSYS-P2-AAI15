@@ -261,6 +261,7 @@ int hal_gpio_count_edges(int pin, bool enable)
 {
     if (!hal_gpio_valid(pin)) return HAL_ERR_PIN;
     if (!s_gpio_irq) return HAL_ERR_UNSUPPORTED;
+    if (pin == s_echo_pin) return HAL_ERR_BUSY;
     if (enable) {
         gpio_ll_intr_disable(s_gpio, pin);
         s_edges[pin] = 0;
@@ -295,6 +296,8 @@ static void echo_disarm(int pin)
     s_echo_pin = -1;
 }
 
+#include "pulse_capture_mtk.h"
+
 // The reference busy-wait, used only where the task cannot sleep (no GPIO
 // interrupt yet, or called outside a task).
 static int measure_pulse_busy(int echo, uint32_t timeout_us, uint64_t t0)
@@ -310,6 +313,7 @@ static int measure_pulse_busy(int echo, uint32_t timeout_us, uint64_t t0)
 int hal_gpio_measure_pulse(int trig, int echo, uint32_t trig_us, uint32_t timeout_us)
 {
     if (!hal_gpio_valid(trig) || !hal_gpio_valid(echo)) return HAL_ERR_TIMEOUT;
+    if (s_capture_active) return HAL_ERR_BUSY;
     hal_gpio_mode(trig, HAL_GPIO_OUTPUT);           // driven low
     esp_rom_delay_us(2);
 
@@ -666,6 +670,7 @@ static void uart_isr(UINT intno)
     uart_port_ctx_t *u = intno == ETS_UART2_INTR_SOURCE ? &s_uart[0] : &s_uart[1];
     uart_dev_t *hw = UART_LL_GET_HW(u->num);
     uint32_t st = uart_ll_get_intsts_mask(hw);
+    if (st & UART_INTR_RXFIFO_OVF) ++u->dropped;
     uint32_t n;
     while ((n = uart_ll_get_rxfifo_len(hw)) > 0) {
         uint8_t b;
@@ -779,6 +784,7 @@ void hal_mtk_uart_internal_loopback(int port, bool on)
 }
 
 uint32_t hal_mtk_uart_dropped(int port) { return s_uart[port & 1].dropped; }
+uint32_t hal_uart_rx_dropped(int port) { return __atomic_load_n(&s_uart[port & 1].dropped, __ATOMIC_ACQUIRE); }
 
 // ---------- SPI ----------
 // SPI2/FSPI, polled 64-byte FIFO chunks. CS is kept low across the entire

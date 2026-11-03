@@ -342,8 +342,9 @@ STAGES = {
         ("cfg-son", "HC-SR04 pulse input with no sensor (trig GP20, echo GP18)", "BEGINCFG|name=SON|proto=gpio|gpio.mode=pulse"
          "|gpio.trig=20|gpio.echo=18|gpio.pull=down|gpio.pulse_timeout_us=25000|mode=poll|freq_hz=2|ENDCFG",
          2.5, [r"^CFG: ok \(added #\d+: SON\)"]),
-        ("run-t06", "The pulse sensor reports the no-echo frame and the one-wire read publishes nothing", "RUN", 4.0,
-         [r"src=SON len=1 ts=\d+ : 00$", r"!src=OW "]),
+        ("run-t06", "No echo is an invalid frame (baseline) or explicit capture timeout (async); never a valid width", "RUN", 4.0,
+         [r"(?:src=SON len=1 ts=\d+ : 00$|\[SENSOR\] name=SON error=-1 total=\d+)",
+          r"!src=SON len=3 .* 01$", r"!src=OW "]),
         ("stop-t06", "STOP", "STOP", 2.5, [r"^STOP$"]),
         ("alive-t06", "The board still answers", "SHOW", 2.5, [r"^\[SHOW\] sampling=0"]),
         ("clear-t06-end", "CLEAR", "CLEAR", 2.5, [r"^CLEARED"]),
