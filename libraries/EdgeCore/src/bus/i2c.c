@@ -4,9 +4,11 @@
 #include "hal/hal.h"
 #include "bus/bus_common.h"
 #include "bus/bus_if.h"
+#include "bus/i2c_profiles.h"
 
 /* Per-instance state */
 typedef struct {
+    i2c_profile_t *profile;
     // from cfg
     int sda, scl;
     uint32_t baud;
@@ -65,6 +67,12 @@ static int i2c_init_cfg(const sensor_cfg_t *scfg, void **out_ctx) {
         return err;
     }
 
+    if (cfg->i2c_sensor!=I2C_SENSOR_RAW) {
+        int rc=i2c_profile_create(cfg,c->bus,&c->profile);
+        if (rc!=HAL_OK) { free(c); return rc; }
+        *out_ctx=c; return HAL_OK;
+    }
+
     // Run pre once at init for setup-type sensors
     if (c->pre_len) {
         int r = do_pre_writes(c);
@@ -86,7 +94,14 @@ static int i2c_probe(void *ctx_) {
 }
 
 static void i2c_deinit(void *ctx_) {
-    free(ctx_);
+    i2c_ctx_t *c=ctx_;
+    if (c) i2c_profile_free(c->profile);
+    free(c);
+}
+
+static void i2c_cancel(void *ctx_) {
+    i2c_ctx_t *c=ctx_;
+    if (c) i2c_profile_cancel(c->profile);
 }
 
 static int do_pre_writes(i2c_ctx_t *c) {
@@ -112,6 +127,7 @@ static int do_pre_writes(i2c_ctx_t *c) {
 
 static int i2c_poll_once(void *ctx_, uint8_t *buf, size_t cap) {
     i2c_ctx_t *c = (i2c_ctx_t*)ctx_;
+    if (c->profile) return i2c_profile_poll(c->profile,buf,cap);
     int r;  // <-- define r
 
     // Only re-run pre per poll if explicitly implied by post_delay_ms>0
@@ -147,5 +163,6 @@ const bus_t bus_i2c = {
     .probe = i2c_probe,
     .poll_once = i2c_poll_once,
     .stream_start = i2c_stream_start,
-    .stream_stop = i2c_stream_stop
+    .stream_stop = i2c_stream_stop,
+    .cancel = i2c_cancel
 };

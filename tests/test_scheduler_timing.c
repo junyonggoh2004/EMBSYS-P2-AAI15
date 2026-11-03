@@ -25,6 +25,14 @@ static size_t fixture_count;
 uint64_t hal_time_us(void) { return now_us; }
 uint32_t hal_time_ms(void) { return (uint32_t)(now_us / 1000); }
 
+/* This fixture uses a fake bus, never GPIO capture. Explicit fallbacks also
+ * support PE/COFF host linkers, which do not resolve ELF-style weak aliases. */
+int hal_gpio_capture_start(int trig,int echo,uint32_t pulse,uint32_t timeout)
+{ (void)trig; (void)echo; (void)pulse; (void)timeout; return HAL_ERR_UNSUPPORTED; }
+int hal_gpio_capture_poll(int echo,hal_pulse_result_t *result)
+{ (void)echo; (void)result; return HAL_ERR_UNSUPPORTED; }
+void hal_gpio_capture_cancel(int echo) { (void)echo; }
+
 static int init(const sensor_cfg_t *sensor, void **out)
 {
     fixture_t *f = calloc(1, sizeof *f);

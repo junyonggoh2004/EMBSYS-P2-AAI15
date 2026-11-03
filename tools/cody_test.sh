@@ -26,6 +26,7 @@ cc -std=c11 -Wall -Wextra -Werror \
   libraries/EdgeCore/src/application/application_state.c \
   libraries/EdgeCore/src/application/pulse_sequence.c \
   libraries/EdgeCore/src/application/output_format.c \
+  libraries/EdgeCore/src/application/sensor_measurement.c \
   libraries/EdgeCore/src/application/config_parser.c \
   libraries/EdgeCore/src/application/timing_contract.c \
   -o "$GPIO_OUT"
@@ -93,6 +94,7 @@ cc -std=c11 -Wall -Wextra -Werror -DSCHED_DEBUG=0 \
   libraries/EdgeCore/src/hal/pulse_capture.c \
   libraries/EdgeCore/src/application/timing_contract.c \
   libraries/EdgeCore/src/application/output_format.c \
+  libraries/EdgeCore/src/application/sensor_measurement.c \
   -o "$SCHEDULER_OUT"
 "$SCHEDULER_OUT"
 

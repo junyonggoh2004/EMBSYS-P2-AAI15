@@ -5,7 +5,17 @@
 # the shadowed freertos component. Our platform code is in components/ and the
 # shared framework code is libraries/EdgeCore, compiled unchanged.
 cmake_minimum_required(VERSION 3.16)
-set(EXTRA_COMPONENT_DIRS ${CMAKE_CURRENT_LIST_DIR}/third_party/mtk3smp-esp32s3/components)
+# Compile the active target's dependency closure. Unrelated SDK examples and
+# BLE components otherwise inflate Windows command lines beyond CreateProcess.
+set(COMPONENTS main freertos_shim)
+set(CMAKE_NINJA_FORCE_RESPONSE_FILE ON CACHE BOOL "Use response files on Windows")
+if(NOT MTKERNEL_PATH)
+    set(MTKERNEL_PATH "${CMAKE_CURRENT_LIST_DIR}/third_party/mtk3smp-esp32s3")
+endif()
+if(NOT EXISTS "${MTKERNEL_PATH}/components/mtkernel/mtk_startup.c")
+    message(FATAL_ERROR "Initialise the course kernel submodule or supply MTKERNEL_PATH. No FreeRTOS fallback.")
+endif()
+set(EXTRA_COMPONENT_DIRS "${MTKERNEL_PATH}/components")
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(esp32s3_mtk)
 

@@ -48,6 +48,7 @@ add_executable(project_v3
     ${EDGECORE}/application/config_parser.c
     ${EDGECORE}/application/scheduler.c
     ${EDGECORE}/application/output_format.c
+    ${EDGECORE}/application/sensor_measurement.c
     ${EDGECORE}/application/timing_contract.c
     ${EDGECORE}/application/pulse_sequence.c
     ${EDGECORE}/application/entrance_window.c
@@ -65,6 +66,7 @@ add_executable(project_v3
 
     ${EDGECORE}/bus/bus_if.c
     ${EDGECORE}/bus/i2c.c
+    ${EDGECORE}/bus/i2c_profiles.c
     ${EDGECORE}/bus/uart.c
     ${EDGECORE}/bus/gpio.c
     ${EDGECORE}/hal/pulse_capture.c

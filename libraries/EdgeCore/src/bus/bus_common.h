@@ -30,6 +30,10 @@ typedef enum {
     sample_mode_stream = 1
 } sample_mode_t;
 
+typedef enum {
+    I2C_SENSOR_RAW = 0, I2C_SENSOR_AHT, I2C_SENSOR_TSL2561
+} i2c_sensor_t;
+
 // ---------- global parsed config ----------
 typedef struct {
     // common
@@ -43,6 +47,7 @@ typedef struct {
 
     // -------- I2C --------
     int            i2c_sda;
+    i2c_sensor_t   i2c_sensor;         // optional device protocol; raw is default
     int            i2c_scl;
     uint32_t       i2c_baud;
     int            i2c_addr;
