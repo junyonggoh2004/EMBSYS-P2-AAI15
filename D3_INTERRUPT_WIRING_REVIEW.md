@@ -83,6 +83,15 @@ was performed; linked-image validation was skipped without a built ELF.
 
 ## Decision and evidence boundary
 
+**D3-2 preflight update (5 November 2026):** the merged `11255ec` firmware now
+passes the pinned build, linked-image purity and configurable-image audit.
+GPIO4/5 parity fixture selection and a manual one-shot probe are prepared;
+existing D3/D2 native suites and five fixture tests pass. See the
+[V2 capture procedure and execution record](docs/D3_CAPTURE_V2_TEST.md).
+No ESP32-S3 is connected, so physical D3-2 acceptance and runtime resource
+measurements remain pending. Earlier missing-image statements below describe
+the preceding runs and do not override this newer preflight result.
+
 For the pre-merge standalone resistor-free tests, the recorded fixture is README section 5,
 Part E's kit 3 V sonar: VCC at 3V3, common ground, Trig GPIO1, Echo GPIO2.
 This is a recorded baseline, not a measurement of the currently fitted hardware.
