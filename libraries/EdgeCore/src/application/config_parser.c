@@ -143,6 +143,16 @@ void cfg_parse_line(const char *line_in, app_cfg_t *cfg) {
     }
 
     /* i2c.* */
+    else if (!strcmp(key,"i2c.sensor")) {
+        if (!strcmp(val,"raw")) cfg->i2c_sensor=I2C_SENSOR_RAW;
+        else if (!strcmp(val,"aht")) cfg->i2c_sensor=I2C_SENSOR_AHT;
+        else if (!strcmp(val,"tsl2561")) cfg->i2c_sensor=I2C_SENSOR_TSL2561;
+        else config_error(cfg,"unsupported i2c.sensor");
+    }
+    else if (!strcmp(key,"i2c.baud")) {
+        if (!parse_u32_strict(val,&cfg->i2c_baud) || cfg->i2c_baud<10000u || cfg->i2c_baud>400000u)
+            config_error(cfg,"invalid i2c.baud");
+    }
     else if (!strcmp(key,"i2c.sda"))         { cfg->i2c_sda = (int)parse_u32(val); }
     else if (!strcmp(key,"i2c.scl"))         { cfg->i2c_scl = (int)parse_u32(val); }
     else if (!strcmp(key,"i2c.addr"))        { cfg->i2c_addr= (uint8_t)parse_u32(val); }
@@ -335,6 +345,16 @@ void cfg_parse_end(app_cfg_t *cfg) {
         cfg->gpio_trig == cfg->gpio_echo) {
         config_error(cfg, "gpio.trig and gpio.echo must differ");
         return;
+    }
+    if (cfg->proto == proto_i2c && cfg->i2c_sensor != I2C_SENSOR_RAW) {
+        if (cfg->mode != sample_mode_poll || cfg->i2c_pre_len || cfg->i2c_post_delay_ms)
+            config_error(cfg,"I2C sensor profile requires poll and no pre/delay");
+        else if (!hal_gpio_valid(cfg->i2c_sda) || !hal_gpio_valid(cfg->i2c_scl) || cfg->i2c_sda==cfg->i2c_scl)
+            config_error(cfg,"invalid I2C sensor pins");
+        else if (cfg->i2c_sensor==I2C_SENSOR_AHT && cfg->i2c_addr!=0x38)
+            config_error(cfg,"AHT address must be 0x38");
+        else if (cfg->i2c_sensor==I2C_SENSOR_TSL2561 && cfg->i2c_addr!=0x29 && cfg->i2c_addr!=0x39 && cfg->i2c_addr!=0x49)
+            config_error(cfg,"TSL2561 address must be 0x29/0x39/0x49");
     }
     if (cfg->proto != proto_spi) return;
 

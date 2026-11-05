@@ -6,7 +6,7 @@ No firmware, wiring or resistor removal has been performed or approved by this r
 
 ## Alignment with README D3 task list
 
-Task IDs below follow [README section 4](README.md#4-d3-task-checklist).
+Task IDs below follow [README section 4](docs/MAIN_BRANCH_README.md#4-d3-task-checklist).
 The local `D3_TASKS.md` uses an older, longer numbering scheme; its D3-01 is
 not README's D3-1. Use the README IDs for this review and acceptance reporting.
 
@@ -57,9 +57,33 @@ active-window runtime-reconfiguration policy remains an explicit open contract;
 observed cancellation behavior alone does not close that policy decision.
 No board commands, flash operations or wiring changes were performed.
 
+## Merge update — 5 November 2026
+
+The incoming main branch (`b496a8d`) adds a recorded three-sensor breadboard:
+AHT/TSL2561 share GPIO1/2 I²C, and a documented 3.3 V-compatible HC-SR04+
+uses Trig GPIO4/Echo GPIO5. See the [current root README](README.md),
+[active wiring](esp32s3_mtk/WIRING.md) and [preset](config/three_sensors.cfg).
+The [framework D3 checklist](docs/MAIN_BRANCH_README.md#4-d3-task-checklist)
+and earlier regression guide are preserved under `docs/MAIN_BRANCH_README.md`.
+
+The review and D3-1 execution record below describe the pre-merge `aaf48da`
+checkpoint and alternative test fixtures. GPIO1/2 sonar and GPIO5/6 loopback
+must not be applied to the incoming breadboard. The new documentation identifies
+its own compatible module; it does not establish the exact circuit or measured
+voltages on this checkout's board. No circuit or firmware modification is made
+as a resistor-removal action. The incoming optional sensor profiles and startup
+fix are preserved as upstream integration changes. Dual-sonar pins/guard and
+physical 50 ms acceptance remain unverified.
+
+Post-merge native checks pass: D3 contracts/runtime, D2 host, sensor profiles/
+scheduler integration, startup lifecycle, six sensor-loader tests (repository
+venv) and source/HAL purity (75 platform files). [Merge test evidence](parity/logs/d3/merge-main-20261105.log)
+records the parent commits and output. No target build, image or board acceptance
+was performed; linked-image validation was skipped without a built ELF.
+
 ## Decision and evidence boundary
 
-For resistor-free testing, the preferred existing fixture is README section 5,
+For the pre-merge standalone resistor-free tests, the recorded fixture is README section 5,
 Part E's kit 3 V sonar: VCC at 3V3, common ground, Trig GPIO1, Echo GPIO2.
 This is a recorded baseline, not a measurement of the currently fitted hardware.
 The exact model/revision, circuit, supply and Echo voltage have not been supplied
@@ -77,7 +101,7 @@ Reviewed root README sections 4, 5 Parts E/G and 6, SETUP's pin/power and
 µT-Kernel hardware-test sections, ARCHITECTURE's D3 updates and hardware table,
 MTK_REDESIGN's interrupt description, the GPIO configuration guide in
 `project_v3/README.md`, and the historical `esp32s3/README.md` bring-up guide.
-There is no application README directly under `esp32s3_mtk/`.
+At that checkpoint there was no application README directly under `esp32s3_mtk/`; the incoming merge adds one with the current fixture.
 
 | Evidence | Recorded baseline / discrepancy |
 |---|---|

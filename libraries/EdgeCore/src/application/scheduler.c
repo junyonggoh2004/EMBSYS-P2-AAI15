@@ -11,6 +11,7 @@
 #include "application/event_identity.h"
 #include "application/ld2450.h"
 #include "application/output_format.h"
+#include "application/sensor_measurement.h"
 #include "bus/bus_common.h"
 #include "bus/bus_if.h"
 #include "mqtt/mqtt_telemetry.h"
@@ -196,6 +197,11 @@ void scheduler_dump(void) {
                        c->spi_cs, (unsigned)c->spi_hz, (unsigned)c->spi_mode,
                        (unsigned)c->spi_tx_len, (unsigned)c->spi_read_len,
                        (unsigned)c->spi_timeout_ms);
+            }
+            if (c->proto == proto_i2c) {
+                printf("[SCHED] #%d I2C sensor=%s sda=%d scl=%d addr=0x%02X\n",i,
+                       c->i2c_sensor==I2C_SENSOR_AHT ? "aht" : c->i2c_sensor==I2C_SENSOR_TSL2561 ? "tsl2561" : "raw",
+                       c->i2c_sda,c->i2c_scl,c->i2c_addr);
             }
             printf("[SENSOR] name=%s pending=%u timeouts=%u errors=%u overruns=%u\n",
                    c->name, g_sensors[i].pending ? 1u : 0u,
@@ -704,6 +710,7 @@ if (cfg->mode == sample_mode_poll) {
         printf("[TIMING] sensor=%s status=timeout armed_us=%llu deadline_us=%llu\n",
                cfg->name, (unsigned long long)S->timing.armed_us,
                (unsigned long long)S->timing.deadline_us);
+        sensor_measurement_emit(cfg,NULL,HAL_ERR_TIMEOUT);
         timing_state_complete(&S->timing, now);
     } else if (timing_status == TIMING_STATUS_DUE) {
         int64_t dt_us = (int64_t)(S->timing.due_us - now); // due - now
@@ -729,6 +736,7 @@ if (cfg->mode == sample_mode_poll) {
             printf("[TIMING] sensor=%s status=timeout phase=acquisition deadline_us=%llu\n",
                    cfg->name, (unsigned long long)S->timing.deadline_us);
             n = 0; /* a complete but late response is not a valid sample */
+            sensor_measurement_emit(cfg,NULL,HAL_ERR_TIMEOUT);
         }
         S->pending = n == BUS_POLL_PENDING;
         if (!S->pending) timing_state_complete(&S->timing, now);
@@ -750,6 +758,7 @@ else {
                 SLOG("publish[%d/%s]: %d bytes via %s", i, cfg->name, n, p);
                 publisher_emit_hex(cfg, p, cfg->name, buf, n);
             } else if (n < 0 && n != BUS_POLL_PENDING) {
+                sensor_measurement_emit(cfg,NULL,n);
                 ++S->acquisition_errors;
                 uint32_t error_ms = hal_time_ms();
                 if (S->acquisition_errors == 1 || error_ms - S->last_error_log_ms >= 1000u) {
