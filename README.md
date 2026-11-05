@@ -207,6 +207,8 @@ D3 replaces the Pico's fixed one-second loop with configurable timing per sensor
 
 **Tests.** `sh tools/cody_test.sh` runs D3's twelve laptop suites (contracts, GPIO pulse configuration, µT-Kernel capture, pulse sequence, entrance window, event identity, UART ready drain, event safety, application dispatch, scheduler timing, rule provenance and the µT-Kernel application glue); `sh tools/mtk_runtime_test.sh` runs the last one alone. On the board, `sh tools/mtk.sh app-test` checks the application path without wiring and must end with `Application smoke PASS` ([section 5, Part G](#part-g-d3-timing-and-application)).
 
+**D3-1 native recheck (5 November 2026).** Parser, timing and scheduler regressions passed through `sh tools/cody_test.sh`; D2 host tests and source/HAL purity also passed. The [review and task mapping](D3_INTERRUPT_WIRING_REVIEW.md#alignment-with-readme-d3-task-list) links each covered D3-1 requirement to its tests and retains the [raw output](parity/logs/d3/d3-1-native-20261105.log). Active-window reconfiguration policy remains open. These native results do not close target build/image, electrical wiring, physical capture or timing acceptance.
+
 **Who waits on it.** D2's flash event logging (D2-8, D2-9), D5's B3 timing benchmark, and D6, the end-to-end use case.
 
 

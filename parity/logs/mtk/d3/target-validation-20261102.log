@@ -1,0 +1,472 @@
+
+=== sh tools/mtk.sh check ===
+course port: e92874d50d3a2968566f9628018f4c096c01f3d9   (pinned e92874d50d3a2968566f9628018f4c096c01f3d9)
+ESP-IDF:     v6.1-dev-2300-g17a74c925c   (pinned v6.1-dev-2300-g17a74c925c)
+compiler:    esp-15.2.0_20251204   (pinned esp-15.2.0_20251204)
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/bt/host/nimble/Kconfig.in:1420: BT_NIMBLE_MESH_PROVISIONER: 'default 0' is not a valid bool value (only 'y' and 'n' are allowed). Value is treated as 'n'.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/fatfs/Kconfig:230: FATFS_PRINT_LLI: 'default 0' is not a valid bool value (only 'y' and 'n' are allowed). Value is treated as 'n'.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/fatfs/Kconfig:235: FATFS_PRINT_FLOAT: 'default 0' is not a valid bool value (only 'y' and 'n' are allowed). Value is treated as 'n'.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/bootloader/Kconfig.projbuild:386: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/bootloader/Kconfig.projbuild:426: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/bt/host/nimble/Kconfig.in:1015: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/bt/controller/esp32c3/Kconfig.in:617: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/esp_hw_support/./lowpower/port/esp32p4/Kconfig.p4_rev3_mspi_workaround:6: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/esp_mm/Kconfig:20: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/esp_system/./port/soc/esp32s3/Kconfig.memory:21: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/openthread/Kconfig:106: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/bt/sdkconfig.rename.esp32s3:4: duplicate rename mapping for CONFIG_BT_NIMBLE_COEX_PHY_CODED_TX_RX_TLIM_EN: previous target CONFIG_BT_LE_COEX_PHY_CODED_TX_RX_TLIM_EN, new target CONFIG_BT_CTRL_COEX_PHY_CODED_TX_RX_TLIM_EN - last mapping is used
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/bt/sdkconfig.rename.esp32s3:5: duplicate rename mapping for CONFIG_BT_NIMBLE_COEX_PHY_CODED_TX_RX_TLIM_DIS: previous target CONFIG_BT_LE_COEX_PHY_CODED_TX_RX_TLIM_DIS, new target CONFIG_BT_CTRL_COEX_PHY_CODED_TX_RX_TLIM_DIS - last mapping is used
+Loading defaults file /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/sdkconfig.defaults...
+NOTE: Kconfig parser version: 1
+NOTE: Kconfig defaults policy: use sdkconfig
+NOTE: Status: Finished with notifications
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/esp_system/Kconfig:339: ESP_TASK_WDT_CHECK_IDLE_TASK_CPU0 has user-set value n from /var/folders/h_/7n7nk94s1cbfp4q8yjmlslmm0000gn/T/kconfgen_tmpclkhohbn but is not visible (disabled dependency)
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/esp_system/Kconfig:350: ESP_TASK_WDT_CHECK_IDLE_TASK_CPU1 has user-set value n from /var/folders/h_/7n7nk94s1cbfp4q8yjmlslmm0000gn/T/kconfgen_tmpclkhohbn but is not visible (disabled dependency)
+CMake Warning (deprecated) at managed_components/espressif__esp-nn/CMakeLists.txt:1 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+This warning is for project developers.  Use -Wno-author or -Wno-deprecated
+to suppress it.
+
+CMake Warning (deprecated) at managed_components/espressif__esp-tflite-micro/CMakeLists.txt:3 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+This warning is for project developers.  Use -Wno-author or -Wno-deprecated
+to suppress it.
+
+CMake Warning at /Users/tanyilin/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:106 (message):
+  Private include directory
+  '/Users/tanyilin/esp/esp-idf-v6.1/components/esp_wifi/wifi_apps/roaming_app/include'
+  belongs to component esp_wifi but is being used by component
+  wpa_supplicant.  It is recommended to define the component dependency for
+  wpa_supplicant on the component esp_wifi, i.e.  'idf_component_register(...
+  PRIV_REQUIRES esp_wifi)' in the CMakeLists.txt of wpa_supplicant, and
+  specify the included directory as idf_component_register(...
+  PRIV_INCLUDE_DIRS <dir relative to component>) in the CMakeLists.txt of
+  component esp_wifi.
+Call Stack (most recent call first):
+  /Users/tanyilin/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:130 (__component_validation_check_include_dirs)
+  /Users/tanyilin/esp/esp-idf-v6.1/CMakeLists.txt:353 (__component_validation_run_checks)
+
+
+CMake Warning at /Users/tanyilin/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:106 (message):
+  Private include directory
+  '/Users/tanyilin/esp/esp-idf-v6.1/components/esp_wifi/wifi_apps/roaming_app/src'
+  belongs to component esp_wifi but is being used by component
+  wpa_supplicant.  It is recommended to define the component dependency for
+  wpa_supplicant on the component esp_wifi, i.e.  'idf_component_register(...
+  PRIV_REQUIRES esp_wifi)' in the CMakeLists.txt of wpa_supplicant, and
+  specify the included directory as idf_component_register(...
+  PRIV_INCLUDE_DIRS <dir relative to component>) in the CMakeLists.txt of
+  component esp_wifi.
+Call Stack (most recent call first):
+  /Users/tanyilin/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:130 (__component_validation_check_include_dirs)
+  /Users/tanyilin/esp/esp-idf-v6.1/CMakeLists.txt:353 (__component_validation_run_checks)
+
+
+CMake Warning at /Users/tanyilin/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:106 (message):
+  Private include directory
+  '/Users/tanyilin/esp/esp-idf-v6.1/components/wpa_supplicant/src' belongs to
+  component wpa_supplicant but is being used by component esp_wifi.  It is
+  recommended to define the component dependency for esp_wifi on the
+  component wpa_supplicant, i.e.  'idf_component_register(...  PRIV_REQUIRES
+  wpa_supplicant)' in the CMakeLists.txt of esp_wifi, and specify the
+  included directory as idf_component_register(...  PRIV_INCLUDE_DIRS <dir
+  relative to component>) in the CMakeLists.txt of component wpa_supplicant.
+Call Stack (most recent call first):
+  /Users/tanyilin/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:130 (__component_validation_check_include_dirs)
+  /Users/tanyilin/esp/esp-idf-v6.1/CMakeLists.txt:353 (__component_validation_run_checks)
+
+
+CMake Warning at /Users/tanyilin/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:106 (message):
+  Private include directory
+  '/Users/tanyilin/esp/esp-idf-v6.1/components/wpa_supplicant/esp_supplicant/src'
+  belongs to component wpa_supplicant but is being used by component
+  esp_wifi.  It is recommended to define the component dependency for
+  esp_wifi on the component wpa_supplicant, i.e.  'idf_component_register(...
+  PRIV_REQUIRES wpa_supplicant)' in the CMakeLists.txt of esp_wifi, and
+  specify the included directory as idf_component_register(...
+  PRIV_INCLUDE_DIRS <dir relative to component>) in the CMakeLists.txt of
+  component wpa_supplicant.
+Call Stack (most recent call first):
+  /Users/tanyilin/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:130 (__component_validation_check_include_dirs)
+  /Users/tanyilin/esp/esp-idf-v6.1/CMakeLists.txt:353 (__component_validation_run_checks)
+
+
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/bootloader/Kconfig.projbuild:386: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/bootloader/Kconfig.projbuild:426: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/esp_hw_support/./lowpower/port/esp32p4/Kconfig.p4_rev3_mspi_workaround:6: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/esp_system/./port/soc/esp32s3/Kconfig.memory:21: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+Default value for APP_REPRODUCIBLE_BUILD in sdkconfig is y but it is n according to Kconfig.
+Using default value from sdkconfig (y).
+Default value for APP_EXCLUDE_PROJECT_VER_VAR in sdkconfig is y but it is n according to Kconfig.
+Using default value from sdkconfig (y).
+NOTE: Kconfig parser version: 1
+NOTE: Kconfig defaults policy: use sdkconfig
+NOTE: Status: Finished with notifications
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/Kconfig:281: APP_REPRODUCIBLE_BUILD: Kconfig default value: n, sdkconfig default value: y, using y from sdkconfig
+NOTE: /Users/tanyilin/esp/esp-idf-v6.1/components/esp_app_format/Kconfig.projbuild:12: APP_EXCLUDE_PROJECT_VER_VAR: Kconfig default value: n, sdkconfig default value: y, using y from sdkconfig
+In file included from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.c:21:
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.h: In function 'knl_call_abortfn':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.h:88:19: warning: cast between incompatible function types from 'FP' {aka 'void (*)()'} to 'ER (*)(ID,  T_DEVREQ *, INT,  void *)' {aka 'int (*)(int,  struct t_devreq *, int,  void *)'} [-Wcast-function-type]
+   88 |         abortfn = (ABTFN)devcb->ddev.abortfn;
+      |                   ^
+In file included from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/cpu_status.h:17,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/cpu_status.h:17,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/cpu_status.h:26,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/kernel.h:41,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.c:19:
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.h:90:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+   90 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.h:94:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+   94 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.c: In function 'tk_evt_dev':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.c:428:19: warning: cast between incompatible function types from 'FP' {aka 'void (*)()'} to 'INT (*)(INT,  void *, void *)' {aka 'int (*)(int,  void *, void *)'} [-Wcast-function-type]
+  428 |         eventfn = (EVTFN)devcb->ddev.eventfn;
+      |                   ^
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.c:434:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+  434 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.c:438:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+  438 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+In file included from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:21:
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.h: In function 'knl_call_abortfn':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.h:88:19: warning: cast between incompatible function types from 'FP' {aka 'void (*)()'} to 'ER (*)(ID,  T_DEVREQ *, INT,  void *)' {aka 'int (*)(int,  struct t_devreq *, int,  void *)'} [-Wcast-function-type]
+   88 |         abortfn = (ABTFN)devcb->ddev.abortfn;
+      |                   ^
+In file included from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/cpu_status.h:17,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/cpu_status.h:17,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/cpu_status.h:26,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/kernel.h:41,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:19:
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.h:90:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+   90 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.h:94:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+   94 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c: In function 'tk_opn_dev':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:247:18: warning: cast between incompatible function types from 'FP' {aka 'void (*)()'} to 'ER (*)(ID,  UINT,  void *)' {aka 'int (*)(int,  unsigned int,  void *)'} [-Wcast-function-type]
+  247 |         openfn = (OPNFN)devcb->ddev.openfn;
+      |                  ^
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:273:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  273 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:277:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  277 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c: In function 'abort_allrequest':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:319:19: warning: cast between incompatible function types from 'FP' {aka 'void (*)()'} to 'ER (*)(ID,  T_DEVREQ *, INT,  void *)' {aka 'int (*)(int,  struct t_devreq *, int,  void *)'} [-Wcast-function-type]
+  319 |         abortfn = (ABTFN)devcb->ddev.abortfn;
+      |                   ^
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:320:19: warning: cast between incompatible function types from 'FP' {aka 'void (*)()'} to 'INT (*)(T_DEVREQ *, INT,  TMO,  void *)' {aka 'int (*)(struct t_devreq *, int,  long int,  void *)'} [-Wcast-function-type]
+  320 |         waitfn  = (WAIFN)devcb->ddev.waitfn;
+      |                   ^
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:331:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  331 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:335:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  335 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:351:25: note: in expansion of macro 'DISABLE_INTERRUPT'
+  351 |                         DISABLE_INTERRUPT;
+      |                         ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:355:25: note: in expansion of macro 'DISABLE_INTERRUPT'
+  355 |                         DISABLE_INTERRUPT;
+      |                         ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:380:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  380 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:384:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  384 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c: In function 'knl_close_device':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:415:19: warning: cast between incompatible function types from 'FP' {aka 'void (*)()'} to 'ER (*)(ID,  UINT,  void *)' {aka 'int (*)(int,  unsigned int,  void *)'} [-Wcast-function-type]
+  415 |         closefn = (CLSFN)devcb->ddev.closefn;
+      |                   ^
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:437:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  437 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:441:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  441 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c: In function 'knl_request':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:530:18: warning: cast between incompatible function types from 'FP' {aka 'void (*)()'} to 'ER (*)(T_DEVREQ *, TMO,  void *)' {aka 'int (*)(struct t_devreq *, long int,  void *)'} [-Wcast-function-type]
+  530 |         execfn = (EXCFN)devcb->ddev.execfn;
+      |                  ^
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:558:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+  558 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:562:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+  562 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c: In function 'tk_wai_dev':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:705:18: warning: cast between incompatible function types from 'FP' {aka 'void (*)()'} to 'INT (*)(T_DEVREQ *, INT,  TMO,  void *)' {aka 'int (*)(struct t_devreq *, int,  long int,  void *)'} [-Wcast-function-type]
+  705 |         waitfn = (WAIFN)devcb->ddev.waitfn;
+      |                  ^
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:759:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+  759 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:763:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+  763 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c: In function 'sendevt_alldevice':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:843:27: warning: cast between incompatible function types from 'FP' {aka 'void (*)()'} to 'INT (*)(INT,  void *, void *)' {aka 'int (*)(int,  void *, void *)'} [-Wcast-function-type]
+  843 |                 eventfn = (EVTFN)devcb->ddev.eventfn;
+      |                           ^
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:844:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  844 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:848:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  848 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+In file included from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/cpu_status.h:17,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/cpu_status.h:17,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/cpu_status.h:26,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/kernel.h:41,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/task_manage.c:19:
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/task_manage.c: In function 'tk_ext_tsk':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/task_manage.c:346:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+  346 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/task_manage.c: In function 'tk_exd_tsk':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/task_manage.c:390:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+  390 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+In file included from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/cpu_status.h:17,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/cpu_status.h:17,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/cpu_status.h:26,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/kernel.h:41,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/time_calls.c:19:
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/time_calls.c: In function 'knl_call_cychdr':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/time_calls.c:275:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  275 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/time_calls.c:290:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+  290 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/time_calls.c: In function 'knl_call_almhdr':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/time_calls.c:738:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  738 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/time_calls.c:753:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+  753 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/lib/libtm/libtm_printf.c: In function 'outint':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/lib/libtm/libtm_printf.c:50:30: warning: initializer-string for array of 'unsigned char' truncates NUL terminator but destination lacks 'nonstring' attribute (33 chars into 32 available) [-Wunterminated-string-initialization]
+   50 | LOCAL const UB  digits[32] = "0123456789abcdef0123456789ABCDEF";
+      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/cpu_status.h:17,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/cpu_status.h:17,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/cpu_status.h:26,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/kernel.h:41,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/sysinit/sysinit.c:18:
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/sysinit/sysinit.c: In function 'knl_main':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/sysinit/sysinit.c:34:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+   34 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+In file included from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/cpu_status.h:17,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/cpu_status.h:17,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/cpu_status.h:26,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/kernel.h:41,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/sysdepend/cpu/core/xtensa_lx7/tls.c:34:
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/sysdepend/cpu/core/xtensa_lx7/tls.c: In function 'knl_stack_check':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/sysdepend/cpu/core/xtensa_lx7/tls.c:110:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  110 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/sysdepend/cpu/core/xtensa_lx7/tls.c:121:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  121 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+In file included from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/cpu_status.h:17,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/cpu_status.h:17,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/cpu_status.h:26,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/kernel.h:41,
+                 from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/sysdepend/iote_esp32s3/hw_setting.c:17:
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/sysdepend/iote_esp32s3/hw_setting.c: In function 'knl_shutdown_hw':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/sysdepend/iote_esp32s3/hw_setting.c:33:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+   33 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/device/common/drvif/msdrvif.c: In function 'msdi_def_dev':
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/device/common/drvif/msdrvif.c:156:24: warning: cast between incompatible function types from 'ER (*)(ID,  UINT,  T_MSDI *)' {aka 'int (*)(int,  unsigned int,  struct S_MSDI *)'} to 'void (*)()' [-Wcast-function-type]
+  156 |         ddev.openfn  = (FP)msdi_openfn;
+      |                        ^
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/device/common/drvif/msdrvif.c:157:24: warning: cast between incompatible function types from 'ER (*)(ID,  UINT,  T_MSDI *)' {aka 'int (*)(int,  unsigned int,  struct S_MSDI *)'} to 'void (*)()' [-Wcast-function-type]
+  157 |         ddev.closefn = (FP)msdi_closefn;
+      |                        ^
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/device/common/drvif/msdrvif.c:158:24: warning: cast between incompatible function types from 'ER (*)(T_DEVREQ *, TMO,  T_MSDI *)' {aka 'int (*)(struct t_devreq *, long int,  struct S_MSDI *)'} to 'void (*)()' [-Wcast-function-type]
+  158 |         ddev.execfn  = (FP)msdi_execfn;
+      |                        ^
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/device/common/drvif/msdrvif.c:159:24: warning: cast between incompatible function types from 'INT (*)(T_DEVREQ *, INT,  TMO,  T_MSDI *)' {aka 'int (*)(struct t_devreq *, int,  long int,  struct S_MSDI *)'} to 'void (*)()' [-Wcast-function-type]
+  159 |         ddev.waitfn  = (FP)msdi_waitfn;
+      |                        ^
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/device/common/drvif/msdrvif.c:160:24: warning: cast between incompatible function types from 'ER (*)(ID,  T_DEVREQ *, INT,  T_MSDI *)' {aka 'int (*)(int,  struct t_devreq *, int,  struct S_MSDI *)'} to 'void (*)()' [-Wcast-function-type]
+  160 |         ddev.abortfn = (FP)msdi_abortfn;
+      |                        ^
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/third_party/mtk3smp-esp32s3/device/common/drvif/msdrvif.c:161:24: warning: cast between incompatible function types from 'INT (*)(INT,  void *, T_MSDI *)' {aka 'int (*)(int,  void *, struct S_MSDI *)'} to 'void (*)()' [-Wcast-function-type]
+  161 |         ddev.eventfn = (FP)msdi_eventfn;
+      |                        ^
+In file included from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/micro/kernels/sub.cc:24:
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h: In lambda function:
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:56:62: warning: declaration of 'const tflite::ArithmeticParams& params' shadows a parameter [-Wshadow]
+   56 |       [](T input1_val, T input2_val, const ArithmeticParams& params) {
+      |                                      ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:48:47: note: shadowed declaration is here
+   48 | void BroadcastSubSlow(const ArithmeticParams& params,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+In file included from /Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/micro/kernels/sub_common.cc:22:
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h: In lambda function:
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:56:62: warning: declaration of 'const tflite::ArithmeticParams& params' shadows a parameter [-Wshadow]
+   56 |       [](T input1_val, T input2_val, const ArithmeticParams& params) {
+      |                                      ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:48:47: note: shadowed declaration is here
+   48 | void BroadcastSubSlow(const ArithmeticParams& params,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h: In lambda function:
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:76:34: warning: declaration of 'const tflite::ArithmeticParams& params' shadows a parameter [-Wshadow]
+   76 |          const ArithmeticParams& params) {
+      |          ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:64:59: note: shadowed declaration is here
+   64 | inline void BroadcastSub16POTSlow(const ArithmeticParams& params,
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h: In lambda function:
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:76:34: warning: declaration of 'const tflite::ArithmeticParams& params' shadows a parameter [-Wshadow]
+   76 |          const ArithmeticParams& params) {
+      |          ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:64:59: note: shadowed declaration is here
+   64 | inline void BroadcastSub16POTSlow(const ArithmeticParams& params,
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h: In lambda function:
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:100:62: warning: declaration of 'const tflite::ArithmeticParams& params' shadows a parameter [-Wshadow]
+  100 |       [](T input1_val, T input2_val, const ArithmeticParams& params) {
+      |                                      ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:90:52: note: shadowed declaration is here
+   90 | void BroadcastQuantSubSlow(const ArithmeticParams& params,
+      |                            ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h: In lambda function:
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:100:62: warning: declaration of 'const tflite::ArithmeticParams& params' shadows a parameter [-Wshadow]
+  100 |       [](T input1_val, T input2_val, const ArithmeticParams& params) {
+      |                                      ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:90:52: note: shadowed declaration is here
+   90 | void BroadcastQuantSubSlow(const ArithmeticParams& params,
+      |                            ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h: In lambda function:
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:212:62: warning: declaration of 'const tflite::ArithmeticParams& params' shadows a parameter [-Wshadow]
+  212 |       [](T input1_val, T input2_val, const ArithmeticParams& params) {
+      |                                      ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:205:34: note: shadowed declaration is here
+  205 | void Sub(const ArithmeticParams& params, const RuntimeShape& input1_shape,
+      |          ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h: In lambda function:
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:212:62: warning: declaration of 'const tflite::ArithmeticParams& params' shadows a parameter [-Wshadow]
+  212 |       [](T input1_val, T input2_val, const ArithmeticParams& params) {
+      |                                      ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+/Users/tanyilin/Downloads/EMBSYS-P2-AAI15-1/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:205:34: note: shadowed declaration is here
+  205 | void Sub(const ArithmeticParams& params, const RuntimeShape& input1_shape,
+      |          ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
