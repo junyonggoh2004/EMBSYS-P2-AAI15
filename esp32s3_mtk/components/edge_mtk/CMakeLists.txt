@@ -4,7 +4,7 @@
 # (hal/*_ll.h), never esp_driver_* components, as in the course port.
 idf_component_register(SRCS "console_mtk.c" "hal_mtk.c" "runtime_mtk.c" "spi_bench_mtk.c" "net_mtk.c" "model_store_mtk.c" "inference_mtk.cpp" "identity_mtk.c"
                        INCLUDE_DIRS "include"
-                       REQUIRES mtkernel edgecore esp_timer esp_hw_support esp_rom esp_system heap soc hal esp_hal_wdt
+                       REQUIRES mtkernel edgecore lcd_output esp_timer esp_hw_support esp_rom esp_system heap soc hal esp_hal_wdt
                                 esp_hal_gpio esp_hal_i2c esp_hal_ledc esp_hal_gpspi esp_hal_uart esp_hal_usb
                                 esp_wifi esp_netif esp_event nvs_flash lwip espressif__mqtt esp_hal_timg
                                 esp_partition espressif__esp-tflite-micro

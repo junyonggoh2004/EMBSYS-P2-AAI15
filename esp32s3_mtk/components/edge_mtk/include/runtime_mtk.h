@@ -60,6 +60,11 @@ typedef struct {
 typedef struct {
     char     name[24];
     uint32_t value_us;
+    /* Used only by the opt-in LCDTEST diagnostic. The regular benchmark
+     * messages zero-initialize these fields. */
+    uint16_t lcd_width, lcd_height;
+    uint16_t lcd_x_offset, lcd_y_offset;
+    uint8_t  lcd_madctl, lcd_invert;
 } bench_msg_t;
 
 // Message-buffer capacities, in messages: the Week 6 queue depths.

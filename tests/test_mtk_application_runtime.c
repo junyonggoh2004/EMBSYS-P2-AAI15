@@ -5,6 +5,13 @@
  * SDK and kernel calls are modeled below; this is not a scheduler emulator. */
 #include "../esp32s3_mtk/components/edge_mtk/runtime_mtk.c"
 
+/* This suite exercises the console handoff. The LCD's SPI behaviour is
+ * covered by the lcd_output component's separate host test. */
+int lcd_output_init(const lcd_output_config_t *config)
+{ (void)config; return HAL_OK; }
+void lcd_output_deinit(void) { }
+int lcd_output_test_pattern(void) { return HAL_OK; }
+
 typedef struct message {
     struct message *next;
     INT bytes;
@@ -219,6 +226,17 @@ int main(void)
     assert((app->tskatr & (TA_ASSPRC | TA_FPU)) == (TA_ASSPRC | TA_FPU));
     assert(queue(app_mbf)->config.maxmsz == sizeof(application_message_t));
     assert(queue(app_mbf)->config.bufsz == 8 * cost(sizeof(application_message_t)));
+
+    control("LCDTEST 76 284 82 18 00 0\n");
+    assert(queue(bench_mbf)->count == 1);
+    bench_msg_t lcd_request;
+    assert(tk_rcv_mbf(bench_mbf, &lcd_request, TMO_POL) == sizeof lcd_request);
+    assert(!strcmp(lcd_request.name, "LCDTEST"));
+    assert(lcd_request.lcd_width == 76 && lcd_request.lcd_height == 284);
+    assert(lcd_request.lcd_x_offset == 82 && lcd_request.lcd_y_offset == 18);
+    assert(lcd_request.lcd_madctl == 0 && lcd_request.lcd_invert == 0);
+    control("LCDTEST 0 240 0 0 00 1\n");
+    assert(queue(bench_mbf)->count == 0);
 
     /* Real ControlTask queues reset, event and status in order. */
     control("APP RESET\nAPP EVENT 91 1 entry\nAPP STATUS\n");

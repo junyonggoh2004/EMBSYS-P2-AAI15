@@ -51,6 +51,7 @@
 #include "mqtt/mqtt_model_transfer.h"
 #include "edge_mtk.h"
 #include "runtime_mtk.h"
+#include "lcd_output.h"
 
 // Defined in the shared code (mqtt/mqtt_config_parser.c) and by the MQTT layer.
 void control_bind_flags(bool *running, bool *cfg_ready);
@@ -327,6 +328,30 @@ static void control_task(INT stacd, void *exinf)
 
         if (strcasecmp(line, "TASKS") == 0) {   // platform commands, not part of the REPL
             runtime_print_tasks();
+        } else if (strncasecmp(line, "LCDTEST", 7) == 0) {
+            unsigned width, height, x_offset, y_offset, madctl, invert;
+            char extra;
+            if (sscanf(line + 7, " %u %u %u %u %x %u %c",
+                       &width, &height, &x_offset, &y_offset,
+                       &madctl, &invert, &extra) != 6 ||
+                width == 0 || height == 0 || width > 320 || height > 320 ||
+                x_offset > 320 || y_offset > 320 ||
+                x_offset + width > 320 || y_offset + height > 320 ||
+                madctl > 0xff || invert > 1) {
+                puts("[LCD] usage: LCDTEST <width> <height> <x_offset> <y_offset> <madctl_hex> <invert_0_or_1>");
+            } else {
+                bench_msg_t b = { .name = "LCDTEST",
+                                  .lcd_width = (uint16_t)width,
+                                  .lcd_height = (uint16_t)height,
+                                  .lcd_x_offset = (uint16_t)x_offset,
+                                  .lcd_y_offset = (uint16_t)y_offset,
+                                  .lcd_madctl = (uint8_t)madctl,
+                                  .lcd_invert = (uint8_t)invert };
+                if (!runtime_send(bench_mbf, &b, sizeof b))
+                    puts("[LCD] ERROR benchmark queue full");
+                else
+                    puts("[LCD] test queued");
+            }
         } else if (strncasecmp(line, "APP ", 4) == 0 || strcasecmp(line, "APP") == 0) {
             application_message_t request;
             if (!application_command_parse(line, hal_time_us(), &request)) {
@@ -492,7 +517,27 @@ static void benchmark_task(INT stacd, void *exinf)
     for (;;) {
         if (tk_rcv_mbf(bench_mbf, &b, TMO_FEVR) > 0) {
             runtime_alive(RT_BENCHMARK);
-            if (strcmp(b.name, "SPIBENCH") == 0)
+            if (strcmp(b.name, "LCDTEST") == 0) {
+                lcd_output_config_t config = {
+                    .width = b.lcd_width,
+                    .height = b.lcd_height,
+                    .x_offset = b.lcd_x_offset,
+                    .y_offset = b.lcd_y_offset,
+                    .madctl = b.lcd_madctl,
+                    .invert_colors = b.lcd_invert != 0
+                };
+                lcd_output_deinit();
+                printf("[LCD] starting test %ux%u offset=%u,%u madctl=%02x invert=%u\n",
+                       (unsigned)config.width, (unsigned)config.height,
+                       (unsigned)config.x_offset, (unsigned)config.y_offset,
+                       (unsigned)config.madctl, (unsigned)config.invert_colors);
+                int result = lcd_output_init(&config);
+                if (result == HAL_OK) result = lcd_output_test_pattern();
+                printf("[LCD] test %s result=%d\n",
+                       result == HAL_OK ? "complete" : "failed", result);
+                lcd_output_deinit();
+            }
+            else if (strcmp(b.name, "SPIBENCH") == 0)
                 mtk_spi_benchmark(b.value_us >> 30, b.value_us & 0x3fffffffu);
             else if (strcmp(b.name, "SPIID") == 0)
                 mtk_spi_flash_id();

@@ -7,11 +7,11 @@ This workspace now uses the configurable components from **main commit `49677c62
 | Item | Status |
 |---|---|
 | AHT temperature/humidity, HC-SR04+ distance, Grove TSL2561 light | Confirmed reading together on the corrected ESP-IDF / µT-Kernel firmware in the user-provided 3 November runtime capture |
-| ST7789 LCD | **Not working for now**: dim/white screen, no text; keep existing wiring, display remains disabled |
+| ST7789 LCD | The separate LCD-only test shows the intended colour bands and `LCD READY` on the physical screen with inversion `0`. The revised firmware's BenchmarkTask stack margin was checked at 1740 B free; panel-edge alignment remains. |
 | Active firmware | Main's shared EdgeCore + complete µT-Kernel runtime, with optional I²C sensor profiles |
 | Current integrated firmware validation | See [VALIDATION.md](esp32s3_mtk/VALIDATION.md); historical sensor tests are separate from new firmware execution |
 
-**Use the wiring tables on this page for this fixture.** The upstream test guides use alternative pin layouts for one-sensor, SPI-flash, radar and loopback fixtures. Their commands are not this breadboard's configuration. In particular, GPIO1/2 are occupied by the two I²C sensors here, and GPIO10 is wired to LCD CS; do not run the upstream SPI/flash tests with the LCD attached.
+**Use the wiring tables on this page for the shared sensor fixture.** For the separate LCD-only test, use the [breadboard table and images in WIRING.md](esp32s3_mtk/WIRING.md#separate-lcd-only-breadboard-test-current-lcd_output-firmware) and the [LCD test guide and photo gallery](esp32s3_mtk/components/lcd_output/README.md#hardware-and-test-images). The older shared-fixture LCD rows below remain for reference; their GPIO6/7/8/9 signal map does not match the current `lcd_output` firmware. The upstream test guides use alternative pin layouts for one-sensor, SPI-flash, radar and loopback fixtures. In particular, GPIO10 is wired to LCD CS; do not run upstream SPI/flash tests with the LCD attached.
 
 ## Open and run
 
@@ -55,7 +55,7 @@ The console prints supplementary JSON in physical units alongside the framework'
 
 These are illustrative formats, not captured board measurements. A failed or missing configured sensor produces JSON `null` and a status; zero lux remains valid. Failed acquisitions do not publish successful raw frames to the rules/MQTT pipeline. Physical-unit JSON is console output; the existing MQTT raw/line topics are preserved. This framework does not emit the old single combined sensor-only JSON object.
 
-`SHOW` lists the three sensors and their profiles; `TASKS` reports the real runtime tasks, stack headroom, heap and core residency. Main pins **SchedulerTask to physical CPU1**, MQTTTask to CPU0. This supersedes the old bring-up task/core arrangement. HELP, RUN, STOP, CLEAR, rules, timing modes, application events, networking and inference remain available through main's components. Without credentials, the network task runs offline. No LCD driver or automatic SPI test is started.
+`SHOW` lists the three sensors and their profiles; `TASKS` reports the real runtime tasks, stack headroom, heap and core residency. Main pins **SchedulerTask to physical CPU1**, MQTTTask to CPU0. This supersedes the old bring-up task/core arrangement. HELP, RUN, STOP, CLEAR, rules, timing modes, application events, networking and inference remain available through main's components. Without credentials, the network task runs offline. The LCD driver runs only when `LCDTEST` is entered; no automatic SPI test starts.
 
 ## Repository guide
 
@@ -136,9 +136,13 @@ The TSL2561 shares the I²C bus with the AHT. The profile validates the part ID 
 
 ### ST7789 TFT LCD → breadboard (retain existing wiring)
 
-**LCD is not working for now:** it has shown a dim/white screen without text. Its existing connections can remain while the other sensors are used. The current µT-Kernel firmware does not initialise or update the LCD and leaves GPIO6–10 unused. Keeping it connected does not enable display output.
+**Historical Version 2 layout:** this shared-fixture wiring previously showed
+a dim/white LCD without text. The connections remain documented for the
+sensor setup, but they do not match the current LCD driver. Use the
+[separate LCD-only table](esp32s3_mtk/WIRING.md#separate-lcd-only-breadboard-test-current-lcd_output-firmware)
+for `LCDTEST`.
 
-| LCD printed pin | Breadboard hole | Electrical connection | Current firmware |
+| LCD printed pin | Breadboard hole | Electrical connection | Version 2 status |
 |---|---|---|---|
 | GND | Blue rail N2 | Ground via N1 and B7 | Retain |
 | VCC | B4 | ESP32 3V3 via A4 | Retain |

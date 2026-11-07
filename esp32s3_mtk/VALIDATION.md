@@ -2,6 +2,9 @@
 
 Date: 3 November 2026. Branch: `dev-jy-sensors`. Reviewed main snapshot: `49677c62c8738493f4e66667d1fe79afc947600d`.
 
+The sensor findings below describe the 3 November shared breadboard. The
+later, separate LCD-only result is recorded at the end of this file.
+
 ## Completed checks
 
 ### Board startup finding and correction
@@ -48,7 +51,7 @@ The main source snapshot and submodule reference were imported into the existing
 
 ## Remaining board checks
 
-The user reports that AHT, HC-SR04+ and Grove TSL2561 worked in earlier hardware tests. The LCD remains dim/white without text. The corrected integration has now produced readings from all three sensors on the physical board, as documented below.
+The user reports that AHT, HC-SR04+ and Grove TSL2561 worked in earlier hardware tests. At the time of this shared-breadboard capture, the LCD was dim/white without text. The corrected integration has now produced readings from all three sensors on the physical board, as documented below.
 
 1. Keep [WIRING.md](WIRING.md): SDA1/SCL2, TRIG4/ECHO5, shared 3V3/GND. This assumes the identified 3.3 V-compatible HC-SR04+. LCD wiring can remain; its pins 6–10 are unused by the preset.
 2. Build, flash, then run `tools/build.ps1 sensors -Port COMx` to load the three configurations and RUN. The loader replaces volatile sensor/rule configuration via STOP/CLEAR. Load it again after a reset.
@@ -70,4 +73,30 @@ After uploading the startup-stack correction, the user supplied a boot capture s
 | AHT | 22.01–22.04 °C, 71.62–71.63% RH | OK, error 0 |
 | Grove TSL2561 | 20 lux | OK, error 0 |
 
-The capture shows `running=1`, increasing timestamps and approximately 2 s between samples of each sensor. This confirms startup and multi-sensor acquisition for the supplied capture. It does not establish calibrated accuracy, a ten-minute endurance run, physical fault/recovery testing, networking or inference correctness. TASKS/core-residency evidence remains to be collected. LCD remains disabled and non-functional; existing wiring is retained.
+The capture shows `running=1`, increasing timestamps and approximately 2 s between samples of each sensor. This confirms startup and multi-sensor acquisition for the supplied capture. It does not establish calibrated accuracy, a ten-minute endurance run, physical fault/recovery testing, networking or inference correctness. TASKS/core-residency evidence for this combined sensor setup remains to be collected. The LCD was disabled in this historical fixture; its wiring was retained.
+
+## Separate LCD-only result — 7 November 2026
+
+On the `lcd-output` branch, the DIYUSER 2.25-inch ST7789P3 was connected to
+the ESP32-S3 Super Mini using the [separate breadboard map](WIRING.md#separate-lcd-only-breadboard-test-current-lcd_output-firmware).
+The [empty breadboard photo](components/lcd_output/images/breadboard-empty.jpg)
+shows the user's breadboard model, and the
+[ESP32 pinout reference](components/lcd_output/images/esp32s3-super-mini-pinout.jpg)
+identifies the header labels. Neither image is a photo of the completed
+wiring. The [module back](components/lcd_output/images/lcd-module-back.jpg)
+and [package label](components/lcd_output/images/lcd-package-label.jpg)
+identify the display.
+
+`LCDTEST 76 284 82 18 00 0` printed `[LCD] test complete result=0` and
+displayed the [red, green, blue and dark bands with white `LCD READY`](components/lcd_output/images/lcd-test-rgb.jpg).
+The earlier inversion `1` trial produced
+[inverted colours](components/lcd_output/images/lcd-test-inverted.jpg).
+After moving the glyph buffer off the task stack and flashing the rebuilt
+firmware, `TASKS` showed `BenchmarkTask stack_free=1740 B`, up from 892 B
+before that change. The last repeated LCD command again reported
+`[LCD] test complete result=0`, and the user confirmed the pattern remained
+visible.
+
+This validates the isolated display test, not simultaneous sensor output.
+Panel edge alignment and the application-result update path remain to be
+checked. The original shared-breadboard connection tables remain preserved.

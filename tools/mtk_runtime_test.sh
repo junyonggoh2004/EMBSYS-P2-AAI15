@@ -9,6 +9,7 @@ ${CC:-cc} -std=c11 -Wall -Wextra -Werror -Wno-error=comment \
   -DEDGE_MTK_RUNTIME_TEST \
   -I "$FIXTURE" -I tests -I libraries/EdgeCore/src \
   -I esp32s3_mtk/components/edge_mtk/include \
+  -I esp32s3_mtk/components/lcd_output/include \
   tests/test_mtk_application_runtime.c \
   libraries/EdgeCore/src/application/application_dispatch.c \
   libraries/EdgeCore/src/application/application_state.c \
