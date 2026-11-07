@@ -150,6 +150,9 @@ and that configuration resets its cumulative metrics. Save the report first.
 
 ## 6. Ground-truth trials
 
+Use the [trial worksheet](D3_TRIAL_WORKSHEET.md) for session provenance,
+pre-filled trial rows, timing/resource results and evidence references.
+
 Suggested pilot: ten entries and ten exits, interleaved, plus three repeats of
 each negative case. These are proposed collection counts, not an agreed final
 accuracy qualification. Record all trials, including failures and retries.
