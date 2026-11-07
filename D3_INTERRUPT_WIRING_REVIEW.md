@@ -4,6 +4,32 @@ Review date: 5 November 2026. Source checkpoint: `aaf48da`.
 Status: documentation/source review and native validation; physical acceptance pending.
 No firmware, wiring or resistor removal has been performed or approved by this review.
 
+## Mandatory verification and approval gate
+
+**BLOCKED: VERIFICATION REQUIRED** applies to any proposed resistor removal,
+GPIO rewiring or interrupt change whose electrical safety is not established
+by consistent documentation, verified implementation and specifications for
+the exact fitted hardware. The recorded compatible module in a README is a
+baseline claim; it does not prove compatibility of another module or harness.
+Missing or conflicting evidence must be reported, not resolved by assumption.
+No affected component or GPIO connection may be changed while this gate applies.
+
+Required sequence: README review → source-code verification → hardware
+specification verification → proposed change → team approval → implementation
+→ physical testing → documentation update.
+
+For each proposed removal or interrupt change, record the README section/path,
+existing hardware configuration, proposed modification, electrical/technical
+justification, affected source files, required regressions and risk if wrong.
+Preserve voltage protection, required bias, D1 behavior, D3 timing modes,
+interrupt capture, STOP/CLEAR and the complete 50 ms PAIR bound. Only after
+approval and physical validation should documentation describe a changed
+configuration as verified. Build/native evidence does not close this gate.
+
+Current unverified resistor-removal or GPIO/interrupt-change proposals remain
+**BLOCKED: VERIFICATION REQUIRED**. Host fixture tooling and preflight results
+below are preparation, not team approval or physical acceptance.
+
 ## Alignment with README D3 task list
 
 Task IDs below follow [README section 4](docs/MAIN_BRANCH_README.md#4-d3-task-checklist).
