@@ -13,6 +13,12 @@ This workspace now uses the configurable components from **main commit `49677c62
 
 **Use the wiring tables on this page for the shared sensor fixture.** For the separate LCD-only test, use the [breadboard table and images in WIRING.md](esp32s3_mtk/WIRING.md#separate-lcd-only-breadboard-test-current-lcd_output-firmware) and the [LCD test guide and photo gallery](esp32s3_mtk/components/lcd_output/README.md#hardware-and-test-images). The older shared-fixture LCD rows below remain for reference; their GPIO6/7/8/9 signal map does not match the current `lcd_output` firmware. The upstream test guides use alternative pin layouts for one-sensor, SPI-flash, radar and loopback fixtures. In particular, GPIO10 is wired to LCD CS; do not run upstream SPI/flash tests with the LCD attached.
 
+For the LCD-only setup, use the [COM5 PowerShell quick start](esp32s3_mtk/components/lcd_output/README.md#com5-quick-start-on-this-windows-checkout).
+It includes the flash, CRLF ESP-IDF monitor and `LCDTEST` commands. The
+[ESP32-S3 pinout](esp32s3_mtk/components/lcd_output/images/esp32s3-super-mini-pinout.jpg)
+and [breadboard diagram](esp32s3_mtk/components/lcd_output/LCD_BREADBOARD.svg)
+are also included in the repository.
+
 ## Open and run
 
 1. Open [AAI15-MTK.code-workspace](AAI15-MTK.code-workspace) in VS Code. It selects only `esp32s3_mtk/`.

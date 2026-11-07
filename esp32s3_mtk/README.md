@@ -4,6 +4,12 @@ This target uses main's complete configurable framework at upstream commit `4967
 
 The corrected firmware now has user-provided board evidence of all three sensors returning OK/error 0 together; see [VALIDATION.md](VALIDATION.md). The earlier shared breadboard LCD showed a dim/white screen. The separate opt-in `LCDTEST` now produces the intended colour bands and white `LCD READY` with inversion `0`; after the stack-buffer fix, `BenchmarkTask` showed 1740 B free on the board. For an LCD-only test, follow the [separate breadboard wiring table and images](WIRING.md#separate-lcd-only-breadboard-test-current-lcd_output-firmware) and [LCD component guide with test photos](components/lcd_output/README.md#hardware-and-test-images); the older shared-fixture GPIO6/7/8/9 LCD wiring does not match the current driver. The three-sensor preset does not invoke `LCDTEST`. Upstream SPI flash diagnostics use another fixture and must not be run with the LCD attached.
 
+The exact Windows **COM5 flash, ESP-IDF monitor and LCDTEST commands** are in
+the [LCD COM5 quick start](components/lcd_output/README.md#com5-quick-start-on-this-windows-checkout).
+The [ESP32-S3 pinout image](components/lcd_output/images/esp32s3-super-mini-pinout.jpg)
+and [breadboard diagram](components/lcd_output/LCD_BREADBOARD.svg) are stored
+with the LCD component.
+
 Build with `tools/build.ps1 build`, flash with `tools/build.ps1 flash -Port COMx`, load the volatile three-sensor configuration with `tools/build.ps1 sensors -Port COMx`, then open `tools/build.ps1 monitor -Port COMx`. The helper loads `../config/three_sensors.cfg` via the existing command interface and STOP/CLEAR replaces volatile sensor/rule configuration. Without a preset, configure and RUN manually. Ctrl+C leaves the interactive monitor.
 
 The default output folder is `build/`, separate from the previous sensor-only `build_mtk/`. A `-BuildDirectory` override permits a shorter output path on Windows. CMake uses response files and limits the SDK to the application's dependency closure; all shared components and the full runtime remain compiled. `tools/audit_configurable.py` audits the actual ELF and compiler inputs after every successful build.

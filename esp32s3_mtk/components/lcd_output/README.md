@@ -232,3 +232,45 @@ a photo of the front and back of the module and the wiring. If colours appear
 but are shifted or rotated, record that too: offsets and `MADCTL` can then be
 adjusted without rebuilding. The LCD is still a diagnostic display; sensor
 and application results have not yet been connected to it.
+
+### COM5 quick start on this Windows checkout
+
+There is no command to start COM5: connect the ESP32-S3 with a USB data cable,
+then confirm **USB Serial Device (COM5)** in Windows Device Manager under
+**Ports (COM & LPT)**. Windows may choose a different COM number after
+reconnecting; use the number it shows. Check the
+[ESP32-S3 pinout reference](images/esp32s3-super-mini-pinout.jpg),
+[breadboard diagram](LCD_BREADBOARD.svg) and
+[LCD-only wiring table](../../WIRING.md#separate-lcd-only-breadboard-test-current-lcd_output-firmware)
+before powering the board.
+
+In a new PowerShell window, this is the complete setup for the paths used in
+the physical test. `Set-ExecutionPolicy` affects only this PowerShell process.
+Close any serial monitor before flashing. If the latest LCD firmware is
+already on the board, skip the flash line and open the monitor directly.
+
+```powershell
+cd C:\Users\brend\EMBSYS-P2-AAI15\esp32s3_mtk
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+$env:MTKERNEL_PATH = 'C:\Users\brend\EMBSYS-P2-AAI15\esp32s3_mtk\third_party\mtk3smp-esp32s3'
+$env:IDF_PATH = 'C:\Users\brend\esp\esp-idf-v6.1'
+$env:IDF_TOOLS_PATH = 'C:\Users\brend\.espressif'
+$env:IDF_PYTHON_ENV_PATH = 'C:\Users\brend\.espressif\python_env\idf6.1_py3.14_env'
+.\tools\build.ps1 flash -Port COM5
+& "$env:IDF_PYTHON_ENV_PATH\Scripts\python.exe" "$env:IDF_PATH\tools\idf_monitor.py" -p COM5 -b 115200 --eol CRLF --target esp32s3 .\build\esp32s3_mtk.elf
+```
+
+After the ESP-IDF monitor opens, type each command **inside the monitor**, not
+at the `PS>` prompt, and press Enter after each:
+
+```text
+LCDTEST 76 284 82 18 00 0
+TASKS
+```
+
+The LCD test should print `[LCD] test complete result=0` and show red,
+green, blue and dark bands plus white `LCD READY`. `TASKS` shows the task
+stack values; the tested firmware reported `BenchmarkTask stack_free=1740 B`.
+Press Ctrl+] to exit ESP-IDF Monitor. If COM5 is busy, close any other serial
+monitor before retrying. These paths and COM5 describe this user's Windows
+checkout; other computers need their own SDK paths and port number.
