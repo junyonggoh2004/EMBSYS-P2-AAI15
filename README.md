@@ -57,6 +57,18 @@ These are illustrative formats, not captured board measurements. A failed or mis
 
 `SHOW` lists the three sensors and their profiles; `TASKS` reports the real runtime tasks, stack headroom, heap and core residency. Main pins **SchedulerTask to physical CPU1**, MQTTTask to CPU0. This supersedes the old bring-up task/core arrangement. HELP, RUN, STOP, CLEAR, rules, timing modes, application events, networking and inference remain available through main's components. Without credentials, the network task runs offline. No LCD driver or automatic SPI test is started.
 
+## D3 task checklist and regression evidence
+
+The [D3 task checklist and timing contract](docs/MAIN_BRANCH_README.md#4-d3-task-checklist), [D3 test procedures](docs/MAIN_BRANCH_README.md#part-g-d3-timing-and-application) and [interrupt wiring review](D3_INTERRUPT_WIRING_REVIEW.md) are retained alongside this fixture guide. D3-1 native validation and window timing-report tooling are preserved; hardware pair/crosstalk/WCET acceptance remains pending. [D3-1 raw native evidence](parity/logs/d3/d3-1-native-20261105.log) predates this merge and is not a board result.
+
+For D3-2 on this breadboard, use the [V2 sonar test procedure](docs/D3_CAPTURE_V2_TEST.md). Its explicit `--fixture v2-sonar` option maps the real-sonar parity stages to Trig GPIO4/Echo GPIO5, stops/clears the volatile preset first and rejects unrelated stages. The default test commands retain their original fixture mappings. The [one-shot capture probe](config/d3_sonar_v2_once.cfg) supports manual timeout and cancellation trials; physical acceptance is still pending.
+
+Use this page and [WIRING.md](esp32s3_mtk/WIRING.md) for the current breadboard. The framework guide's GPIO1/2 sonar, GPIO5/6 loopback and GPIO10–13 SPI layouts require their separate fixtures; they conflict with connections retained here. The three-sensor preset's 30 ms sonar timeout is for individual acquisition; two such timeouts cannot fit a 50 ms PAIR. No dual-sonar preset or acoustic guard is selected by this merge.
+
+## D6 use case (draft)
+
+D6 is the end-to-end use case. The current draft is a radar-triggered doorway occupancy counter that runs on D3's `WINDOW` controller: see the [D6 validation plan](docs/D6_USECASE_VALIDATION_PLAN.md) and the [D6 trial worksheet](docs/D6_TRIAL_WORKSHEET.md). Both are plans only; no D6 trial has been run on the board.
+
 ## Repository guide
 
 | Location | Purpose |

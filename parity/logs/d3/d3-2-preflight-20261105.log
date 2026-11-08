@@ -1,0 +1,908 @@
+D3-2 V2 capture preflight — 5 November 2026 (Asia/Singapore)
+Firmware source: 11255ec; host fixture/test/document changes in working tree.
+No ESP32-S3 detected via pyserial: only Bluetooth-Incoming-Port, debug-console and wlan-debug. No hardware test, flash or wiring change.
+Initial sandbox build failed in psutil process inspection; approved external retry passed. Initial image check before build reported missing ELF; post-build image gate passed.
+esp32s3_mtk/build/esp32s3_mtk.bin: bytes=1291664 sha256=1e250ead668af997ea394f14fc70a51c5e21e8ee7a718ab58d477bacc526473a
+esp32s3_mtk/build/esp32s3_mtk.elf: bytes=20120672 sha256=ef9261a592e112a276b06b764cebece4640b87ccf9c25defe819e24f90d03aae
+
+=== sh tools/mtk.sh check (approved external retry, exit 0) ===
+course port: e92874d50d3a2968566f9628018f4c096c01f3d9   (pinned e92874d50d3a2968566f9628018f4c096c01f3d9)
+ESP-IDF:     v6.1-dev-2300-g17a74c925c   (pinned v6.1-dev-2300-g17a74c925c)
+compiler:    esp-15.2.0_20251204   (pinned esp-15.2.0_20251204)
+NOTE: ~/esp/esp-idf-v6.1/components/bootloader/Kconfig.projbuild:386: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: ~/esp/esp-idf-v6.1/components/bootloader/Kconfig.projbuild:426: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: ~/esp/esp-idf-v6.1/components/esp_hw_support/./lowpower/port/esp32p4/Kconfig.p4_rev3_mspi_workaround:6: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: ~/esp/esp-idf-v6.1/components/esp_mm/Kconfig:20: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: ~/esp/esp-idf-v6.1/components/esp_system/./port/soc/esp32s3/Kconfig.memory:21: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+Loading defaults file <repo>/esp32s3_mtk/sdkconfig.defaults...
+NOTE: unknown kconfig symbol 'BT_ENABLED' assigned to 'n' in <repo>/esp32s3_mtk/sdkconfig.defaults
+Default value for GDMA_CTRL_FUNC_IN_IRAM in sdkconfig is y but it is n according to Kconfig.
+Using default value from sdkconfig (y).
+NOTE: Kconfig parser version: 1
+NOTE: Kconfig defaults policy: use sdkconfig
+NOTE: Status: Finished with notifications
+NOTE: ~/esp/esp-idf-v6.1/components/esp_driver_dma/Kconfig:3: GDMA_CTRL_FUNC_IN_IRAM: Kconfig default value: n, sdkconfig default value: y, using y from sdkconfig
+NOTE: ~/esp/esp-idf-v6.1/components/esp_system/Kconfig:339: ESP_TASK_WDT_CHECK_IDLE_TASK_CPU0 has user-set value n from <tmp>/kconfgen_tmpohbr_r83 but is not visible (disabled dependency)
+NOTE: ~/esp/esp-idf-v6.1/components/esp_system/Kconfig:350: ESP_TASK_WDT_CHECK_IDLE_TASK_CPU1 has user-set value n from <tmp>/kconfgen_tmpohbr_r83 but is not visible (disabled dependency)
+CMake Warning (deprecated) at managed_components/espressif__esp-nn/CMakeLists.txt:1 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+This warning is for project developers.  Use -Wno-author or -Wno-deprecated
+to suppress it.
+
+CMake Warning (deprecated) at managed_components/espressif__esp-tflite-micro/CMakeLists.txt:3 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+This warning is for project developers.  Use -Wno-author or -Wno-deprecated
+to suppress it.
+
+CMake Warning at ~/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:106 (message):
+  Private include directory
+  '~/esp/esp-idf-v6.1/components/esp_wifi/wifi_apps/roaming_app/include'
+  belongs to component esp_wifi but is being used by component
+  wpa_supplicant.  It is recommended to define the component dependency for
+  wpa_supplicant on the component esp_wifi, i.e.  'idf_component_register(...
+  PRIV_REQUIRES esp_wifi)' in the CMakeLists.txt of wpa_supplicant, and
+  specify the included directory as idf_component_register(...
+  PRIV_INCLUDE_DIRS <dir relative to component>) in the CMakeLists.txt of
+  component esp_wifi.
+Call Stack (most recent call first):
+  ~/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:130 (__component_validation_check_include_dirs)
+  ~/esp/esp-idf-v6.1/CMakeLists.txt:353 (__component_validation_run_checks)
+
+
+CMake Warning at ~/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:106 (message):
+  Private include directory
+  '~/esp/esp-idf-v6.1/components/esp_wifi/wifi_apps/roaming_app/src'
+  belongs to component esp_wifi but is being used by component
+  wpa_supplicant.  It is recommended to define the component dependency for
+  wpa_supplicant on the component esp_wifi, i.e.  'idf_component_register(...
+  PRIV_REQUIRES esp_wifi)' in the CMakeLists.txt of wpa_supplicant, and
+  specify the included directory as idf_component_register(...
+  PRIV_INCLUDE_DIRS <dir relative to component>) in the CMakeLists.txt of
+  component esp_wifi.
+Call Stack (most recent call first):
+  ~/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:130 (__component_validation_check_include_dirs)
+  ~/esp/esp-idf-v6.1/CMakeLists.txt:353 (__component_validation_run_checks)
+
+
+CMake Warning at ~/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:106 (message):
+  Private include directory
+  '~/esp/esp-idf-v6.1/components/wpa_supplicant/src' belongs to
+  component wpa_supplicant but is being used by component esp_wifi.  It is
+  recommended to define the component dependency for esp_wifi on the
+  component wpa_supplicant, i.e.  'idf_component_register(...  PRIV_REQUIRES
+  wpa_supplicant)' in the CMakeLists.txt of esp_wifi, and specify the
+  included directory as idf_component_register(...  PRIV_INCLUDE_DIRS <dir
+  relative to component>) in the CMakeLists.txt of component wpa_supplicant.
+Call Stack (most recent call first):
+  ~/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:130 (__component_validation_check_include_dirs)
+  ~/esp/esp-idf-v6.1/CMakeLists.txt:353 (__component_validation_run_checks)
+
+
+CMake Warning at ~/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:106 (message):
+  Private include directory
+  '~/esp/esp-idf-v6.1/components/wpa_supplicant/esp_supplicant/src'
+  belongs to component wpa_supplicant but is being used by component
+  esp_wifi.  It is recommended to define the component dependency for
+  esp_wifi on the component wpa_supplicant, i.e.  'idf_component_register(...
+  PRIV_REQUIRES wpa_supplicant)' in the CMakeLists.txt of esp_wifi, and
+  specify the included directory as idf_component_register(...
+  PRIV_INCLUDE_DIRS <dir relative to component>) in the CMakeLists.txt of
+  component wpa_supplicant.
+Call Stack (most recent call first):
+  ~/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:130 (__component_validation_check_include_dirs)
+  ~/esp/esp-idf-v6.1/CMakeLists.txt:353 (__component_validation_run_checks)
+
+
+NOTE: ~/esp/esp-idf-v6.1/components/bootloader/Kconfig.projbuild:386: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: ~/esp/esp-idf-v6.1/components/bootloader/Kconfig.projbuild:426: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: ~/esp/esp-idf-v6.1/components/esp_hw_support/./lowpower/port/esp32p4/Kconfig.p4_rev3_mspi_workaround:6: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: ~/esp/esp-idf-v6.1/components/esp_system/./port/soc/esp32s3/Kconfig.memory:21: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+Default value for APP_REPRODUCIBLE_BUILD in sdkconfig is y but it is n according to Kconfig.
+Using default value from sdkconfig (y).
+Default value for APP_EXCLUDE_PROJECT_VER_VAR in sdkconfig is y but it is n according to Kconfig.
+Using default value from sdkconfig (y).
+NOTE: Kconfig parser version: 1
+NOTE: Kconfig defaults policy: use sdkconfig
+NOTE: Status: Finished with notifications
+NOTE: ~/esp/esp-idf-v6.1/Kconfig:281: APP_REPRODUCIBLE_BUILD: Kconfig default value: n, sdkconfig default value: y, using y from sdkconfig
+NOTE: ~/esp/esp-idf-v6.1/components/esp_app_format/Kconfig.projbuild:12: APP_EXCLUDE_PROJECT_VER_VAR: Kconfig default value: n, sdkconfig default value: y, using y from sdkconfig
+In file included from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.c:21:
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.h: In function 'knl_call_abortfn':
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.h:88:19: warning: cast between incompatible function types from 'FP' {aka 'void (*)()'} to 'ER (*)(ID,  T_DEVREQ *, INT,  void *)' {aka 'int (*)(int,  struct t_devreq *, int,  void *)'} [-Wcast-function-type]
+   88 |         abortfn = (ABTFN)devcb->ddev.abortfn;
+      |                   ^
+In file included from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/cpu_status.h:17,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/cpu_status.h:17,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/cpu_status.h:26,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/kernel.h:41,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.c:19:
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.h:90:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+   90 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.h:94:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+   94 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.c: In function 'tk_evt_dev':
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.c:428:19: warning: cast between incompatible function types from 'FP' {aka 'void (*)()'} to 'INT (*)(INT,  void *, void *)' {aka 'int (*)(int,  void *, void *)'} [-Wcast-function-type]
+  428 |         eventfn = (EVTFN)devcb->ddev.eventfn;
+      |                   ^
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.c:434:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+  434 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.c:438:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+  438 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+In file included from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:21:
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.h: In function 'knl_call_abortfn':
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.h:88:19: warning: cast between incompatible function types from 'FP' {aka 'void (*)()'} to 'ER (*)(ID,  T_DEVREQ *, INT,  void *)' {aka 'int (*)(int,  struct t_devreq *, int,  void *)'} [-Wcast-function-type]
+   88 |         abortfn = (ABTFN)devcb->ddev.abortfn;
+      |                   ^
+In file included from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/cpu_status.h:17,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/cpu_status.h:17,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/cpu_status.h:26,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/kernel.h:41,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:19:
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.h:90:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+   90 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/device.h:94:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+   94 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c: In function 'tk_opn_dev':
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:247:18: warning: cast between incompatible function types from 'FP' {aka 'void (*)()'} to 'ER (*)(ID,  UINT,  void *)' {aka 'int (*)(int,  unsigned int,  void *)'} [-Wcast-function-type]
+  247 |         openfn = (OPNFN)devcb->ddev.openfn;
+      |                  ^
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:273:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  273 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:277:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  277 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c: In function 'abort_allrequest':
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:319:19: warning: cast between incompatible function types from 'FP' {aka 'void (*)()'} to 'ER (*)(ID,  T_DEVREQ *, INT,  void *)' {aka 'int (*)(int,  struct t_devreq *, int,  void *)'} [-Wcast-function-type]
+  319 |         abortfn = (ABTFN)devcb->ddev.abortfn;
+      |                   ^
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:320:19: warning: cast between incompatible function types from 'FP' {aka 'void (*)()'} to 'INT (*)(T_DEVREQ *, INT,  TMO,  void *)' {aka 'int (*)(struct t_devreq *, int,  long int,  void *)'} [-Wcast-function-type]
+  320 |         waitfn  = (WAIFN)devcb->ddev.waitfn;
+      |                   ^
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:331:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  331 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:335:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  335 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:351:25: note: in expansion of macro 'DISABLE_INTERRUPT'
+  351 |                         DISABLE_INTERRUPT;
+      |                         ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:355:25: note: in expansion of macro 'DISABLE_INTERRUPT'
+  355 |                         DISABLE_INTERRUPT;
+      |                         ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:380:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  380 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:384:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  384 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c: In function 'knl_close_device':
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:415:19: warning: cast between incompatible function types from 'FP' {aka 'void (*)()'} to 'ER (*)(ID,  UINT,  void *)' {aka 'int (*)(int,  unsigned int,  void *)'} [-Wcast-function-type]
+  415 |         closefn = (CLSFN)devcb->ddev.closefn;
+      |                   ^
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:437:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  437 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:441:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  441 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c: In function 'knl_request':
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:530:18: warning: cast between incompatible function types from 'FP' {aka 'void (*)()'} to 'ER (*)(T_DEVREQ *, TMO,  void *)' {aka 'int (*)(struct t_devreq *, long int,  void *)'} [-Wcast-function-type]
+  530 |         execfn = (EXCFN)devcb->ddev.execfn;
+      |                  ^
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:558:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+  558 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:562:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+  562 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c: In function 'tk_wai_dev':
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:705:18: warning: cast between incompatible function types from 'FP' {aka 'void (*)()'} to 'INT (*)(T_DEVREQ *, INT,  TMO,  void *)' {aka 'int (*)(struct t_devreq *, int,  long int,  void *)'} [-Wcast-function-type]
+  705 |         waitfn = (WAIFN)devcb->ddev.waitfn;
+      |                  ^
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:759:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+  759 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:763:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+  763 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c: In function 'sendevt_alldevice':
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:843:27: warning: cast between incompatible function types from 'FP' {aka 'void (*)()'} to 'INT (*)(INT,  void *, void *)' {aka 'int (*)(int,  void *, void *)'} [-Wcast-function-type]
+  843 |                 eventfn = (EVTFN)devcb->ddev.eventfn;
+      |                           ^
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:844:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  844 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/deviceio.c:848:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  848 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+In file included from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/cpu_status.h:17,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/cpu_status.h:17,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/cpu_status.h:26,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/kernel.h:41,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/task_manage.c:19:
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/task_manage.c: In function 'tk_ext_tsk':
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/task_manage.c:346:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+  346 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/task_manage.c: In function 'tk_exd_tsk':
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/task_manage.c:390:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+  390 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+In file included from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/cpu_status.h:17,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/cpu_status.h:17,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/cpu_status.h:26,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/kernel.h:41,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/time_calls.c:19:
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/time_calls.c: In function 'knl_call_cychdr':
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/time_calls.c:275:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  275 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/time_calls.c:290:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+  290 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/time_calls.c: In function 'knl_call_almhdr':
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/time_calls.c:738:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  738 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/tkernel/time_calls.c:753:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+  753 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/lib/libtm/libtm_printf.c: In function 'outint':
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/lib/libtm/libtm_printf.c:50:30: warning: initializer-string for array of 'unsigned char' truncates NUL terminator but destination lacks 'nonstring' attribute (33 chars into 32 available) [-Wunterminated-string-initialization]
+   50 | LOCAL const UB  digits[32] = "0123456789abcdef0123456789ABCDEF";
+      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/cpu_status.h:17,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/cpu_status.h:17,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/cpu_status.h:26,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/kernel.h:41,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/sysinit/sysinit.c:18:
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/sysinit/sysinit.c: In function 'knl_main':
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/sysinit/sysinit.c:34:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+   34 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+In file included from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/cpu_status.h:17,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/cpu_status.h:17,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/cpu_status.h:26,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/kernel.h:41,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/sysdepend/cpu/core/xtensa_lx7/tls.c:34:
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/sysdepend/cpu/core/xtensa_lx7/tls.c: In function 'knl_stack_check':
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/sysdepend/cpu/core/xtensa_lx7/tls.c:110:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  110 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/sysdepend/cpu/core/xtensa_lx7/tls.c:121:17: note: in expansion of macro 'DISABLE_INTERRUPT'
+  121 |                 DISABLE_INTERRUPT;
+      |                 ^~~~~~~~~~~~~~~~~
+In file included from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/cpu_status.h:17,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/cpu_status.h:17,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/cpu_status.h:26,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/kernel.h:41,
+                 from <repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/sysdepend/iote_esp32s3/hw_setting.c:17:
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/sysdepend/iote_esp32s3/hw_setting.c: In function 'knl_shutdown_hw':
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/knlinc/../sysdepend/iote_esp32s3/../cpu/esp32s3/../core/xtensa_lx7/cpu_status.h:73:38: warning: variable '_dummy' set but not used [-Wunused-but-set-variable]
+   73 | #define DISABLE_INTERRUPT       { UW _dummy; DI(_dummy); }
+      |                                      ^~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/kernel/sysdepend/iote_esp32s3/hw_setting.c:33:9: note: in expansion of macro 'DISABLE_INTERRUPT'
+   33 |         DISABLE_INTERRUPT;
+      |         ^~~~~~~~~~~~~~~~~
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/device/common/drvif/msdrvif.c: In function 'msdi_def_dev':
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/device/common/drvif/msdrvif.c:156:24: warning: cast between incompatible function types from 'ER (*)(ID,  UINT,  T_MSDI *)' {aka 'int (*)(int,  unsigned int,  struct S_MSDI *)'} to 'void (*)()' [-Wcast-function-type]
+  156 |         ddev.openfn  = (FP)msdi_openfn;
+      |                        ^
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/device/common/drvif/msdrvif.c:157:24: warning: cast between incompatible function types from 'ER (*)(ID,  UINT,  T_MSDI *)' {aka 'int (*)(int,  unsigned int,  struct S_MSDI *)'} to 'void (*)()' [-Wcast-function-type]
+  157 |         ddev.closefn = (FP)msdi_closefn;
+      |                        ^
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/device/common/drvif/msdrvif.c:158:24: warning: cast between incompatible function types from 'ER (*)(T_DEVREQ *, TMO,  T_MSDI *)' {aka 'int (*)(struct t_devreq *, long int,  struct S_MSDI *)'} to 'void (*)()' [-Wcast-function-type]
+  158 |         ddev.execfn  = (FP)msdi_execfn;
+      |                        ^
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/device/common/drvif/msdrvif.c:159:24: warning: cast between incompatible function types from 'INT (*)(T_DEVREQ *, INT,  TMO,  T_MSDI *)' {aka 'int (*)(struct t_devreq *, int,  long int,  struct S_MSDI *)'} to 'void (*)()' [-Wcast-function-type]
+  159 |         ddev.waitfn  = (FP)msdi_waitfn;
+      |                        ^
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/device/common/drvif/msdrvif.c:160:24: warning: cast between incompatible function types from 'ER (*)(ID,  T_DEVREQ *, INT,  T_MSDI *)' {aka 'int (*)(int,  struct t_devreq *, int,  struct S_MSDI *)'} to 'void (*)()' [-Wcast-function-type]
+  160 |         ddev.abortfn = (FP)msdi_abortfn;
+      |                        ^
+<repo>/esp32s3_mtk/third_party/mtk3smp-esp32s3/device/common/drvif/msdrvif.c:161:24: warning: cast between incompatible function types from 'INT (*)(INT,  void *, T_MSDI *)' {aka 'int (*)(int,  void *, struct S_MSDI *)'} to 'void (*)()' [-Wcast-function-type]
+  161 |         ddev.eventfn = (FP)msdi_eventfn;
+      |                        ^
+In file included from <repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/micro/kernels/sub.cc:24:
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h: In lambda function:
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:56:62: warning: declaration of 'const tflite::ArithmeticParams& params' shadows a parameter [-Wshadow]
+   56 |       [](T input1_val, T input2_val, const ArithmeticParams& params) {
+      |                                      ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:48:47: note: shadowed declaration is here
+   48 | void BroadcastSubSlow(const ArithmeticParams& params,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h: In lambda function:
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:76:34: warning: declaration of 'const tflite::ArithmeticParams& params' shadows a parameter [-Wshadow]
+   76 |          const ArithmeticParams& params) {
+      |          ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:64:59: note: shadowed declaration is here
+   64 | inline void BroadcastSub16POTSlow(const ArithmeticParams& params,
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h: In lambda function:
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:100:62: warning: declaration of 'const tflite::ArithmeticParams& params' shadows a parameter [-Wshadow]
+  100 |       [](T input1_val, T input2_val, const ArithmeticParams& params) {
+      |                                      ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:90:52: note: shadowed declaration is here
+   90 | void BroadcastQuantSubSlow(const ArithmeticParams& params,
+      |                            ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h: In lambda function:
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:212:62: warning: declaration of 'const tflite::ArithmeticParams& params' shadows a parameter [-Wshadow]
+  212 |       [](T input1_val, T input2_val, const ArithmeticParams& params) {
+      |                                      ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:205:34: note: shadowed declaration is here
+  205 | void Sub(const ArithmeticParams& params, const RuntimeShape& input1_shape,
+      |          ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+In file included from <repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/micro/kernels/sub_common.cc:22:
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h: In lambda function:
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:56:62: warning: declaration of 'const tflite::ArithmeticParams& params' shadows a parameter [-Wshadow]
+   56 |       [](T input1_val, T input2_val, const ArithmeticParams& params) {
+      |                                      ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:48:47: note: shadowed declaration is here
+   48 | void BroadcastSubSlow(const ArithmeticParams& params,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h: In lambda function:
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:76:34: warning: declaration of 'const tflite::ArithmeticParams& params' shadows a parameter [-Wshadow]
+   76 |          const ArithmeticParams& params) {
+      |          ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:64:59: note: shadowed declaration is here
+   64 | inline void BroadcastSub16POTSlow(const ArithmeticParams& params,
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h: In lambda function:
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:100:62: warning: declaration of 'const tflite::ArithmeticParams& params' shadows a parameter [-Wshadow]
+  100 |       [](T input1_val, T input2_val, const ArithmeticParams& params) {
+      |                                      ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:90:52: note: shadowed declaration is here
+   90 | void BroadcastQuantSubSlow(const ArithmeticParams& params,
+      |                            ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h: In lambda function:
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:212:62: warning: declaration of 'const tflite::ArithmeticParams& params' shadows a parameter [-Wshadow]
+  212 |       [](T input1_val, T input2_val, const ArithmeticParams& params) {
+      |                                      ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+<repo>/esp32s3_mtk/managed_components/espressif__esp-tflite-micro/tensorflow/lite/kernels/internal/reference/sub.h:205:34: note: shadowed declaration is here
+  205 | void Sub(const ArithmeticParams& params, const RuntimeShape& input1_shape,
+      |          ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+In file included from <repo>/esp32s3_mtk/components/edge_mtk/model_store_mtk.c:33:
+<repo>/libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:33:52: warning: '/*' within comment [-Wcomment]
+   33 |  * Call once after mqtt_init(). Subscribes to model/* topics. */
+<repo>/libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:36:48: warning: '/*' within comment [-Wcomment]
+   36 | /* Call from mqtt_incoming_data_cb when a model/* topic is detected. */
+In file included from <repo>/esp32s3_mtk/components/edge_mtk/runtime_mtk.c:51:
+<repo>/libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:33:52: warning: '/*' within comment [-Wcomment]
+   33 |  * Call once after mqtt_init(). Subscribes to model/* topics. */
+<repo>/libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:36:48: warning: '/*' within comment [-Wcomment]
+   36 | /* Call from mqtt_incoming_data_cb when a model/* topic is detected. */
+In file included from <repo>/esp32s3_mtk/components/edge_mtk/net_mtk.c:35:
+<repo>/libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:33:52: warning: '/*' within comment [-Wcomment]
+   33 |  * Call once after mqtt_init(). Subscribes to model/* topics. */
+<repo>/libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:36:48: warning: '/*' within comment [-Wcomment]
+   36 | /* Call from mqtt_incoming_data_cb when a model/* topic is detected. */
+<repo>/libraries/EdgeCore/src/application/scheduler.c: In function 'scheduler_reset':
+<repo>/libraries/EdgeCore/src/application/scheduler.c:28:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   28 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+<repo>/libraries/EdgeCore/src/application/scheduler.c:175:5: note: in expansion of macro 'SLOG'
+  175 |     SLOG("reset: cleared %d slots", (int)MAX_ACTIVE);
+      |     ^~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c: In function 'scheduler_add_config':
+<repo>/libraries/EdgeCore/src/application/scheduler.c:28:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   28 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+<repo>/libraries/EdgeCore/src/application/scheduler.c:522:17: note: in expansion of macro 'SLOG'
+  522 |                 SLOG("add[%d]: UNKNOWN proto for %s", i, cfg_in->name);
+      |                 ^~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c:28:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   28 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+<repo>/libraries/EdgeCore/src/application/scheduler.c:528:17: note: in expansion of macro 'SLOG'
+  528 |                 SLOG("add[%d]: UNKNOWN proto for %s", i, cfg_in->name);
+      |                 ^~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c:28:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   28 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+<repo>/libraries/EdgeCore/src/application/scheduler.c:550:17: note: in expansion of macro 'SLOG'
+  550 |                 SLOG("add[%d]: init_cfg FAILED for %s on %s", i, cfg_in->name, pname);
+      |                 ^~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c:28:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   28 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+<repo>/libraries/EdgeCore/src/application/scheduler.c:562:17: note: in expansion of macro 'SLOG'
+  562 |                 SLOG("add[%d]: %s on %s freq=%.3fHz mode=%s I2C(sda=%d,scl=%d,addr=0x%02X,reg=0x%X,len=%u)",
+      |                 ^~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c:28:12: warning: format '%X' expects argument of type 'unsigned int', but argument 11 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   28 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c:562:17: note: in expansion of macro 'SLOG'
+  562 |                 SLOG("add[%d]: %s on %s freq=%.3fHz mode=%s I2C(sda=%d,scl=%d,addr=0x%02X,reg=0x%X,len=%u)",
+      |                 ^~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c:28:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   28 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+<repo>/libraries/EdgeCore/src/application/scheduler.c:568:17: note: in expansion of macro 'SLOG'
+  568 |                 SLOG("add[%d]: %s on %s freq=%.3fHz mode=%s UART(tx=%d,rx=%d,baud=%u)",
+      |                 ^~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c:28:12: warning: format '%u' expects argument of type 'unsigned int', but argument 10 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   28 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c:568:17: note: in expansion of macro 'SLOG'
+  568 |                 SLOG("add[%d]: %s on %s freq=%.3fHz mode=%s UART(tx=%d,rx=%d,baud=%u)",
+      |                 ^~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c:28:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   28 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+<repo>/libraries/EdgeCore/src/application/scheduler.c:573:17: note: in expansion of macro 'SLOG'
+  573 |                 SLOG("add[%d]: %s on %s freq=%.3fHz mode=poll SPI(host=%s,sclk=%d,mosi=%d,miso=%d,cs=%d,hz=%u,mode=%u,tx=%u,rx=%u,timeout=%ums)",
+      |                 ^~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c:28:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   28 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+<repo>/libraries/EdgeCore/src/application/scheduler.c:580:17: note: in expansion of macro 'SLOG'
+  580 |                 SLOG("add[%d]: %s on %s freq=%.3fHz mode=%s method=%s GPIO(pin=%d)",
+      |                 ^~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c:28:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   28 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+<repo>/libraries/EdgeCore/src/application/scheduler.c:591:5: note: in expansion of macro 'SLOG'
+  591 |     SLOG("add: no free slots");
+      |     ^~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c: In function 'scheduler_apply_config':
+<repo>/libraries/EdgeCore/src/application/scheduler.c:28:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   28 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+<repo>/libraries/EdgeCore/src/application/scheduler.c:598:5: note: in expansion of macro 'SLOG'
+  598 |     SLOG("apply_config (compat): reset+add %s", cfg->name);
+      |     ^~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c: In function 'trigger_matching':
+<repo>/libraries/EdgeCore/src/application/scheduler.c:28:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   28 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+<repo>/libraries/EdgeCore/src/application/scheduler.c:617:13: note: in expansion of macro 'SLOG'
+  617 |             SLOG("trigger[%d/%s]: source=%s deadline=%llu", i, S->cfg_copy.name, source,
+      |             ^~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c: In function 'scheduler_run_all':
+<repo>/libraries/EdgeCore/src/application/scheduler.c:28:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   28 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+<repo>/libraries/EdgeCore/src/application/scheduler.c:649:13: note: in expansion of macro 'SLOG'
+  649 |             SLOG("run_all: running=%u", running?1u:0u);
+      |             ^~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c:28:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   28 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+<repo>/libraries/EdgeCore/src/application/scheduler.c:661:13: note: in expansion of macro 'SLOG'
+  661 |             SLOG("arm[%d/%s]: mode=%s armed=%u", j, g_sensors[j].cfg_copy.name,
+      |             ^~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c:28:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   28 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+<repo>/libraries/EdgeCore/src/application/scheduler.c:681:17: note: in expansion of macro 'SLOG'
+  681 |                 SLOG("stream[%d/%s]: START", i, cfg->name);
+      |                 ^~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c:28:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   28 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+<repo>/libraries/EdgeCore/src/application/scheduler.c:685:17: note: in expansion of macro 'SLOG'
+  685 |                 SLOG("stream[%d/%s]: STOP", i, cfg->name);
+      |                 ^~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c:28:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   28 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+<repo>/libraries/EdgeCore/src/application/scheduler.c:690:13: note: in expansion of macro 'SLOG'
+  690 |             SLOG("stream[%d/%s]: STOP (leaving stream mode)", i, cfg->name);
+      |             ^~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c:28:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   28 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+<repo>/libraries/EdgeCore/src/application/scheduler.c:748:13: note: in expansion of macro 'SLOG'
+  748 |             SLOG("stream[%d/%s]: poll_once()", i, cfg->name);
+      |             ^~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c:28:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   28 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+<repo>/libraries/EdgeCore/src/application/scheduler.c:752:13: note: in expansion of macro 'SLOG'
+  752 |             SLOG("stream[%d/%s]: result=%d", i, cfg->name, n);
+      |             ^~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c:28:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   28 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+<repo>/libraries/EdgeCore/src/application/scheduler.c:758:17: note: in expansion of macro 'SLOG'
+  758 |                 SLOG("publish[%d/%s]: %d bytes via %s", i, cfg->name, n, p);
+      |                 ^~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c: In function 'scheduler_run_step':
+<repo>/libraries/EdgeCore/src/application/scheduler.c:28:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   28 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+<repo>/libraries/EdgeCore/src/application/scheduler.c:777:5: note: in expansion of macro 'SLOG'
+  777 |     SLOG("run_step: enter (running=%u)", running?1u:0u);
+      |     ^~~~
+<repo>/libraries/EdgeCore/src/application/scheduler.c:28:12: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+   28 |     printf("[SCHED %9ums] " fmt "\n", _ms, ##__VA_ARGS__); \
+      |            ^~~~~~~~~~~~~~~~           ~~~
+      |                                       |
+      |                                       uint32_t {aka long unsigned int}
+<repo>/libraries/EdgeCore/src/application/scheduler.c:779:5: note: in expansion of macro 'SLOG'
+  779 |     SLOG("run_step: exit");
+      |     ^~~~
+In file included from <repo>/libraries/EdgeCore/src/inference_engine/inference_manager.c:11:
+<repo>/libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:33:52: warning: '/*' within comment [-Wcomment]
+   33 |  * Call once after mqtt_init(). Subscribes to model/* topics. */
+<repo>/libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:36:48: warning: '/*' within comment [-Wcomment]
+   36 | /* Call from mqtt_incoming_data_cb when a model/* topic is detected. */
+<repo>/libraries/EdgeCore/src/rule_engine/rule_expr.c: In function 'eval_rpn':
+<repo>/libraries/EdgeCore/src/rule_engine/rule_expr.c:409:9: warning: enumeration value 'FN_mse' not handled in switch [-Wswitch]
+  409 |         switch ((fkind_t)t.op) {
+      |         ^~~~~~
+NOTE: ~/esp/esp-idf-v6.1/components/bootloader/Kconfig.projbuild:386: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: ~/esp/esp-idf-v6.1/components/bootloader/Kconfig.projbuild:426: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: ~/esp/esp-idf-v6.1/components/esp_hw_support/./lowpower/port/esp32p4/Kconfig.p4_rev3_mspi_workaround:6: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: ~/esp/esp-idf-v6.1/components/esp_mm/Kconfig:20: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: ~/esp/esp-idf-v6.1/components/esp_system/./port/soc/esp32s3/Kconfig.memory:21: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+Default value for GDMA_CTRL_FUNC_IN_IRAM in sdkconfig is y but it is n according to Kconfig.
+Using default value from sdkconfig (y).
+Bootloader binary size 0x5220 bytes. 0x2de0 bytes (36%) free.
+esp32s3_mtk.bin binary size 0x13b590 bytes. Smallest app partition is 0x2f0000 bytes. 0x1b4a70 bytes (58%) free.
+Project build complete. To flash, run:
+
+=== sh tools/mtk.sh purity (post-build, exit 0) ===
+ok    75 files: no FreeRTOS, Arduino, task-watchdog or esp_driver_* use
+ok    shared code: no SDK calls (check_hal_boundary.sh)
+ok    esp32s3_mtk/build/esp32s3_mtk.elf: no FreeRTOS scheduler, tick, task or start-up code linked; µT-Kernel start-up and dispatcher present; 47 FreeRTOS API functions served by the course shim on µT-Kernel
+
+=== audit_configurable.py with qualified SDK environment (exit 0) ===
+PASS: main configurable framework + sensor profiles linked; micro T-Kernel SMP startup/dispatcher present; original FreeRTOS scheduler excluded; PSRAM and native USB enabled.
+
+=== sh tools/cody_test.sh (exit 0) ===
+cody contracts: PASS (EventRecord=96 bytes)
+[GPIO] SONAR: gpio.trig and gpio.echo must differ
+[GPIO] SONAR: gpio.trig and gpio.echo are required
+[GPIO] SONAR: pin 8 or 49 not available on this board
+[SCHED         0ms] reset: cleared 8 slots
+[SCHED      1000ms] add[0]: SONAR on gpio freq=0.000Hz mode=poll method=pulse GPIO(pin=0)
+[SCHED] added: SONAR on gpio
+[SCHED      1000ms] add[1]: OTHER on gpio freq=0.000Hz mode=poll method=digital GPIO(pin=10)
+[SCHED] added: OTHER on gpio
+[SCHED      1000ms] run_all: running=1
+[SCHED      1000ms] arm[0/SONAR]: mode=periodic armed=1
+[SCHED      1000ms] arm[1/OTHER]: mode=periodic armed=1
+[SCHED      1000ms] publish[1/OTHER]: 3 bytes via gpio
+proto=gpio src=OTHER len=3 ts=1000 : 00 00 00
+[SCHED] config OTHER refused: pulse pin 9 is used by SONAR
+[SCHED] config SONAR refused: pulse pin 8 is used by SONAR
+[SCHED] config SONAR refused: pulse pin 9 is used by SONAR
+[SCHED      1001ms] publish[0/SONAR]: 3 bytes via gpio
+proto=gpio src=SONAR len=3 ts=1001 : 44 02 01
+{"sensor":"SONAR","timestamp_ms":1001,"distance_cm":9.9,"echo_us":580,"status":"OK","error":0}
+[SCHED      1050ms] publish[1/OTHER]: 3 bytes via gpio
+proto=gpio src=OTHER len=3 ts=1050 : 00 32 00
+[TIMING] sensor=SONAR status=timeout armed_us=1001000 deadline_us=1070000
+{"sensor":"SONAR","timestamp_ms":1070,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SCHED      1100ms] publish[1/OTHER]: 3 bytes via gpio
+proto=gpio src=OTHER len=3 ts=1100 : 00 64 00
+[SCHED      1100ms] arm[0/SONAR]: mode=periodic armed=1
+[SCHED      1100ms] arm[1/OTHER]: mode=periodic armed=1
+[SCHED      1100ms] publish[1/OTHER]: 3 bytes via gpio
+proto=gpio src=OTHER len=3 ts=1100 : 00 64 00
+[SCHED      1100ms] reset: cleared 8 slots
+[SCHED      1100ms] reset: cleared 8 slots
+[SCHED      1000ms] add[0]: A on gpio freq=0.000Hz mode=poll method=pulse GPIO(pin=0)
+[SCHED] added: A on gpio
+[SCHED      1000ms] add[1]: B on gpio freq=0.000Hz mode=poll method=pulse GPIO(pin=0)
+[SCHED] added: B on gpio
+[PAIR] armed A=A B=B first=A guard_us=10000 window_us=50000
+[PAIR] state=complete outcome=0 elapsed_us=12000 window_us=50000
+[PAIR] sensor=A name=A attempted=1 valid=1 status=0 rise_us=1000100 fall_us=1000680 width_us=580
+[PAIR] sensor=B name=B attempted=1 valid=1 status=0 rise_us=1011100 fall_us=1011680 width_us=580
+[PAIR] armed A=A B=B first=B guard_us=10000 window_us=50000
+[PAIR] state=cancelled outcome=4 elapsed_us=0 window_us=50000
+[PAIR] sensor=A name=A attempted=0 valid=0 status=2 rise_us=0 fall_us=0 width_us=0
+[PAIR] sensor=B name=B attempted=1 valid=0 status=3 rise_us=0 fall_us=0 width_us=0
+[PAIR] armed A=A B=B first=A guard_us=10000 window_us=50000
+[PAIR] state=cancelled outcome=4 elapsed_us=0 window_us=50000
+[PAIR] sensor=A name=A attempted=1 valid=0 status=3 rise_us=0 fall_us=0 width_us=0
+[PAIR] sensor=B name=B attempted=0 valid=0 status=2 rise_us=0 fall_us=0 width_us=0
+[SCHED      1012ms] reset: cleared 8 slots
+[SCHED      1012ms] reset: cleared 8 slots
+[SCHED       900ms] add[0]: A on gpio freq=0.000Hz mode=poll method=pulse GPIO(pin=0)
+[SCHED] added: A on gpio
+[SCHED       900ms] add[1]: B on gpio freq=0.000Hz mode=poll method=pulse GPIO(pin=0)
+[SCHED] added: B on gpio
+[SCHED       900ms] add[2]: RADAR on uart freq=0.000Hz mode=poll UART(tx=12,rx=13,baud=256000)
+[SCHED] added: RADAR on uart
+[WINDOW] configured; RUN enables radar acquisition, STOP/CLEAR cancels
+[SCHED      1000ms] arm[0/A]: mode=periodic armed=1
+[SCHED      1000ms] arm[1/B]: mode=periodic armed=1
+[SCHED      1000ms] arm[2/RADAR]: mode=periodic armed=1
+[WINDOW] seq=1 class=entry reason=0 pairs=7 valid=7 failed=0 queued=1
+[WINDOW_REPORT] token=abcdef01 kind=state version=1 configured=1 enabled=0 state=2 events=1 dropped=0 radar_frames=7 malformed=0 rx_dropped=0 rx_dropped_start=0 identity=1 event_schema=2 now_us=1613000
+[WINDOW_REPORT] token=abcdef01 kind=timing pairs=7 valid=7 failed=0 cancelled=0 deadline_misses=0 skipped=0 min_us=13000 mean_us=13000 max_us=13000 p95_le_us=13000 p99_le_us=13000
+[WINDOW_REPORT] token=abcdef01 kind=events entry=1 exit=0 incomplete=0 false_events=0 window_deadlines=0 radar_stale=0 window_faults=0
+[WINDOW_REPORT] token=abcdef01 kind=config period_us=100000 window_us=2000000 pair_limit_us=50000 clear_us=200000 radar_stale_us=300000 max_pairs=20 guard_us=1000 timeout_a_us=12000 timeout_b_us=12000 occupied_a_mm=500 occupied_b_mm=500
+[WINDOW_REPORT] token=abcdef01 kind=geometry a_name=A a_trig=8 a_echo=9 b_name=B b_trig=10 b_echo=11 radar_name=RADAR radar_tx=12 radar_rx=13 xmin=-500 xmax=500 ymin=0 ymax=2000
+[WINDOW_REPORT] token=abcdef01 kind=end
+[WINDOW] configured; RUN enables radar acquisition, STOP/CLEAR cancels
+[SCHED      2000ms] run_all: running=1
+[SCHED      2000ms] arm[0/A]: mode=periodic armed=1
+[SCHED      2000ms] arm[1/B]: mode=periodic armed=1
+[SCHED      2000ms] arm[2/RADAR]: mode=periodic armed=1
+[WINDOW] seq=2 class=incomplete reason=0 pairs=7 valid=7 failed=0 queued=1
+[SCHED      2613ms] reset: cleared 8 slots
+GPIO pulse configuration/lifecycle: PASS (real scheduler/driver, async service, timeout, STOP/CLEAR)
+MTK pulse capture: PASS (actual HAL functions, mocked register/clock boundaries)
+pulse sequence: PASS (both orders, guard, 50 ms pair budget, faults/cancel; state=208 B)
+entrance window: PASS (radar framing, real pair engine, window policy, canonical events and occupancy)
+event identity: PASS (actual NVS startup, commit failure, reboot identity and exhaustion)
+UART ready drain: PASS (real driver, bounded reads, no wait/pre-writes, loss reporting)
+event safety: PASS (finite fields, quality rejection, source-scoped duplicates, occupancy bounds; state=1064 B)
+application dispatch: PASS (typed message=104, result publication, FIFO reset, malformed input)
+[SCHED] added: ONCE on gpio
+proto=gpio src=ONCE len=1 ts=1000 : 01
+proto=gpio src=ONCE len=1 ts=1001 : 01
+[SCHED] added: PERIODIC on gpio
+proto=gpio src=PERIODIC len=1 ts=1000 : 01
+[TIMING] sensor=PERIODIC status=timeout armed_us=1000000 deadline_us=1060000
+proto=gpio src=PERIODIC len=1 ts=1100 : 01
+[SCHED] added: DISABLED on gpio
+[SCHED] added: SLOW on gpio
+[TIMING] sensor=SLOW status=timeout phase=acquisition deadline_us=1010000
+proto=gpio src=SLOW len=1 ts=1060 : 01
+[SCHED] added: SOURCE on gpio
+[SCHED] added: TARGET on gpio
+proto=gpio src=SOURCE len=1 ts=1000 : 01
+proto=gpio src=TARGET len=1 ts=1000 : 01
+[TIMING] sensor=TARGET status=timeout armed_us=1001000 deadline_us=1021000
+proto=gpio src=TARGET len=1 ts=1022 : 01
+[SCHED] added: ONCE on gpio
+proto=gpio src=ONCE len=1 ts=1000 : 01
+[SCHED] added: ONCE on gpio
+proto=gpio src=ONCE len=1 ts=1000 : 01
+[SCHED] added: PERIODIC on gpio
+proto=gpio src=PERIODIC len=1 ts=1000 : 01
+proto=gpio src=PERIODIC len=1 ts=1151 : 01
+[SCHED] invalid timing: timing.interval_ms out of range
+[SCHED] invalid timing: null config
+[SCHED] added: SONAR on gpio
+[SCHED] added: OTHER on gpio
+proto=gpio src=OTHER len=1 ts=1000 : 01
+proto=gpio src=SONAR len=1 ts=1002 : 01
+[TIMING] sensor=SONAR status=timeout armed_us=1002000 deadline_us=1022000
+scheduler timing: PASS (one-shot, timeout recovery, disabled stream, deadline, source handoff)
+[RULE] DOOR: event=entry id=1 observation=unverified queued=1
+[RULE] DOOR: event=entry id=2 observation=unverified queued=1
+[RULE] DOOR: event=entry id=3 observation=unverified queued=1
+[RULE] DOOR: event=entry id=4 observation=unverified queued=1
+[RULE] DOOR: event=entry id=5 observation=unverified queued=1
+[RULE] DOOR: event=entry id=6 observation=unverified queued=1
+[RULE] DOOR: event=entry id=7 observation=unverified queued=1
+[RULE] DOOR: event=entry id=8 observation=unverified queued=1
+[RULE] DOOR: event=entry id=9 observation=unverified queued=1
+[RULE] DOOR: event=entry id=10 observation=unverified queued=1
+[RULE] DOOR: event=exit id=11 observation=unverified queued=1
+[RULE] DOOR: event=exit id=12 observation=unverified queued=0
+[RULE] DOOR: invalid event class 'unknown'
+[RULE] DOOR: event=incomplete id=13 observation=unverified queued=1
+[RULE] DOOR: event=false id=14 observation=unverified queued=1
+rule provenance: PASS (no invented window quality, 64-bit decision time, bounded sink)
+....
+----------------------------------------------------------------------
+Ran 4 tests in 0.004s
+
+OK
+........
+----------------------------------------------------------------------
+Ran 8 tests in 0.010s
+
+OK
+In file included from tests/test_mtk_application_runtime.c:6:
+In file included from tests/../esp32s3_mtk/components/edge_mtk/runtime_mtk.c:51:
+libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:33:52: warning: '/*' within block comment [-Wcomment]
+   33 |  * Call once after mqtt_init(). Subscribes to model/* topics. */
+      |                                                    ^
+libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:36:48: warning: '/*' within block comment [-Wcomment]
+   36 | /* Call from mqtt_incoming_data_cb when a model/* topic is detected. */
+      |                                                ^
+2 warnings generated.
+NATIVE TEST: modeled kernel/SDK boundaries; no target ABI or scheduling evidence
+[BOOT] app_mbf failed: er=-33
+[BOOT] app_mbf failed: er=-33
+[BOOT] micro T-Kernel 3 SMP runtime: 7 tasks, 6 message buffers, 1 event flag, 1 cyclic handler
+[APP] request=2 synthetic=0 queued=1
+[APP] request=1 synthetic=1 queued=1
+[APP] request=3 synthetic=0 queued=1
+[APP] reset occupancy=0 processed=0 resets=1 malformed=0 publish_enqueued=0 publish_failed=0
+[APP] id=91 seq=1 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=2
+[APP] status occupancy=1 processed=1 resets=1 malformed=0 publish_enqueued=0 publish_failed=1
+[APP] request=2 synthetic=0 queued=1
+[APP] reset occupancy=0 processed=1 resets=2 malformed=0 publish_enqueued=0 publish_failed=1
+[APP] request=2 synthetic=0 queued=0
+[APP] id=200 seq=1 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+[APP] id=201 seq=2 result=0 class=entry via=rule occupancy=1->2 degraded=0 reason=accepted publish=1
+[APP] id=202 seq=3 result=0 class=entry via=rule occupancy=2->3 degraded=0 reason=accepted publish=1
+[APP] id=203 seq=4 result=0 class=entry via=rule occupancy=3->4 degraded=0 reason=accepted publish=1
+[APP] id=204 seq=5 result=0 class=entry via=rule occupancy=4->5 degraded=0 reason=accepted publish=1
+[APP] id=205 seq=6 result=0 class=entry via=rule occupancy=5->6 degraded=0 reason=accepted publish=1
+[APP] id=206 seq=7 result=0 class=entry via=rule occupancy=6->7 degraded=0 reason=accepted publish=1
+[APP] id=207 seq=8 result=0 class=entry via=rule occupancy=7->8 degraded=0 reason=accepted publish=1
+[APP] request=2 synthetic=0 queued=1
+[APP] reset occupancy=0 processed=9 resets=3 malformed=0 publish_enqueued=8 publish_failed=1
+[APP] id=300 seq=1 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=2
+[APP] id=301 seq=2 result=0 class=entry via=rule occupancy=1->2 degraded=0 reason=accepted publish=2
+[APP] id=302 seq=3 result=0 class=entry via=rule occupancy=2->3 degraded=0 reason=accepted publish=2
+[APP] id=303 seq=4 result=0 class=entry via=rule occupancy=3->4 degraded=0 reason=accepted publish=2
+[APP] id=304 seq=5 result=0 class=entry via=rule occupancy=4->5 degraded=0 reason=accepted publish=2
+[APP] id=305 seq=6 result=0 class=entry via=rule occupancy=5->6 degraded=0 reason=accepted publish=2
+[APP] id=306 seq=7 result=0 class=entry via=rule occupancy=6->7 degraded=0 reason=accepted publish=2
+[APP] id=307 seq=8 result=0 class=entry via=rule occupancy=7->8 degraded=0 reason=accepted publish=2
+[APP] id=300 seq=1 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=301 seq=2 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=302 seq=3 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=303 seq=4 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=304 seq=5 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=305 seq=6 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=306 seq=7 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=307 seq=8 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=300 seq=1 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] request=2 synthetic=0 queued=1
+[APP] reset occupancy=0 processed=26 resets=4 malformed=0 publish_enqueued=8 publish_failed=18
+[APP] id=400 seq=1 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=2
+[APP] malformed message bytes=4 total=1
+micro T-Kernel application glue: PASS (modeled kernel, actual runtime task bodies)
+
+=== sh tools/d2_host_test.sh (exit 0) ===
+w25q32/log mock: PASS (device faults, codec, CRC, recovery, torn slot, full log)
+
+=== .venv/bin/python -m unittest discover -s tests -p test_sonar_fixture.py (exit 0) ===
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.002s
+
+OK

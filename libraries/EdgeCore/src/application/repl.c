@@ -129,6 +129,7 @@ void repl_show_help(void) {
     printf("  TRIGGER <sensor|source>     - arm one-shot/event-driven sensor(s)\n");
     printf("  PAIR <A> <B> <A|B> <guard_us> - one stopped-mode sonar pair diagnostic (50 ms)\n");
     puts("  WINDOW <A> <B> <radar> <guard_us> <A_mm> <B_mm> <xmin> <xmax> <ymin> <ymax>");
+    puts("  WINDOW STATUS [8-hex nonce] - read-only metrics after STOP (no reset)");
     printf("  CLEAR                      - clear sensors + rules\n");
     printf("  SHOW / SHOWRULES           - show sensors / rules\n");
     printf("  CLEARRULES                 - clear only rules\n");
@@ -245,6 +246,24 @@ void repl_handle_line(char *line, bool *running, bool *cfg_ready) {
         }
         else if (strcmp(cmd, "run") == 0) { scheduler_pair_cancel(); *running = true; printf("RUN\n"); }
         else if (strcmp(cmd, "stop") == 0) { scheduler_window_stop(); scheduler_pair_cancel(); *running = false; printf("STOP\n"); }
+        else if (!strncasecmp(line, "WINDOW STATUS", 13) &&
+                 (!line[13] || isspace((unsigned char)line[13]))) {
+            const char *p = line + 13;
+            while (isspace((unsigned char)*p)) ++p;
+            const char *end = p;
+            while (isxdigit((unsigned char)*end)) ++end;
+            const char *tail = end;
+            while (isspace((unsigned char)*tail)) ++tail;
+            if (*tail || (*p && end - p != 8)) puts("[WINDOW] usage: WINDOW STATUS [8-hex nonce]");
+            else {
+                uint32_t token = *p ? (uint32_t)strtoul(p, NULL, 16) : 0;
+                int rc = *running ? HAL_ERR_BUSY : scheduler_window_report(token);
+                if (rc != HAL_OK) {
+                    printf("[WINDOW_REPORT] token=%08x kind=error code=%d\n", (unsigned)token, rc);
+                    printf("[WINDOW_REPORT] token=%08x kind=end\n", (unsigned)token);
+                }
+            }
+        }
         else if (!strncasecmp(line, "WINDOW ", 7) || !strcasecmp(line, "WINDOW")) {
             int rc = *running ? HAL_ERR_BUSY : scheduler_window_command(line_len > 6 ? line + 7 : "");
             printf("[WINDOW] request=%d\n", rc);
