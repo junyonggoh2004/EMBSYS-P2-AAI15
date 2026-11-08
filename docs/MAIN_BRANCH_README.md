@@ -211,7 +211,7 @@ D3 replaces the Pico's fixed one-second loop with configurable timing per sensor
 
 **D3-1 native recheck (5 November 2026).** Parser, timing and scheduler regressions passed through `sh tools/cody_test.sh`; D2 host tests and source/HAL purity also passed. The [review and task mapping](../D3_INTERRUPT_WIRING_REVIEW.md#alignment-with-readme-d3-task-list) links each covered D3-1 requirement to its tests and retains the [raw output](../parity/logs/d3/d3-1-native-20261105.log). Active-window reconfiguration policy remains open. These native results do not close target build/image, electrical wiring, physical capture or timing acceptance.
 
-**Who waits on it.** D2's flash event logging (D2-8, D2-9), D5's B3 timing benchmark, and D6, the end-to-end use case.
+**Who waits on it.** D2's flash event logging (D2-8, D2-9), D5's B3 timing benchmark, and D6, the end-to-end use case. The D6 draft, a radar-triggered doorway occupancy counter built on `WINDOW`, has its own [validation plan](D6_USECASE_VALIDATION_PLAN.md) and [trial worksheet](D6_TRIAL_WORKSHEET.md); neither has been run on the board.
 
 
 ---

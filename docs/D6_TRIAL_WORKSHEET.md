@@ -1,8 +1,9 @@
-# D3 use-case 1: physical trial worksheet
+# D6 use case 1: physical trial worksheet
 
-Prepared: 8 November 2026. Template status: **NOT RUN**.
+Deliverable: D6, the end-to-end use case. Prepared: 8 November 2026, by Cody.
+Template status: **NOT RUN**.
 
-Use with the [doorway occupancy validation plan](D3_USECASE_VALIDATION_PLAN.md).
+Use with the [D6 doorway occupancy validation plan](D6_USECASE_VALIDATION_PLAN.md).
 Copy this worksheet for each workload/session and replace placeholders with
 observations. It is a data-entry template, not physical acceptance evidence.
 All rows start NOT RUN; a blank field or dash never means zero or pass.
@@ -47,8 +48,8 @@ Before recording trials, confirm:
 - [ ] Logging and independent ground-truth observation are active.
 - [ ] Doorway clear, controller ready, starting count recorded.
 
-If electrical or fixture evidence is missing, record
-**BLOCKED: VERIFICATION REQUIRED** and leave affected trials NOT RUN.
+If electrical or fixture evidence is missing, record **not ready** and leave
+the affected trials NOT RUN.
 No new GPIO, guard, threshold or fault circuit is selected by this worksheet.
 
 ## 2. Trial recording rules

@@ -65,6 +65,10 @@ For D3-2 on this breadboard, use the [V2 sonar test procedure](docs/D3_CAPTURE_V
 
 Use this page and [WIRING.md](esp32s3_mtk/WIRING.md) for the current breadboard. The framework guide's GPIO1/2 sonar, GPIO5/6 loopback and GPIO10–13 SPI layouts require their separate fixtures; they conflict with connections retained here. The three-sensor preset's 30 ms sonar timeout is for individual acquisition; two such timeouts cannot fit a 50 ms PAIR. No dual-sonar preset or acoustic guard is selected by this merge.
 
+## D6 use case (draft)
+
+D6 is the end-to-end use case. The current draft is a radar-triggered doorway occupancy counter that runs on D3's `WINDOW` controller: see the [D6 validation plan](docs/D6_USECASE_VALIDATION_PLAN.md) and the [D6 trial worksheet](docs/D6_TRIAL_WORKSHEET.md). Both are plans only; no D6 trial has been run on the board.
+
 ## Repository guide
 
 | Location | Purpose |

@@ -1,11 +1,13 @@
-# Use case 1: radar-triggered doorway occupancy counter
+# D6 use case 1: radar-triggered doorway occupancy counter
 
-Draft: 7 November 2026. Owner: Cody (D3); hardware/capture coordination with
-Sitt/Hasif, scheduler and workload coordination with Brendan.
+Deliverable: **D6, the end-to-end use case**. Draft: 7 November 2026, by Cody.
+It runs on D3's `WINDOW` controller and ApplicationTask; hardware and capture
+coordination with Sitt/Hasif, scheduler and workload coordination with Brendan.
 
-Status: **plan for review; physical execution pending**. This file authorizes
-no new wiring, component removal, flash erase or firmware change. It defines
-one use case and the evidence required to validate the existing implementation.
+Status: **plan for team review; nothing has been run on the board yet**. It
+changes no wiring or firmware. It defines one use case and the evidence needed
+to validate the existing implementation. The D3 tasks it relies on keep their
+own status in [README section 4](MAIN_BRANCH_README.md#4-d3-task-checklist).
 
 ## 1. Intended result
 
@@ -36,7 +38,7 @@ I²C GPIO1/2, and retained LCD wiring on GPIO6–10. It does not establish an
 approved second-sonar or radar connection. Older research notes and upstream
 test fixtures use different pins; do not apply those layouts to V2.
 
-**BLOCKED: VERIFICATION REQUIRED** until the following record is completed:
+Trials do not start until the following record is complete:
 
 | Required evidence | Actual value / evidence reference |
 |---|---|
@@ -50,13 +52,10 @@ test fixtures use different pins; do not apply those layouts to V2.
 | Scope/analyzer model, input limits and measurement resolution | Pending |
 | Team approval for the proposed fixture | Pending |
 
-Keep required voltage protection and bias. Internal pulls do not provide voltage
-shifting. For every proposed connection/component/interrupt change, record the
-baseline README section, existing circuit, proposal, specification evidence,
-electrical justification, affected files, regression tests and failure risk.
-Follow README review → source verification → exact hardware specification
-verification → proposal → team approval → implementation → physical testing →
-documentation update. This plan deliberately assigns no additional GPIOs.
+Keep the required voltage protection and bias; internal pulls do not shift
+voltage levels. Any new connection, component or interrupt change is agreed by
+the team before wiring, with the module's specification, the measured signal
+levels and the affected files recorded. This plan assigns no additional GPIOs.
 
 ## 3. Placement and calibration
 
@@ -150,7 +149,7 @@ and that configuration resets its cumulative metrics. Save the report first.
 
 ## 6. Ground-truth trials
 
-Use the [trial worksheet](D3_TRIAL_WORKSHEET.md) for session provenance,
+Use the [D6 trial worksheet](D6_TRIAL_WORKSHEET.md) for session provenance,
 pre-filled trial rows, timing/resource results and evidence references.
 
 Suggested pilot: ten entries and ten exits, interleaved, plus three repeats of
@@ -244,5 +243,5 @@ captures, physical traces and configuration/build provenance. Record unresolved
 accuracy, resource or hardware limitations with an owner and disposition.
 After team review and successful physical validation, update the README,
 architecture/pin diagrams and test instructions with the verified fixture.
-Keep D3-2 through D3-10 physical gates open until their own evidence is complete;
-this use-case plan or a successful build does not close them.
+D3-2 to D3-10 stay open until their own board evidence is complete; this D6
+plan or a successful build does not close them.
