@@ -16,7 +16,7 @@ the fixture tooling below are preparation, not physical acceptance.
 
 ## Alignment with README D3 task list
 
-Task IDs below follow [README section 4](docs/MAIN_BRANCH_README.md#4-d3-task-checklist).
+Task IDs below follow [README section 4](README.md#4-d3-task-checklist).
 
 | README task | Review contribution and current acceptance boundary |
 |---|---|
@@ -69,10 +69,10 @@ No board commands, flash operations or wiring changes were performed.
 
 The incoming main branch (`b496a8d`) adds a recorded three-sensor breadboard:
 AHT/TSL2561 share GPIO1/2 I²C, and a documented 3.3 V-compatible HC-SR04+
-uses Trig GPIO4/Echo GPIO5. See the [current root README](README.md),
+uses Trig GPIO4/Echo GPIO5. See the [breadboard guide](SENSOR_BREADBOARD_README.md),
 [active wiring](esp32s3_mtk/WIRING.md) and [preset](config/three_sensors.cfg).
-The [framework D3 checklist](docs/MAIN_BRANCH_README.md#4-d3-task-checklist)
-and earlier regression guide are preserved under `docs/MAIN_BRANCH_README.md`.
+The [D3 checklist](README.md#4-d3-task-checklist) and the regression guide
+are in the root README.
 
 The review and D3-1 execution record below describe the pre-merge `aaf48da`
 checkpoint and alternative test fixtures. GPIO1/2 sonar and GPIO5/6 loopback
@@ -100,7 +100,7 @@ No ESP32-S3 is connected, so physical D3-2 acceptance and runtime resource
 measurements remain pending. Earlier missing-image statements below describe
 the preceding runs and do not override this newer preflight result.
 
-For the pre-merge standalone resistor-free tests, the recorded fixture is README section 5,
+For the pre-merge standalone resistor-free tests, the recorded fixture is README section 8,
 Part E's kit 3 V sonar: VCC at 3V3, common ground, Trig GPIO1, Echo GPIO2.
 This is a recorded baseline, not a measurement of the currently fitted hardware.
 The exact model/revision, circuit, supply and Echo voltage have not been supplied
@@ -114,7 +114,7 @@ module and the wiring-free tests.
 
 ## Baseline documents and discrepancies
 
-Reviewed root README sections 4, 5 Parts E/G and 6, SETUP's pin/power and
+Reviewed root README sections 4, 8 Parts E/G and 9, SETUP's pin/power and
 µT-Kernel hardware-test sections, ARCHITECTURE's D3 updates and hardware table,
 MTK_REDESIGN's interrupt description, the GPIO configuration guide in
 `project_v3/README.md`, and the historical `esp32s3/README.md` bring-up guide.
@@ -122,7 +122,7 @@ At that checkpoint there was no application README directly under `esp32s3_mtk/`
 
 | Evidence | Recorded baseline / discrepancy |
 |---|---|
-| README Part E and section 6 sonar row | Kit 3 V module: GPIO1/2, direct wiring; explicitly distinguishes a 5 V module needing Echo division. |
+| README Part E and section 9 sonar row | Kit 3 V module: GPIO1/2, direct wiring; explicitly distinguishes a 5 V module needing Echo division. |
 | README Part E, “Why no resistor” | Starts with the 3 V kit but ends by saying HC-SR04 needs division because it is powered at 5 V. This must be qualified by module type. Powering a board at 3.3 V alone is not proof that every interface is compatible. |
 | SETUP pin/power diagram | Older 5 V sonar on Trig GPIO4/Echo GPIO7 with 10 kΩ upper and 20 kΩ lower divider. This is a different fixture from the current single-sonar acceptance fixture. |
 | SETUP hardware-test rows 9–10 | Agrees with README's kit 3 V direct GPIO1/2 fixture, with a separate 5 V alternative. |
@@ -154,7 +154,7 @@ they are not instructions or approval to edit those files now.
 |---|---|---|
 | [D3_INTERRUPT_WIRING_REVIEW.md](D3_INTERRUPT_WIRING_REVIEW.md) | Review findings, electrical evidence, conditional wiring comparison, resistor decisions, pin map, test plan and file-impact register. | Created for this review; updated with this register. |
 | [parity/logs/d3/d3-1-native-20261105.log](parity/logs/d3/d3-1-native-20261105.log) | Full native D3-1 execution and companion D2/purity output with source/platform provenance. | Added for this validation; no board evidence implied. |
-| [README.md](README.md) | Added the D3-1 native recheck and links to this review/raw output. Still needs fixture reconciliation in Part E and section 6 once hardware is verified. | Evidence note added now; no baseline wiring change made here. |
+| [README.md](README.md) | Added the D3-1 native recheck and links to this review/raw output. Still needs fixture reconciliation in Part E and section 9 once hardware is verified. | Evidence note added now; no baseline wiring change made here. |
 | [SETUP.md](SETUP.md) | Clearly label GPIO4/7 5 V divider fixture versus GPIO1/2 kit fixture; record actual A/B/radar harness, supply, resistor values and measured levels. | After actual hardware is verified and tested. |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Align the current hardware diagram and active async interrupt description; retain dated baseline history. | After validated fixture and implementation evidence are available. |
 | [D2_D4_RESEARCH_CONTEXT.md](D2_D4_RESEARCH_CONTEXT.md) | Add a dated note that its Pico-only baseline and provisional sonar/TFT allocation are historical; link to current README and this review. Preserve its original research context. | Documentation reconciliation follow-up; currently unchanged. |
