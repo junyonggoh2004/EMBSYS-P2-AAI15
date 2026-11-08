@@ -4,37 +4,19 @@ Review date: 5 November 2026. Source checkpoint: `aaf48da`.
 Status: documentation/source review and native validation; physical acceptance pending.
 No firmware, wiring or resistor removal has been performed or approved by this review.
 
-## Mandatory verification and approval gate
+## Change control
 
-**BLOCKED: VERIFICATION REQUIRED** applies to any proposed resistor removal,
-GPIO rewiring or interrupt change whose electrical safety is not established
-by consistent documentation, verified implementation and specifications for
-the exact fitted hardware. The recorded compatible module in a README is a
-baseline claim; it does not prove compatibility of another module or harness.
-Missing or conflicting evidence must be reported, not resolved by assumption.
-No affected component or GPIO connection may be changed while this gate applies.
-
-Required sequence: README review → source-code verification → hardware
-specification verification → proposed change → team approval → implementation
-→ physical testing → documentation update.
-
-For each proposed removal or interrupt change, record the README section/path,
-existing hardware configuration, proposed modification, electrical/technical
-justification, affected source files, required regressions and risk if wrong.
-Preserve voltage protection, required bias, D1 behavior, D3 timing modes,
-interrupt capture, STOP/CLEAR and the complete 50 ms PAIR bound. Only after
-approval and physical validation should documentation describe a changed
-configuration as verified. Build/native evidence does not close this gate.
-
-Current unverified resistor-removal or GPIO/interrupt-change proposals remain
-**BLOCKED: VERIFICATION REQUIRED**. Host fixture tooling and preflight results
-below are preparation, not team approval or physical acceptance.
+A resistor removal, GPIO rewiring or interrupt change needs the exact fitted
+module's specification, measured signal levels, team agreement and a board
+retest before any document calls it verified. A compatible module named in a
+README does not prove that a different module or harness is compatible. Keep
+voltage protection, required bias, D1 behaviour, the D3 timing modes, interrupt
+capture, STOP/CLEAR and the complete 50 ms PAIR bound. Builds, laptop tests and
+the fixture tooling below are preparation, not physical acceptance.
 
 ## Alignment with README D3 task list
 
 Task IDs below follow [README section 4](docs/MAIN_BRANCH_README.md#4-d3-task-checklist).
-The local `D3_TASKS.md` uses an older, longer numbering scheme; its D3-01 is
-not README's D3-1. Use the README IDs for this review and acceptance reporting.
 
 | README task | Review contribution and current acceptance boundary |
 |---|---|
@@ -127,8 +109,8 @@ The second sonar and full entrance harness have no verified pin allocation here.
 
 Keep the documented Echo divider or suitable level shifter on a standard 5 V
 HC-SR04. Internal pull resistors cannot provide voltage-level protection.
-The previous conversational statement that our tests need no resistors applies
-only to the documented compatible 3 V fixture and wiring-free tests.
+The README's no-resistor note applies only to the documented 3 V-compatible
+module and the wiring-free tests.
 
 ## Baseline documents and discrepancies
 
@@ -172,7 +154,6 @@ they are not instructions or approval to edit those files now.
 |---|---|---|
 | [D3_INTERRUPT_WIRING_REVIEW.md](D3_INTERRUPT_WIRING_REVIEW.md) | Review findings, electrical evidence, conditional wiring comparison, resistor decisions, pin map, test plan and file-impact register. | Created for this review; updated with this register. |
 | [parity/logs/d3/d3-1-native-20261105.log](parity/logs/d3/d3-1-native-20261105.log) | Full native D3-1 execution and companion D2/purity output with source/platform provenance. | Added for this validation; no board evidence implied. |
-| [AGENTS.md](AGENTS.md) | README-first and hardware-verification guardrail. | Already updated locally; ignored and must not be staged. |
 | [README.md](README.md) | Added the D3-1 native recheck and links to this review/raw output. Still needs fixture reconciliation in Part E and section 6 once hardware is verified. | Evidence note added now; no baseline wiring change made here. |
 | [SETUP.md](SETUP.md) | Clearly label GPIO4/7 5 V divider fixture versus GPIO1/2 kit fixture; record actual A/B/radar harness, supply, resistor values and measured levels. | After actual hardware is verified and tested. |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Align the current hardware diagram and active async interrupt description; retain dated baseline history. | After validated fixture and implementation evidence are available. |
@@ -196,7 +177,6 @@ No D2 flash codec, D4 model, NVS identity, Pico/Arduino backend or course-kernel
 modification is proposed. D2 wiring is a conflict constraint and D4 activity is
 part of workload regression, not grounds to expand this resistor review.
 
-The local `skills.md`, `.agents/` and planning notes remain local and unstaged.
 No changes were made to `D2_D4_RESEARCH_CONTEXT.md`, firmware, test code or wiring
 while adding this file-impact register.
 
@@ -315,13 +295,13 @@ Native checks rerun for this review: `tools/cody_test.sh` PASS (twelve native C
 suites plus twelve Python tests), `tools/d2_host_test.sh` PASS, and
 `tools/mtk.sh purity` PASS for 71 platform files and the shared HAL boundary.
 Image validation was skipped because no built ELF is present. Two existing
-nested-comment warnings in `mqtt_model_transfer.h` remain. Native logs are in
-`/tmp/d3-interrupt-review-native.log` and `/tmp/d3-interrupt-review-d2.log` for
-this session. Native capture tests execute the actual capture functions with
-mocked register/clock boundaries, not real pad voltages or ISR latency.
+nested-comment warnings in `mqtt_model_transfer.h` remain. The native output is
+kept in [the D3-1 evidence log](parity/logs/d3/d3-1-native-20261105.log).
+Native capture tests execute the actual capture functions with mocked
+register/clock boundaries, not real pad voltages or ISR latency.
 
-No board commands were run: exact installed wiring/voltages are unverified,
-and the user explicitly requires verification before firmware or wiring changes.
+No board commands were run: the installed wiring and voltages are not yet
+verified, and the team requires that before any firmware or wiring change.
 Existing `parity/logs/mtk/4c-sonic.log`, `sonic-rule.log`, `t06.log` and
 `29-echo-and-wcet.txt` are historical evidence only.
 
