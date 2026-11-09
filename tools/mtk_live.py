@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """mtk_live.py: run a real sensor on the board and show its readings decoded.
 
-    sh tools/mtk.sh live sonic      HC-SR04: Trig GPIO1, Echo GPIO2 through a divider
+    sh tools/mtk.sh live sonic      Kit 3 V sonar: Trig GPIO1, Echo GPIO2 direct
     sh tools/mtk.sh live mag        GY-511: SDA GPIO1, SCL GPIO2
 
 Configures the sensor with the same lines as the parity stages 4c-sonic and
@@ -10,6 +10,8 @@ next to the raw bytes the board sent, and stops after --seconds or Ctrl+C.
 Everything the board prints is saved with timestamps to
 parity/logs/mtk/live-<sensor>.log, so the run can be checked afterwards.
 Works on either build (µT-Kernel or Arduino); it only uses the console.
+This standalone fixture is not the shared breadboard's Trig GPIO4/Echo GPIO5
+layout. A replacement sonar with 5 V Echo requires voltage-level protection.
 """
 import argparse, math, re, sys, time
 from pathlib import Path

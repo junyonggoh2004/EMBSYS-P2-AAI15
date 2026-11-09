@@ -386,7 +386,11 @@ Front view, USB-C at the top ([pinout](Pinout_Diagram_S3.jpg)). Left column top 
 | 5V | USB VBUS, for 5 V sensors (HC-SR04, radar); total limited by the USB port (500 mA) |
 | 3V3 | On-board regulator; the vendor gives no rating, so keep sensor load under 100 mA. GPIO source current up to 40 mA, 20 mA recommended |
 
-**Final D1 wiring (no pin conflicts).** Every sensor is owned by SchedulerTask through the shared EdgeCore driver named; the HAL and drivers are Hasif's per the Week 6 review.
+**D3 single-sonar kit wiring (no resistors).** For the kit's 3 V-compatible HC-SR04, connect VCC to 3V3, GND to GND, Trig to GPIO1 and Echo directly to GPIO2. This is the wiring used by `sh tools/mtk.sh live sonic`, `test 4c-sonic` and `test sonic-rule`. Unplug USB before wiring. It replaces the 5 V sonar/divider arrangement below for these single-sensor tests; remove any GPIO1–GPIO2 loopback jumper or I2C device first. An unidentified replacement module must have its supply and Echo voltage checked before using this direct connection.
+
+This standalone fixture is different from the current shared breadboard on `origin/main` and `origin/d3`: that breadboard keeps I²C on GPIO1/2 and uses HC-SR04+ Trig GPIO4 / Echo GPIO5, without a divider for its identified 3.3 V-compatible module. Use those branches' `SENSOR_BREADBOARD_README.md` and V2 test procedure for that layout. This checkout's default sonar tests do not select GPIO4/5.
+
+**Retained D1 integration wiring (5 V sonar variant, no pin conflicts).** The following diagram describes the earlier 5 V HC-SR04 arrangement, not the direct-wired 3 V kit setup above. Every sensor is owned by SchedulerTask through the shared EdgeCore driver named; the HAL and drivers are Hasif's per the Week 6 review.
 
 ```text
 ESP32-S3 Super Mini            Device                     Driver (SchedulerTask)
@@ -405,7 +409,7 @@ GND ─────────────────────────�
 Test only: GPIO1↔GPIO2 (UART loopback, I2C removed), GPIO5↔GPIO6 (GPIO loopback)
 ```
 
-Configs for each device are in the README sensor table. Verified so far on this board: GY-511 (`4c-mag`), loopback UART, GPIO and PWM; the HC-SR04 and radar need the divider and the radar module respectively.
+Configs for each device are in the README sensor table. The earlier integration diagram uses a divider only for its 5 V sonar variant; the 3 V kit sonar uses the direct wiring above. Target evidence and remaining wiring checks are listed in the hardware-check table below and PARITY.md §4.
 
 ### D2 SPI pins
 

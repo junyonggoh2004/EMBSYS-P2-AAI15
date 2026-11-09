@@ -174,6 +174,12 @@ The full checklist with every gate and its evidence is [D2_SPI_TODO.md](D2_SPI_T
 
 D3 replaces the Pico's fixed one-second loop with configurable timing per sensor (owner: Cody; integration and merge by Hasif on 1 Nov 2026). The requirements document asks for periodic, one-shot and event-driven execution and a logical sequence in which one sensor's event opens a window for another, with the requested interval measured against the actual interval on real hardware. Its evidence is a requested-against-measured timing table at 10, 50, 100, 500, 1000 and 2000 ms (timing error, jitter and sample count) and at least one working event-driven or logical sequence. The professor's feedback makes the entrance the acceptance case: radar presence opens a window, then two HC-SR04s are read in a fixed order, without crosstalk, with the whole pair inside 50 ms.
 
+**Kit wiring for D3 (9 November clarification).** Use the kit's 3 V HC-SR04 directly: VCC → 3V3, GND → GND, Trig → GPIO1, Echo → GPIO2. No external resistor or divider is required for that module; resistor values are not firmware configuration or timing parameters. This assumes the 3 V-compatible kit module identified in the setup notes, not an unidentified 5 V replacement. One HC-SR04 supports the single-sensor checks; `PAIR` and `WINDOW` still need two separate sonars.
+
+**Separate fixtures across branches.** GPIO1/2 above belongs only to the standalone single-sonar fixture used by this branch's default `live sonic` and parity commands. The current shared breadboard documented on `origin/main`, `origin/d3` and `origin/dev-jy-sensors` uses a 3.3 V-compatible HC-SR04+ on **Trig GPIO4 / Echo GPIO5**, with GPIO1/2 reserved for AHT/TSL2561 I²C. That fixture also needs no Echo divider. Its instructions are `SENSOR_BREADBOARD_README.md` and `docs/D3_CAPTURE_V2_TEST.md` on those branches, including the explicit `--fixture v2-sonar` test option. Do not apply this branch's default GPIO1/2 sonar commands to that breadboard; the V2 fixture support has not been integrated into this checkout.
+
+**Latest demo feedback supplied on 9 November.** Prioritise configurable features and the live GPIO/I2C/SPI demo; pause D5 benchmarking. The proposed D6 demo uses three boards for motion/light, temperature/humidity and an LCD. The team still needs to decide whether the doorway counter supplies the motion input or is dropped. The entrance implementation and its unrun checks below are retained pending that decision; this note does not claim a revised D3 acceptance sign-off.
+
 **How it works.** Every sensor keeps its own timing, set in its configuration line; nothing changes for sensors that do not set it, because `periodic` is the default and `freq_hz` still works.
 
 | Mode | The sensor reads | Keys |
@@ -332,7 +338,7 @@ One sensor at a time; unplug the USB cable before changing wires. No resistor is
 
 ### Why no resistor
 
-An S3 pin can take at most 3.3 V. The GY-511, the kit's 3 V HC-SR04, the MH board and the IR board are powered from the S3's **3V3** pin, so their signals can never be higher than 3.3 V, and the pull-up or pull-down a digital input needs is built into the chip (`gpio.pull=up` or `down`). The test wires join an S3 pin to another S3 pin, also 3.3 V. Only the **HC-SR04** needs a resistor divider: it is powered from **5V**, so its Echo signal is 5 V and must be divided down before it reaches an S3 pin (wiring in [SETUP.md](SETUP.md#pin-power-and-wiring-task-8)).
+The kit's 3 V HC-SR04 uses a 3V3 supply and a 3.3 V Echo signal, so Echo connects directly to GPIO2. The GY-511, MH board and IR board also use the S3's **3V3** supply; digital pull-up or pull-down is configured in the chip (`gpio.pull=up` or `down`). The test jumpers join 3.3 V GPIOs. No external resistor is required for these setups. A replacement HC-SR04 with a 5 V Echo output needs a divider or level shifter: S3 GPIOs are not 5 V tolerant ([SETUP.md](SETUP.md#pin-power-and-wiring-task-8)).
 
 
 ---
@@ -348,6 +354,8 @@ An S3 pin can take at most 3.3 V. The GY-511, the kit's 3 V HC-SR04, the MH boar
 These are read-only on the module. Never run `SPIPROGRAM` or `SPILOGWRITE` without agreeing a scratch address with Brendan ([SETUP.md](SETUP.md#d2-spi-checks-on-µt-kernel)).
 
 ## Part G: D3 timing and application
+
+For the single-sonar checks, use the kit's 3 V module with the four direct wires in Part E; no resistor is required. Run `t06` with the sensor disconnected, then unplug USB and connect the sensor before the real-echo tests. The two-sonar checks require a second module and separate pins.
 
 | Wiring | Command | You should see |
 |---|---|---|
@@ -581,6 +589,6 @@ Use one sensor at a time. No breadboard and no resistor are needed for these two
 
 ### Why no resistor
 
-An S3 pin can take at most 3.3 V. The GY-511, MH board and IR board are powered from the S3's **3V3** pin, so their signals can never be higher than 3.3 V, and the pull-up or pull-down a digital input needs is built into the chip (`gpio.pull=up` or `down`). The test wires join an S3 pin to another S3 pin, also 3.3 V. Only the **HC-SR04** needs a resistor divider: it is powered from **5V**, so its Echo signal is 5 V and must be divided down before it reaches an S3 pin (wiring in [SETUP.md](SETUP.md#pin-power-and-wiring-task-8)).
+The GY-511, MH board and IR board use the S3's **3V3** supply, and digital pull-up or pull-down is configured in the chip (`gpio.pull=up` or `down`). The test jumpers join 3.3 V GPIOs. The kit's 3 V HC-SR04 also connects directly when powered from 3V3, as described in section 5. A replacement HC-SR04 with a 5 V Echo output needs a divider or level shifter before Echo reaches an S3 GPIO ([SETUP.md](SETUP.md#pin-power-and-wiring-task-8)).
 
 If every step matched, this laptop has built, flashed and verified the Arduino baseline by itself.

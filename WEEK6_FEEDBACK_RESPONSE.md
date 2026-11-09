@@ -367,6 +367,7 @@ None of this closes F9, F10, R2, R5, the D3 board checklist or D2 T-23. Applicat
 
 | Date | By | Change |
 |---|---|---|
+| 2026-11-09 | Cody | Clarified D3's direct wiring for the documented 3 V HC-SR04 kit module (3V3, GND, Trig GPIO1, Echo GPIO2; no resistors) and corrected contradictory blanket divider wording. Retained the 5 V replacement warning and historical wiring. Recorded the supplied feature-first demo feedback and pending team decision on the doorway counter; no hardware acceptance or revised D3 sign-off is claimed. |
 | 2026-11-03 | Cody | Event validation now rejects undefined schema-v2 quality bits before ApplicationTask can change occupancy. Native tests cover both entry and exit; board fault checks remain pending. |
 | 2026-11-03 | Cody | Defined runtime configuration changes during WINDOW: a rejected sensor add leaves the observation running; a successful add cancels it, producing one incomplete ambiguous event if open. Native regression covers both outcomes. Target validation remains pending. |
 | 2026-11-03 | Cody | Reconciled the D3 progress notes with the implemented radar/sonar WINDOW path, 96-byte schema-v2 EventRecord, 104-byte application messages and node/boot/sequence identity. Kept board validation, cross-node time, occupancy persistence/replay and D2 mapping gates open; no hardware result or feedback closure is claimed. |
