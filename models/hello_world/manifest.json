@@ -1,0 +1,79 @@
+{
+  "license": "Apache-2.0",
+  "models": [
+    {
+      "id": "sine-float",
+      "file": "hello_world_float.tflite",
+      "url": "https://raw.githubusercontent.com/tensorflow/tflite-micro/964e43d7ee3e82fe6abb6075b7f50506eafce79b/tensorflow/lite/micro/examples/hello_world/models/hello_world_float.tflite",
+      "commit": "964e43d7ee3e82fe6abb6075b7f50506eafce79b",
+      "sha256": "ee939863195ca37ce063b18e14fb82aa0d98db6596ba41095757f6b560da1070",
+      "bytes": 3164,
+      "inputs": [
+        {
+          "shape": [
+            1,
+            1
+          ],
+          "type": 0,
+          "scale": [],
+          "zero_point": []
+        }
+      ],
+      "outputs": [
+        {
+          "shape": [
+            1,
+            1
+          ],
+          "type": 0,
+          "scale": [],
+          "zero_point": []
+        }
+      ],
+      "builtin_ops": [
+        9
+      ]
+    },
+    {
+      "id": "sine-int8",
+      "file": "hello_world_int8.tflite",
+      "url": "https://raw.githubusercontent.com/tensorflow/tflite-micro/964e43d7ee3e82fe6abb6075b7f50506eafce79b/tensorflow/lite/micro/examples/hello_world/models/hello_world_int8.tflite",
+      "commit": "964e43d7ee3e82fe6abb6075b7f50506eafce79b",
+      "sha256": "505ee4fae7fa46ab67bea4c08b4969eb3eb8b9114c50595ec4a29d9a27993202",
+      "bytes": 2704,
+      "inputs": [
+        {
+          "shape": [
+            1,
+            1
+          ],
+          "type": 9,
+          "scale": [
+            0.024480115622282028
+          ],
+          "zero_point": [
+            -128
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "shape": [
+            1,
+            1
+          ],
+          "type": 9,
+          "scale": [
+            0.008290956728160381
+          ],
+          "zero_point": [
+            5
+          ]
+        }
+      ],
+      "builtin_ops": [
+        9
+      ]
+    }
+  ]
+}

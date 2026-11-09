@@ -1,17 +1,26 @@
 # Configurable Edge Platform on the ESP32-S3 (D1 to D6)
 
-Branch `main`: D1 (tasks 1–34), the D2 SPI checkpoint and the D3 timing checkpoint; D4 to D6 are placeholders until the team finalises their scope. This is the Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) ported to the ESP32-S3 Super Mini. Since Tribunal 1 the firmware runs on µT-Kernel 3 SMP through the course port ([MTK_REDESIGN.md](MTK_REDESIGN.md)), and D2's SPI and D3's timing run on it too; the earlier Arduino-ESP32/FreeRTOS port stays as the measured baseline. The same configuration lines, console commands, MQTT topics, output format and ML model work on both boards, because both builds compile the same shared code.
+Baseline from `main`: D1 (tasks 1–34), the D2 SPI checkpoint and the D3 timing checkpoint; D4 to D6 remain in progress. This D4 branch adds the ML integration checkpoint in section 5. This is the Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) ported to the ESP32-S3 Super Mini. Since Tribunal 1 the firmware runs on µT-Kernel 3 SMP through the course port ([MTK_REDESIGN.md](MTK_REDESIGN.md)), and D2's SPI and D3's timing run on it too; the earlier Arduino-ESP32/FreeRTOS port stays as the measured baseline. The same configuration lines, console commands, MQTT topics, output format and ML model work on both boards, because both builds compile the same shared code.
 
 **Current breadboard.** The three-sensor breadboard (AHT temperature and humidity, HC-SR04+ distance and TSL2561 light, with the LCD wiring kept) and its Windows and VS Code build workflow are in [SENSOR_BREADBOARD_README.md](SENSOR_BREADBOARD_README.md). The single-sonar, loopback, radar and SPI fixtures in this guide use other pins; do not apply them to that breadboard.
 
+## Embedded ML in this branch
+
+The current implementation feeds decoded AHT temperature/humidity, TSL2561 light and HC-SR04+ distance into configurable model bindings. Run **MTK: load sensors and ML** for the full setup, including ultrasonic distance. The LCD remains disabled; existing wiring is unchanged. MQTT ML-result publishing is deferred.
+
+The default pretrained **sine-float** model is a 3,164-byte Float32 dense network (1 → 16 → 16 → 1), trained on synthetic x → sin(x) pairs. The four sensor measurements are scaled to [0,1], averaged and multiplied by 2π; the network predicts the sine of that scalar. It does not predict occupancy or environmental conditions. Runtime alternatives are the 2,704-byte sine-int8 model and the existing 16-input autoencoder demonstration.
+
+See the [model specifications and deliverables](docs/embedded-ml/README.md), [step-by-step user guide](docs/embedded-ml/RUNNING.md) and [validation results](docs/embedded-ml/VALIDATION.md). The source branch reported a firmware build and desktop model inference; host integration checks pass on this D4 branch. A combined firmware build and successful ESP32 ML inference still need verification.
+
+
 ## Deliverables at a glance
 
-| Deliverable | What it is | Owners | State on `main` (9 Nov 2026) | Details |
+| Deliverable | What it is | Owners | State / branch checkpoint | Details |
 |---|---|---|---|---|
 | D1 | Port configpico2wedge to the ESP32-S3, on µT-Kernel 3 SMP since Tribunal 1 | Hasif, Cody, Sitt | Done (tag `d1-mtk-v1.0`); task 7 rollout and six jumper or light-sensor stages pending | [Section 2](#2-d1-task-checklist) |
 | D2 | SPI support on the ESP32-S3 | Brendan, Jun Yong | Checkpoint merged (PR #3 on 27 Oct, PR #5 on 1 Nov); event logging, T-23 and sign-off open | [Section 3](#3-d2-task-checklist) |
 | D3 | Configurable timing: periodic, one-shot, event-driven, logical sequence | Cody | Checkpoint merged (PR #6 on 3 Nov, PR #8 on 9 Nov); board results pending | [Section 4](#4-d3-task-checklist) |
-| D4 | Embedded ML | Brendan, Jun Yong | Placeholder: scope being finalised | [Section 5](#5-d4-task-checklist) |
+| D4 | Embedded ML | Brendan, Jun Yong; live configuration with Hasif and Sitt | D4 Part 2 integration in progress on `d4-live-ml-sitt`; board verification pending | [Section 5](#5-d4-task-checklist) |
 | D5 | Benchmarking | Hasif, Sitt | Placeholder: scope being finalised | [Section 6](#6-d5-task-checklist) |
 | D6 | End-to-end use case | Whole team | Placeholder: use case being finalised | [Section 7](#7-d6-task-checklist) |
 
@@ -27,7 +36,7 @@ Owners are the team workload split of 28 Sep 2026. Each owner updates their row 
 | [µT-Kernel redesign plan](MTK_REDESIGN.md) | Change requirement, FreeRTOS-to-µT-Kernel mapping, core assignment, compliance matrix |
 | [3. D2 task checklist](#3-d2-task-checklist) | D2 SPI tasks D2-1 to D2-11 with status, the checks before the merge, how to run the SPI tests, what D2 still needs; full list in [D2_SPI_TODO.md](D2_SPI_TODO.md) |
 | [4. D3 task checklist](#4-d3-task-checklist) | How the timing modes, the radar entrance window and event identity work, D3 tasks D3-1 to D3-12 with status, the D3 commands and tests |
-| [5. D4 task checklist](#5-d4-task-checklist) | Placeholder until D4 is finalised |
+| [5. D4 task checklist](#5-d4-task-checklist) | D4 Part 2 integration checkpoint and remaining live switching work |
 | [6. D5 task checklist](#6-d5-task-checklist) | Placeholder until D5 is finalised |
 | [7. D6 task checklist](#7-d6-task-checklist) | Placeholder until the use case is finalised |
 | [8. Set up and test from scratch](#8-set-up-and-test-from-scratch-d1-to-d3) | Step-by-step on a new Mac for the µT-Kernel build (D1 to D3) |
@@ -234,9 +243,19 @@ D3 replaces the Pico's fixed one-second loop with configurable timing per sensor
 
 # 5. D4 task checklist
 
-> **Placeholder.** The D4 task table goes here, in the same format as sections 2 to 4, once the team finalises D4. Update this section and the D4 row of [Deliverables at a glance](#deliverables-at-a-glance) then.
+**D4 Part 2 checkpoint (Hasif and Sitt).** The model transfer and flash slots on `main` are D1 task 31. This branch integrates Jun Yong's local sensor bindings and selectable bundled models from `dev-jy-ml`. The existing `ML` commands can now also arrive on `pico/<node>/cmd`; SchedulerTask handles them through the same ML parser as serial commands. This is a local integration checkpoint, not a completed live ML workflow or board result. See [the ML run guide](docs/embedded-ml/RUNNING.md) and [validation notes](docs/embedded-ml/VALIDATION.md).
 
-**Where the work is.** The model path already on `main` (InferenceTask owning TFLite Micro, models uploaded over MQTT into two flash slots) is D1 task 31. The original D4 research is in [D4_EMBEDDED_ML_RESEARCH.md](D4_EMBEDDED_ML_RESEARCH.md) and [D2_D4_RESEARCH_CONTEXT.md](D2_D4_RESEARCH_CONTEXT.md). Jun Yong's ML pipeline is on branch `dev-jy-ml`, not merged.
+| Item | Work | Status on this branch |
+|---|---|---|
+| 3.1 | Agree one setup format for model, input source and result destination | Pending team agreement; the existing `ML` command syntax is only a stepping stone |
+| 3.2 | Switch the model from MQTT while sensing continues | Partial: MQTT can deliver existing ML commands, but model changes still require `STOP`, then `ML PRESET`/`ML MODEL`, `ML RUN`, `RUN` |
+| 3.3 | Switch between local sensor data and another board's data | Pending; ML bindings currently accept only local configured sensors |
+| 3.4 | Choose local or published ML results | Pending; ML results currently print to the console |
+| 3.5 | Reject invalid setup without stopping sensors | Partial: existing ML command validation; unified setup and recovery still pending |
+| 3.6 | Write the live-switching user guide and demo | Pending; current serial/MQTT command guide covers the partial checkpoint |
+| 3.7 | Capture board evidence and update D4 status | Pending real-board verification |
+
+Hasif's D4 Part 2 plan says its items 1.4 and 2.1 must precede the unified workflow. Their exact wording is not in this repository; obtain the full plan before finalising the format. Earlier research remains in [D4_EMBEDDED_ML_RESEARCH.md](D4_EMBEDDED_ML_RESEARCH.md) and [D2_D4_RESEARCH_CONTEXT.md](D2_D4_RESEARCH_CONTEXT.md).
 
 
 ---

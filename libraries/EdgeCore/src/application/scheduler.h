@@ -58,6 +58,7 @@ int scheduler_on_sample(const char *source, uint64_t timestamp_us);
 void scheduler_run_step(const app_cfg_t *cfg, bool running);
 
 
+const app_cfg_t *scheduler_config_by_name(const char *name);
 int  scheduler_count(void);
 void scheduler_dump(void);
 

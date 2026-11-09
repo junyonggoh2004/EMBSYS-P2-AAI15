@@ -174,6 +174,10 @@ void scheduler_reset(void) {
     s_prev_running = false;
     SLOG("reset: cleared %d slots", (int)MAX_ACTIVE);
 }
+const app_cfg_t *scheduler_config_by_name(const char *name) {
+    for(int i=0;i<MAX_ACTIVE;i++) if(g_sensors[i].in_use && !strcmp(g_sensors[i].cfg_copy.name,name)) return &g_sensors[i].cfg_copy;
+    return NULL;
+}
 void scheduler_dump(void) {
     printf("[WINDOW] enabled=%u state=%u events=%u dropped=%u radar_frames=%u malformed=%u rx_dropped=%u identity=%u\n",
            s_window.enabled ? 1u : 0u, (unsigned)s_window.state,

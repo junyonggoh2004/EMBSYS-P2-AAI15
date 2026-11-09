@@ -144,10 +144,17 @@ void repl_show_help(void) {
 // a complete line (without the newline). Shared by repl_poll() and by a
 // platform task that reads the console itself.
 bool repl_line_feed(int ch, char *line, size_t cap, size_t *len) {
+    if (!line || !len || cap<2) return false;
+    if (ch == '\b' || ch == 127) {
+        if (*len) --*len;
+        return false;
+    }
     if (ch == '\r') return false;
+    if (ch != '\n' && ch != '\t' && (ch<32 || ch>126)) return false;
     if (ch == '\n') {
         line[*len] = 0;
         trim_crlf(line);
+        trim_ws_inplace(line);
         return true;
     }
     if (*len + 1 < cap) {

@@ -31,6 +31,8 @@ extern "C" {
 
 /* Initialise the inference manager. Call once at startup. */
 void inference_mgr_init(void);
+bool inference_mgr_load_bytes(const uint8_t *bytes,uint32_t size);
+uint32_t inference_mgr_revision(void);
 
 /* Attempt to load the pre-compiled base model (skips Flash).
  * Returns true if loaded successfully, false otherwise. */

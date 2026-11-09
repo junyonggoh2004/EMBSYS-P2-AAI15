@@ -1,6 +1,8 @@
 param(
-    [ValidateSet('build','configure','flash','monitor','audit','sensors')][string]$Action='build',
+    [ValidateSet('build','configure','flash','monitor','audit','sensors','ml')][string]$Action='build',
     [string]$Port,
+    [ValidateSet('sine-float','sine-int8','autoencoder')][string]$Model='sine-float',
+    [ValidateSet('all','aht-light')][string]$Inputs='all',
     [string]$BuildDirectory
 )
 $ErrorActionPreference='Stop'
@@ -40,7 +42,12 @@ if ($Action -eq 'audit') {
     if ($LASTEXITCODE -ne 0) { throw 'Build audit failed.' }
     exit 0
 }
-if (($Action -in @('flash','monitor','sensors')) -and -not $Port) { throw 'Specify -Port COMx explicitly.' }
+if (($Action -in @('flash','monitor','sensors','ml')) -and -not $Port) { throw 'Specify -Port COMx explicitly.' }
+if ($Action -eq 'ml') {
+    & $MtkPython (Join-Path $PSScriptRoot 'load_ml.py') --port $Port --model $Model --inputs $Inputs
+    if ($LASTEXITCODE -ne 0) { throw 'ML configuration was not acknowledged. Check firmware and port.' }
+    exit 0
+}
 if ($Action -eq 'sensors') {
     & $MtkPython (Join-Path $PSScriptRoot 'load_sensors.py') --port $Port
     if ($LASTEXITCODE -ne 0) { throw 'Sensor configuration was not acknowledged. Check the firmware and port.' }

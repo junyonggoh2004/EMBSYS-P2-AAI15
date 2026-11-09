@@ -117,6 +117,17 @@ UNUSED_VOID(mtk_spi_flash_log_write)
 UNUSED_VOID(mtk_spi_flash_log_verify)
 UNUSED_VOID(model_transfer_init)
 UNUSED_VOID(model_transfer_poll)
+static unsigned ml_commands, ml_invalidations, ordinary_commands;
+static bool ml_sampling;
+bool sensor_ml_command(const char *line,bool sampling)
+{
+    if (strncmp(line, "ML ", 3)) return false;
+    ++ml_commands;
+    ml_sampling = sampling;
+    return true;
+}
+void sensor_ml_invalidate(void) { ++ml_invalidations; }
+void sensor_ml_poll(bool sampling) { (void)sampling; }
 UNUSED_VOID(inference_mgr_init)
 UNUSED_VOID(inference_mgr_poll)
 UNUSED_VOID(scheduler_reset)
@@ -205,6 +216,9 @@ static void clear_queue(ID id)
 static void reset_application(void)
 { control("APP RESET\n"); consume_app(); clear_queue(pub_mbf); clear_queue(bench_mbf); }
 
+static void test_mqtt_command(const char *line)
+{ assert(!strcmp(line, "SHOW") || !strcmp(line, "STOP")); ++ordinary_commands; }
+
 int main(void)
 {
     puts("NATIVE TEST: modeled kernel/SDK boundaries; no target ABI or scheduling evidence");
@@ -219,6 +233,20 @@ int main(void)
     assert((app->tskatr & (TA_ASSPRC | TA_FPU)) == (TA_ASSPRC | TA_FPU));
     assert(queue(app_mbf)->config.maxmsz == sizeof(application_message_t));
     assert(queue(app_mbf)->config.bufsz == 8 * cost(sizeof(application_message_t)));
+
+    /* MQTT ML commands use the same SchedulerTask handler as serial ML commands. */
+    runtime_set_mqtt_handlers(NULL, test_mqtt_command, NULL);
+    bool running = true, cfg_ready = true;
+    sched_msg_t ml = {.kind = SCHED_MQTT_CMD};
+    strcpy(ml.text, "ML SHOW");
+    handle_sched_msg(&ml, &running, &cfg_ready);
+    assert(ml_commands == 1 && ml_sampling && ml_invalidations == 0 && ordinary_commands == 0);
+    strcpy(ml.text, "SHOW");
+    handle_sched_msg(&ml, &running, &cfg_ready);
+    assert(ordinary_commands == 1 && ml_invalidations == 0);
+    strcpy(ml.text, "STOP");
+    handle_sched_msg(&ml, &running, &cfg_ready);
+    assert(ordinary_commands == 2 && ml_invalidations == 1);
 
     /* Real ControlTask queues reset, event and status in order. */
     control("APP RESET\nAPP EVENT 91 1 entry\nAPP STATUS\n");
