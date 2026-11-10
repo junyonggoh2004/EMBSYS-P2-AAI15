@@ -1,4 +1,12 @@
-# D1 ESP32-S3 Port with the D2 SPI and D3 Timing Extensions
+# Configurable Edge Platform on the ESP32-S3 (D1 to D6)
+
+**D6 branch planning (10 November 2026).** The three-board end-to-end demo is
+planned in [D6 validation plan](docs/D6_USECASE_VALIDATION_PLAN.md), with a
+[session worksheet](docs/D6_TRIAL_WORKSHEET.md). This branch starts from the
+older `d3-board` checkpoint; current `main` and the LCD integration are still
+pending. The baseline descriptions below retain that checkpoint's status.
+D3 is the timing/sequencing subsystem, not the scope of the whole project.
+The earlier doorway plan is retained as a reference, not the selected final demo.
 
 Branch `main`: D1 (tasks 1–34), the D2 SPI checkpoint and the D3 timing checkpoint. This is the Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) ported to the ESP32-S3 Super Mini. Since Tribunal 1 the firmware runs on µT-Kernel 3 SMP through the course port ([MTK_REDESIGN.md](MTK_REDESIGN.md)), and D2's SPI and D3's timing run on it too; the earlier Arduino-ESP32/FreeRTOS port stays as the measured baseline. The same configuration lines, console commands, MQTT topics, output format and ML model work on both boards, because both builds compile the same shared code.
 
@@ -354,6 +362,8 @@ The kit's 3 V HC-SR04 uses a 3V3 supply and a 3.3 V Echo signal, so Echo connect
 These are read-only on the module. Never run `SPIPROGRAM` or `SPILOGWRITE` without agreeing a scratch address with Brendan ([SETUP.md](SETUP.md#d2-spi-checks-on-µt-kernel)).
 
 ## Part G: D3 timing and application
+
+For a step-by-step Mac walkthrough using the ESP32-S3, one compatible sonar on GP4/GP5 and an LD2450, use [D3_HARDWARE_GUIDE.md](D3_HARDWARE_GUIDE.md). It uses explicit configurations supported by `d3-board` and separates the available smoke checks from pending two-sonar acceptance.
 
 For the single-sonar checks, use the kit's 3 V module with the four direct wires in Part E; no resistor is required. Run `t06` with the sensor disconnected, then unplug USB and connect the sensor before the real-echo tests. The two-sonar checks require a second module and separate pins.
 
