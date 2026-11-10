@@ -15,3 +15,10 @@ ${CC:-cc} -std=c11 -Wall -Wextra -Werror -Wno-error=comment \
   libraries/EdgeCore/src/application/event_record.c \
   -o "$FIXTURE/runtime-test"
 "$FIXTURE/runtime-test"
+
+# D1 task 1.4: the console and the MQTT command topic share repl_command().
+${CC:-cc} -std=c11 -Wall -Wextra -Werror \
+  -I libraries/EdgeCore/src \
+  tests/test_repl_commands.c libraries/EdgeCore/src/application/repl.c \
+  -o "$FIXTURE/repl-commands-test"
+"$FIXTURE/repl-commands-test"
