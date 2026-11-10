@@ -1,6 +1,6 @@
 # One-board MQTT smoke test on Windows
 
-Use `codex/jy-ml-mqtt-integration` and open `AAI15-MTK.code-workspace` in VS Code. These steps verify sensor telemetry to the laptop broker and an ML command from the broker to the ESP32. Use the existing three-sensor wiring.
+Use `main` and open `AAI15-MTK.code-workspace` in VS Code. These steps verify sensor telemetry to the laptop broker and an ML command from the broker to the ESP32. Use the existing three-sensor wiring.
 
 ## 1. Start the broker
 
