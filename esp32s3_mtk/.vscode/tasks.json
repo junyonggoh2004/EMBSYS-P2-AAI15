@@ -108,6 +108,24 @@
       "problemMatcher": []
     },
     {
+      "label": "MTK: monitor raw",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "${workspaceFolder}/tools/build.ps1",
+        "monitor",
+        "-Port",
+        "${input:serialPort}",
+        "-RawMonitor"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "MTK: load sensors and ML",
       "type": "process",
       "command": "powershell.exe",
@@ -142,6 +160,25 @@
         "cwd": "${workspaceFolder}"
       },
       "problemMatcher": []
+    },
+    {
+      "label": "MTK: load demo configuration",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "${workspaceFolder}/tools/build.ps1",
+        "ml",
+        "-Port",
+        "${input:serialPort}",
+        "-ConfigFile",
+        "${workspaceFolder}/../config/demos/${input:mlDemoConfig}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
     }
   ],
   "inputs": [
@@ -150,6 +187,17 @@
       "type": "promptString",
       "description": "ESP32 serial port from Device Manager",
       "default": "COM5"
+    },
+    {
+      "id": "mlDemoConfig",
+      "type": "pickString",
+      "description": "Sensor and ML demo setup",
+      "options": [
+        "no-light.cfg",
+        "no-aht.cfg",
+        "dual-ultrasonic.cfg"
+      ],
+      "default": "no-light.cfg"
     }
   ]
 }

@@ -1,0 +1,292 @@
+BEGINCFG ... ENDCFG        - add sensor config (multi-line)
+BEGINCFG|k=v|...|ENDCFG    - add sensor config (inline with '|', supports \|)
+BEGINRULE ... ENDRULE      - add rule (multi-line)
+BEGINRULE|k=v|...|ENDRULE  - add rule (inline with '|', supports \|)
+RUN / STOP                 - control sampling
+TRIGGER <sensor|source>     - arm one-shot/event-driven sensor(s)
+PAIR <A> <B> <A|B> <guard_us> - one stopped-mode sonar pair diagnostic (50 ms)
+WINDOW <A> <B> <radar> <guard_us> <A_mm> <B_mm> <xmin> <xmax> <ymin> <ymax>
+CLEAR                      - clear sensors + rules
+SHOW / SHOWRULES           - show sensors / rules
+CLEARRULES                 - clear only rules
+HELP                       - this text
+Example inline rule (HMC5883L big-endian X,Z,Y at 0x03):
+BEGINRULE|name=GY511_MAG|source=GY511_ACC|calc=mx=s16be(0)|calc=mz=s16be(2)|calc=my=s16be(4)|calc=mag=sqrt(mx*mx+my*my+mz*mz)|when=mag>350|action=log:MAG change detected|ENDRULE
+STOP
+[RULE] reset
+CLEARED
+OK: Config applied (inline, delim='|')
+[I2C] pre_len=0 :
+[SCHED] added: AHT on i2c
+CFG: ok (added #0: AHT)
+OK: Config applied (inline, delim='|')
+[I2C] pre_len=0 :
+[SCHED] added: LIGHT on i2c
+CFG: ok (added #1: LIGHT)
+OK: Config applied (inline, delim='|')
+[SCHED] added: DISTANCE on gpio
+CFG: ok (added #2: DISTANCE)
+[SHOW] sampling=0
+[WINDOW] enabled=0 state=0 events=0 dropped=0 radar_frames=0 malformed=0 rx_dropped=0 identity=1
+[SCHED] #0 name=AHT proto=i2c mode=poll freq=0.500Hz timing=periodic interval=2000ms timeout=600ms window=0ms trigger=- status=1
+[SCHED] #0 I2C sensor=aht sda=1 scl=2 addr=0x38
+[SENSOR] name=AHT pending=0 timeouts=0 errors=0 overruns=0
+[SCHED] #1 name=LIGHT proto=i2c mode=poll freq=0.500Hz timing=periodic interval=2000ms timeout=600ms window=0ms trigger=- status=1
+[SCHED] #1 I2C sensor=tsl2561 sda=1 scl=2 addr=0x29
+[SENSOR] name=LIGHT pending=0 timeouts=0 errors=0 overruns=0
+[SCHED] #2 name=DISTANCE proto=gpio mode=poll freq=0.500Hz timing=periodic interval=2000ms timeout=100ms window=0ms trigger=- status=1
+[SENSOR] name=DISTANCE pending=0 timeouts=0 errors=0 overruns=0
+[RULE] count=0
+[TFLITE] Unloading previous model state...
+[TFLITE] Unload complete.
+[TFLITE] Verifying FlatBuffer at 0x3c10a430...
+[TFLITE] Schema version 3 verified.
+[TFLITE] Creating OpResolver...
+[TFLITE] Ops registered.
+[TFLITE] Creating Interpreter (Arena size 65536)...
+[TFLITE] Allocating tensors...
+[TFLITE] Tensors allocated.
+[TFLITE] Model loaded OK!
+[TFLITE]   Inputs:  1 tensor(s), 1 total element(s)
+[TFLITE]   Outputs: 1 tensor(s), 1 total element(s)
+[TFLITE]   Arena:   776 / 65536 bytes used
+ML: OK PRESET sine-float
+ML: OK RUN
+RUN
+
+--- Capture sine-float ---
+{"type":"ml","timestamp_ms":17827,"generation":7,"model":"sine-float","outputs":null,"status":"MISSING_OR_STALE"}
+proto=gpio src=DISTANCE len=3 ts=17838 : 3A 25 01
+{"sensor":"DISTANCE","timestamp_ms":17843,"distance_cm":163.4,"echo_us":9530,"status":"OK","error":0}
+proto=i2c src=AHT len=6 ts=17907 : 18 9C 3B E6 15 96
+{"sensor":"AHT","timestamp_ms":17912,"temperature_c":26.05,"humidity_pct":61.03,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=18073 : BE 03 AC 00 5E 00 00 00
+{"sensor":"LIGHT","timestamp_ms":18079,"light_lux":94,"status":"OK","error":0}
+[ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=0
+{"type":"ml","timestamp_ms":19828,"generation":7,"model":"sine-float","raw_features":[26.054,61.02886,94,163.4395],"inputs":[2.687343],"outputs":[0.4205171],"invoke_us":597,"status":"OK"}
+{"sensor":"DISTANCE","timestamp_ms":19859,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=DISTANCE error=-1 total=1
+proto=i2c src=AHT len=6 ts=19908 : 18 9F C4 B6 17 F5
+{"sensor":"AHT","timestamp_ms":19911,"temperature_c":26.17,"humidity_pct":62.41,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=20075 : FF 04 C8 00 83 00 00 00
+{"sensor":"LIGHT","timestamp_ms":20082,"light_lux":131,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":21828,"generation":7,"model":"sine-float","outputs":null,"status":"MISSING_OR_STALE"}
+{"sensor":"DISTANCE","timestamp_ms":21858,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=DISTANCE error=-1 total=2
+proto=i2c src=AHT len=6 ts=21909 : 18 A2 21 D6 18 B8
+{"sensor":"AHT","timestamp_ms":21911,"temperature_c":26.21,"humidity_pct":63.33,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=22074 : C2 04 BE 00 7D 00 00 00
+{"sensor":"LIGHT","timestamp_ms":22076,"light_lux":125,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":23828,"generation":7,"model":"sine-float","outputs":null,"status":"MISSING_OR_STALE"}
+{"sensor":"DISTANCE","timestamp_ms":23858,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=DISTANCE error=-1 total=3
+proto=i2c src=AHT len=6 ts=23909 : 18 A8 0A 66 1A 62
+{"sensor":"AHT","timestamp_ms":23914,"temperature_c":26.29,"humidity_pct":65.64,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=24074 : FD 04 C8 00 83 00 00 00
+{"sensor":"LIGHT","timestamp_ms":24075,"light_lux":131,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":25828,"generation":7,"model":"sine-float","outputs":null,"status":"MISSING_OR_STALE"}
+proto=gpio src=DISTANCE len=3 ts=25844 : FA 36 01
+{"sensor":"DISTANCE","timestamp_ms":25849,"distance_cm":241.4,"echo_us":14074,"status":"OK","error":0}
+proto=i2c src=AHT len=6 ts=25909 : 18 AB A3 76 1C 67
+{"sensor":"AHT","timestamp_ms":25916,"temperature_c":26.39,"humidity_pct":67.05,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=26075 : 7A 04 B5 00 75 00 00 00
+{"sensor":"LIGHT","timestamp_ms":26081,"light_lux":117,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":27828,"generation":7,"model":"sine-float","raw_features":[26.38683,67.04626,117,241.3691],"inputs":[3.134272],"outputs":[0.001871333],"invoke_us":342,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=27843 : 46 36 01
+{"sensor":"DISTANCE","timestamp_ms":27845,"distance_cm":238.3,"echo_us":13894,"status":"OK","error":0}
+proto=i2c src=AHT len=6 ts=27909 : 18 AD 65 A6 1D 00
+{"sensor":"AHT","timestamp_ms":27916,"temperature_c":26.42,"humidity_pct":67.73,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=28075 : D7 03 A8 00 62 00 00 00
+{"sensor":"LIGHT","timestamp_ms":28076,"light_lux":98,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":29828,"generation":7,"model":"sine-float","raw_features":[26.41602,67.73319,98,238.2821],"inputs":[3.103798],"outputs":[0.03041732],"invoke_us":340,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=29835 : D8 15 01
+{"sensor":"DISTANCE","timestamp_ms":29836,"distance_cm":95.9,"echo_us":5592,"status":"OK","error":0}
+STOP
+[TFLITE] Unloading previous model state...
+[TFLITE] Unload complete.
+[TFLITE] Verifying FlatBuffer at 0x3c1099a0...
+[TFLITE] Schema version 3 verified.
+[TFLITE] Creating OpResolver...
+[TFLITE] Ops registered.
+[TFLITE] Creating Interpreter (Arena size 65536)...
+[TFLITE] Allocating tensors...
+[TFLITE] Tensors allocated.
+[TFLITE] Model loaded OK!
+[TFLITE]   Inputs:  1 tensor(s), 1 total element(s)
+[TFLITE]   Outputs: 1 tensor(s), 1 total element(s)
+[TFLITE]   Arena:   716 / 65536 bytes used
+ML: OK PRESET sine-int8
+ML: OK RUN
+RUN
+
+--- Capture sine-int8 ---
+{"type":"ml","timestamp_ms":29867,"generation":10,"model":"sine-int8","outputs":null,"status":"MISSING_OR_STALE"}
+proto=gpio src=DISTANCE len=3 ts=29874 : D5 15 01
+{"sensor":"DISTANCE","timestamp_ms":29877,"distance_cm":95.9,"echo_us":5589,"status":"OK","error":0}
+proto=i2c src=AHT len=6 ts=29961 : 18 AC 17 76 1D D8
+{"sensor":"AHT","timestamp_ms":29976,"temperature_c":26.46,"humidity_pct":67.22,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=30113 : 18 04 AD 00 6A 00 00 00
+{"sensor":"LIGHT","timestamp_ms":30117,"light_lux":106,"status":"OK","error":0}
+[ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=2
+{"type":"ml","timestamp_ms":31868,"generation":10,"model":"sine-int8","raw_features":[26.45721,67.22327,106,95.85135],"inputs":[2.547298],"outputs":[0.5554941],"invoke_us":574,"status":"OK"}
+{"sensor":"DISTANCE","timestamp_ms":31900,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=DISTANCE error=-1 total=4
+proto=i2c src=AHT len=6 ts=31948 : 18 A9 44 76 1B E1
+{"sensor":"AHT","timestamp_ms":31951,"temperature_c":26.36,"humidity_pct":66.12,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=32115 : 40 05 D0 00 8A 00 00 00
+{"sensor":"LIGHT","timestamp_ms":32123,"light_lux":138,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":33868,"generation":10,"model":"sine-int8","outputs":null,"status":"MISSING_OR_STALE"}
+proto=gpio src=DISTANCE len=3 ts=33874 : 04 11 01
+{"sensor":"DISTANCE","timestamp_ms":33877,"distance_cm":74.7,"echo_us":4356,"status":"OK","error":0}
+proto=i2c src=AHT len=6 ts=33949 : 18 A6 4D D6 1B 0A
+{"sensor":"AHT","timestamp_ms":33950,"temperature_c":26.32,"humidity_pct":64.96,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=34114 : A8 04 C7 00 78 00 00 00
+{"sensor":"LIGHT","timestamp_ms":34118,"light_lux":120,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":35868,"generation":10,"model":"sine-int8","raw_features":[26.32027,64.96248,120,74.7054],"inputs":[2.446734],"outputs":[0.6384037],"invoke_us":409,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=35883 : 1A 36 01
+{"sensor":"DISTANCE","timestamp_ms":35886,"distance_cm":237.5,"echo_us":13850,"status":"OK","error":0}
+proto=i2c src=AHT len=6 ts=35948 : 18 A3 0E C6 19 9C
+{"sensor":"AHT","timestamp_ms":35950,"temperature_c":26.25,"humidity_pct":63.69,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=36115 : 8C 04 C6 00 75 00 00 00
+{"sensor":"LIGHT","timestamp_ms":36116,"light_lux":117,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":37868,"generation":10,"model":"sine-int8","raw_features":[26.25046,63.69438,117,237.5275],"inputs":[3.062889],"outputs":[0.06632765],"invoke_us":390,"status":"OK"}
+STOP
+[TFLITE] Unloading previous model state...
+[TFLITE] Unload complete.
+[TFLITE] Verifying FlatBuffer at 0x3c10b2ec...
+[TFLITE] Schema version 3 verified.
+[TFLITE] Creating OpResolver...
+[TFLITE] Ops registered.
+[TFLITE] Creating Interpreter (Arena size 65536)...
+[TFLITE] Allocating tensors...
+[TFLITE] Tensors allocated.
+[TFLITE] Model loaded OK!
+[TFLITE]   Inputs:  1 tensor(s), 16 total element(s)
+[TFLITE]   Outputs: 1 tensor(s), 16 total element(s)
+[TFLITE]   Arena:   2908 / 65536 bytes used
+ML: OK PRESET autoencoder
+ML: OK RUN
+RUN
+
+--- Capture autoencoder ---
+{"type":"ml","timestamp_ms":37897,"generation":13,"model":"autoencoder","outputs":null,"status":"MISSING_OR_STALE"}
+proto=gpio src=DISTANCE len=3 ts=37911 : AE 35 01
+{"sensor":"DISTANCE","timestamp_ms":37914,"distance_cm":235.7,"echo_us":13742,"status":"OK","error":0}
+proto=i2c src=AHT len=6 ts=37990 : 18 A3 98 F6 19 DE
+{"sensor":"AHT","timestamp_ms":37997,"temperature_c":26.26,"humidity_pct":63.91,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=38144 : A7 04 D0 00 76 00 00 00
+{"sensor":"LIGHT","timestamp_ms":38147,"light_lux":118,"status":"OK","error":0}
+[ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=0
+{"type":"ml","timestamp_ms":39899,"generation":13,"model":"autoencoder","raw_features":[26.26305,63.90524,118,235.6753,26.26305,63.90524,118,235.6753,26.26305,63.90524,118,235.6753,26.26305,63.90524,118,235.6753],"inputs":[0.6043841,0.6390524,0.118,0.5871239,0.6043841,0.6390524,0.118,0.5871239,0.6043841,0.6390524,0.118,0.5871239,0.6043841,0.6390524,0.118,0.5871239],"outputs":[0,0,0,1.134948,0,0,0,0,1.134948,0,1.134948,1.134948,-1.134948,0,0,1.134948],"invoke_us":1282,"status":"OK"}
+{"sensor":"DISTANCE","timestamp_ms":39930,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=DISTANCE error=-1 total=5
+proto=i2c src=AHT len=6 ts=39979 : 18 A2 7E 96 17 48
+{"sensor":"AHT","timestamp_ms":39982,"temperature_c":26.14,"humidity_pct":63.47,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=40146 : CB 04 DA 00 79 00 00 00
+{"sensor":"LIGHT","timestamp_ms":40147,"light_lux":121,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":41899,"generation":13,"model":"autoencoder","outputs":null,"status":"MISSING_OR_STALE"}
+{"sensor":"DISTANCE","timestamp_ms":41931,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=DISTANCE error=-1 total=6
+proto=i2c src=AHT len=6 ts=41980 : 18 A0 C5 56 16 C7
+{"sensor":"AHT","timestamp_ms":41987,"temperature_c":26.11,"humidity_pct":62.80,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=42145 : A5 04 D2 00 76 00 00 00
+{"sensor":"LIGHT","timestamp_ms":42162,"light_lux":118,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":43899,"generation":13,"model":"autoencoder","outputs":null,"status":"MISSING_OR_STALE"}
+{"sensor":"DISTANCE","timestamp_ms":43929,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=DISTANCE error=-1 total=7
+proto=i2c src=AHT len=6 ts=43980 : 18 9E 41 66 15 E2
+{"sensor":"AHT","timestamp_ms":43987,"temperature_c":26.07,"humidity_pct":61.82,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=44145 : B4 04 D3 00 78 00 00 00
+{"sensor":"LIGHT","timestamp_ms":44148,"light_lux":120,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":45899,"generation":13,"model":"autoencoder","outputs":null,"status":"MISSING_OR_STALE"}
+{"sensor":"DISTANCE","timestamp_ms":45929,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=DISTANCE error=-1 total=8
+proto=i2c src=AHT len=6 ts=45980 : 18 9C 8D 36 14 B2
+{"sensor":"AHT","timestamp_ms":45982,"temperature_c":26.01,"humidity_pct":61.15,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=46146 : 8A 04 C8 00 74 00 00 00
+{"sensor":"LIGHT","timestamp_ms":46164,"light_lux":116,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":47899,"generation":13,"model":"autoencoder","outputs":null,"status":"MISSING_OR_STALE"}
+proto=gpio src=DISTANCE len=3 ts=47905 : 8D 11 01
+{"sensor":"DISTANCE","timestamp_ms":47907,"distance_cm":77.1,"echo_us":4493,"status":"OK","error":0}
+proto=i2c src=AHT len=6 ts=47979 : 18 9C 5B 46 14 90
+{"sensor":"AHT","timestamp_ms":47986,"temperature_c":26.00,"humidity_pct":61.08,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=48145 : 98 04 C6 00 76 00 00 00
+{"sensor":"LIGHT","timestamp_ms":48147,"light_lux":118,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":49899,"generation":13,"model":"autoencoder","raw_features":[26.00403,61.07674,118,77.05495,26.00403,61.07674,118,77.05495,26.00403,61.07674,118,77.05495,26.00403,61.07674,118,77.05495],"inputs":[0.6000671,0.6107674,0.118,0.1885803,0.6000671,0.6107674,0.118,0.1885803,0.6000671,0.6107674,0.118,0.1885803,0.6000671,0.6107674,0.118,0.1885803],"outputs":[0,0,0,0,0,0,-1.134948,0,0,0,1.134948,1.134948,0,1.134948,-1.134948,0],"invoke_us":539,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=49905 : E3 0F 01
+{"sensor":"DISTANCE","timestamp_ms":49908,"distance_cm":69.7,"echo_us":4067,"status":"OK","error":0}
+proto=i2c src=AHT len=6 ts=49979 : 18 9B 31 26 14 81
+{"sensor":"AHT","timestamp_ms":49981,"temperature_c":26.00,"humidity_pct":60.62,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=50146 : 7E 04 BD 00 74 00 00 00
+{"sensor":"LIGHT","timestamp_ms":50158,"light_lux":116,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":51899,"generation":13,"model":"autoencoder","raw_features":[26.00117,60.62183,116,69.74905,26.00117,60.62183,116,69.74905,26.00117,60.62183,116,69.74905,26.00117,60.62183,116,69.74905],"inputs":[0.6000195,0.6062183,0.116,0.1702237,0.6000195,0.6062183,0.116,0.1702237,0.6000195,0.6062183,0.116,0.1702237,0.6000195,0.6062183,0.116,0.1702237],"outputs":[0,0,0,0,0,0,-1.134948,0,0,0,1.134948,1.134948,0,1.134948,-1.134948,0],"invoke_us":522,"status":"OK"}
+STOP
+[TFLITE] Unloading previous model state...
+[TFLITE] Unload complete.
+[TFLITE] Verifying FlatBuffer at 0x3c10a430...
+[TFLITE] Schema version 3 verified.
+[TFLITE] Creating OpResolver...
+[TFLITE] Ops registered.
+[TFLITE] Creating Interpreter (Arena size 65536)...
+[TFLITE] Allocating tensors...
+[TFLITE] Tensors allocated.
+[TFLITE] Model loaded OK!
+[TFLITE]   Inputs:  1 tensor(s), 1 total element(s)
+[TFLITE]   Outputs: 1 tensor(s), 1 total element(s)
+[TFLITE]   Arena:   776 / 65536 bytes used
+ML: OK PRESET sine-float
+ML: OK RUN
+RUN
+
+--- Capture sine-float ---
+{"sensor":"DISTANCE","timestamp_ms":51931,"distance_cm":null,"echo_us":null,"status":"SENSOR_ERROR_OR_MISSING","error":-6}
+[SENSOR] name=DISTANCE error=-6 total=9
+{"type":"ml","timestamp_ms":51933,"generation":16,"model":"sine-float","outputs":null,"status":"MISSING_OR_STALE"}
+proto=i2c src=AHT len=6 ts=52024 : 18 99 27 E6 15 0A
+{"sensor":"AHT","timestamp_ms":52029,"temperature_c":26.03,"humidity_pct":59.83,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=52177 : 97 04 C7 00 76 00 00 00
+{"sensor":"LIGHT","timestamp_ms":52178,"light_lux":118,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":53934,"generation":16,"model":"sine-float","outputs":null,"status":"MISSING_OR_STALE"}
+{"sensor":"DISTANCE","timestamp_ms":53962,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=DISTANCE error=-1 total=10
+proto=i2c src=AHT len=6 ts=54013 : 18 97 6B 46 12 DF
+{"sensor":"AHT","timestamp_ms":54020,"temperature_c":25.92,"humidity_pct":59.15,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=54179 : 8C 04 C5 00 75 00 00 00
+{"sensor":"LIGHT","timestamp_ms":54187,"light_lux":117,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":55934,"generation":16,"model":"sine-float","outputs":null,"status":"MISSING_OR_STALE"}
+{"sensor":"DISTANCE","timestamp_ms":55964,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=DISTANCE error=-1 total=11
+proto=i2c src=AHT len=6 ts=56013 : 18 95 E5 36 11 6B
+{"sensor":"AHT","timestamp_ms":56015,"temperature_c":25.85,"humidity_pct":58.55,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=56178 : 47 04 BF 00 6D 00 00 00
+{"sensor":"LIGHT","timestamp_ms":56187,"light_lux":109,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":57934,"generation":16,"model":"sine-float","outputs":null,"status":"MISSING_OR_STALE"}
+{"sensor":"DISTANCE","timestamp_ms":57962,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=DISTANCE error=-1 total=12
+proto=i2c src=AHT len=6 ts=58013 : 18 94 BF 96 10 A7
+{"sensor":"AHT","timestamp_ms":58020,"temperature_c":25.81,"humidity_pct":58.10,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=58179 : 29 04 B7 00 6A 00 00 00
+{"sensor":"LIGHT","timestamp_ms":58185,"light_lux":106,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":59934,"generation":16,"model":"sine-float","outputs":null,"status":"MISSING_OR_STALE"}
+proto=gpio src=DISTANCE len=3 ts=59938 : D0 12 01
+{"sensor":"DISTANCE","timestamp_ms":59943,"distance_cm":82.6,"echo_us":4816,"status":"OK","error":0}
+proto=i2c src=AHT len=6 ts=60013 : 18 93 D4 06 0F 95
+{"sensor":"AHT","timestamp_ms":60016,"temperature_c":25.76,"humidity_pct":57.75,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=60178 : 0B 04 B2 00 67 00 00 00
+{"sensor":"LIGHT","timestamp_ms":60182,"light_lux":103,"status":"OK","error":0}
+[ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=0
+{"type":"ml","timestamp_ms":61934,"generation":16,"model":"sine-float","raw_features":[25.76084,57.74536,103,82.5944],"inputs":[2.323155],"outputs":[0.7616571],"invoke_us":568,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=61947 : 03 38 01
+{"sensor":"DISTANCE","timestamp_ms":61948,"distance_cm":245.9,"echo_us":14339,"status":"OK","error":0}
+proto=i2c src=AHT len=6 ts=62013 : 18 92 E9 16 0E EF
+{"sensor":"AHT","timestamp_ms":62018,"temperature_c":25.73,"humidity_pct":57.39,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=62178 : 29 04 B7 00 6A 00 00 00
+{"sensor":"LIGHT","timestamp_ms":62179,"light_lux":106,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":63934,"generation":16,"model":"sine-float","raw_features":[25.72918,57.38688,106,245.9138],"inputs":[2.965984],"outputs":[0.1595101],"invoke_us":308,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=63947 : 86 37 01
+{"sensor":"DISTANCE","timestamp_ms":63952,"distance_cm":243.8,"echo_us":14214,"status":"OK","error":0}
+proto=i2c src=AHT len=6 ts=64012 : 18 92 B2 46 0E 61
+{"sensor":"AHT","timestamp_ms":64015,"temperature_c":25.70,"humidity_pct":57.30,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=64179 : 6F 04 C1 00 72 00 00 00
+{"sensor":"LIGHT","timestamp_ms":64183,"light_lux":114,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":65934,"generation":16,"model":"sine-float","raw_features":[25.7021,57.30324,114,243.7701],"inputs":[2.968066],"outputs":[0.1575588],"invoke_us":322,"status":"OK"}
