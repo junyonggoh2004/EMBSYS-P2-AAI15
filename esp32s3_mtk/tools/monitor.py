@@ -15,6 +15,10 @@ SENSOR_FIELDS = (
 )
 RAW_SENSOR_FRAME = re.compile(r"^proto=(?:i2c|gpio) src=(.*?) len=\d+ ts=\d+ :")
 
+TIMING_TIMEOUT = re.compile(r"^\[TIMING\] sensor=(.*?) status=timeout ")
+SENSOR_ERROR = re.compile(r"\[SENSOR\] name=(.*?) error=(-?\d+) total=\d+")
+HIDDEN_SENSOR_STATUSES = {"SENSOR_ERROR_OR_MISSING", "TIMEOUT"}
+
 
 def number(value, precision):
     return format(value, precision) if type(value) in (int, float) else "--"
@@ -58,6 +62,8 @@ def telemetry_row(record):
     ]
     if not readings:
         return None
+    if status in HIDDEN_SENSOR_STATUSES:
+        return ""
     error = record.get("error")
     detail = f" (error {error})" if type(error) is int and error else ""
     return f"{time}  {source:<8}  {status:<8}  {'  |  '.join(readings)}{detail}"
@@ -69,6 +75,8 @@ class PrettyTelemetry(miniterm.Transform):
     def __init__(self):
         self.partial = ""
         self.pending_frame = None
+        self.pending_error = None
+        self.last_reading_ms = None
 
     def rx(self, text):
         lines = (self.partial + text).split("\n")
@@ -80,6 +88,13 @@ class PrettyTelemetry(miniterm.Transform):
         return "".join(rendered)
 
     def format_line(self, line):
+        previous_error = self.pending_error
+        self.pending_error = None
+        if previous_error is not None:
+            diagnostic = SENSOR_ERROR.fullmatch(line.rstrip("\r\n"))
+            if diagnostic and previous_error == (diagnostic[1], diagnostic[2]):
+                return ""
+
         record = None
         row = None
         if line.startswith("{"):
@@ -92,14 +107,23 @@ class PrettyTelemetry(miniterm.Transform):
         prefix = ""
         if self.pending_frame:
             source, frame = self.pending_frame
-            if row is None or record.get("sensor") != source:
+            same_sensor = row is not None and record.get("sensor") == source
+            if not same_sensor or (frame.startswith("[TIMING]") and row != ""):
                 prefix = frame
             self.pending_frame = None
 
+        if row == "":
+            self.pending_error = (record["sensor"], str(record.get("error")))
+            return prefix
         if row is not None:
-            return prefix + row + "\n"
+            timestamp = record["timestamp_ms"]
+            # The 2 s preset emits each sampling burst within a short window.
+            previous = self.last_reading_ms
+            self.last_reading_ms = timestamp
+            separator = "\n" if previous is not None and (timestamp < previous or timestamp - previous >= 1000) else ""
+            return prefix + separator + row + "\n"
 
-        raw_frame = RAW_SENSOR_FRAME.match(line)
+        raw_frame = RAW_SENSOR_FRAME.match(line) or TIMING_TIMEOUT.match(line)
         if raw_frame:
             self.pending_frame = (raw_frame[1], line)
             return prefix

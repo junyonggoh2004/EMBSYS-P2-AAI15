@@ -9,7 +9,7 @@ The first ML implementation came from `dev-jy-ml` and was integrated into `main`
 3. Press **Ctrl+Shift+B**, select **MTK: build**, and wait for success.
 4. Choose **Terminal → Run Task → MTK: flash**, select `COM5`, and wait for completion.
 5. Choose **Terminal → Run Task → MTK: load sensors and ML**, select `COM5`. Wait for `ML: OK PRESET sine-float`, `ML: OK RUN` and the final `RUN` acknowledgement.
-6. Choose **Terminal → Run Task → MTK: monitor**, select `COM5`. Do not press RESET. Look for timestamped sensor and ML rows with readings, units and status. Use **MTK: monitor raw** for full JSON and hex frames.
+6. Choose **Terminal → Run Task → MTK: monitor**, select `COM5`. Do not press RESET. Look for timestamped sensor and ML rows with readings, units and status. The formatted monitor skips sensor rows for missing readings and timeouts. Use **MTK: monitor raw** for those diagnostics, full JSON and hex frames.
 
 Equivalent PowerShell commands, from the workspace's `esp32s3_mtk` folder, **one at a time**:
 
@@ -84,6 +84,37 @@ RUN
 The autoencoder preset is explicitly a shape/execution demonstration. Its repeated features do not reproduce its training distribution. No meaningful anomaly decision is made. All outputs are exposed as a numeric vector, with no forced MSE scoring or probability interpretation.
 
 `ML MODEL <id>` changes the model while retaining bindings, but disables ML until `ML RUN` validates them. `ML PRESET <id>` supplies the appropriate demonstration bindings. Models are immutable bundled assets selected at runtime; installing arbitrary new `.tflite` files over serial is not implemented in this first version. The existing MQTT transfer subsystem is retained, but model uploads or other model-loading flows change the model revision and cause this ML pipeline to stop with `MODEL_CHANGED` until reconfigured.
+
+## Run the sensor configuration demos
+
+Close the serial monitor. For a physical wiring change, disconnect USB before moving leads, then reconnect USB. In VS Code choose **Terminal → Run Task → MTK: load demo configuration**, select the file and serial port, then reopen **MTK: monitor**. The loader sends the sensor registrations, model selection and ML bindings from the selected file. The same firmware image handles all profiles. Apply the selected profile again after a reset.
+
+| Profile | Configured sensor outputs | Features used by `sine-float` |
+|---|---|---|
+| [no-light.cfg](../../config/demos/no-light.cfg) | AHT and DISTANCE | Temperature, humidity, distance |
+| [no-aht.cfg](../../config/demos/no-aht.cfg) | LIGHT and DISTANCE | Light, distance |
+| [dual-ultrasonic.cfg](../../config/demos/dual-ultrasonic.cfg) | LIGHT, DISTANCE and DISTANCE2 | Light, first distance, second distance |
+
+Each file sets sensor names, drivers, pins and timing. The three files use the same scalar model and set consecutive ML binding indices from zero. Each bound value is scaled, and the model input is `2π × mean(scaled values)`. A sensor that is outside the selected profile has no polling slot or ML binding. Use **MTK: load sensors and ML** to restore the original three-sensor setup.
+
+For the two-ultrasonic profile, keep the original HC-SR04+ on GPIO4/5 and the TSL2561 on GPIO1/2. Remove the AHT. The table assumes the second module supports 3.3 V operation and a 3.3 V-compatible Echo signal. A module with a 5 V Echo needs level shifting before it connects to the ESP32. [3.3–5 V ultrasonic module datasheet](https://cdn.sparkfun.com/assets/a/8/9/c/a/HC-SR04-33_Datasheet.pdf)
+
+| Second ultrasonic | Connection on the current breadboard |
+|---|---|
+| VCC | 3V3, E4 |
+| GND | Common GND, E7 |
+| TRIG | GPIO11 to A15, then E15 to TRIG |
+| ECHO | GPIO12 to A16, then E16 to ECHO |
+
+Use free rows and adjust `gpio.trig` and `gpio.echo` in the file if GPIO11/12 are occupied by another fixture. Keep the two TRIG/ECHO pairs separate. The first ultrasonic runs periodically. A fresh LIGHT measurement triggers DISTANCE2 after the light driver's integration wait of at least 120 ms, leaving time for the first 30 ms echo capture. This profile requires a working light sensor to trigger the second sonar. Point the modules at separate targets and confirm both values before the demo.
+
+On 10 November, `no-light.cfg` and `no-aht.cfg` each returned numeric inference output on the board. `dual-ultrasonic.cfg` registered three sources and continued reporting light and the original ultrasonic while the unconnected DISTANCE2 reported a timeout. Verification with two physically connected modules is pending.
+
+For a custom file, run the following from `esp32s3_mtk`.
+
+```powershell
+powershell.exe -NoProfile -File .\tools\build.ps1 ml -Port COM5 -ConfigFile ..\config\demos\no-light.cfg
+```
 
 ## Change the sensor-to-model mapping
 

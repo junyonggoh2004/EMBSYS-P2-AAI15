@@ -4,7 +4,8 @@ param(
     [ValidateSet('sine-float','sine-int8','autoencoder')][string]$Model='sine-float',
     [ValidateSet('all','aht-light')][string]$Inputs='all',
     [string]$BuildDirectory,
-    [switch]$RawMonitor
+    [switch]$RawMonitor,
+    [string]$ConfigFile
 )
 $ErrorActionPreference='Stop'
 $MtkProjectRoot=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
@@ -45,7 +46,9 @@ if ($Action -eq 'audit') {
 }
 if (($Action -in @('flash','monitor','sensors','ml')) -and -not $Port) { throw 'Specify -Port COMx explicitly.' }
 if ($Action -eq 'ml') {
-    & $MtkPython (Join-Path $PSScriptRoot 'load_ml.py') --port $Port --model $Model --inputs $Inputs
+    $MlArgs = @('--port', $Port, '--model', $Model, '--inputs', $Inputs)
+    if ($ConfigFile) { $MlArgs += @('--config', $ConfigFile) }
+    & $MtkPython (Join-Path $PSScriptRoot 'load_ml.py') @MlArgs
     if ($LASTEXITCODE -ne 0) { throw 'ML configuration was not acknowledged. Check firmware and port.' }
     exit 0
 }
