@@ -47,7 +47,7 @@ def read_configuration(path):
     for command in commands[2:-1]:
         sensor_config = command.startswith("BEGINCFG|") and command.endswith("|ENDCFG")
         ml_config = command.startswith(("ML MODEL ", "ML PRESET ", "ML BIND ",
-                                        "ML UNBIND ", "ML TIMING ")) or command in ("ML RESET", "ML RUN")
+                                        "ML UNBIND ", "ML TIMING ", "ML THRESHOLD ")) or command in ("ML RESET", "ML RUN")
         if not command.isascii() or len(command) >= 512 or not (sensor_config or ml_config or command == "SHOW"):
             raise ValueError(f"Unsupported configuration line: {command}")
     return commands

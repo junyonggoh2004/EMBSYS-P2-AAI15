@@ -55,6 +55,12 @@ ML output includes model ID, configuration generation, physical `raw_features`, 
 
 Missing or failed sensor readings invalidate the affected feature. Missing/stale inputs emit `outputs:null` with `MISSING_OR_STALE`; inconsistent timestamps emit `SAMPLE_SKEW`. Zero lux is valid. Default freshness limit is 5000 ms, maximum timestamp skew 2500 ms, output period 2000 ms. An initial null line before all sensors have produced a sample is normal.
 
+## Set a scalar output threshold
+
+After starting **MTK: monitor**, enter `ML THRESHOLD 0.5` and wait for `ML: OK THRESHOLD 0.5`. You can change the cutoff during sampling. `ML SHOW` displays the setting, and `ML THRESHOLD OFF` clears it. A board reset clears the cutoff. To apply it each time you load a demo configuration, add `ML THRESHOLD 0.5` before the final `RUN` line in that file.
+
+The monitor displays `PASS (> 0.5)` for a successful scalar result above the cutoff and `AT OR BELOW (0.5)` for results equal to or below it. Raw JSON includes `threshold` and the Boolean `threshold_exceeded` alongside the inference status. Skipped inferences and the 16-output autoencoder omit the decision. The sine model cutoff tests a unitless demo score. Physical quantities such as distance in cm have separate thresholds.
+
 ## Switch models without rebuilding
 
 Use the monitor to send these commands **one line at a time**:

@@ -30,8 +30,15 @@ bool inference_mgr_set_inputs(const float *p,int n) { assert(n==dim); memcpy(see
 bool inference_mgr_run(void) { runs++; return !fail_invoke; }
 int inference_mgr_output_count(void) { return dim; }
 bool inference_mgr_get_output(int i,float *v) { assert(i<dim); *v=seen[i]; return true; }
+static char last_line[1800];
+static int capture_puts(const char *line) {
+    snprintf(last_line, sizeof last_line, "%s", line);
+    return puts(line);
+}
 /* Include the actual implementation, exposing private state only to assertions. */
+#define puts capture_puts
 #include "../esp32s3_mtk/components/edge_mtk/sensor_ml.c"
+#undef puts
 static const uint8_t aht[]={8,0x80,0,6,0,0};
 static const uint8_t light[]={0,0,0,0,0,0,0,0};
 static const uint8_t pulse[]={0xd0,7,1};
@@ -77,5 +84,23 @@ int main(void) {
     sensor_ml_invalidate(); tick(); assert(runs==8);
     // wrap-safe sample ages, with fresh zero-millisecond samples allowed
     now=UINT32_MAX-100; cmd("ML PRESET"); cmd("ML RUN"); samples(); now=100; sensor_ml_poll(true); assert(runs==9);
+    cmd("ML RESET"); cmd("ML BIND 0 LIGHT light_lux 0 1000"); cmd("ML RUN");
+    assert(sensor_ml_command("ML THRESHOLD -0.5", true));
+    assert(sensor_ml_command("ML THRESHOLD nan", true));
+    assert(sensor_ml_command("ML THRESHOLD 1e99", true));
+    assert(sensor_ml_command("ML THRESHOLD 1 extra", true));
+    samples(); tick();
+    assert(strstr(last_line, "\"threshold\":-0.5,\"threshold_exceeded\":true"));
+    assert(sensor_ml_command("ML THRESHOLD 0", true));
+    tick();
+    assert(strstr(last_line, "\"threshold\":0,\"threshold_exceeded\":false"));
+    cmd("ML THRESHOLD OFF"); tick();
+    assert(strstr(last_line, "\"status\":\"OK\"") && !strstr(last_line, "threshold"));
+    cmd("ML THRESHOLD 0.5");
+    cmd("ML PRESET autoencoder"); cmd("ML RUN"); samples(); tick();
+    assert(strstr(last_line, "\"status\":\"OK\"") && !strstr(last_line, "threshold"));
+    cmd("ML PRESET sine-int8"); cmd("ML RUN");
+    last_line[0] = '\0'; tick();
+    assert(!last_line[0]); // No successful result or threshold decision without fresh samples.
     puts("sensor ML integration tests PASS (interpreter boundary simulated)");
 }

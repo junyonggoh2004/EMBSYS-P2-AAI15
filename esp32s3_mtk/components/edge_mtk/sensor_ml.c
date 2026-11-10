@@ -8,6 +8,7 @@
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
+#include <errno.h>
 #include "sine_models.h"
 
 /* These immutable bytes already belong to inference_manager.c. */
@@ -28,6 +29,8 @@ typedef struct {
 static binding_t bindings[16];
 static int active=-1;
 static bool enabled;
+static bool threshold_enabled;
+static float output_threshold;
 static uint32_t generation,revision,last_ms;
 static uint32_t interval_ms=2000,max_age_ms=5000,max_skew_ms=2500;
 
@@ -78,10 +81,30 @@ static bool select_model(int index) {
     sensor_ml_invalidate();
     return true;
 }
+static bool set_threshold(const char *value) {
+    while (*value == ' ') value++;
+    if (!strcmp(value, "OFF")) {
+        threshold_enabled = false;
+        return true;
+    }
+    char *end;
+    errno = 0;
+    float cutoff = strtof(value, &end);
+    if (end == value || *end || errno == ERANGE || !isfinite(cutoff)) {
+        puts("ML: ERROR expected ML THRESHOLD <finite value> or ML THRESHOLD OFF");
+        return false;
+    }
+    output_threshold = cutoff;
+    threshold_enabled = true;
+    return true;
+}
+
 static void show(void) {
     printf("ML: model=%s enabled=%u generation=%lu interval_ms=%lu max_age_ms=%lu max_skew_ms=%lu\n",
         active<0 ? "none":models[active].id,enabled,(unsigned long)generation,
         (unsigned long)interval_ms,(unsigned long)max_age_ms,(unsigned long)max_skew_ms);
+    if (threshold_enabled) printf("ML: threshold=%.9g (scalar output)\n", (double)output_threshold);
+    else puts("ML: threshold=off");
     for(int i=0;i<16;i++) if(bindings[i].bound)
         printf("ML: bind=%d source=%s field=%s min=%.6g max=%.6g valid=%u\n",i,
             bindings[i].source,bindings[i].field,(double)bindings[i].lo,(double)bindings[i].hi,bindings[i].valid);
@@ -89,11 +112,18 @@ static void show(void) {
 bool sensor_ml_command(const char *line,bool sampling) {
     if(strncmp(line,"ML",2) || (line[2] && line[2]!=' ')) return false;
     if(!strcmp(line,"ML") || !strcmp(line,"ML HELP")) {
-        puts("ML: HELP | SHOW | PRESET [sine-float|sine-int8|autoencoder] | MODEL <id> | RESET | BIND <index> <source> <field> <min> <max> | UNBIND <index> | TIMING <interval_ms> <age_ms> <skew_ms> | RUN | STOP");
+        puts("ML: HELP | SHOW | PRESET [sine-float|sine-int8|autoencoder] | MODEL <id> | RESET | BIND <index> <source> <field> <min> <max> | UNBIND <index> | TIMING <interval_ms> <age_ms> <skew_ms> | THRESHOLD <value|OFF> | RUN | STOP");
         return true;
     }
     if(!strcmp(line,"ML SHOW")) { show(); return true; }
     if(!strcmp(line,"ML STOP")) { enabled=false; sensor_ml_invalidate(); puts("ML: OK STOP"); return true; }
+    const char threshold_command[] = "ML THRESHOLD";
+    const size_t threshold_len = sizeof threshold_command - 1;
+    if (!strncmp(line, threshold_command, threshold_len) &&
+        (!line[threshold_len] || line[threshold_len] == ' ')) {
+        if (set_threshold(line + threshold_len)) printf("ML: OK %s\n", line + 3);
+        return true;
+    }
     if(sampling) { puts("ML: ERROR send STOP before changing ML configuration"); return true; }
     char id[32],source[32],field[24],extra;
     int i; float lo,hi;
@@ -180,7 +210,15 @@ void sensor_ml_poll(bool sampling) {
     used+=snprintf(line+used,sizeof line-(size_t)used,"],\"inputs\":[");
     for(int i=0;i<count;i++) used+=snprintf(line+used,sizeof line-(size_t)used,"%s%.7g",i ? ",":"",(double)inputs[i]);
     used+=snprintf(line+used,sizeof line-(size_t)used,"],\"outputs\":[");
-    for(int i=0;i<out_count;i++) used+=snprintf(line+used,sizeof line-(size_t)used,"%s%.7g",i ? ",":"",(double)outputs[i]);
-    snprintf(line+used,sizeof line-(size_t)used,"],\"invoke_us\":%lu,\"status\":\"OK\"}",(unsigned long)elapsed);
+    bool compare_output = threshold_enabled && out_count == 1;
+    for(int i=0;i<out_count;i++) used+=snprintf(line+used,sizeof line-(size_t)used,"%s%.*g",
+        i ? ",":"", compare_output ? 9 : 7, (double)outputs[i]);
+    used += snprintf(line + used, sizeof line - (size_t)used, "]");
+    if (compare_output) {
+        used += snprintf(line + used, sizeof line - (size_t)used,
+            ",\"threshold\":%.9g,\"threshold_exceeded\":%s",
+            (double)output_threshold, outputs[0] > output_threshold ? "true" : "false");
+    }
+    snprintf(line+used,sizeof line-(size_t)used,",\"invoke_us\":%lu,\"status\":\"OK\"}",(unsigned long)elapsed);
     puts(line);
 }
