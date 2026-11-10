@@ -108,6 +108,24 @@
       "problemMatcher": []
     },
     {
+      "label": "MTK: monitor raw",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "${workspaceFolder}/tools/build.ps1",
+        "monitor",
+        "-Port",
+        "${input:serialPort}",
+        "-RawMonitor"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "MTK: load sensors and ML",
       "type": "process",
       "command": "powershell.exe",
