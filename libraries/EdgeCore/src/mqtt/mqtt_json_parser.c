@@ -80,6 +80,50 @@ static const char* normalize_json(const char *in, char *tmp, size_t tmp_sz) {
     return tmp;
 }
 
+/* Relaxed JSON (D-11). The reference project's own cfg.to example sends
+   {configs:[{name:X,proto:gpio,gpio:{pin:26}}]}, because a rule written in JSON
+   cannot hold nested quotes. Bare words outside strings are quoted here, except
+   numbers and true/false/null, so strict JSON passes through unchanged. A word
+   ends at , : [ ] { } " or white space, so values with spaces still need quotes.
+   Returns false if the result would not fit. */
+static bool quote_bare_words(const char *in, char *out, size_t out_sz) {
+    size_t w = 0;
+    bool in_str = false, esc = false;
+    for (size_t i = 0; in[i]; ) {
+        char c = in[i];
+        if (in_str || c == '"') {
+            if (w + 1 >= out_sz) return false;
+            out[w++] = c;
+            i++;
+            if (!in_str) in_str = true;
+            else if (esc) esc = false;
+            else if (c == '\\') esc = true;
+            else if (c == '"') in_str = false;
+            continue;
+        }
+        if (isalpha((unsigned char)c) || c == '_') {
+            size_t j = i;
+            while (in[j] && !strchr(",:[]{}\" \t\r\n", in[j])) j++;
+            size_t n = j - i;
+            bool literal = (n == 4 && !strncmp(in + i, "true", 4)) ||
+                           (n == 5 && !strncmp(in + i, "false", 5)) ||
+                           (n == 4 && !strncmp(in + i, "null", 4));
+            if (w + n + 3 >= out_sz) return false;
+            if (!literal) out[w++] = '"';
+            memcpy(out + w, in + i, n);
+            w += n;
+            if (!literal) out[w++] = '"';
+            i = j;
+            continue;
+        }
+        if (w + 1 >= out_sz) return false;
+        out[w++] = c;
+        i++;
+    }
+    out[w] = 0;
+    return true;
+}
+
 /* -------- helpers: token/string utilities -------- */
 
 static void slice_to_str(const char *src, int start, int end, char *out, size_t out_sz) {
@@ -365,8 +409,10 @@ int mqtt_json_try_convert_to_inline(const char *payload, char *out, size_t out_s
 
     const char *src0 = normalize_json(payload, s_norm, sizeof(s_norm));
 
-    strncpy(s_work, src0, sizeof(s_work)-1);
-    s_work[sizeof(s_work)-1] = 0;
+    if (!quote_bare_words(src0, s_work, sizeof(s_work))) {
+        strncpy(s_work, src0, sizeof(s_work)-1);   // too long to quote: parse as sent
+        s_work[sizeof(s_work)-1] = 0;
+    }
     strip_trailing_commas(s_work);
 
     //printf("[JSON] normalized preview: %.*s\n", 120, work);
