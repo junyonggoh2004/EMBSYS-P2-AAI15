@@ -26,6 +26,12 @@ int identity_mtk_init(void);
 #define MQTT_PORT 1883
 #define NODE_ID   "s3-001"
 #endif
+// NODE=<id> sh tools/mtk.sh flash builds a further node from the same source
+// and credentials, in its own build directory (D1 tasks 1.1-1.3).
+#ifdef EDGE_NODE_ID
+#undef NODE_ID
+#define NODE_ID EDGE_NODE_ID
+#endif
 
 #define STARTUP_STACK_BYTES (16u * 1024u)
 
