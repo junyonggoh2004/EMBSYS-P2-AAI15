@@ -1,0 +1,353 @@
+18:34:07 ---    stage control: A=s3-001 B=s3-002
+18:34:07 ---    step reset: Both nodes stopped and cleared
+18:34:07 ---    publish pico/s3-001/cmd: STOP
+18:34:07 BROKER pico/s3-001/cmd STOP
+18:34:07 A      [CMD] STOP
+18:34:08 ---    publish pico/s3-001/cmd: CLEAR
+18:34:08 BROKER pico/s3-001/cmd CLEAR
+18:34:08 A      [RULE] reset
+18:34:08 A      [BRIDGE] reset
+18:34:08 A      [CMD] CLEAR (scheduler + rules + bridge)
+18:34:08 ---    publish pico/s3-002/cmd: STOP
+18:34:08 BROKER pico/s3-002/cmd STOP
+18:34:08 B      [CMD] STOP
+18:34:08 ---    publish pico/s3-002/cmd: CLEAR
+18:34:08 BROKER pico/s3-002/cmd CLEAR
+18:34:08 B      [RULE] reset
+18:34:08 B      [BRIDGE] reset
+18:34:08 B      [CMD] CLEAR (scheduler + rules + bridge)
+18:34:09 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:10 A      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:11 ---    step b-running: B runs its own sensor
+18:34:11 ---    publish pico/s3-002/config: BEGINCFG|name=BDIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+18:34:11 BROKER pico/s3-002/config BEGINCFG|name=BDIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+18:34:11 BROKER pico/s3-002/status/config OK:BDIG
+18:34:11 B      [CFG] cfg_cb payload (first 120): BEGINCFG|name=BDIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+18:34:11 B      [JSON] not starting with '{' after trim, char=0x22
+18:34:11 B      [CFG] mqtt_json_try_convert_to_inline -> 0
+18:34:11 B      [SCHED] added: BDIG on gpio
+18:34:11 B      [CFG] added #0: BDIG
+18:34:11 ---    publish pico/s3-002/cmd: RUN
+18:34:11 BROKER pico/s3-002/cmd RUN
+18:34:11 B      [CMD] RUN
+18:34:11 B      proto=gpio src=BDIG len=3 ts=96905 : 00 05 01
+18:34:11 BROKER pico/s3-002/sensor/BDIG/line proto=gpio src=BDIG len=3 ts=96905 : 00 05 01
+18:34:11 BROKER pico/s3-002/sensor/BDIG/line proto=gpio src=BDIG len=3 ts=97407 : 00 FA 02
+18:34:11 B      proto=gpio src=BDIG len=3 ts=97407 : 00 FA 02
+18:34:12 BROKER pico/s3-002/sensor/BDIG/line proto=gpio src=BDIG len=3 ts=97906 : 00 EE 04
+18:34:12 B      proto=gpio src=BDIG len=3 ts=97906 : 00 EE 04
+18:34:12 BROKER pico/s3-002/sensor/BDIG/line proto=gpio src=BDIG len=3 ts=98406 : 00 E1 06
+18:34:13 B      proto=gpio src=BDIG len=3 ts=98406 : 00 E1 06
+18:34:13 BROKER pico/s3-002/sensor/BDIG/line proto=gpio src=BDIG len=3 ts=98906 : 00 D5 08
+18:34:13 B      proto=gpio src=BDIG len=3 ts=98906 : 00 D5 08
+18:34:13 ---    step stop-b: A rule on A stops B (cmd.to); B's sampling stops
+18:34:13 ---    publish pico/s3-001/config: BEGINCFG|name=GO|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=1|timing.mode=one_shot|ENDCFG
+18:34:13 BROKER pico/s3-001/config BEGINCFG|name=GO|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=1|timing.mode=one_shot|ENDCFG
+18:34:13 A      [CFG] cfg_cb payload (first 120): BEGINCFG|name=GO|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=1|timing.mode=one_shot|ENDCFG
+18:34:13 A      [JSON] not starting with '{' after trim, char=0x22
+18:34:13 A      [CFG] mqtt_json_try_convert_to_inline -> 0
+18:34:13 A      [SCHED] added: GO on gpio
+18:34:13 A      [CFG] added #0: GO
+18:34:13 BROKER pico/s3-001/status/config OK:GO
+18:34:13 BROKER pico/s3-002/sensor/BDIG/line proto=gpio src=BDIG len=3 ts=99406 : 00 C9 0A
+18:34:14 ---    publish pico/s3-001/config: BEGINRULE|name=R_STOP_B|source=GO|calc=s=u8(0)|when=s==0|action=cmd.to:s3-002:STOP|ENDRULE
+18:34:14 BROKER pico/s3-001/config BEGINRULE|name=R_STOP_B|source=GO|calc=s=u8(0)|when=s==0|action=cmd.to:s3-002:STOP|ENDRULE
+18:34:14 B      proto=gpio src=BDIG len=3 ts=99406 : 00 C9 0A
+18:34:14 A      [CFG] cfg_cb payload (first 120): BEGINRULE|name=R_STOP_B|source=GO|calc=s=u8(0)|when=s==0|action=cmd.to:s3-002:STOP|ENDRULE
+18:34:14 A      [JSON] not starting with '{' after trim, char=0x22
+18:34:14 A      [CFG] mqtt_json_try_convert_to_inline -> 0
+18:34:14 A      [RULE] added name=R_STOP_B src=GO vars=1 action=cmd.to:s3-002:STOP
+18:34:14 A      [RULE] added name=R_STOP_B
+18:34:14 BROKER pico/s3-001/status/rule OK:R_STOP_B
+18:34:14 ---    publish pico/s3-001/cmd: RUN
+18:34:14 BROKER pico/s3-001/cmd RUN
+18:34:14 BROKER pico/s3-002/cmd STOP
+18:34:14 BROKER pico/rule/R_STOP_B/event ts=118908 rule=R_STOP_B type=cmd.to value=0.000 msg=s3-002
+18:34:14 BROKER pico/s3-001/sensor/GO/line proto=gpio src=GO len=3 ts=118908 : 00 62 02
+18:34:14 A      [CMD] RUN
+18:34:14 A      proto=gpio src=GO len=3 ts=118908 : 00 62 02
+18:34:14 A      [RULE] R_STOP_B: cmd.to -> node=s3-002 cmd='STOP'
+18:34:14 A      [TRACE] Total Rule Eval (GO): 621us
+18:34:14 B      [CMD] STOP
+18:34:14 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:15 A      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:16 ---    step start-b: A rule on A starts B again (cmd.to RUN)
+18:34:16 ---    publish pico/s3-001/cmd: STOP
+18:34:16 BROKER pico/s3-001/cmd STOP
+18:34:16 A      [CMD] STOP
+18:34:16 BROKER pico/s3-001/heartbeat {"uptime_s":121}
+18:34:16 ---    publish pico/s3-001/cmd: CLEARRULES
+18:34:16 BROKER pico/s3-001/cmd CLEARRULES
+18:34:17 A      [RULE] reset
+18:34:17 BROKER pico/s3-002/heartbeat {"uptime_s":102}
+18:34:17 ---    publish pico/s3-001/config: BEGINRULE|name=R_RUN_B|source=GO|calc=s=u8(0)|when=s==0|action=cmd.to:s3-002:RUN|ENDRULE
+18:34:17 BROKER pico/s3-001/config BEGINRULE|name=R_RUN_B|source=GO|calc=s=u8(0)|when=s==0|action=cmd.to:s3-002:RUN|ENDRULE
+18:34:17 BROKER pico/s3-001/status/rule OK:R_RUN_B
+18:34:17 A      [CFG] cfg_cb payload (first 120): BEGINRULE|name=R_RUN_B|source=GO|calc=s=u8(0)|when=s==0|action=cmd.to:s3-002:RUN|ENDRULE
+18:34:17 A      [JSON] not starting with '{' after trim, char=0x22
+18:34:17 A      [CFG] mqtt_json_try_convert_to_inline -> 0
+18:34:17 A      [RULE] added name=R_RUN_B src=GO vars=1 action=cmd.to:s3-002:RUN
+18:34:17 A      [RULE] added name=R_RUN_B
+18:34:17 ---    publish pico/s3-001/cmd: RUN
+18:34:17 BROKER pico/s3-001/cmd RUN
+18:34:17 A      [CMD] RUN
+18:34:17 A      proto=gpio src=GO len=3 ts=122150 : 00 0C 0F
+18:34:17 A      [RULE] R_RUN_B: cmd.to -> node=s3-002 cmd='RUN'
+18:34:17 A      [TRACE] Total Rule Eval (GO): 624us
+18:34:17 BROKER pico/s3-002/cmd RUN
+18:34:17 BROKER pico/rule/R_RUN_B/event ts=122150 rule=R_RUN_B type=cmd.to value=0.000 msg=s3-002
+18:34:17 BROKER pico/s3-001/sensor/GO/line proto=gpio src=GO len=3 ts=122150 : 00 0C 0F
+18:34:17 BROKER pico/s3-002/sensor/BDIG/line proto=gpio src=BDIG len=3 ts=103144 : 00 63 19
+18:34:17 B      [CMD] RUN
+18:34:17 B      proto=gpio src=BDIG len=3 ts=103144 : 00 63 19
+18:34:18 BROKER pico/s3-002/sensor/BDIG/line proto=gpio src=BDIG len=3 ts=103645 : 00 59 1B
+18:34:18 B      proto=gpio src=BDIG len=3 ts=103645 : 00 59 1B
+18:34:18 BROKER pico/s3-002/sensor/BDIG/line proto=gpio src=BDIG len=3 ts=104145 : 00 4C 1D
+18:34:18 B      proto=gpio src=BDIG len=3 ts=104145 : 00 4C 1D
+18:34:19 B      proto=gpio src=BDIG len=3 ts=104645 : 00 40 1F
+18:34:19 BROKER pico/s3-002/sensor/BDIG/line proto=gpio src=BDIG len=3 ts=104645 : 00 40 1F
+18:34:19 B      proto=gpio src=BDIG len=3 ts=105145 : 00 34 21
+18:34:19 BROKER pico/s3-002/sensor/BDIG/line proto=gpio src=BDIG len=3 ts=105145 : 00 34 21
+18:34:19 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:19 ---    step platform-b: A sends B a platform command (TASKS) and an ML command; TRIGGER over MQTT re-arms A
+18:34:19 ---    publish pico/s3-001/cmd: STOP
+18:34:19 BROKER pico/s3-001/cmd STOP
+18:34:19 A      [CMD] STOP
+18:34:20 ---    publish pico/s3-001/cmd: CLEARRULES
+18:34:20 BROKER pico/s3-001/cmd CLEARRULES
+18:34:20 BROKER pico/s3-002/sensor/BDIG/line proto=gpio src=BDIG len=3 ts=105645 : 00 28 23
+18:34:20 B      proto=gpio src=BDIG len=3 ts=105645 : 00 28 23
+18:34:20 A      [RULE] reset
+18:34:20 ---    publish pico/s3-001/config: BEGINRULE|name=R_TASKS_B|source=GO|calc=s=u8(0)|when=s==0|action=cmd.to:s3-002:TASKS|ENDRULE
+18:34:20 BROKER pico/s3-001/config BEGINRULE|name=R_TASKS_B|source=GO|calc=s=u8(0)|when=s==0|action=cmd.to:s3-002:TASKS|ENDRULE
+18:34:20 BROKER pico/s3-001/status/rule OK:R_TASKS_B
+18:34:20 A      [CFG] cfg_cb payload (first 120): BEGINRULE|name=R_TASKS_B|source=GO|calc=s=u8(0)|when=s==0|action=cmd.to:s3-002:TASKS|ENDRULE
+18:34:20 A      [JSON] not starting with '{' after trim, char=0x22
+18:34:20 A      [CFG] mqtt_json_try_convert_to_inline -> 0
+18:34:20 A      [RULE] added name=R_TASKS_B src=GO vars=1 action=cmd.to:s3-002:TASKS
+18:34:20 A      [RULE] added name=R_TASKS_B
+18:34:20 BROKER pico/s3-002/sensor/BDIG/line proto=gpio src=BDIG len=3 ts=106145 : 00 1C 25
+18:34:20 B      proto=gpio src=BDIG len=3 ts=106145 : 00 1C 25
+18:34:20 A      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:20 ---    publish pico/s3-001/config: BEGINRULE|name=R_ML_B|source=GO|calc=s=u8(0)|when=s==0|action=cmd.to:s3-002:ML SHOW|ENDRULE
+18:34:20 BROKER pico/s3-001/config BEGINRULE|name=R_ML_B|source=GO|calc=s=u8(0)|when=s==0|action=cmd.to:s3-002:ML SHOW|ENDRULE
+18:34:20 BROKER pico/s3-001/status/rule OK:R_ML_B
+18:34:20 A      [CFG] cfg_cb payload (first 120): BEGINRULE|name=R_ML_B|source=GO|calc=s=u8(0)|when=s==0|action=cmd.to:s3-002:ML SHOW|ENDRULE
+18:34:20 A      [JSON] not starting with '{' after trim, char=0x22
+18:34:20 A      [CFG] mqtt_json_try_convert_to_inline -> 0
+18:34:20 A      [RULE] added name=R_ML_B src=GO vars=1 action=cmd.to:s3-002:ML SHOW
+18:34:20 A      [RULE] added name=R_ML_B
+18:34:21 ---    publish pico/s3-001/cmd: RUN
+18:34:21 BROKER pico/s3-001/cmd RUN
+18:34:21 BROKER pico/s3-002/cmd TASKS
+18:34:21 BROKER pico/rule/R_TASKS_B/event ts=125699 rule=R_TASKS_B type=cmd.to value=0.000 msg=s3-002
+18:34:21 BROKER pico/s3-002/cmd ML SHOW
+18:34:21 BROKER pico/rule/R_ML_B/event ts=125699 rule=R_ML_B type=cmd.to value=0.000 msg=s3-002
+18:34:21 BROKER pico/s3-001/sensor/GO/line proto=gpio src=GO len=3 ts=125699 : 00 E9 1C
+18:34:21 B      proto=gpio src=BDIG len=3 ts=106645 : 00 10 27
+18:34:21 BROKER pico/s3-002/sensor/BDIG/line proto=gpio src=BDIG len=3 ts=106645 : 00 10 27
+18:34:21 A      [CMD] RUN
+18:34:21 A      proto=gpio src=GO len=3 ts=125699 : 00 E9 1C
+18:34:21 A      [RULE] R_TASKS_B: cmd.to -> node=s3-002 cmd='TASKS'
+18:34:21 A      [RULE] R_ML_B: cmd.to -> node=s3-002 cmd='ML SHOW'
+18:34:21 A      [TRACE] Total Rule Eval (GO): 945us
+18:34:21 B      ML: model=none enabled=0 generation=10 interval_ms=2000 max_age_ms=5000 max_skew_ms=2500
+18:34:21 B      [TASK] app_message=104 B app_buffer=864 B
+18:34:21 B      [TASK] SchedulerTask    id=8  core=1 pri=21 stack_free=8204 B ran_on_core0=0 ran_on_core1=127
+18:34:21 B      [TASK] MQTTTask         id=9  core=0 pri=22 stack_free=8636 B ran_on_core0=9679 ran_on_core1=0
+18:34:21 B      [TASK] ControlTask      id=10 core=1 pri=23 stack_free=3036 B ran_on_core0=0 ran_on_core1=1056
+18:34:21 B      [TASK] InferenceTask    id=11 core=1 pri=23 stack_free=6796 B ran_on_core0=0 ran_on_core1=1
+18:34:21 B      [TASK] ApplicationTask  id=12 core=1 pri=23 stack_free=3228 B ran_on_core0=0 ran_on_core1=0
+18:34:21 B      [TASK] BenchmarkTask    id=13 core=1 pri=24 stack_free=2364 B ran_on_core0=0 ran_on_core1=0
+18:34:21 B      [TASK] MonitorTask      id=14 core=1 pri=24 stack_free=3308 B ran_on_core0=0 ran_on_core1=106
+18:34:21 B      [TASK] sched_mbf  free=12912 B dropped=0
+18:34:21 B      [TASK] pub_mbf    free=10944 B dropped=0
+18:34:21 B      [TASK] infer_mbf  free=336 B dropped=0
+18:34:21 B      [TASK] app_mbf    free=864 B dropped=0
+18:34:21 B      [TASK] bench_mbf  free=512 B dropped=0
+18:34:21 B      [TASK] ctrl_mbf   free=528 B dropped=0
+18:34:21 B      [TASK] heap_free=31808 B min_free=25364 B largest=22528 B console_rx_irqs=0 console_rx_dropped=0
+18:34:21 B      [TASK] SchedulerTask cycles=127 mean_us=395 p95_us=<2500 max_us=3811
+18:34:21 ---    publish pico/s3-001/cmd: TRIGGER GO
+18:34:21 BROKER pico/s3-001/cmd TRIGGER GO
+18:34:21 BROKER pico/s3-002/cmd TASKS
+18:34:21 BROKER pico/rule/R_TASKS_B/event ts=126030 rule=R_TASKS_B type=cmd.to value=0.000 msg=s3-002
+18:34:21 BROKER pico/s3-002/cmd ML SHOW
+18:34:21 BROKER pico/rule/R_ML_B/event ts=126030 rule=R_ML_B type=cmd.to value=0.000 msg=s3-002
+18:34:21 BROKER pico/s3-001/sensor/GO/line proto=gpio src=GO len=3 ts=126030 : 00 34 1E
+18:34:21 A      [TIMING] trigger=GO armed=1
+18:34:21 A      proto=gpio src=GO len=3 ts=126030 : 00 34 1E
+18:34:21 A      [RULE] R_TASKS_B: cmd.to -> node=s3-002 cmd='TASKS'
+18:34:21 A      [RULE] R_ML_B: cmd.to -> node=s3-002 cmd='ML SHOW'
+18:34:21 A      [TRACE] Total Rule Eval (GO): 775us
+18:34:21 B      [TASK] app_message=104 B app_buffer=864 B
+18:34:21 B      [TASK] SchedulerTask    id=8  core=1 pri=21 stack_free=8204 B ran_on_core0=0 ran_on_core1=128
+18:34:21 B      [TASK] MQTTTask         id=9  core=0 pri=22 stack_free=8636 B ran_on_core0=9707 ran_on_core1=0
+18:34:21 B      [TASK] ControlTask      id=10 core=1 pri=23 stack_free=2988 B ran_on_core0=0 ran_on_core1=1059
+18:34:21 B      [TASK] InferenceTask    id=11 core=1 pri=23 stack_free=6796 B ran_on_core0=0 ran_on_core1=1
+18:34:21 B      [TASK] ApplicationTask  id=12 core=1 pri=23 stack_free=3228 B ran_on_core0=0 ran_on_core1=0
+18:34:21 B      [TASK] BenchmarkTask    id=13 core=1 pri=24 stack_free=2364 B ran_on_core0=0 ran_on_core1=0
+18:34:21 B      [TASK] MonitorTask      id=14 core=1 pri=24 stack_free=3308 B ran_on_core0=0 ran_on_core1=106
+18:34:21 B      [TASK] sched_mbf  free=12912 B dropped=0
+18:34:21 B      [TASK] pub_mbf    free=10944 B dropped=0
+18:34:21 B      [TASK] infer_mbf  free=336 B dropped=0
+18:34:21 B      [TASK] app_mbf    free=864 B dropped=0
+18:34:21 B      [TASK] bench_mbf  free=512 B dropped=0
+18:34:21 B      [TASK] ctrl_mbf   free=528 B dropped=0
+18:34:21 B      [TASK] heap_free=31808 B min_free=25364 B largest=22528 B console_rx_irqs=0 console_rx_dropped=0
+18:34:21 B      [TASK] SchedulerTask cycles=1 mean_us=213 p95_us=<250 max_us=213
+18:34:21 BROKER pico/s3-002/sensor/BDIG/line proto=gpio src=BDIG len=3 ts=107145 : 00 04 29
+18:34:21 B      proto=gpio src=BDIG len=3 ts=107145 : 00 04 29
+18:34:21 B      ML: model=none enabled=0 generation=10 interval_ms=2000 max_age_ms=5000 max_skew_ms=2500
+18:34:22 B      proto=gpio src=BDIG len=3 ts=107645 : 00 F8 2A
+18:34:22 BROKER pico/s3-002/sensor/BDIG/line proto=gpio src=BDIG len=3 ts=107645 : 00 F8 2A
+18:34:22 BROKER pico/s3-002/sensor/BDIG/line proto=gpio src=BDIG len=3 ts=108145 : 00 EC 2C
+18:34:22 B      proto=gpio src=BDIG len=3 ts=108145 : 00 EC 2C
+18:34:23 BROKER pico/s3-002/sensor/BDIG/line proto=gpio src=BDIG len=3 ts=108645 : 00 E0 2E
+18:34:23 B      proto=gpio src=BDIG len=3 ts=108645 : 00 E0 2E
+18:34:23 BROKER pico/s3-002/sensor/BDIG/line proto=gpio src=BDIG len=3 ts=109145 : 00 D4 30
+18:34:23 B      proto=gpio src=BDIG len=3 ts=109145 : 00 D4 30
+18:34:23 ---    step cfg-text: A configures B with a text block (cfg.to); B applies it unchanged (D-11)
+18:34:23 ---    publish pico/s3-001/cmd: STOP
+18:34:23 BROKER pico/s3-001/cmd STOP
+18:34:23 A      [CMD] STOP
+18:34:24 ---    publish pico/s3-001/cmd: CLEARRULES
+18:34:24 BROKER pico/s3-001/cmd CLEARRULES
+18:34:24 A      [RULE] reset
+18:34:24 BROKER pico/s3-002/sensor/BDIG/line proto=gpio src=BDIG len=3 ts=109645 : 00 C8 32
+18:34:24 B      proto=gpio src=BDIG len=3 ts=109645 : 00 C8 32
+18:34:24 ---    publish pico/s3-002/cmd: STOP
+18:34:24 BROKER pico/s3-002/cmd STOP
+18:34:24 B      [CMD] STOP
+18:34:24 ---    publish pico/s3-001/config: BEGINRULE|name=R_CFG_B|source=GO|calc=s=u8(0)|when=s==0|action=cfg.to:s3-002:BEGINCFG\|name=LED\|proto=gpio\|gpio.mode=digital\|gpio.pin=8\|mode=poll\|freq_hz=1\|ENDCFG|ENDRULE
+18:34:24 BROKER pico/s3-001/config BEGINRULE|name=R_CFG_B|source=GO|calc=s=u8(0)|when=s==0|action=cfg.to:s3-002:BEGINCFG\|name=LED\|proto=gpio\|gpio.mode=digital\|gpio.pin=8\|mode=poll\|freq_hz=1\|ENDCFG|ENDRULE
+18:34:24 A      [CFG] cfg_cb payload (first 120): BEGINRULE|name=R_CFG_B|source=GO|calc=s=u8(0)|when=s==0|action=cfg.to:s3-002:BEGINCFG\|name=LED\|proto=gpio\|gpio.mode=d
+18:34:24 A      [JSON] not starting with '{' after trim, char=0x22
+18:34:24 A      [CFG] mqtt_json_try_convert_to_inline -> 0
+18:34:24 A      [RULE] added name=R_CFG_B src=GO vars=1 action=cfg.to:s3-002:BEGINCFG\|name=LED\|proto=gpio\|gpio.mode=digital\|gpio.pin=8\|mode=poll\|freq_hz=1\|ENDCFG
+18:34:24 A      [RULE] added name=R_CFG_B
+18:34:24 BROKER pico/s3-001/status/rule OK:R_CFG_B
+18:34:24 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:24 ---    publish pico/s3-001/cmd: RUN
+18:34:24 BROKER pico/s3-001/cmd RUN
+18:34:25 A      [CMD] RUN
+18:34:25 A      proto=gpio src=GO len=3 ts=129557 : 00 FB 2B
+18:34:25 A      BEGINCFG\|name=LED\|proto=gpio\|gpio.mode=digital\|gpio.pin=8\|mode=poll\|freq_hz=1\|ENDCFG
+18:34:25 A      BEGINCFG|name=LED|proto=gpio|gpio.mode=digital|gpio.pin=8|mode=poll|freq_hz=1|ENDCFG
+18:34:25 A      [RULE] R_CFG_B: cfg.to -> node=s3-002
+18:34:25 A      [TRACE] Total Rule Eval (GO): 947us
+18:34:25 BROKER pico/s3-002/config BEGINCFG|name=LED|proto=gpio|gpio.mode=digital|gpio.pin=8|mode=poll|freq_hz=1|ENDCFG
+18:34:25 BROKER pico/rule/R_CFG_B/event ts=129557 rule=R_CFG_B type=cfg.to value=0.000 msg=s3-002
+18:34:25 BROKER pico/s3-001/sensor/GO/line proto=gpio src=GO len=3 ts=129557 : 00 FB 2B
+18:34:25 BROKER pico/s3-002/status/config OK:LED
+18:34:25 B      [CFG] cfg_cb payload (first 120): BEGINCFG|name=LED|proto=gpio|gpio.mode=digital|gpio.pin=8|mode=poll|freq_hz=1|ENDCFG
+18:34:25 B      [JSON] not starting with '{' after trim, char=0x22
+18:34:25 B      [CFG] mqtt_json_try_convert_to_inline -> 0
+18:34:25 B      [SCHED] added: LED on gpio
+18:34:25 B      [CFG] added #1: LED
+18:34:25 A      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:26 BROKER pico/s3-001/heartbeat {"uptime_s":131}
+18:34:27 BROKER pico/s3-002/heartbeat {"uptime_s":112}
+18:34:27 ---    step cfg-json: A configures B with JSON (cfg.to); B converts and applies it
+18:34:27 ---    publish pico/s3-001/cmd: STOP
+18:34:27 BROKER pico/s3-001/cmd STOP
+18:34:27 A      [CMD] STOP
+18:34:27 ---    publish pico/s3-001/cmd: CLEARRULES
+18:34:27 BROKER pico/s3-001/cmd CLEARRULES
+18:34:27 A      [RULE] reset
+18:34:27 ---    publish pico/s3-001/config: BEGINRULE|name=R_JSON_B|source=GO|calc=s=u8(0)|when=s==0|action=cfg.to:s3-002:{"configs":[{"name":"LEDJ","proto":"gpio","mode":"poll","freq_hz":1,"gpio":{"pin":8,"mode":"digital"}}]}|ENDRULE
+18:34:27 BROKER pico/s3-001/config BEGINRULE|name=R_JSON_B|source=GO|calc=s=u8(0)|when=s==0|action=cfg.to:s3-002:{"configs":[{"name":"LEDJ","proto":"gpio","mode":"poll","freq_hz":1,"gpio":{"pin":8,"mode":"digital"}}]}|ENDRULE
+18:34:27 BROKER pico/s3-001/status/rule OK:R_JSON_B
+18:34:28 A      [CFG] cfg_cb payload (first 120): BEGINRULE|name=R_JSON_B|source=GO|calc=s=u8(0)|when=s==0|action=cfg.to:s3-002:{"configs":[{"name":"LEDJ","proto":"gpio",
+18:34:28 A      [JSON] not starting with '{' after trim, char=0x22
+18:34:28 A      [CFG] mqtt_json_try_convert_to_inline -> 0
+18:34:28 A      [RULE] added name=R_JSON_B src=GO vars=1 action=cfg.to:s3-002:{"configs":[{"name":"LEDJ","proto":"gpio","mode":"poll","freq_hz":1,"gpio":{"pin":8,"mode":"digital"}}]}
+18:34:28 A      [RULE] added name=R_JSON_B
+18:34:28 ---    publish pico/s3-001/cmd: RUN
+18:34:28 BROKER pico/s3-001/cmd RUN
+18:34:28 A      [CMD] RUN
+18:34:28 A      proto=gpio src=GO len=3 ts=132859 : 00 E1 38
+18:34:28 A      {"configs":[{"name":"LEDJ","proto":"gpio","mode":"poll","freq_hz":1,"gpio":{"pin":8,"mode":"digital"}}]}
+18:34:28 A      {"configs":[{"name":"LEDJ","proto":"gpio","mode":"poll","freq_hz":1,"gpio":{"pin":8,"mode":"digital"}}]}
+18:34:28 A      [RULE] R_JSON_B: cfg.to -> node=s3-002
+18:34:28 A      [TRACE] Total Rule Eval (GO): 938us
+18:34:28 BROKER pico/s3-002/config {"configs":[{"name":"LEDJ","proto":"gpio","mode":"poll","freq_hz":1,"gpio":{"pin":8,"mode":"digital"}}]}
+18:34:28 BROKER pico/rule/R_JSON_B/event ts=132859 rule=R_JSON_B type=cfg.to value=0.000 msg=s3-002
+18:34:28 BROKER pico/s3-001/sensor/GO/line proto=gpio src=GO len=3 ts=132859 : 00 E1 38
+18:34:28 BROKER pico/s3-002/status/config OK:LEDJ
+18:34:28 B      [CFG] cfg_cb payload (first 120): {"configs":[{"name":"LEDJ","proto":"gpio","mode":"poll","freq_hz":1,"gpio":{"pin":8,"mode":"digital"}}]}
+18:34:28 B      [JSON] configs processed: 1
+18:34:28 B      [CFG] mqtt_json_try_convert_to_inline -> 85
+18:34:28 B      [CFG] inline from JSON: BEGINCFG|name=LEDJ|proto=gpio|mode=poll|freq_hz=1|gpio.pin=8|gpio.mode=digital|ENDCFG
+18:34:28 B      [SCHED] added: LEDJ on gpio
+18:34:28 B      [CFG] added #2: LEDJ
+18:34:29 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:30 ---    step cfg-relaxed: A configures B with bare-word JSON, the reference example's form (D-11)
+18:34:30 ---    publish pico/s3-001/cmd: STOP
+18:34:30 BROKER pico/s3-001/cmd STOP
+18:34:30 A      [CMD] STOP
+18:34:30 A      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:30 ---    publish pico/s3-001/cmd: CLEARRULES
+18:34:30 BROKER pico/s3-001/cmd CLEARRULES
+18:34:30 A      [RULE] reset
+18:34:31 ---    publish pico/s3-001/config: BEGINRULE|name=R_RELAX_B|source=GO|calc=s=u8(0)|when=s==0|action=cfg.to:s3-002:{configs:[{name:LEDR,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:8,mode:digital}}]}|ENDRULE
+18:34:31 BROKER pico/s3-001/config BEGINRULE|name=R_RELAX_B|source=GO|calc=s=u8(0)|when=s==0|action=cfg.to:s3-002:{configs:[{name:LEDR,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:8,mode:digital}}]}|ENDRULE
+18:34:31 A      [CFG] cfg_cb payload (first 120): BEGINRULE|name=R_RELAX_B|source=GO|calc=s=u8(0)|when=s==0|action=cfg.to:s3-002:{configs:[{name:LEDR,proto:gpio,mode:poll
+18:34:31 A      [JSON] not starting with '{' after trim, char=0x22
+18:34:31 A      [CFG] mqtt_json_try_convert_to_inline -> 0
+18:34:31 A      [RULE] added name=R_RELAX_B src=GO vars=1 action=cfg.to:s3-002:{configs:[{name:LEDR,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:8,mode:digital}}]}
+18:34:31 A      [RULE] added name=R_RELAX_B
+18:34:31 BROKER pico/s3-001/status/rule OK:R_RELAX_B
+18:34:31 ---    publish pico/s3-001/cmd: RUN
+18:34:31 BROKER pico/s3-001/cmd RUN
+18:34:31 A      [CMD] RUN
+18:34:31 A      proto=gpio src=GO len=3 ts=136050 : 00 57 45
+18:34:31 A      {configs:[{name:LEDR,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:8,mode:digital}}]}
+18:34:31 A      {configs:[{name:LEDR,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:8,mode:digital}}]}
+18:34:31 A      [RULE] R_RELAX_B: cfg.to -> node=s3-002
+18:34:31 A      [TRACE] Total Rule Eval (GO): 907us
+18:34:31 BROKER pico/s3-002/config {configs:[{name:LEDR,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:8,mode:digital}}]}
+18:34:31 BROKER pico/rule/R_RELAX_B/event ts=136050 rule=R_RELAX_B type=cfg.to value=0.000 msg=s3-002
+18:34:31 BROKER pico/s3-001/sensor/GO/line proto=gpio src=GO len=3 ts=136050 : 00 57 45
+18:34:31 BROKER pico/s3-002/status/config OK:LEDR
+18:34:31 B      [CFG] cfg_cb payload (first 120): {configs:[{name:LEDR,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:8,mode:digital}}]}
+18:34:31 B      [JSON] configs processed: 1
+18:34:31 B      [CFG] mqtt_json_try_convert_to_inline -> 85
+18:34:31 B      [CFG] inline from JSON: BEGINCFG|name=LEDR|proto=gpio|mode=poll|freq_hz=1|gpio.pin=8|gpio.mode=digital|ENDCFG
+18:34:31 B      [SCHED] added: LEDR on gpio
+18:34:31 B      [CFG] added #3: LEDR
+18:34:33 ---    step b-show: B lists what A configured
+18:34:33 ---    publish pico/s3-002/cmd: SHOW
+18:34:33 BROKER pico/s3-002/cmd SHOW
+18:34:33 B      [CMD] SHOW
+18:34:33 B      [WINDOW] enabled=0 state=0 events=0 dropped=0 radar_frames=0 malformed=0 rx_dropped=0 identity=1
+18:34:33 B      [SCHED] #0 name=BDIG proto=gpio mode=poll freq=2.000Hz timing=periodic interval=500ms timeout=0ms window=0ms trigger=- status=1
+18:34:33 B      [SENSOR] name=BDIG pending=0 timeouts=0 errors=0 overruns=0
+18:34:33 B      [SCHED] #1 name=LED proto=gpio mode=poll freq=1.000Hz timing=periodic interval=1000ms timeout=0ms window=0ms trigger=- status=1
+18:34:33 B      [SENSOR] name=LED pending=0 timeouts=0 errors=0 overruns=0
+18:34:33 B      [SCHED] #2 name=LEDJ proto=gpio mode=poll freq=1.000Hz timing=periodic interval=1000ms timeout=0ms window=0ms trigger=- status=1
+18:34:33 B      [SENSOR] name=LEDJ pending=0 timeouts=0 errors=0 overruns=0
+18:34:33 B      [SCHED] #3 name=LEDR proto=gpio mode=poll freq=1.000Hz timing=periodic interval=1000ms timeout=0ms window=0ms trigger=- status=1
+18:34:33 B      [SENSOR] name=LEDR pending=0 timeouts=0 errors=0 overruns=0
+18:34:33 B      [RULE] count=0
+18:34:34 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:35 A      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:36 ---    step stop: Both stopped and cleared
+18:34:36 ---    publish pico/s3-001/cmd: STOP
+18:34:36 BROKER pico/s3-001/cmd STOP
+18:34:36 A      [CMD] STOP
+18:34:36 ---    publish pico/s3-001/cmd: CLEAR
+18:34:36 BROKER pico/s3-001/cmd CLEAR
+18:34:36 A      [RULE] reset
+18:34:36 A      [BRIDGE] reset
+18:34:36 A      [CMD] CLEAR (scheduler + rules + bridge)
+18:34:36 ---    publish pico/s3-002/cmd: STOP
+18:34:36 BROKER pico/s3-002/cmd STOP
+18:34:36 BROKER pico/s3-001/heartbeat {"uptime_s":141}
+18:34:36 B      [CMD] STOP
+18:34:37 ---    publish pico/s3-002/cmd: CLEAR
+18:34:37 BROKER pico/s3-002/cmd CLEAR
+18:34:37 B      [RULE] reset
+18:34:37 B      [BRIDGE] reset
+18:34:37 B      [CMD] CLEAR (scheduler + rules + bridge)
+18:34:37 BROKER pico/s3-002/heartbeat {"uptime_s":122}

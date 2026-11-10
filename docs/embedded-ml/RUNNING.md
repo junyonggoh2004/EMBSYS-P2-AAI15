@@ -167,9 +167,9 @@ ML RUN
 RUN
 ```
 
-Watch the board's serial console for `ML: OK PRESET sine-int8`, `ML: OK RUN`, and subsequent ML JSON with numeric outputs. `ML SHOW` can be sent on the same topic without clearing cached samples. Other command payloads continue through the existing MQTT command handler. This checkpoint has a native routing test; MQTT delivery and ML inference on the board are not yet verified.
+Watch the board's serial console for `ML: OK PRESET sine-int8`, `ML: OK RUN`, and subsequent ML JSON with numeric outputs. `ML SHOW` can be sent on the same topic without clearing cached samples. Other command payloads continue through the existing MQTT command handler. MQTT delivery was verified on the board on 10 Nov 2026: `ML SHOW` sent on the command topic, and sent by another board with `cmd.to` (D1 task 1.4, [parity/logs/mtk/d1-mqtt/](../../parity/logs/mtk/d1-mqtt/)).
 
-This is **not yet live switching**: `STOP` pauses sensor sampling, and the commands are separate MQTT messages. The one-command format for model, local/remote input and local/published output still needs team agreement. Remote ML input and MQTT publishing of ML results are not implemented here. Tasks 1.4 and 2.1 in the [README task lists](../../README.md#5-d4-task-checklist) come first.
+This is **not yet live switching**: `STOP` pauses sensor sampling, and the commands are separate MQTT messages. The one-command format for model, local/remote input and local/published output still needs team agreement. Remote ML input and MQTT publishing of ML results are not implemented here. Tasks 1.4 and 2.1, which this needed first, are done; the rest is D4 part 2 in the [README task lists](../../README.md#5-d4-task-checklist).
 
 ## Validation and remaining work
 

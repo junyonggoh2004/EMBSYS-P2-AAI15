@@ -8,10 +8,10 @@ Branch `main`: D1 (tasks 1–34), the D2 SPI checkpoint, the D3 timing checkpoin
 
 | Deliverable | What it is | Owners | State on `main` (10 Nov 2026) | Details |
 |---|---|---|---|---|
-| D1 | Port configpico2wedge to the ESP32-S3, on µT-Kernel 3 SMP since Tribunal 1 | Hasif, Cody, Sitt | Done (tag `d1-mtk-v1.0`); task 7 rollout and six jumper or light-sensor stages pending; MQTT between real boards (1.1–1.5) open | [Section 2](#2-d1-task-checklist) |
+| D1 | Port configpico2wedge to the ESP32-S3, on µT-Kernel 3 SMP since Tribunal 1 | Hasif, Cody, Sitt | Done (tag `d1-mtk-v1.0`); MQTT between real boards (1.1–1.5) done 10 Nov, 43/43 on two boards; task 7 rollout and six jumper or light-sensor stages pending | [Section 2](#2-d1-task-checklist) |
 | D2 | SPI support on the ESP32-S3 | Brendan, Jun Yong | Checkpoint merged (PR #3 on 27 Oct, PR #5 on 1 Nov); event logging, T-23 and sign-off open | [Section 3](#3-d2-task-checklist) |
 | D3 | Configurable timing: periodic, one-shot, event-driven, logical sequence | Cody | Checkpoint merged (PR #6 on 3 Nov, PR #8 on 9 Nov); board results pending | [Section 4](#4-d3-task-checklist) |
-| D4 | Embedded ML | Part 1: Jun Yong, Brendan. Part 2: Hasif, Sitt | First checkpoint merged: three bundled models, `ML` commands over the console and MQTT; board run (2.1) and live switching (3.1–3.7) open | [Section 5](#5-d4-task-checklist) |
+| D4 | Embedded ML | Part 1: Jun Yong, Brendan. Part 2: Hasif, Sitt | Three bundled models swap on the board, the int8 one on the S3's vector instructions (2.1, 10 Nov); `ML` commands work over the console and MQTT; live switching (3.1–3.7) open | [Section 5](#5-d4-task-checklist) |
 | D5 | Benchmarking, cut down | Sitt, with Hasif | Task list agreed (4.1–4.6); B1–B8 plan on `s3-port-d5`, not merged | [Section 6](#6-d5-task-checklist) |
 | D6 | End-to-end use case and demo | Whole team, Cody leads | Task list agreed (5.1–5.8); use case to confirm (5.1) | [Section 7](#7-d6-task-checklist) |
 
@@ -39,7 +39,7 @@ Owners are the team workload split of 28 Sep 2026, with D4 to D6 re-split on 10 
 | &nbsp;&nbsp;[Part E: Real sensors](#part-e-real-sensors) | GY-511, HC-SR04, the light sensor and jumper tests; why no resistor |
 | &nbsp;&nbsp;[Part F: D2 SPI](#part-f-d2-spi) | Host test, loopback suite and benchmark, read-only W25Q32 checks |
 | &nbsp;&nbsp;[Part G: D3 timing and application](#part-g-d3-timing-and-application) | Laptop tests, the application smoke test, a timing-mode example, `PAIR` and `WINDOW` |
-| [9. Using any sensor](#9-using-any-sensor-config-cheat-sheet) | Wiring and the config line for every sensor type, including SPI, and rules |
+| [9. Using any sensor](#9-using-any-sensor-config-cheat-sheet) | Wiring and the config line for every sensor type, including SPI, and rules; [over MQTT](#over-mqtt-how-it-works-and-what-to-send): topics, JSON forms, board to board |
 | [10. Completion rule](#10-completion-rule) | When a task counts as done |
 | [11. Arduino/FreeRTOS baseline](#11-arduinofreertos-baseline-set-up-and-test-reference) | The earlier build's step-by-step setup and tests, Mac and Windows |
 
@@ -77,6 +77,7 @@ Other documents: [SENSOR_BREADBOARD_README.md](SENSOR_BREADBOARD_README.md) (cur
 | I2C, real GY-511 compass and accelerometer | `test 4c-mag` (or `live mag`) | 15/15 | 15/15 |
 | Real HC-SR04 distance, and rules on its readings | `test 4c-sonic`, `test sonic-rule` (or `live sonic`) | 4/4, 7/7 | not run |
 | MQTT telemetry, config, commands, bridging, model upload | `mqtt <ip>` | 27/27 | 27/27 |
+| Two real boards: every command over MQTT, sensor following, `cmd.to`/`cfg.to`, config whole and piecemeal (D1 tasks 1.1–1.4, 10 Nov) | `boards <ip>` | 43/43 | not run |
 | Model storage: upload, bad uploads, survives reset | `model <ip>` | 8/9 (the miss is a test timing artefact; reload captured separately) | 9/9 |
 | Faults: bad JSON, oversized, broker and Wi-Fi loss | `faults <ip>` | 9/9 | 9/9 |
 | Queue flooding | `flood <ip>` | Pass | Pass |
@@ -142,15 +143,26 @@ Change requirement from Tribunal 1 (19 Oct 2026): the firmware must run on the c
 
 ### D1 MQTT between real boards (tasks 1.1–1.5)
 
-Added on 10 Nov 2026 because D4 to D6 depend on it. The professor asked that boards send each other data and commands, and noted that the group that got an A also took data from other groups' MQTT. Every MQTT test so far ran between one board and the laptop, with the laptop playing the second node (`pico-002`); two real S3 boards have not been tested together. Hasif owns these tasks. They are the agreed outline; the technical steps come later.
+Added on 10 Nov 2026 because D4 to D6 depend on it. The professor asked that boards send each other data and commands, and noted that the group that got an A also took data from other groups' MQTT. Every MQTT test so far ran between one board and the laptop, with the laptop playing the second node (`pico-002`); two real S3 boards have not been tested together. Hasif owns these tasks. The team agreed them as an outline on 10 Nov 2026; the rows below are the technical version.
 
-| # | Task | What it means | Status |
-|---|---|---|---|
-| 1.1 | Two-board data test | Board A publishes a sensor reading and board B receives it and uses it | Pending |
-| 1.2 | Two-board control test | One board starts, stops or reconfigures the other, and the earlier board-to-board config fix (D-11, `cfg.to`) is confirmed on real boards | Pending |
-| 1.3 | Config over MQTT, both ways | Send a full setup as one JSON message, then piece by piece, and show that nothing is hard-coded | Pending |
-| 1.4 | Every command reachable over MQTT | Every console command can also be sent on `pico/<node>/cmd` | Partly done: `ML` commands work over MQTT since the D4 checkpoint; the SPI, `WINDOW`, `PAIR` and `TRIGGER` commands are still console only |
-| 1.5 | Record and update | Save the logs and update this section | Pending |
+**How they are run.** Two bare ESP32-S3 boards (nothing wired: the tests use GPIO6 and GPIO7 as inputs with internal pulls, and GPIO8) on the laptop's USB, Mosquitto on the laptop (Part B), and both boards on the same 2.4 GHz network. With an iPhone hotspot, turn on Maximize Compatibility and keep the Personal Hotspot screen open while the boards join; otherwise they print `[WIFI] not connected: reason 201` (network not found). Both are flashed from the same checkout; the second node gets its own build directory and node ID at compile time, so `wifi_credentials.h` is not edited between flashes. Every configuration and command goes in over MQTT; the two consoles and the broker are only read.
+
+```sh
+PORT=<board A port> sh tools/mtk.sh flash                # s3-001, the NODE_ID in wifi_credentials.h
+NODE=s3-002 PORT=<board B port> sh tools/mtk.sh flash    # s3-002, built in esp32s3_mtk/build-s3-002
+BOARD=n16r8 NODE=s3-002 PORT=<port> sh tools/mtk.sh flash   # or s3-002 on the N16R8 DevKitC (8 MB octal PSRAM)
+sh tools/mtk.sh boards <laptop-ip>                       # 1.4, 1.1, 1.2, 1.3 in turn; or add commands|data|control|config
+```
+
+Board B can be the larger ESP32-S3-WROOM-1 N16R8 DevKitC (16 MB flash, 8 MB octal PSRAM) instead of a second HW-747: `BOARD=n16r8` adds [esp32s3_mtk/sdkconfig.board.n16r8](esp32s3_mtk/sdkconfig.board.n16r8), whose only change is the PSRAM mode. Plug it in by the USB-C port wired to the chip's own USB: the console is the chip's USB-Serial-JTAG, and the other port goes through a CH343 UART bridge that shows only the boot messages. The first flash over that port may need BOOT held while RST is pressed, because the firmware it shipped with does not reset into download mode by itself. The script finds which port is which node by sending `SHOW` to each node's command topic, and writes one log per stage to `parity/logs/mtk/d1-mqtt/` with Wi-Fi names and MAC addresses redacted. With one board, `sh tools/mtk.sh boards <laptop-ip> commands` runs 1.4 alone.
+
+| # | Task | Required work | Acceptance evidence | Status | Dev notes |
+|---|---|---|---|---|---|
+| 1.1 | Two-board data | Board A (`s3-001`) gets a GPIO input `DIG` (GPIO6, pull-down, 2 Hz) over MQTT and publishes `pico/s3-001/sensor/DIG/line`. Board B (`s3-002`) gets, over MQTT only, a sensor `REM` with `proto=mqtt`, `remote_node=s3-001`, `remote_source=DIG`, and two rules on its first byte: `R_LOW` when 0 and `R_HIGH` when 1. A is then reconfigured live with a pull-up. Nothing is reflashed between steps. | `boards data` passes 6/6. B logs `[BRIDGE] on_remote_line: s3-001/DIG -> local=REM`; every byte string B bridges is one A published; `R_LOW` fires while A reads 0 and `R_HIGH` after the live change to 1, never before; `pico/rule/R_LOW/event` reaches the broker. Log `parity/logs/mtk/d1-mqtt/data.log`. | Done | Hasif, 10 Nov 2026. 6/6 on `s3-001` (HW-747 Super Mini) and `s3-002` (N16R8 DevKitC). Every byte string B bridged is one A published; `R_LOW` then, after the live pull-up change, `R_HIGH` fired on B |
+| 1.2 | Two-board control | A gets a one-shot GPIO input `GO` (`timing.mode=one_shot`, so each `RUN` or `TRIGGER GO` fires its rules once) and, in turn, rules whose actions are `cmd.to:s3-002:STOP`, `cmd.to:s3-002:RUN`, `cmd.to:s3-002:TASKS`, `cmd.to:s3-002:ML SHOW`, a text block `cfg.to:s3-002:BEGINCFG\|name=LED\|…\|ENDCFG`, a JSON block `cfg.to:s3-002:{"configs":[{"name":"LEDJ",…}]}`, and the same in the bare-word form of the reference project's own example (`test_json/h206_remote.json`), `cfg.to:s3-002:{configs:[{name:LEDR,…}]}`, which a rule written in JSON needs because it cannot hold nested quotes. B runs its own GPIO input `BDIG` meanwhile. | `boards control` passes 10/10. B prints `[CMD] STOP` and `BDIG` prints nothing more than 1 s later; `[CMD] RUN` restarts it; B answers the `TASKS` and `ML SHOW` that A sends; B adds a sensor named exactly `LED` (no trailing `\`, the D-11 symptom on the Pico), then `LEDJ` and `LEDR`, acknowledges each on `pico/s3-002/status/config` and lists all three in `SHOW`. Log `control.log`. | Done | Hasif, 10 Nov 2026. 10/10. The run found two defects, both fixed and covered by host tests: a rule whose action forwarded a payload with `gpio:` in it was refused on the sending board, because the pin check read into the `cfg.to`/`cmd.to` payload (the reference example's `gpio:{pin:26}` included); and the receiver rejected bare-word JSON (`jsmn error=-2`), the part of D-11 the escape fix had not covered. D-11 is now closed |
+| 1.3 | Config over MQTT, one message and piece by piece | Send B two sensors (`C1`: GPIO6, pull-down, 1 Hz; `C2`: GPIO7, pull-up, 2 Hz) and a rule `R_C1` as one `{"configs":[…],"rules":[…]}` message, then `SHOW`, `CLEAR`, the same setup as three single-object messages (`{"type":"config",…}` twice, `{"type":"rule",…}`), `SHOW` and `RUN`. Then send one config on `pico/broadcast/config`. | `boards config` passes 9/9. Every item is acknowledged on `pico/s3-002/status/config` or `status/rule`; the two `SHOW` listings are identical; `R_C1` fires after `RUN`; the broadcast config is added and acknowledged by both A and B. Log `config.log`. | Done | Hasif, 10 Nov 2026. 9/9. The single message and the three separate messages give identical `SHOW` listings; the broadcast config was acknowledged by both nodes |
+| 1.4 | Every console command over MQTT | Route every console command that arrives on `pico/<node>/cmd` to the handler the console uses. `ML …` goes to the ML parser. `TASKS`, `APP`, `WIFISCAN`, `WIFIDROP`, `SPI*` and `STALL` go to ControlTask through a new message buffer `ctrl_mbf` (4 messages of 128 bytes, newest dropped and counted when full). `WINDOW`, `WINDOW STATUS`, `PAIR`, `TRIGGER`, `SHOWRULES`, `CLEARRULES` and `HELP` go to `repl_command()`, the stateless part of the shared REPL, which the console now uses too. `RUN`, `STOP`, `CLEAR`, `SHOW`, `debug.infer`, `infer.mode` and `batch:` keep the MQTT handler's `[CMD]` replies, and `STOP` and `RUN` also end a `WINDOW` or `PAIR` as on the console. Configuration sent on the command topic is refused with a pointer to the config topic. | Host: `sh tools/mtk_runtime_test.sh` passes (routing, the ControlTask hand-off, a full `ctrl_mbf`, the REPL command table, and an MQTT command arriving in the middle of a typed config block). Board: `boards commands` passes 18/18, each command answering on A's console and `WIFIDROP` reconnecting by itself; the single-board `sh tools/mtk.sh mqtt <ip>` still passes 27/27. Log `commands.log`. | Done | Hasif, 10 Nov 2026. 18/18 on `s3-001`; host tests pass; the single-board `mqtt` regression still passes 27/27 ([mqtt-regression.log](parity/logs/mtk/d1-mqtt/mqtt-regression.log)). Builds checked: µT-Kernel firmware, Arduino baseline, and the shared files cross-compiled for the Pico 2 |
+| 1.5 | Record and update | Run `sh tools/mtk.sh boards <ip>` (all stages) on two boards flashed from the same commit, and the single-board `mqtt` regression. Commit the logs, fill in this table's status and notes, and update FR-13 in [parity/PARITY.md](parity/PARITY.md) and the D1 row of [Deliverables at a glance](#deliverables-at-a-glance). | The logs are in `parity/logs/mtk/d1-mqtt/`; this table and FR-13 cite them with the commit and date. | Done | Hasif, 10 Nov 2026. Logs in [parity/logs/mtk/d1-mqtt/](parity/logs/mtk/d1-mqtt/); FR-13 and D-11 updated in [parity/PARITY.md](parity/PARITY.md), with the two-board rows in its section 4 |
 
 > **D2 tasks** (SPI support, Brendan and Jun Yong) are tracked in [D2_SPI_TODO.md](D2_SPI_TODO.md), with the design in [D2_SPI_DESIGN_NOTES.md](D2_SPI_DESIGN_NOTES.md) and [D2_EVENT_RECORD_DESIGN.md](D2_EVENT_RECORD_DESIGN.md). Professor feedback that affects D2 is tracked in the [feedback tracker](WEEK6_FEEDBACK_RESPONSE.md#12-d2-feedback-status).
 
@@ -262,21 +274,21 @@ See the [model specifications and deliverables](docs/embedded-ml/README.md), [st
 
 | # | Task | What it means | Owner | Status |
 |---|---|---|---|---|
-| 2.1 | ML running on the real board | Real model output on the S3, not just laptop tests, then merge the branch into `main` | Jun Yong | Partly done: merged into `main` with the D4 checkpoint; board run pending |
+| 2.1 | ML running on the real board | Real model output on the S3, not just laptop tests, then merge the branch into `main` | Jun Yong | Done 10 Nov: three sensors and swaps between all three models on the board, outputs checked against the model weights ([BOARD_VALIDATION.md](docs/embedded-ml/BOARD_VALIDATION.md)) |
 | 2.2 | Research S3 acceleration | Which S3 instructions speed up ML, which Espressif library uses them, and which model formats benefit (likely int8); a short write-up to explain to the professor | Brendan | Pending |
-| 2.3 | A small set of swappable models | Two or three small models with different inputs, at least one that uses the acceleration; note what each takes in and puts out | Jun Yong | Started: sine-float, sine-int8 and the 16-input autoencoder are bundled; use of the acceleration not yet shown |
-| 2.4 | Prove the acceleration works | Time the same model with and without the acceleration once; this also feeds D5 (4.4) | Brendan | Pending |
+| 2.3 | A small set of swappable models | Two or three small models with different inputs, at least one that uses the acceleration; note what each takes in and puts out | Jun Yong | Done 10 Nov: sine-float, sine-int8 and the 16-input autoencoder, swapped on the board; sine-int8 runs on ESP-NN's S3 vector kernel ([BOARD_VALIDATION.md](docs/embedded-ml/BOARD_VALIDATION.md#acceleration-evidence)) |
+| 2.4 | Prove the acceleration works | Time the same model with and without the acceleration once; this also feeds D5 (4.4) | Brendan | Started: Jun Yong's run shows sine-int8 calling the S3 vector kernel; the with and without timing is still to do |
 | 2.5 | Load models without reflashing | Decide whether bundled models are enough or new models must also be sendable over MQTT | Jun Yong, Brendan | Pending |
 | 2.6 | Explain the ML flow | Sensor → model → result in plain words, for the report and Tribunal 2 | Jun Yong, Brendan | Pending |
 
 ### Part 2: configuring and switching ML (Hasif and Sitt)
 
-Part 2 needs task 1.4 ([section 2](#d1-mqtt-between-real-boards-tasks-1115)) and task 2.1 first.
+Both prerequisites are done: every console command, `ML` included, works over MQTT (task 1.4, [section 2](#d1-mqtt-between-real-boards-tasks-1115)), and the ML runs on the board (task 2.1). How MQTT works and what it supports is in [Over MQTT](#over-mqtt-how-it-works-and-what-to-send).
 
 | # | Task | What it means | Status |
 |---|---|---|---|
 | 3.1 | Agree the ML setup format | What a user sends to choose model, input and output, in the same style as the sensor config lines and MQTT JSON | Pending team agreement; the existing `ML` command syntax is only a stepping stone |
-| 3.2 | Switch model live from the network | Change models over MQTT while sensing continues, not only from the console | Partial: MQTT can deliver existing ML commands, but model changes still require `STOP`, then `ML PRESET`/`ML MODEL`, `ML RUN`, `RUN` |
+| 3.2 | Switch model live from the network | Change models over MQTT while sensing continues, not only from the console | Partial: MQTT can deliver existing ML commands, but model changes still require `STOP`, then `ML PRESET`/`ML MODEL`, `ML RUN`, `RUN`; `ML` commands over MQTT answered on the board on 10 Nov (D1 task 1.4) |
 | 3.3 | Switch the data source live | Feed the model from this board's sensors or another board's data over MQTT, and swap between them live | Pending; ML bindings currently accept only local configured sensors |
 | 3.4 | Choose where results go | Use the result on the board (trigger a rule or the LCD) or publish it for other boards | Pending; ML results currently print to the console |
 | 3.5 | Bad input is handled | A wrong model or setup gives a clear error and never stops the sensors | Partial: existing ML command validation; unified setup and recovery still pending |
@@ -533,7 +545,7 @@ For the HC-SR04 and the GY-511 there is a shortcut on the µT-Kernel build: `sh 
 
 Paste each config line **once**: pasting it again adds a second sensor with the same name (`CLEAR` removes both). Multi-byte numbers are sent low byte first, so `82 02` means 0x0282.
 
-The same lines work over Wi-Fi instead of USB: `mosquitto_pub -h <laptop-ip> -t pico/s3-001/config -m "<config line>"`, then `mosquitto_pub -h <laptop-ip> -t pico/s3-001/cmd -m RUN`, and watch with `mosquitto_sub -h <laptop-ip> -t "pico/s3-001/#" -v`.
+The same lines work over Wi-Fi instead of USB: `mosquitto_pub -h <laptop-ip> -t pico/s3-001/config -m "<config line>"`, then `mosquitto_pub -h <laptop-ip> -t pico/s3-001/cmd -m RUN`, and watch with `mosquitto_sub -h <laptop-ip> -t "pico/s3-001/#" -v`. Every topic, the JSON forms and board-to-board use are in [Over MQTT](#over-mqtt-how-it-works-and-what-to-send) at the end of this section.
 
 | Sensor | Wiring to the S3 | Config line | Reading the output |
 |---|---|---|---|
@@ -553,6 +565,45 @@ BEGINRULE|name=DARK|source=LIGHT|calc=s=u8(0)|when=s==1|action=log:it is dark|EN
 `calc` picks the value out of the bytes (`u8(0)` = byte 0), `when` is the condition, and `action` can also switch a pin (`gpio:5=HIGH`), set PWM, publish over MQTT or run the AI model. Every option and action is listed in [project_v3/README.md](project_v3/README.md#%EF%B8%8F-configuration-guide); its examples use Pico pin numbers, so swap in S3 GP numbers.
 
 
+
+## Over MQTT: how it works and what to send
+
+**It is always on.** If `wifi_credentials.h` names a network, the board joins it at boot, connects to the broker in `MQTT_HOST` (Mosquitto on the laptop, [Part B](#part-b-wi-fi-and-broker)) and subscribes to its own topics; it reconnects by itself after a drop. No config line turns MQTT on: config lines only decide which sensors and rules exist. Boards never talk to each other directly; every message goes through the broker. A board's topics start with `pico/<node>/` (the prefix comes from the original Pico project and is kept on purpose, so S3 boards, the Pico reference and other groups' nodes built on the same base can exchange messages, and every MQTT test still applies), where `<node>` is its `NODE_ID` (`s3-001` unless changed; flash another board as `s3-002` with `NODE=s3-002 sh tools/mtk.sh flash`).
+
+| Topic | Direction | What goes on it |
+|---|---|---|
+| `pico/<node>/config` | to the board | Sensors and rules: the same `BEGINCFG…ENDCFG` and `BEGINRULE…ENDRULE` lines as the console, or JSON (below). Each item is answered on `pico/<node>/status/config` or `status/rule` with `OK:<name>` or `FAIL:<name>` |
+| `pico/broadcast/config` | to every board | The same as `config`, for all boards at once |
+| `pico/<node>/cmd` | to the board | Any console command: `RUN`, `STOP`, `CLEAR`, `SHOW`, `SHOWRULES`, `TASKS`, `ML …`, `WINDOW …`, `TRIGGER …`, the `SPI…` commands and the rest (D1 task 1.4). Configuration sent here is refused with a pointer to `config`. A command's printed reply (the `SHOW` list, `TASKS`) appears on the board's console (`sh tools/mtk.sh monitor`), not over MQTT |
+| `pico/<node>/sensor/<name>/line` | from the board | Every reading while the board runs, the same line the console prints |
+| `pico/<node>/presence`, `pico/<node>/heartbeat` | from the board | Sent on connect, then uptime every 10 s |
+| `pico/rule/<rule>/event` | from the board | Each time a rule fires |
+| `pico/<node>/model/…` | to the board | A new ML model and its parameters, sent by `project_v3/models/send_model.py`; the board checks it, keeps it in flash and loads it |
+
+**JSON forms** (on either config topic). Several items at once: `{"configs":[{…},{…}],"rules":[{…}]}`. One item: `{"type":"config","name":"C1","proto":"gpio","mode":"poll","freq_hz":1,"gpio":{"pin":6,"pull":"down","mode":"digital"}}` or `{"type":"rule","name":"R1","source":"C1","calc":["s=u8(0)"],"when":"s==0","action":"log:C1 low"}`. Both give the same result as the text lines, whole or piece by piece (D1 task 1.3). Keys and values may also be written without quotes, `{configs:[{name:C1,…}]}`, which a rule needs when it forwards JSON to another board; a value with spaces still needs quotes.
+
+**Board to board** (tested between two boards in D1 tasks 1.1 and 1.2):
+
+| To | Use |
+|---|---|
+| Use another board's sensor | A config line with `proto=mqtt`, `remote_node=<node>` and `remote_source=<sensor>`: each line that sensor publishes becomes a reading of the local one, so rules work on it as if it were wired here |
+| Send another board a command | A rule action `cmd.to:<node>:<command>`, for example `cmd.to:s3-002:STOP` |
+| Configure another board | A rule action `cfg.to:<node>:<config>`: a text block with its separators written `\|`, or JSON |
+
+**Try it** with two boards, `s3-001` and `s3-002`, and nothing wired (GPIO6 is read with its internal pull-down):
+
+```sh
+mosquitto_sub -h <laptop-ip> -t 'pico/#' -v      # watch everything, in its own window
+mosquitto_pub -h <laptop-ip> -t pico/s3-001/config -m 'BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG'
+mosquitto_pub -h <laptop-ip> -t pico/s3-002/config -m 'BEGINCFG|name=REM|proto=mqtt|mode=poll|freq_hz=2|remote_node=s3-001|remote_source=DIG|ENDCFG'
+mosquitto_pub -h <laptop-ip> -t pico/s3-002/config -m 'BEGINRULE|name=R_LOW|source=REM|calc=s=u8(0)|when=s==0|action=log:A reads low|ENDRULE'
+mosquitto_pub -h <laptop-ip> -t pico/s3-002/cmd -m RUN
+mosquitto_pub -h <laptop-ip> -t pico/s3-001/cmd -m RUN   # board B now prints "A reads low"
+```
+
+`sh tools/mtk.sh boards <laptop-ip>` runs all of this and more as a test (D1 tasks 1.1 to 1.4).
+
+**Not there yet** (D4 part 2, [section 5](#5-d4-task-checklist)): ML results are printed on the console but not published; the ML input cannot yet come from another board; a model change over MQTT works but needs `STOP` first; and there is no single message that sets the model, its input and its output (tasks 3.1 to 3.4). The LCD board does not yet show what the other boards publish (D6 task 5.5).
 ---
 
 # 10. Completion rule

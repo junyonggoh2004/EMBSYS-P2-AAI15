@@ -1,0 +1,166 @@
+18:34:39 ---    stage config: A=s3-001 B=s3-002
+18:34:39 ---    step reset: Both nodes stopped and cleared
+18:34:39 ---    publish pico/s3-001/cmd: STOP
+18:34:39 BROKER pico/s3-001/cmd STOP
+18:34:39 A      [CMD] STOP
+18:34:39 ---    publish pico/s3-001/cmd: CLEAR
+18:34:39 BROKER pico/s3-001/cmd CLEAR
+18:34:39 A      [RULE] reset
+18:34:39 A      [BRIDGE] reset
+18:34:39 A      [CMD] CLEAR (scheduler + rules + bridge)
+18:34:39 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:39 ---    publish pico/s3-002/cmd: STOP
+18:34:39 BROKER pico/s3-002/cmd STOP
+18:34:40 B      [CMD] STOP
+18:34:40 ---    publish pico/s3-002/cmd: CLEAR
+18:34:40 BROKER pico/s3-002/cmd CLEAR
+18:34:40 B      [RULE] reset
+18:34:40 B      [BRIDGE] reset
+18:34:40 B      [CMD] CLEAR (scheduler + rules + bridge)
+18:34:40 A      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:42 ---    step whole: Two sensors and a rule in one JSON message
+18:34:42 ---    publish pico/s3-002/config: {"configs": [{"name": "C1", "proto": "gpio", "mode": "poll", "freq_hz": 1, "gpio": {"pin": 6, "pull": "down", "mode": "digital"}}, {"name": "C2", "proto": "gpio", "mode": "poll", "freq_hz": 2, "gpio": {"pin": 7, "pull": "up", "mode": "digital"}}], "rules": [{"name": "R_C1", "source": "C1", "calc": ["s=u8(0)"], "when": "s==0", "action": "log:C1 low"}]}
+18:34:42 BROKER pico/s3-002/config <353 bytes>
+18:34:42 B      [CFG] cfg_cb payload (first 120): {"configs": [{"name": "C1", "proto": "gpio", "mode": "poll", "freq_hz": 1, "gpio": {"pin": 6, "pull": "down", "mode": "d
+18:34:42 B      [JSON] configs processed: 2
+18:34:42 B      [JSON] rules processed: 1
+18:34:42 B      [CFG] mqtt_json_try_convert_to_inline -> 272
+18:34:42 BROKER pico/s3-002/status/config OK:C1
+18:34:42 BROKER pico/s3-002/status/config OK:C2
+18:34:42 BROKER pico/s3-002/status/rule OK:R_C1
+18:34:42 B      [CFG] inline from JSON: BEGINCFG|name=C1|proto=gpio|mode=poll|freq_hz=1|gpio.pin=6|gpio.pull=down|gpio.mode=digital|ENDCFGBEGINCFG|name=C2|proto=gpio|mode=poll|freq_hz=2|gpio.pin=7|gpio.pull=up|gpio.mode=digital|ENDCFGBEGINRULE|name=R_C1|source=C1|calc=s=u8(0)|when=s==0|action=log:C1 low|ENDRULE
+18:34:42 B      [SCHED] added: C1 on gpio
+18:34:42 B      [CFG] added #0: C1
+18:34:42 B      [SCHED] added: C2 on gpio
+18:34:42 B      [CFG] added #1: C2
+18:34:42 B      [RULE] added name=R_C1 src=C1 vars=1 action=log:C1 low
+18:34:42 B      [RULE] added name=R_C1
+18:34:44 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:44 ---    step whole-show: SHOW lists the setup
+18:34:44 ---    publish pico/s3-002/cmd: SHOW
+18:34:44 BROKER pico/s3-002/cmd SHOW
+18:34:44 B      [CMD] SHOW
+18:34:44 B      [WINDOW] enabled=0 state=0 events=0 dropped=0 radar_frames=0 malformed=0 rx_dropped=0 identity=1
+18:34:44 B      [SCHED] #0 name=C1 proto=gpio mode=poll freq=1.000Hz timing=periodic interval=1000ms timeout=0ms window=0ms trigger=- status=1
+18:34:44 B      [SENSOR] name=C1 pending=0 timeouts=0 errors=0 overruns=0
+18:34:44 B      [SCHED] #1 name=C2 proto=gpio mode=poll freq=2.000Hz timing=periodic interval=500ms timeout=0ms window=0ms trigger=- status=1
+18:34:44 B      [SENSOR] name=C2 pending=0 timeouts=0 errors=0 overruns=0
+18:34:44 B      [RULE] count=1
+18:34:45 B        #0 name=R_C1 src=C1 vars=1 action=log:C1 low prev_init=0
+18:34:45 A      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:46 BROKER pico/s3-001/heartbeat {"uptime_s":151}
+18:34:47 BROKER pico/s3-002/heartbeat {"uptime_s":132}
+18:34:47 ---    step clear: CLEAR
+18:34:47 ---    publish pico/s3-002/cmd: CLEAR
+18:34:47 BROKER pico/s3-002/cmd CLEAR
+18:34:47 B      [RULE] reset
+18:34:47 B      [BRIDGE] reset
+18:34:47 B      [CMD] CLEAR (scheduler + rules + bridge)
+18:34:49 ---    step pieces: The same setup as three separate JSON messages
+18:34:49 ---    publish pico/s3-002/config: {"type": "config", "name": "C1", "proto": "gpio", "mode": "poll", "freq_hz": 1, "gpio": {"pin": 6, "pull": "down", "mode": "digital"}}
+18:34:49 BROKER pico/s3-002/config {"type": "config", "name": "C1", "proto": "gpio", "mode": "poll", "freq_hz": 1, "gpio": {"pin": 6, "pull": "down", "mode": "digital"}}
+18:34:49 B      [CFG] cfg_cb payload (first 120): {"type": "config", "name": "C1", "proto": "gpio", "mode": "poll", "freq_hz": 1, "gpio": {"pin": 6, "pull": "down", "mode
+18:34:49 B      [JSON] single-object type='config'
+18:34:49 B      [JSON] single-object inline: BEGINCFG|type=config|name=C1|proto=gpio|mode=poll|freq_hz=1|gpio.pin=6|gpio.pull=down|gpio.mode=digital|ENDCFG
+18:34:49 B      [CFG] mqtt_json_try_convert_to_inline -> 110
+18:34:49 B      [CFG] inline from JSON: BEGINCFG|type=config|name=C1|proto=gpio|mode=poll|freq_hz=1|gpio.pin=6|gpio.pull=down|gpio.mode=digital|ENDCFG
+18:34:49 BROKER pico/s3-002/status/config OK:C1
+18:34:49 B      [SCHED] added: C1 on gpio
+18:34:49 B      [CFG] added #0: C1
+18:34:49 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:49 ---    publish pico/s3-002/config: {"type": "config", "name": "C2", "proto": "gpio", "mode": "poll", "freq_hz": 2, "gpio": {"pin": 7, "pull": "up", "mode": "digital"}}
+18:34:49 BROKER pico/s3-002/config {"type": "config", "name": "C2", "proto": "gpio", "mode": "poll", "freq_hz": 2, "gpio": {"pin": 7, "pull": "up", "mode": "digital"}}
+18:34:49 B      [CFG] cfg_cb payload (first 120): {"type": "config", "name": "C2", "proto": "gpio", "mode": "poll", "freq_hz": 2, "gpio": {"pin": 7, "pull": "up", "mode":
+18:34:49 B      [JSON] single-object type='config'
+18:34:49 B      [JSON] single-object inline: BEGINCFG|type=config|name=C2|proto=gpio|mode=poll|freq_hz=2|gpio.pin=7|gpio.pull=up|gpio.mode=digital|ENDCFG
+18:34:49 B      [CFG] mqtt_json_try_convert_to_inline -> 108
+18:34:49 B      [CFG] inline from JSON: BEGINCFG|type=config|name=C2|proto=gpio|mode=poll|freq_hz=2|gpio.pin=7|gpio.pull=up|gpio.mode=digital|ENDCFG
+18:34:49 BROKER pico/s3-002/status/config OK:C2
+18:34:50 B      [SCHED] added: C2 on gpio
+18:34:50 B      [CFG] added #1: C2
+18:34:50 ---    publish pico/s3-002/config: {"type": "rule", "name": "R_C1", "source": "C1", "calc": ["s=u8(0)"], "when": "s==0", "action": "log:C1 low"}
+18:34:50 BROKER pico/s3-002/config {"type": "rule", "name": "R_C1", "source": "C1", "calc": ["s=u8(0)"], "when": "s==0", "action": "log:C1 low"}
+18:34:50 B      [CFG] cfg_cb payload (first 120): {"type": "rule", "name": "R_C1", "source": "C1", "calc": ["s=u8(0)"], "when": "s==0", "action": "log:C1 low"}
+18:34:50 B      [JSON] single-object type='rule'
+18:34:50 B      [JSON] single-object inline: BEGINRULE|name=R_C1|source=C1|calc=s=u8(0)|when=s==0|action=log:C1 low|ENDRULE
+18:34:50 B      [CFG] mqtt_json_try_convert_to_inline -> 78
+18:34:50 B      [CFG] inline from JSON: BEGINRULE|name=R_C1|source=C1|calc=s=u8(0)|when=s==0|action=log:C1 low|ENDRULE
+18:34:50 B      [RULE] added name=R_C1 src=C1 vars=1 action=log:C1 low
+18:34:50 B      [RULE] added name=R_C1
+18:34:50 BROKER pico/s3-002/status/rule OK:R_C1
+18:34:50 A      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:52 ---    step pieces-show: SHOW lists the same setup as the single message
+18:34:52 ---    publish pico/s3-002/cmd: SHOW
+18:34:52 BROKER pico/s3-002/cmd SHOW
+18:34:52 B      [CMD] SHOW
+18:34:52 B      [WINDOW] enabled=0 state=0 events=0 dropped=0 radar_frames=0 malformed=0 rx_dropped=0 identity=1
+18:34:52 B      [SCHED] #0 name=C1 proto=gpio mode=poll freq=1.000Hz timing=periodic interval=1000ms timeout=0ms window=0ms trigger=- status=1
+18:34:52 B      [SENSOR] name=C1 pending=0 timeouts=0 errors=0 overruns=0
+18:34:52 B      [SCHED] #1 name=C2 proto=gpio mode=poll freq=2.000Hz timing=periodic interval=500ms timeout=0ms window=0ms trigger=- status=1
+18:34:52 B      [SENSOR] name=C2 pending=0 timeouts=0 errors=0 overruns=0
+18:34:52 B      [RULE] count=1
+18:34:52 B        #0 name=R_C1 src=C1 vars=1 action=log:C1 low prev_init=0
+18:34:54 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:54 ---    step live: The setup runs: the rule fires
+18:34:54 ---    publish pico/s3-002/cmd: RUN
+18:34:54 BROKER pico/s3-002/cmd RUN
+18:34:54 B      [CMD] RUN
+18:34:54 B      proto=gpio src=C1 len=3 ts=140338 : 00 74 14
+18:34:54 B      [RULE] R_C1: C1 low (value=0.000 ts=140338)
+18:34:54 B      [TRACE] Total Rule Eval (C1): 500us
+18:34:54 B      proto=gpio src=C2 len=3 ts=140339 : 01 4F 13
+18:34:54 BROKER pico/rule/R_C1/event ts=140338 rule=R_C1 type=log value=0.000 msg=C1 low
+18:34:54 BROKER pico/s3-002/sensor/C1/line proto=gpio src=C1 len=3 ts=140338 : 00 74 14
+18:34:54 BROKER pico/s3-002/sensor/C2/line proto=gpio src=C2 len=3 ts=140339 : 01 4F 13
+18:34:55 BROKER pico/s3-002/sensor/C2/line proto=gpio src=C2 len=3 ts=140839 : 01 43 15
+18:34:55 B      proto=gpio src=C2 len=3 ts=140839 : 01 43 15
+18:34:55 A      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:55 BROKER pico/rule/R_C1/event ts=141339 rule=R_C1 type=log value=0.000 msg=C1 low
+18:34:55 BROKER pico/s3-002/sensor/C1/line proto=gpio src=C1 len=3 ts=141339 : 00 5D 18
+18:34:55 BROKER pico/s3-002/sensor/C2/line proto=gpio src=C2 len=3 ts=141339 : 01 37 17
+18:34:55 B      proto=gpio src=C1 len=3 ts=141339 : 00 5D 18
+18:34:55 B      [RULE] R_C1: C1 low (value=0.000 ts=141339)
+18:34:55 B      [TRACE] Total Rule Eval (C1): 382us
+18:34:55 B      proto=gpio src=C2 len=3 ts=141339 : 01 37 17
+18:34:56 BROKER pico/s3-002/sensor/C2/line proto=gpio src=C2 len=3 ts=141839 : 01 2B 19
+18:34:56 B      proto=gpio src=C2 len=3 ts=141839 : 01 2B 19
+18:34:56 BROKER pico/s3-001/heartbeat {"uptime_s":161}
+18:34:56 BROKER pico/rule/R_C1/event ts=142339 rule=R_C1 type=log value=0.000 msg=C1 low
+18:34:56 BROKER pico/s3-002/sensor/C1/line proto=gpio src=C1 len=3 ts=142339 : 00 46 1C
+18:34:56 BROKER pico/s3-002/sensor/C2/line proto=gpio src=C2 len=3 ts=142339 : 01 1F 1B
+18:34:56 B      proto=gpio src=C1 len=3 ts=142339 : 00 46 1C
+18:34:56 B      [RULE] R_C1: C1 low (value=0.000 ts=142339)
+18:34:56 B      [TRACE] Total Rule Eval (C1): 382us
+18:34:56 B      proto=gpio src=C2 len=3 ts=142339 : 01 1F 1B
+18:34:57 BROKER pico/s3-002/heartbeat {"uptime_s":142}
+18:34:57 ---    step broadcast: One config on pico/broadcast/config reaches both nodes
+18:34:57 ---    publish pico/s3-002/cmd: STOP
+18:34:57 BROKER pico/s3-002/cmd STOP
+18:34:57 B      [CMD] STOP
+18:34:57 ---    publish pico/broadcast/config: BEGINCFG|name=BC|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+18:34:57 BROKER pico/broadcast/config BEGINCFG|name=BC|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+18:34:57 BROKER pico/s3-002/status/config OK:BC
+18:34:57 BROKER pico/s3-001/status/config OK:BC
+18:34:57 B      [CFG] cfg_cb payload (first 120): BEGINCFG|name=BC|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+18:34:57 B      [JSON] not starting with '{' after trim, char=0x22
+18:34:57 B      [CFG] mqtt_json_try_convert_to_inline -> 0
+18:34:57 B      [SCHED] added: BC on gpio
+18:34:57 B      [CFG] added #2: BC
+18:34:57 A      [CFG] cfg_cb payload (first 120): BEGINCFG|name=BC|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+18:34:57 A      [JSON] not starting with '{' after trim, char=0x22
+18:34:57 A      [CFG] mqtt_json_try_convert_to_inline -> 0
+18:34:57 A      [SCHED] added: BC on gpio
+18:34:57 A      [CFG] added #0: BC
+18:34:59 ---    step stop: Both cleared
+18:34:59 ---    publish pico/s3-001/cmd: CLEAR
+18:34:59 BROKER pico/s3-001/cmd CLEAR
+18:34:59 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:59 A      [RULE] reset
+18:34:59 A      [BRIDGE] reset
+18:34:59 A      [CMD] CLEAR (scheduler + rules + bridge)
+18:35:00 ---    publish pico/s3-002/cmd: CLEAR
+18:35:00 BROKER pico/s3-002/cmd CLEAR
+18:35:00 B      [RULE] reset
+18:35:00 B      [BRIDGE] reset
+18:35:00 B      [CMD] CLEAR (scheduler + rules + bridge)
+18:35:00 A      [MQTT] Status: Connected, Broker: 172.20.10.5
