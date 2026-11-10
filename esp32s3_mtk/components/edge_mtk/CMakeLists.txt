@@ -13,7 +13,8 @@ idf_component_register(SRCS "console_mtk.c" "hal_mtk.c" "runtime_mtk.c" "spi_ben
 # Every printf/vprintf/puts/putchar in the image goes through console_mtk.c,
 # so console output is serialised by a µT-Kernel mutex.
 target_link_libraries(${COMPONENT_LIB} INTERFACE "-Wl,--wrap=printf" "-Wl,--wrap=vprintf"
-                      "-Wl,--wrap=puts" "-Wl,--wrap=putchar")
+                      "-Wl,--wrap=puts" "-Wl,--wrap=putchar"
+                      "-Wl,--wrap=esp_nn_fc_s16_esp32s3")
 
 # The shared header mqtt/mqtt_model_transfer.h has "/*" inside a comment;
 # keep that warning non-fatal here as in the edgecore component.

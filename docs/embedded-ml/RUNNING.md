@@ -142,7 +142,7 @@ This is **not yet live switching**: `STOP` pauses sensor sampling, and the comma
 
 ## Validation and remaining work
 
-See [VALIDATION.md](VALIDATION.md) for actual completed checks. The code builds and desktop inference and host lifecycle tests pass. **This new ML firmware has not yet been flashed or demonstrated on the board.** The previous board evidence establishes sensor acquisition only.
+The [10 November board capture](BOARD_VALIDATION.md) verifies three sensors, swaps between all three bundled models, and two completed S3 vector-kernel calls during `sine-int8` inference on `dev-jy-ml`. Use the same checks on the combined MQTT firmware before recording an integration-board result. [Host and build validation](VALIDATION.md)
 
 Keep the board running at least ten minutes, observe changing outputs as sensor inputs change, then test the model and binding swaps above. Check missing-data status by disabling a configured source or unplugging a sensor with USB disconnected. Capture TASKS before/after and verify stack headroom, watchdog stability and sensor/rule operation. Compare recorded actual model inputs with the desktop reference tool before claiming target numerical agreement.
 

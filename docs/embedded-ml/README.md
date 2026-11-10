@@ -1,6 +1,6 @@
 # dev-jy-ml — configurable embedded ML deliverables
 
-Plan dated 3 November 2026. Base: merged `main` commit `b496a8d87135a3763403b97d3d34271b29b30442`. Target: ESP32-S3 Super Mini, ESP-IDF with µT-Kernel 3 SMP, using the existing EdgeCore framework. **Status: a first local implementation now builds and passes host tests. See [RUNNING.md](RUNNING.md) and [VALIDATION.md](VALIDATION.md). The full deliverables below remain the target scope; bundled model selection is implemented, arbitrary model-file installation and runtime manifest persistence are not. Board ML inference is not yet verified.**
+Plan dated 3 November 2026. Base: merged `main` commit `b496a8d87135a3763403b97d3d34271b29b30442`. Target: ESP32-S3 Super Mini, ESP-IDF with µT-Kernel 3 SMP, using the existing EdgeCore framework. **Status: a first local implementation now builds and passes host tests. See [RUNNING.md](RUNNING.md) and [VALIDATION.md](VALIDATION.md). The full deliverables below remain the target scope; bundled model selection is implemented, arbitrary model-file installation and runtime manifest persistence are not. [Board inference and ESP-NN execution are verified for the local model-swap demo](BOARD_VALIDATION.md).**
 
 ## Current ML model: specifications and meaning
 
@@ -69,7 +69,7 @@ A single scalar model can consume one selected measurement, or a configured aggr
 
 For the sine demonstration, map a configured physical range to [0, 2π]: `u = clamp((value - minimum) / (maximum - minimum), 0, 1)`; `x = 2πu`. Reject `maximum <= minimum`. Example: distance 2–400 cm, replaced later by another supported scalar field with its own range. For an aggregate, explicitly configure field weights, normalization and reduction; record the final scalar in output evidence. These transforms allow numerical execution but do not make the output a meaningful sensor prediction.
 
-Before accepting any artifact: pin upstream commit and file path; record license/attribution, SHA-256, byte size, shapes, tensor dtypes, quantization scales/zero points and operators; check the pinned runtime supports them; measure arena allocation and successful invocation on the board. Do not infer arena use from model file size. Implementation update: both pinned upstream artifacts are now bundled and have executed successfully in desktop LiteRT. Their metadata/license are in `models/hello_world`; target execution is still pending.
+Before accepting any artifact: pin upstream commit and file path; record license/attribution, SHA-256, byte size, shapes, tensor dtypes, quantization scales/zero points and operators; check the pinned runtime supports them; measure arena allocation and successful invocation on the board. Do not infer arena use from model file size. Implementation update: both pinned upstream artifacts are now bundled and have executed successfully in desktop LiteRT. Their metadata/license are in `models/hello_world`; both sine models also ran in the [ESP32-S3 capture](BOARD_VALIDATION.md).
 
 Primary research sources (checked 3 November 2026):
 

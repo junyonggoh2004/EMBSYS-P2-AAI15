@@ -1,4 +1,6 @@
-# Embedded ML validation — 3 November 2026
+# Embedded ML validation
+
+The [10 November board capture](BOARD_VALIDATION.md) records the ESP32-S3 model-swap and acceleration results. The original host validation below describes the 3 November checkpoint.
 
 
 
@@ -87,4 +89,4 @@ The current supported adapters are AHT/TSL2561 I²C and GPIO pulse distance. Run
 Model selection disables inference, clears cached data and attempts rollback to the previous bundled bytes if loading fails. This is not a power-loss persistence test. The new sensor/ML configuration is intentionally volatile. Local console results do not introduce new MQTT result topics.
 
 
-Console follow-up: the supplied board capture shows repeated scheduler debug output and rejected manually edited commands. Backspace/DEL editing and whitespace trimming now pass tests of actual repl_line_feed; scheduler debug is disabled on the ESP32 target. The AHT/light-only loader avoids manual typing and distance timeouts. Firmware rebuild and linked audit pass. Updated ML invocation on board is still pending.
+Console follow-up: the supplied board capture shows repeated scheduler debug output and rejected manually edited commands. Backspace/DEL editing and whitespace trimming now pass tests of actual repl_line_feed; scheduler debug is disabled on the ESP32 target. The AHT/light-only loader avoids manual typing and distance timeouts. Firmware rebuild and linked audit pass. The subsequent [board capture](BOARD_VALIDATION.md) verifies successful inference with the full sensor preset.
