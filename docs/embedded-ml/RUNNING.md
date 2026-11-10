@@ -127,7 +127,7 @@ Configuration changes and `ML RUN` require sensor sampling stopped. Use contiguo
 
 ## Validation and remaining work
 
-See [VALIDATION.md](VALIDATION.md) for actual completed checks. The code builds and desktop inference and host lifecycle tests pass. **This new ML firmware has not yet been flashed or demonstrated on the user's board.** The previous board evidence establishes sensor acquisition only.
+See [VALIDATION.md](VALIDATION.md) for actual completed checks. The code builds and desktop inference and host lifecycle tests pass. The [10 November board capture](BOARD_VALIDATION.md) verifies three sensors and swaps between all three bundled models. It also captures two completed calls to the S3 vector kernel during `sine-int8` inference.
 
 Keep the board running at least ten minutes, observe changing outputs as sensor inputs change, then test the model and binding swaps above. Check missing-data status by disabling a configured source or unplugging a sensor with USB disconnected. Capture TASKS before/after and verify stack headroom, watchdog stability and sensor/rule operation. Compare recorded actual model inputs with the desktop reference tool before claiming target numerical agreement.
 
