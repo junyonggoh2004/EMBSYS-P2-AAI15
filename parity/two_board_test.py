@@ -231,8 +231,11 @@ def stage_data(a, b):
             if start is None:
                 return False, f"A never printed {after}"
             events = [e for e in events if e[0] > start]
+            # A prints each line on its console before publishing it, so its console
+            # is the full record; the broker copy can reach the host after B's.
             sent = {line_bytes(e[2]) for e in events
-                    if e[1] == "BROKER" and e[2].startswith(f"pico/{a}/sensor/DIG/line ")}
+                    if (e[1] == "BROKER" and e[2].startswith(f"pico/{a}/sensor/DIG/line "))
+                    or (e[1] == "A" and e[2].startswith("proto=gpio src=DIG "))}
             got = {line_bytes(e[2]) for e in events if e[1] == "B" and e[2].startswith("proto=mqtt src=REM ")}
             sent.discard(None)
             got.discard(None)
@@ -286,7 +289,11 @@ def stage_control(a, b):
 
     cfg_text = (f"cfg.to:{b}:BEGINCFG\\|name=LED\\|proto=gpio\\|gpio.mode=digital\\|gpio.pin=8"
                 "\\|mode=poll\\|freq_hz=1\\|ENDCFG")
-    cfg_json = f"cfg.to:{b}:{{configs:[{{name:LEDJ,proto:gpio,mode:poll,freq_hz:1,gpio:{{pin:8,mode:digital}}}}]}}"
+    cfg_json = f"cfg.to:{b}:" + json.dumps({"configs": [{"name": "LEDJ", "proto": "gpio", "mode": "poll", "freq_hz": 1,
+                                                       "gpio": {"pin": 8, "mode": "digital"}}]}, separators=(",", ":"))
+    # The bare-word form of the reference project's own example (test_json/h206_remote.json),
+    # which a JSON rule needs because it cannot hold nested quotes (D-11).
+    cfg_relaxed = f"cfg.to:{b}:{{configs:[{{name:LEDR,proto:gpio,mode:poll,freq_hz:1,gpio:{{pin:8,mode:digital}}}}]}}"
     return [
         ("reset", "Both nodes stopped and cleared",
          [(ka, "STOP"), (ka, "CLEAR"), (kb, "STOP"), (kb, "CLEAR")], 6,
@@ -314,8 +321,12 @@ def stage_control(a, b):
          [(ka, "STOP"), (ka, "CLEARRULES"), (ca, rule("R_JSON_B", "GO", "s==0", cfg_json)), (ka, "RUN")], 8,
          [f"A:^\\[RULE\\] R_JSON_B: cfg.to -> node={b}", "B:^\\[CFG\\] added #\\d+: LEDJ",
           f"BROKER:^pico/{b}/status/config OK:LEDJ"]),
+        ("cfg-relaxed", "A configures B with bare-word JSON, the reference example's form (D-11)",
+         [(ka, "STOP"), (ka, "CLEARRULES"), (ca, rule("R_RELAX_B", "GO", "s==0", cfg_relaxed)), (ka, "RUN")], 8,
+         [f"A:^\\[RULE\\] R_RELAX_B: cfg.to -> node={b}", "B:^\\[CFG\\] added #\\d+: LEDR",
+          f"BROKER:^pico/{b}/status/config OK:LEDR"]),
         ("b-show", "B lists what A configured", [(kb, "SHOW")], 6,
-         ["B:name=LED proto=gpio", "B:name=LEDJ proto=gpio"]),
+         ["B:name=LED proto=gpio", "B:name=LEDJ proto=gpio", "B:name=LEDR proto=gpio"]),
         ("stop", "Both stopped and cleared", [(ka, "STOP"), (ka, "CLEAR"), (kb, "STOP"), (kb, "CLEAR")], 6,
          ["A:^\\[CMD\\] CLEAR", "B:^\\[CMD\\] CLEAR"]),
     ]
