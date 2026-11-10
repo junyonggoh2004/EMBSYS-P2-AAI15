@@ -27,6 +27,7 @@ extern "C" {
 }
 
 #include <cstdio>
+#include <cmath>
 #include <cstring>
 #include <new>
 
@@ -154,6 +155,16 @@ tflite_err_t engine_load(const uint8_t *data, uint32_t size)
         engine_unload();
         return TFLITE_ERR_BAD_MODEL;
     }
+    for(int output=0;output<2;output++) {
+        int n=output ? s_info.num_outputs : s_info.num_inputs;
+        for(int i=0;i<n;i++) {
+            const TfLiteTensor *t=output ? s_interpreter->output(i) : s_interpreter->input(i);
+            if((t->type!=kTfLiteFloat32 && t->type!=kTfLiteInt8) ||
+               (t->type==kTfLiteInt8 && (!std::isfinite(t->params.scale) || t->params.scale<=0 || t->params.zero_point < -128 || t->params.zero_point>127))) {
+                engine_unload(); return TFLITE_ERR_BAD_MODEL;
+            }
+        }
+    }
     s_loaded = true;
     printf("[TFLITE] Model loaded OK!\n");
     printf("[TFLITE]   Inputs:  %d tensor(s), %d total element(s)\n", s_info.num_inputs, s_info.input_size);
@@ -165,6 +176,7 @@ tflite_err_t engine_load(const uint8_t *data, uint32_t size)
 tflite_err_t engine_invoke(const float *inputs, float *outputs)
 {
     if (!s_loaded || !s_interpreter) return TFLITE_ERR_NOT_LOADED;
+    for(int i=0;i<s_info.input_size;i++) if(!std::isfinite(inputs[i])) return TFLITE_ERR_INVOKE;
     int offset = 0;
     for (int i = 0; i < s_info.num_inputs; i++) {
         TfLiteTensor *t = s_interpreter->input(i);
@@ -177,7 +189,8 @@ tflite_err_t engine_invoke(const float *inputs, float *outputs)
             int zero_point = t->params.zero_point;
             for (int k = 0; k < count; k++) {
                 float val = inputs[offset + k];
-                int32_t q = (int32_t)(val / scale + (val >= 0 ? 0.5f : -0.5f)) + zero_point;
+                float rounded=std::round(val / scale) + zero_point;
+                int32_t q=(int32_t)std::fmin(127.0f,std::fmax(-128.0f,rounded));
                 if (q < -128) q = -128;
                 if (q > 127) q = 127;
                 t->data.int8[k] = (int8_t)q;
@@ -257,6 +270,7 @@ tflite_err_t request(infer_req_t &req, infer_rep_t &rep)
         s_info_cache = rep.info;
         s_ready_cache = rep.loaded;
     } else {
+        s_ready_cache=false;
         printf("[INFER] InferenceTask did not answer\n");
     }
     tk_unl_mtx(s_rpc_mtx);

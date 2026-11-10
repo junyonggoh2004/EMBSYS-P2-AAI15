@@ -50,6 +50,7 @@
 #include "mqtt/sensor_bridge.h"
 #include "mqtt/mqtt_model_transfer.h"
 #include "edge_mtk.h"
+#include "sensor_ml.h"
 #include "runtime_mtk.h"
 
 // Defined in the shared code (mqtt/mqtt_config_parser.c) and by the MQTT layer.
@@ -218,9 +219,18 @@ static bool parse_line_topic(const char *topic, char *node, size_t nn, char *src
 static void handle_sched_msg(sched_msg_t *m, bool *running, bool *cfg_ready)
 {
     switch (m->kind) {
-    case SCHED_CONSOLE_LINE: repl_handle_line(m->text, running, cfg_ready); break;
-    case SCHED_MQTT_CONFIG:  if (s_cfg_cb) s_cfg_cb(m->text); break;
-    case SCHED_MQTT_CMD:     if (s_cmd_cb) s_cmd_cb(m->text); break;
+    case SCHED_CONSOLE_LINE:
+        if(sensor_ml_command(m->text,*running)) break;
+        if(!strcasecmp(m->text,"STOP") || !strcasecmp(m->text,"CLEAR") || strstr(m->text,"BEGINCFG")) sensor_ml_invalidate();
+        repl_handle_line(m->text, running, cfg_ready); break;
+    case SCHED_MQTT_CONFIG:  sensor_ml_invalidate(); if (s_cfg_cb) s_cfg_cb(m->text); break;
+    case SCHED_MQTT_CMD:
+        // The MQTT callback runs in SchedulerTask, just like console ML commands.
+        // Keep the shared command parser for all other commands.
+        if (sensor_ml_command(m->text, *running)) break;
+        if (!strcasecmp(m->text, "STOP") || !strcasecmp(m->text, "CLEAR")) sensor_ml_invalidate();
+        if (s_cmd_cb) s_cmd_cb(m->text);
+        break;
     case SCHED_MQTT_NODE:    if (s_node_cb) s_node_cb("unknown", m->text); break;
     case SCHED_MODEL_PARAMS: inference_mgr_set_params((const uint8_t *)m->text, m->len); break;
     case SCHED_REMOTE_LINE: {
@@ -303,6 +313,7 @@ static void scheduler_task(INT stacd, void *exinf)
         scheduler_run_all(running);
         model_transfer_poll();
         inference_mgr_poll();
+        sensor_ml_poll(running);
         cycle_record((uint32_t)(hal_time_us() - t0));
         runtime_alive(RT_SCHEDULER);
     }

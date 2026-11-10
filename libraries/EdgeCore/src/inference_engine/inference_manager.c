@@ -10,6 +10,7 @@
 #include "inference_engine/tflite_wrapper.h"
 #include "mqtt/mqtt_model_transfer.h"
 #include <stdio.h>
+#include <math.h>
 #include <string.h>
 #include "hal/hal.h"
 
@@ -18,6 +19,8 @@
 #include "../models/model_params.h"
 
 /* ---- State ---- */
+static uint32_t s_revision;
+static bool s_outputs_valid;
 static bool s_auto_loaded = false;     /* have we auto-loaded the current flash model? */
 
 /* Cached outputs from the most recent inference */
@@ -69,7 +72,21 @@ void inference_mgr_init(void) {
     printf("[INFER] Inference manager initialised.\n");
 }
 
+uint32_t inference_mgr_revision(void) { return s_revision; }
+bool inference_mgr_load_bytes(const uint8_t *bytes,uint32_t size) {
+    s_outputs_valid=false;
+    s_revision++;
+    if(tflite_load_model(bytes,size)!=TFLITE_OK) return false;
+    const tflite_model_info_t *info=tflite_get_info();
+    if(!info || info->input_size<1 || info->input_size>INFER_MAX_INPUTS || info->output_size<1 || info->output_size>INFER_MAX_OUTPUTS) return false;
+    s_input_count=info->input_size; s_output_count=info->output_size;
+    memset(s_inputs,0,sizeof s_inputs); memset(s_outputs,0,sizeof s_outputs);
+    s_norm_count=0; s_thresh_count=0; s_auto_loaded=true;
+    memset(s_slot_last_seen_ms,0,sizeof s_slot_last_seen_ms);
+    return true;
+}
 bool inference_mgr_load_base_model(void) {
+    s_revision++; s_outputs_valid=false;
     if (g_autoencoder_model_size == 0) {
         printf("[INFER] Base model is empty.\n");
         return false;
@@ -110,6 +127,7 @@ bool inference_mgr_load_base_model(void) {
 }
 
 bool inference_mgr_load_from_flash(void) {
+    s_revision++; s_outputs_valid=false;
     const uint8_t *model = model_transfer_get_model_ptr();
     uint32_t size = model_transfer_model_size();
 
@@ -136,20 +154,15 @@ bool inference_mgr_load_from_flash(void) {
 }
 
 bool inference_mgr_set_inputs(const float *inputs, int count) {
-    if (!tflite_is_ready()) return false;
-
-    int n = count < s_input_count ? count : s_input_count;
-    memcpy(s_inputs, inputs, n * sizeof(float));
-
-    /* Zero-pad if caller provided fewer inputs than expected */
-    if (n < s_input_count) {
-        memset(s_inputs + n, 0, (s_input_count - n) * sizeof(float));
-    }
-
+    s_outputs_valid=false;
+    if(!inputs || !tflite_is_ready() || count!=s_input_count || count<1 || count>INFER_MAX_INPUTS) return false;
+    for(int i=0;i<count;i++) if(!isfinite(inputs[i])) return false;
+    memcpy(s_inputs,inputs,(size_t)count*sizeof(float));
     return true;
 }
 
 bool inference_mgr_run(void) {
+    s_outputs_valid=false;
     if (!tflite_is_ready()) return false;
 
     tflite_err_t err = tflite_invoke(s_inputs, s_outputs);
@@ -157,11 +170,12 @@ bool inference_mgr_run(void) {
         printf("[INFER] Invoke failed: error %d\n", err);
         return false;
     }
+    s_outputs_valid=true;
     return true;
 }
 
 bool inference_mgr_get_output(int index, float *out) {
-    if (index < 0 || index >= s_output_count) return false;
+    if (!out || !s_outputs_valid || index < 0 || index >= s_output_count) return false;
     if (!tflite_is_ready()) return false;
     *out = s_outputs[index];
     return true;
