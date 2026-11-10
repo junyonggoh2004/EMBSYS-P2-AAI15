@@ -1,6 +1,6 @@
 # Run the first embedded ML version
 
-The first ML implementation came from `dev-jy-ml` and is being integrated on `d4-live-ml-sitt`. It uses the existing ESP-IDF / µT-Kernel firmware and unchanged [breadboard wiring](../../esp32s3_mtk/WIRING.md). The LCD remains disabled and non-functional.
+The first ML implementation came from `dev-jy-ml` and was integrated into `main` through `d4-live-ml-sitt`. It uses the existing ESP-IDF / µT-Kernel firmware and unchanged [breadboard wiring](../../esp32s3_mtk/WIRING.md). The LCD remains disabled and non-functional.
 
 ## Start in VS Code
 
@@ -127,7 +127,7 @@ Configuration changes and `ML RUN` require sensor sampling stopped. Use contiguo
 
 ## MQTT control checkpoint (D4 Part 2)
 
-On the D4 integration branch, the existing `pico/<node>/cmd` subscription also accepts the same `ML` text commands as the serial console. MQTTTask queues each command for SchedulerTask; the ML parser and model state are not called from the network callback. For example, with the board connected to a broker, send the following payloads **in order** to the board's own command topic (replace `<node>` with its configured node ID):
+Since the D4 checkpoint, the existing `pico/<node>/cmd` subscription also accepts the same `ML` text commands as the serial console. MQTTTask queues each command for SchedulerTask; the ML parser and model state are not called from the network callback. For example, with the board connected to a broker, send the following payloads **in order** to the board's own command topic (replace `<node>` with its configured node ID):
 
 ```text
 STOP
@@ -138,11 +138,11 @@ RUN
 
 Watch the board's serial console for `ML: OK PRESET sine-int8`, `ML: OK RUN`, and subsequent ML JSON with numeric outputs. `ML SHOW` can be sent on the same topic without clearing cached samples. Other command payloads continue through the existing MQTT command handler. This checkpoint has a native routing test; MQTT delivery and ML inference on the board are not yet verified.
 
-This is **not yet live switching**: `STOP` pauses sensor sampling, and the commands are separate MQTT messages. The one-command format for model, local/remote input and local/published output still needs team agreement. Remote ML input and MQTT publishing of ML results are not implemented here. Hasif's prerequisite items 1.4 and 2.1 need their full wording before that format is finalised.
+This is **not yet live switching**: `STOP` pauses sensor sampling, and the commands are separate MQTT messages. The one-command format for model, local/remote input and local/published output still needs team agreement. Remote ML input and MQTT publishing of ML results are not implemented here. Tasks 1.4 and 2.1 in the [README task lists](../../README.md#5-d4-task-checklist) come first.
 
 ## Validation and remaining work
 
-See [VALIDATION.md](VALIDATION.md) for actual completed checks. The code builds and desktop inference and host lifecycle tests pass. **This new ML firmware has not yet been flashed or demonstrated on the user's board.** The previous board evidence establishes sensor acquisition only.
+See [VALIDATION.md](VALIDATION.md) for actual completed checks. The code builds and desktop inference and host lifecycle tests pass. **This new ML firmware has not yet been flashed or demonstrated on the board.** The previous board evidence establishes sensor acquisition only.
 
 Keep the board running at least ten minutes, observe changing outputs as sensor inputs change, then test the model and binding swaps above. Check missing-data status by disabling a configured source or unplugging a sensor with USB disconnected. Capture TASKS before/after and verify stack headroom, watchdog stability and sensor/rule operation. Compare recorded actual model inputs with the desktop reference tool before claiming target numerical agreement.
 
