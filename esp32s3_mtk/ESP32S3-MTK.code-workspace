@@ -1,0 +1,11 @@
+{
+  "folders": [
+    {
+      "name": "ESP32-S3 micro T-Kernel sensors",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "cmake.configureOnOpen": false
+  }
+}

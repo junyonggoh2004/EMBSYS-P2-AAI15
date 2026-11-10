@@ -3,12 +3,28 @@
 **D6 branch planning (10 November 2026).** The three-board end-to-end demo is
 planned in [D6 validation plan](docs/D6_USECASE_VALIDATION_PLAN.md), with a
 [session worksheet](docs/D6_TRIAL_WORKSHEET.md). This branch starts from the
-older `d3-board` checkpoint; current `main` and the LCD integration are still
-pending. The baseline descriptions below retain that checkpoint's status.
+older `d3-board` checkpoint; `origin/main` at `b389714` is now integrated in
+the prepared merge. The separate `lcd-output` integration and D6 board tests
+remain pending.
 D3 is the timing/sequencing subsystem, not the scope of the whole project.
 The earlier doorway plan is retained as a reference, not the selected final demo.
 
-Branch `main`: D1 (tasks 1–34), the D2 SPI checkpoint and the D3 timing checkpoint. This is the Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) ported to the ESP32-S3 Super Mini. Since Tribunal 1 the firmware runs on µT-Kernel 3 SMP through the course port ([MTK_REDESIGN.md](MTK_REDESIGN.md)), and D2's SPI and D3's timing run on it too; the earlier Arduino-ESP32/FreeRTOS port stays as the measured baseline. The same configuration lines, console commands, MQTT topics, output format and ML model work on both boards, because both builds compile the same shared code.
+Project baseline integrated into `d6`: D1 (tasks 1–34), the D2 SPI checkpoint, the D3 timing checkpoint and the first D4 ML checkpoint. The agreed task lists for the D1 MQTT work and for D4 to D6 are in sections 2 and 5 to 7. This is the Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) ported to the ESP32-S3 Super Mini. Since Tribunal 1 the firmware runs on µT-Kernel 3 SMP through the course port ([MTK_REDESIGN.md](MTK_REDESIGN.md)), and D2's SPI and D3's timing run on it too; the earlier Arduino-ESP32/FreeRTOS port stays as the measured baseline. The same configuration lines, console commands, MQTT topics, output format and ML model work on both boards, because both builds compile the same shared code.
+
+**Current breadboard.** The three-sensor breadboard (AHT temperature and humidity, HC-SR04+ distance and TSL2561 light, with the LCD wiring kept) and its Windows and VS Code build workflow are in [SENSOR_BREADBOARD_README.md](SENSOR_BREADBOARD_README.md). The single-sonar, loopback, radar and SPI fixtures in this guide use other pins; do not apply them to that breadboard.
+
+## Deliverables at a glance
+
+| Deliverable | What it is | Owners | State on `main` (10 Nov 2026) | Details |
+|---|---|---|---|---|
+| D1 | Port configpico2wedge to the ESP32-S3, on µT-Kernel 3 SMP since Tribunal 1 | Hasif, Cody, Sitt | Done (tag `d1-mtk-v1.0`); MQTT between real boards (1.1–1.5) done 10 Nov, 43/43 on two boards; task 7 rollout and six jumper or light-sensor stages pending | [Section 2](#2-d1-task-checklist) |
+| D2 | SPI support on the ESP32-S3 | Brendan, Jun Yong | Checkpoint merged (PR #3 on 27 Oct, PR #5 on 1 Nov); event logging, T-23 and sign-off open | [Section 3](#3-d2-task-checklist) |
+| D3 | Configurable timing: periodic, one-shot, event-driven, logical sequence | Cody | Checkpoint merged (PR #6 on 3 Nov, PR #8 on 9 Nov); board results pending | [Section 4](#4-d3-task-checklist) |
+| D4 | Embedded ML | Part 1: Jun Yong, Brendan. Part 2: Hasif, Sitt | Three bundled models swap on the board, the int8 one on the S3's vector instructions (2.1, 10 Nov); `ML` commands work over the console and MQTT; live switching (3.1–3.7) open | [Section 5](#5-d4-task-checklist) |
+| D5 | Benchmarking, cut down | Sitt, with Hasif | Task list agreed (4.1–4.6); B1–B8 plan on `s3-port-d5`, not merged | [Section 6](#6-d5-task-checklist) |
+| D6 | End-to-end use case and demo | Whole team, Cody leads | Task list agreed (5.1–5.8); use case to confirm (5.1) | [Section 7](#7-d6-task-checklist) |
+
+Owners are the team workload split of 28 Sep 2026, with D4 to D6 re-split on 10 Nov 2026. The D1 MQTT tasks 1.1–1.5 (section 2) and the D4 to D6 tasks 2.1–5.8 (sections 5 to 7) are the outline the team agreed on 10 Nov 2026; each owner turns their rows into technical steps later and keeps the numbers. Order: 1.4 and 2.1 come first because D4 part 2 needs them, 2.4 feeds 4.4, and the D1 MQTT tasks and both D4 parts feed D6. Each owner updates their row and section when their work merges.
 
 ## Contents
 
@@ -16,11 +32,14 @@ Branch `main`: D1 (tasks 1–34), the D2 SPI checkpoint and the D3 timing checkp
 |---|---|
 | [1. Start here](#1-start-here) | What the firmware runs on (µT-Kernel 3 SMP), the 7 commands to try, and every result next to the FreeRTOS baseline |
 | [Feedback tracker](WEEK6_FEEDBACK_RESPONSE.md) | Every professor feedback item on the Week 6 design review: owner, status, evidence, next action |
-| [2. D1 task checklist](#2-d1-task-checklist) | Tasks 1–23 with status and dev notes; [execution model](#execution-model); [tasks 24–34: µT-Kernel 3 SMP redesign](#d1-redesign-port-to-µt-kernel-3-smp-tasks-2434) |
+| [2. D1 task checklist](#2-d1-task-checklist) | Tasks 1–23 with status and dev notes; [execution model](#execution-model); [tasks 24–34: µT-Kernel 3 SMP redesign](#d1-redesign-port-to-µt-kernel-3-smp-tasks-2434); [tasks 1.1–1.5: MQTT between real boards](#d1-mqtt-between-real-boards-tasks-1115) |
 | [µT-Kernel redesign plan](MTK_REDESIGN.md) | Change requirement, FreeRTOS-to-µT-Kernel mapping, core assignment, compliance matrix |
 | [3. D2 task checklist](#3-d2-task-checklist) | D2 SPI tasks D2-1 to D2-11 with status, the checks before the merge, how to run the SPI tests, what D2 still needs; full list in [D2_SPI_TODO.md](D2_SPI_TODO.md) |
 | [4. D3 task checklist](#4-d3-task-checklist) | How the timing modes, the radar entrance window and event identity work, D3 tasks D3-1 to D3-12 with status, the D3 commands and tests |
-| [5. Set up and test from scratch](#5-set-up-and-test-from-scratch-d1-to-d3) | Step-by-step on a new Mac for the µT-Kernel build (D1 to D3) |
+| [5. D4 task checklist](#5-d4-task-checklist) | What is on `main` now; part 1, the ML itself (2.1–2.6); part 2, configuring and switching ML (3.1–3.7) |
+| [6. D5 task checklist](#6-d5-task-checklist) | Cut-down benchmarking tasks 4.1–4.6 |
+| [7. D6 task checklist](#7-d6-task-checklist) | Use case and demo tasks 5.1–5.8 |
+| [8. Set up and test from scratch](#8-set-up-and-test-from-scratch-d1-to-d3) | Step-by-step on a new Mac for the µT-Kernel build (D1 to D3) |
 | &nbsp;&nbsp;[Part A: Install](#part-a-install) | Steps 1–4: tools, project, ESP-IDF and the course port, version check |
 | &nbsp;&nbsp;[Part B: Wi-Fi and broker](#part-b-wi-fi-and-broker) | Steps 5–7: laptop IP, Wi-Fi file, MQTT broker |
 | &nbsp;&nbsp;[Board pinout](#board-pinout) | Super Mini pin diagram and how to hold the board |
@@ -29,11 +48,11 @@ Branch `main`: D1 (tasks 1–34), the D2 SPI checkpoint and the D3 timing checkp
 | &nbsp;&nbsp;[Part E: Real sensors](#part-e-real-sensors) | GY-511, HC-SR04, the light sensor and jumper tests; why no resistor |
 | &nbsp;&nbsp;[Part F: D2 SPI](#part-f-d2-spi) | Host test, loopback suite and benchmark, read-only W25Q32 checks |
 | &nbsp;&nbsp;[Part G: D3 timing and application](#part-g-d3-timing-and-application) | Laptop tests, the application smoke test, a timing-mode example, `PAIR` and `WINDOW` |
-| [6. Using any sensor](#6-using-any-sensor-config-cheat-sheet) | Wiring and the config line for every sensor type, including SPI, and rules |
-| [7. Completion rule](#7-completion-rule) | When a task counts as done |
-| [8. Arduino/FreeRTOS baseline](#8-arduinofreertos-baseline-set-up-and-test-reference) | The earlier build's step-by-step setup and tests, Mac and Windows |
+| [9. Using any sensor](#9-using-any-sensor-config-cheat-sheet) | Wiring and the config line for every sensor type, including SPI, and rules; [over MQTT](#over-mqtt-how-it-works-and-what-to-send): topics, JSON forms, board to board |
+| [10. Completion rule](#10-completion-rule) | When a task counts as done |
+| [11. Arduino/FreeRTOS baseline](#11-arduinofreertos-baseline-set-up-and-test-reference) | The earlier build's step-by-step setup and tests, Mac and Windows |
 
-Other documents: [WEEK6_FEEDBACK_RESPONSE.md](WEEK6_FEEDBACK_RESPONSE.md) (professor feedback tracker), [D2_SPI_TODO.md](D2_SPI_TODO.md) (D2 tasks), [SETUP.md](SETUP.md) (board and environment details), [parity/PARITY.md](parity/PARITY.md) (requirements and evidence), [PORTABILITY.md](PORTABILITY.md) (Pico to S3 changes and defects), [ARCHITECTURE.md](ARCHITECTURE.md) (task design), [project_v3/README.md](project_v3/README.md) (full config syntax).
+Other documents: [SENSOR_BREADBOARD_README.md](SENSOR_BREADBOARD_README.md) (current three-sensor breadboard and Windows workflow), [WEEK6_FEEDBACK_RESPONSE.md](WEEK6_FEEDBACK_RESPONSE.md) (professor feedback tracker), [D2_SPI_TODO.md](D2_SPI_TODO.md) (D2 tasks), [SETUP.md](SETUP.md) (board and environment details), [parity/PARITY.md](parity/PARITY.md) (requirements and evidence), [PORTABILITY.md](PORTABILITY.md) (Pico to S3 changes and defects), [ARCHITECTURE.md](ARCHITECTURE.md) (task design), [project_v3/README.md](project_v3/README.md) (full config syntax).
 
 
 ---
@@ -67,6 +86,7 @@ Other documents: [WEEK6_FEEDBACK_RESPONSE.md](WEEK6_FEEDBACK_RESPONSE.md) (profe
 | I2C, real GY-511 compass and accelerometer | `test 4c-mag` (or `live mag`) | 15/15 | 15/15 |
 | Real HC-SR04 distance, and rules on its readings | `test 4c-sonic`, `test sonic-rule` (or `live sonic`) | 4/4, 7/7 | not run |
 | MQTT telemetry, config, commands, bridging, model upload | `mqtt <ip>` | 27/27 | 27/27 |
+| Two real boards: every command over MQTT, sensor following, `cmd.to`/`cfg.to`, config whole and piecemeal (D1 tasks 1.1–1.4, 10 Nov) | `boards <ip>` | 43/43 | not run |
 | Model storage: upload, bad uploads, survives reset | `model <ip>` | 8/9 (the miss is a test timing artefact; reload captured separately) | 9/9 |
 | Faults: bad JSON, oversized, broker and Wi-Fi loss | `faults <ip>` | 9/9 | 9/9 |
 | Queue flooding | `flood <ip>` | Pass | Pass |
@@ -130,6 +150,29 @@ Change requirement from Tribunal 1 (19 Oct 2026): the firmware must run on the c
 | 33 | Close the redesign documentation | Fill the evidence column of the compliance matrix, update PORTABILITY.md, ARCHITECTURE.md, SETUP.md and the feedback tracker, and switch "Start here" to the µT-Kernel build. | No document still describes FreeRTOS or Arduino as the D1 runtime except as the baseline; every requirement clause links to evidence. | Done | Hasif. Every clause of the compliance matrix links to its evidence ([MTK_REDESIGN.md §9](MTK_REDESIGN.md#9-compliance-matrix)); [Start here](#1-start-here) runs the µT-Kernel build (`sh tools/mtk.sh compare` added for the Pico comparison); [PORTABILITY.md §6](PORTABILITY.md#6-the-µt-kernel-3-smp-build-tasks-2434) maps every Pico dependency onto the µT-Kernel build; ARCHITECTURE.md and SETUP.md mark the Arduino material as the baseline, and SETUP.md has a µT-Kernel testing section; the [feedback tracker](WEEK6_FEEDBACK_RESPONSE.md) has F6 resolved and redesign evidence on F5, R1, R4 and C2; [MTK_REDESIGN.md §11](MTK_REDESIGN.md#11-checked-against-the-course-ports-own-code) compares the build with the course port's own components and examples, with the reason for every difference and three defects found in the port |
 | 34 | Release the µT-Kernel build | Merge `s3-port-d1-redesign` into `main`, tag the release, clone recursively into a new directory and follow SETUP.md to build, flash and rerun the smoke tests. | The tag resolves on origin; the clean clone builds and passes 4a. | Done | Hasif, 2026-10-21. A clean recursive clone (the course port fetched from GitHub) builds firmware identical to the image that passed the suite, apart from the 32-byte ELF fingerprint and the image hash that covers it. The branch merges into `main` with no conflicts (the merged tree equals the branch's) and is tagged `d1-mtk-v1.0`. The D2 SPI work up to the branch point came with it, as this branch is built on `s3-port-d2`; D2's µT-Kernel SPI backend followed in the D2 checkpoint merge ([section 3](#3-d2-task-checklist)) |
 
+### D1 MQTT between real boards (tasks 1.1–1.5)
+
+Added on 10 Nov 2026 because D4 to D6 depend on it. The professor asked that boards send each other data and commands, and noted that the group that got an A also took data from other groups' MQTT. Every MQTT test so far ran between one board and the laptop, with the laptop playing the second node (`pico-002`); two real S3 boards have not been tested together. Hasif owns these tasks. The team agreed them as an outline on 10 Nov 2026; the rows below are the technical version.
+
+**How they are run.** Two bare ESP32-S3 boards (nothing wired: the tests use GPIO6 and GPIO7 as inputs with internal pulls, and GPIO8) on the laptop's USB, Mosquitto on the laptop (Part B), and both boards on the same 2.4 GHz network. With an iPhone hotspot, turn on Maximize Compatibility and keep the Personal Hotspot screen open while the boards join; otherwise they print `[WIFI] not connected: reason 201` (network not found). Both are flashed from the same checkout; the second node gets its own build directory and node ID at compile time, so `wifi_credentials.h` is not edited between flashes. Every configuration and command goes in over MQTT; the two consoles and the broker are only read.
+
+```sh
+PORT=<board A port> sh tools/mtk.sh flash                # s3-001, the NODE_ID in wifi_credentials.h
+NODE=s3-002 PORT=<board B port> sh tools/mtk.sh flash    # s3-002, built in esp32s3_mtk/build-s3-002
+BOARD=n16r8 NODE=s3-002 PORT=<port> sh tools/mtk.sh flash   # or s3-002 on the N16R8 DevKitC (8 MB octal PSRAM)
+sh tools/mtk.sh boards <laptop-ip>                       # 1.4, 1.1, 1.2, 1.3 in turn; or add commands|data|control|config
+```
+
+Board B can be the larger ESP32-S3-WROOM-1 N16R8 DevKitC (16 MB flash, 8 MB octal PSRAM) instead of a second HW-747: `BOARD=n16r8` adds [esp32s3_mtk/sdkconfig.board.n16r8](esp32s3_mtk/sdkconfig.board.n16r8), whose only change is the PSRAM mode. Plug it in by the USB-C port wired to the chip's own USB: the console is the chip's USB-Serial-JTAG, and the other port goes through a CH343 UART bridge that shows only the boot messages. The first flash over that port may need BOOT held while RST is pressed, because the firmware it shipped with does not reset into download mode by itself. The script finds which port is which node by sending `SHOW` to each node's command topic, and writes one log per stage to `parity/logs/mtk/d1-mqtt/` with Wi-Fi names and MAC addresses redacted. With one board, `sh tools/mtk.sh boards <laptop-ip> commands` runs 1.4 alone.
+
+| # | Task | Required work | Acceptance evidence | Status | Dev notes |
+|---|---|---|---|---|---|
+| 1.1 | Two-board data | Board A (`s3-001`) gets a GPIO input `DIG` (GPIO6, pull-down, 2 Hz) over MQTT and publishes `pico/s3-001/sensor/DIG/line`. Board B (`s3-002`) gets, over MQTT only, a sensor `REM` with `proto=mqtt`, `remote_node=s3-001`, `remote_source=DIG`, and two rules on its first byte: `R_LOW` when 0 and `R_HIGH` when 1. A is then reconfigured live with a pull-up. Nothing is reflashed between steps. | `boards data` passes 6/6. B logs `[BRIDGE] on_remote_line: s3-001/DIG -> local=REM`; every byte string B bridges is one A published; `R_LOW` fires while A reads 0 and `R_HIGH` after the live change to 1, never before; `pico/rule/R_LOW/event` reaches the broker. Log `parity/logs/mtk/d1-mqtt/data.log`. | Done | Hasif, 10 Nov 2026. 6/6 on `s3-001` (HW-747 Super Mini) and `s3-002` (N16R8 DevKitC). Every byte string B bridged is one A published; `R_LOW` then, after the live pull-up change, `R_HIGH` fired on B |
+| 1.2 | Two-board control | A gets a one-shot GPIO input `GO` (`timing.mode=one_shot`, so each `RUN` or `TRIGGER GO` fires its rules once) and, in turn, rules whose actions are `cmd.to:s3-002:STOP`, `cmd.to:s3-002:RUN`, `cmd.to:s3-002:TASKS`, `cmd.to:s3-002:ML SHOW`, a text block `cfg.to:s3-002:BEGINCFG\|name=LED\|…\|ENDCFG`, a JSON block `cfg.to:s3-002:{"configs":[{"name":"LEDJ",…}]}`, and the same in the bare-word form of the reference project's own example (`test_json/h206_remote.json`), `cfg.to:s3-002:{configs:[{name:LEDR,…}]}`, which a rule written in JSON needs because it cannot hold nested quotes. B runs its own GPIO input `BDIG` meanwhile. | `boards control` passes 10/10. B prints `[CMD] STOP` and `BDIG` prints nothing more than 1 s later; `[CMD] RUN` restarts it; B answers the `TASKS` and `ML SHOW` that A sends; B adds a sensor named exactly `LED` (no trailing `\`, the D-11 symptom on the Pico), then `LEDJ` and `LEDR`, acknowledges each on `pico/s3-002/status/config` and lists all three in `SHOW`. Log `control.log`. | Done | Hasif, 10 Nov 2026. 10/10. The run found two defects, both fixed and covered by host tests: a rule whose action forwarded a payload with `gpio:` in it was refused on the sending board, because the pin check read into the `cfg.to`/`cmd.to` payload (the reference example's `gpio:{pin:26}` included); and the receiver rejected bare-word JSON (`jsmn error=-2`), the part of D-11 the escape fix had not covered. D-11 is now closed |
+| 1.3 | Config over MQTT, one message and piece by piece | Send B two sensors (`C1`: GPIO6, pull-down, 1 Hz; `C2`: GPIO7, pull-up, 2 Hz) and a rule `R_C1` as one `{"configs":[…],"rules":[…]}` message, then `SHOW`, `CLEAR`, the same setup as three single-object messages (`{"type":"config",…}` twice, `{"type":"rule",…}`), `SHOW` and `RUN`. Then send one config on `pico/broadcast/config`. | `boards config` passes 9/9. Every item is acknowledged on `pico/s3-002/status/config` or `status/rule`; the two `SHOW` listings are identical; `R_C1` fires after `RUN`; the broadcast config is added and acknowledged by both A and B. Log `config.log`. | Done | Hasif, 10 Nov 2026. 9/9. The single message and the three separate messages give identical `SHOW` listings; the broadcast config was acknowledged by both nodes |
+| 1.4 | Every console command over MQTT | Route every console command that arrives on `pico/<node>/cmd` to the handler the console uses. `ML …` goes to the ML parser. `TASKS`, `APP`, `WIFISCAN`, `WIFIDROP`, `SPI*` and `STALL` go to ControlTask through a new message buffer `ctrl_mbf` (4 messages of 128 bytes, newest dropped and counted when full). `WINDOW`, `WINDOW STATUS`, `PAIR`, `TRIGGER`, `SHOWRULES`, `CLEARRULES` and `HELP` go to `repl_command()`, the stateless part of the shared REPL, which the console now uses too. `RUN`, `STOP`, `CLEAR`, `SHOW`, `debug.infer`, `infer.mode` and `batch:` keep the MQTT handler's `[CMD]` replies, and `STOP` and `RUN` also end a `WINDOW` or `PAIR` as on the console. Configuration sent on the command topic is refused with a pointer to the config topic. | Host: `sh tools/mtk_runtime_test.sh` passes (routing, the ControlTask hand-off, a full `ctrl_mbf`, the REPL command table, and an MQTT command arriving in the middle of a typed config block). Board: `boards commands` passes 18/18, each command answering on A's console and `WIFIDROP` reconnecting by itself; the single-board `sh tools/mtk.sh mqtt <ip>` still passes 27/27. Log `commands.log`. | Done | Hasif, 10 Nov 2026. 18/18 on `s3-001`; host tests pass; the single-board `mqtt` regression still passes 27/27 ([mqtt-regression.log](parity/logs/mtk/d1-mqtt/mqtt-regression.log)). Builds checked: µT-Kernel firmware, Arduino baseline, and the shared files cross-compiled for the Pico 2 |
+| 1.5 | Record and update | Run `sh tools/mtk.sh boards <ip>` (all stages) on two boards flashed from the same commit, and the single-board `mqtt` regression. Commit the logs, fill in this table's status and notes, and update FR-13 in [parity/PARITY.md](parity/PARITY.md) and the D1 row of [Deliverables at a glance](#deliverables-at-a-glance). | The logs are in `parity/logs/mtk/d1-mqtt/`; this table and FR-13 cite them with the commit and date. | Done | Hasif, 10 Nov 2026. Logs in [parity/logs/mtk/d1-mqtt/](parity/logs/mtk/d1-mqtt/); FR-13 and D-11 updated in [parity/PARITY.md](parity/PARITY.md), with the two-board rows in its section 4 |
+
 > **D2 tasks** (SPI support, Brendan and Jun Yong) are tracked in [D2_SPI_TODO.md](D2_SPI_TODO.md), with the design in [D2_SPI_DESIGN_NOTES.md](D2_SPI_DESIGN_NOTES.md) and [D2_EVENT_RECORD_DESIGN.md](D2_EVENT_RECORD_DESIGN.md). Professor feedback that affects D2 is tracked in the [feedback tracker](WEEK6_FEEDBACK_RESPONSE.md#12-d2-feedback-status).
 
 ## Execution model
@@ -184,7 +227,7 @@ D3 replaces the Pico's fixed one-second loop with configurable timing per sensor
 
 **Kit wiring for D3 (9 November clarification).** Use the kit's 3 V HC-SR04 directly: VCC → 3V3, GND → GND, Trig → GPIO1, Echo → GPIO2. No external resistor or divider is required for that module; resistor values are not firmware configuration or timing parameters. This assumes the 3 V-compatible kit module identified in the setup notes, not an unidentified 5 V replacement. One HC-SR04 supports the single-sensor checks; `PAIR` and `WINDOW` still need two separate sonars.
 
-**Separate fixtures across branches.** GPIO1/2 above belongs only to the standalone single-sonar fixture used by this branch's default `live sonic` and parity commands. The current shared breadboard documented on `origin/main`, `origin/d3` and `origin/dev-jy-sensors` uses a 3.3 V-compatible HC-SR04+ on **Trig GPIO4 / Echo GPIO5**, with GPIO1/2 reserved for AHT/TSL2561 I²C. That fixture also needs no Echo divider. Its instructions are `SENSOR_BREADBOARD_README.md` and `docs/D3_CAPTURE_V2_TEST.md` on those branches, including the explicit `--fixture v2-sonar` test option. Do not apply this branch's default GPIO1/2 sonar commands to that breadboard; the V2 fixture support has not been integrated into this checkout.
+**Separate fixtures across branches.** GPIO1/2 above belongs only to the standalone single-sonar fixture used by this branch's default `live sonic` and parity commands. The current shared breadboard documented on `origin/main`, `origin/d3` and `origin/dev-jy-sensors` uses a 3.3 V-compatible HC-SR04+ on **Trig GPIO4 / Echo GPIO5**, with GPIO1/2 reserved for AHT/TSL2561 I²C. That fixture also needs no Echo divider. Its instructions are `SENSOR_BREADBOARD_README.md` and `docs/D3_CAPTURE_V2_TEST.md` on those branches, including the explicit `--fixture v2-sonar` test option. Do not apply this branch's default GPIO1/2 sonar commands to that breadboard; the V2 fixture support is included by this merge; select `--fixture v2-sonar` explicitly for that breadboard.
 
 **Latest demo feedback supplied on 9 November.** Prioritise configurable features and the live GPIO/I2C/SPI demo; pause D5 benchmarking. The proposed D6 demo uses three boards for motion/light, temperature/humidity and an LCD. The team still needs to decide whether the doorway counter supplies the motion input or is dropped. The entrance implementation and its unrun checks below are retained pending that decision; this note does not claim a revised D3 acceptance sign-off.
 
@@ -212,23 +255,107 @@ D3 replaces the Pico's fixed one-second loop with configurable timing per sensor
 | D3-4 | Radar presence opens the observation window | LD2450 decoding and draining, window open, confirm, close, expiry and cooldown, the A, guard, B pairs and the entry and exit patterns, one event per window. | Laptop tests of radar framing, the window policy and the path to occupancy; walk-through entries and exits on the board. | Done in code (`WINDOW`); board run pending | Cody. [entrance_window.c](libraries/EdgeCore/src/application/entrance_window.c), [ld2450.c](libraries/EdgeCore/src/application/ld2450.c), [uart.c](libraries/EdgeCore/src/bus/uart.c) |
 | D3-5 | Measure the two-sonar order and guard | Physical trigger order and guard spacing that avoids crosstalk; direction of travel. | Crosstalk and direction measurements. | Not started: board | Cody and Sitt |
 | D3-6 | Requested-against-measured timing table | 10, 50, 100, 500, 1000 and 2000 ms with timing error, jitter and sample count; one-shot and event-driven shown working. | The requirements-document table and the mode demonstrations. | Not started: board (`sh tools/mtk.sh timing` covers periodic) | Shares runs and scripts with D5's B3 benchmark |
-| D3-7 | Entrance workload timing | The full `WINDOW` workload with p95, p99, maximum, skipped samples and SchedulerTask cycle times (R1, F6). | Measured tables. | Not started: board | Cody and Brendan |
+| D3-7 | Entrance workload timing | The full `WINDOW` workload with p95, p99, maximum, skipped samples and SchedulerTask cycle times (R1, F6). | Measured tables. | Timing counters and read-only report in code; board measurements pending | Cody and Brendan |
 | D3-8 | ApplicationTask on µT-Kernel (shared with D6) | Typed 104-byte messages through `app_mbf` (eight messages, no wait, drop newest), validation, duplicate rejection, occupancy, schema-v2 result publishing and the `APP` commands; core 1, priority 23, 4 KB stack; the boot counter in NVS at start-up. | Native runtime and identity tests; `sh tools/mtk.sh app-test` and `TASKS` on the board. | Done in code; `app-test` on the board pending | Cody. [runtime_mtk.c](esp32s3_mtk/components/edge_mtk/runtime_mtk.c), [identity_mtk.c](esp32s3_mtk/components/edge_mtk/identity_mtk.c), [event_identity.c](libraries/EdgeCore/src/application/event_identity.c), [application_dispatch.c](libraries/EdgeCore/src/application/application_dispatch.c), [application_state.c](libraries/EdgeCore/src/application/application_state.c), [event_record.h](libraries/EdgeCore/src/application/event_record.h) |
 | D3-9 | Faults never look like readings | Timeouts, missing sensors, busy capture, full queues, invalid configuration and undefined quality flags are explicit errors. | Laptop tests, including entry/exit rejection for undefined schema-v2 quality bits; the same sensor and queue faults on the board. | Laptop tests done; board pending | Cody. [tests/](tests/) |
 | D3-10 | D1 regression on the D3 firmware | First a clean boot (the NVS boot counter is written before the tasks start, which has not run on the board yet), then the D1 suite on the exact D3 commit. | A normal boot and the same results as before D3. | Pending: board | Hasif |
 | D3-11 | Agree the open contracts | What the 50 ms covers; how the radar opens and closes a window; node, boot and sequence identity; the time base between nodes; occupancy reset and replay; the D2 log handoff. | An agreed table, recorded here. | In progress: the window policy and the node, boot and sequence identity are agreed and in code (above); the time base between nodes, occupancy persistence and the D2 mapping are open | Cody, Brendan, Sitt, Hasif, Jun Yong |
 | D3-12 | Documentation, review and merge | This section, the feedback tracker and ARCHITECTURE.md §16; build from a clean clone; merge. | Every link resolves on `main`; team sign-off. | In progress: checkpoint on `main`, integrated 1 Nov with a clean-clone build; board evidence and sign-off pending | Hasif |
 
-**Tests.** `sh tools/cody_test.sh` runs D3's twelve laptop suites (contracts, GPIO pulse configuration, µT-Kernel capture, pulse sequence, entrance window, event identity, UART ready drain, event safety, application dispatch, scheduler timing, rule provenance and the µT-Kernel application glue); `sh tools/mtk_runtime_test.sh` runs the last one alone. On the board, `sh tools/mtk.sh app-test` checks the application path without wiring and must end with `Application smoke PASS` ([section 5, Part G](#part-g-d3-timing-and-application)).
+**Tests.** `sh tools/cody_test.sh` runs D3's twelve laptop suites (contracts, GPIO pulse configuration, µT-Kernel capture, pulse sequence, entrance window, event identity, UART ready drain, event safety, application dispatch, scheduler timing, rule provenance and the µT-Kernel application glue); `sh tools/mtk_runtime_test.sh` runs the last one alone. On the board, `sh tools/mtk.sh app-test` checks the application path without wiring and must end with `Application smoke PASS` ([section 8, Part G](#part-g-d3-timing-and-application)).
 
-**Who waits on it.** D2's flash event logging (D2-8, D2-9), D5's B3 timing benchmark, and D6, the end-to-end use case.
+**D3-1 native recheck (5 November 2026).** Parser, timing and scheduler regressions passed through `sh tools/cody_test.sh`; D2 host tests and source/HAL purity also passed. The [review and task mapping](D3_INTERRUPT_WIRING_REVIEW.md#alignment-with-readme-d3-task-list) links each covered D3-1 requirement to its tests and retains the [raw output](parity/logs/d3/d3-1-native-20261105.log). Active-window reconfiguration policy remains open. These native results do not close target build/image, electrical wiring, physical capture or timing acceptance.
+
+**Who waits on it.** D2's flash event logging (D2-8, D2-9), D5's B3 timing benchmark, and D6, the end-to-end use case. The D6 draft, a radar-triggered doorway occupancy counter built on `WINDOW`, has its own [validation plan](docs/D6_USECASE_VALIDATION_PLAN.md) and [trial worksheet](docs/D6_TRIAL_WORKSHEET.md); neither has been run on the board.
 
 
 ---
 
-# 5. Set up and test from scratch (D1 to D3)
+# 5. D4 task checklist
 
-Follow these steps in order on a Mac (Linux works the same way). They build, flash and test the firmware on `main`: D1 on µT-Kernel 3 SMP with D2's SPI and D3's timing. Each step says what you should see. On Windows, install ESP-IDF at commit `17a74c925c`, load it with its PowerShell `export.ps1` and give `IDF_PATH` forward slashes, as Brendan did ([D2_SPI_TODO.md](D2_SPI_TODO.md)); the Arduino baseline in [section 8](#8-arduinofreertos-baseline-set-up-and-test-reference) has full Windows steps.
+D4 has two parts, agreed on 10 Nov 2026. Part 1 is the ML itself (Jun Yong and Brendan); part 2 is configuring and switching it live (Hasif and Sitt). The professor's guidance: accuracy does not matter; use the S3's built-in acceleration, starting from its instruction set and then finding models and a format that use it; and a JSON or MQTT command should choose the model, where its data comes from (this board's sensors or the network) and where the result goes (used on the board or published), all switchable live. The point is that models can be changed on the fly, not which model is best. The rows below are the agreed outline; owners add the technical steps later and keep the numbers.
+
+### What is on `main` now
+
+The model upload over MQTT and the two flash model slots are D1 task 31. The D4 checkpoint (branch `d4-live-ml-sitt`, Sitt) integrates Jun Yong's local sensor bindings and selectable bundled models from `dev-jy-ml`, and the existing `ML` commands can now also arrive on `pico/<node>/cmd`; SchedulerTask handles them through the same ML parser as serial commands. This is an integration checkpoint, not a completed live ML workflow or board result.
+
+The current implementation feeds decoded AHT temperature/humidity, TSL2561 light and HC-SR04+ distance into configurable model bindings. Run **MTK: load sensors and ML** for the full setup, including ultrasonic distance. The LCD remains disabled; existing wiring is unchanged. MQTT ML-result publishing is deferred.
+
+The default pretrained **sine-float** model is a 3,164-byte Float32 dense network (1 → 16 → 16 → 1), trained on synthetic x → sin(x) pairs. The four sensor measurements are scaled to [0,1], averaged and multiplied by 2π; the network predicts the sine of that scalar. It does not predict occupancy or environmental conditions. Runtime alternatives are the 2,704-byte sine-int8 model and the existing 16-input autoencoder demonstration.
+
+See the [model specifications and deliverables](docs/embedded-ml/README.md), [step-by-step user guide](docs/embedded-ml/RUNNING.md) and [validation results](docs/embedded-ml/VALIDATION.md). The combined firmware builds and the host tests pass (10 Nov 2026); ML inference on the board still needs verifying (task 2.1).
+
+### Part 1: the ML itself (Jun Yong and Brendan)
+
+| # | Task | What it means | Owner | Status |
+|---|---|---|---|---|
+| 2.1 | ML running on the real board | Real model output on the S3, not just laptop tests, then merge the branch into `main` | Jun Yong | Done 10 Nov: three sensors and swaps between all three models on the board, outputs checked against the model weights ([BOARD_VALIDATION.md](docs/embedded-ml/BOARD_VALIDATION.md)) |
+| 2.2 | Research S3 acceleration | Which S3 instructions speed up ML, which Espressif library uses them, and which model formats benefit (likely int8); a short write-up to explain to the professor | Brendan | Pending |
+| 2.3 | A small set of swappable models | Two or three small models with different inputs, at least one that uses the acceleration; note what each takes in and puts out | Jun Yong | Done 10 Nov: sine-float, sine-int8 and the 16-input autoencoder, swapped on the board; sine-int8 runs on ESP-NN's S3 vector kernel ([BOARD_VALIDATION.md](docs/embedded-ml/BOARD_VALIDATION.md#acceleration-evidence)) |
+| 2.4 | Prove the acceleration works | Time the same model with and without the acceleration once; this also feeds D5 (4.4) | Brendan | Started: Jun Yong's run shows sine-int8 calling the S3 vector kernel; the with and without timing is still to do |
+| 2.5 | Load models without reflashing | Decide whether bundled models are enough or new models must also be sendable over MQTT | Jun Yong, Brendan | Pending |
+| 2.6 | Explain the ML flow | Sensor → model → result in plain words, for the report and Tribunal 2 | Jun Yong, Brendan | Pending |
+
+### Part 2: configuring and switching ML (Hasif and Sitt)
+
+Both prerequisites are done: every console command, `ML` included, works over MQTT (task 1.4, [section 2](#d1-mqtt-between-real-boards-tasks-1115)), and the ML runs on the board (task 2.1). How MQTT works and what it supports is in [Over MQTT](#over-mqtt-how-it-works-and-what-to-send).
+
+| # | Task | What it means | Status |
+|---|---|---|---|
+| 3.1 | Agree the ML setup format | What a user sends to choose model, input and output, in the same style as the sensor config lines and MQTT JSON | Pending team agreement; the existing `ML` command syntax is only a stepping stone |
+| 3.2 | Switch model live from the network | Change models over MQTT while sensing continues, not only from the console | Partial: MQTT can deliver existing ML commands, but model changes still require `STOP`, then `ML PRESET`/`ML MODEL`, `ML RUN`, `RUN`; `ML` commands over MQTT answered on the board on 10 Nov (D1 task 1.4) |
+| 3.3 | Switch the data source live | Feed the model from this board's sensors or another board's data over MQTT, and swap between them live | Pending; ML bindings currently accept only local configured sensors |
+| 3.4 | Choose where results go | Use the result on the board (trigger a rule or the LCD) or publish it for other boards | Pending; ML results currently print to the console |
+| 3.5 | Bad input is handled | A wrong model or setup gives a clear error and never stops the sensors | Partial: existing ML command validation; unified setup and recovery still pending |
+| 3.6 | User how-to and demo steps | A short guide plus the live demo sequence: switch the model, then switch the source | Pending; current serial/MQTT command guide covers the partial checkpoint |
+| 3.7 | Board evidence and update | Logs, then fill this section | Pending real-board verification |
+
+Earlier research remains in [D4_EMBEDDED_ML_RESEARCH.md](D4_EMBEDDED_ML_RESEARCH.md) and [D2_D4_RESEARCH_CONTEXT.md](D2_D4_RESEARCH_CONTEXT.md).
+
+
+---
+
+# 6. D5 task checklist
+
+D5 is cut down, agreed on 10 Nov 2026. The professor said benchmarking is not for this module and not to run the full study now, and that it is not about which model is best; his own comparison idea is hard-coded against configurable. D5 therefore measures a few differences between the configurable platform and a fixed, hard-coded build, and reuses results already measured. Sitt owns D5, with Hasif. The rows are the agreed outline; the technical steps come later.
+
+| # | Task | What it means | Status |
+|---|---|---|---|
+| 4.1 | Agree the reduced scope | Drop the full programme, keep a few measurements and confirm them with the team | Pending |
+| 4.2 | Changing live against reflashing | How long a sensor or model change takes live, against rebuilding and reflashing | Pending |
+| 4.3 | Cost of being configurable | Time and memory per reading through the configurable path, against a fixed hard-coded one | Pending |
+| 4.4 | Acceleration result | Take the with and without timing from 2.4 into the table | Pending |
+| 4.5 | Reuse what is already measured | FreeRTOS against µT-Kernel, the SPI benchmark and the timing tests, collected into one table | Pending |
+| 4.6 | Short write-up | Method, one table and one conclusion paragraph; the rest goes on a list for a later paper | Pending |
+
+**Where the work is.** The first B1 to B8 benchmark plan and its decision record are on branch `s3-port-d5`, not merged; task 4.1 decides which parts stay. Existing measured results, such as µT-Kernel against the FreeRTOS baseline, are in [parity/PARITY.md](parity/PARITY.md).
+
+
+---
+
+# 7. D6 task checklist
+
+Cody leads D6 with the whole team, agreed on 10 Nov 2026. The professor's suggested use case is three S3 boards: one whose motion and light sensors drive an output, one with temperature and humidity, and an LCD board that shows both over MQTT. He also wants a live multi-bus demo: GPIO, I2C and SPI on one board, writing one byte over SPI and reading it back, then swapping the SPI device and reconfiguring. The rows are the agreed outline; the technical steps come later.
+
+| # | Task | What it means | Owner | Status |
+|---|---|---|---|---|
+| 5.1 | Confirm the use case | Adopt the three-board setup and decide whether the doorway counter becomes the motion board's input or is dropped | Team | Pending |
+| 5.2 | Define each board | Its sensors, what it publishes, what it reacts to and what the LCD shows; parts and wiring per board (jumper wires from Mr Ajah) | Cody | Pending |
+| 5.3 | Multi-bus demo script | Step-by-step live demo of GPIO, I2C and SPI on one board, configured live, with the whole setup sent at once and then piece by piece | Cody | Pending |
+| 5.4 | SPI write and read by config | Write one byte, read it back, swap the device and reconfigure; config cannot do this yet | Brendan | Pending |
+| 5.5 | LCD board shows live data | Merge the LCD work and make it display what the other boards publish | Brendan | Pending |
+| 5.6 | ML inside the use case | One board runs a model on its own or another board's data; the result shows on the LCD or is published | Hasif, Sitt | Pending |
+| 5.7 | Full rehearsal on three boards | Run the whole thing end to end, record it and fill this section | Team | Pending |
+| 5.8 | Tribunal 2 preparation | Each person can explain which of their functions would change under a new requirement (theory only) | Everyone | Pending |
+
+**Where the work is.** The three-board demo has a [validation plan](docs/D6_USECASE_VALIDATION_PLAN.md) and a [trial worksheet](docs/D6_TRIAL_WORKSHEET.md), both planning only and not run. The earlier radar-triggered doorway draft is retained as an [archived plan](docs/d6/reference/D6_USECASE_VALIDATION_PLAN.md) and [archived worksheet](docs/d6/reference/D6_TRIAL_WORKSHEET.md); its inclusion in the final demo remains a team decision. Part of the application logic (the typed event record, ApplicationTask and occupancy) is already on `main` with D3 ([section 4](#4-d3-task-checklist)). Brendan's ST7789 LCD driver and its test pattern, checked on the board, are on branch `lcd-output`, not merged.
+
+
+---
+
+# 8. Set up and test from scratch (D1 to D3)
+
+Follow these steps in order on a Mac (Linux works the same way). They build, flash and test the firmware on `main`: D1 on µT-Kernel 3 SMP with D2's SPI and D3's timing. Each step says what you should see. On Windows, install ESP-IDF at commit `17a74c925c`, load it with its PowerShell `export.ps1` and give `IDF_PATH` forward slashes, as Brendan did ([D2_SPI_TODO.md](D2_SPI_TODO.md)); the Arduino baseline in [section 11](#11-arduinofreertos-baseline-set-up-and-test-reference) has full Windows steps.
 
 ## What D1 and D2 are
 
@@ -375,6 +502,37 @@ For the single-sonar checks, use the kit's 3 V module with the four direct wires
 | One HC-SR04 (Part E wiring) | `sh tools/mtk.sh test t06` with nothing connected, then `test 4c-sonic` and `test sonic-rule` with the sensor | `7/7`, `4/4`, `7/7 passed` |
 | Two HC-SR04s on separate Trigger and Echo pins, each configured with `gpio.pulse_timeout_us` small enough for the pair to fit 50 ms | `STOP`, then `PAIR <A> <B> A <guard_us>` | one `[PAIR] state=complete outcome=0` line and an A and a B record with their widths |
 | Both HC-SR04s and the LD2450 radar (raw UART at 256000 baud) | `STOP`, then `WINDOW <A> <B> <radar> <guard_us> <A_mm> <B_mm> <xmin> <xmax> <ymin> <ymax>`, `RUN`, then walk through | `SHOW` lists the window state and decoder counts; each crossing prints one `[APP]` event (entry, exit or incomplete) |
+| None, after the trial and `STOP` | `sh tools/mtk.sh window-report --note "fixture and trial description"` | read-only raw/JSON snapshots under `parity/logs/mtk/d3/`; physical acceptance remains pending |
+
+**Window timing evidence (1 November 2026).** The controller now retains
+cumulative pair count, valid/failed/cancelled outcomes, deadline misses,
+skipped slots, min/mean/max duration and p95/p99 upper bounds in 1 ms buckets.
+Durations include cooldown captures, failures and cancelled/overdue attempts;
+an over-budget tail is represented as `>50000`, not clipped into a passing
+percentile. These fixed-size counters/histogram stay in EdgeCore's PSRAM-mapped
+BSS. They reset on WINDOW configuration or CLEAR, not when queried. Early
+turnaround/incomplete closure has its own reason and does not count as a
+two-second window deadline.
+
+After the desired trials, type `STOP` in the serial console and exit the
+monitor, then collect before CLEAR or another WINDOW configuration:
+
+```sh
+sh tools/mtk.sh window-report --note "fixture and trial description"
+```
+
+The equivalent manual console query is `WINDOW STATUS`; the host collector
+uses an eight-digit request nonce to reject old/mixed USB replies. Reporting
+is refused during RUN or an active PAIR diagnostic so serial printing cannot
+disturb the timed capture. The collector sends only WINDOW STATUS, requests no
+reset and saves raw `.log` plus structured `.json` under `parity/logs/mtk/d3/`.
+It records timing outcomes, event/fault/drop counts and calibration/pin/zone
+settings. It rejects incomplete/inconsistent reports and reset output. Empty
+sample sets retain null timing assessments, and JSON acceptance remains `not_evaluated`;
+bucket bounds are not exact percentiles or a physical-accuracy certificate.
+Host Git metadata is labeled separately from the unverified firmware revision;
+retain matching build/flash/image, board/wiring and workload evidence. Target
+RAM, timing, core residency and physical qualification remain open.
 
 A timing-mode example: a sensor read every 100 ms and a second one that reads only after it.
 ```
@@ -388,7 +546,7 @@ If every step matched, this laptop has built and flashed the µT-Kernel firmware
 
 ---
 
-# 6. Using any sensor (config cheat sheet)
+# 9. Using any sensor (config cheat sheet)
 
 The node is not plug-and-play: each sensor needs **one config line** that tells it the protocol, the pins and how to read it. No code change and no re-flash: wire the sensor, send the line, type `RUN`.
 
@@ -406,7 +564,7 @@ For the HC-SR04 and the GY-511 there is a shortcut on the µT-Kernel build: `sh 
 
 Paste each config line **once**: pasting it again adds a second sensor with the same name (`CLEAR` removes both). Multi-byte numbers are sent low byte first, so `82 02` means 0x0282.
 
-The same lines work over Wi-Fi instead of USB: `mosquitto_pub -h <laptop-ip> -t pico/s3-001/config -m "<config line>"`, then `mosquitto_pub -h <laptop-ip> -t pico/s3-001/cmd -m RUN`, and watch with `mosquitto_sub -h <laptop-ip> -t "pico/s3-001/#" -v`.
+The same lines work over Wi-Fi instead of USB: `mosquitto_pub -h <laptop-ip> -t pico/s3-001/config -m "<config line>"`, then `mosquitto_pub -h <laptop-ip> -t pico/s3-001/cmd -m RUN`, and watch with `mosquitto_sub -h <laptop-ip> -t "pico/s3-001/#" -v`. Every topic, the JSON forms and board-to-board use are in [Over MQTT](#over-mqtt-how-it-works-and-what-to-send) at the end of this section.
 
 | Sensor | Wiring to the S3 | Config line | Reading the output |
 |---|---|---|---|
@@ -426,18 +584,57 @@ BEGINRULE|name=DARK|source=LIGHT|calc=s=u8(0)|when=s==1|action=log:it is dark|EN
 `calc` picks the value out of the bytes (`u8(0)` = byte 0), `when` is the condition, and `action` can also switch a pin (`gpio:5=HIGH`), set PWM, publish over MQTT or run the AI model. Every option and action is listed in [project_v3/README.md](project_v3/README.md#%EF%B8%8F-configuration-guide); its examples use Pico pin numbers, so swap in S3 GP numbers.
 
 
+
+## Over MQTT: how it works and what to send
+
+**It is always on.** If `wifi_credentials.h` names a network, the board joins it at boot, connects to the broker in `MQTT_HOST` (Mosquitto on the laptop, [Part B](#part-b-wi-fi-and-broker)) and subscribes to its own topics; it reconnects by itself after a drop. No config line turns MQTT on: config lines only decide which sensors and rules exist. Boards never talk to each other directly; every message goes through the broker. A board's topics start with `pico/<node>/` (the prefix comes from the original Pico project and is kept on purpose, so S3 boards, the Pico reference and other groups' nodes built on the same base can exchange messages, and every MQTT test still applies), where `<node>` is its `NODE_ID` (`s3-001` unless changed; flash another board as `s3-002` with `NODE=s3-002 sh tools/mtk.sh flash`).
+
+| Topic | Direction | What goes on it |
+|---|---|---|
+| `pico/<node>/config` | to the board | Sensors and rules: the same `BEGINCFG…ENDCFG` and `BEGINRULE…ENDRULE` lines as the console, or JSON (below). Each item is answered on `pico/<node>/status/config` or `status/rule` with `OK:<name>` or `FAIL:<name>` |
+| `pico/broadcast/config` | to every board | The same as `config`, for all boards at once |
+| `pico/<node>/cmd` | to the board | Any console command: `RUN`, `STOP`, `CLEAR`, `SHOW`, `SHOWRULES`, `TASKS`, `ML …`, `WINDOW …`, `TRIGGER …`, the `SPI…` commands and the rest (D1 task 1.4). Configuration sent here is refused with a pointer to `config`. A command's printed reply (the `SHOW` list, `TASKS`) appears on the board's console (`sh tools/mtk.sh monitor`), not over MQTT |
+| `pico/<node>/sensor/<name>/line` | from the board | Every reading while the board runs, the same line the console prints |
+| `pico/<node>/presence`, `pico/<node>/heartbeat` | from the board | Sent on connect, then uptime every 10 s |
+| `pico/rule/<rule>/event` | from the board | Each time a rule fires |
+| `pico/<node>/model/…` | to the board | A new ML model and its parameters, sent by `project_v3/models/send_model.py`; the board checks it, keeps it in flash and loads it |
+
+**JSON forms** (on either config topic). Several items at once: `{"configs":[{…},{…}],"rules":[{…}]}`. One item: `{"type":"config","name":"C1","proto":"gpio","mode":"poll","freq_hz":1,"gpio":{"pin":6,"pull":"down","mode":"digital"}}` or `{"type":"rule","name":"R1","source":"C1","calc":["s=u8(0)"],"when":"s==0","action":"log:C1 low"}`. Both give the same result as the text lines, whole or piece by piece (D1 task 1.3). Keys and values may also be written without quotes, `{configs:[{name:C1,…}]}`, which a rule needs when it forwards JSON to another board; a value with spaces still needs quotes.
+
+**Board to board** (tested between two boards in D1 tasks 1.1 and 1.2):
+
+| To | Use |
+|---|---|
+| Use another board's sensor | A config line with `proto=mqtt`, `remote_node=<node>` and `remote_source=<sensor>`: each line that sensor publishes becomes a reading of the local one, so rules work on it as if it were wired here |
+| Send another board a command | A rule action `cmd.to:<node>:<command>`, for example `cmd.to:s3-002:STOP` |
+| Configure another board | A rule action `cfg.to:<node>:<config>`: a text block with its separators written `\|`, or JSON |
+
+**Try it** with two boards, `s3-001` and `s3-002`, and nothing wired (GPIO6 is read with its internal pull-down):
+
+```sh
+mosquitto_sub -h <laptop-ip> -t 'pico/#' -v      # watch everything, in its own window
+mosquitto_pub -h <laptop-ip> -t pico/s3-001/config -m 'BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG'
+mosquitto_pub -h <laptop-ip> -t pico/s3-002/config -m 'BEGINCFG|name=REM|proto=mqtt|mode=poll|freq_hz=2|remote_node=s3-001|remote_source=DIG|ENDCFG'
+mosquitto_pub -h <laptop-ip> -t pico/s3-002/config -m 'BEGINRULE|name=R_LOW|source=REM|calc=s=u8(0)|when=s==0|action=log:A reads low|ENDRULE'
+mosquitto_pub -h <laptop-ip> -t pico/s3-002/cmd -m RUN
+mosquitto_pub -h <laptop-ip> -t pico/s3-001/cmd -m RUN   # board B now prints "A reads low"
+```
+
+`sh tools/mtk.sh boards <laptop-ip>` runs all of this and more as a test (D1 tasks 1.1 to 1.4).
+
+**Not there yet** (D4 part 2, [section 5](#5-d4-task-checklist)): ML results are printed on the console but not published; the ML input cannot yet come from another board; a model change over MQTT works but needs `STOP` first; and there is no single message that sets the model, its input and its output (tasks 3.1 to 3.4). The LCD board does not yet show what the other boards publish (D6 task 5.5).
 ---
 
-# 7. Completion rule
+# 10. Completion rule
 
 A task is not complete merely because code compiles or a single happy-path demonstration works. It is complete only when its acceptance evidence is recorded, relevant requirements and assumptions are updated, and any failure or limitation is either fixed or explicitly documented with an owner and disposition.
 
 
 ---
 
-# 8. Arduino/FreeRTOS baseline: set up and test (reference)
+# 11. Arduino/FreeRTOS baseline: set up and test (reference)
 
-These are the steps for the earlier Arduino-ESP32/FreeRTOS build (`esp32s3_edge/`, `tools/s3.sh`), kept as the measured baseline (task 21, [PARITY.md §3](parity/PARITY.md#3-esp32-s3-results-tasks-13-to-21)), with Windows commands. The board pinout is in [section 5](#board-pinout). Going from the µT-Kernel build back to this one, erase the flash first ([SETUP.md](SETUP.md#testing-on-µt-kernel-tasks-2732)).
+These are the steps for the earlier Arduino-ESP32/FreeRTOS build (`esp32s3_edge/`, `tools/s3.sh`), kept as the measured baseline (task 21, [PARITY.md §3](parity/PARITY.md#3-esp32-s3-results-tasks-13-to-21)), with Windows commands. The board pinout is in [section 8](#board-pinout). Going from the µT-Kernel build back to this one, erase the flash first ([SETUP.md](SETUP.md#testing-on-µt-kernel-tasks-2732)).
 
 
 ---
@@ -546,7 +743,7 @@ Close the monitor first (Ctrl+C): a test and the monitor cannot use the USB port
 
 ## Baseline Part E: Real sensors
 
-Use one sensor at a time. No breadboard and no resistor are needed for these two (see "Why no resistor" in section 5).
+Use one sensor at a time. No breadboard and no resistor are needed for these two (see "Why no resistor" in section 8).
 
 ### Step 25. GY-511 compass and accelerometer (I2C)
 

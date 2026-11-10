@@ -26,10 +26,17 @@ cc -std=c11 -Wall -Wextra -Werror \
   libraries/EdgeCore/src/application/application_state.c \
   libraries/EdgeCore/src/application/pulse_sequence.c \
   libraries/EdgeCore/src/application/output_format.c \
+  libraries/EdgeCore/src/application/sensor_measurement.c \
   libraries/EdgeCore/src/application/config_parser.c \
   libraries/EdgeCore/src/application/timing_contract.c \
   -o "$GPIO_OUT"
-"$GPIO_OUT"
+GPIO_LOG=${TMPDIR:-/tmp}/cody_gpio_pulse_config_tests.log
+if "$GPIO_OUT" > "$GPIO_LOG" 2>&1; then
+  cat "$GPIO_LOG"
+else
+  cat "$GPIO_LOG"
+  exit 1
+fi
 
 PULSE_OUT=${TMPDIR:-/tmp}/cody_mtk_pulse_tests
 cc -std=c11 -Wall -Wextra -Werror -I libraries/EdgeCore/src \
@@ -93,6 +100,7 @@ cc -std=c11 -Wall -Wextra -Werror -DSCHED_DEBUG=0 \
   libraries/EdgeCore/src/hal/pulse_capture.c \
   libraries/EdgeCore/src/application/timing_contract.c \
   libraries/EdgeCore/src/application/output_format.c \
+  libraries/EdgeCore/src/application/sensor_measurement.c \
   -o "$SCHEDULER_OUT"
 "$SCHEDULER_OUT"
 
@@ -110,6 +118,7 @@ cc -std=c11 -Wall -Wextra -Werror \
 # Test the target runner's parsing/failure behavior without pyserial or a board.
 if command -v python3 >/dev/null 2>&1; then SMOKE_PY=python3; else SMOKE_PY=python; fi
 "$SMOKE_PY" -m unittest discover -s tests -p test_application_smoke.py
+D3_NATIVE_REPORT_LOG="$GPIO_LOG" "$SMOKE_PY" -m unittest discover -s tests -p test_window_report.py
 
 # Execute actual application/control runtime bodies with test-only kernel/SDK seams.
 sh tools/mtk_runtime_test.sh

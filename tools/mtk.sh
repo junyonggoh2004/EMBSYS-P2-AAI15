@@ -6,8 +6,12 @@
 #   sh tools/mtk.sh check              print the pinned versions and build the firmware
 #   sh tools/mtk.sh build              build esp32s3_mtk
 #   sh tools/mtk.sh flash              build and flash
+#   NODE=s3-002 sh tools/mtk.sh flash  build and flash a further node (its own build directory)
+#   BOARD=n16r8 ...                    another S3 board: adds esp32s3_mtk/sdkconfig.board.<name>
+#                                      (n16r8: 8 MB octal PSRAM); plug it in by its native USB port
 #   sh tools/mtk.sh monitor            open the console (Ctrl+C to leave)
 #   sh tools/mtk.sh app-test           synthetic D3 application/core smoke test (clears volatile state)
+#   sh tools/mtk.sh window-report      read-only window timing snapshot after STOP; saves raw log + JSON
 #   sh tools/mtk.sh haltest            flash the HAL test firmware, run it, then restore the firmware
 #   sh tools/mtk.sh purity             check our code uses no FreeRTOS, Arduino or esp_driver_* API
 #   sh tools/mtk.sh image              check the built firmware links no FreeRTOS kernel code
@@ -15,6 +19,9 @@
 #   sh tools/mtk.sh compare <stage>    the Pico's and this build's output for a stage, side by side
 #   sh tools/mtk.sh live sonic|mag [s] run the HC-SR04 or the GY-511 and show its readings in units
 #   sh tools/mtk.sh mqtt <broker-ip>   the 27-step MQTT test (node from wifi_credentials.h)
+#   sh tools/mtk.sh boards <broker-ip> [all|commands|data|control|config]
+#                                      D1 tasks 1.1-1.4 on two boards, s3-001 and s3-002; logs in
+#                                      parity/logs/mtk/d1-mqtt/ (PORT_A/PORT_B override the ports)
 #   sh tools/mtk.sh model|faults|flood|endurance <broker-ip>
 #                                      faults includes the broker-loss check when MOSQ_CONF names the
 #                                      Mosquitto config and Mosquitto runs as /opt/homebrew/sbin/mosquitto -c it
@@ -66,13 +73,31 @@ except Exception: pass" "$PORT" 2>/dev/null || true
 # sync reply ("TX path seems down"); a normal reset and a 10 s wait for the
 # USB device to come back clears it, so retry once that way.
 flash_proj() {
-  idf.py -C "$1" -p "$PORT" build >/dev/null
-  idf.py -C "$1" -p "$PORT" flash && return 0
+  p=$1; shift
+  idf.py -C "$p" "$@" -p "$PORT" build >/dev/null
+  idf.py -C "$p" "$@" -p "$PORT" flash && return 0
   echo "Flash failed; resetting the board and retrying in 10 s..."
   reset_chip; sleep 10
-  idf.py -C "$1" -p "$PORT" flash
+  idf.py -C "$p" "$@" -p "$PORT" flash
 }
 node_id() { sed -n 's/^#define NODE_ID *"\([^"]*\)".*/\1/p' $PROJ/main/wifi_credentials.h 2>/dev/null | head -1; }
+# NODE=<id>, other than the one in wifi_credentials.h, builds that node in its
+# own build directory with NODE_ID overridden, so one checkout flashes several
+# boards (D1 tasks 1.1-1.3). BOARD=<name> adds sdkconfig.board.<name> for an S3
+# board other than the Super Mini, with its own sdkconfig in that directory.
+# Neither set: the normal build/ directory and sdkconfig are used.
+if [ -n "$BOARD" ] && [ ! -f "$PROJ/sdkconfig.board.$BOARD" ]; then
+  echo "No $PROJ/sdkconfig.board.$BOARD; boards: $(ls $PROJ | sed -n 's/^sdkconfig\.board\.//p' | tr '\n' ' ')"; exit 1
+fi
+node_build() {
+  dir=
+  if [ -n "$NODE" ] && [ "$NODE" != "$(node_id)" ]; then dir=build-$NODE; echo "-DEDGE_NODE_ID=$NODE"; fi
+  if [ -n "$BOARD" ]; then
+    dir=${dir:-build}-$BOARD
+    echo "-DSDKCONFIG=$dir/sdkconfig -DSDKCONFIG_DEFAULTS=sdkconfig.defaults;sdkconfig.board.$BOARD"
+  fi
+  if [ -n "$dir" ]; then echo "-B $PROJ/$dir"; fi
+}
 
 case "$1" in
   setup)
@@ -100,8 +125,8 @@ case "$1" in
     [ "$have_port" = "$PORT_COMMIT" ] && [ "$have_idf" = "$IDF_DESCRIBE" ] && [ "$have_gcc" = "$GCC_VERSION" ] || {
       echo "MISMATCH: run sh tools/mtk.sh setup (and git submodule update)"; exit 1; }
     idf.py -C $PROJ build | grep -E "binary size|Project build complete" ;;
-  build)   idf build ;;
-  flash)   need_port; idf_env; flash_proj $PROJ ;;
+  build)   idf $(node_build) build ;;
+  flash)   need_port; idf_env; flash_proj $PROJ $(node_build) ;;
   # The console takes typed lines (HELP, TASKS, BEGINCFG...) through pyserial's
   # miniterm: ESP-IDF's monitor shows the board's output but did not pass typed
   # keys to it in our tests. For decoded crash backtraces (output only) use
@@ -111,7 +136,7 @@ case "$1" in
   haltest) need_port; mkdir -p parity/logs/mtk
            idf_env
            flash_proj $PROJ/haltest >/dev/null
-           trap 'echo "Restoring the firmware..."; flash_proj $PROJ >/dev/null' EXIT
+           trap 'echo "Restoring the firmware..."; flash_proj $PROJ $(node_build) >/dev/null' EXIT
            sleep 2
            $PY parity/hal_test.py --port "$PORT" --log parity/logs/mtk/hal_test.log ;;
   purity)  sh tools/check_mtk_purity.sh || exit 1
@@ -120,6 +145,7 @@ case "$1" in
            if [ -f $PROJ/build/$PROJ.elf ]; then idf_env; sh tools/check_mtk_image.sh; else echo "note  build first to check the firmware image too"; fi ;;
   image)   idf_env; sh tools/check_mtk_image.sh ;;
   app-test) need_port; $PY parity/application_test.py --port "$PORT" ;;
+  window-report) need_port; shift; $PY parity/window_report.py --port "$PORT" "$@" ;;
   test)    need_port; mkdir -p parity/logs/mtk
            $PY parity/parity_test.py --stage "${2:-4a}" --board s3 --port "$PORT" --log "parity/logs/mtk/${2:-4a}.log" ;;
   live)    need_port; [ -n "$2" ] || { echo "usage: sh tools/mtk.sh live sonic|mag [seconds]"; exit 1; }
@@ -132,6 +158,11 @@ case "$1" in
   mqtt)    need_port; [ -n "$2" ] || { echo "usage: sh tools/mtk.sh mqtt <broker-ip>"; exit 1; }
            mkdir -p parity/logs/mtk
            $PY parity/mqtt_test.py --broker "$2" --node "${NODE:-$(node_id)}" --board s3 --port "$PORT" --log parity/logs/mtk/mqtt.log ;;
+  boards)  [ -n "$2" ] || { echo "usage: sh tools/mtk.sh boards <broker-ip> [all|commands|data|control|config]"; exit 1; }
+           mkdir -p parity/logs/mtk/d1-mqtt
+           $PY parity/two_board_test.py --broker "$2" --stage "${3:-all}" \
+             --node-a "${NODE_A:-s3-001}" --node-b "${NODE_B:-s3-002}" \
+             ${PORT_A:+--port-a "$PORT_A"} ${PORT_B:+--port-b "$PORT_B"} --log-dir parity/logs/mtk/d1-mqtt ;;
   model|faults|flood|endurance)
            need_port; [ -n "$2" ] || { echo "usage: sh tools/mtk.sh $1 <broker-ip>"; exit 1; }
            mkdir -p parity/logs/mtk

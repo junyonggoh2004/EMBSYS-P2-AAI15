@@ -53,7 +53,7 @@ FreeRTOS calls (tasks, queues, event groups, software timers) are the RTOS the W
 | D-08 nonexistent pin accepted | Fixed: refused |
 | D-09 boot reports Wi-Fi failure, then connects | Fixed on the S3: state printed on every change |
 | D-10 bridging drops every remote line | Fixed on the S3: verified over MQTT |
-| D-11 `cfg.to` forwards `\|` escapes | Fixed: escapes removed before sending |
+| D-11 `cfg.to` forwards `\|` escapes | Fixed: escapes removed before sending; since D1 task 1.2 the receiver also accepts bare-word JSON and the sender no longer checks pins inside a forwarded payload |
 | D-12 `uptime_s` counts heartbeats | Fixed on the S3: seconds |
 | D-13 one Pico freeze after 28 minutes idle | Pico only; the S3 continuous run is in PARITY.md §3 |
 | D-14 batch action copies 17 KB onto the stack | Fixed |

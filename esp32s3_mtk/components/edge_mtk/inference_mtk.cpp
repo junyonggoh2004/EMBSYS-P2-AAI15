@@ -27,6 +27,7 @@ extern "C" {
 }
 
 #include <cstdio>
+#include <cmath>
 #include <cstring>
 #include <new>
 
@@ -51,6 +52,8 @@ alignas(16) uint8_t s_resolver_buf[sizeof(tflite::MicroMutableOpResolver<kOpCoun
 alignas(16) uint8_t s_interp_buf[sizeof(tflite::MicroInterpreter)];
 tflite_model_info_t s_info;
 bool s_loaded = false;
+uint32_t s_fc_vector_calls = 0;
+bool s_accel_reported = false;
 
 bool arena_alloc()
 {
@@ -84,6 +87,7 @@ void engine_unload()
     if (s_arena) memset(s_arena, 0, TFLITE_ARENA_SIZE);
     s_model = nullptr;
     s_loaded = false;
+    s_accel_reported = false;
     memset(&s_info, 0, sizeof s_info);
     printf("[TFLITE] Unload complete.\n");
 }
@@ -154,6 +158,16 @@ tflite_err_t engine_load(const uint8_t *data, uint32_t size)
         engine_unload();
         return TFLITE_ERR_BAD_MODEL;
     }
+    for(int output=0;output<2;output++) {
+        int n=output ? s_info.num_outputs : s_info.num_inputs;
+        for(int i=0;i<n;i++) {
+            const TfLiteTensor *t=output ? s_interpreter->output(i) : s_interpreter->input(i);
+            if((t->type!=kTfLiteFloat32 && t->type!=kTfLiteInt8) ||
+               (t->type==kTfLiteInt8 && (!std::isfinite(t->params.scale) || t->params.scale<=0 || t->params.zero_point < -128 || t->params.zero_point>127))) {
+                engine_unload(); return TFLITE_ERR_BAD_MODEL;
+            }
+        }
+    }
     s_loaded = true;
     printf("[TFLITE] Model loaded OK!\n");
     printf("[TFLITE]   Inputs:  %d tensor(s), %d total element(s)\n", s_info.num_inputs, s_info.input_size);
@@ -165,6 +179,7 @@ tflite_err_t engine_load(const uint8_t *data, uint32_t size)
 tflite_err_t engine_invoke(const float *inputs, float *outputs)
 {
     if (!s_loaded || !s_interpreter) return TFLITE_ERR_NOT_LOADED;
+    for(int i=0;i<s_info.input_size;i++) if(!std::isfinite(inputs[i])) return TFLITE_ERR_INVOKE;
     int offset = 0;
     for (int i = 0; i < s_info.num_inputs; i++) {
         TfLiteTensor *t = s_interpreter->input(i);
@@ -177,7 +192,8 @@ tflite_err_t engine_invoke(const float *inputs, float *outputs)
             int zero_point = t->params.zero_point;
             for (int k = 0; k < count; k++) {
                 float val = inputs[offset + k];
-                int32_t q = (int32_t)(val / scale + (val >= 0 ? 0.5f : -0.5f)) + zero_point;
+                float rounded=std::round(val / scale) + zero_point;
+                int32_t q=(int32_t)std::fmin(127.0f,std::fmax(-128.0f,rounded));
                 if (q < -128) q = -128;
                 if (q > 127) q = 127;
                 t->data.int8[k] = (int8_t)q;
@@ -188,6 +204,7 @@ tflite_err_t engine_invoke(const float *inputs, float *outputs)
         }
         offset += count;
     }
+    const uint32_t vector_calls_before = s_fc_vector_calls;
     if (s_interpreter->Invoke() != kTfLiteOk) { printf("[TFLITE] Invoke() failed\n"); return TFLITE_ERR_INVOKE; }
     offset = 0;
     for (int i = 0; i < s_info.num_outputs; i++) {
@@ -205,6 +222,11 @@ tflite_err_t engine_invoke(const float *inputs, float *outputs)
             return TFLITE_ERR_INVOKE;
         }
         offset += count;
+    }
+    if (!s_accel_reported) {
+        printf("[ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=%lu\n",
+               static_cast<unsigned long>(s_fc_vector_calls - vector_calls_before));
+        s_accel_reported = true;
     }
     return TFLITE_OK;
 }
@@ -257,6 +279,7 @@ tflite_err_t request(infer_req_t &req, infer_rep_t &rep)
         s_info_cache = rep.info;
         s_ready_cache = rep.loaded;
     } else {
+        s_ready_cache=false;
         printf("[INFER] InferenceTask did not answer\n");
     }
     tk_unl_mtx(s_rpc_mtx);
@@ -264,6 +287,28 @@ tflite_err_t request(infer_req_t &req, infer_rep_t &rep)
 }
 
 }  // namespace
+
+// ESP-NN 1.4.1's per-tensor FC dispatcher calls this assembly kernel.
+// Its signed vector MAC loop runs for one or more groups of eight elements
+// per output channel. Count completed calls that enter that loop.
+extern "C" void __real_esp_nn_fc_s16_esp32s3(
+    const int8_t *input, int32_t input_offset, uint16_t row_length,
+    const int8_t *weights, int32_t weight_offset, const int32_t *bias,
+    int8_t *output, uint16_t channels, int32_t output_offset, int32_t shift,
+    int32_t multiplier, int32_t activation_min, int32_t activation_max);
+
+extern "C" void __wrap_esp_nn_fc_s16_esp32s3(
+    const int8_t *input, int32_t input_offset, uint16_t row_length,
+    const int8_t *weights, int32_t weight_offset, const int32_t *bias,
+    int8_t *output, uint16_t channels, int32_t output_offset, int32_t shift,
+    int32_t multiplier, int32_t activation_min, int32_t activation_max)
+{
+    __real_esp_nn_fc_s16_esp32s3(input, input_offset, row_length, weights,
+                                weight_offset, bias, output, channels,
+                                output_offset, shift, multiplier,
+                                activation_min, activation_max);
+    if (row_length >= 8 && channels > 0) ++s_fc_vector_calls;
+}
 
 // ---------------- InferenceTask and the C API ----------------
 

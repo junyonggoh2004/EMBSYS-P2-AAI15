@@ -7,7 +7,7 @@
 //   task              core  pri  FreeRTOS pri  waits on
 //   SchedulerTask      1    21   4             sched_mbf, until the next sensor is due
 //   MQTTTask           0    22   3             pub_mbf (10 ms) and the network
-//   ControlTask        1    23   2             USB console receive flag
+//   ControlTask        1    23   2             USB console receive flag; polls ctrl_mbf
 //   InferenceTask      1    23   2             infer_mbf
 //   ApplicationTask    1    23   2             app_mbf (D6 application logic)
 //   BenchmarkTask      1    24   1             bench_mbf
@@ -50,6 +50,7 @@
 #include "mqtt/sensor_bridge.h"
 #include "mqtt/mqtt_model_transfer.h"
 #include "edge_mtk.h"
+#include "sensor_ml.h"
 #include "runtime_mtk.h"
 
 // Defined in the shared code (mqtt/mqtt_config_parser.c) and by the MQTT layer.
@@ -69,7 +70,7 @@ void mtk_spi_flash_log_plan(void);
 void mtk_spi_flash_log_write(void);
 void mtk_spi_flash_log_verify(void);
 
-ID sched_mbf, pub_mbf, infer_mbf, app_mbf, bench_mbf;
+ID sched_mbf, pub_mbf, infer_mbf, app_mbf, bench_mbf, ctrl_mbf;
 ID net_flg;
 
 // ---------- network settings ----------
@@ -161,10 +162,12 @@ static uint32_t s_mbf_infer[MBF_BYTES(INFER_MBF_MSGS, INFER_MSG_MAX) / 4];
  * larger processing/formatting state stays in EdgeCore's external BSS. */
 static uint32_t s_mbf_app[MBF_BYTES(APP_MBF_MSGS, APP_MSG_MAX) / 4];
 static uint32_t s_mbf_bench[MBF_BYTES(BENCH_MBF_MSGS, sizeof(bench_msg_t)) / 4];
+static uint32_t s_mbf_ctrl[MBF_BYTES(CTRL_MBF_MSGS, sizeof(ctrl_msg_t)) / 4];
 
 static struct { const char *name; ID *id; volatile uint32_t dropped; } s_mbfs[] = {
     { "sched_mbf", &sched_mbf, 0 }, { "pub_mbf", &pub_mbf, 0 }, { "infer_mbf", &infer_mbf, 0 },
     { "app_mbf", &app_mbf, 0 },     { "bench_mbf", &bench_mbf, 0 },
+    { "ctrl_mbf", &ctrl_mbf, 0 },
 };
 
 bool runtime_send(ID mbf, const void *msg, INT size)
@@ -213,14 +216,71 @@ static bool parse_line_topic(const char *topic, char *node, size_t nn, char *src
     return true;
 }
 
+// ---------- commands from pico/<node>/cmd (D1 task 1.4) ----------
+
+// The platform commands ControlTask runs itself rather than passing them to
+// the shared REPL. Only the first word is matched; ControlTask checks the rest.
+static bool is_platform_command(const char *line)
+{
+    static const char *const k_words[] = {
+        "TASKS", "APP", "WIFISCAN", "WIFIDROP", "SPIID", "SPILOGPLAN", "SPILOGVERIFY", "SPILOGWRITE",
+        "SPICHECK", "SPISCAN", "SPIPROGRAM", "SPIVERIFY", "SPIBENCH", "STALL",
+    };
+    size_t n = strcspn(line, " \t");
+    for (size_t i = 0; i < sizeof k_words / sizeof k_words[0]; i++)
+        if (strlen(k_words[i]) == n && !strncasecmp(line, k_words[i], n)) return true;
+    return false;
+}
+
+// A command on pico/<node>/cmd does what the same line does on the console.
+// ML and shared REPL commands run here in SchedulerTask, as typed lines do;
+// platform commands go to ControlTask through ctrl_mbf, so they also run in
+// the task that runs them for the console. RUN, STOP, CLEAR, SHOW,
+// debug.infer, infer.mode and batch: keep the MQTT handler's [CMD] replies,
+// as on the Pico; configuration belongs on pico/<node>/config.
+static void mqtt_command(char *text, bool *running, bool *cfg_ready)
+{
+    char *p = text;
+    while (*p == ' ' || *p == '\t' || *p == '\r' || *p == '\n') p++;
+    size_t n = strlen(p);
+    while (n && (p[n - 1] == ' ' || p[n - 1] == '\t' || p[n - 1] == '\r' || p[n - 1] == '\n')) p[--n] = 0;
+    if (!n) return;
+
+    if (sensor_ml_command(p, *running)) return;
+    if (is_platform_command(p)) {
+        static ctrl_msg_t c;
+        if (n >= sizeof c.text) { printf("[CMD] too long for ControlTask: %.40s...\n", p); return; }
+        memcpy(c.text, p, n + 1);
+        if (!runtime_send(ctrl_mbf, &c, sizeof c)) printf("[CMD] ControlTask busy, dropped: %s\n", p);
+        return;
+    }
+    if (!strncasecmp(p, "BEGINCFG", 8) || !strncasecmp(p, "BEGINRULE", 9)) {
+        printf("[CMD] configuration goes to pico/%s/config\n", s_node);
+        return;
+    }
+    bool mqtt_own = !strcasecmp(p, "RUN") || !strcasecmp(p, "STOP") || !strcasecmp(p, "CLEAR") ||
+                    !strcasecmp(p, "SHOW") || !strncasecmp(p, "debug.infer", 11) ||
+                    !strncasecmp(p, "infer.mode", 10) || !strncasecmp(p, "batch:", 6);
+    if (!mqtt_own && repl_command(p, running, cfg_ready)) return;
+
+    // As on the console, STOP also ends a WINDOW and a PAIR, and RUN cancels a PAIR.
+    if (!strcasecmp(p, "STOP")) { scheduler_window_stop(); scheduler_pair_cancel(); }
+    else if (!strcasecmp(p, "RUN")) scheduler_pair_cancel();
+    if (!strcasecmp(p, "STOP") || !strcasecmp(p, "CLEAR")) sensor_ml_invalidate();
+    if (s_cmd_cb) s_cmd_cb(p);       // anything else: "[CMD] Unknown: ..."
+}
+
 // ---------- SchedulerTask ----------
 
 static void handle_sched_msg(sched_msg_t *m, bool *running, bool *cfg_ready)
 {
     switch (m->kind) {
-    case SCHED_CONSOLE_LINE: repl_handle_line(m->text, running, cfg_ready); break;
-    case SCHED_MQTT_CONFIG:  if (s_cfg_cb) s_cfg_cb(m->text); break;
-    case SCHED_MQTT_CMD:     if (s_cmd_cb) s_cmd_cb(m->text); break;
+    case SCHED_CONSOLE_LINE:
+        if(sensor_ml_command(m->text,*running)) break;
+        if(!strcasecmp(m->text,"STOP") || !strcasecmp(m->text,"CLEAR") || strstr(m->text,"BEGINCFG")) sensor_ml_invalidate();
+        repl_handle_line(m->text, running, cfg_ready); break;
+    case SCHED_MQTT_CONFIG:  sensor_ml_invalidate(); if (s_cfg_cb) s_cfg_cb(m->text); break;
+    case SCHED_MQTT_CMD:     mqtt_command(m->text, running, cfg_ready); break;
     case SCHED_MQTT_NODE:    if (s_node_cb) s_node_cb("unknown", m->text); break;
     case SCHED_MODEL_PARAMS: inference_mgr_set_params((const uint8_t *)m->text, m->len); break;
     case SCHED_REMOTE_LINE: {
@@ -303,6 +363,7 @@ static void scheduler_task(INT stacd, void *exinf)
         scheduler_run_all(running);
         model_transfer_poll();
         inference_mgr_poll();
+        sensor_ml_poll(running);
         cycle_record((uint32_t)(hal_time_us() - t0));
         runtime_alive(RT_SCHEDULER);
     }
@@ -310,93 +371,110 @@ static void scheduler_task(INT stacd, void *exinf)
 
 // ---------- ControlTask ----------
 
+// The platform commands, which are not part of the shared REPL: typed on the
+// console or sent over MQTT (through ctrl_mbf), they run here in ControlTask.
+// Returns false when `line` is not one of them.
+static bool platform_command(const char *line)
+{
+    if (strcasecmp(line, "TASKS") == 0) {
+        runtime_print_tasks();
+    } else if (strncasecmp(line, "APP ", 4) == 0 || strcasecmp(line, "APP") == 0) {
+        application_message_t request;
+        if (!application_command_parse(line, hal_time_us(), &request)) {
+            puts("[APP] usage: APP RESET | APP STATUS | APP EVENT <id> <seq> <entry|exit|incomplete|false>");
+        } else {
+            bool queued = runtime_send(app_mbf, &request, sizeof request);
+            printf("[APP] request=%u synthetic=%u queued=%u\n", (unsigned)request.kind,
+                   request.kind == APPLICATION_MESSAGE_EVENT ? 1u : 0u, queued ? 1u : 0u);
+        }
+    } else if (strcasecmp(line, "WIFISCAN") == 0) {
+        mqtt_wifi_scan();
+    } else if (strcasecmp(line, "WIFIDROP") == 0) {
+        mqtt_wifi_drop();
+    } else if (strcasecmp(line, "SPIID") == 0) {
+        bench_msg_t b = { .name = "SPIID" };
+        if (!runtime_send(bench_mbf, &b, sizeof b))
+            puts("[SPIID] ERROR benchmark queue full");
+    } else if (strcasecmp(line, "SPILOGPLAN") == 0 ||
+               strcasecmp(line, "SPILOGVERIFY") == 0 ||
+               strcasecmp(line, "SPILOGWRITE EF4016 3FF100") == 0) {
+        bench_msg_t b = { 0 };
+        snprintf(b.name, sizeof b.name, "%s",
+                 strcasecmp(line, "SPILOGPLAN") == 0 ? "SPILOGPLAN" :
+                 strcasecmp(line, "SPILOGVERIFY") == 0 ? "SPILOGVERIFY" :
+                 "SPILOGWRITE");
+        if (!runtime_send(bench_mbf, &b, sizeof b))
+            puts("[SPILOG] ERROR benchmark queue full");
+    } else if (strncasecmp(line, "SPICHECK ", 9) == 0 ||
+               strncasecmp(line, "SPISCAN ", 8) == 0 ||
+               strncasecmp(line, "SPIPROGRAM ", 11) == 0 ||
+               strncasecmp(line, "SPIVERIFY ", 10) == 0) {
+        unsigned long expected;
+        char extra;
+        const bool scan = strncasecmp(line, "SPISCAN ", 8) == 0;
+        const bool program = strncasecmp(line, "SPIPROGRAM ", 11) == 0;
+        const bool verify = strncasecmp(line, "SPIVERIFY ", 10) == 0;
+        const char *value = line + (scan ? 8 : program ? 11 : verify ? 10 : 9);
+        if (sscanf(value, "%lx %c", &expected, &extra) != 1 ||
+            expected == 0 || expected >= 0xfffffful) {
+            puts("[SPI] ERROR expected <SPI command> <six-digit JEDEC ID>");
+        } else {
+            bench_msg_t b = { .value_us = (uint32_t)expected };
+            snprintf(b.name, sizeof b.name, "%s",
+                     scan ? "SPISCAN" : program ? "SPIPROGRAM" :
+                     verify ? "SPIVERIFY" : "SPICHECK");
+            if (!runtime_send(bench_mbf, &b, sizeof b))
+                puts("[SPI] ERROR benchmark queue full");
+        }
+    } else if (strncasecmp(line, "SPIBENCH ", 9) == 0) {
+        unsigned mode;
+        unsigned long hz;
+        char extra;
+        if (sscanf(line, "SPIBENCH %u %lu %c", &mode, &hz, &extra) != 2 ||
+            mode > 3 || hz < 1000000ul || hz > 20000000ul) {
+            puts("[SPIBENCH] ERROR expected SPIBENCH <mode 0..3> <hz 1000000..20000000>");
+        } else {
+            bench_msg_t b = { .name = "SPIBENCH",
+                              .value_us = (uint32_t)hz | ((uint32_t)mode << 30) };
+            if (!runtime_send(bench_mbf, &b, sizeof b))
+                puts("[SPIBENCH] ERROR benchmark queue full");
+        }
+    } else if (strncasecmp(line, "STALL ", 6) == 0) {
+        // Watchdog test: this task stops reporting for the given time, as
+        // if it were stuck. MonitorTask stops feeding the hardware watchdog
+        // after 5 s and the chip resets WDT_TIMEOUT_S later.
+        uint32_t ms = (uint32_t)strtoul(line + 6, NULL, 10);
+        printf("[CTRL] stalling ControlTask for %u ms (watchdog test)\n", (unsigned)ms);
+        tk_dly_tsk((TMO)ms);
+        printf("[CTRL] stall over\n");
+    } else {
+        return false;
+    }
+    return true;
+}
+
 static void control_task(INT stacd, void *exinf)
 {
     (void)stacd; (void)exinf;
     static char line[512];
     static size_t len = 0;
     static sched_msg_t msg;
+    static ctrl_msg_t remote;
 
     ER er = console_start_rx();               // USB receive interrupt on this core
     if (er != E_OK) printf("[CTRL] console_start_rx failed er=%d; polling instead\n", (int)er);
 
     for (;;) {
+        // Platform commands from MQTT: the console wait below lasts at most
+        // 100 ms, so each starts within about 100 ms of arriving.
+        while (tk_rcv_mbf(ctrl_mbf, &remote, TMO_POL) > 0)
+            if (!platform_command(remote.text)) printf("[CMD] Unknown: %s\n", remote.text);
+
         int ch = hal_console_getc(100000);
         runtime_alive(RT_CONTROL);
         if (ch < 0 || !repl_line_feed(ch, line, sizeof line, &len)) continue;
 
-        if (strcasecmp(line, "TASKS") == 0) {   // platform commands, not part of the REPL
-            runtime_print_tasks();
-        } else if (strncasecmp(line, "APP ", 4) == 0 || strcasecmp(line, "APP") == 0) {
-            application_message_t request;
-            if (!application_command_parse(line, hal_time_us(), &request)) {
-                puts("[APP] usage: APP RESET | APP STATUS | APP EVENT <id> <seq> <entry|exit|incomplete|false>");
-            } else {
-                bool queued = runtime_send(app_mbf, &request, sizeof request);
-                printf("[APP] request=%u synthetic=%u queued=%u\n", (unsigned)request.kind,
-                       request.kind == APPLICATION_MESSAGE_EVENT ? 1u : 0u, queued ? 1u : 0u);
-            }
-        } else if (strcasecmp(line, "WIFISCAN") == 0) {
-            mqtt_wifi_scan();
-        } else if (strcasecmp(line, "WIFIDROP") == 0) {
-            mqtt_wifi_drop();
-        } else if (strcasecmp(line, "SPIID") == 0) {
-            bench_msg_t b = { .name = "SPIID" };
-            if (!runtime_send(bench_mbf, &b, sizeof b))
-                puts("[SPIID] ERROR benchmark queue full");
-        } else if (strcasecmp(line, "SPILOGPLAN") == 0 ||
-                   strcasecmp(line, "SPILOGVERIFY") == 0 ||
-                   strcasecmp(line, "SPILOGWRITE EF4016 3FF100") == 0) {
-            bench_msg_t b = { 0 };
-            snprintf(b.name, sizeof b.name, "%s",
-                     strcasecmp(line, "SPILOGPLAN") == 0 ? "SPILOGPLAN" :
-                     strcasecmp(line, "SPILOGVERIFY") == 0 ? "SPILOGVERIFY" :
-                     "SPILOGWRITE");
-            if (!runtime_send(bench_mbf, &b, sizeof b))
-                puts("[SPILOG] ERROR benchmark queue full");
-        } else if (strncasecmp(line, "SPICHECK ", 9) == 0 ||
-                   strncasecmp(line, "SPISCAN ", 8) == 0 ||
-                   strncasecmp(line, "SPIPROGRAM ", 11) == 0 ||
-                   strncasecmp(line, "SPIVERIFY ", 10) == 0) {
-            unsigned long expected;
-            char extra;
-            const bool scan = strncasecmp(line, "SPISCAN ", 8) == 0;
-            const bool program = strncasecmp(line, "SPIPROGRAM ", 11) == 0;
-            const bool verify = strncasecmp(line, "SPIVERIFY ", 10) == 0;
-            const char *value = line + (scan ? 8 : program ? 11 : verify ? 10 : 9);
-            if (sscanf(value, "%lx %c", &expected, &extra) != 1 ||
-                expected == 0 || expected >= 0xfffffful) {
-                puts("[SPI] ERROR expected <SPI command> <six-digit JEDEC ID>");
-            } else {
-                bench_msg_t b = { .value_us = (uint32_t)expected };
-                snprintf(b.name, sizeof b.name, "%s",
-                         scan ? "SPISCAN" : program ? "SPIPROGRAM" :
-                         verify ? "SPIVERIFY" : "SPICHECK");
-                if (!runtime_send(bench_mbf, &b, sizeof b))
-                    puts("[SPI] ERROR benchmark queue full");
-            }
-        } else if (strncasecmp(line, "SPIBENCH ", 9) == 0) {
-            unsigned mode;
-            unsigned long hz;
-            char extra;
-            if (sscanf(line, "SPIBENCH %u %lu %c", &mode, &hz, &extra) != 2 ||
-                mode > 3 || hz < 1000000ul || hz > 20000000ul) {
-                puts("[SPIBENCH] ERROR expected SPIBENCH <mode 0..3> <hz 1000000..20000000>");
-            } else {
-                bench_msg_t b = { .name = "SPIBENCH",
-                                  .value_us = (uint32_t)hz | ((uint32_t)mode << 30) };
-                if (!runtime_send(bench_mbf, &b, sizeof b))
-                    puts("[SPIBENCH] ERROR benchmark queue full");
-            }
-        } else if (strncasecmp(line, "STALL ", 6) == 0) {
-            // Watchdog test: this task stops reporting for the given time, as
-            // if it were stuck. MonitorTask stops feeding the hardware watchdog
-            // after 5 s and the chip resets WDT_TIMEOUT_S later.
-            uint32_t ms = (uint32_t)strtoul(line + 6, NULL, 10);
-            printf("[CTRL] stalling ControlTask for %u ms (watchdog test)\n", (unsigned)ms);
-            tk_dly_tsk((TMO)ms);
-            printf("[CTRL] stall over\n");
-        } else {
+        if (!platform_command(line)) {
             msg.kind = SCHED_CONSOLE_LINE;
             msg.len = 0;
             msg.topic[0] = 0;
@@ -704,6 +782,7 @@ ER runtime_start(void)
     CHECK("infer_mbf", make_mbf(&infer_mbf, s_mbf_infer, sizeof s_mbf_infer, INFER_MSG_MAX,       "infer_mbf"));
     CHECK("app_mbf",   make_mbf(&app_mbf,   s_mbf_app,   sizeof s_mbf_app,   APP_MSG_MAX,         "app_mbf"));
     CHECK("bench_mbf", make_mbf(&bench_mbf, s_mbf_bench, sizeof s_mbf_bench, sizeof(bench_msg_t), "bench_mbf"));
+    CHECK("ctrl_mbf",  make_mbf(&ctrl_mbf,  s_mbf_ctrl,  sizeof s_mbf_ctrl,  sizeof(ctrl_msg_t),  "ctrl_mbf"));
 
     T_CFLG cflg = { .exinf = NULL, .flgatr = TA_TFIFO | TA_WMUL, .iflgptn = 0 };
     ID flg = tk_cre_flg(&cflg);
@@ -736,7 +815,7 @@ ER runtime_start(void)
 
     for (int t = 0; t < RT_NTASKS; t++) CHECK(s_tasks[t].name, tk_sta_tsk(s_tasks[t].id, 0));
 
-    printf("[BOOT] micro T-Kernel 3 SMP runtime: %d tasks, 6 message buffers, 1 event flag, 1 cyclic handler\n",
+    printf("[BOOT] micro T-Kernel 3 SMP runtime: %d tasks, 7 message buffers, 1 event flag, 1 cyclic handler\n",
            RT_NTASKS);
     return E_OK;
 }

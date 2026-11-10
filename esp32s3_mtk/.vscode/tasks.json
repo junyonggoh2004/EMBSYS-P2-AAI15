@@ -1,0 +1,203 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "MTK: build",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "${workspaceFolder}/tools/build.ps1",
+        "build"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [
+        "$gcc"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "MTK: configure",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "${workspaceFolder}/tools/build.ps1",
+        "configure"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [
+        "$gcc"
+      ]
+    },
+    {
+      "label": "MTK: audit",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "${workspaceFolder}/tools/build.ps1",
+        "audit"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [
+        "$gcc"
+      ]
+    },
+    {
+      "label": "MTK: flash",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "${workspaceFolder}/tools/build.ps1",
+        "flash",
+        "-Port",
+        "${input:serialPort}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "MTK: load three sensors",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "${workspaceFolder}/tools/build.ps1",
+        "sensors",
+        "-Port",
+        "${input:serialPort}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "MTK: monitor",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "${workspaceFolder}/tools/build.ps1",
+        "monitor",
+        "-Port",
+        "${input:serialPort}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "MTK: monitor raw",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "${workspaceFolder}/tools/build.ps1",
+        "monitor",
+        "-Port",
+        "${input:serialPort}",
+        "-RawMonitor"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "MTK: load sensors and ML",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "${workspaceFolder}/tools/build.ps1",
+        "ml",
+        "-Port",
+        "${input:serialPort}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "MTK: load AHT and light ML",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "${workspaceFolder}/tools/build.ps1",
+        "ml",
+        "-Port",
+        "${input:serialPort}",
+        "-Inputs",
+        "aht-light"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "MTK: load demo configuration",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "${workspaceFolder}/tools/build.ps1",
+        "ml",
+        "-Port",
+        "${input:serialPort}",
+        "-ConfigFile",
+        "${workspaceFolder}/../config/demos/${input:mlDemoConfig}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "serialPort",
+      "type": "promptString",
+      "description": "ESP32 serial port from Device Manager",
+      "default": "COM5"
+    },
+    {
+      "id": "mlDemoConfig",
+      "type": "pickString",
+      "description": "Sensor and ML demo setup",
+      "options": [
+        "no-light.cfg",
+        "no-aht.cfg",
+        "dual-ultrasonic.cfg"
+      ],
+      "default": "no-light.cfg"
+    }
+  ]
+}

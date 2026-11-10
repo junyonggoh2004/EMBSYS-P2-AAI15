@@ -332,7 +332,9 @@ static void test_radar_to_application(void)
     application_state_t app; application_state_init(&app,NULL);
     assert(application_process_event(&app,&window_event,now_us).code==APP_RESULT_APPLIED && app.occupancy==1);
     assert(application_process_event(&app,&window_event,now_us).code==APP_RESULT_DUPLICATE);
+    assert(scheduler_window_report(0xabcdef01)==HAL_ERR_BUSY);
     scheduler_window_stop(); scheduler_run_all(false);
+    assert(scheduler_window_report(0xabcdef01)==HAL_OK); // parsed by offline host-report tests
     now_us=1900000;
     assert(scheduler_window_command("A B RADAR 1000 500 500 -500 500 0 2000")==HAL_OK);
     for(unsigned n=0;n<7;++n) {

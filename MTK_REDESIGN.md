@@ -40,7 +40,7 @@ Three consequences follow for D1.
 |---|---|---:|---:|---:|---|
 | SchedulerTask | 1 (`TP_PRC2`) | 21 | 4 | 16 KB | `sched_mbf` with a timeout equal to the next sensor due time |
 | MQTTTask | 0 (`TP_PRC1`) | 22 | 3 | 16 KB | `pub_mbf` (10 ms) and the network state |
-| ControlTask | 1 | 23 | 2 | 4 KB | USB console bytes (1 ms poll) |
+| ControlTask | 1 | 23 | 2 | 4 KB | USB console bytes (1 ms poll); since D1 task 1.4 also `ctrl_mbf`, the platform commands (`TASKS`, `APP`, `WIFISCAN`, `WIFIDROP`, `SPI*`, `STALL`) that arrive over MQTT |
 | InferenceTask | 1 | 23 | 2 | 8 KB | `infer_mbf` |
 | ApplicationTask | 1 | 23 | 2 | 4 KB | `app_mbf` (D6 application logic) |
 | BenchmarkTask | 1 | 24 | 1 | 3 KB | `bench_mbf` (since D2 it also runs the SPI benchmark and the W25Q32 console commands) |
@@ -82,7 +82,7 @@ The first full build without PSRAM did not link: internal DRAM (341 KB, shared w
 | Sensor acquisition and processing | GPIO, pulse, counter, one-wire, I2C, UART through the µT-Kernel HAL | 27, 29 | 4a 14/14, 5-neg 27/27, t03, t04, t06, t10 all pass; real GY-511 on I2C 15/15 and real HC-SR04 4/4 and 7/7 with rules (2026-10-21); 4b, 4c-uart and the other jumper rows hardware pending (PARITY.md §4) |
 | Actuator and output control | GPIO write/toggle, PULSE by alarm handler, PWM by LEDC | 27 | HAL test: GPIO write and toggle, PWM duty 0.250/0.500/0.749, 200 ms PULSE returning in 24 µs; rule actions in 4a and t10; 4b hardware pending |
 | Communication and networking | MQTTTask with esp_wifi and esp-mqtt | 30 | `mqtt` 27/27, `faults` 9/9, `flood` pass; the course port's Wi-Fi limitation and the recovery path are in section 10 |
-| Inter-task communication | Five message buffers for the Week 6 queues, a reply buffer for InferenceTask, one event flag | 28, 31 | `flood` pass; `TASKS` reports each buffer's free space and drops; inference requests and replies in 4a (14/14, MSE 0.4179) |
+| Inter-task communication | Five message buffers for the Week 6 queues, a reply buffer for InferenceTask, `ctrl_mbf` for platform commands from MQTT (D1 task 1.4), one event flag | 28, 31 | `flood` pass; `TASKS` reports each buffer's free space and drops; inference requests and replies in 4a (14/14, MSE 0.4179) |
 | System monitoring and control | MonitorTask (stacks, heap, heartbeats, hardware watchdog), ControlTask, BenchmarkTask | 28, 30 | `TASKS` output; watchdog reset proven by `STALL` ([28-watchdog.log](parity/logs/mtk/28-watchdog.log)); endurance 6/6 over 30 minutes with no reset and a flat heap ([endurance.log](parity/logs/mtk/endurance.log)) |
 | Preserve the required functionality | Re-run every D1 test unchanged and compare with FreeRTOS | 32 | [PARITY.md §4](parity/PARITY.md#4-esp32-s3-on-µt-kernel-3-smp-tasks-24-to-34), FreeRTOS and µT-Kernel side by side |
 

@@ -358,10 +358,10 @@ Record these from the actual board markings, its matching pinout and a physical 
 
 | Item | Confirmed value |
 | --- | --- |
-| Exact Super Mini board/revision and ESP32-S3 module marking | User confirmed the physical board matches the supplied [HW-747 Super Mini pinout diagram](Pinout_Diagram_S3.jpg) on 2026-10-13; no module can: the bare chip is an **ESP32-S3FH4R2** (QFN56, revision v0.2), identified electronically on 2026-10-14 by esptool 5.3.1 `flash-id` on macOS: `Embedded Flash 4MB (XMC), Embedded PSRAM 2MB (AP_3v3)`, 40 MHz crystal, flash ID 46/4016 |
+| Exact Super Mini board/revision and ESP32-S3 module marking | Confirmed on 2026-10-13 that the physical board matches the supplied [HW-747 Super Mini pinout diagram](Pinout_Diagram_S3.jpg); no module can: the bare chip is an **ESP32-S3FH4R2** (QFN56, revision v0.2), identified electronically on 2026-10-14 by esptool 5.3.1 `flash-id` on macOS: `Embedded Flash 4MB (XMC), Embedded PSRAM 2MB (AP_3v3)`, 40 MHz crystal, flash ID 46/4016 |
 | Flash size | 4 MB embedded flash, detected on COM6 with esptool v5.3.1 on 2026-10-13 |
 | PSRAM presence and size | 2 MB embedded quad PSRAM (AP_3v3), reported by esptool; used by the firmware with PSRAM `QSPI PSRAM` (about 2.0 MB free at run time, `TASKS` output) |
-| Exposed, usable GPIOs and reserved/unsafe pins | Candidate exposed pins are shown in the user-confirmed [HW-747 pinout diagram](Pinout_Diagram_S3.jpg); see the pin and power table below; enforced in firmware by `hal_gpio_valid` |
+| Exposed, usable GPIOs and reserved/unsafe pins | Candidate exposed pins are shown in the confirmed [HW-747 pinout diagram](Pinout_Diagram_S3.jpg); see the pin and power table below; enforced in firmware by `hal_gpio_valid` |
 | USB connector and serial path (`Serial` via native USB CDC or USB-to-UART bridge) | USB-Serial/JTAG reported by esptool; the board enumerated on COM6 as `ESP32 Family Device, Ozobot DRVKit`, and sketch `Serial` output was observed on COM6 at 115200 baud |
 | Arduino IDE board profile | `ESP32S3 Dev Module` used for local compile, upload, and Serial Monitor verification |
 | Board-specific Flash Size and PSRAM menu choices | Flash Size: `4MB (32Mb)`; PSRAM: `Disabled` for the minimal bring-up sketch, despite 2 MB being present; the full firmware uses `QSPI PSRAM` (verified: Wi-Fi, MQTT and the tensor arena run from it) with Partition Scheme `Huge APP (3MB No OTA/1MB SPIFFS)` |

@@ -30,11 +30,20 @@ static void build_error(const char *what, const char *text) {
 // Every "gpio:<pin>=" and "pwm:<pin>=" in an action (batch included) must name
 // a pin that exists on this board, so a bad pin is refused when the rule is
 // added rather than reported each time it fires (D-04).
+// Text after cfg.to: or cmd.to: is a payload for another node, which checks
+// its own pins when it applies it, so only the text before it is checked here
+// (D1 task 1.2: a JSON payload's "gpio":{"pin":8} is not a local gpio: action).
 static bool action_pins_valid(const char *a) {
     static const char *const kinds[] = { "gpio:", "pwm:" };
+    static const char *const remote[] = { "cfg.to:", "cmd.to:" };
+    const char *end = a + strlen(a);
+    for (int r = 0; r < 2; r++) {
+        const char *x = strstr(a, remote[r]);
+        if (x && x < end) end = x;
+    }
     for (int k = 0; k < 2; k++) {
         size_t klen = strlen(kinds[k]);
-        for (const char *p = strstr(a, kinds[k]); p; p = strstr(p + klen, kinds[k])) {
+        for (const char *p = strstr(a, kinds[k]); p && p < end; p = strstr(p + klen, kinds[k])) {
             const char *q = p + klen;
             if (*q < '0' || *q > '9') return false;
             int pin = 0;

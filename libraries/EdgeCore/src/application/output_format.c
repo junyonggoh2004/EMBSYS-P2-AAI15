@@ -4,6 +4,7 @@
 #include "mqtt/mqtt_telemetry.h"
 #include "rule_engine/rules.h"
 #include "application/scheduler.h"
+#include "application/sensor_measurement.h"
 
 void output_emit_hex(const app_cfg_t *cfg,
                      const char *proto_str,
@@ -21,6 +22,8 @@ void output_emit_hex(const app_cfg_t *cfg,
     printf("proto=%s src=%s len=%d ts=%lu :", proto_str, src_str, n, (unsigned long)ts);
     for (int i = 0; i < n; i++) printf(" %02X", buf[i]);
     printf("\n");
+
+    sensor_measurement_emit(cfg,buf,n);
 
     // 2) Rule engine evaluation for this frame
     rules_on_sample(src_str /* usually cfg->name */, buf, n, ts);

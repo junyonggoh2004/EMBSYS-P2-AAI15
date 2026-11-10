@@ -16,7 +16,7 @@ typedef struct {
     unsigned count;
     message_t *head, *tail;
 } queue_t;
-static queue_t queues[6];
+static queue_t queues[8];
 static T_CTSK tasks[16];
 static unsigned queue_count, task_count, started_count, fail_create;
 static UINT network_flags;
@@ -31,7 +31,7 @@ ID tk_cre_mbf(const T_CMBF *config)
 {
     ++queue_count;
     if (queue_count == fail_create) return E_NOMEM;
-    assert(queue_count < 6 && config->bufptr && config->maxmsz > 0);
+    assert(queue_count < 8 && config->bufptr && config->maxmsz > 0);
     assert((config->mbfatr & (TA_USERBUF | TA_TFIFO)) == (TA_USERBUF | TA_TFIFO));
     queues[queue_count].config = *config;
     return (ID)queue_count;
@@ -58,6 +58,7 @@ INT tk_rcv_mbf(ID id, void *out, TMO timeout)
 {
     queue_t *q = queue(id);
     if (!q->head) {
+        if (timeout == TMO_POL) return E_TMOUT; /* ControlTask polls ctrl_mbf */
         assert(active_task == APP_TASK && id == app_mbf && timeout == TMO_FEVR);
         longjmp(waiting, 1); /* stop where the real task would block */
     }
@@ -117,6 +118,31 @@ UNUSED_VOID(mtk_spi_flash_log_write)
 UNUSED_VOID(mtk_spi_flash_log_verify)
 UNUSED_VOID(model_transfer_init)
 UNUSED_VOID(model_transfer_poll)
+static unsigned ml_commands, ml_invalidations, ordinary_commands;
+static bool ml_sampling;
+bool sensor_ml_command(const char *line,bool sampling)
+{
+    if (strncmp(line, "ML ", 3)) return false;
+    ++ml_commands;
+    ml_sampling = sampling;
+    return true;
+}
+void sensor_ml_invalidate(void) { ++ml_invalidations; }
+/* D1 task 1.4: the shared REPL command table and the console STOP/RUN side effects. */
+static unsigned repl_commands, window_stops, pair_cancels;
+static char last_repl[64];
+bool repl_command(const char *line, bool *running, bool *ready)
+{
+    (void)running; (void)ready;
+    if (strncasecmp(line, "WINDOW", 6) && strncasecmp(line, "PAIR", 4) && strcasecmp(line, "SHOWRULES"))
+        return false;
+    ++repl_commands;
+    snprintf(last_repl, sizeof last_repl, "%s", line);
+    return true;
+}
+void scheduler_window_stop(void) { ++window_stops; }
+void scheduler_pair_cancel(void) { ++pair_cancels; }
+void sensor_ml_poll(bool sampling) { (void)sampling; }
 UNUSED_VOID(inference_mgr_init)
 UNUSED_VOID(inference_mgr_poll)
 UNUSED_VOID(scheduler_reset)
@@ -205,6 +231,20 @@ static void clear_queue(ID id)
 static void reset_application(void)
 { control("APP RESET\n"); consume_app(); clear_queue(pub_mbf); clear_queue(bench_mbf); }
 
+static char last_mqtt[64];
+static void test_mqtt_command(const char *line)
+{
+    assert(!strcmp(line, "SHOW") || !strcmp(line, "STOP") || !strcmp(line, "RUN") || !strcmp(line, "FOO"));
+    ++ordinary_commands;
+    snprintf(last_mqtt, sizeof last_mqtt, "%s", line);
+}
+static void mqtt_cmd(const char *text, bool *running, bool *ready)
+{
+    static sched_msg_t m = {.kind = SCHED_MQTT_CMD};
+    snprintf(m.text, sizeof m.text, "%s", text);
+    handle_sched_msg(&m, running, ready);
+}
+
 int main(void)
 {
     puts("NATIVE TEST: modeled kernel/SDK boundaries; no target ABI or scheduling evidence");
@@ -219,6 +259,60 @@ int main(void)
     assert((app->tskatr & (TA_ASSPRC | TA_FPU)) == (TA_ASSPRC | TA_FPU));
     assert(queue(app_mbf)->config.maxmsz == sizeof(application_message_t));
     assert(queue(app_mbf)->config.bufsz == 8 * cost(sizeof(application_message_t)));
+
+    /* MQTT ML commands use the same SchedulerTask handler as serial ML commands. */
+    runtime_set_mqtt_handlers(NULL, test_mqtt_command, NULL);
+    bool running = true, cfg_ready = true;
+    sched_msg_t ml = {.kind = SCHED_MQTT_CMD};
+    strcpy(ml.text, "ML SHOW");
+    handle_sched_msg(&ml, &running, &cfg_ready);
+    assert(ml_commands == 1 && ml_sampling && ml_invalidations == 0 && ordinary_commands == 0);
+    strcpy(ml.text, "SHOW");
+    handle_sched_msg(&ml, &running, &cfg_ready);
+    assert(ordinary_commands == 1 && ml_invalidations == 0);
+    strcpy(ml.text, "STOP");
+    handle_sched_msg(&ml, &running, &cfg_ready);
+    assert(ordinary_commands == 2 && ml_invalidations == 1);
+
+    /* D1 task 1.4: every console command also works on pico/<node>/cmd. */
+    assert(queue(ctrl_mbf)->config.maxmsz == sizeof(ctrl_msg_t));
+    assert(queue(ctrl_mbf)->config.bufsz == CTRL_MBF_MSGS * cost(sizeof(ctrl_msg_t)));
+    /* STOP and RUN keep the MQTT reply and gain the console's WINDOW/PAIR effects. */
+    assert(window_stops == 1 && pair_cancels == 1);
+    mqtt_cmd(" RUN\r\n", &running, &cfg_ready);
+    assert(ordinary_commands == 3 && !strcmp(last_mqtt, "RUN") && pair_cancels == 2 && window_stops == 1);
+    /* Shared REPL commands run in SchedulerTask through the same table as the console. */
+    mqtt_cmd("WINDOW STATUS 0000abcd", &running, &cfg_ready);
+    assert(repl_commands == 1 && !strcmp(last_repl, "WINDOW STATUS 0000abcd") && ordinary_commands == 3);
+    mqtt_cmd("SHOWRULES", &running, &cfg_ready);
+    assert(repl_commands == 2 && ordinary_commands == 3);
+    /* Unknown text still gets the MQTT handler's "[CMD] Unknown" reply. */
+    mqtt_cmd("FOO", &running, &cfg_ready);
+    assert(repl_commands == 2 && ordinary_commands == 4 && !strcmp(last_mqtt, "FOO"));
+    /* Configuration is refused on the command topic; it has its own topic. */
+    mqtt_cmd("BEGINCFG|name=X|proto=gpio|ENDCFG", &running, &cfg_ready);
+    assert(repl_commands == 2 && ordinary_commands == 4 && queue(ctrl_mbf)->count == 0);
+    /* Platform commands go to ControlTask, which runs them as typed lines. */
+    mqtt_cmd("APP STATUS", &running, &cfg_ready);
+    mqtt_cmd("app reset", &running, &cfg_ready);
+    assert(queue(ctrl_mbf)->count == 2 && queue(app_mbf)->count == 0 && ordinary_commands == 4);
+    control("");
+    assert(queue(ctrl_mbf)->count == 0 && queue(app_mbf)->count == 2);
+    consume_app();
+    assert(queue(app_mbf)->count == 0);
+    clear_queue(pub_mbf);
+    /* A bad platform command reaches ControlTask and is rejected there. */
+    mqtt_cmd("SPICHECK", &running, &cfg_ready);
+    control("");
+    assert(queue(ctrl_mbf)->count == 0 && queue(bench_mbf)->count == 0);
+    /* A full ctrl_mbf drops the newest command and counts it. */
+    uint32_t ctrl_drops = dropped(ctrl_mbf);
+    for (unsigned i = 0; i < CTRL_MBF_MSGS + 1; ++i) mqtt_cmd("APP STATUS", &running, &cfg_ready);
+    assert(queue(ctrl_mbf)->count == CTRL_MBF_MSGS && dropped(ctrl_mbf) == ctrl_drops + 1);
+    control("");
+    consume_app();
+    clear_queue(pub_mbf);
+    assert(queue(ctrl_mbf)->count == 0 && queue(app_mbf)->count == 0);
 
     /* Real ControlTask queues reset, event and status in order. */
     control("APP RESET\nAPP EVENT 91 1 entry\nAPP STATUS\n");

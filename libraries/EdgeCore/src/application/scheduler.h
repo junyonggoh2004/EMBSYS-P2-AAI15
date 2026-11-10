@@ -58,6 +58,7 @@ int scheduler_on_sample(const char *source, uint64_t timestamp_us);
 void scheduler_run_step(const app_cfg_t *cfg, bool running);
 
 
+const app_cfg_t *scheduler_config_by_name(const char *name);
 int  scheduler_count(void);
 void scheduler_dump(void);
 
@@ -71,6 +72,9 @@ void scheduler_pair_cancel(void);
  * All physical values are explicit; RUN starts service, STOP/CLEAR disable it. */
 int scheduler_window_command(const char *args);
 void scheduler_window_stop(void);
+/* Read-only framed snapshot. Refuses RUN/active PAIR so serial reporting
+ * cannot disturb a 50 ms capture. Nonce ties host evidence to this request. */
+int scheduler_window_report(uint32_t token);
 
 #ifdef __cplusplus
 }
