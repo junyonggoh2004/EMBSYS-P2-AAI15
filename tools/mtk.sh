@@ -7,6 +7,8 @@
 #   sh tools/mtk.sh build              build esp32s3_mtk
 #   sh tools/mtk.sh flash              build and flash
 #   NODE=s3-002 sh tools/mtk.sh flash  build and flash a further node (its own build directory)
+#   BOARD=n16r8 ...                    another S3 board: adds esp32s3_mtk/sdkconfig.board.<name>
+#                                      (n16r8: 8 MB octal PSRAM); plug it in by its native USB port
 #   sh tools/mtk.sh monitor            open the console (Ctrl+C to leave)
 #   sh tools/mtk.sh app-test           synthetic D3 application/core smoke test (clears volatile state)
 #   sh tools/mtk.sh window-report      read-only window timing snapshot after STOP; saves raw log + JSON
@@ -81,9 +83,20 @@ flash_proj() {
 node_id() { sed -n 's/^#define NODE_ID *"\([^"]*\)".*/\1/p' $PROJ/main/wifi_credentials.h 2>/dev/null | head -1; }
 # NODE=<id>, other than the one in wifi_credentials.h, builds that node in its
 # own build directory with NODE_ID overridden, so one checkout flashes several
-# boards (D1 tasks 1.1-1.3). Unset, the normal build/ directory is used.
+# boards (D1 tasks 1.1-1.3). BOARD=<name> adds sdkconfig.board.<name> for an S3
+# board other than the Super Mini, with its own sdkconfig in that directory.
+# Neither set: the normal build/ directory and sdkconfig are used.
+if [ -n "$BOARD" ] && [ ! -f "$PROJ/sdkconfig.board.$BOARD" ]; then
+  echo "No $PROJ/sdkconfig.board.$BOARD; boards: $(ls $PROJ | sed -n 's/^sdkconfig\.board\.//p' | tr '\n' ' ')"; exit 1
+fi
 node_build() {
-  if [ -n "$NODE" ] && [ "$NODE" != "$(node_id)" ]; then echo "-B $PROJ/build-$NODE -DEDGE_NODE_ID=$NODE"; fi
+  dir=
+  if [ -n "$NODE" ] && [ "$NODE" != "$(node_id)" ]; then dir=build-$NODE; echo "-DEDGE_NODE_ID=$NODE"; fi
+  if [ -n "$BOARD" ]; then
+    dir=${dir:-build}-$BOARD
+    echo "-DSDKCONFIG=$dir/sdkconfig -DSDKCONFIG_DEFAULTS=sdkconfig.defaults;sdkconfig.board.$BOARD"
+  fi
+  if [ -n "$dir" ]; then echo "-B $PROJ/$dir"; fi
 }
 
 case "$1" in
