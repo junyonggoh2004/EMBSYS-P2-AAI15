@@ -9,7 +9,7 @@ The first ML implementation came from `dev-jy-ml` and was integrated into `main`
 3. Press **Ctrl+Shift+B**, select **MTK: build**, and wait for success.
 4. Choose **Terminal → Run Task → MTK: flash**, select `COM5`, and wait for completion.
 5. Choose **Terminal → Run Task → MTK: load sensors and ML**, select `COM5`. Wait for `ML: OK PRESET sine-float`, `ML: OK RUN` and the final `RUN` acknowledgement.
-6. Choose **Terminal → Run Task → MTK: monitor**, select `COM5`. Do not press RESET. Sensor JSON and additional JSON with `"type":"ml"` should appear about every two seconds.
+6. Choose **Terminal → Run Task → MTK: monitor**, select `COM5`. Do not press RESET. Look for timestamped sensor and ML rows with readings, units and status. Use **MTK: monitor raw** for full JSON and hex frames.
 
 Equivalent PowerShell commands, from the workspace's `esp32s3_mtk` folder, **one at a time**:
 
@@ -20,7 +20,7 @@ powershell.exe -NoProfile -File .\tools\build.ps1 ml -Port COM5
 powershell.exe -NoProfile -File .\tools\build.ps1 monitor -Port COM5
 ```
 
-The ML loader uses STOP/CLEAR and replaces volatile sensors/rules with the three-sensor preset. A reset loses this configuration; run the `ml` action again. Close the monitor with **Ctrl+C** before running a loader. A loader acknowledgement confirms configuration, not a successful inference. Look for actual ML JSON with `status: OK` and numeric outputs.
+The ML loader uses STOP/CLEAR and replaces volatile sensors/rules with the three-sensor preset. A reset loses this configuration; run the `ml` action again. Close the monitor with **Ctrl+C** before running a loader. A loader acknowledgement confirms configuration, not a successful inference. Look for `ML OK` with numeric outputs. In the raw monitor, the equivalent JSON has `status: OK`.
 
 There are no additional Arduino libraries to install. Desktop model-validation packages are separate from ESP-IDF; they are not required to flash or use the board.
 

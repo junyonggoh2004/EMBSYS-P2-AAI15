@@ -3,7 +3,8 @@ param(
     [string]$Port,
     [ValidateSet('sine-float','sine-int8','autoencoder')][string]$Model='sine-float',
     [ValidateSet('all','aht-light')][string]$Inputs='all',
-    [string]$BuildDirectory
+    [string]$BuildDirectory,
+    [switch]$RawMonitor
 )
 $ErrorActionPreference='Stop'
 $MtkProjectRoot=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
@@ -55,7 +56,12 @@ if ($Action -eq 'sensors') {
 }
 if ($Action -eq 'monitor') {
     Write-Output "Opening serial monitor on $Port. Typed characters are shown locally; Ctrl+C exits."
-    & $MtkPython -m serial.tools.miniterm --eol CRLF --raw --echo --exit-char 3 $Port 115200
+    if ($RawMonitor) {
+        & $MtkPython -m serial.tools.miniterm --eol CRLF --raw --echo --exit-char 3 $Port 115200
+    } else {
+        Write-Output "Times are board uptime. Use MTK: monitor raw for complete serial output."
+        & $MtkPython (Join-Path $PSScriptRoot 'monitor.py') --eol CRLF --echo --exit-char 3 $Port 115200
+    }
     if ($LASTEXITCODE -ne 0) { throw 'Serial monitor failed.' }
     exit 0
 }
