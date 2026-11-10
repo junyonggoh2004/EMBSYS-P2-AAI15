@@ -275,7 +275,7 @@ Part 2 needs task 1.4 ([section 2](#d1-mqtt-between-real-boards-tasks-1115)) and
 
 | # | Task | What it means | Status |
 |---|---|---|---|
-| 3.1 | Agree the ML setup format | What a user sends to choose model, input and output, in the same style as the sensor config lines and MQTT JSON | Pending team agreement; the existing `ML` command syntax is only a stepping stone |
+| 3.1 | Agree the ML setup format | What a user sends to choose model, input and output, in the same style as the sensor config lines and MQTT JSON | [Draft contract for team review](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md); pending agreement and implementation |
 | 3.2 | Switch model live from the network | Change models over MQTT while sensing continues, not only from the console | Partial: MQTT can deliver existing ML commands, but model changes still require `STOP`, then `ML PRESET`/`ML MODEL`, `ML RUN`, `RUN` |
 | 3.3 | Switch the data source live | Feed the model from this board's sensors or another board's data over MQTT, and swap between them live | Pending; ML bindings currently accept only local configured sensors |
 | 3.4 | Choose where results go | Use the result on the board (trigger a rule or the LCD) or publish it for other boards | Pending; ML results currently print to the console |
