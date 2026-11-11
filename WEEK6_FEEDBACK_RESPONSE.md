@@ -63,6 +63,19 @@ This file is the single record of the professor's feedback on the Week 6 design 
 >
 > Resolve the inconsistencies between artefacts first, then prove the sampling path on real hardware before investing further in ML optimisation. Just a reminder that project must be in C.
 
+### D6 LCD/parser integration and board roles (11 November 2026)
+
+The user clarified **A input only; B ML, storage, data handling and
+communication; C output**. The current D6 plan/worksheet use A→B→C, with B's
+remote ML bindings, output transport and storage contract still open.
+The working change selectively imports the LCD diagnostic from `b1c1675`
+without replacing current MQTT/ML/application runtime paths. Strict portable
+sensor-frame parsing rejects malformed envelopes before bridge publication;
+native coverage includes a reproduced truncated-frame defect, typed AHT
+values and modeled LCD command/task/queue behavior. Physical D6 trials and
+feedback acceptance remain open; historical LCD reference evidence is kept
+separate. See [integration evidence](docs/d6/INTEGRATION_STATUS.md).
+
 ### D6 planning refinement (11 November 2026)
 
 The `d6` branch integrated main checkpoint `b389714` in merge `3e029d0`.

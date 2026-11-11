@@ -60,6 +60,10 @@ typedef struct {
 typedef struct {
     char     name[24];
     uint32_t value_us;
+    /* Opt-in LCDTEST only; regular benchmark producers zero these fields. */
+    uint16_t lcd_width, lcd_height;
+    uint16_t lcd_x_offset, lcd_y_offset;
+    uint8_t  lcd_madctl, lcd_invert;
 } bench_msg_t;
 
 // ---------- ctrl_mbf: platform commands that arrived over MQTT ----------

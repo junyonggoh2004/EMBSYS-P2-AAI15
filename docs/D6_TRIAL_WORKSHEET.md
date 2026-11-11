@@ -6,6 +6,11 @@ field is unknown, never zero/pass. Record failures and retries separately.
 Refined 11 November 2026 with decision and per-attempt evidence fields; see
 the [next integration steps](d6/NEXT_STEPS.md).
 
+Board roles clarified by the user on 11 November: **A input only; B ML,
+storage, data handling and communication; C output**. Exact fixture and B→C
+transport/storage contracts remain pending. A→C bypass alone does not prove
+the selected A→B→C path.
+
 ## Decision register
 
 Record the agreed value and owner/date/evidence before running dependent
@@ -18,6 +23,8 @@ trials. PENDING does not mean an interface or numerical limit is approved.
 | C panel geometry, offsets, orientation, colors and fixture | PENDING | All display trials |
 | Source/profile/field mapping, units and display precision | PENDING | T01, T02, T10 |
 | Freshness, refresh limits and disconnect/reset behavior | PENDING | T11–T15 |
+| B input handling/forwarding and B→C output payload/topic | PENDING | T01, T02, T06, T10–T14 |
+| B storage content/format, writer, failure handling and acceptance trials | PENDING | Storage trial scope pending; T16 if enabled |
 | SPI devices, supported operations and approved write location | PENDING | T04, T05 |
 | ML model/input/output meaning and result transport | PENDING | T06–T09, T15 |
 | Live model/source activation and failure recovery semantics | PENDING | T07–T09 |
@@ -52,14 +59,14 @@ INCONCLUSIVE, BLOCKED or NOT RUN explicitly. Add one row per attempt.
 
 | ID | Trial | Status | Actual observation and evidence |
 |---|---|---|---|
-| T01 | A activity/light → rule/output → MQTT → LCD | NOT RUN | Pending |
-| T02 | B temperature/humidity → MQTT → LCD | NOT RUN | Pending |
+| T01 | A activity/light → B handling/control → C output | NOT RUN | Pending |
+| T02 | A temperature/humidity → B handling/forwarding → C LCD | NOT RUN | Pending |
 | T03 | Complete and piecewise configuration, same image | NOT RUN | Pending |
 | T04 | GPIO/I2C/SPI concurrent fixture, byte round trip | NOT RUN | Pending |
 | T05 | SPI device substitution and reconfiguration | NOT RUN | Pending |
-| T06 | Local ML → subscriber → labelled LCD result | NOT RUN | Pending |
+| T06 | A input → B remote-input ML → subscriber → C labelled result | NOT RUN | Pending D4 typed remote bindings and result transport |
 | T07 | Live network model change with continued sampling | NOT RUN | Pending |
-| T08 | Local → remote → local ML input change | NOT RUN | Pending |
+| T08 | B input-source switch; D4 local↔remote needs separate fixture/scope | NOT RUN | Pending source/fixture agreement; no B physical sensor assumed |
 | T09 | Invalid setup/model preserves previous valid state | NOT RUN | Pending |
 | T10 | Invalid/truncated/wrong-source frame rejected | NOT RUN | Pending |
 | T11 | Stopped sensor becomes stale; others continue | NOT RUN | Pending |
@@ -79,6 +86,8 @@ Keep retries separate. Use the trial ID above and a unique attempt ID.
 | Preconditions: fixture/config revision, RUN state and decision references | Pending |
 | Exact stimulus/command or injected frame; expected behavior/limit | Pending |
 | Source serial record and raw topic/payload; subscriber capture position | Pending |
+| B accepted input, processing/routing result and outgoing topic/payload | Pending |
+| B storage outcome and record/readback evidence, only if enabled by agreed contract | Pending |
 | Decoded value/unit/status and photo/video position on C | Pending |
 | Correlation method; measured delay and uncertainty if timing is assessed | Pending |
 | TASKS/error/drop counts before and after when relevant | Pending |

@@ -4,8 +4,10 @@
 planned in [D6 validation plan](docs/D6_USECASE_VALIDATION_PLAN.md), with a
 [session worksheet](docs/D6_TRIAL_WORKSHEET.md). This branch starts from the
 older `d3-board` checkpoint; `origin/main` at `b389714` is now integrated in
-merge `3e029d0`. The separate `lcd-output` integration and D6 board tests
-remain pending.
+merge `3e029d0`. The LCD diagnostic is selectively imported from `b1c1675`
+in the current working change; live output integration and D6 board tests remain pending.
+Board roles clarified on 11 November: **A input only; B ML, storage, data
+handling and communication; C output**.
 The [next three integration steps](docs/d6/NEXT_STEPS.md) define the fixture,
 LCD import and remote-display gates.
 D3 is the timing/sequencing subsystem, not the scope of the whole project.
@@ -337,20 +339,20 @@ D5 is cut down, agreed on 10 Nov 2026. The professor said benchmarking is not fo
 
 # 7. D6 task checklist
 
-Cody leads D6 with the whole team, agreed on 10 Nov 2026. The professor's suggested use case is three S3 boards: one whose motion and light sensors drive an output, one with temperature and humidity, and an LCD board that shows both over MQTT. He also wants a live multi-bus demo: GPIO, I2C and SPI on one board, writing one byte over SPI and reading it back, then swapping the SPI device and reconfiguring. The rows are the agreed outline; the technical steps come later.
+Cody leads D6 with the whole team, agreed on 10 Nov 2026. The professor's original suggested use case used motion/light, temperature/humidity and a separate LCD over MQTT. The user clarified the board split on 11 Nov: **A acquires inputs only; B handles ML, storage, data and communication; C provides outputs**. Physical inputs therefore feed A→B→C; a direct A→C display is insufficient for the selected path. Exact devices, pins and B→C/storage interfaces remain to agree. The live multi-bus demonstration still requires GPIO, I2C and SPI on one board, a configured byte write/read, and a device swap/reconfiguration. The rows retain the agreed task numbers.
 
 | # | Task | What it means | Owner | Status |
 |---|---|---|---|---|
-| 5.1 | Confirm the use case | Adopt the three-board setup and decide whether the doorway counter becomes the motion board's input or is dropped | Team | Pending |
+| 5.1 | Confirm the use case | A input only, B processing/ML/storage/communication, C output; decide final scenario and doorway inclusion | Team | Role split clarified 11 Nov; final scenario pending |
 | 5.2 | Define each board | Its sensors, what it publishes, what it reacts to and what the LCD shows; parts and wiring per board (jumper wires from Mr Ajah) | Cody | Pending |
 | 5.3 | Multi-bus demo script | Step-by-step live demo of GPIO, I2C and SPI on one board, configured live, with the whole setup sent at once and then piece by piece | Cody | Pending |
 | 5.4 | SPI write and read by config | Write one byte, read it back, swap the device and reconfigure; config cannot do this yet | Brendan | Pending |
-| 5.5 | LCD board shows live data | Merge the LCD work and make it display what the other boards publish | Brendan | Pending |
-| 5.6 | ML inside the use case | One board runs a model on its own or another board's data; the result shows on the LCD or is published | Hasif, Sitt | Pending |
+| 5.5 | LCD board shows live data | Import LCD component and connect C to B's agreed output data/status | Brendan | Diagnostic imported in current working change; live path and combined panel evidence pending |
+| 5.6 | ML inside the use case | B runs ML on A's inputs and communicates results to C; typed remote bindings and result transport required | Hasif, Sitt | Pending |
 | 5.7 | Full rehearsal on three boards | Run the whole thing end to end, record it and fill this section | Team | Pending |
 | 5.8 | Tribunal 2 preparation | Each person can explain which of their functions would change under a new requirement (theory only) | Everyone | Pending |
 
-**Where the work is.** The three-board demo has a [validation plan](docs/D6_USECASE_VALIDATION_PLAN.md) and a [trial worksheet](docs/D6_TRIAL_WORKSHEET.md), both planning only and not run. The earlier radar-triggered doorway draft is retained as an [archived plan](docs/d6/reference/D6_USECASE_VALIDATION_PLAN.md) and [archived worksheet](docs/d6/reference/D6_TRIAL_WORKSHEET.md); its inclusion in the final demo remains a team decision. Part of the application logic (the typed event record, ApplicationTask and occupancy) is already on `main` with D3 ([section 4](#4-d3-task-checklist)). Brendan's ST7789 LCD driver and its test pattern, checked on the board, are on branch `lcd-output`, not merged.
+**Where the work is.** The three-board demo has a [validation plan](docs/D6_USECASE_VALIDATION_PLAN.md) and a [trial worksheet](docs/D6_TRIAL_WORKSHEET.md), both planning only and not run. The earlier radar-triggered doorway draft is retained as an [archived plan](docs/d6/reference/D6_USECASE_VALIDATION_PLAN.md) and [archived worksheet](docs/d6/reference/D6_TRIAL_WORKSHEET.md); its inclusion in the final demo remains a team decision. Part of the application logic (the typed event record, ApplicationTask and occupancy) is already on `main` with D3 ([section 4](#4-d3-task-checklist)). Brendan's ST7789 driver and diagnostic from `lcd-output` at `b1c1675` are selectively imported in the current working change. The reference branch's panel evidence is retained; live B→C display and combined hardware evidence remain pending. Run `sh tools/d6_test.sh` for parser/bridge and LCD HAL checks; the current runtime tests also cover serial/MQTT diagnostic routing and nonblocking handoff.
 
 
 ---

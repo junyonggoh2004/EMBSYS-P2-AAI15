@@ -5,6 +5,16 @@
  * SDK and kernel calls are modeled below; this is not a scheduler emulator. */
 #include "../esp32s3_mtk/components/edge_mtk/runtime_mtk.c"
 
+/* Command/task integration uses a recorded LCD boundary; the component's
+ * separate HAL test exercises its real drawing and error behavior. */
+static unsigned lcd_inits, lcd_patterns, lcd_closes;
+static int lcd_init_result = HAL_OK;
+static lcd_output_config_t last_lcd;
+int lcd_output_init(const lcd_output_config_t *config)
+{ ++lcd_inits; last_lcd = *config; return lcd_init_result; }
+void lcd_output_deinit(void) { ++lcd_closes; }
+int lcd_output_test_pattern(void) { ++lcd_patterns; return HAL_OK; }
+
 typedef struct message {
     struct message *next;
     INT bytes;
@@ -21,7 +31,7 @@ static T_CTSK tasks[16];
 static unsigned queue_count, task_count, started_count, fail_create;
 static UINT network_flags;
 static jmp_buf waiting;
-static enum { NO_TASK, APP_TASK, CONTROL_TASK } active_task;
+static enum { NO_TASK, APP_TASK, CONTROL_TASK, BENCH_TASK } active_task;
 static const char *console_input;
 
 static size_t cost(INT bytes) { return 4u + (((size_t)bytes + 3u) & ~3u); }
@@ -59,7 +69,8 @@ INT tk_rcv_mbf(ID id, void *out, TMO timeout)
     queue_t *q = queue(id);
     if (!q->head) {
         if (timeout == TMO_POL) return E_TMOUT; /* ControlTask polls ctrl_mbf */
-        assert(active_task == APP_TASK && id == app_mbf && timeout == TMO_FEVR);
+        assert(((active_task == APP_TASK && id == app_mbf) ||
+                (active_task == BENCH_TASK && id == bench_mbf)) && timeout == TMO_FEVR);
         longjmp(waiting, 1); /* stop where the real task would block */
     }
     message_t *m = q->head;
@@ -162,8 +173,13 @@ void scheduler_run_all(bool running) { (void)running; abort(); }
 uint32_t scheduler_next_due_ms(bool running, uint32_t max) { (void)running; (void)max; abort(); }
 bool inference_mgr_load_base_model(void) { abort(); }
 void inference_mgr_set_params(const uint8_t *data, size_t bytes) { (void)data; (void)bytes; abort(); }
+static unsigned remote_frames;
 void sensor_bridge_on_remote_line(const char *node, const char *source, const char *line, uint32_t ts)
-{ (void)node; (void)source; (void)line; (void)ts; abort(); }
+{
+    assert(!strcmp(node, "nodeB") && !strcmp(source, "AHT"));
+    assert(!strcmp(line, "proto=i2c src=AHT len=1 ts=0 : 00") && ts == 1000);
+    ++remote_frames;
+}
 ER hal_mtk_init(void) { abort(); }
 void console_stats(uint32_t *irqs, uint32_t *drops) { *irqs = 0; *drops = 0; }
 size_t heap_caps_get_free_size(unsigned caps) { (void)caps; return 100000; }
@@ -185,6 +201,12 @@ static void consume_app(void)
 {
     active_task = APP_TASK;
     if (!setjmp(waiting)) application_task(0, NULL);
+    active_task = NO_TASK;
+}
+static void consume_bench(void)
+{
+    active_task = BENCH_TASK;
+    if (!setjmp(waiting)) benchmark_task(0, NULL);
     active_task = NO_TASK;
 }
 static void control(const char *text)
@@ -259,10 +281,37 @@ int main(void)
     assert((app->tskatr & (TA_ASSPRC | TA_FPU)) == (TA_ASSPRC | TA_FPU));
     assert(queue(app_mbf)->config.maxmsz == sizeof(application_message_t));
     assert(queue(app_mbf)->config.bufsz == 8 * cost(sizeof(application_message_t)));
+    assert(sizeof(bench_msg_t) == 40);
+    assert(queue(bench_mbf)->config.maxmsz == sizeof(bench_msg_t));
+    assert(queue(bench_mbf)->config.bufsz == BENCH_MBF_MSGS * cost(sizeof(bench_msg_t)));
+    printf("Native bench_msg_t=%zu, bench_mbf=%zu bytes (target layout still needs image audit)\n",
+           sizeof(bench_msg_t), (size_t)queue(bench_mbf)->config.bufsz);
 
     /* MQTT ML commands use the same SchedulerTask handler as serial ML commands. */
     runtime_set_mqtt_handlers(NULL, test_mqtt_command, NULL);
     bool running = true, cfg_ready = true;
+    /* Topic parsing cannot silently truncate an identity, and embedded NULs
+     * cannot hide trailing bytes before the bridge validates the envelope. */
+    sched_msg_t remote = {.kind = SCHED_REMOTE_LINE};
+    strcpy(remote.topic, "pico/nodeB/sensor/AHT/line");
+    strcpy(remote.text, "proto=i2c src=AHT len=1 ts=0 : 00");
+    remote.len = (uint16_t)strlen(remote.text);
+    handle_sched_msg(&remote, &running, &cfg_ready);
+    assert(remote_frames == 1);
+    remote.text[remote.len + 1] = 'X';
+    remote.len += 2;
+    handle_sched_msg(&remote, &running, &cfg_ready);
+    assert(remote_frames == 1);
+    remote.len -= 2;
+    strcpy(remote.topic, "pico/12345678901234567890123456789012/sensor/AHT/line");
+    handle_sched_msg(&remote, &running, &cfg_ready);
+    assert(remote_frames == 1);
+    memset(remote.topic, 'X', sizeof remote.topic); /* no terminator */
+    handle_sched_msg(&remote, &running, &cfg_ready);
+    assert(remote_frames == 1);
+    remote.len = sizeof remote.text;
+    handle_sched_msg(&remote, &running, &cfg_ready);
+    assert(remote_frames == 1);
     sched_msg_t ml = {.kind = SCHED_MQTT_CMD};
     strcpy(ml.text, "ML SHOW");
     handle_sched_msg(&ml, &running, &cfg_ready);
@@ -313,6 +362,51 @@ int main(void)
     consume_app();
     clear_queue(pub_mbf);
     assert(queue(ctrl_mbf)->count == 0 && queue(app_mbf)->count == 0);
+
+    /* LCD diagnostic has the same path from MQTT and serial. It remains
+     * inactive at startup and only BenchmarkTask calls the driver. */
+    assert(lcd_inits == 0 && lcd_patterns == 0 && lcd_closes == 0);
+    control("LCDTEST 76 284 82 18 00 0\n");
+    assert(queue(bench_mbf)->count == 1 && lcd_inits == 0);
+    bench_msg_t lcd_request;
+    assert(tk_rcv_mbf(bench_mbf, &lcd_request, TMO_POL) == sizeof lcd_request);
+    assert(!strcmp(lcd_request.name, "LCDTEST"));
+    assert(lcd_request.lcd_width == 76 && lcd_request.lcd_height == 284);
+    assert(lcd_request.lcd_x_offset == 82 && lcd_request.lcd_y_offset == 18);
+    assert(lcd_request.lcd_madctl == 0 && lcd_request.lcd_invert == 0);
+    const char *bad_lcd[] = {
+        "LCDTEST", "LCDTEST 0 240 0 0 00 1", "LCDTEST 76 284 82 40 00 0",
+        "LCDTEST 76 284 82 18 100 0", "LCDTEST 76 284 82 18 00 2",
+        "LCDTEST 76 284 82 18 00 0 junk", "LCDTEST -1 284 82 18 00 0",
+        "LCDTEST 4294967372 284 82 18 00 0", "LCDTEST +76 284 82 18 00 0",
+        "LCDTEST 76 284 82 18 00 -4294967296", "LCDTEST 76 284 82 18 0x 0",
+    };
+    for (size_t i = 0; i < sizeof bad_lcd / sizeof bad_lcd[0]; ++i) {
+        assert(platform_command(bad_lcd[i]));
+        assert(queue(bench_mbf)->count == 0);
+    }
+    assert(!platform_command("LCDTESTX 76 284 82 18 00 0"));
+    mqtt_cmd("lcdtest 76 284 82 18 00 0", &running, &cfg_ready);
+    assert(queue(ctrl_mbf)->count == 1 && queue(bench_mbf)->count == 0);
+    control("");
+    assert(queue(ctrl_mbf)->count == 0 && queue(bench_mbf)->count == 1);
+    consume_bench();
+    assert(lcd_inits == 1 && lcd_patterns == 1 && lcd_closes == 2);
+    assert(last_lcd.width == 76 && last_lcd.height == 284 && !last_lcd.invert_colors);
+    lcd_init_result = HAL_ERR_IO;
+    control("LCDTEST 76 284 82 18 00 0\n");
+    consume_bench();
+    assert(lcd_inits == 2 && lcd_patterns == 1 && lcd_closes == 4);
+    lcd_init_result = HAL_OK;
+    uint32_t lcd_drops = dropped(bench_mbf);
+    for (unsigned i = 0; i < BENCH_MBF_MSGS + 1; ++i)
+        assert(platform_command("LCDTEST 76 284 82 18 00 0"));
+    assert(queue(bench_mbf)->count == BENCH_MBF_MSGS && dropped(bench_mbf) == lcd_drops + 1);
+    clear_queue(bench_mbf);
+    runtime_bench("TEST", 123);
+    assert(tk_rcv_mbf(bench_mbf, &lcd_request, TMO_POL) == sizeof lcd_request);
+    assert(!strcmp(lcd_request.name, "TEST") && lcd_request.value_us == 123);
+    assert(lcd_request.lcd_width == 0 && lcd_request.lcd_height == 0);
 
     /* Real ControlTask queues reset, event and status in order. */
     control("APP RESET\nAPP EVENT 91 1 entry\nAPP STATUS\n");

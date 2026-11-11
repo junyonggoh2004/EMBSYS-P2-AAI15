@@ -1,13 +1,12 @@
-// rule_engine/sensor_bridge.c
+// mqtt/sensor_bridge.c
 #include "mqtt/sensor_bridge.h"
+#include "mqtt/sensor_frame.h"
 #include "application/output_format.h"  // publisher_emit_hex
 #include "bus/bus_common.h"            // app_cfg_t, proto_t, sample_mode_*
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include <ctype.h>
-#include <stdlib.h>
 
 #define MAX_BRIDGE_MAP 8
 
@@ -52,26 +51,6 @@ static bridge_map_t* find_map(const char *remote_node,
     return NULL;
 }
 
-/* Parse "01 CE 03" -> bytes[] = {0x01, 0xCE, 0x03}, return count */
-static int parse_hex_line(const char *line, uint8_t *out, int out_cap)
-{
-    if (!line || !out || out_cap <= 0) return -1;
-
-    char buf[160];
-    trim_copy(buf, sizeof buf, line);
-
-    int count = 0;
-    char *save = NULL;
-    char *tok = strtok_r(buf, " ,\t", &save);
-    while (tok && count < out_cap) {
-        // allow "0xCE" or "CE"
-        unsigned long v = strtoul(tok, NULL, 16);
-        out[count++] = (uint8_t)v;
-        tok = strtok_r(NULL, " ,\t", &save);
-    }
-    return count;
-}
-
 /* ----------------- public API ----------------- */
 
 bool sensor_bridge_add_mapping(const char *remote_node,
@@ -113,7 +92,7 @@ bool sensor_bridge_add_mapping(const char *remote_node,
 /*
  * Called from mqtt_telemetry.c when we receive:
  *   pico/<remote_node>/sensor/<remote_source>/line
- * with ASCII hex payload, e.g. "01 CE 03".
+ * with the complete publisher envelope (proto/src/len/ts and hex bytes).
  */
 void sensor_bridge_on_remote_line(const char *remote_node,
                                   const char *remote_source,
@@ -129,27 +108,10 @@ void sensor_bridge_on_remote_line(const char *remote_node,
         return;
     }
 
-    // Debug: show full incoming line
-    printf("[BRIDGE] on_remote_line: %s/%s -> local=%s line='%s'\n",
-           remote_node, remote_source, m->local_name, line);
-
-    // --- NEW: extract only the hex bytes after ':' ---
-    const char *hex_part = strchr(line, ':');
-    if (hex_part) {
-        hex_part++;  // move past ':'
-        while (*hex_part == ' ' || *hex_part == '\t') {
-            hex_part++;   // skip spaces
-        }
-    } else {
-        // No ':' found, fall back to whole line (shouldn't happen with your format)
-        hex_part = line;
-    }
-
-    uint8_t buf[64];
-    int n = parse_hex_line(hex_part, buf, (int)sizeof buf);
-    if (n <= 0) {
-        printf("[BRIDGE] on_remote_line: parse_hex_line failed (hex_part='%s')\n",
-               hex_part);
+    (void)ts_ms; /* Receive-age policy belongs to a typed consumer. */
+    sensor_frame_t frame;
+    if (!sensor_frame_parse_line(line, strlen(line), remote_source, NULL, &frame)) {
+        printf("[BRIDGE] rejected malformed frame from %s/%s\n", remote_node, remote_source);
         return;
     }
 
@@ -165,7 +127,7 @@ void sensor_bridge_on_remote_line(const char *remote_node,
     // This will:
     //  - print hex line
     //  - feed bytes into rule engine as if it came from a local sensor
-    publisher_emit_hex(&fake_cfg, "mqtt", m->local_name, buf, n);
+    publisher_emit_hex(&fake_cfg, "mqtt", m->local_name, frame.data, (int)frame.length);
 }
 
 

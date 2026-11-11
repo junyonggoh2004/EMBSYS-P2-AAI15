@@ -1,17 +1,21 @@
 # D6 next integration steps
 
-Reviewed 11 November 2026 against `d6` at `3e029d0`. This is an implementation
-handoff; no D6 hardware trial or team decision is marked complete.
+Planning reviewed at `3e029d0`; implementation based on `d6` at `035d7fc`
+on 11 November 2026. This is an implementation
+handoff; no D6 hardware trial is marked complete. The user clarified the roles:
+**A input only; B ML, storage, data handling and communication; C output**.
 Use the [plan](../D6_USECASE_VALIDATION_PLAN.md) and copy the
 [worksheet](../D6_TRIAL_WORKSHEET.md) for each actual session.
+Implemented changes, native/build results and remaining physical gates are in
+[integration status](INTEGRATION_STATUS.md).
 
 ## Baseline checked
 
 | Item | Finding at this review |
 |---|---|
 | Main integration | Merge `3e029d0` includes main checkpoint `b389714`; initial working tree clean |
-| LCD reference | Local remote-tracking ref `origin/lcd-output` resolves to `b1c1675`; reviewed without fetching or importing |
-| LCD capability | Single-caller synchronous drawing API; opt-in `LCDTEST` through BenchmarkTask; no remote sensor display adapter |
+| LCD reference | Local remote-tracking ref `origin/lcd-output` resolves to `b1c1675`; selectively imported without a network fetch |
+| LCD capability | Driver/typed diagnostic selectively imported from `b1c1675` in this working change, adapted to current serial/MQTT dispatch; live B→C output adapter pending |
 | Sensor network | `/line` publisher exists; `/raw` publication returns false on the active MTK backend |
 | Measurement decoding | `sensor_measurement_value()` exposes typed field decoding; physical-unit JSON is supplementary console output |
 | ML integration | Current ML configuration changes require sampling stopped; remote bindings and result publication remain separate D4 work |
@@ -24,14 +28,17 @@ visible test-pattern evidence; that does not prove this combined D6 firmware.
 Cody leads with the owners named in plan section 4. Complete the worksheet's
 decision register before turning proposed node names and pins into presets.
 
-1. Confirm the scenario and doorway inclusion, actual motion source and local
-   output. Record output behavior, polarity and failure state.
+1. Confirm the scenario and doorway inclusion, A's actual sensor inventory and
+   C's output devices. Record B processing/control routing and C output
+   behavior, polarity and failure state. A has no actuator/output role.
 2. Record one pin/power diagram per board and unique node/source names. Treat
    the existing three-sensor breadboard and Brendan's LCD-only fixture as
    separate layouts until a checked diagram reconciles them.
 3. Agree the display's source-to-field mappings, units, age/refresh limits and
    behavior on disconnect/reset. Agree the ML input/model/result contract with
    the D4 owners; reserve a display field without inventing a result topic.
+   Agree B's storage content/format, bounded writer ownership and failure
+   behavior before implementing writes; its role does not freeze D2 mappings.
 4. Obtain Brendan's two SPI device protocols and supported configuration
    operations before preparing task 5.4's commands.
 
@@ -66,9 +73,11 @@ results separately. LCD import alone leaves task 5.5 pending live-data evidence.
 
 ## Step 3 — implement and validate the remote sensor display path
 
-Start with T02, B's AHT temperature/humidity → MQTT → C display. Add A's light
-and activity path after their fixture/behavior decisions. ML display follows
-the agreed D4 result transport rather than blocking this first sensor path.
+Start with T02, A's AHT temperature/humidity → B handling/forwarding → C
+display over MQTT. Agree B→C output payload/topic first; a direct A→C bypass
+does not validate B's role. Add light/activity after their fixture/behavior
+decisions. B's ML requires D4 typed remote bindings for A inputs. Storage
+requires its own contract/trials and is not enabled by importing the LCD.
 
 The existing wire envelope is:
 
@@ -80,13 +89,16 @@ payload: proto=<protocol> src=<source> len=<byte-count> ts=<source-uptime-ms> : 
 `application/output_format.c` constructs this text in a bounded 256-byte
 buffer. Long frames can therefore be truncated while retaining the declared
 length. The display adapter must reject length disagreement. In
-`mqtt/sensor_bridge.c`, the existing parser extracts bytes after `:` using
-`strtoul()` without complete token validation and caps its local buffer at
-64 bytes. Reusing it alone does not satisfy T10's malformed-frame gate.
+`mqtt/sensor_bridge.c`, the old parser accepted partially validated hex and
+truncated frames. The current change replaces it with `mqtt/sensor_frame.c`:
+exact envelope/source/byte-count checks, bounded byte spans and atomic output
+on rejection. Runtime topic parsing now rejects overlong identities instead
+of truncating them. The existing bridge's 64-byte data bound is retained.
 
-Implement the following once the mappings are agreed:
+Parser and bridge rejection are implemented and covered by native tests in
+`sh tools/d6_test.sh`; the following full-path work remains:
 
-1. Validate exact topic structure and configured node/source, envelope source,
+1. Use the strict parser to validate exact topic structure and configured node/source, envelope source,
    protocol, declared length and every hex token. Reject truncation, excess
    bytes, malformed fields and unsupported profiles before changing state.
 2. Keep parsing, typed decoding and display-state logic in EdgeCore. Reuse
@@ -109,7 +121,7 @@ establish parser/state behavior, not screen output or scheduling acceptance.
 
 ## Verification and handoff
 
-For implementation changes run the focused tests, `sh tools/cody_test.sh`,
+For implementation changes run `sh tools/d6_test.sh`, the focused tests, `sh tools/cody_test.sh`,
 `sh tools/d2_host_test.sh`, `sh tools/check_hal_boundary.sh`,
 `sh tools/mtk.sh purity` and `git diff --check`. Add the LCD host test when
 imported, then pinned-SDK build/image and relevant board tests from the plan.

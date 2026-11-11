@@ -20,7 +20,10 @@ void sensor_bridge_on_remote_raw(const char *remote_node,
                                  size_t len,
                                  uint32_t ts_ms);
 
-// Called when a remote LINE frame (ASCII) is received
+// Called with a complete publisher LINE envelope (proto/src/len/ts + hex).
+// Bare hex, bad source/length/hex and oversized frames are rejected before
+// rule/publication side effects. Callers receiving byte spans must reject
+// embedded NULs before converting to this C-string API (MTK does so).
 void sensor_bridge_on_remote_line(const char *remote_node,
                                   const char *remote_source,
                                   const char *line,

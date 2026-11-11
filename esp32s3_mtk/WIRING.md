@@ -101,3 +101,62 @@ The BL-to-ground entry preserves the active-low backlight arrangement previously
 | LCD signal/BL connections | No new resistor added; preserve the existing breakout arrangement |
 
 Bare sensors or different breakout revisions may need different power, pull-up or backlight circuitry. These tables describe the current modules and retained wiring.
+
+
+## Separate LCD-only breadboard test (current `lcd_output` firmware)
+
+Imported from `lcd-output` at `b1c1675` on 11 November 2026. This is the
+reference component's fixture; combined D6 firmware/panel checks remain pending.
+
+This is a **separate setup** for the DIYUSER 2.25-inch ST7789P3, 76×284 LCD
+and ESP32-S3 Super Mini. Disconnect the sensors and remove the Version 2 LCD
+wires above before using this map. The Version 2 tables remain as a record of
+the earlier shared breadboard. The current `lcd_output` pin definitions are in
+[`components/lcd_output/lcd_board_config.h`](components/lcd_output/lcd_board_config.h).
+
+| User's breadboard before wiring | ESP32-S3 Super Mini pinout reference |
+|---|---|
+| ![Empty breadboard showing the left blue rail and numbered A–E rows](components/lcd_output/images/breadboard-empty.jpg) | ![ESP32-S3 Super Mini pinout showing 3V3, GND and GPIO8 through GPIO12](components/lcd_output/images/esp32s3-super-mini-pinout.jpg) |
+
+These are reference images, not a photo of the completed connections. Check
+the actual printed pin labels. The [working LCD photo](components/lcd_output/images/lcd-test-rgb.jpg)
+and [module identification photos](components/lcd_output/images/README.md)
+are stored with the driver.
+
+Place the ESP32 and LCD outside an empty breadboard. Use one continuous
+blue/minus rail section for all three ground leads below. Choose three holes
+on that same section and call them N1, N2 and N3; these are example names, not
+printed coordinates. If the rail is split, use one side of the split or bridge
+it with a jumper. On the terminal strip, A–E of the same numbered row are
+connected; different numbered rows are separate.
+The [LCD-only breadboard diagram](components/lcd_output/LCD_BREADBOARD.svg)
+shows these holes on a simplified version of the user's board.
+
+| Device pin | Breadboard hole | Electrical connection |
+|---|---|---|
+| ESP32 GND | Blue rail N1 | Grounds the rail |
+| LCD GND | Blue rail N2 | ESP32 GND through the same rail |
+| LCD BL | Blue rail N3 | ESP32 GND through the same rail |
+| ESP32 3V3 | A4 | Supplies row 4 |
+| LCD VCC | E4 | ESP32 3V3 through row 4 |
+| ESP32 GPIO12 | A10 | LCD SPI clock through row 10 |
+| LCD SCL / SCK | E10 | ESP32 GPIO12 through row 10 |
+| ESP32 GPIO11 | A11 | LCD SPI MOSI through row 11 |
+| LCD SDA / MOSI | E11 | ESP32 GPIO11 through row 11 |
+| ESP32 GPIO8 | A12 | LCD reset through row 12 |
+| LCD RST | E12 | ESP32 GPIO8 through row 12 |
+| ESP32 GPIO9 | A13 | LCD data/command through row 13 |
+| LCD DC | E13 | ESP32 GPIO9 through row 13 |
+| ESP32 GPIO10 | A14 | LCD chip select through row 14 |
+| LCD CS | E14 | ESP32 GPIO10 through row 14 |
+
+The GND/BL rail is a ground junction: **N1, N2 and N3 must be electrically
+continuous.** Do not connect that rail to 3V3. LCD `SCL` and `SDA` are SPI
+clock and MOSI, not the sensor I²C signals. No LCD MISO wire is used. The BL
+connection follows the previously selected active-low arrangement for this
+particular breakout; its current rating has not been verified, so the firmware
+does not use GPIO13 for BL. Unplug USB power before adding or moving wires.
+Do not run the SPI fixture commands while this LCD is connected to GPIO10–12.
+
+For the display pattern and console command, see the
+[`lcd_output` test instructions](components/lcd_output/README.md#how-to-run-the-physical-lcd-test).

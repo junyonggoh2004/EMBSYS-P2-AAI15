@@ -124,7 +124,16 @@ case "$1" in
     echo "compiler:    $have_gcc   (pinned $GCC_VERSION)"
     [ "$have_port" = "$PORT_COMMIT" ] && [ "$have_idf" = "$IDF_DESCRIBE" ] && [ "$have_gcc" = "$GCC_VERSION" ] || {
       echo "MISMATCH: run sh tools/mtk.sh setup (and git submodule update)"; exit 1; }
-    idf.py -C $PROJ build | grep -E "binary size|Project build complete" ;;
+    # POSIX sh has no pipefail: filtering a pipeline would hide an idf.py
+    # failure whenever the bootloader already printed a binary-size line.
+    CHECK_LOG=$(mktemp "${TMPDIR:-/tmp}/mtk-check.XXXXXX")
+    trap 'rm -f "$CHECK_LOG"' EXIT HUP INT TERM
+    if idf.py -C "$PROJ" build > "$CHECK_LOG" 2>&1; then
+      grep -E "binary size|Project build complete" "$CHECK_LOG" || cat "$CHECK_LOG"
+    else
+      cat "$CHECK_LOG" >&2
+      exit 1
+    fi ;;
   build)   idf $(node_build) build ;;
   flash)   need_port; idf_env; flash_proj $PROJ $(node_build) ;;
   # The console takes typed lines (HELP, TASKS, BEGINCFG...) through pyserial's

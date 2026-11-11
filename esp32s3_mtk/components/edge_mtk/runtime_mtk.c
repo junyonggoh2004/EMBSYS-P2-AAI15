@@ -52,6 +52,8 @@
 #include "edge_mtk.h"
 #include "sensor_ml.h"
 #include "runtime_mtk.h"
+#include "lcd_output.h"
+#include "mqtt/sensor_frame.h"
 
 // Defined in the shared code (mqtt/mqtt_config_parser.c) and by the MQTT layer.
 void control_bind_flags(bool *running, bool *cfg_ready);
@@ -201,21 +203,6 @@ void runtime_set_mqtt_handlers(void (*cfg)(const char *), void (*cmd)(const char
     s_node_cb = node;
 }
 
-// "pico/<node>/sensor/<source>/line" -> node, source
-static bool parse_line_topic(const char *topic, char *node, size_t nn, char *src, size_t sn)
-{
-    if (strncmp(topic, "pico/", 5) != 0) return false;
-    const char *n0 = topic + 5;
-    const char *n1 = strchr(n0, '/');
-    if (!n1 || strncmp(n1, "/sensor/", 8) != 0) return false;
-    const char *s0 = n1 + 8;
-    const char *s1 = strchr(s0, '/');
-    if (!s1 || strcmp(s1, "/line") != 0) return false;
-    snprintf(node, nn, "%.*s", (int)(n1 - n0), n0);
-    snprintf(src, sn, "%.*s", (int)(s1 - s0), s0);
-    return true;
-}
-
 // ---------- commands from pico/<node>/cmd (D1 task 1.4) ----------
 
 // The platform commands ControlTask runs itself rather than passing them to
@@ -224,7 +211,7 @@ static bool is_platform_command(const char *line)
 {
     static const char *const k_words[] = {
         "TASKS", "APP", "WIFISCAN", "WIFIDROP", "SPIID", "SPILOGPLAN", "SPILOGVERIFY", "SPILOGWRITE",
-        "SPICHECK", "SPISCAN", "SPIPROGRAM", "SPIVERIFY", "SPIBENCH", "STALL",
+        "SPICHECK", "SPISCAN", "SPIPROGRAM", "SPIVERIFY", "SPIBENCH", "STALL", "LCDTEST",
     };
     size_t n = strcspn(line, " \t");
     for (size_t i = 0; i < sizeof k_words / sizeof k_words[0]; i++)
@@ -284,9 +271,14 @@ static void handle_sched_msg(sched_msg_t *m, bool *running, bool *cfg_ready)
     case SCHED_MQTT_NODE:    if (s_node_cb) s_node_cb("unknown", m->text); break;
     case SCHED_MODEL_PARAMS: inference_mgr_set_params((const uint8_t *)m->text, m->len); break;
     case SCHED_REMOTE_LINE: {
-        char node[32], src[32];
-        if (parse_line_topic(m->topic, node, sizeof node, src, sizeof src))
-            sensor_bridge_on_remote_line(node, src, m->text, hal_time_ms());
+        sensor_frame_topic_t topic;
+        const char *end = memchr(m->topic, 0, sizeof m->topic);
+        if (end && m->len < sizeof m->text && m->text[m->len] == 0 &&
+            !memchr(m->text, 0, m->len) &&
+            sensor_frame_parse_topic(m->topic, (size_t)(end - m->topic), &topic))
+            sensor_bridge_on_remote_line(topic.node, topic.source, m->text, hal_time_ms());
+        else
+            puts("[BRIDGE] rejected invalid topic or payload span");
         break;
     }
     default: break;
@@ -371,6 +363,31 @@ static void scheduler_task(INT stacd, void *exinf)
 
 // ---------- ControlTask ----------
 
+/* Bounded diagnostic numbers: reject signs, overflow and joined/trailing
+ * tokens before narrowing to the typed benchmark message. */
+static bool lcd_number(const char **next, unsigned base, unsigned limit, unsigned *out)
+{
+    const char *p = *next;
+    while (*p == ' ' || *p == '\t') ++p;
+    if (base == 16 && p[0] == '0' && (p[1] == 'x' || p[1] == 'X')) p += 2;
+    const char *start = p;
+    unsigned value = 0;
+    while (*p) {
+        unsigned digit;
+        if (*p >= '0' && *p <= '9') digit = (unsigned)(*p - '0');
+        else if (base == 16 && *p >= 'a' && *p <= 'f') digit = (unsigned)(*p - 'a' + 10);
+        else if (base == 16 && *p >= 'A' && *p <= 'F') digit = (unsigned)(*p - 'A' + 10);
+        else break;
+        if (digit >= base || digit > limit || value > (limit - digit) / base) return false;
+        value = value * base + digit;
+        ++p;
+    }
+    if (p == start || (*p && *p != ' ' && *p != '\t')) return false;
+    *next = p;
+    *out = value;
+    return true;
+}
+
 // The platform commands, which are not part of the shared REPL: typed on the
 // console or sent over MQTT (through ctrl_mbf), they run here in ControlTask.
 // Returns false when `line` is not one of them.
@@ -378,6 +395,31 @@ static bool platform_command(const char *line)
 {
     if (strcasecmp(line, "TASKS") == 0) {
         runtime_print_tasks();
+    } else if (strncasecmp(line, "LCDTEST", 7) == 0 &&
+               (line[7] == 0 || line[7] == ' ' || line[7] == '\t')) {
+        unsigned width, height, x_offset, y_offset, madctl, invert;
+        const char *next = line + 7;
+        bool valid = lcd_number(&next, 10, 320, &width) &&
+                     lcd_number(&next, 10, 320, &height) &&
+                     lcd_number(&next, 10, 320, &x_offset) &&
+                     lcd_number(&next, 10, 320, &y_offset) &&
+                     lcd_number(&next, 16, 255, &madctl) &&
+                     lcd_number(&next, 10, 1, &invert);
+        while (*next == ' ' || *next == '\t') ++next;
+        if (!valid || *next || width == 0 || height == 0 ||
+            x_offset + width > 320 || y_offset + height > 320 ||
+            madctl > 0xff || invert > 1) {
+            puts("[LCD] usage: LCDTEST <width> <height> <x_offset> <y_offset> <madctl_hex> <invert_0_or_1>");
+        } else {
+            bench_msg_t b = { .name = "LCDTEST",
+                              .lcd_width = (uint16_t)width, .lcd_height = (uint16_t)height,
+                              .lcd_x_offset = (uint16_t)x_offset, .lcd_y_offset = (uint16_t)y_offset,
+                              .lcd_madctl = (uint8_t)madctl, .lcd_invert = (uint8_t)invert };
+            if (!runtime_send(bench_mbf, &b, sizeof b))
+                puts("[LCD] ERROR benchmark queue full");
+            else
+                puts("[LCD] test queued");
+        }
     } else if (strncasecmp(line, "APP ", 4) == 0 || strcasecmp(line, "APP") == 0) {
         application_message_t request;
         if (!application_command_parse(line, hal_time_us(), &request)) {
@@ -570,7 +612,24 @@ static void benchmark_task(INT stacd, void *exinf)
     for (;;) {
         if (tk_rcv_mbf(bench_mbf, &b, TMO_FEVR) > 0) {
             runtime_alive(RT_BENCHMARK);
-            if (strcmp(b.name, "SPIBENCH") == 0)
+            if (strcmp(b.name, "LCDTEST") == 0) {
+                lcd_output_config_t config = {
+                    .width = b.lcd_width, .height = b.lcd_height,
+                    .x_offset = b.lcd_x_offset, .y_offset = b.lcd_y_offset,
+                    .madctl = b.lcd_madctl, .invert_colors = b.lcd_invert != 0
+                };
+                printf("[LCD] starting test %ux%u offset=%u,%u madctl=%02x invert=%u\n",
+                       (unsigned)config.width, (unsigned)config.height,
+                       (unsigned)config.x_offset, (unsigned)config.y_offset,
+                       (unsigned)config.madctl, (unsigned)config.invert_colors);
+                lcd_output_deinit();
+                int result = lcd_output_init(&config);
+                if (result == HAL_OK) result = lcd_output_test_pattern();
+                printf("[LCD] test %s result=%d\n",
+                       result == HAL_OK ? "complete" : "failed", result);
+                lcd_output_deinit();
+            }
+            else if (strcmp(b.name, "SPIBENCH") == 0)
                 mtk_spi_benchmark(b.value_us >> 30, b.value_us & 0x3fffffffu);
             else if (strcmp(b.name, "SPIID") == 0)
                 mtk_spi_flash_id();
@@ -596,7 +655,7 @@ static void benchmark_task(INT stacd, void *exinf)
 
 void runtime_bench(const char *name, uint32_t value_us)
 {
-    bench_msg_t b;
+    bench_msg_t b = {0};
     snprintf(b.name, sizeof b.name, "%s", name);
     b.value_us = value_us;
     runtime_send(bench_mbf, &b, sizeof b);
