@@ -8,7 +8,7 @@ The default **sine-float** model is the official pretrained TensorFlow Lite Micr
 
 | Specification | sine-float | sine-int8 |
 |---|---|---|
-| Architecture | Dense 1 → 16 → 16 → 1 | Quantized version of the same demonstration |
+| Architecture | Dense 1 → 16 → 16 → 1 with ReLU hidden layers and a linear output | Same 321-parameter network, quantized |
 | File size | 3,164 bytes | 2,704 bytes |
 | Input/output | One scalar in, one scalar out, shape [1,1] | Same shapes |
 | Tensor precision | Float32 | Int8, quantized/dequantized using actual tensor parameters |
@@ -26,7 +26,11 @@ All three sensors, including ultrasonic distance, belong to the default setup. U
 
 For desktop input 1.829175, the bundled float model returned approximately 0.95309836 and the int8 model 0.95346002. These are actual desktop reference results, not ESP32 measurements.
 
-The output demonstrates dataflow and model execution. It does **not** predict occupancy, entry/exit, future environmental readings or meaningful anomalies. Changing sensors changes the mathematical input; it does not retrain the model or establish predictive validity. The selectable existing 16-input autoencoder is a different-shape execution demo with repeated features; its original training provenance has not been newly established.
+The output is a unitless demonstration score with a target range of approximately −1 to +1. The INT8 model dequantizes its output with `y = (q - 5) × 0.0082909567`, giving a representable range of about −1.103 to +1.011. The sensor ranges control input scaling. As the normalized mean increases, the sine curve can rise or fall. A cutoff such as `0.5` tests the model score. See [the threshold run guide](RUNNING.md#set-a-scalar-output-threshold).
+
+The existing `autoencoder` is a 16,440-byte INT8 reconstruction model with dense layers `16 → 64 → 32 → 8 → 32 → 64 → 16`. Its original training data are unverified. The demo repeats the four normalized features to fill its 16 inputs and returns the 16 reconstructed values. The different tensor shape lets the demo exercise a broader model swap.
+
+The sine pair was chosen for its small pretrained assets and predictable reference outputs. The float model provided a reference for the same regression task in INT8, whose fully connected layers exercised the ESP32-S3 vector instructions through ESP-NN. [Board validation](BOARD_VALIDATION.md)
 
 Pinned upstream [training source](https://github.com/tensorflow/tflite-micro/blob/964e43d7ee3e82fe6abb6075b7f50506eafce79b/tensorflow/lite/micro/examples/hello_world/train.py), [model assets](https://github.com/tensorflow/tflite-micro/tree/964e43d7ee3e82fe6abb6075b7f50506eafce79b/tensorflow/lite/micro/examples/hello_world/models), and local [artifact metadata](../../models/hello_world/manifest.json) document provenance, checksums, tensor metadata and license.
 
