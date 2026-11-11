@@ -1,6 +1,8 @@
 # D6: three-board end-to-end validation plan
 
-Prepared 10 November 2026 on branch `d6`. Status: **planning only; NOT RUN**.
+Prepared 10 November 2026; refined 11 November 2026 on branch `d6`.
+Status: **planning only; NOT RUN**. See the [next three integration steps](d6/NEXT_STEPS.md)
+for concrete changes, dependencies and review gates.
 Lead: Cody. Brendan implements the SPI-config demonstration and remote-data LCD
 path; Hasif/Sitt integrate the D4 network/configuration path; Jun Yong supplies
 the verified model/input/output contract. These follow the task split recorded
@@ -31,24 +33,24 @@ their tests ran. Use the [current worksheet](D6_TRIAL_WORKSHEET.md) for new runs
 
 The new branch starts at `1c30eeb` (the `d3-board` checkpoint), not the latest
 project baseline. `origin/main` at `b389714`, containing the merged MQTT and
-first ML checkpoints, is now integrated in the prepared merge. Conflicts in
+first ML checkpoints, was integrated by merge `3e029d0`. Conflicts in
 README, feedback history and the two D6 documents were reconciled: the current
 three-board plan is retained here and the upstream doorway documents remain
 archived references. Automatic merging of runtime files is not behavioral
 verification; combined validation and LCD integration retain separate gates.
 
-1. Preserve the existing README edit, untracked D3 hardware guide and other
-   local files. Review the exact diff before integrating anything.
-2. Review the prepared `main` integration into `d6`;
-   resolve feedback/document history without dropping retained D3 fixes or
-   newer MQTT/ML behavior. Do not replace main's README with the older D3 copy.
+1. Inspect branch, dirty state and local files before integration; preserve
+   unrelated changes. The tree was clean at the start of the 11 November review.
+2. Retain the completed `main` integration at `3e029d0` and its reconciled
+   document history. New upstream changes require a fresh review; this
+   checkpoint does not establish the current state of the remote server.
 3. Review Brendan's `lcd-output` component against that combined baseline.
    Bring over the driver/typed handoff and relevant tests, not an older runtime
    wholesale. Keep LCD geometry, offsets and pins specific to the verified panel.
 4. Build and audit the combined target, then run regressions before wiring the
    multi-board system. Record the exact revisions actually integrated.
 
-The prepared merge integrates main only; it does not integrate `lcd-output`,
+The completed merge integrates main only; it does not integrate `lcd-output`,
 flash boards or implement the missing adapters. `D3_TASKS.md` and `CODY_WEEK8_SUBMODULE.md` are
 absent from this checkpoint; use the current upstream README task list rather
 than claiming those missing local handoffs were reviewed.
@@ -146,7 +148,7 @@ trials. A reconstruction output or arbitrary threshold is insufficient.
 
 ## 7. Implementation sequence and task ownership
 
-End-to-end stages remain **NOT RUN**. G0 has a prepared main merge, with LCD
+End-to-end stages remain **NOT RUN**. G0 has a completed main merge, with LCD
 integration and the remaining readiness gates still open. A completed earlier
 upstream component does not mark the combined D6 stage passed.
 

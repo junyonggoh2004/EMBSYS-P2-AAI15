@@ -3,6 +3,25 @@
 Template prepared 10 November 2026. **NOT RUN**. Use with the
 [validation plan](D6_USECASE_VALIDATION_PLAN.md). Copy once per session; a blank
 field is unknown, never zero/pass. Record failures and retries separately.
+Refined 11 November 2026 with decision and per-attempt evidence fields; see
+the [next integration steps](d6/NEXT_STEPS.md).
+
+## Decision register
+
+Record the agreed value and owner/date/evidence before running dependent
+trials. PENDING does not mean an interface or numerical limit is approved.
+
+| Decision | Agreed value / owner / date / evidence | Dependent trials |
+|---|---|---|
+| Scenario, doorway inclusion, motion source and output behavior | PENDING | T01, T03, T16 |
+| A/B/C inventory, unique node/source names, pin/power diagrams | PENDING | All physical trials |
+| C panel geometry, offsets, orientation, colors and fixture | PENDING | All display trials |
+| Source/profile/field mapping, units and display precision | PENDING | T01, T02, T10 |
+| Freshness, refresh limits and disconnect/reset behavior | PENDING | T11–T15 |
+| SPI devices, supported operations and approved write location | PENDING | T04, T05 |
+| ML model/input/output meaning and result transport | PENDING | T06–T09, T15 |
+| Live model/source activation and failure recovery semantics | PENDING | T07–T09 |
+| Workload, repetitions/duration and resource/timing limits | PENDING | All measured trials, T16 |
 
 ## Session and readiness
 
@@ -49,6 +68,28 @@ INCONCLUSIVE, BLOCKED or NOT RUN explicitly. Add one row per attempt.
 | T14 | Display reset, re-subscribe and fresh data | NOT RUN | Pending |
 | T15 | Missing ML input produces explicit invalid result | NOT RUN | Pending |
 | T16 | Combined-load run and resource capture | NOT RUN | Pending |
+
+## Per-attempt evidence (copy for each attempt)
+
+Keep retries separate. Use the trial ID above and a unique attempt ID.
+
+| Field | Actual value / evidence |
+|---|---|
+| Trial ID, attempt ID, operator and host/video time | Pending |
+| Preconditions: fixture/config revision, RUN state and decision references | Pending |
+| Exact stimulus/command or injected frame; expected behavior/limit | Pending |
+| Source serial record and raw topic/payload; subscriber capture position | Pending |
+| Decoded value/unit/status and photo/video position on C | Pending |
+| Correlation method; measured delay and uncertainty if timing is assessed | Pending |
+| TASKS/error/drop counts before and after when relevant | Pending |
+| Actual observation; PASS/FAIL/INCONCLUSIVE/BLOCKED/NOT RUN and reason | Pending |
+| Recovery performed, restored configuration and next attempt reference | Pending |
+
+For T10, include length mismatch/truncation, invalid hex and wrong source;
+confirm rejected frames neither replace a valid reading nor refresh its age.
+For T11, record the last valid receive time, agreed age limit and stale display
+time while another source continues. For T12–T14, capture startup/reconnect
+and the first fresh displayed sample separately from presence/heartbeat.
 
 ## End-to-end correlation and resources
 

@@ -63,6 +63,16 @@ This file is the single record of the professor's feedback on the Week 6 design 
 >
 > Resolve the inconsistencies between artefacts first, then prove the sampling path on real hardware before investing further in ML optimisation. Just a reminder that project must be in C.
 
+### D6 planning refinement (11 November 2026)
+
+The `d6` branch integrated main checkpoint `b389714` in merge `3e029d0`.
+The [next three integration steps](docs/d6/NEXT_STEPS.md) now define fixture
+decisions, selective LCD integration and validated remote sensor display.
+The [session worksheet](docs/D6_TRIAL_WORKSHEET.md) adds decision ownership and
+per-attempt source/subscriber/screen evidence. These are planning changes;
+no feedback status or hardware acceptance gate is closed. The three-board
+proposal and optional doorway extension retain their separate scope decisions.
+
 ## 3. Status at a glance
 
 ✅ resolved · 🟡 partly resolved · ❌ open for its owner
