@@ -13,7 +13,7 @@ It consolidates the project requirements, the current repository, the shared Cha
 
 Primary project sources:
 
-- Project requirements: `C:/Users/brend/Downloads/ESP_P2_AAI15.pdf`
+- Project requirements: the course brief `ESP_P2_AAI15.pdf` (not kept in the repository)
 - Shared research conversation: <https://chatgpt.com/s/cx_6ab235ca82448191a1939ace6c4e7792>
 - Current Pico implementation: this repository
 

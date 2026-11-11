@@ -1,6 +1,6 @@
 # Version 2 wiring — ESP32-S3 Super Mini
 
-AHT, HC-SR04+ and Grove TSL2561 have worked in the user's hardware tests. The ST7789 LCD is not working for now; retain its existing connections while running the current ESP-IDF / µT-Kernel SMP sensor target.
+AHT, HC-SR04+ and Grove TSL2561 have worked in the team's hardware tests. The ST7789 LCD is not working for now; retain its existing connections while running the current ESP-IDF / µT-Kernel SMP sensor target.
 
 ## Complete breadboard connections
 

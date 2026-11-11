@@ -1,10 +1,38 @@
 #include "application/entrance_window.h"
 #include <string.h>
 
+static void record_pair(entrance_window_t *w, uint64_t elapsed, bool valid, bool cancelled)
+{
+    entrance_metrics_t *m = &w->metrics;
+    uint32_t us = elapsed > UINT32_MAX ? UINT32_MAX : (uint32_t)elapsed;
+    if (!m->pairs || us < m->min_us) m->min_us = us;
+    if (us > m->max_us) m->max_us = us;
+    ++m->pairs; m->sum_us += us;
+    if (cancelled) ++m->cancelled;
+    else if (valid) ++m->valid;
+    else ++m->failed;
+    if (elapsed > w->config.pair.window_us) ++m->deadline_misses;
+    uint32_t bucket = us ? (us - 1) / 1000u : 0;
+    if (bucket >= ENTRANCE_TIMING_BINS) bucket = ENTRANCE_TIMING_BINS - 1;
+    ++m->histogram[bucket];
+}
+
+uint32_t entrance_window_percentile_us(const entrance_window_t *w, unsigned percentile)
+{
+    if (!w || !w->metrics.pairs || !percentile || percentile > 100) return 0;
+    uint64_t need = ((uint64_t)w->metrics.pairs * percentile + 99u) / 100u, seen = 0;
+    for (unsigned i = 0; i < ENTRANCE_TIMING_BINS; ++i) {
+        seen += w->metrics.histogram[i];
+        if (seen >= need) return i == ENTRANCE_TIMING_BINS - 1 ? UINT32_MAX : (i + 1) * 1000u;
+    }
+    return UINT32_MAX;
+}
+
 static void close_window(entrance_window_t *w, entrance_reason_t reason, uint64_t now)
 {
     if (w->pair_pending) {
         uint64_t elapsed = now - w->pair.started_us;
+        record_pair(w, elapsed, false, true);
         uint32_t measured = elapsed > UINT32_MAX ? UINT32_MAX : (uint32_t)elapsed;
         if (measured > w->result.max_pair_us) w->result.max_pair_us = measured;
         ++w->result.failed_pairs; // cancelled/overdue attempts must not disappear from metrics
@@ -25,6 +53,15 @@ static void close_window(entrance_window_t *w, entrance_reason_t reason, uint64_
     if (w->ambiguous || !w->confirmed || (!crossing && reason != ENTRANCE_NO_CROSSING))
         w->result.quality_flags |= EVENT_QUALITY_AMBIGUOUS;
     w->state = ENTRANCE_COOLDOWN; /* before callback: never offer twice */
+    switch (w->result.classification) {
+    case EVENT_CLASS_ENTRY: ++w->metrics.entry; break;
+    case EVENT_CLASS_EXIT: ++w->metrics.exit; break;
+    case EVENT_CLASS_FALSE: ++w->metrics.false_events; break;
+    default: ++w->metrics.incomplete; break;
+    }
+    if (reason == ENTRANCE_DEADLINE) ++w->metrics.window_deadlines;
+    if (reason == ENTRANCE_RADAR_STALE) ++w->metrics.radar_stale;
+    if (w->faulty) ++w->metrics.window_faults;
     w->clear_pairs = 0;
     ++w->events;
     if (!w->emit(&w->result, w->emit_context)) ++w->drops;
@@ -113,6 +150,7 @@ static void consume_pair(entrance_window_t *w, uint64_t now)
         if (w->pair.samples[i].pulse.width_us < 116u || w->pair.samples[i].pulse.width_us > 23200u)
             valid = false; // HC-SR04's specified 2 cm .. 4 m range
     }
+    record_pair(w, w->pair.finished_us - w->pair.started_us, valid, false);
     if (w->state == ENTRANCE_OPEN) {
         uint64_t elapsed = w->pair.finished_us - w->pair.started_us;
         if (elapsed > w->result.max_pair_us) w->result.max_pair_us = (uint32_t)elapsed;
@@ -145,7 +183,7 @@ static void consume_pair(entrance_window_t *w, uint64_t now)
         transition(w, mask);
         if (clear && (w->stage == 7 || w->stage == 9)) close_window(w, ENTRANCE_CROSSING, now);
         else if (clear && !w->radar_targets && w->confirmed)
-            close_window(w, w->stage == 1 ? ENTRANCE_NO_CROSSING : ENTRANCE_DEADLINE, now);
+            close_window(w, w->stage == 1 ? ENTRANCE_NO_CROSSING : ENTRANCE_INCOMPLETE, now);
     } else if (clear && !w->radar_targets && w->radar_seen && now - w->radar_us < ENTRANCE_RADAR_STALE_US) {
         w->state = ENTRANCE_IDLE;
     }
@@ -182,12 +220,14 @@ void entrance_window_step(entrance_window_t *w, uint64_t now)
         for (unsigned i = 0; i < 2; ++i) {
             if (w->pair.samples[i].attempted && now - w->pair.samples[i].started_us <= 60000u) {
                 uint64_t missed = (now - w->next_pair_us) / ENTRANCE_PERIOD_US + 1;
+                w->metrics.skipped += (uint32_t)missed;
                 w->next_pair_us += missed * ENTRANCE_PERIOD_US;
                 if (w->state == ENTRANCE_OPEN) { w->result.skipped += (uint32_t)missed; w->ambiguous = true; }
                 return;
             }
         }
         uint64_t skipped = (now - w->next_pair_us) / ENTRANCE_PERIOD_US;
+        w->metrics.skipped += (uint32_t)skipped;
         if (skipped) w->ambiguous = true;
         if (w->state == ENTRANCE_OPEN) w->result.skipped += (uint32_t)skipped;
         w->next_pair_us += (skipped + 1) * ENTRANCE_PERIOD_US;
@@ -204,6 +244,7 @@ void entrance_window_stop(entrance_window_t *w, uint64_t now)
     if (!w || !w->enabled) return;
     if (now < w->last_us) now = w->last_us;
     if (w->state == ENTRANCE_OPEN) close_window(w, ENTRANCE_CANCELLED, now);
+    else if (w->pair_pending) record_pair(w, now - w->pair.started_us, false, true);
     pulse_sequence_cancel(&w->pair, now);
     w->pair_pending = false;
     w->enabled = false;

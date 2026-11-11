@@ -1,18 +1,18 @@
 # dev-jy-sensors — ESP32-S3 sensor firmware
 
-The current ESP32-S3 target on **`dev-jy-sensors` uses ESP-IDF with µT-Kernel 3 SMP (uT-Kernel)**. Open **[AAI15-MTK.code-workspace](AAI15-MTK.code-workspace)** and build **`esp32s3_mtk/`**.
+The current ESP32-S3 target on **`dev-jy-sensors` uses ESP-IDF with µT-Kernel 3 SMP (uT-Kernel)**. Open **[AAI15-MTK.code-workspace](../AAI15-MTK.code-workspace)** and build **`esp32s3_mtk/`**.
 
 ## Current status
 
 | Component / check | Status |
 |---|---|
-| AHT temperature and humidity sensor | Working in the user's hardware tests |
-| HC-SR04+ ultrasonic distance sensor | Working in the user's hardware tests |
-| Grove TSL2561 digital light sensor | Working in the user's hardware tests |
+| AHT temperature and humidity sensor | Working in the recorded hardware tests |
+| HC-SR04+ ultrasonic distance sensor | Working in the recorded hardware tests |
+| Grove TSL2561 digital light sensor | Working in the recorded hardware tests |
 | ST7789 TFT LCD | **Not working for now**; dim/white screen, no text. Connections can remain; LCD support is disabled in the current firmware. |
 | ESP-IDF + µT-Kernel build | Clean compile/link and linked-kernel audit passed |
 
-The working-sensor entries record the user's hardware results. The migration validation records compilation and link checks; it does not contain a captured on-board run of the new µT-Kernel firmware. See [validation and board-test steps](esp32s3_mtk/VALIDATION.md).
+The working-sensor entries record the hardware test results. The migration validation records compilation and link checks; it does not contain a captured on-board run of the new µT-Kernel firmware. See [validation and board-test steps](../esp32s3_mtk/VALIDATION.md).
 
 ## Firmware and repository layout
 
@@ -22,7 +22,7 @@ The working-sensor entries record the user's hardware results. The migration val
 | `AAI15-MTK.code-workspace` | VS Code workspace selecting the current target |
 | `esp32s3/` | Earlier ESP32 firmware, retained separately |
 | Root Pico sources and `CMakeLists.txt` | Earlier Pico project, retained separately |
-| [docs/README-PICO-LEGACY.md](docs/README-PICO-LEGACY.md) | Preserved original Pico README |
+| [docs/README-PICO-LEGACY.md](README-PICO-LEGACY.md) | Preserved original Pico README |
 
 ESP-IDF supplies the build system, startup support and hardware definitions. **µT-Kernel runs task scheduling and application synchronisation.** The port's `freertos_shim` translates SDK compatibility calls into µT-Kernel operations; the original FreeRTOS scheduler is excluded from this target. This project is built from C sources, rather than an Arduino `.ino` sketch.
 
@@ -141,7 +141,7 @@ Bare sensors or different breakout revisions may need different power, pull-up o
 
 ## Build, flash and view readings
 
-The local SDK, toolchain and kernel locations are already configured in ignored `esp32s3_mtk/tools/local.env.ps1` on the development machine. Other machines need their own setup; see the [target README](esp32s3_mtk/README.md). Exact kernel/SDK revisions are recorded in [dependencies.lock.json](esp32s3_mtk/dependencies.lock.json), and managed SDK dependencies in [dependencies.lock](esp32s3_mtk/dependencies.lock).
+The local SDK, toolchain and kernel locations are already configured in ignored `esp32s3_mtk/tools/local.env.ps1` on the development machine. Other machines need their own setup; see the [target README](../esp32s3_mtk/README.md). Exact kernel/SDK revisions are recorded in [dependencies.lock.json](../esp32s3_mtk/dependencies.lock.json), and managed SDK dependencies in [dependencies.lock](../esp32s3_mtk/dependencies.lock).
 
 1. Connect the ESP32-S3 with a USB data cable and close Arduino Serial Monitor or any other program using its COM port.
 2. Open `AAI15-MTK.code-workspace` in VS Code.
@@ -149,7 +149,7 @@ The local SDK, toolchain and kernel locations are already configured in ignored 
 4. In a VS Code PowerShell terminal, enter the target folder and flash. Replace `COM5` with the board's port shown in Device Manager.
 
 ```powershell
-cd "C:\Users\junyo\OneDrive\Desktop\ES-P2-AAI15\ES-P2-AAI15\esp32s3_mtk"
+cd "<your clone of the repository>\esp32s3_mtk"
 
 # Build and check the linked kernel (also available through Ctrl+Shift+B).
 powershell.exe -NoProfile -File .\tools\build.ps1 build
@@ -167,4 +167,4 @@ Output files are under `esp32s3_mtk/build_mtk/`, including `aai15_esp32s3_mtk_se
 
 The target provisionally uses [sirfonzie/mtk3smp-esp32s3](https://github.com/sirfonzie/mtk3smp-esp32s3), pinned to the revision in the dependency lock. The requirement document specifies the course µT-Kernel 3 SMP port without identifying a source URL; lecturer confirmation of this public port as the course-approved base is still pending.
 
-See [esp32s3_mtk/README.md](esp32s3_mtk/README.md) for task/core details and [esp32s3_mtk/VALIDATION.md](esp32s3_mtk/VALIDATION.md) for completed checks and remaining on-board verification. The complete wiring tables are also kept in [esp32s3_mtk/WIRING.md](esp32s3_mtk/WIRING.md).
+See [esp32s3_mtk/README.md](../esp32s3_mtk/README.md) for task/core details and [esp32s3_mtk/VALIDATION.md](../esp32s3_mtk/VALIDATION.md) for completed checks and remaining on-board verification. The complete wiring tables are also kept in [esp32s3_mtk/WIRING.md](../esp32s3_mtk/WIRING.md).

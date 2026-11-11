@@ -1,8 +1,8 @@
 # Configurable ESP32-S3 firmware — ESP-IDF / µT-Kernel SMP
 
-This target uses main's complete configurable framework at upstream commit `49677c62c8738493f4e66667d1fe79afc947600d`, with optional AHT and TSL2561 I²C profiles and the existing asynchronous GPIO pulse driver. See the [branch README](../README.md) for the full wiring tables, Windows build/flash/monitor instructions, preset commands and JSON formats. [WIRING.md](WIRING.md) contains the same complete connection tables.
+This target uses main's complete configurable framework at upstream commit `49677c62c8738493f4e66667d1fe79afc947600d`, with optional AHT and TSL2561 I²C profiles and the existing asynchronous GPIO pulse driver. See the [breadboard guide](../SENSOR_BREADBOARD_README.md) for the full wiring tables, Windows build/flash/monitor instructions, preset commands and JSON formats. [WIRING.md](WIRING.md) contains the same complete connection tables.
 
-The corrected firmware now has user-provided board evidence of all three sensors returning OK/error 0 together; see [VALIDATION.md](VALIDATION.md). The LCD remains non-functional (dim/white, no text); all existing connections can remain. The three-sensor preset never configures LCD GPIO6–10. Upstream SPI flash diagnostics use another fixture and must not be run with the LCD attached.
+The corrected firmware now has board evidence of all three sensors returning OK/error 0 together; see [VALIDATION.md](VALIDATION.md). The LCD remains non-functional (dim/white, no text); all existing connections can remain. The three-sensor preset never configures LCD GPIO6–10. Upstream SPI flash diagnostics use another fixture and must not be run with the LCD attached.
 
 Build with `tools/build.ps1 build`, flash with `tools/build.ps1 flash -Port COMx`, load the volatile three-sensor configuration with `tools/build.ps1 sensors -Port COMx`, then open `tools/build.ps1 monitor -Port COMx`. The helper loads `../config/three_sensors.cfg` via the existing command interface and STOP/CLEAR replaces volatile sensor/rule configuration. Without a preset, configure and RUN manually. Ctrl+C leaves the interactive monitor.
 

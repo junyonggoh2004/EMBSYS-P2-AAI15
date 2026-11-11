@@ -47,10 +47,15 @@ def telemetry_row(record):
             return f"{time}  ML        Waiting for fresh inputs ({model})"
         if status != "OK":
             return f"{time}  ML        {status} ({model})"
-        return (
-            f"{time}  ML        OK  {model}"
-            f"  in {vector(record.get('inputs'))}  out {vector(record.get('outputs'))}"
-        )
+        outputs = record.get("outputs")
+        row = f"{time}  ML        OK  {model}  in {vector(record.get('inputs'))}"
+        exceeded = record.get("threshold_exceeded")
+        if type(exceeded) is bool and isinstance(outputs, list) and len(outputs) == 1:
+            cutoff = number(record.get("threshold"), ".9g")
+            score = number(outputs[0], ".9g")
+            decision = f"PASS (> {cutoff})" if exceeded else f"AT OR BELOW ({cutoff})"
+            return f"{row}  out [{score}]  |  {decision}"
+        return f"{row}  out {vector(outputs)}"
 
     source = record.get("sensor")
     if not isinstance(source, str):

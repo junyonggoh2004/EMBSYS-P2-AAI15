@@ -1,0 +1,207 @@
+D3-1 native regression evidence
+Date: 2026-11-05 (Asia/Singapore)
+Source: aaf48da98c9824b0c262ac197486dfa1c740b507
+Platform: macOS-15.4-arm64-arm-64bit-Mach-O
+Scope: existing native suites and source checks; no firmware/wiring changes or target acceptance.
+
+=== sh tools/cody_test.sh (exit 0) ===
+cody contracts: PASS (EventRecord=96 bytes)
+[GPIO] SONAR: gpio.trig and gpio.echo must differ
+[GPIO] SONAR: gpio.trig and gpio.echo are required
+[GPIO] SONAR: pin 8 or 49 not available on this board
+[SCHED         0ms] reset: cleared 8 slots
+[SCHED      1000ms] add[0]: SONAR on gpio freq=0.000Hz mode=poll method=pulse GPIO(pin=0)
+[SCHED] added: SONAR on gpio
+[SCHED      1000ms] add[1]: OTHER on gpio freq=0.000Hz mode=poll method=digital GPIO(pin=10)
+[SCHED] added: OTHER on gpio
+[SCHED      1000ms] run_all: running=1
+[SCHED      1000ms] arm[0/SONAR]: mode=periodic armed=1
+[SCHED      1000ms] arm[1/OTHER]: mode=periodic armed=1
+[SCHED      1000ms] publish[1/OTHER]: 3 bytes via gpio
+proto=gpio src=OTHER len=3 ts=1000 : 00 00 00
+[SCHED] config OTHER refused: pulse pin 9 is used by SONAR
+[SCHED] config SONAR refused: pulse pin 8 is used by SONAR
+[SCHED] config SONAR refused: pulse pin 9 is used by SONAR
+[SCHED      1001ms] publish[0/SONAR]: 3 bytes via gpio
+proto=gpio src=SONAR len=3 ts=1001 : 44 02 01
+[SCHED      1050ms] publish[1/OTHER]: 3 bytes via gpio
+proto=gpio src=OTHER len=3 ts=1050 : 00 32 00
+[TIMING] sensor=SONAR status=timeout armed_us=1001000 deadline_us=1070000
+[SCHED      1100ms] publish[1/OTHER]: 3 bytes via gpio
+proto=gpio src=OTHER len=3 ts=1100 : 00 64 00
+[SCHED      1100ms] arm[0/SONAR]: mode=periodic armed=1
+[SCHED      1100ms] arm[1/OTHER]: mode=periodic armed=1
+[SCHED      1100ms] publish[1/OTHER]: 3 bytes via gpio
+proto=gpio src=OTHER len=3 ts=1100 : 00 64 00
+[SCHED      1100ms] reset: cleared 8 slots
+[SCHED      1100ms] reset: cleared 8 slots
+[SCHED      1000ms] add[0]: A on gpio freq=0.000Hz mode=poll method=pulse GPIO(pin=0)
+[SCHED] added: A on gpio
+[SCHED      1000ms] add[1]: B on gpio freq=0.000Hz mode=poll method=pulse GPIO(pin=0)
+[SCHED] added: B on gpio
+[PAIR] armed A=A B=B first=A guard_us=10000 window_us=50000
+[PAIR] state=complete outcome=0 elapsed_us=12000 window_us=50000
+[PAIR] sensor=A name=A attempted=1 valid=1 status=0 rise_us=1000100 fall_us=1000680 width_us=580
+[PAIR] sensor=B name=B attempted=1 valid=1 status=0 rise_us=1011100 fall_us=1011680 width_us=580
+[PAIR] armed A=A B=B first=B guard_us=10000 window_us=50000
+[PAIR] state=cancelled outcome=4 elapsed_us=0 window_us=50000
+[PAIR] sensor=A name=A attempted=0 valid=0 status=2 rise_us=0 fall_us=0 width_us=0
+[PAIR] sensor=B name=B attempted=1 valid=0 status=3 rise_us=0 fall_us=0 width_us=0
+[PAIR] armed A=A B=B first=A guard_us=10000 window_us=50000
+[PAIR] state=cancelled outcome=4 elapsed_us=0 window_us=50000
+[PAIR] sensor=A name=A attempted=1 valid=0 status=3 rise_us=0 fall_us=0 width_us=0
+[PAIR] sensor=B name=B attempted=0 valid=0 status=2 rise_us=0 fall_us=0 width_us=0
+[SCHED      1012ms] reset: cleared 8 slots
+[SCHED      1012ms] reset: cleared 8 slots
+[SCHED       900ms] add[0]: A on gpio freq=0.000Hz mode=poll method=pulse GPIO(pin=0)
+[SCHED] added: A on gpio
+[SCHED       900ms] add[1]: B on gpio freq=0.000Hz mode=poll method=pulse GPIO(pin=0)
+[SCHED] added: B on gpio
+[SCHED       900ms] add[2]: RADAR on uart freq=0.000Hz mode=poll UART(tx=12,rx=13,baud=256000)
+[SCHED] added: RADAR on uart
+[WINDOW] configured; RUN enables radar acquisition, STOP/CLEAR cancels
+[SCHED      1000ms] arm[0/A]: mode=periodic armed=1
+[SCHED      1000ms] arm[1/B]: mode=periodic armed=1
+[SCHED      1000ms] arm[2/RADAR]: mode=periodic armed=1
+[WINDOW] seq=1 class=entry reason=0 pairs=7 valid=7 failed=0 queued=1
+[WINDOW_REPORT] token=abcdef01 kind=state version=1 configured=1 enabled=0 state=2 events=1 dropped=0 radar_frames=7 malformed=0 rx_dropped=0 rx_dropped_start=0 identity=1 event_schema=2 now_us=1613000
+[WINDOW_REPORT] token=abcdef01 kind=timing pairs=7 valid=7 failed=0 cancelled=0 deadline_misses=0 skipped=0 min_us=13000 mean_us=13000 max_us=13000 p95_le_us=13000 p99_le_us=13000
+[WINDOW_REPORT] token=abcdef01 kind=events entry=1 exit=0 incomplete=0 false_events=0 window_deadlines=0 radar_stale=0 window_faults=0
+[WINDOW_REPORT] token=abcdef01 kind=config period_us=100000 window_us=2000000 pair_limit_us=50000 clear_us=200000 radar_stale_us=300000 max_pairs=20 guard_us=1000 timeout_a_us=12000 timeout_b_us=12000 occupied_a_mm=500 occupied_b_mm=500
+[WINDOW_REPORT] token=abcdef01 kind=geometry a_name=A a_trig=8 a_echo=9 b_name=B b_trig=10 b_echo=11 radar_name=RADAR radar_tx=12 radar_rx=13 xmin=-500 xmax=500 ymin=0 ymax=2000
+[WINDOW_REPORT] token=abcdef01 kind=end
+[WINDOW] configured; RUN enables radar acquisition, STOP/CLEAR cancels
+[SCHED      2000ms] run_all: running=1
+[SCHED      2000ms] arm[0/A]: mode=periodic armed=1
+[SCHED      2000ms] arm[1/B]: mode=periodic armed=1
+[SCHED      2000ms] arm[2/RADAR]: mode=periodic armed=1
+[WINDOW] seq=2 class=incomplete reason=0 pairs=7 valid=7 failed=0 queued=1
+[SCHED      2613ms] reset: cleared 8 slots
+GPIO pulse configuration/lifecycle: PASS (real scheduler/driver, async service, timeout, STOP/CLEAR)
+MTK pulse capture: PASS (actual HAL functions, mocked register/clock boundaries)
+pulse sequence: PASS (both orders, guard, 50 ms pair budget, faults/cancel; state=208 B)
+entrance window: PASS (radar framing, real pair engine, window policy, canonical events and occupancy)
+event identity: PASS (actual NVS startup, commit failure, reboot identity and exhaustion)
+UART ready drain: PASS (real driver, bounded reads, no wait/pre-writes, loss reporting)
+event safety: PASS (finite fields, quality rejection, source-scoped duplicates, occupancy bounds; state=1064 B)
+application dispatch: PASS (typed message=104, result publication, FIFO reset, malformed input)
+[SCHED] added: ONCE on gpio
+proto=gpio src=ONCE len=1 ts=1000 : 01
+proto=gpio src=ONCE len=1 ts=1001 : 01
+[SCHED] added: PERIODIC on gpio
+proto=gpio src=PERIODIC len=1 ts=1000 : 01
+[TIMING] sensor=PERIODIC status=timeout armed_us=1000000 deadline_us=1060000
+proto=gpio src=PERIODIC len=1 ts=1100 : 01
+[SCHED] added: DISABLED on gpio
+[SCHED] added: SLOW on gpio
+[TIMING] sensor=SLOW status=timeout phase=acquisition deadline_us=1010000
+proto=gpio src=SLOW len=1 ts=1060 : 01
+[SCHED] added: SOURCE on gpio
+[SCHED] added: TARGET on gpio
+proto=gpio src=SOURCE len=1 ts=1000 : 01
+proto=gpio src=TARGET len=1 ts=1000 : 01
+[TIMING] sensor=TARGET status=timeout armed_us=1001000 deadline_us=1021000
+proto=gpio src=TARGET len=1 ts=1022 : 01
+[SCHED] added: ONCE on gpio
+proto=gpio src=ONCE len=1 ts=1000 : 01
+[SCHED] added: ONCE on gpio
+proto=gpio src=ONCE len=1 ts=1000 : 01
+[SCHED] added: PERIODIC on gpio
+proto=gpio src=PERIODIC len=1 ts=1000 : 01
+proto=gpio src=PERIODIC len=1 ts=1151 : 01
+[SCHED] invalid timing: timing.interval_ms out of range
+[SCHED] invalid timing: null config
+[SCHED] added: SONAR on gpio
+[SCHED] added: OTHER on gpio
+proto=gpio src=OTHER len=1 ts=1000 : 01
+proto=gpio src=SONAR len=1 ts=1002 : 01
+[TIMING] sensor=SONAR status=timeout armed_us=1002000 deadline_us=1022000
+scheduler timing: PASS (one-shot, timeout recovery, disabled stream, deadline, source handoff)
+[RULE] DOOR: event=entry id=1 observation=unverified queued=1
+[RULE] DOOR: event=entry id=2 observation=unverified queued=1
+[RULE] DOOR: event=entry id=3 observation=unverified queued=1
+[RULE] DOOR: event=entry id=4 observation=unverified queued=1
+[RULE] DOOR: event=entry id=5 observation=unverified queued=1
+[RULE] DOOR: event=entry id=6 observation=unverified queued=1
+[RULE] DOOR: event=entry id=7 observation=unverified queued=1
+[RULE] DOOR: event=entry id=8 observation=unverified queued=1
+[RULE] DOOR: event=entry id=9 observation=unverified queued=1
+[RULE] DOOR: event=entry id=10 observation=unverified queued=1
+[RULE] DOOR: event=exit id=11 observation=unverified queued=1
+[RULE] DOOR: event=exit id=12 observation=unverified queued=0
+[RULE] DOOR: invalid event class 'unknown'
+[RULE] DOOR: event=incomplete id=13 observation=unverified queued=1
+[RULE] DOOR: event=false id=14 observation=unverified queued=1
+rule provenance: PASS (no invented window quality, 64-bit decision time, bounded sink)
+....
+----------------------------------------------------------------------
+Ran 4 tests in 0.001s
+
+OK
+........
+----------------------------------------------------------------------
+Ran 8 tests in 0.002s
+
+OK
+In file included from tests/test_mtk_application_runtime.c:6:
+In file included from tests/../esp32s3_mtk/components/edge_mtk/runtime_mtk.c:51:
+libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:33:52: warning: '/*' within block comment [-Wcomment]
+   33 |  * Call once after mqtt_init(). Subscribes to model/* topics. */
+      |                                                    ^
+libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:36:48: warning: '/*' within block comment [-Wcomment]
+   36 | /* Call from mqtt_incoming_data_cb when a model/* topic is detected. */
+      |                                                ^
+2 warnings generated.
+NATIVE TEST: modeled kernel/SDK boundaries; no target ABI or scheduling evidence
+[BOOT] app_mbf failed: er=-33
+[BOOT] app_mbf failed: er=-33
+[BOOT] micro T-Kernel 3 SMP runtime: 7 tasks, 6 message buffers, 1 event flag, 1 cyclic handler
+[APP] request=2 synthetic=0 queued=1
+[APP] request=1 synthetic=1 queued=1
+[APP] request=3 synthetic=0 queued=1
+[APP] reset occupancy=0 processed=0 resets=1 malformed=0 publish_enqueued=0 publish_failed=0
+[APP] id=91 seq=1 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=2
+[APP] status occupancy=1 processed=1 resets=1 malformed=0 publish_enqueued=0 publish_failed=1
+[APP] request=2 synthetic=0 queued=1
+[APP] reset occupancy=0 processed=1 resets=2 malformed=0 publish_enqueued=0 publish_failed=1
+[APP] request=2 synthetic=0 queued=0
+[APP] id=200 seq=1 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+[APP] id=201 seq=2 result=0 class=entry via=rule occupancy=1->2 degraded=0 reason=accepted publish=1
+[APP] id=202 seq=3 result=0 class=entry via=rule occupancy=2->3 degraded=0 reason=accepted publish=1
+[APP] id=203 seq=4 result=0 class=entry via=rule occupancy=3->4 degraded=0 reason=accepted publish=1
+[APP] id=204 seq=5 result=0 class=entry via=rule occupancy=4->5 degraded=0 reason=accepted publish=1
+[APP] id=205 seq=6 result=0 class=entry via=rule occupancy=5->6 degraded=0 reason=accepted publish=1
+[APP] id=206 seq=7 result=0 class=entry via=rule occupancy=6->7 degraded=0 reason=accepted publish=1
+[APP] id=207 seq=8 result=0 class=entry via=rule occupancy=7->8 degraded=0 reason=accepted publish=1
+[APP] request=2 synthetic=0 queued=1
+[APP] reset occupancy=0 processed=9 resets=3 malformed=0 publish_enqueued=8 publish_failed=1
+[APP] id=300 seq=1 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=2
+[APP] id=301 seq=2 result=0 class=entry via=rule occupancy=1->2 degraded=0 reason=accepted publish=2
+[APP] id=302 seq=3 result=0 class=entry via=rule occupancy=2->3 degraded=0 reason=accepted publish=2
+[APP] id=303 seq=4 result=0 class=entry via=rule occupancy=3->4 degraded=0 reason=accepted publish=2
+[APP] id=304 seq=5 result=0 class=entry via=rule occupancy=4->5 degraded=0 reason=accepted publish=2
+[APP] id=305 seq=6 result=0 class=entry via=rule occupancy=5->6 degraded=0 reason=accepted publish=2
+[APP] id=306 seq=7 result=0 class=entry via=rule occupancy=6->7 degraded=0 reason=accepted publish=2
+[APP] id=307 seq=8 result=0 class=entry via=rule occupancy=7->8 degraded=0 reason=accepted publish=2
+[APP] id=300 seq=1 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=301 seq=2 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=302 seq=3 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=303 seq=4 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=304 seq=5 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=305 seq=6 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=306 seq=7 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=307 seq=8 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=300 seq=1 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] request=2 synthetic=0 queued=1
+[APP] reset occupancy=0 processed=26 resets=4 malformed=0 publish_enqueued=8 publish_failed=18
+[APP] id=400 seq=1 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=2
+[APP] malformed message bytes=4 total=1
+micro T-Kernel application glue: PASS (modeled kernel, actual runtime task bodies)
+
+=== sh tools/d2_host_test.sh (exit 0) ===
+w25q32/log mock: PASS (device faults, codec, CRC, recovery, torn slot, full log)
+
+=== sh tools/mtk.sh purity (exit 0) ===
+ok    71 files: no FreeRTOS, Arduino, task-watchdog or esp_driver_* use
+ok    shared code: no SDK calls (check_hal_boundary.sh)
+note  build first to check the firmware image too

@@ -39,9 +39,9 @@ The new workspace selects only `esp32s3_mtk`. The previous `esp32s3` directory, 
 
 ## User-reported hardware status
 
-On 3 November 2026, the user confirmed that the AHT temperature/humidity, HC-SR04+ ultrasonic and Grove TSL2561 light sensors have worked. The ST7789 LCD remains non-functional (dim/white screen without text). Its Version 2 wiring can remain connected; the current ESP-IDF / µT-Kernel target leaves LCD support disabled. See [WIRING.md](WIRING.md).
+On 3 November 2026, the team confirmed that the AHT temperature/humidity, HC-SR04+ ultrasonic and Grove TSL2561 light sensors have worked. The ST7789 LCD remains non-functional (dim/white screen without text). Its Version 2 wiring can remain connected; the current ESP-IDF / µT-Kernel target leaves LCD support disabled. See [WIRING.md](WIRING.md).
 
-These results describe the user's hardware testing. A captured on-board run of the migrated µT-Kernel firmware has not been recorded in this validation document.
+These results describe the team's hardware testing. A captured on-board run of the migrated µT-Kernel firmware has not been recorded in this validation document.
 
 ## Board tests still required
 

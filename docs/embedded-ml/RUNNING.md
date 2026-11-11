@@ -1,6 +1,6 @@
 # Run the first embedded ML version
 
-Implemented on `dev-jy-ml`, based on merged main `b496a8d`. Uses the existing ESP-IDF / µT-Kernel firmware and unchanged [breadboard wiring](../../esp32s3_mtk/WIRING.md). The LCD remains disabled and non-functional.
+The first ML implementation came from `dev-jy-ml` and was integrated into `main` through `d4-live-ml-sitt`. It uses the existing ESP-IDF / µT-Kernel firmware and unchanged [breadboard wiring](../../esp32s3_mtk/WIRING.md). The LCD remains disabled and non-functional.
 
 ## Start in VS Code
 
@@ -54,6 +54,12 @@ Each value becomes `u = clamp((value - min)/(max - min), 0, 1)`. For the scalar 
 ML output includes model ID, configuration generation, physical `raw_features`, transformed `inputs`, model `outputs`, elapsed inference request time and status. `raw_features` follows the binding indices printed by `ML SHOW`. The elapsed `invoke_us` field includes the µT-Kernel request/reply overhead; it is not an isolated kernel benchmark.
 
 Missing or failed sensor readings invalidate the affected feature. Missing/stale inputs emit `outputs:null` with `MISSING_OR_STALE`; inconsistent timestamps emit `SAMPLE_SKEW`. Zero lux is valid. Default freshness limit is 5000 ms, maximum timestamp skew 2500 ms, output period 2000 ms. An initial null line before all sensors have produced a sample is normal.
+
+## Set a scalar output threshold
+
+After starting **MTK: monitor**, enter `ML THRESHOLD 0.5` and wait for `ML: OK THRESHOLD 0.5`. You can change the cutoff during sampling. `ML SHOW` displays the setting, and `ML THRESHOLD OFF` clears it. A board reset clears the cutoff. To apply it each time you load a demo configuration, add `ML THRESHOLD 0.5` before the final `RUN` line in that file.
+
+The monitor displays `PASS (> 0.5)` for a successful scalar result above the cutoff and `AT OR BELOW (0.5)` for results equal to or below it. Raw JSON includes `threshold` and the Boolean `threshold_exceeded` alongside the inference status. Skipped inferences and the 16-output autoencoder omit the decision. The sine model cutoff tests a unitless demo score. Physical quantities such as distance in cm have separate thresholds.
 
 ## Switch models without rebuilding
 
@@ -156,9 +162,24 @@ Missing sensors not referenced by a binding do not block inference. Sources must
 
 Configuration changes and `ML RUN` require sensor sampling stopped. Use contiguous binding indices beginning at zero. Scalar models reduce any 1–16 bindings to one input; the vector model requires exactly 16. Missing mappings are rejected rather than silently padded. Configuration and model changes clear old samples; inference waits for fresh data. Invalid model loads disable the pipeline and attempt to reload the previous bundled model. Do not combine legacy `infer.set`/anomaly rules with this demo; both use the same interpreter and manager.
 
+## MQTT control checkpoint (D4 Part 2)
+
+Since the D4 checkpoint, the existing `pico/<node>/cmd` subscription also accepts the same `ML` text commands as the serial console. MQTTTask queues each command for SchedulerTask; the ML parser and model state are not called from the network callback. For example, with the board connected to a broker, send the following payloads **in order** to the board's own command topic (replace `<node>` with its configured node ID):
+
+```text
+STOP
+ML PRESET sine-int8
+ML RUN
+RUN
+```
+
+Watch the board's serial console for `ML: OK PRESET sine-int8`, `ML: OK RUN`, and subsequent ML JSON with numeric outputs. `ML SHOW` can be sent on the same topic without clearing cached samples. Other command payloads continue through the existing MQTT command handler. MQTT delivery was verified on the board on 10 Nov 2026: `ML SHOW` sent on the command topic, and sent by another board with `cmd.to` (D1 task 1.4, [parity/logs/mtk/d1-mqtt/](../../parity/logs/mtk/d1-mqtt/)).
+
+This is **not yet live switching**: `STOP` pauses sensor sampling, and the commands are separate MQTT messages. The one-command format for model, local/remote input and local/published output still needs team agreement. Remote ML input and MQTT publishing of ML results are not implemented here. Tasks 1.4 and 2.1, which this needed first, are done; the rest is D4 part 2 in the [README task lists](../../README.md#5-d4-task-checklist).
+
 ## Validation and remaining work
 
-See [VALIDATION.md](VALIDATION.md) for actual completed checks. The code builds and desktop inference and host lifecycle tests pass. The [10 November board capture](BOARD_VALIDATION.md) verifies three sensors and swaps between all three bundled models. It also captures two completed calls to the S3 vector kernel during `sine-int8` inference.
+The [10 November board capture](BOARD_VALIDATION.md) verifies three sensors, swaps between all three bundled models, and two completed S3 vector-kernel calls during `sine-int8` inference on `dev-jy-ml`. Use the same checks on the combined MQTT firmware before recording an integration-board result. [Host and build validation](VALIDATION.md)
 
 Keep the board running at least ten minutes, observe changing outputs as sensor inputs change, then test the model and binding swaps above. Check missing-data status by disabling a configured source or unplugging a sensor with USB disconnected. Capture TASKS before/after and verify stack headroom, watchdog stability and sensor/rule operation. Compare recorded actual model inputs with the desktop reference tool before claiming target numerical agreement.
 

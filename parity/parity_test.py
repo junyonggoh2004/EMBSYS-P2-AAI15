@@ -464,6 +464,24 @@ def find_port():
     return ports[0] if ports else None
 
 
+def stage_steps(stage, board, fixture="upstream"):
+    """Keep the V2 sonar fixture off I2C1/2 and retained LCD pins 6–10."""
+    if fixture == "v2-sonar":
+        if board != "s3" or stage not in ("4c-sonic", "sonic-rule"):
+            raise ValueError("v2-sonar supports only s3 4c-sonic and sonic-rule; t06 needs a separate fixture")
+        pins = {16: 4, 17: 5}
+        steps = list(STAGES[stage])
+        # Stop before CLEAR/configuration, including if the preset is running.
+        steps = [("fixture-stop", "Stop the existing preset", "STOP", 2.5, [r"^STOP$"]),
+                 ("fixture-clear", "Replace volatile sensors/rules", "CLEAR", 2.5, [r"^CLEARED"])] + steps
+    else:
+        pins = BOARD_PINS[board]
+        steps = STAGES[stage]
+    return [(key, description, map_pins(command, pins), wait,
+             [map_pins(p, pins) for p in patterns])
+            for key, description, command, wait, patterns in steps]
+
+
 def wait_for_port(timeout):
     end = time.monotonic() + timeout
     while time.monotonic() < end:
@@ -545,13 +563,21 @@ def main():
     parser.add_argument("--log", help="raw serial log path (default: parity/logs/<stage>.log)")
     parser.add_argument("--boot", action="store_true",
                         help="wait for the board to be replugged and check its boot log first")
+    parser.add_argument("--fixture", default="upstream", choices=("upstream", "v2-sonar"),
+                        help="v2-sonar: verified 3.3 V HC-SR04+ on GPIO4/5; clears volatile preset")
     args = parser.parse_args()
+    try:
+        steps = stage_steps(args.stage, args.board, args.fixture)
+    except ValueError as error:
+        parser.error(str(error))
 
-    log_path = Path(args.log or f"parity/logs/{args.stage}.log")
+    suffix = "" if args.fixture == "upstream" else "-" + args.fixture
+    log_path = Path(args.log or f"parity/logs/{args.stage}{suffix}.log")
     log_path.parent.mkdir(parents=True, exist_ok=True)
     results = []
 
     with open(log_path, "w") as log:
+        log.write(f"# board={args.board} fixture={args.fixture} stage={args.stage}\n")
         if args.boot:
             ser, boot_lines = capture_after_replug(15.0, log)
             results.append(check("boot", "Board boots, tries WiFi and loads the built-in model",
@@ -566,10 +592,7 @@ def main():
         ser.write(b"\r\n")
         read_for(ser, 1.5, log)
 
-        pins = BOARD_PINS[args.board]
-        for step_id, description, command, wait, patterns in STAGES[args.stage]:
-            command = map_pins(command, pins)
-            patterns = [map_pins(p, pins) for p in patterns]
+        for step_id, description, command, wait, patterns in steps:
             log.write(f"{time.strftime('%H:%M:%S')} --- {step_id}: {command}\n")
             ser.write((command + "\r\n").encode())
             lines = run_step(ser, wait, patterns, log)

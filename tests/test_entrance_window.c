@@ -79,6 +79,8 @@ static void test_crossings_and_rearm(void)
     for (unsigned n=0; n<7; ++n) pair(&f,1000000+n*100000,entry[n],1);
     assert(f.emitted == 1 && f.last.classification == EVENT_CLASS_ENTRY && f.app.occupancy == 1);
     assert(f.last.pairs == 7 && f.last.confirmed && f.window.state == ENTRANCE_COOLDOWN);
+    assert(f.window.metrics.pairs == 7 && f.window.metrics.valid == 7 && f.window.metrics.entry == 1);
+    assert(f.window.metrics.sum_us == 7*13000 && entrance_window_percentile_us(&f.window,95)==13000);
     for (unsigned n=7; n<11; ++n) pair(&f,1000000+n*100000,0,1);
     assert(f.emitted == 1); // persistent presence never extends/reopens a window
     for (unsigned n=11; n<14; ++n) pair(&f,1000000+n*100000,0,0);
@@ -94,6 +96,7 @@ static void test_faults_and_expiry(void)
     assert(f.emitted == 1 && f.last.reason == ENTRANCE_SENSOR_FAULT && f.last.failed_pairs == 3);
     assert(f.app.occupancy == 0 && f.last.classification == EVENT_CLASS_INCOMPLETE);
     assert(f.starts == 6); // collect both sensors even when first fails
+    assert(f.window.metrics.pairs==3 && f.window.metrics.failed==3 && f.window.metrics.valid==0);
 
     init(&f); entrance_window_radar(&f.window,1,1000000);
     tick(&f,1300000);
@@ -122,6 +125,7 @@ static void test_ambiguity_loss_and_cancel(void)
     entrance_window_stop(&f.window,1000010);
     entrance_window_stop(&f.window,1000020); tick(&f,2000000);
     assert(f.emitted == 1 && f.window.drops == 1 && f.owner == -1 && !f.window.enabled);
+    assert(f.window.metrics.pairs==1 && f.window.metrics.cancelled==1 && f.window.metrics.max_us==10);
 }
 static unsigned reports, targets;
 static void report(unsigned n,uint64_t now,void *context)
@@ -165,10 +169,41 @@ static void test_confirmation_and_clock(void)
     pair(&f,1020000,0,1); // service is 20 ms late; later slots keep the original anchor
     assert(f.window.next_pair_us==1100000);
 }
+static void test_metrics_include_overdue_cancellation(void)
+{
+    fixture_t f; init(&f);
+    const unsigned masks[]={0,1,3,2,0,0,0};
+    for(unsigned n=0;n<7;++n) pair(&f,1000000+n*100000,masks[n],1);
+    tick(&f,1700000); // cooldown capture is still a real attempt
+    entrance_window_stop(&f.window,1765001);
+    assert(f.window.metrics.pairs==8 && f.window.metrics.valid==7 && f.window.metrics.cancelled==1);
+    assert(f.window.metrics.deadline_misses==1 && f.window.metrics.max_us==65001);
+    assert(entrance_window_percentile_us(&f.window,95)==UINT32_MAX);
+    assert(entrance_window_percentile_us(&f.window,99)==UINT32_MAX);
+    entrance_metrics_t before=f.window.metrics;
+    (void)entrance_window_percentile_us(&f.window,50);
+    entrance_window_stop(&f.window,2000000);
+    assert(!memcmp(&before,&f.window.metrics,sizeof before));
+    assert(f.emitted==1); // stopping cooldown does not manufacture another window
+
+    entrance_window_t distribution={0};
+    distribution.metrics.pairs=100;
+    distribution.metrics.histogram[0]=95;
+    distribution.metrics.histogram[50]=5;
+    assert(entrance_window_percentile_us(&distribution,95)==1000);
+    assert(entrance_window_percentile_us(&distribution,99)==UINT32_MAX);
+    assert(entrance_window_percentile_us(&distribution,0)==0);
+    init(&f);
+    const unsigned turnaround[]={0,1,0,0,0};
+    for(unsigned n=0;n<5;++n) pair(&f,1000000+n*100000,turnaround[n],n<2?1:0);
+    assert(f.emitted==1 && f.last.reason==ENTRANCE_INCOMPLETE && f.last.classification==EVENT_CLASS_INCOMPLETE);
+    assert(f.window.metrics.window_deadlines==0 && f.window.metrics.incomplete==1);
+}
 int main(void)
 {
     assert(event_identity_install(0xcafe,3));
     test_crossings_and_rearm(); test_faults_and_expiry(); test_ambiguity_loss_and_cancel(); test_decoder();
     test_confirmation_and_clock();
+    test_metrics_include_overdue_cancellation();
     puts("entrance window: PASS (radar framing, real pair engine, window policy, canonical events and occupancy)");
 }

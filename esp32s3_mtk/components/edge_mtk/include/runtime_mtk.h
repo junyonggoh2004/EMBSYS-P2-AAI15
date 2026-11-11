@@ -62,12 +62,24 @@ typedef struct {
     uint32_t value_us;
 } bench_msg_t;
 
-// Message-buffer capacities, in messages: the Week 6 queue depths.
+// ---------- ctrl_mbf: platform commands that arrived over MQTT ----------
+// TASKS, APP, WIFISCAN, WIFIDROP, the SPI commands and STALL run in ControlTask
+// when typed on the console. SchedulerTask passes the same commands to it
+// through ctrl_mbf when they arrive on pico/<node>/cmd (D1 task 1.4).
+
+#define CTRL_TEXT_MAX 128      // the longest platform command is under 64 characters
+
+typedef struct {
+    char text[CTRL_TEXT_MAX];
+} ctrl_msg_t;
+
+// Message-buffer capacities, in messages: the Week 6 queue depths, and ctrl_mbf.
 #define SCHED_MBF_MSGS  6
 #define PUB_MBF_MSGS    16
 #define INFER_MBF_MSGS  4
 #define APP_MBF_MSGS    8
 #define BENCH_MBF_MSGS  16
+#define CTRL_MBF_MSGS   4
 #define INFER_MSG_MAX   80     // infer_mbf request: model pointer and size, or 16 input floats
 #define APP_MSG_MAX     ((INT)sizeof(application_message_t))
 
@@ -76,7 +88,7 @@ typedef struct {
 #define NET_MQTT_UP (1u << 1)
 
 // Kernel object IDs, valid after runtime_start().
-extern ID sched_mbf, pub_mbf, infer_mbf, app_mbf, bench_mbf;
+extern ID sched_mbf, pub_mbf, infer_mbf, app_mbf, bench_mbf, ctrl_mbf;
 extern ID net_flg;
 
 // Sends to a message buffer without waiting (TMO_POL). When the buffer is
