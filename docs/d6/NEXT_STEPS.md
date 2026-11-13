@@ -1,5 +1,10 @@
 # D6 next integration steps
 
+**13 November update:** Read the [selected doorway handoff](D6_INTEGRATION_HANDOFF.md)
+before using this 11 November baseline. It adds A-local timed `WINDOW` assembly,
+B-only occupancy updates and three board diagrams. The steps below remain a
+record of earlier integration work; they do not prove that new event path.
+
 Planning reviewed at `3e029d0`; implementation based on `d6` at `035d7fc`
 on 11 November 2026. This is an implementation
 handoff; no D6 hardware trial is marked complete. The user clarified the roles:

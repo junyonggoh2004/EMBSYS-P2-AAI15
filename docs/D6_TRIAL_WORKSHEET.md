@@ -3,6 +3,9 @@
 Template prepared 10 November 2026. **NOT RUN**. Use with the
 [validation plan](D6_USECASE_VALIDATION_PLAN.md). Copy once per session; a blank
 field is unknown, never zero/pass. Record failures and retries separately.
+The [13 November integration handoff](d6/D6_INTEGRATION_HANDOFF.md) records
+the user's doorway selection and A-local WINDOW / B-final-occupancy split.
+Actual pins, power, transport, storage and team fixture review are still pending.
 Refined 11 November 2026 with decision and per-attempt evidence fields; see
 the [next integration steps](d6/NEXT_STEPS.md).
 
@@ -18,7 +21,7 @@ trials. PENDING does not mean an interface or numerical limit is approved.
 
 | Decision | Agreed value / owner / date / evidence | Dependent trials |
 |---|---|---|
-| Scenario, doorway inclusion, motion source and output behavior | PENDING | T01, T03, T16 |
+| Scenario, doorway inclusion, motion source and output behavior | User selected radar + Sonar A/B doorway on 13 Nov; team fixture/behavior review PENDING | T01, T03, T16 |
 | A/B/C inventory, unique node/source names, pin/power diagrams | PENDING | All physical trials |
 | C panel geometry, offsets, orientation, colors and fixture | PENDING | All display trials |
 | Source/profile/field mapping, units and display precision | PENDING | T01, T02, T10 |
@@ -59,7 +62,7 @@ INCONCLUSIVE, BLOCKED or NOT RUN explicitly. Add one row per attempt.
 
 | ID | Trial | Status | Actual observation and evidence |
 |---|---|---|---|
-| T01 | A activity/light → B handling/control → C output | NOT RUN | Pending |
+| T01 | A doorway candidate/light → B final count/status → C output | NOT RUN | Pending approved fixture and A-to-B event contract |
 | T02 | A temperature/humidity → B handling/forwarding → C LCD | NOT RUN | Pending |
 | T03 | Complete and piecewise configuration, same image | NOT RUN | Pending |
 | T04 | GPIO/I2C/SPI concurrent fixture, byte round trip | NOT RUN | Pending |
@@ -75,6 +78,9 @@ INCONCLUSIVE, BLOCKED or NOT RUN explicitly. Add one row per attempt.
 | T14 | Display reset, re-subscribe and fresh data | NOT RUN | Pending |
 | T15 | Missing ML input produces explicit invalid result | NOT RUN | Pending |
 | T16 | Combined-load run and resource capture | NOT RUN | Pending |
+| T17 | Real entry: A then B sonar sequence, one B occupancy increment | NOT RUN | Pending A-local WINDOW and B-only occupancy implementation |
+| T18 | Real exit: B then A sonar sequence, one B occupancy decrement | NOT RUN | Pending A-local WINDOW and B-only occupancy implementation |
+| T19 | Approach-only, turnaround, ambiguity and essential faults cause no B occupancy change | NOT RUN | Pending physical trial fixtures and fault policy |
 
 ## Per-attempt evidence (copy for each attempt)
 

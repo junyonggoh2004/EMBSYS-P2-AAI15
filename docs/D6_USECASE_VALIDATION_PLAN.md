@@ -3,6 +3,10 @@
 Prepared 10 November 2026; refined 11 November 2026 on branch `d6`.
 Status: **integration in progress; D6 trials NOT RUN**. See the [next three integration steps](d6/NEXT_STEPS.md)
 for concrete changes, dependencies and review gates.
+The [13 November handoff](d6/D6_INTEGRATION_HANDOFF.md) records the user's
+selected doorway scenario, revised A-local WINDOW / B-occupancy ownership,
+materials and proposed board diagrams. It is the current integration direction;
+the detailed fixture, transport and storage decisions below still need review.
 See [integration status](d6/INTEGRATION_STATUS.md) for the LCD/parser changes
 and actual native/build evidence; all physical trials remain NOT RUN.
 Lead: Cody. Brendan implements the SPI-config demonstration and remote-data LCD
@@ -18,18 +22,21 @@ Change supported configuration on the same firmware image and show the effect.
 Also demonstrate GPIO, I2C and SPI together, including a configured SPI byte
 write/read and a device substitution after safe power-off and reconfiguration.
 
-The proposed application is a room/activity and environmental monitor. The
-user clarified the board split on 11 November: **A is input only; B owns ML,
-storage, data handling and communication; C is output**. A's network transport
-supports sending inputs to B; it does not give A an actuator/output role.
-The exact devices and final scenario/doorway choice still need recording.
+The selected application is a radar-and-two-sonar doorway counter with light,
+temperature and humidity readings. A locally acquires and assembles the timed
+crossing using D3 `WINDOW`, then sends one identified candidate event to B.
+B validates and deduplicates events, decides and changes occupancy, stores the
+agreed record, and publishes the output state. C displays B's latest valid
+state. A has no actuator or final occupancy role. The exact devices, fixture,
+event contract and team acceptance still need recording.
 D3 supplies timing and sequencing; D4 supplies ML. Neither the whole repository
 nor D6 is a D3-only project.
 
 The original doorway plan's readiness checks, controlled workloads, failure
-trials, provenance and evidence discipline are reused here. Its occupancy
-classification and 50 ms two-sonar acceptance are conditional on retaining the
-doorway extension, not automatic acceptance criteria for this three-board demo.
+trials, provenance and evidence discipline are reused here. Because the user
+selected doorway inclusion, its occupancy integrity and 50 ms two-sonar
+acceptance become target gates once the fixture and A-to-B event design are
+approved; no existing run is presumed to pass them.
 The original [plan](d6/reference/D6_USECASE_VALIDATION_PLAN.md) and
 [worksheet](d6/reference/D6_TRIAL_WORKSHEET.md) are archived without claiming
 their tests ran. Use the [current worksheet](D6_TRIAL_WORKSHEET.md) for new runs.
@@ -69,9 +76,9 @@ They do not redefine canonical event identity or cross-node time contracts.
 
 | Board | Proposed node | Input and responsibility | Visible evidence |
 |---|---|---|---|
-| A: input only | `s3-001` | Physical sensor acquisition: activity/light and temperature/humidity; publish identified input frames for B. Exact inventory/pins pending | Stimulus changes the correct raw input; no actuator output on A |
-| B: processing and communication | `s3-002` | Receive/validate A data, handle state and ML, own data storage and onward communication to C; storage format/handoff and B→C transport pending | Correlated accepted input, processed result, storage outcome when implemented, and outgoing publication |
-| C: output | `s3-003` | Consume B's agreed output data/status and draw through Brendan's LCD driver; other output devices pending selection | Correctly associated values/results/validity from B are visibly rendered |
+| A: acquisition and timed assembly | `s3-001` | Physical AHT/light, two sonar and radar acquisition; locally pair sonar samples and run the radar `WINDOW`; publish one identified crossing candidate/event per completed window plus environmental frames. Exact pins and event schema pending | Ground-truth input and window evidence; no final occupancy update or actuator output on A |
+| B: decision and storage | `s3-002` | Receive/validate/deduplicate A events, make the final occupancy update, later apply ML, own agreed SPI-flash records and onward communication to C; storage and B→C contracts pending | Correlated accepted event, single occupancy transition, storage outcome when implemented, and outgoing publication |
+| C: output | `s3-003` | Consume B's agreed output snapshot/status and draw through Brendan's LCD driver; other output devices pending selection | Correctly associated readings, occupancy and validity from B are visibly rendered |
 | Laptop | Broker and evidence | Mosquitto, command publication, raw MQTT/serial capture | Independent evidence that messages reach a subscriber |
 
 ```mermaid
@@ -87,9 +94,10 @@ flowchart LR
     M -->|display configuration: pending interface| C
 ```
 
-Do not label ultrasonic distance as motion or occupancy without specifying and
-testing the decision rule. Select the real motion source, output device, pins,
-thresholds and polarity with Sitt/Brendan before writing runnable presets.
+Do not label a raw ultrasonic distance as motion or occupancy. A assembles a
+timed crossing candidate, while B validates it and changes occupancy at most
+once. Select exact devices, pins, thresholds and failure behaviour with the
+team before writing runnable presets.
 Output behavior belongs to C; B handles its data and control routing. The
 doorway alternative needs an approved second sonar, radar, geometry and
 its own acceptance; the existing one-sonar fixture does not provide that proof.
@@ -98,7 +106,7 @@ its own acceptance; the existing one-sonar fixture does not provide that proof.
 
 | Decision | Responsible participants | Required recorded result |
 |---|---|---|
-| 5.1 final scenario and doorway inclusion | Cody, Brendan, team | Chosen activity input, output behavior, final demo boundary |
+| 5.1 final scenario and doorway inclusion | Cody, Brendan, team | User selected radar + Sonar A/B doorway on 13 Nov; record team acceptance, fixture and final demo boundary |
 | 5.2 inventory and per-board fixture | Cody, Sitt, Brendan | Exact board/module, voltages, unique node, pin/power diagram; no conflicts |
 | Rule/output behavior | Cody, Sitt, Brendan | B processing/control routing and C output: condition, thresholds/units, debounce or hysteresis, polarity and fault behavior |
 | Display and remote validity | Cody, Brendan, Hasif | Fields, source names, decoding, age limit, reconnect/reset behavior, refresh budget |
@@ -250,7 +258,9 @@ W3 = W2 + verified ML publication/display; W4 = W3 + live reconfiguration and
 approved SPI activity. Use unchanged fixtures/rates or assign a new revision.
 B storage is required by the clarified role split, but its writer, record
 contract and dedicated acceptance trials must be defined before enabling
-writes. No D2 flash logging or old D3 `WINDOW` workload is enabled by this plan.
+writes. The existing D3 `WINDOW` implementation runs with local application
+state; the A-local event export and B-only occupancy path described in the
+13 November handoff are **not yet implemented or physically validated**.
 
 ## 10. Verification and evidence handoff
 
