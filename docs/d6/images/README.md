@@ -13,3 +13,7 @@ They show breadboard-connected terminal rows and separate power rails:
 Read [the handoff](../D6_INTEGRATION_HANDOFF.md) for the connection status,
 power notes, materials and staged test plan. Check module markings and actual
 board pin labels before wiring.
+
+The [drawing script](draw_board_diagrams.py) reproduces these images using
+Pillow and Arial on Windows. Its source was moved from the `lcd-output`
+workspace's generated `output/d6-wiring-20261113` folder.

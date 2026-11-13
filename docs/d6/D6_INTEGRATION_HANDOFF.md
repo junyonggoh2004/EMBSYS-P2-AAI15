@@ -99,6 +99,9 @@ application path is A -> broker -> B -> broker -> C.
 
 The older [shared breadboard wiring](../../esp32s3_mtk/WIRING.md) and the
 isolated LCD fixture are different layouts. Do not merge their pins by name.
+The earlier [LCD-plus-radar prototype](reference/LCD_RADAR_PROTOTYPE_LEGACY.md)
+was transferred for history; it puts radar and LCD on one board with a
+different power/UART proposal and must not be used as the D6 fixture.
 
 ## Implementation order and exit gates
 

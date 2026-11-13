@@ -1,0 +1,7 @@
+# live sonic run, 2026-11-03 15:01:45, COM5
+15:01:45 --- STOP
+15:01:46 --- CLEAR
+15:01:47 --- BEGINCFG|name=HCSR04|proto=gpio|gpio.mode=pulse|mode=poll|freq_hz=2|gpio.trig=1|gpio.echo=2|gpio.trig_us=10|gpio.pulse_timeout_us=25000|ENDCFG
+15:01:49 --- RUN
+15:01:52 --- STOP
+15:01:53 --- CLEAR
