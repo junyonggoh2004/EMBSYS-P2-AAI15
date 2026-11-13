@@ -137,8 +137,8 @@ The `d6` base includes an imported `LCDTEST` diagnostic and strict MQTT
 sensor-frame parser with native/build evidence in
 [integration status](INTEGRATION_STATUS.md). It does not contain a completed
 remote WINDOW-event pipeline, B storage writer, or live B -> C screen. The
-uncommitted `lcd-output` working tree also contains separate `FLASHLCD` and
-`LCDMOCK` additions; those were **not merged into this branch** and must be
+`lcd-output` at `9b13e36` contains separate `FLASHLCD` and
+`LCDMOCK` tests; those were **not merged into this branch** and must be
 reviewed and tested independently if selected. Preserve the isolated LCD test
 and earlier fixture documentation during future integration.
 
