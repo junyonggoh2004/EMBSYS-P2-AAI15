@@ -65,6 +65,9 @@ typedef struct {
     uint16_t lcd_width, lcd_height;
     uint16_t lcd_x_offset, lcd_y_offset;
     uint8_t  lcd_madctl, lcd_invert;
+    /* Used by LCDMOCK only: distance, temperature, humidity, lux, ML score.
+     * Short strings fit the 76-pixel portrait display at scale 2. */
+    char lcd_mock_values[5][8];
 } bench_msg_t;
 
 // Message-buffer capacities, in messages: the Week 6 queue depths.

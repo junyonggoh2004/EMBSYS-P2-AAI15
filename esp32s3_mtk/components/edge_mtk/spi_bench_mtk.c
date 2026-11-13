@@ -10,6 +10,7 @@
 #include "flash/w25q32.h"
 #include "flash/d2_event_log.h"
 #include "hal/hal.h"
+#include "lcd_flash_board.h"
 #include "runtime_mtk.h"
 
 #define ATTEMPTS 1000u
@@ -27,6 +28,25 @@ static const uint8_t s_flash_test_pattern[16] = {
     'D', '2', '-', 'S', 'P', 'I', '-', 'W', '2', '5', 'Q', '3', '2', '-', '0', '1'
 };
 
+static int flash_open(uint32_t hz, uint8_t mode)
+{
+    return hal_spi_open("fspi", LCD_FLASH_PIN_SCK, LCD_FLASH_PIN_MOSI,
+                        LCD_FLASH_PIN_MISO, LCD_FLASH_PIN_FLASH_CS, hz, mode);
+}
+
+/* BenchmarkTask is the sole SPI diagnostic owner. Deassert both chip selects
+ * before any LCD or flash clock is generated, including when one is absent. */
+int mtk_spi_board_prepare(void)
+{
+    int rc = hal_gpio_mode(LCD_FLASH_PIN_LCD_CS, HAL_GPIO_OUTPUT);
+    if (rc != HAL_OK) return rc;
+    rc = hal_gpio_write(LCD_FLASH_PIN_LCD_CS, 1);
+    if (rc != HAL_OK) return rc;
+    rc = hal_gpio_mode(LCD_FLASH_PIN_FLASH_CS, HAL_GPIO_OUTPUT);
+    if (rc != HAL_OK) return rc;
+    return hal_gpio_write(LCD_FLASH_PIN_FLASH_CS, 1);
+}
+
 /* A rejected, invalid synthetic fixture: never report this as a live event. */
 static const d2_log_record_t s_log_test_record = {
     .node_id = UINT64_C(0xd200000000000001),
@@ -40,7 +60,7 @@ static const d2_log_record_t s_log_test_record = {
 
 static int log_test_open(w25q32_t *flash, d2_event_log_t *log)
 {
-    int device = hal_spi_open("fspi", 11, 12, 13, 10, 1000000, 0);
+    int device = flash_open(1000000, 0);
     if (device < 0) return device;
     int rc = w25q32_probe(flash, device, D2_PART_ID);
     if (rc == HAL_OK)
@@ -189,36 +209,41 @@ static void print_samples(size_t n)
 
 // Read-only discovery before choosing an expected part ID or scratch sector.
 // 0x9F is a JEDEC-ID read; this path never issues write-enable, program or erase.
-void mtk_spi_flash_id(void)
+int mtk_spi_flash_read_id(uint32_t *id)
 {
-    int device = hal_spi_open("fspi", 11, 12, 13, 10, 1000000, 0);
-    if (device < 0) {
-        printf("[SPIID] ERROR open=%d\n", device);
-        return;
-    }
+    if (!id) return HAL_ERR_INVALID;
+    *id = 0;
+    int device = flash_open(1000000, 0);
+    if (device < 0) return device;
     const uint8_t tx[4] = { 0x9f, 0, 0, 0 };
     uint8_t rx[4] = { 0 };
     int result = hal_spi_transfer(device, tx, rx, sizeof tx, 100);
     int closed = hal_spi_close(device);
-    if (result != sizeof tx || closed != HAL_OK) {
-        printf("[SPIID] ERROR transfer=%d close=%d\n", result, closed);
+    if (result != sizeof tx) return result < 0 ? result : HAL_ERR_IO;
+    if (closed != HAL_OK) return closed;
+    *id = ((uint32_t)rx[1] << 16) | ((uint32_t)rx[2] << 8) | rx[3];
+    if (*id == 0 || *id == 0xffffffu) return HAL_ERR_IO;
+    return HAL_OK;
+}
+
+void mtk_spi_flash_id(void)
+{
+    uint32_t id;
+    int result = mtk_spi_flash_read_id(&id);
+    if (result != HAL_OK) {
+        printf("[SPIID] ERROR result=%d raw=%06lX; check module and wiring\n",
+               result, (unsigned long)id);
         return;
     }
-    if ((rx[1] == 0 && rx[2] == 0 && rx[3] == 0) ||
-        (rx[1] == 0xff && rx[2] == 0xff && rx[3] == 0xff)) {
-        printf("[SPIID] INVALID raw=%02X%02X%02X; check module and wiring\n",
-               rx[1], rx[2], rx[3]);
-        return;
-    }
-    printf("[SPIID] raw=%02X%02X%02X; verify against chip marking before writes\n",
-           rx[1], rx[2], rx[3]);
+    printf("[SPIID] raw=%06lX; verify against chip marking before writes\n",
+           (unsigned long)id);
 }
 
 // Confirms the device layer can identify and repeatedly read the same bytes.
 // This deliberately makes no write or erase request to an unallocated sector.
 void mtk_spi_flash_check(uint32_t expected_id)
 {
-    int device = hal_spi_open("fspi", 11, 12, 13, 10, 1000000, 0);
+    int device = flash_open(1000000, 0);
     if (device < 0) {
         printf("[SPICHECK] ERROR open=%d\n", device);
         return;
@@ -251,7 +276,7 @@ void mtk_spi_flash_check(uint32_t expected_id)
 void mtk_spi_flash_scan(uint32_t expected_id)
 {
     enum { SCRATCH_BYTES = D2_SCRATCH_END - D2_SCRATCH_BEGIN };
-    int device = hal_spi_open("fspi", 11, 12, 13, 10, 1000000, 0);
+    int device = flash_open(1000000, 0);
     if (device < 0) {
         printf("[SPISCAN] ERROR open=%d\n", device);
         return;
@@ -290,7 +315,7 @@ void mtk_spi_flash_program(uint32_t expected_id)
         puts("[SPIPROGRAM] ERROR unexpected ID; no write");
         return;
     }
-    int device = hal_spi_open("fspi", 11, 12, 13, 10, 1000000, 0);
+    int device = flash_open(1000000, 0);
     if (device < 0) {
         printf("[SPIPROGRAM] ERROR open=%d; no write\n", device);
         return;
@@ -317,7 +342,7 @@ void mtk_spi_flash_verify(uint32_t expected_id)
         puts("[SPIVERIFY] ERROR unexpected ID");
         return;
     }
-    int device = hal_spi_open("fspi", 11, 12, 13, 10, 1000000, 0);
+    int device = flash_open(1000000, 0);
     if (device < 0) {
         printf("[SPIVERIFY] ERROR open=%d\n", device);
         return;
@@ -343,7 +368,7 @@ void mtk_spi_benchmark(unsigned mode, uint32_t hz)
         puts("[SPIBENCH] ERROR invalid mode or clock");
         return;
     }
-    int device = hal_spi_open("fspi", 11, 12, 13, 10, hz, (uint8_t)mode);
+    int device = flash_open(hz, (uint8_t)mode);
     if (device < 0) {
         printf("[SPIBENCH] ERROR open=%d\n", device);
         return;

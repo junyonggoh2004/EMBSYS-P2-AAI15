@@ -105,7 +105,7 @@ The BL-to-ground entry preserves the active-low backlight arrangement previously
 
 Bare sensors or different breakout revisions may need different power, pull-up or backlight circuitry. These tables describe the current modules and retained wiring.
 
-## Separate LCD-only breadboard test (current `lcd_output` firmware)
+## (TEST) Separate LCD-only breadboard test (current `lcd_output` firmware)
 
 This is a **separate setup** for the DIYUSER 2.25-inch ST7789P3, 76×284 LCD
 and ESP32-S3 Super Mini. Disconnect the sensors and remove the Version 2 LCD
@@ -155,7 +155,50 @@ clock and MOSI, not the sensor I²C signals. No LCD MISO wire is used. The BL
 connection follows the previously selected active-low arrangement for this
 particular breakout; its current rating has not been verified, so the firmware
 does not use GPIO13 for BL. Unplug USB power before adding or moving wires.
-Do not run the SPI fixture commands while this LCD is connected to GPIO10–12.
+For this isolated setup, leave external flash disconnected and use `LCDTEST`.
 
 For the display pattern and console command, see the
 [`lcd_output` test instructions](components/lcd_output/README.md#how-to-run-the-physical-lcd-test).
+
+## (TEST) Proposed LCD plus external SPI flash breadboard prototype
+
+This is a separate additional test of the **working LCD wiring plus an external
+flash module**. The isolated LCD setup and earlier Version 2 wiring above
+are preserved. See the [LCD plus SPI flash breadboard diagram](components/lcd_output/LCD_SPI_FLASH_BREADBOARD.svg).
+Keep all current LCD wires, including LCD BL on the blue ground rail. The
+flash module in the supplied photo says `W25QXX`, but its actual chip marking,
+connector labels and electrical ratings cannot be read. Verify those before
+powering it; the proposed VCC connection below is for a breakout confirmed to
+accept 3.3 V.
+
+| Device pin | Breadboard hole | Connection |
+|---|---|---|
+| Flash GND | Blue ground rail N4 | Same continuous rail as ESP32 GND, LCD GND and LCD BL |
+| Flash VCC, if 3.3 V is confirmed | C4 | ESP32 3V3 at A4; LCD VCC at E4 |
+| Flash CLK / SCK | C10 | ESP32 GPIO12 at A10; LCD SCL / SCK at E10 |
+| Flash DI / SI / MOSI | C11 | ESP32 GPIO11 at A11; LCD SDA / MOSI at E11 |
+| ESP32 GPIO13 | A15 | New SPI MISO input |
+| Flash DO / SO / MISO | E15 | Flash output to ESP32 GPIO13 |
+| ESP32 GPIO6 | A16 | New flash chip select output |
+| Flash CS / SS | E16 | Flash CS, separate from LCD CS on GPIO10 |
+
+The LCD does not have a MISO connection. N4 is an example hole on the same
+continuous ground rail as N1–N3. Check for a split rail and check the flash
+module's actual pin names; the photo does not establish connector order or
+wire-colour meanings. Leave any other module pins unconnected until their
+functions and required pull-ups are confirmed.
+
+The updated firmware uses SCK GPIO12, MOSI GPIO11, MISO GPIO13 and separate
+chip selects: LCD GPIO10, flash GPIO6. `FLASHLCD` reads only the flash's JEDEC
+ID (command `9F`) and shows it on the LCD. `SPIID` reads the same ID in the
+serial monitor. These commands do not write or erase flash. `LCDTEST 76 284
+82 18 00 0` remains the **separate isolated LCD test** with flash disconnected.
+Both display and flash diagnostics run sequentially in BenchmarkTask; another
+task must not use this SPI host concurrently without whole-operation bus
+ownership. The actual flash part must be identified before using any
+W25Q32-specific test, especially a write or erase operation. On 10 November
+2026, the user reported `SPIID` ID `EF4016`, `FLASHLCD` flash and LCD results
+of `0`, and visible `FLASH TEST` / `SPI OK` / `ID EF4016` text. `TASKS` then
+showed `BenchmarkTask stack_free=1756 B` and zero message-buffer drops. This
+validates the read-only combined test; it does not validate flash writes,
+stored data or long-run timing.

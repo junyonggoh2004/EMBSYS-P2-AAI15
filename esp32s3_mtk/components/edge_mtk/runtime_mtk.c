@@ -61,6 +61,8 @@ void mqtt_wifi_scan(void);
 void mqtt_wifi_drop(void);
 void inference_task_body(void);
 void mtk_spi_benchmark(unsigned mode, uint32_t hz);
+int mtk_spi_board_prepare(void);
+int mtk_spi_flash_read_id(uint32_t *id);
 void mtk_spi_flash_id(void);
 void mtk_spi_flash_check(uint32_t expected_id);
 void mtk_spi_flash_scan(uint32_t expected_id);
@@ -352,6 +354,43 @@ static void control_task(INT stacd, void *exinf)
                 else
                     puts("[LCD] test queued");
             }
+        } else if (strncasecmp(line, "LCDMOCK", 7) == 0) {
+            bench_msg_t b = { .name = "LCDMOCK" };
+            char extra;
+            bool valid = false;
+            if (strcasecmp(line, "LCDMOCK") == 0) {
+                static const char *const defaults[5] = {
+                    "123.4", "27.5", "65.2", "420", "0.953"
+                };
+                for (unsigned i = 0; i < 5; ++i)
+                    snprintf(b.lcd_mock_values[i], sizeof b.lcd_mock_values[i],
+                             "%s", defaults[i]);
+                valid = true;
+            } else if (sscanf(line + 7, " %7s %7s %7s %7s %7s %c",
+                              b.lcd_mock_values[0], b.lcd_mock_values[1],
+                              b.lcd_mock_values[2], b.lcd_mock_values[3],
+                              b.lcd_mock_values[4], &extra) == 5) {
+                valid = true;
+                for (unsigned i = 0; i < 5; ++i) {
+                    const char *value = b.lcd_mock_values[i];
+                    size_t len = strlen(value);
+                    bool digit = false, dot = false;
+                    if (!len || len > 5) { valid = false; break; }
+                    for (size_t j = 0; j < len; ++j) {
+                        if (value[j] >= '0' && value[j] <= '9') digit = true;
+                        else if (value[j] == '.' && !dot) dot = true;
+                        else if (value[j] == '-' && i == 1 && j == 0) { }
+                        else { valid = false; break; }
+                    }
+                    if (!digit || !valid) { valid = false; break; }
+                }
+            }
+            if (!valid)
+                puts("[LCDMOCK] usage: LCDMOCK [distance_cm temp_c humidity_pct lux ml_score]; each value max 5 numeric characters");
+            else if (!runtime_send(bench_mbf, &b, sizeof b))
+                puts("[LCDMOCK] ERROR benchmark queue full");
+            else
+                puts("[LCDMOCK] render queued");
         } else if (strncasecmp(line, "APP ", 4) == 0 || strcasecmp(line, "APP") == 0) {
             application_message_t request;
             if (!application_command_parse(line, hal_time_us(), &request)) {
@@ -369,6 +408,12 @@ static void control_task(INT stacd, void *exinf)
             bench_msg_t b = { .name = "SPIID" };
             if (!runtime_send(bench_mbf, &b, sizeof b))
                 puts("[SPIID] ERROR benchmark queue full");
+        } else if (strcasecmp(line, "FLASHLCD") == 0) {
+            bench_msg_t b = { .name = "FLASHLCD" };
+            if (!runtime_send(bench_mbf, &b, sizeof b))
+                puts("[FLASHLCD] ERROR benchmark queue full");
+            else
+                puts("[FLASHLCD] test queued");
         } else if (strcasecmp(line, "SPILOGPLAN") == 0 ||
                    strcasecmp(line, "SPILOGVERIFY") == 0 ||
                    strcasecmp(line, "SPILOGWRITE EF4016 3FF100") == 0) {
@@ -513,10 +558,21 @@ static void application_task(INT stacd, void *exinf)
 static void benchmark_task(INT stacd, void *exinf)
 {
     (void)stacd; (void)exinf;
+    const int spi_setup = mtk_spi_board_prepare();
+    if (spi_setup != HAL_OK)
+        printf("[SPI] ERROR chip-select setup=%d; SPI tests disabled\n", spi_setup);
     bench_msg_t b;
     for (;;) {
         if (tk_rcv_mbf(bench_mbf, &b, TMO_FEVR) > 0) {
             runtime_alive(RT_BENCHMARK);
+            if (spi_setup != HAL_OK &&
+                (strcmp(b.name, "LCDTEST") == 0 ||
+                 strcmp(b.name, "LCDMOCK") == 0 ||
+                 strcmp(b.name, "FLASHLCD") == 0 ||
+                 strncmp(b.name, "SPI", 3) == 0)) {
+                printf("[SPI] %s skipped: chip-select setup=%d\n", b.name, spi_setup);
+                continue;
+            }
             if (strcmp(b.name, "LCDTEST") == 0) {
                 lcd_output_config_t config = {
                     .width = b.lcd_width,
@@ -535,6 +591,57 @@ static void benchmark_task(INT stacd, void *exinf)
                 if (result == HAL_OK) result = lcd_output_test_pattern();
                 printf("[LCD] test %s result=%d\n",
                        result == HAL_OK ? "complete" : "failed", result);
+                lcd_output_deinit();
+            }
+            else if (strcmp(b.name, "LCDMOCK") == 0) {
+                const lcd_output_config_t config = {
+                    .width = 76, .height = 284, .x_offset = 82,
+                    .y_offset = 18, .madctl = 0, .invert_colors = false
+                };
+                lcd_output_deinit();
+                int result = lcd_output_init(&config);
+                if (result == HAL_OK)
+                    result = lcd_output_mock_screen(b.lcd_mock_values[0],
+                                                    b.lcd_mock_values[1],
+                                                    b.lcd_mock_values[2],
+                                                    b.lcd_mock_values[3],
+                                                    b.lcd_mock_values[4]);
+                printf("[LCDMOCK] render %s result=%d\n",
+                       result == HAL_OK ? "complete" : "failed", result);
+                lcd_output_deinit();
+            }
+            else if (strcmp(b.name, "FLASHLCD") == 0) {
+                uint32_t id = 0;
+                int flash_result = mtk_spi_flash_read_id(&id);
+                printf("[FLASHLCD] flash %s result=%d id=%06lX\n",
+                       flash_result == HAL_OK ? "detected" : "failed",
+                       flash_result, (unsigned long)id);
+                const lcd_output_config_t config = {
+                    .width = 76, .height = 284, .x_offset = 82,
+                    .y_offset = 18, .madctl = 0, .invert_colors = false
+                };
+                lcd_output_deinit();
+                int lcd_result = lcd_output_init(&config);
+                if (lcd_result == HAL_OK) lcd_result = lcd_output_fill(0x0000u);
+                if (lcd_result == HAL_OK)
+                    lcd_result = lcd_output_draw_text(3, 12, "FLASH TEST",
+                                                      0xffffu, 0x0000u, 1);
+                if (lcd_result == HAL_OK) {
+                    if (flash_result == HAL_OK) {
+                        char label[16];
+                        snprintf(label, sizeof label, "ID %06lX", (unsigned long)id);
+                        lcd_result = lcd_output_draw_text(3, 32, "SPI OK",
+                                                          0x07e0u, 0x0000u, 1);
+                        if (lcd_result == HAL_OK)
+                            lcd_result = lcd_output_draw_text(3, 52, label,
+                                                              0xffffu, 0x0000u, 1);
+                    } else {
+                        lcd_result = lcd_output_draw_text(3, 32, "SPI FAIL",
+                                                          0xf800u, 0x0000u, 1);
+                    }
+                }
+                printf("[FLASHLCD] lcd %s result=%d\n",
+                       lcd_result == HAL_OK ? "complete" : "failed", lcd_result);
                 lcd_output_deinit();
             }
             else if (strcmp(b.name, "SPIBENCH") == 0)

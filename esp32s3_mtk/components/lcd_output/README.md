@@ -140,8 +140,8 @@ LCD `SCL/SCK` to GPIO12, `SDA/MOSI` to GPIO11, `RST` to GPIO8, `DC` to
 GPIO9, and `CS` to GPIO10. LCD `VCC` goes to 3V3. ESP32 GND, LCD GND and
 LCD BL share one continuous ground rail. This pin map replaces the older
 breadboard map in the LCD firmware only; the earlier breadboard tables remain
-in `WIRING.md`. GPIO11/12 also appear in the SPI fixture commands; do not
-run those commands while the LCD is wired for this isolated test.
+in `WIRING.md`. For this isolated test, leave external flash disconnected and
+run `LCDTEST` as before.
 
 The photos do not provide a backlight schematic or current rating. Do not
 connect `BL` directly to ESP32 GPIO13 as a substitute for ground until its
@@ -154,13 +154,16 @@ The course port includes a third-party ST7789P3 driver under
 drop-in driver or proof that this breadboard display works. Keep changes out
 of the course submodule.
 
-GPIO10 is also used as CS by an upstream SPI flash test fixture. The current
-breadboard has the LCD there, so do not run that flash fixture with the LCD
-connected. If another SPI device is later added, plan separate CS pins and
-whole-operation bus ownership; the existing HAL locks and toggles CS for each
-transfer, which does not protect a complete LCD command plus its data from
-another user of the same host. The current implementation assumes one LCD
-caller and no concurrent device on its SPI host.
+The optional [LCD plus external SPI flash wiring](LCD_SPI_FLASH_BREADBOARD.svg)
+is documented separately in [`WIRING.md`](../../WIRING.md). The `FLASHLCD`
+diagnostic reads and displays an external flash JEDEC ID; it does not display
+application results or read stored records.
+
+The older upstream flash fixture used GPIO10 as flash CS; the combined-test
+firmware now uses GPIO6 for flash CS and GPIO10 for LCD CS. BenchmarkTask
+runs the LCD and flash diagnostics sequentially. The HAL locks each transfer,
+so any future task using the same SPI host needs whole-operation coordination
+before it can run concurrently with these diagnostics.
 
 ## Implementation and verification sequence
 
@@ -170,15 +173,10 @@ caller and no concurrent device on its SPI host.
    confirmed geometry and panel settings (see below).
 3. Check the red, green, blue and black bands plus the `LCD READY` label.
    Check visible area, rotation and backlight; record the outcome.
-4. Add a bounded display update path for selected application results and
-   errors. Decide the update owner, queue/drop policy and refresh rate so a
-   missing LCD cannot stall sensor sampling or occupancy processing.
-5. Build and run the existing sensor configuration with the LCD enabled.
-   Check that sensor readings, task timing and error reporting still work.
 
 The source, build registration, host tests, opt-in diagnostic and first
 visible-screen test and stack-margin retest are in place. A panel-edge
-alignment check and the application-result hook remain pending.
+alignment check remains pending for this isolated LCD fixture.
 
 ## How to run the physical LCD test
 
@@ -190,8 +188,8 @@ the printed row numbers on the physical breadboard are the final reference.
    [LCD-only breadboard table](../../WIRING.md#separate-lcd-only-breadboard-test-current-lcd_output-firmware).
    It joins ESP32 GND, LCD GND and LCD BL on one continuous blue rail; VCC
    uses the 3V3 row and the five SPI/control signals use separate rows.
-   GPIO13 is not enabled in firmware. Leave the sensors disconnected and do
-   not run the SPI fixture commands while the LCD is connected.
+   GPIO13 is the shared SPI MISO input but has no LCD wire. Leave the flash
+   and sensors disconnected for this isolated LCD test.
 2. The owner reports a 76×284 visible area. Use candidate RAM offsets 82/18
    and portrait `MADCTL=00`. Inversion `0` gave the intended colours in the
    physical test; inversion `1` visibly inverted them. The offset comes from another
@@ -274,3 +272,71 @@ stack values; the tested firmware reported `BenchmarkTask stack_free=1740 B`.
 Press Ctrl+] to exit ESP-IDF Monitor. If COM5 is busy, close any other serial
 monitor before retrying. These paths and COM5 describe this user's Windows
 checkout; other computers need their own SDK paths and port number.
+
+## Separate LCD plus external SPI flash test
+
+The isolated LCD test above remains available and uses the same `LCDTEST 76
+284 82 18 00 0` command with the flash disconnected. The following is an
+**additional** test for the [LCD plus flash breadboard diagram](LCD_SPI_FLASH_BREADBOARD.svg)
+and [pin table](../../WIRING.md#test-proposed-lcd-plus-external-spi-flash-breadboard-prototype).
+
+Before powering the flash, confirm its actual connector pin names, chip
+marking and supply rating. The photographed `W25QXX` breakout does not show
+enough detail to verify them. The diagram assumes a breakout confirmed to
+accept 3.3 V. With USB disconnected, add its GND, VCC, SCK, MOSI, MISO and
+separate CS wires as shown. Keep the working LCD wires unchanged. Check the
+ground rail continuity and that 3V3 is not shorted to GND.
+
+Flash this newly built firmware and open the COM5 monitor using the PowerShell
+commands in the preceding section. Then type these commands **inside the
+monitor**, pressing Enter after each:
+
+```text
+SPIID
+FLASHLCD
+TASKS
+```
+
+`SPIID` sends only the JEDEC ID read command (`9F`) and prints a six-digit
+hexadecimal ID. `FLASHLCD` repeats that read and displays `FLASH TEST`,
+`SPI OK` and `ID XXXXXX` on the LCD, or `SPI FAIL` if the read fails. Look for
+`[FLASHLCD] flash detected result=0` and `[FLASHLCD] lcd complete result=0`
+in the monitor **and** the matching visible ID on the LCD. A zero result alone
+cannot prove the LCD pixels worked. `000000` and `FFFFFF` are rejected as
+invalid IDs. Compare any other ID with the actual chip marking before using
+part-specific flash commands. On 10 November 2026, the user reported a physical
+`SPIID` result of `EF4016`, `FLASHLCD` flash and LCD results of `0`, and visible
+`FLASH TEST` / `SPI OK` / `ID EF4016` text. A following `TASKS` capture showed
+`BenchmarkTask stack_free=1756 B` and zero message-buffer drops. The serial
+captures are indexed in [images/README.md](images/README.md); the screen text
+was confirmed by the user without a separate screen photo. Do not run
+`SPIPROGRAM`, `SPILOGWRITE`, `SPIBENCH` or erase/write tests for this first
+connection check.
+
+## Mock room-monitor screen
+
+`LCDMOCK` is a separate opt-in display demo for the verified 76×284 LCD.
+It does not read the real sensors or external flash. The wide reference image
+is adapted into five stacked cards: distance, temperature, humidity, light
+and ML output, with a fixed `3/3 OK` mock status. The status is example text,
+not a live sensor-health result. The original `LCDTEST` pattern and the
+read-only `FLASHLCD` diagnostic remain separate commands.
+
+After flashing the newly built firmware and opening the COM5 monitor using
+the PowerShell steps above, type one of these **inside the monitor**:
+
+```text
+LCDMOCK
+LCDMOCK 123.4 27.5 65.2 420 0.953
+LCDMOCK 98.2 28.1 61.0 300 0.812
+```
+
+The five values are `distance_cm temp_c humidity_percent lux ml_score`.
+The no-argument form displays the reference values. Each supplied value must
+be numeric and at most five characters so it fits the narrow screen. The
+firmware should print `[LCDMOCK] render complete result=0`, and the screen
+should visibly show the supplied values. Re-enter `LCDMOCK` with new values
+to redraw it. `LCDTEST 76 284 82 18 00 0` still runs the isolated RGB pattern
+with flash disconnected; `FLASHLCD` still runs the read-only combined test.
+The new `LCDMOCK` screen passed the firmware build but has not yet been
+confirmed on the physical LCD.

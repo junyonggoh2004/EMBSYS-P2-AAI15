@@ -36,6 +36,12 @@ int lcd_output_draw_text(uint16_t x, uint16_t y, const char *text,
 /* Basic physical bring-up check: red, green, blue bands and a label. */
 int lcd_output_test_pattern(void);
 
+/* Portrait demo layout for five console-supplied mock values. The caller
+ * initializes the verified 76x284 panel first; no sensor is read here. */
+int lcd_output_mock_screen(const char *distance_cm, const char *temp_c,
+                           const char *humidity_pct, const char *light_lux,
+                           const char *ml_output);
+
 #ifdef __cplusplus
 }
 #endif

@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1070" viewBox="0 0 1600 1070" role="img" aria-label="Proposed ESP32-S3 Super Mini, ST7789 LCD and external SPI flash breadboard pin diagram">
+<rect width="1600" height="1070" fill="#f4f7fb"/>
+<text x="46" y="58" font-family="Arial,sans-serif" font-size="32" font-weight="bold" fill="#142b48">LCD + external SPI flash: proposed breadboard wiring</text>
+<text x="46" y="92" font-family="Arial,sans-serif" font-size="19" fill="#344963">Keep the tested LCD wiring. Add a separate flash CS and a flash-to-ESP32 MISO line. Devices sit outside the breadboard.</text>
+<rect x="575" y="132" width="476" height="732" rx="18" fill="#eee7d2" stroke="#a99d7a" stroke-width="3"/>
+<rect x="598" y="151" width="45" height="688" rx="5" fill="#dcebf3"/>
+<line x1="620" y1="162" x2="620" y2="827" stroke="#147bb4" stroke-width="5"/>
+<text x="620" y="858" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" fill="#126995">GND rail</text>
+<text x="840" y="172" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-weight="bold" fill="#24364c">A      B      C      D      E</text>
+<text x="46" y="165" font-family="Arial,sans-serif" font-size="19" font-weight="bold" fill="#246a34">ESP32-S3 Super Mini</text>
+<text x="1090" y="165" font-family="Arial,sans-serif" font-size="19" font-weight="bold" fill="#713e92">LCD / SPI flash</text>
+<g font-family="Arial,sans-serif" font-size="18" font-weight="bold" fill="#176592">
+<text x="46" y="210">ESP32 GND → blue rail N1</text>
+<text x="46" y="247">LCD GND → blue rail N2</text>
+<text x="46" y="284">LCD BL → blue rail N3</text>
+<text x="46" y="321">Flash GND → blue rail N4</text>
+</g>
+<g fill="#147bb4"><circle cx="620" cy="203" r="8"/><circle cx="620" cy="240" r="8"/><circle cx="620" cy="277" r="8"/><circle cx="620" cy="314" r="8"/></g>
+<g font-family="Arial,sans-serif" font-size="16" fill="#176592"><text x="642" y="209">N1</text><text x="642" y="246">N2</text><text x="642" y="283">N3</text><text x="642" y="320">N4</text></g>
+<g stroke="#147bb4" stroke-width="2"><line x1="315" y1="204" x2="608" y2="203"/><line x1="290" y1="241" x2="608" y2="240"/><line x1="273" y1="278" x2="608" y2="277"/><line x1="308" y1="315" x2="608" y2="314"/></g>
+<text x="647" y="397" font-family="Arial,sans-serif" font-size="16" fill="#54616b">row 4</text>
+<text x="46" y="397" font-family="Arial,sans-serif" font-size="19" font-weight="bold" fill="#246a34">ESP32 3V3 → A4</text>
+<text x="1090" y="397" font-family="Arial,sans-serif" font-size="19" font-weight="bold" fill="#713e92">E4 ← LCD VCC</text>
+<g fill="#263b50"><circle cx="735" cy="390" r="6"/><circle cx="790" cy="390" r="6"/><circle cx="845" cy="390" r="6"/><circle cx="900" cy="390" r="6"/><circle cx="955" cy="390" r="6"/></g>
+<circle cx="735" cy="390" r="14" fill="none" stroke="#24933d" stroke-width="4"/>
+<circle cx="955" cy="390" r="14" fill="none" stroke="#8843ac" stroke-width="4"/>
+<circle cx="845" cy="390" r="14" fill="none" stroke="#d77c27" stroke-width="4"/>
+<text x="1090" y="420" font-family="Arial,sans-serif" font-size="17" font-weight="bold" fill="#b45d17">Flash VCC → C4</text><text x="647" y="455" font-family="Arial,sans-serif" font-size="16" fill="#54616b">row 10</text>
+<text x="46" y="455" font-family="Arial,sans-serif" font-size="19" font-weight="bold" fill="#246a34">ESP32 GPIO12 → A10</text>
+<text x="1090" y="455" font-family="Arial,sans-serif" font-size="19" font-weight="bold" fill="#713e92">E10 ← LCD SCL/SCK</text>
+<g fill="#263b50"><circle cx="735" cy="448" r="6"/><circle cx="790" cy="448" r="6"/><circle cx="845" cy="448" r="6"/><circle cx="900" cy="448" r="6"/><circle cx="955" cy="448" r="6"/></g>
+<circle cx="735" cy="448" r="14" fill="none" stroke="#24933d" stroke-width="4"/>
+<circle cx="955" cy="448" r="14" fill="none" stroke="#8843ac" stroke-width="4"/>
+<circle cx="845" cy="448" r="14" fill="none" stroke="#d77c27" stroke-width="4"/>
+<text x="1090" y="478" font-family="Arial,sans-serif" font-size="17" font-weight="bold" fill="#b45d17">Flash CLK/SCK → C10</text><text x="647" y="513" font-family="Arial,sans-serif" font-size="16" fill="#54616b">row 11</text>
+<text x="46" y="513" font-family="Arial,sans-serif" font-size="19" font-weight="bold" fill="#246a34">ESP32 GPIO11 → A11</text>
+<text x="1090" y="513" font-family="Arial,sans-serif" font-size="19" font-weight="bold" fill="#713e92">E11 ← LCD SDA/MOSI</text>
+<g fill="#263b50"><circle cx="735" cy="506" r="6"/><circle cx="790" cy="506" r="6"/><circle cx="845" cy="506" r="6"/><circle cx="900" cy="506" r="6"/><circle cx="955" cy="506" r="6"/></g>
+<circle cx="735" cy="506" r="14" fill="none" stroke="#24933d" stroke-width="4"/>
+<circle cx="955" cy="506" r="14" fill="none" stroke="#8843ac" stroke-width="4"/>
+<circle cx="845" cy="506" r="14" fill="none" stroke="#d77c27" stroke-width="4"/>
+<text x="1090" y="536" font-family="Arial,sans-serif" font-size="17" font-weight="bold" fill="#b45d17">Flash DI/SI/MOSI → C11</text><text x="647" y="571" font-family="Arial,sans-serif" font-size="16" fill="#54616b">row 12</text>
+<text x="46" y="571" font-family="Arial,sans-serif" font-size="19" font-weight="bold" fill="#246a34">ESP32 GPIO8 → A12</text>
+<text x="1090" y="571" font-family="Arial,sans-serif" font-size="19" font-weight="bold" fill="#713e92">E12 ← LCD RST</text>
+<g fill="#263b50"><circle cx="735" cy="564" r="6"/><circle cx="790" cy="564" r="6"/><circle cx="845" cy="564" r="6"/><circle cx="900" cy="564" r="6"/><circle cx="955" cy="564" r="6"/></g>
+<circle cx="735" cy="564" r="14" fill="none" stroke="#24933d" stroke-width="4"/>
+<circle cx="955" cy="564" r="14" fill="none" stroke="#8843ac" stroke-width="4"/>
+<text x="647" y="629" font-family="Arial,sans-serif" font-size="16" fill="#54616b">row 13</text>
+<text x="46" y="629" font-family="Arial,sans-serif" font-size="19" font-weight="bold" fill="#246a34">ESP32 GPIO9 → A13</text>
+<text x="1090" y="629" font-family="Arial,sans-serif" font-size="19" font-weight="bold" fill="#713e92">E13 ← LCD DC</text>
+<g fill="#263b50"><circle cx="735" cy="622" r="6"/><circle cx="790" cy="622" r="6"/><circle cx="845" cy="622" r="6"/><circle cx="900" cy="622" r="6"/><circle cx="955" cy="622" r="6"/></g>
+<circle cx="735" cy="622" r="14" fill="none" stroke="#24933d" stroke-width="4"/>
+<circle cx="955" cy="622" r="14" fill="none" stroke="#8843ac" stroke-width="4"/>
+<text x="647" y="687" font-family="Arial,sans-serif" font-size="16" fill="#54616b">row 14</text>
+<text x="46" y="687" font-family="Arial,sans-serif" font-size="19" font-weight="bold" fill="#246a34">ESP32 GPIO10 → A14</text>
+<text x="1090" y="687" font-family="Arial,sans-serif" font-size="19" font-weight="bold" fill="#713e92">E14 ← LCD CS</text>
+<g fill="#263b50"><circle cx="735" cy="680" r="6"/><circle cx="790" cy="680" r="6"/><circle cx="845" cy="680" r="6"/><circle cx="900" cy="680" r="6"/><circle cx="955" cy="680" r="6"/></g>
+<circle cx="735" cy="680" r="14" fill="none" stroke="#24933d" stroke-width="4"/>
+<circle cx="955" cy="680" r="14" fill="none" stroke="#8843ac" stroke-width="4"/>
+<text x="647" y="759" font-family="Arial,sans-serif" font-size="16" fill="#54616b">row 15</text>
+<text x="46" y="759" font-family="Arial,sans-serif" font-size="19" font-weight="bold" fill="#246a34">ESP32 GPIO13 → A15</text>
+<text x="1090" y="759" font-family="Arial,sans-serif" font-size="19" font-weight="bold" fill="#b45d17">E15 ← Flash DO/SO/MISO</text>
+<g fill="#263b50"><circle cx="735" cy="752" r="6"/><circle cx="790" cy="752" r="6"/><circle cx="845" cy="752" r="6"/><circle cx="900" cy="752" r="6"/><circle cx="955" cy="752" r="6"/></g>
+<circle cx="735" cy="752" r="14" fill="none" stroke="#24933d" stroke-width="4"/>
+<circle cx="955" cy="752" r="14" fill="none" stroke="#d77c27" stroke-width="4"/>
+<text x="647" y="817" font-family="Arial,sans-serif" font-size="16" fill="#54616b">row 16</text>
+<text x="46" y="817" font-family="Arial,sans-serif" font-size="19" font-weight="bold" fill="#246a34">ESP32 GPIO6 → A16</text>
+<text x="1090" y="817" font-family="Arial,sans-serif" font-size="19" font-weight="bold" fill="#b45d17">E16 ← Flash CS/SS</text>
+<g fill="#263b50"><circle cx="735" cy="810" r="6"/><circle cx="790" cy="810" r="6"/><circle cx="845" cy="810" r="6"/><circle cx="900" cy="810" r="6"/><circle cx="955" cy="810" r="6"/></g>
+<circle cx="735" cy="810" r="14" fill="none" stroke="#24933d" stroke-width="4"/>
+<circle cx="955" cy="810" r="14" fill="none" stroke="#d77c27" stroke-width="4"/>
+<text x="46" y="905" font-family="Arial,sans-serif" font-size="20" fill="#263a51">Each A–E row is connected across; different numbered rows are separate. The blue rail joins N1–N4 vertically.</text>
+<text x="46" y="939" font-family="Arial,sans-serif" font-size="19" font-weight="bold" fill="#a4312a">Use 3.3V for flash ONLY after verifying the actual chip and breakout ratings. Never use the LCD CS for flash.</text>
+<text x="46" y="973" font-family="Arial,sans-serif" font-size="19" fill="#344963">Flash labels may read DI/SI/MOSI, DO/SO/MISO, CLK/SCK, and CS/SS. Follow labels, not wire colours.</text>
+<text x="46" y="1007" font-family="Arial,sans-serif" font-size="19" fill="#344963">Updated firmware supports read-only SPIID and FLASHLCD; the physical flash module is still unverified.</text>
+<text x="46" y="1041" font-family="Arial,sans-serif" font-size="19" fill="#344963">Unplug USB before wiring. Check that your ground rail has no centre break. N1–N4 are example names.</text>
+</svg>

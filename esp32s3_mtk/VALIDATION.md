@@ -100,3 +100,23 @@ visible.
 This validates the isolated display test, not simultaneous sensor output.
 Panel edge alignment and the application-result update path remain to be
 checked. The original shared-breadboard connection tables remain preserved.
+
+## Separate LCD plus external SPI flash result — 10 November 2026
+
+The [additional breadboard map](WIRING.md#test-proposed-lcd-plus-external-spi-flash-breadboard-prototype)
+keeps the working LCD wiring and adds external flash on shared SCK GPIO12,
+MOSI GPIO11, MISO GPIO13 and its own CS GPIO6. The isolated `LCDTEST` command
+and the earlier shared-breadboard documentation remain available.
+The updated firmware passed a full ESP-IDF build and the LCD host test before
+the user flashed it. The physical module's chip marking and exact breakout
+rating were not documented in the supplied photos.
+
+With both devices connected, the user's [SPIID capture](components/lcd_output/images/flash-spiid-ef4016.png)
+reported `EF4016`. The [FLASHLCD capture](components/lcd_output/images/flashlcd-result.png)
+reported `flash detected result=0 id=EF4016` and `lcd complete result=0`.
+The user confirmed the LCD visibly displayed `FLASH TEST`, `SPI OK` and
+`ID EF4016`; no separate photo of that screen was supplied. The subsequent
+[TASKS capture](components/lcd_output/images/flashlcd-tasks.png) showed
+`BenchmarkTask stack_free=1756 B`, heap free `46912 B`, and zero message-buffer
+drops. This validates one read-only flash-ID-to-LCD run. Flash writes, data
+retention, endurance and concurrent application SPI use remain untested.
