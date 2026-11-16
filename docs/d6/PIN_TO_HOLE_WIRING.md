@@ -1,10 +1,21 @@
 # D6 pin-to-hole breadboard diagrams
 
 Prepared 16 November 2026 as clear wiring sketches for the three separate
-ESP32-S3 Super Mini boards. These are **proposed integration fixtures**, not
-evidence that all D6 devices have been powered or tested together. See the`n[integration handoff](D6_INTEGRATION_HANDOFF.md) for implementation status and`ntest gates, and the [jumper-wire count](JUMPER_WIRE_COUNT.md) for the`nproposed fixture materials.
+ESP32-S3 N16R8 development boards photographed on 16 November: A and B
+seat in green screw-terminal expansion plates, while C is bare with male
+headers. These are **proposed integration fixtures**, not
+evidence that all D6 devices have been powered or tested together. See the
+[integration handoff](D6_INTEGRATION_HANDOFF.md) for implementation status and
+test gates, and the [jumper-wire count](JUMPER_WIRE_COUNT.md) for the
+proposed fixture materials.
 
-The module and ESP32 boards sit outside each breadboard. Holes A-E on the
+The modules and all three ESP32 assemblies sit outside each breadboard.
+On A/B, each ESP connection starts at the expansion plate screw terminal
+with the matching printed pin label; secure an insulated lead there and place
+its male breadboard end in the named hole. On C, use a male-to-female jumper
+from the bare ESP male header to the named hole. Compare each plate terminal
+label with the inserted board before wiring. See the
+[N16R8 board setup](N16R8_BOARD_SETUP.md). Holes A-E on the
 **same numbered row** connect electrically; F-J across the center gap do not
 connect to A-E. P, N and R are **example names** assigned here to holes in a
 continuous power-rail section, not labels printed on a breadboard. If a rail
@@ -36,8 +47,11 @@ All A devices share A's GND rail; there is no wire from A to B or C.
 | LD2450 GND / 5V | N6 / R2 | ESP GND / USB-backed 5V rail |
 | LD2450 TX / RX | E22 / E23 | **Proposed** ESP UART RX GPIO17 at A22 / UART TX GPIO18 at A23 |
 
-GPIO17/18 are underside pads on the HW-747 Super Mini and need reliable
-soldered access. Radar TX connects to ESP RX; radar RX connects to ESP TX if
+GPIO17/18 are exposed on the photographed N16R8 board and its expansion
+plate. Use the plate terminals marked **17** and **18**, not the
+separate `TX`/`RX` terminals (GPIO43/44 on the DevKitC-style header).
+The UART GPIO routing must match the chosen firmware configuration. Radar TX connects to
+ESP RX; radar RX connects to ESP TX if
 required by the agreed UART configuration. Sonar B and radar UART GPIOs are
 **not approved** in the D6 decision register. Confirm them before wiring
 those signal lines. Verify each sonar's actual Echo level; a 5V Echo needs
@@ -48,7 +62,9 @@ stable when the radar starts. Unplug USB while changing wires.
 
 ![Board B pin-to-hole wiring](images/board-b-detailed.png)
 
-This follows the D2 six-wire flash fixture. Check the breakout's printed
+This keeps the D2 six-wire GPIO map, but the photographed N16R8 Board B
+and its screw-terminal plate still need a new physical `SPIID` test.
+Check the breakout's printed
 `VCC`, `GND`, `CS`, `SLK/CLK`, `DI/SI` and `DO/SO` labels; wire color and
 connector order are not pin definitions.
 
@@ -69,8 +85,9 @@ has not been selected, so it is not drawn here.
 
 ![Board C pin-to-hole wiring](images/board-c-detailed.png)
 
-This is the known working isolated pin map for the user's DIYUSER 76x284
-ST7789P3 module. `SCL` and `SDA` on this LCD mean **SPI SCK and MOSI**, not
+This reuses the isolated pin map previously verified with a Super Mini;
+it has **not yet been verified** on the photographed bare N16R8 Board C.
+The module is the user's DIYUSER 76x284 ST7789P3 display. `SCL` and `SDA` on this LCD mean **SPI SCK and MOSI**, not
 the I2C signals on Board A. Its BL-to-GND arrangement is specific to this
 tested active-low breakout.
 
@@ -84,5 +101,7 @@ tested active-low breakout.
 | LCD DC | E13 | ESP GPIO9 at A13 |
 | LCD CS | E14 | ESP GPIO10 at A14 |
 
-First run the isolated `LCDTEST 76 284 82 18 00 0` on Board C. The D6
-firmware still needs B-to-C live display transport and status handling.
+First build with `BOARD=n16r8`, flash the bare Board C through its
+native USB port, then run the isolated `LCDTEST 76 284 82 18 00 0` and
+check the visible result. This is a new board verification, not inherited
+proof from the Super Mini. The D6 firmware still needs B-to-C live display transport and status handling.

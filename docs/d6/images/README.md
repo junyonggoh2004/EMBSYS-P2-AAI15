@@ -1,14 +1,20 @@
 # D6 board diagrams
 
-These three PNGs were prepared for the 13 November 2026 integration handoff.
+The active images now depict the photographed ESP32-S3 N16R8 setup:
+Boards A/B use green screw-terminal expansion plates; Board C uses a bare
+board with male headers. See [board identification and source photos](../N16R8_BOARD_SETUP.md).
+The old Super Mini test evidence remains historical.
+
+The six schematic PNGs were first prepared for the integration handoff and
+were redrawn on 16 November for the photographed N16R8 board layout.
 They show breadboard-connected terminal rows and separate power rails:
 
 - [Board A inputs](board-a-inputs.png): AHT, TSL2561, Sonar A/B and LD2450.
   Purple rows are **proposed**, not approved D6 GPIO assignments.
 - [Board B processing and flash](board-b-processing-flash.png): the previously
   tested D2 flash pin map, not a completed D6 storage run.
-- [Board C LCD](board-c-lcd.png): the verified isolated ST7789 pin map, not a
-  completed live B-to-C display run.
+- [Board C LCD](board-c-lcd.png): the ST7789 pin map previously verified on the Super Mini; the N16R8 C
+  and live B-to-C display still need tests.
 
 Read [the handoff](../D6_INTEGRATION_HANDOFF.md) for the connection status,
 power notes, materials and staged test plan. Check module markings and actual

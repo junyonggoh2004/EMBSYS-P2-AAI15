@@ -7,6 +7,12 @@ retains current MQTT command routing. Combined D6 panel tests remain NOT RUN;
 normal startup leaves the panel inactive. Board C is output; Board B owns
 processing/storage/communication and Board A is input only.
 
+For the current D6 three-board integration, Board C is the photographed
+**bare N16R8** with male headers. Keep the verified Super Mini test below as
+historical evidence; the same LCD pin map and `LCDTEST` command need a new
+physical run on C. See the [N16R8 board setup](../../../docs/d6/N16R8_BOARD_SETUP.md)
+and [Board C wiring](../../../docs/d6/PIN_TO_HOLE_WIRING.md#board-c-tested-lcd-fixture).
+
 This folder contains the first ESP32-S3 ST7789 LCD output implementation.
 The files compile and pass a host test with mocked GPIO/SPI. The opt-in
 `LCDTEST` has returned `result=0` on the connected ESP32-S3 and LCD. A user

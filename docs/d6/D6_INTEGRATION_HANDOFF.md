@@ -55,7 +55,8 @@ must be checked before the wiring is approved.
 
 | Item | Quantity | Board/use |
 |---|---:|---|
-| ESP32-S3 Super Mini | 3 | A, B, C |
+| ESP32-S3 N16R8 development board | 3 | A and B in screw-terminal expansion plates; C bare with male headers |
+| Compatible screw-terminal expansion plate | 2 | A and B; verify the terminal labels against each inserted board |
 | Verified 3.3 V-compatible HC-SR04+ | 2 | A, Sonar A and B |
 | HLK-LD2450 | 1 | A, radar |
 | TSL2561 light module | 1 | A, I2C |
@@ -64,13 +65,18 @@ must be checked before the wiring is approved.
 | DIYUSER 76 x 284 ST7789P3 LCD | 1 | C, output |
 | Breadboard | 3 | One per board, with known continuous rail sections |
 | USB data/power cable | 3 | One per board |
-| Male-to-female jumper leads | 58 for the drawn fixture; gather about 70 | Counts assume male headers and boards outside breadboards; see [per-board count](JUMPER_WIRE_COUNT.md) |
+| Male-to-female jumper leads | 41 in the photographed layout, conditional on module connectors | 26 module leads on A/B and 15 leads on C; see [per-board count](JUMPER_WIRE_COUNT.md) |
+| Expansion-terminal-to-breadboard leads | 17 | Eleven on A, six on B; one prepared insulated lead per used screw terminal |
 | Suitable four-wire radar connector or soldered leads | 1 set | The bare LD2450 cannot be reliably plugged into a breadboard by loose wire contact |
 | Multimeter | 1 | Check rails and actual signal levels |
 | Logic analyzer or oscilloscope | Access to 1 | Trigger/Echo guard, order and complete-pair timing evidence |
 | Broker laptop and reachable Wi-Fi | 1 setup | MQTT capture and configuration |
 | Second readable SPI device | 1, model pending | D6 5.4 swap/reconfiguration; select protocol before purchase |
 
+For the photographed N16R8 setup, A and B are inserted into green
+screw-terminal expansion plates; C has exposed male header pins. See the
+[board and connector identification](N16R8_BOARD_SETUP.md). The previous
+58 male-to-female estimate applied to a different all-male-header layout.
 Board A's USB-powered ESP32 **5V** pin may supply the LD2450's 5V input for
 the initial fixture, as the user confirmed from the professor's approach.
 Share A's ground, keep 5V away from 3V3 and GPIO, and verify the USB/current
@@ -90,9 +96,9 @@ group across the center gap. Check any split power rail for continuity.
 
 | Board | Image | Pin status |
 |---|---|
-| A | [Inputs, radar, two sonars and I2C](images/board-a-inputs.png) | I2C GPIO1/2 and Sonar A GPIO4/5 follow the existing V2 fixture. Sonar B GPIO6/7 and radar UART GPIO17/18 are **proposals requiring the team pin/power review**. GPIO17/18 are underside pads on the pictured HW-747. |
-| B | [SPI flash](images/board-b-processing-flash.png) | Previously tested D2 six-wire map: VCC 3V3, GND, CS GPIO10, SCK GPIO11, MOSI/DI GPIO12, MISO/DO GPIO13. The complete D6 board and storage write path are untested. |
-| C | [LCD](images/board-c-lcd.png) | Verified isolated fixture: VCC 3V3, GND, SCK GPIO12, MOSI GPIO11, RST GPIO8, DC GPIO9, CS GPIO10, and module-specific active-low BL to GND. The imported D6 diagnostic still needs a visible combined-firmware check. |
+| A | [Inputs, radar, two sonars and I2C](images/board-a-inputs.png) | I2C GPIO1/2 and Sonar A GPIO4/5 follow the existing V2 fixture. Sonar B GPIO6/7 and radar UART GPIO17/18 are **proposals requiring the team pin/power review**. GPIO17/18 appear on the N16R8 header and expansion plate; their radar use is still proposed. |
+| B | [SPI flash](images/board-b-processing-flash.png) | D2 six-wire pin map previously tested on an earlier board (retest on this N16R8): VCC 3V3, GND, CS GPIO10, SCK GPIO11, MOSI/DI GPIO12, MISO/DO GPIO13. The complete D6 board and storage write path are untested. |
+| C | [LCD](images/board-c-lcd.png) | Previously verified isolated LCD pin map on the older Super Mini; retest with bare N16R8 Board C: VCC 3V3, GND, SCK GPIO12, MOSI GPIO11, RST GPIO8, DC GPIO9, CS GPIO10, and module-specific active-low BL to GND. The imported D6 diagnostic still needs a visible combined-firmware check. |
 
 On A, the **3V3 rail** supplies the AHT, TSL2561 and verified 3.3V sonars;
 the **separate 5V rail** supplies only the radar; all grounds join A's GND.

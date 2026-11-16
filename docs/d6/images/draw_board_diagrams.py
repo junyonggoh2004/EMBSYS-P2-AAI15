@@ -31,14 +31,15 @@ def base(title, subtitle, badge):
     return im, d
 
 def rails(d, mode):
+    source = mode['source']
     roundrect(d, (55, 142, 1545, 328), 'white', '#d3deeb')
     label(d, (77, 160), 'BREADBOARD POWER RAILS', 25, INK, True)
     entries = [
-        ('3V3 +', GREEN, 'ESP 3V3  ->  ' + mode['3v3']),
-        ('GND -', BLUE, 'ESP GND  ->  ' + mode['gnd']),
+        ('3V3 +', GREEN, source + ' 3V3  ->  ' + mode['3v3']),
+        ('GND -', BLUE, source + ' GND  ->  ' + mode['gnd']),
     ]
     if '5v' in mode:
-        entries.insert(1, ('5V +', ORANGE, 'ESP 5V (USB power)  ->  ' + mode['5v']))
+        entries.insert(1, ('5V +', ORANGE, source + ' 5V (USB)  ->  ' + mode['5v']))
     for idx, (name, color, desc) in enumerate(entries):
         y = 203 + idx * 39 if len(entries) == 3 else 215 + idx * 48
         label(d, (92, y - 2), name, 23, color, True)
@@ -50,7 +51,7 @@ def rows(d, data, foot):
     label(d, (78, 372), 'BREADBOARD TERMINAL ROWS', 25, INK, True)
     label(d, (78, 407), 'On each numbered row, holes A-E are connected. Adjacent rows are separate.', 21, MUTED)
     label(d, (83, 454), 'ROW', 21, MUTED, True)
-    label(d, (220, 454), 'ESP32-S3 PIN', 21, MUTED, True)
+    label(d, (220, 454), 'N16R8 PIN', 21, MUTED, True)
     label(d, (655, 454), 'SAME CONNECTED ROW', 21, MUTED, True)
     label(d, (1110, 454), 'DEVICE PIN', 21, MUTED, True)
     top, gap = 493, min(57, int(385 / max(len(data), 1)))
@@ -75,9 +76,10 @@ def footer(d, lines):
         label(d, (58, 946 + i*30), t, 21, MUTED)
 
 im, d = base('BOARD A  |  PHYSICAL INPUTS',
-             'One ESP32-S3 Super Mini; AHT + light + Sonar A/B + LD2450 radar',
+             'N16R8 Board A in green terminal plate; AHT + light + sonars + radar',
              'Established + proposed pins')
 rails(d, {
+    'source': 'A terminal',
     '3v3': 'AHT VCC, TSL2561 VCC, Sonar A/B VCC*',
     '5v': 'LD2450 5V ONLY',
     'gnd': 'AHT, TSL2561, Sonar A/B, LD2450 GND',
@@ -91,7 +93,7 @@ rows(d, [
     (19, 'GPIO7', 'Sonar B ECHO*', 'PROPOSED'),
     (22, 'GPIO17  UART RX', 'Radar TX  ->  ESP RX', 'PROPOSED'),
     (23, 'GPIO18  UART TX', 'Radar RX  <-  ESP TX', 'PROPOSED'),
-], 'Purple PLAN rows require team pin approval; GPIO17/18 are underside pads on HW-747.')
+], 'Use plate terminals 17/18, not TX/RX (GPIO43/44); purple GPIOs need approval.')
 footer(d, [
     '* Use only verified 3.3 V-compatible sonar modules; protect any 5 V ECHO.',
     'Keep the 5 V rail isolated from 3V3 and GPIO. Unplug USB before wiring; confirm rail continuity.',
@@ -100,9 +102,10 @@ footer(d, [
 im.save(OUT / 'board-a-inputs.png')
 
 im, d = base('BOARD B  |  PROCESSING + STORAGE',
-             'One ESP32-S3 Super Mini; W25QXX external SPI flash module',
-             'Tested D2 flash pin map')
+             'N16R8 Board B in green terminal plate; W25QXX external SPI flash',
+             'D2 map; retest N16R8')
 rails(d, {
+    'source': 'B terminal',
     '3v3': 'W25QXX VCC',
     'gnd': 'W25QXX GND',
 })
@@ -111,7 +114,7 @@ rows(d, [
     (11, 'GPIO11  SCK', 'Flash SLK / CLK', 'ESTABLISHED'),
     (12, 'GPIO12  MOSI', 'Flash DI / MOSI', 'ESTABLISHED'),
     (13, 'GPIO13  MISO', 'Flash DO / MISO', 'ESTABLISHED'),
-], 'This is the six-wire D2 flash fixture, including 3V3 and GND above.')
+], 'B plate screw terminal -> prepared wire -> breadboard; retest SPIID.')
 footer(d, [
     'Confirm printed flash-module labels; do not infer pin order from wire color.',
     'Begin with read-only JEDEC ID. D6 record format and writable address remain undecided.',
@@ -120,9 +123,10 @@ footer(d, [
 im.save(OUT / 'board-b-processing-flash.png')
 
 im, d = base('BOARD C  |  LCD OUTPUT',
-             'One ESP32-S3 Super Mini; DIYUSER 76 x 284 ST7789P3 display',
-             'Verified isolated LCD pin map')
+             'Bare N16R8 Board C; DIYUSER 76 x 284 ST7789P3 display',
+             'Retest on N16R8 C')
 rails(d, {
+    'source': 'C header',
     '3v3': 'LCD VCC',
     'gnd': 'LCD GND + LCD BL*',
 })
@@ -132,10 +136,10 @@ rows(d, [
     (12, 'GPIO8', 'LCD RST', 'ESTABLISHED'),
     (13, 'GPIO9', 'LCD DC', 'ESTABLISHED'),
     (14, 'GPIO10', 'LCD CS', 'ESTABLISHED'),
-], 'LCD SCL/SDA are SPI signals, not the I2C bus on Board A.')
+], 'C male header -> female jumper -> breadboard; LCD SCL/SDA mean SPI.')
 footer(d, [
     '* BL-to-GND applies only to the tested active-low module and existing fixture.',
-    'Run LCDTEST 76 284 82 18 00 0 on C before attempting live display.',
+    'Retest LCDTEST 76 284 82 18 00 0 on N16R8 C before live display.',
     'C receives B output over MQTT; live B-to-C rendering is not yet implemented.',
 ])
 im.save(OUT / 'board-c-lcd.png')

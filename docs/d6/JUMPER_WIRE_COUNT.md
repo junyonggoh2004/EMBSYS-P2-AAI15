@@ -1,81 +1,70 @@
-# D6 jumper-wire count for the three breadboards
+# D6 wire count for the photographed N16R8 setup
 
-Recorded 16 November 2026 from the user's supplied wire-count breakdown.
-Use with the [pin-to-hole wiring guide](PIN_TO_HOLE_WIRING.md) and the
-[integration handoff](D6_INTEGRATION_HANDOFF.md). These are **planning counts**,
-not proof that the proposed Sonar B and radar GPIOs have been approved.
+Updated 16 November 2026. [Board identification and photos](N16R8_BOARD_SETUP.md)
+and [pin-to-hole wiring](PIN_TO_HOLE_WIRING.md) define the fixture.
+Boards A and B use green screw-terminal expansion plates. Board C is bare
+with male header pins. All three assemblies stay outside their breadboards.
 
-## Counting assumption
-
-Each ESP32-S3 and module sits **outside** its breadboard and exposes male
-header pins. Each listed connection from a male pin to a breadboard hole uses
-one **male-to-female** jumper: the female end attaches to the header and the
-male end enters the breadboard. Power rails are continuous within the chosen
-section. Under these assumptions the diagrams need no female-to-female or
-male-to-male jumpers.
-
-| Board | Male-to-female | Female-to-female | Male-to-male |
+| Board | Module-to-breadboard male-to-female leads | ESP connection leads | Total connections |
 |---|---:|---:|---:|
-| A: sensors and radar | 31 | 0 | 0 |
-| B: SPI flash | 12 | 0 | 0 |
-| C: LCD | 15 | 0 | 0 |
-| **Total** | **58** | **0** | **0** |
+| A: sensors and radar | 20 | 11 terminal-to-breadboard | 31 |
+| B: SPI flash | 6 | 6 terminal-to-breadboard | 12 |
+| C: LCD | 8 | 7 male-to-female from bare ESP header | 15 |
+| **Total** | **34** | **17 terminal leads + 7 male-to-female** | **58** |
 
-Purchase or gather **about 70 male-to-female leads** to allow for broken
-leads, replacements and layout changes. This is a shopping allowance, not a
-claim that all 70 are used simultaneously.
+Thus the photographed layout calls for **41 male-to-female leads** and
+**17 prepared insulated screw-terminal-to-breadboard leads**, if every
+module exposes male pins and every listed ESP signal uses the plate's screw
+terminal. The 58 figure is the number of connections, **not 58 identical
+jumper leads**. The former about-70 male-to-female shopping estimate only
+applied when all three ESP boards had accessible male headers and none used
+the expansion plates. Check the actual cable ends before purchasing.
 
-## Board A: 31 leads
+## Board A: 31 connections
 
-| Component | Breadboard connections | Male-to-female leads |
+| Component | Connections | Lead count |
 |---|---|---:|
-| AHT temperature/humidity | VCC, GND, SDA, SCL | 4 |
-| TSL2561 light sensor | VCC, GND, SDA, SCL | 4 |
-| Sonar A | VCC, GND, TRIG, ECHO | 4 |
-| Sonar B | VCC, GND, TRIG, ECHO | 4 |
-| LD2450 radar | 5V, GND, TX, RX | 4 |
-| ESP32-S3 Super Mini | GND, 3V3, 5V and eight signals: GPIO1, 2, 4, 5, 6, 7, 17, 18 | 11 |
-| **Board A total** | | **31** |
+| AHT temperature/humidity | VCC, GND, SDA, SCL | 4 male-to-female, if male header |
+| TSL2561 light sensor | VCC, GND, SDA, SCL | 4, subject to Grove adapter |
+| Sonar A | VCC, GND, TRIG, ECHO | 4 male-to-female, if male header |
+| Sonar B | VCC, GND, TRIG, ECHO | 4 male-to-female, if male header |
+| LD2450 radar | 5V, GND, TX, RX | 4, subject to radar connector |
+| N16R8 ESP via green plate | GND, 3V3, 5V, GPIO1/2/4/5/6/7/17/18 | 11 terminal-to-breadboard |
 
-The AHT and TSL2561 share the **two ESP32 I2C signal wires** at GPIO1 and
-GPIO2; each sensor still needs its own SDA/SCL lead to the shared breadboard
-rows. If the initial radar test only connects radar **TX -> ESP RX**, omit
-the radar RX lead and the ESP UART TX lead: **29** for A and **56** overall.
-The exact radar module may need a soldered header/adapter; a bare PCB pad is
-not a male header. GPIO17/18 on the HW-747 Super Mini are underside pads and
-also need reliable access. Confirm those physical connectors before buying
-jumper leads solely from the count.
+AHT and light share the ESP's two I2C signal connections at GPIO1/2;
+each sensor still has its own SDA/SCL lead. For receive-only radar bring-up,
+omit radar RX and ESP UART TX: **29 A connections**, **56 overall**.
+The radar may require a dedicated connector or soldered leads. Sonar B
+GPIO6/7 and radar GPIO17/18 remain proposed, pending team approval.
 
-## Board B: 12 leads
+## Board B: 12 connections
 
-| Component | Breadboard connections | Male-to-female leads |
+| Component | Connections | Lead count |
 |---|---|---:|
-| SPI flash module | VCC, GND, CS, CLK, DI, DO | 6 |
-| ESP32-S3 Super Mini | GND, 3V3, GPIO10 CS, GPIO11 SCK, GPIO12 MOSI, GPIO13 MISO | 6 |
-| **Board B total** | | **12** |
+| External SPI flash | VCC, GND, CS, CLK, DI, DO | 6 male-to-female, if male header |
+| N16R8 ESP via green plate | GND, 3V3, GPIO10/11/12/13 | 6 terminal-to-breadboard |
 
-The later D6 SPI device-swap demonstration may require leads for a second
-device. It is not counted until that device and its connector are selected.
+The future second SPI device for the D6 swap demo is not included.
 
-## Board C: 15 leads
+## Board C: 15 connections
 
-| Component | Breadboard connections | Male-to-female leads |
+| Component | Connections | Lead count |
 |---|---|---:|
-| LCD | VCC, GND, SCL/SCK, SDA/MOSI, RST, DC, CS, BL | 8 |
-| ESP32-S3 Super Mini | GND, 3V3, GPIO12 SCK, GPIO11 MOSI, GPIO8 RST, GPIO9 DC, GPIO10 CS | 7 |
-| **Board C total** | | **15** |
+| ST7789 LCD | VCC, GND, SCL, SDA, RST, DC, CS, BL | 8 male-to-female, if male header |
+| Bare N16R8 ESP male headers | GND, 3V3, GPIO12/11/8/9/10 | 7 male-to-female |
 
-The LCD's BL-to-GND arrangement is specific to the tested module.
+BL-to-GND is specific to the tested active-low LCD module. The same GPIO
+map still needs an isolated test on this N16R8 Board C.
 
-## Adjust before wiring or purchasing
+## Connector and rail checks
 
-- A split breadboard rail needs **one additional male-to-male jumper for each
-  rail break you choose to bridge**. Never bridge the 5V and 3V3 rails.
-- The Grove light-sensor cable may require an adapter instead of four ordinary
-  female jumper ends; inspect its cable ends and breakout pins first.
-- If a board or module presents female sockets, solder pads or a keyed
-  connector instead of male header pins, revise the lead type and count for
-  that item. Do not assume wire color identifies a pin.
-- Sonar B GPIO6/7 and radar UART GPIO17/18 remain **proposed** in the D6
-  diagrams. Their approval can change the final layout, although the number
-  of signal leads would usually stay the same.
+- A/B screw terminals take a suitably stripped, secured insulated wire end;
+  the breadboard end must fit its hole. Do not count an unmodified female
+  Dupont socket as a screw-terminal connection. Verify the plate's printed
+  labels map to the inserted board pins before energizing it.
+- If the green plate exposes a reliable alternative header connection and
+  you choose it, recalculate the 17 ESP lead types for that layout.
+- Bridge each split breadboard power rail deliberately with a suitable
+  male-to-male lead, if needed. Never join 5V to 3V3.
+- Grove and radar connectors can change the lead types. Follow module
+  labels and verified voltage ratings, not wire colors.

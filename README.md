@@ -9,6 +9,11 @@ merge `3e029d0`. The LCD diagnostic is selectively imported from `b1c1675`
 on the `d6` base; live output integration and D6 board tests remain pending.
 Board roles now specify **A physical inputs and local timed WINDOW assembly;
 B final occupancy, ML, storage, data handling and communication; C output**.
+The current D6 fixture uses [three photographed N16R8 boards](docs/d6/N16R8_BOARD_SETUP.md):
+A/B in green screw-terminal expansion plates and C bare with male headers.
+See the [updated wiring diagrams](docs/d6/PIN_TO_HOLE_WIRING.md) and
+[wire count](docs/d6/JUMPER_WIRE_COUNT.md). Previous Super Mini tests remain
+historical evidence.
 The [next three integration steps](docs/d6/NEXT_STEPS.md) define the fixture,
 LCD import and remote-display gates.
 D3 is the timing/sequencing subsystem, not the scope of the whole project.
