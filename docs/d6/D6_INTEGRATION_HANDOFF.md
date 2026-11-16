@@ -80,6 +80,9 @@ and measured rather than assumed from their name.
 
 ## Breadboard and pinout images
 
+For each exact ESP32 pin -> breadboard hole -> module pin, see the
+[detailed three-board wiring guide](PIN_TO_HOLE_WIRING.md).
+
 The images show electrically connected breadboard rows and separate power
 rails. They are **schematic proposals**, not photos of the completed three-board
 fixture. A-E holes on one numbered terminal row are joined; F-J are a different

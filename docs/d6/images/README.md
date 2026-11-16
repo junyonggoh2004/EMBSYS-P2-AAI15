@@ -17,3 +17,5 @@ board pin labels before wiring.
 The [drawing script](draw_board_diagrams.py) reproduces these images using
 Pillow and Arial on Windows. Its source was moved from the `lcd-output`
 workspace's generated `output/d6-wiring-20261113` folder.
+
+The [detailed pin-to-hole guide](../PIN_TO_HOLE_WIRING.md) links the newer [A](board-a-detailed.png), [B](board-b-detailed.png) and [C](board-c-detailed.png) diagrams styled like the prior LCD/flash breadboard sketch. [Drawing source](draw_pin_to_hole_diagrams.py).
