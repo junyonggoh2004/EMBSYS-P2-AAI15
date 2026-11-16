@@ -64,7 +64,7 @@ must be checked before the wiring is approved.
 | DIYUSER 76 x 284 ST7789P3 LCD | 1 | C, output |
 | Breadboard | 3 | One per board, with known continuous rail sections |
 | USB data/power cable | 3 | One per board |
-| Assorted compatible jumper leads/adapters | Approximately 50-60 | Includes spares and connections to module headers |
+| Male-to-female jumper leads | 58 for the drawn fixture; gather about 70 | Counts assume male headers and boards outside breadboards; see [per-board count](JUMPER_WIRE_COUNT.md) |
 | Suitable four-wire radar connector or soldered leads | 1 set | The bare LD2450 cannot be reliably plugged into a breadboard by loose wire contact |
 | Multimeter | 1 | Check rails and actual signal levels |
 | Logic analyzer or oscilloscope | Access to 1 | Trigger/Echo guard, order and complete-pair timing evidence |

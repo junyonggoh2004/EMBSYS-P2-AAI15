@@ -2,9 +2,7 @@
 
 Prepared 16 November 2026 as clear wiring sketches for the three separate
 ESP32-S3 Super Mini boards. These are **proposed integration fixtures**, not
-evidence that all D6 devices have been powered or tested together. Refer to
-the [integration handoff](D6_INTEGRATION_HANDOFF.md) for the implementation
-status and test gates.
+evidence that all D6 devices have been powered or tested together. See the`n[integration handoff](D6_INTEGRATION_HANDOFF.md) for implementation status and`ntest gates, and the [jumper-wire count](JUMPER_WIRE_COUNT.md) for the`nproposed fixture materials.
 
 The module and ESP32 boards sit outside each breadboard. Holes A-E on the
 **same numbered row** connect electrically; F-J across the center gap do not
