@@ -48,7 +48,12 @@ def telemetry_row(record):
         if status != "OK":
             return f"{time}  ML        {status} ({model})"
         outputs = record.get("outputs")
-        row = f"{time}  ML        OK  {model}  in {vector(record.get('inputs'))}"
+        source = " (replay)" if record.get("input_source") == "replay" else ""
+        row = f"{time}  ML        OK  {model}  in {vector(record.get('inputs'))}{source}"
+        if type(record.get("comfort_score")) is int:
+            return f"{time}  ML        OK  {model}  Comfort {record['comfort_score']}/100{source}"
+        if record.get("direction") in ("in", "none", "out"):
+            return f"{time}  ML        OK  {model}  Direction {record['direction'].upper()}{source}"
         exceeded = record.get("threshold_exceeded")
         if type(exceeded) is bool and isinstance(outputs, list) and len(outputs) == 1:
             cutoff = number(record.get("threshold"), ".9g")

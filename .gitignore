@@ -55,3 +55,6 @@ esp32s3_mtk/haltest/managed_components/
 esp32s3_mtk/wifirepro/sdkconfig
 esp32s3_mtk/wifirepro/sdkconfig.old
 esp32s3_mtk/wifirepro/managed_components/
+
+# Local Edge Impulse export for the classroom ML demo
+/models/classroom/people_counter_raw_int8.tflite

@@ -91,6 +91,26 @@ The autoencoder preset is explicitly a shape/execution demonstration. Its repeat
 
 `ML MODEL <id>` changes the model while retaining bindings, but disables ML until `ML RUN` validates them. `ML PRESET <id>` supplies the appropriate demonstration bindings. Models are immutable bundled assets selected at runtime; installing arbitrary new `.tflite` files over serial is not implemented in this first version. The existing MQTT transfer subsystem is retained, but model uploads or other model-loading flows change the model revision and cause this ML pipeline to stop with `MODEL_CHANGED` until reconfigured.
 
+## Switch between the classroom demo models
+
+Build and flash once with the models you want available. In **MTK: monitor**, enter `ML LIST` to see the model IDs and whether their weights are present. Switch with `STOP` and `ML PRESET <id>`. Start live sensor inference with `ML RUN` followed by `RUN`. Model selection happens in the running firmware.
+
+| Model | How to supply inputs | Result |
+|---|---|---|
+| `sine-int8` | Load the three-sensor profile and start live inference, or replay a phase with `ML REPLAY 1.57` | Unitless sine output. The board capture shows its ESP-NN vector calls. |
+| `comfort-summer` | Bind the AHT and run live, or enter `ML REPLAY 26.3 67` after selecting the model | Estimated comfort score on the source model's scale of 0–99. The monitor shows it as a score out of 100. |
+| `people-counter` | Build with a local INT8 export, select it, then enter `ML REPLAY` followed by a complete 31-value model-ready window | `IN`, `OUT`, or `NONE` with the winning class score. Replay produces a classification only. |
+
+For a hardware-free serial replay with an ESP32-S3 attached, flash the firmware and type `STOP`, `ML PRESET comfort-summer`, and `ML REPLAY 26.3 67` one line at a time. The desktop reference for this input is **92/100**. The two values are °C and % RH. Then select `people-counter` and replay one labelled example if its weights are in your build. Return with `ML MODEL sine-int8`, then enter `ML REPLAY 1.57` to see the sine output without sensors. Replay reports its input source in JSON and in the monitor. The scalar threshold command still applies to the sine outputs.
+
+The comfort checkpoint estimates current comfort under the original summer training assumptions. It used thermal-comfort simulations, and its class score indicates the model's preferred class. It takes temperature and humidity. For the classroom panel, show that score alongside occupancy, temperature and lux. Use occupancy to distinguish occupied and empty settings, lux for brighten/hold/dim, and temperature for increase/hold/reduce cooling. A low comfort score alone gives no direction for cooling. The published comfort checkpoint is FP32.
+
+### Local doorway model and hardware follow-up
+
+- In the [people_counter_raw project](https://studio.edgeimpulse.com/public/18808/latest), obtain the NN Classifier TensorFlow Lite INT8 block output through the project dashboard or a permitted clone. Check the export has 31 model-ready inputs and outputs ordered `in`, `none`, `out`. Save it as `models/classroom/people_counter_raw_int8.tflite`, then build and flash once. That file is ignored by Git. The public project lists no attached license. [Model architecture](https://studio.edgeimpulse.com/public/18808/latest/impulse/1/learning/keras/20)
+- Use the source project's preprocessing and labelled 31-value windows for replay. The pretrained classifier came from a single Grove ultrasonic sensor. Keep live occupancy counting based on the confirmed two-zone crossing sequence while testing how the classroom traces differ.
+- **When Brendan returns the hardware**, confirm both HC-SR04+ modules, the final TRIG/ECHO pins, and the physical zones before updating the wiring table or adding a live doorway profile. The supplied modules have 3.3 V-compatible Echo and use no resistor in this setup. Name the hallway zone A and classroom zone B. Confirm A → B entry, B → A exit, and turn-backs or ambiguous crossings leaving occupancy unchanged. Alternate pings and validate the separation with both sensors fitted.
+
 ## Run the sensor configuration demos
 
 Close the serial monitor. For a physical wiring change, disconnect USB before moving leads, then reconnect USB. In VS Code choose **Terminal → Run Task → MTK: load demo configuration**, select the file and serial port, then reopen **MTK: monitor**. The loader sends the sensor registrations, model selection and ML bindings from the selected file. The same firmware image handles all profiles. Apply the selected profile again after a reset.
