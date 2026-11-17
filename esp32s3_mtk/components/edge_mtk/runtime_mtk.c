@@ -51,6 +51,7 @@
 #include "mqtt/mqtt_model_transfer.h"
 #include "edge_mtk.h"
 #include "sensor_ml.h"
+#include "ml_bench.h"
 #include "runtime_mtk.h"
 
 // Defined in the shared code (mqtt/mqtt_config_parser.c) and by the MQTT layer.
@@ -247,6 +248,7 @@ static void mqtt_command(char *text, bool *running, bool *cfg_ready)
     if (!n) return;
 
     if (sensor_ml_command(p, *running)) return;
+    if (ml_bench_command(p, *running)) return;
     if (is_platform_command(p)) {
         static ctrl_msg_t c;
         if (n >= sizeof c.text) { printf("[CMD] too long for ControlTask: %.40s...\n", p); return; }
@@ -277,6 +279,7 @@ static void handle_sched_msg(sched_msg_t *m, bool *running, bool *cfg_ready)
     switch (m->kind) {
     case SCHED_CONSOLE_LINE:
         if(sensor_ml_command(m->text,*running)) break;
+        if(ml_bench_command(m->text,*running)) break;
         if(!strcasecmp(m->text,"STOP") || !strcasecmp(m->text,"CLEAR") || strstr(m->text,"BEGINCFG")) sensor_ml_invalidate();
         repl_handle_line(m->text, running, cfg_ready); break;
     case SCHED_MQTT_CONFIG:  sensor_ml_invalidate(); if (s_cfg_cb) s_cfg_cb(m->text); break;

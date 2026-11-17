@@ -23,6 +23,8 @@
 extern "C" {
 #include <tk/tkernel.h>
 #include "inference_engine/tflite_wrapper.h"
+#include "hal/hal.h"
+#include "ml_bench.h"
 #include "runtime_mtk.h"
 }
 
@@ -54,6 +56,7 @@ tflite_model_info_t s_info;
 bool s_loaded = false;
 uint32_t s_fc_vector_calls = 0;
 bool s_accel_reported = false;
+uint32_t s_invoke_us = 0;     // the last Invoke() alone, for D5 (MLBENCH)
 
 bool arena_alloc()
 {
@@ -205,7 +208,9 @@ tflite_err_t engine_invoke(const float *inputs, float *outputs)
         offset += count;
     }
     const uint32_t vector_calls_before = s_fc_vector_calls;
+    const uint64_t invoke_start = hal_time_us();
     if (s_interpreter->Invoke() != kTfLiteOk) { printf("[TFLITE] Invoke() failed\n"); return TFLITE_ERR_INVOKE; }
+    s_invoke_us = (uint32_t)(hal_time_us() - invoke_start);
     offset = 0;
     for (int i = 0; i < s_info.num_outputs; i++) {
         TfLiteTensor *t = s_interpreter->output(i);
@@ -248,6 +253,7 @@ struct infer_req_t {
 struct infer_rep_t {
     int32_t             err;
     uint32_t            seq;
+    uint32_t            invoke_us;    // Invoke() alone, for REQ_INVOKE
     bool                loaded;
     tflite_model_info_t info;
     float               out[TFLITE_MAX_OUTPUTS];
@@ -259,6 +265,7 @@ ID s_rep_mbf, s_rpc_mtx;
 uint32_t s_rep_buf[2 * (4 + ((sizeof(infer_rep_t) + 3) & ~3u)) / 4];
 tflite_model_info_t s_info_cache;     // the caller's copy of the metadata
 volatile bool s_ready_cache;
+volatile uint32_t s_invoke_us_cache;  // the caller's copy of rep.invoke_us
 uint32_t s_seq;                       // guarded by s_rpc_mtx
 
 // Sends one request and sleeps until its reply arrives (at most 5 s).
@@ -278,6 +285,7 @@ tflite_err_t request(infer_req_t &req, infer_rep_t &rep)
         err = (tflite_err_t)rep.err;
         s_info_cache = rep.info;
         s_ready_cache = rep.loaded;
+        s_invoke_us_cache = rep.invoke_us;
     } else {
         s_ready_cache=false;
         printf("[INFER] InferenceTask did not answer\n");
@@ -340,7 +348,7 @@ extern "C" void inference_task_body(void)
         memset(&rep, 0, sizeof rep);
         switch (req.op) {
         case REQ_LOAD:   rep.err = engine_load(req.model, req.size); break;
-        case REQ_INVOKE: rep.err = engine_invoke(req.in, rep.out); break;
+        case REQ_INVOKE: rep.err = engine_invoke(req.in, rep.out); rep.invoke_us = s_invoke_us; break;
         case REQ_UNLOAD: engine_unload(); rep.err = TFLITE_OK; break;
         default:         rep.err = TFLITE_ERR_INVOKE; break;
         }
@@ -392,4 +400,9 @@ extern "C" void tflite_unload_model(void)
 extern "C" bool tflite_is_ready(void)
 {
     return s_ready_cache;
+}
+
+extern "C" uint32_t inference_mtk_last_invoke_us(void)
+{
+    return s_invoke_us_cache;
 }
