@@ -108,7 +108,7 @@ RUN
 |---|---|---|
 | `sine-int8` | Load the three-sensor profile and start live inference, or replay a phase with `ML REPLAY 1.57` | Unitless sine output. The board capture shows its ESP-NN vector calls. |
 | `comfort-summer` | Bind the AHT and run live, or enter `ML REPLAY 26.3 67` after selecting the model | Estimated comfort score on the source model's scale of 0–99. The monitor shows it as a score out of 100. |
-| `people-counter` | Build with a local INT8 export, select it, then enter `ML REPLAY` followed by a complete 31-value model-ready window | `IN`, `OUT`, or `NONE` with the winning class score. Replay produces a classification only. |
+| `people-counter` | Select the bundled INT8 model, then enter `ML REPLAY` followed by a complete 31-value model-ready window | `IN`, `OUT`, or `NONE` with the winning class score. Replay produces a classification only. |
 
 To replay without connected sensors, open **MTK: monitor raw** and enter these commands on the flashed ESP32-S3:
 
@@ -124,9 +124,14 @@ The comfort replay uses °C and % RH. Its desktop reference is **92/100**. The s
 
 The comfort checkpoint estimates current comfort under the original summer training assumptions. It used thermal-comfort simulations, and its class score indicates the model's preferred class. It takes temperature and humidity. For the classroom panel, show that score alongside occupancy, temperature and lux. Use occupancy to distinguish occupied and empty settings, lux for brighten/hold/dim, and temperature for increase/hold/reduce cooling. A low comfort score alone gives no direction for cooling. The published comfort checkpoint is FP32.
 
-### Local doorway model and hardware follow-up
+### Doorway model replay and hardware follow-up
 
-- In the [people_counter_raw project](https://studio.edgeimpulse.com/public/18808/latest), obtain the NN Classifier TensorFlow Lite INT8 block output through the project dashboard or a permitted clone. Check the export has 31 model-ready inputs and outputs ordered `in`, `none`, `out`. Save it as `models/classroom/people_counter_raw_int8.tflite`, then build and flash once. The download endpoint requires authenticated project access. The file can be added locally for testing. Edge Impulse's public-project terms specify BSD 3-Clause when the author supplies no license. Keep the required attribution and license notice with any redistributed export. [Public-project terms](https://www.edgeimpulse.com/legal/terms-of-use-applicable-to-download-and-use-of-ml-projects) [Model architecture](https://studio.edgeimpulse.com/public/18808/latest/impulse/1/learning/keras/20)
+- Select `ML MODEL people-counter` after `STOP`. For a quick model-loading check, send `ML REPLAY` with exactly 31 zeroes. This exercises the model on a synthetic input. Use a labelled sensor trace to judge whether the direction is correct. [Model file and provenance](../../models/classroom/README.md)
+
+```text
+ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+```
+
 - Use the source project's preprocessing and labelled 31-value windows for replay. The pretrained classifier came from a single Grove ultrasonic sensor. Keep live occupancy counting based on the confirmed two-zone crossing sequence while testing how the classroom traces differ.
 - **When Brendan returns the hardware**, confirm both HC-SR04+ modules, the final TRIG/ECHO pins, and the physical zones before updating the wiring table or adding a live doorway profile. The supplied modules have 3.3 V-compatible Echo and use no resistor in this setup. Name the hallway zone A and classroom zone B. Confirm A → B entry, B → A exit, and turn-backs or ambiguous crossings leaving occupancy unchanged. Alternate pings and validate the separation with both sensors fitted.
 
