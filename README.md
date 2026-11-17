@@ -264,7 +264,18 @@ D4 has two parts, agreed on 10 Nov 2026. Part 1 is the ML itself (Jun Yong); par
 
 The model upload over MQTT and the two flash model slots are D1 task 31. Jun Yong's ML pipeline feeds decoded AHT temperature and humidity, TSL2561 light and HC-SR04+ distance into configurable model bindings; run **MTK: load sensors and ML** for the full setup. Three bundled models are chosen at runtime without reflashing, but a change still needs `STOP`, then `ML PRESET` or `ML MODEL`, `ML RUN` and `RUN`. **sine-float** (3,164 bytes, Float32) and **sine-int8** (2,704 bytes, INT8 on ESP-NN's S3 vector kernel) predict the sine of the four scaled readings combined into one number; they show the pipeline and the acceleration, not room conditions. The 16-input autoencoder shows a vector model. `ML THRESHOLD` compares a one-number output against a limit. Every `ML` command also works on `pico/<node>/cmd` (task 1.4). Results print on the console only; nothing is published yet (task 3.4).
 
-Branch `dev-jy-ml` (Jun Yong, 16 Nov, not merged) adds three things. **comfort-summer** is a published 5,960-byte FP32 model that turns AHT temperature and humidity into a comfort score from 0 to 99 (26.3 °C and 67% RH gives 92 on the desktop); its board run is still to do. **people-counter** classifies 31 consecutive distance readings as IN, OUT or NONE; it is built only when its INT8 export is added locally, it is not in the repository, and whether it is used is still open. `ML LIST` lists the models in the build, and `ML REPLAY` runs the selected model on typed-in values, so a model can be tried without its sensors. The branch already contains `main` and merges cleanly. Before it merges, one line in `tests/test_sensor_ml.c` needs fixing: `sh tools/ml_test.sh` has failed on `main` since the threshold change of 10 Nov because the threshold test's last reading goes stale before it is checked.
+**Classroom model demo.** `comfort-summer` is a bundled 5,960-byte FP32 checkpoint. It estimates current comfort from AHT temperature and humidity. The desktop reference for 26.3 °C and 67% RH is 92/100. Its first board run is pending. `people-counter` is an optional doorway classifier for 31 model-ready measurements from one ultrasonic sensor. It requires a local Edge Impulse INT8 export. `ML LIST` shows which models are available, and `ML REPLAY` runs the selected model on typed inputs.
+
+In VS Code run **MTK: build → MTK: flash → MTK: load sensors and ML → MTK: monitor**. To switch to comfort during a sensor demo, click in the same monitor terminal and enter these lines individually. The incoming readings pause after `STOP`.
+
+```text
+STOP
+ML PRESET comfort-summer
+ML RUN
+RUN
+```
+
+Repeat with `ML PRESET sine-int8` to switch back. For the replay demo and the acceleration trace, follow the [classroom model instructions](docs/embedded-ml/RUNNING.md#switch-between-the-classroom-demo-models).
 
 See the [model specifications and deliverables](docs/embedded-ml/README.md), [step-by-step user guide](docs/embedded-ml/RUNNING.md), [validation results](docs/embedded-ml/VALIDATION.md) and [board results](docs/embedded-ml/BOARD_VALIDATION.md).
 
@@ -311,7 +322,7 @@ D5 was cut down on 10 Nov 2026 and refocused on 17 Nov 2026. The professor said 
 | 4.5 | In the running system | 4.2's fastest case again with the sensors and MQTT running, with `TASKS` checked for drops and stack use, to show the result holds in the real firmware | Pending; after 4.2 |
 | 4.6 | Explanation and write-up | How the S3's vector instructions speed up INT8 through ESP-NN, why the chosen models and format, one results table and a conclusion; uses Jun Yong's 2.2 research | Pending; last |
 
-**Where the work is.** sine-float and sine-int8 are on `main`; comfort-summer and `ML REPLAY`, which runs a model on fixed typed-in inputs without sensors, are on `dev-jy-ml`. Every ML result line prints `invoke_us`, and every model load prints its tensor arena use. The proof that sine-int8 calls ESP-NN's S3 assembly is in [BOARD_VALIDATION.md](docs/embedded-ml/BOARD_VALIDATION.md#acceleration-evidence). Earlier inference times for context are in [parity/PARITY.md](parity/PARITY.md): the autoencoder took 500–525 µs on µT-Kernel against 265–280 µs on the Arduino build, a gap put down to the task round trip and the port's `-Og` optimisation. The older B1 to B8 plan on branch `s3-port-d5` is replaced by this list.
+**Where the work is.** sine-float and sine-int8 are on `main`; comfort-summer and `ML REPLAY`, which runs a model on fixed typed-in inputs without sensors, are on `dev-jy-ml`. Every successful ML result line prints `invoke_us`, and every model load prints its tensor arena use. The proof that sine-int8 calls ESP-NN's S3 assembly is in [BOARD_VALIDATION.md](docs/embedded-ml/BOARD_VALIDATION.md#acceleration-evidence). Earlier inference times for context are in [parity/PARITY.md](parity/PARITY.md): the autoencoder took 500–525 µs on µT-Kernel against 265–280 µs on the Arduino build, a gap put down to the task round trip and the port's `-Og` optimisation. The older B1 to B8 plan on branch `s3-port-d5` is replaced by this list.
 
 
 ---

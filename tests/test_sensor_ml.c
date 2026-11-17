@@ -120,7 +120,7 @@ int main(void) {
     assert(sensor_ml_command("ML THRESHOLD 0", true));
     tick();
     assert(strstr(last_line, "\"threshold\":0,\"threshold_exceeded\":false"));
-    cmd("ML THRESHOLD OFF"); tick();
+    cmd("ML THRESHOLD OFF"); samples(); tick();
     assert(strstr(last_line, "\"status\":\"OK\"") && !strstr(last_line, "threshold"));
     cmd("ML THRESHOLD 0.5");
     cmd("ML PRESET autoencoder"); cmd("ML RUN"); samples(); tick();

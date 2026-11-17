@@ -150,10 +150,12 @@ static const char *class_fields(const model_t *model, int winner, float confiden
 }
 
 static bool class_result(const model_t *model, const float *inputs, const char *source, uint32_t now) {
+    uint64_t start = hal_time_us();
     if (!inference_mgr_set_inputs(inputs, model->count) || !inference_mgr_run()) {
         skip("INVOKE_ERROR", now);
         return false;
     }
+    uint64_t elapsed = hal_time_us() - start;
     int winner = 0;
     float confidence = -1.0f;
     for (int i = 0; i < model->outputs; i++) {
@@ -169,9 +171,9 @@ static bool class_result(const model_t *model, const float *inputs, const char *
     }
     char fields[112];
     printf("{\"type\":\"ml\",\"timestamp_ms\":%lu,\"generation\":%lu,\"model\":\"%s\","
-           "\"input_source\":\"%s\",\"outputs\":[%d]%s,\"status\":\"OK\"}\n",
+           "\"input_source\":\"%s\",\"outputs\":[%d]%s,\"invoke_us\":%lu,\"status\":\"OK\"}\n",
            (unsigned long)now, (unsigned long)generation, model->id, source, winner,
-           class_fields(model, winner, confidence, fields, sizeof fields));
+           class_fields(model, winner, confidence, fields, sizeof fields), (unsigned long)elapsed);
     return true;
 }
 
