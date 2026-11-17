@@ -12,7 +12,7 @@ Branch `main`: D1 (tasks 1–34), the D2 SPI checkpoint, the D3 timing checkpoin
 | D2 | SPI support on the ESP32-S3 | Brendan, Jun Yong | Checkpoint merged (PR #3 on 27 Oct, PR #5 on 1 Nov); event logging, T-23 and sign-off open | [Section 3](#3-d2-task-checklist) |
 | D3 | Configurable timing: periodic, one-shot, event-driven, logical sequence | Cody | Checkpoint merged (PR #6 on 3 Nov, PR #8 on 9 Nov); board results pending | [Section 4](#4-d3-task-checklist) |
 | D4 | Embedded ML | Part 1: Jun Yong. Part 2: Sitt | On `main`: three bundled models swap on the board, the int8 one on the S3's vector instructions (2.1, 10 Nov), and `ML` commands work over the console and MQTT. On `dev-jy-ml` (16 Nov, not merged): a comfort-score model from temperature and humidity, `ML LIST` and `ML REPLAY`. Live switching (3.1–3.7) open; a draft setup format is on `d4-live-ml-sitt` | [Section 5](#5-d4-task-checklist) |
-| D5 | Benchmarking, cut down | Hasif | Task list agreed (4.1–4.6), not started; everything except 4.4 can start now. The earlier B1–B8 plan is on `s3-port-d5`, not merged | [Section 6](#6-d5-task-checklist) |
+| D5 | Benchmarking, cut down | Hasif | Task list agreed (4.1–4.6), not started; everything except 4.4 can start now. The earlier B1–B8 plan is on `s3-port-d5`, not merged | [Section 6](#6-d5-task-checklist-hasif) |
 | D6 | End-to-end use case and demo | Cody (lead), Brendan | Doorway headcount chosen 13 Nov: board A senses, board B counts and runs ML, board C shows it on the LCD. Plan, wiring diagrams, an LCD test command and a strict parser for readings sent over MQTT are on `D6-Integration`, not merged; no three-board run yet | [Section 7](#7-d6-task-checklist) |
 
 Owners are the team workload split of 28 Sep 2026, with D4 to D6 re-split on 10 Nov 2026 and confirmed on 16 Nov 2026 as D4 part 1 Jun Yong, D4 part 2 Sitt, D5 Hasif, and D6 Cody and Brendan. The D1 MQTT tasks 1.1–1.5 (section 2) and the D4 to D6 tasks 2.1–5.8 (sections 5 to 7) are the outline the team agreed on 10 Nov 2026; each owner turns their rows into technical steps later and keeps the numbers. Order: 1.4 and 2.1 come first because D4 part 2 needs them, 2.4 feeds 4.4, and the D1 MQTT tasks and both D4 parts feed D6. Each owner updates their row and section when their work merges.
@@ -28,7 +28,7 @@ Owners are the team workload split of 28 Sep 2026, with D4 to D6 re-split on 10 
 | [3. D2 task checklist](#3-d2-task-checklist) | D2 SPI tasks D2-1 to D2-11 with status, the checks before the merge, how to run the SPI tests, what D2 still needs; full list in [D2_SPI_TODO.md](D2_SPI_TODO.md) |
 | [4. D3 task checklist](#4-d3-task-checklist) | How the timing modes, the radar entrance window and event identity work, D3 tasks D3-1 to D3-12 with status, the D3 commands and tests |
 | [5. D4 task checklist](#5-d4-task-checklist) | What is on `main` now; part 1, the ML itself (2.1–2.6); part 2, configuring and switching ML (3.1–3.7) |
-| [6. D5 task checklist](#6-d5-task-checklist) | Cut-down benchmarking tasks 4.1–4.6 |
+| [6. D5 task checklist (Hasif)](#6-d5-task-checklist-hasif) | Cut-down benchmarking tasks 4.1–4.6 |
 | [7. D6 task checklist](#7-d6-task-checklist) | Use case and demo tasks 5.1–5.8 |
 | [8. Set up and test from scratch](#8-set-up-and-test-from-scratch-d1-to-d3) | Step-by-step on a new Mac for the µT-Kernel build (D1 to D3) |
 | &nbsp;&nbsp;[Part A: Install](#part-a-install) | Steps 1–4: tools, project, ESP-IDF and the course port, version check |
@@ -270,14 +270,14 @@ See the [model specifications and deliverables](docs/embedded-ml/README.md), [st
 
 ### Part 1: the ML itself (Jun Yong)
 
-| # | Task | What it means | Owner | Status |
-|---|---|---|---|---|
-| 2.1 | ML running on the real board | Real model output on the S3, not just laptop tests, then merge the branch into `main` | Jun Yong | Done 10 Nov: three sensors and swaps between all three models on the board, outputs checked against the model weights ([BOARD_VALIDATION.md](docs/embedded-ml/BOARD_VALIDATION.md)) |
-| 2.2 | Research S3 acceleration | Which S3 instructions speed up ML, which Espressif library uses them, and which model formats benefit (likely int8); a short write-up to explain to the professor | Jun Yong | Partly done: the library is ESP-NN, and its S3 assembly path runs for sine-int8 ([BOARD_VALIDATION.md](docs/embedded-ml/BOARD_VALIDATION.md#acceleration-evidence)); the short write-up is still to do |
-| 2.3 | A small set of swappable models | Two or three small models with different inputs, at least one that uses the acceleration; note what each takes in and puts out | Jun Yong | Done 10 Nov: sine-float, sine-int8 and the 16-input autoencoder, swapped on the board; sine-int8 runs on ESP-NN's S3 vector kernel. Added 16 Nov on `dev-jy-ml`: comfort-summer (board run pending) and the people-counter slot (decision pending); merge into `main` pending |
-| 2.4 | Prove the acceleration works | Time the same model with and without the acceleration once; this also feeds D5 (4.4) | Jun Yong | Started: Jun Yong's run shows sine-int8 calling the S3 vector kernel; the with and without timing is still to do. Each result already prints `invoke_us`, and a second build with `CONFIG_NN_ANSI_C=y` instead of `CONFIG_NN_OPTIMIZED=y` gives the figure without acceleration |
-| 2.5 | Load models without reflashing | Decide whether bundled models are enough or new models must also be sendable over MQTT | Jun Yong | Partly done: bundled models are chosen at runtime without reflashing; whether new models are also sent over MQTT (D1 task 31) is still to decide |
-| 2.6 | Explain the ML flow | Sensor → model → result in plain words, for the report and Tribunal 2 | Jun Yong | Pending; [RUNNING.md](docs/embedded-ml/RUNNING.md) on `dev-jy-ml` already explains where the comfort score fits in the classroom display |
+| # | Task | What it means | Status |
+|---|---|---|---|
+| 2.1 | ML running on the real board | Real model output on the S3, not just laptop tests, then merge the branch into `main` | Done 10 Nov: three sensors and swaps between all three models on the board, outputs checked against the model weights ([BOARD_VALIDATION.md](docs/embedded-ml/BOARD_VALIDATION.md)) |
+| 2.2 | Research S3 acceleration | Which S3 instructions speed up ML, which Espressif library uses them, and which model formats benefit (likely int8); a short write-up to explain to the professor | Partly done: the library is ESP-NN, and its S3 assembly path runs for sine-int8 ([BOARD_VALIDATION.md](docs/embedded-ml/BOARD_VALIDATION.md#acceleration-evidence)); the short write-up is still to do |
+| 2.3 | A small set of swappable models | Two or three small models with different inputs, at least one that uses the acceleration; note what each takes in and puts out | Done 10 Nov: sine-float, sine-int8 and the 16-input autoencoder, swapped on the board; sine-int8 runs on ESP-NN's S3 vector kernel. Added 16 Nov on `dev-jy-ml`: comfort-summer (board run pending) and the people-counter slot (decision pending); merge into `main` pending |
+| 2.4 | Prove the acceleration works | Time the same model with and without the acceleration once; this also feeds D5 (4.4) | Started: Jun Yong's run shows sine-int8 calling the S3 vector kernel; the with and without timing is still to do. Each result already prints `invoke_us`, and a second build with `CONFIG_NN_ANSI_C=y` instead of `CONFIG_NN_OPTIMIZED=y` gives the figure without acceleration |
+| 2.5 | Load models without reflashing | Decide whether bundled models are enough or new models must also be sendable over MQTT | Partly done: bundled models are chosen at runtime without reflashing; whether new models are also sent over MQTT (D1 task 31) is still to decide |
+| 2.6 | Explain the ML flow | Sensor → model → result in plain words, for the report and Tribunal 2 | Pending; [RUNNING.md](docs/embedded-ml/RUNNING.md) on `dev-jy-ml` already explains where the comfort score fits in the classroom display |
 
 ### Part 2: configuring and switching ML (Sitt)
 
@@ -298,7 +298,7 @@ Earlier research remains in [D4_EMBEDDED_ML_RESEARCH.md](D4_EMBEDDED_ML_RESEARCH
 
 ---
 
-# 6. D5 task checklist
+# 6. D5 task checklist (Hasif)
 
 D5 is cut down, agreed on 10 Nov 2026. The professor said benchmarking is not for this module and not to run the full study now, and that it is not about which model is best; his own comparison idea is hard-coded against configurable. D5 therefore measures a few differences between the configurable platform and a fixed, hard-coded build, and reuses results already measured. Hasif owns D5 (split of 16 Nov 2026). The rows are the agreed outline; the technical steps come later. Only 4.4 waits on other work; the rest can start now.
 
