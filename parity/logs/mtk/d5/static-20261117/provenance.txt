@@ -1,0 +1,14 @@
+D5 task 4.3, static part: firmware sizes from the build, no board.
+Date: 17 Nov 2026. Source: main at bb41cef with the D5 changes (MLBENCH,
+the Invoke() timer, the NN=ansi option), and unchanged main at bb41cef.
+Toolchain: ESP-IDF v6.1-dev-2300-g17a74c925c, xtensa-esp-elf-gcc
+esp-15.2.0_20251204, course port e92874d, optimisation -Og (port default).
+
+size-optimized.txt             idf.py size, normal build (CONFIG_NN_OPTIMIZED=y)
+size-ansi.txt                  idf.py size, NN=ansi build (CONFIG_NN_ANSI_C=y)
+size-main.txt                  idf.py size, main without the D5 changes
+size-components-optimized.txt  idf.py size-components, normal build
+size-components-ansi.txt       idf.py size-components, NN=ansi build
+
+The ANSI image links esp_nn_fully_connected_s8_ansi and no *_esp32s3
+ESP-NN kernel; the normal image links the esp32s3 assembly kernels.
