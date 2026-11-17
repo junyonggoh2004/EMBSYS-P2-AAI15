@@ -42,6 +42,17 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(len(first_burst.splitlines()), 2)
         self.assertEqual(len(next_burst.splitlines()), 1)
 
+    def test_classroom_output_interpretation(self):
+        monitor = PrettyTelemetry()
+        output = monitor.rx(
+            '{"type":"ml","timestamp_ms":1000,"model":"comfort-summer","status":"OK",'
+            '"outputs":[78],"comfort_score":78,"input_source":"replay"}\n'
+            '{"type":"ml","timestamp_ms":3000,"model":"people-counter","status":"OK",'
+            '"outputs":[2],"direction":"out","input_source":"replay"}\n'
+        )
+        self.assertIn("Comfort 78/100 (replay)", output)
+        self.assertIn("Direction OUT (replay)", output)
+
     def test_scalar_output_threshold_decisions(self):
         monitor = PrettyTelemetry()
         output = monitor.rx(

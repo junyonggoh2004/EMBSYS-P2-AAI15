@@ -1,7 +1,7 @@
 param(
     [ValidateSet('build','configure','flash','monitor','audit','sensors','ml')][string]$Action='build',
     [string]$Port,
-    [ValidateSet('sine-float','sine-int8','autoencoder')][string]$Model='sine-float',
+    [ValidateSet('sine-float','sine-int8','autoencoder','comfort-summer')][string]$Model='sine-float',
     [ValidateSet('all','aht-light')][string]$Inputs='all',
     [string]$BuildDirectory,
     [switch]$RawMonitor,

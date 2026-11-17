@@ -22,8 +22,10 @@ extern "C" {
  *   5. Rule engine reads outputs via inference_mgr_get_output()
  */
 
-#define INFER_MAX_OUTPUTS  16
-#define INFER_MAX_INPUTS   16
+#include "tflite_wrapper.h"
+
+#define INFER_MAX_OUTPUTS  TFLITE_MAX_OUTPUTS
+#define INFER_MAX_INPUTS   TFLITE_MAX_INPUTS
 #define INFER_MAX_SLOTS     4   /* number of sensor slots (groups of features) */
 #define INFER_FEATURES_PER_SLOT 4
 #define INFER_MAX_MASKS    16   /* max threshold masks */
