@@ -16,6 +16,8 @@ Use the [board configurations](d6/BOARD_CONFIGURATIONS.md) and
 [demo script](d6/DEMO_SCRIPT.md) to record a reference-fixture transport
 rehearsal. Raw C receipt and an independent LCD pattern do not pass T02's
 live sensor display requirement.
+Step-by-step [test cases](d6/TEST_CASES.md) (18 November) order the firmware
+bring-up, transport and fault checks and map each case to the trials below.
 
 ## Decision register
 
