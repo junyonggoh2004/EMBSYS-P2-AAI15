@@ -1,48 +1,47 @@
-# D6 wire count for the photographed N16R8 setup
+# D6 wire count for three bare N16R8 boards
 
-Updated 16 November 2026. [Board identification and photos](N16R8_BOARD_SETUP.md)
-and [pin-to-hole wiring](PIN_TO_HOLE_WIRING.md) define the fixture.
-Boards A and B use green screw-terminal expansion plates. Board C is bare
-with male header pins. All three assemblies stay outside their breadboards.
+Updated 18 November 2026. [Board identification](N16R8_BOARD_SETUP.md) and
+[pin-to-hole wiring](PIN_TO_HOLE_WIRING.md) define the fixture. Boards A, B
+and C have accessible male headers and sit outside their breadboards.
 
-| Board | Module-to-breadboard male-to-female leads | ESP connection leads | Total connections |
-|---|---:|---:|---:|
-| A: sensors and radar | 20 | 11 terminal-to-breadboard | 31 |
-| B: SPI flash | 6 | 6 terminal-to-breadboard | 12 |
-| C: LCD | 8 | 7 male-to-female from bare ESP header | 15 |
-| **Total** | **34** | **17 terminal leads + 7 male-to-female** | **58** |
+| Board | Module connections | ESP header connections | Other jumper | Total |
+|---|---:|---:|---:|---:|
+| A: sensors and radar | 20 | 11 | 1 B7-to-GND-rail bridge | 32 |
+| B: SPI flash | 6 | 6 | 0 | 12 |
+| C: LCD | 8 | 7 | 0 | 15 |
+| **Total** | **34** | **24** | **1** | **59** |
 
-Thus the photographed layout calls for **41 male-to-female leads** and
-**17 prepared insulated screw-terminal-to-breadboard leads**, if every
-module exposes male pins and every listed ESP signal uses the plate's screw
-terminal. The 58 figure is the number of connections, **not 58 identical
-jumper leads**. The former about-70 male-to-female shopping estimate only
-applied when all three ESP boards had accessible male headers and none used
-the expansion plates. Check the actual cable ends before purchasing.
+If each ESP32 and module exposes male pins and the rails are continuous,
+the plan uses **58 male-to-female jumpers plus one male-to-male ground-rail
+bridge**. Allow about **70 male-to-female leads** for replacements and layout
+changes. Lead types still depend on the Grove cable and radar connector.
+Any split rail may require another male-to-male bridge within the same
+voltage rail; never bridge 3V3 and 5V.
 
-## Board A: 31 connections
+## Board A: 32 connections
 
 | Component | Connections | Lead count |
 |---|---|---:|
-| AHT temperature/humidity | VCC, GND, SDA, SCL | 4 male-to-female, if male header |
-| TSL2561 light sensor | VCC, GND, SDA, SCL | 4, subject to Grove adapter |
-| Sonar A | VCC, GND, TRIG, ECHO | 4 male-to-female, if male header |
-| Sonar B | VCC, GND, TRIG, ECHO | 4 male-to-female, if male header |
-| LD2450 radar | 5V, GND, TX, RX | 4, subject to radar connector |
-| N16R8 ESP via green plate | GND, 3V3, 5V, GPIO1/2/4/5/6/7/17/18 | 11 terminal-to-breadboard |
+| AHT temperature/humidity | VCC E4, GND E7, SDA E5, SCL E6 | 4, if male header |
+| TSL2561 light sensor | VCC D4, GND D7, SDA D5, SCL D6 | 4, subject to Grove adapter |
+| Sonar A | VCC C4, GND C7, TRIG E8, ECHO E9 | 4, if male header |
+| Sonar B | VCC B4, GND rail N2, TRIG E10, ECHO E11 | 4, if male header |
+| LD2450 radar | 5V rail R2, GND rail N3, TX E12, RX E13 | 4, subject to radar connector |
+| Bare N16R8 ESP male header | 3V3 A4, GND A7, 5V rail R1, GPIO1/2/4/5/6/7/17/18 | 11 male-to-female |
+| Row-7 ground bridge | B7 to blue GND rail N1 | 1 male-to-male |
 
-AHT and light share the ESP's two I2C signal connections at GPIO1/2;
-each sensor still has its own SDA/SCL lead. For receive-only radar bring-up,
-omit radar RX and ESP UART TX: **29 A connections**, **56 overall**.
-The radar may require a dedicated connector or soldered leads. Sonar B
-GPIO6/7 and radar GPIO17/18 remain proposed, pending team approval.
+AHT and light share GPIO1/2. Their addresses differ: AHT 0x38,
+TSL2561 preset 0x29. For receive-only radar bring-up, omit radar RX E13
+and ESP GPIO18 A13: **30 A connections**, **57 overall** including the
+ground bridge. Sonar B GPIO6/7 and radar GPIO17/18 remain proposed pending
+team approval; the N16R8 hardware has not yet passed all sensor checks.
 
 ## Board B: 12 connections
 
 | Component | Connections | Lead count |
 |---|---|---:|
-| External SPI flash | VCC, GND, CS, CLK, DI, DO | 6 male-to-female, if male header |
-| N16R8 ESP via green plate | GND, 3V3, GPIO10/11/12/13 | 6 terminal-to-breadboard |
+| External SPI flash | VCC, GND, CS, CLK, DI, DO | 6, if male header |
+| Bare N16R8 ESP male header | GND, 3V3, GPIO10/11/12/13 | 6 male-to-female |
 
 The future second SPI device for the D6 swap demo is not included.
 
@@ -50,21 +49,23 @@ The future second SPI device for the D6 swap demo is not included.
 
 | Component | Connections | Lead count |
 |---|---|---:|
-| ST7789 LCD | VCC, GND, SCL, SDA, RST, DC, CS, BL | 8 male-to-female, if male header |
-| Bare N16R8 ESP male headers | GND, 3V3, GPIO12/11/8/9/10 | 7 male-to-female |
+| ST7789 LCD | VCC, GND, SCL, SDA, RST, DC, CS, BL | 8, if male header |
+| Bare N16R8 ESP male header | GND, 3V3, GPIO12/11/8/9/10 | 7 male-to-female |
 
 BL-to-GND is specific to the tested active-low LCD module. The same GPIO
 map still needs an isolated test on this N16R8 Board C.
 
 ## Connector and rail checks
 
-- A/B screw terminals take a suitably stripped, secured insulated wire end;
-  the breadboard end must fit its hole. Do not count an unmodified female
-  Dupont socket as a screw-terminal connection. Verify the plate's printed
-  labels map to the inserted board pins before energizing it.
-- If the green plate exposes a reliable alternative header connection and
-  you choose it, recalculate the 17 ESP lead types for that layout.
-- Bridge each split breadboard power rail deliberately with a suitable
-  male-to-male lead, if needed. Never join 5V to 3V3.
+- Follow each ESP32's **printed header pin label**. A male-to-female jumper
+  connects that header to a breadboard hole. Do not infer pins from wire
+  colors or from another board's orientation.
+- The Board A B7-to-N1 bridge is required to carry row-7 GND to the
+  continuous blue ground rail. Bridge a split power rail only within the
+  **same voltage** rail, if needed. Never join 5V to 3V3. Check continuity with USB unplugged.
 - Grove and radar connectors can change the lead types. Follow module
   labels and verified voltage ratings, not wire colors.
+
+## Alternative: spacious 65-row Board A
+
+The table above is the earlier compact proposal and is retained. The [spacious layout](BOARD_A_SPACED_65_ROW_LAYOUT.md) has the same 20 sensor-module connections and 11 ESP header connections. It adds three male-to-male bridges: B4->3V3 top rail P1, B7->GND top rail N1, and top-to-bottom blue GND N3->N4. That makes **34 Board A leads** (31 male-to-female plus 3 male-to-male), or **61 leads across A/B/C** (58 male-to-female plus 3 male-to-male). Omit radar RX and ESP GPIO18 to reduce the spacious totals to 32 on A and 59 overall. Use the actual connector ends to choose lead types; these counts assume male module and ESP header pins. A continuous GND rail makes the N3->N4 bridge electrically redundant, but keeping it on the plan is safe.

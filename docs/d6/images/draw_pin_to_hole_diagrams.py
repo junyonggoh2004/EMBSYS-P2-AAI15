@@ -74,39 +74,39 @@ def breadboard(d, rows, top, bottom, note, esp_label):
     txt(d, (581, bottom-36), 'A-E holes connect across each numbered row.', 18, MUTED)
     txt(d, (50, bottom+22), note, 21, MUTED)
 
-# A: all sensors on one acquisition board.
-im, d = frame('BOARD A | ALL PHYSICAL INPUTS',
-              'N16R8 Board A in green terminal plate + AHT + light + sonars + radar',
-              'Purple = proposed GPIO', 1435)
+# A: JY Version 2 rows retained for three sensors, with new Sonar B/radar rows.
+im, d = frame('BOARD A | JY V2 BASE + TWO INPUTS',
+              'Bare ESP32-S3 N16R8; ESP and modules sit outside the breadboard',
+              'AHT / LIGHT / A + B / RADAR', 1460)
 edge = power(d, [
-    ('BLUE GND RAIL', BLUE, 'ESP GND -> N1', [
-        'AHT GND -> N2; TSL GND -> N3; Sonar A GND -> N4',
-        'Sonar B GND -> N5; radar GND -> N6']),
-    ('3V3 RAIL', GREEN, 'A 3V3 terminal -> P1', [
-        'AHT VCC -> P2; TSL VCC -> P3; Sonar A VCC -> P4',
-        'Sonar B VCC -> P5 (only if module verified for 3.3V)']),
-    ('SEPARATE 5V RAIL', ORANGE, 'A 5V terminal -> R1 (USB)', [
-        'LD2450 radar 5V -> R2 only',
-        'Never join this rail to 3V3 or any GPIO'])
+    ('3V3 VIA ROW 4', GREEN, 'ESP 3V3 -> A4', [
+        'B4 Sonar B; C4 Sonar A; D4 TSL2561; E4 AHT']),
+    ('BLUE GND RAIL', BLUE, 'ESP GND -> A7; B7 -> N1', [
+        'C7 Sonar A; D7 TSL2561; E7 AHT',
+        'N2 Sonar B; N3 radar; B7-N1 is a jumper']),
+    ('SEPARATE 5V RAIL', ORANGE, 'ESP 5V -> R1 (USB)', [
+        'LD2450 radar 5V -> R2 ONLY',
+        'Never join 5V to row 4, 3V3 or GPIO']),
 ])
 breadboard(d, [
-    (10, 'ESP GPIO1 (SDA) -> A10', {'C':'AHT SDA', 'E':'TSL SDA'}, GREEN, False),
-    (11, 'ESP GPIO2 (SCL) -> A11', {'C':'AHT SCL', 'E':'TSL SCL'}, GREEN, False),
-    (15, 'ESP GPIO4 -> A15', {'E':'Sonar A TRIG'}, GREEN, False),
-    (16, 'ESP GPIO5 -> A16', {'E':'Sonar A ECHO'}, GREEN, False),
-    (18, 'ESP GPIO6 -> A18', {'E':'Sonar B TRIG'}, PURPLE, True),
-    (19, 'ESP GPIO7 -> A19', {'E':'Sonar B ECHO'}, PURPLE, True),
-    (22, 'A terminal 17 -> A22 (ESP RX)', {'E':'Radar TX'}, PURPLE, True),
-    (23, 'A terminal 18 -> A23 (ESP TX)', {'E':'Radar RX'}, PURPLE, True),
-], edge+28, 1260, 'A green screw terminal -> prepared wire -> A-row hole.', 'A N16R8 GREEN TERMINALS')
-txt(d, (51, 1320), 'Unplug USB while wiring. Measure both ECHO levels: a 5V ECHO needs level protection.', 21, RED, True)
-txt(d, (51, 1355), 'Use plate terminals 17/18, not TX/RX (GPIO43/44); configure UART routing.', 20, MUTED)
-txt(d, (51, 1385), 'Check USB 5V current budget and rail continuity; the 5V and 3V3 rails must never touch.', 20, MUTED)
+    (5, 'ESP GPIO1 (SDA) -> A5', {'D':'TSL SDA', 'E':'AHT SDA'}, GREEN, False),
+    (6, 'ESP GPIO2 (SCL) -> A6', {'D':'TSL SCL', 'E':'AHT SCL'}, GREEN, False),
+    (8, 'ESP GPIO4 -> A8', {'E':'Sonar A TRIG'}, GREEN, False),
+    (9, 'ESP GPIO5 -> A9', {'E':'Sonar A ECHO'}, GREEN, False),
+    (10, 'ESP GPIO6 -> A10', {'E':'Sonar B TRIG'}, PURPLE, True),
+    (11, 'ESP GPIO7 -> A11', {'E':'Sonar B ECHO'}, PURPLE, True),
+    (12, 'ESP GPIO17 (RX) -> A12', {'E':'Radar TX'}, PURPLE, True),
+    (13, 'ESP GPIO18 (TX) -> A13', {'E':'Radar RX (optional)'}, PURPLE, True),
+], edge+28, 1265, 'Rows 4-9 preserve JY V2. Remove all old A LCD wires; add inputs on 10-13.',
+   'A N16R8 MALE HEADER PINS')
+txt(d, (51, 1320), 'Power off to rewire. Keep radar 5V separate. Both sonars need 3.3V ECHO.', 21, RED, True)
+txt(d, (51, 1355), 'Purple = added proposed GPIOs; UART TX/RX header labels are NOT GPIO17/18.', 20, MUTED)
+txt(d, (51, 1390), 'Historical Super Mini success does not prove a complete N16R8 sensor pass.', 20, MUTED)
 im.save(OUT / 'board-a-detailed.png')
 
 # B: tested D2 external flash wiring, separate from Board C LCD SPI.
 im, d = frame('BOARD B | PROCESSING + SPI FLASH',
-              'N16R8 Board B in green terminal plate + 3.3V W25QXX breakout',
+              'Bare N16R8 Board B + 3.3V W25QXX breakout',
               'No LCD on this board', 960)
 edge = power(d, [
     ('BLUE GND RAIL', BLUE, 'ESP GND -> N1', ['Flash GND -> N2']),
@@ -118,15 +118,15 @@ breadboard(d, [
     (11, 'ESP GPIO11 (SCK) -> A11', {'E':'Flash SLK / CLK'}, GREEN, False),
     (12, 'ESP GPIO12 (MOSI) -> A12', {'E':'Flash DI / SI'}, GREEN, False),
     (13, 'ESP GPIO13 (MISO) -> A13', {'E':'Flash DO / SO'}, GREEN, False),
-], edge+28, 820, 'B green screw terminal -> prepared wire -> A-row hole.', 'B N16R8 GREEN TERMINALS')
-txt(d, (51, 885), 'Retest read-only SPIID on N16R8 B; D6 write format/address remain undecided.', 21, RED, True)
+], edge+28, 820, 'ESP B male header -> female jumper -> A-row hole.', 'B N16R8 MALE HEADERS')
+txt(d, (51, 885), 'N16R8 B: SPIID EF4016 + SPICHECK PASS. Sector 3FF000 NONBLANK; no writes.', 21, RED, True)
 txt(d, (51, 920), 'A second SPI device for the later swap demo is still to be selected.', 20, MUTED)
 im.save(OUT / 'board-b-detailed.png')
 
 # C: known working isolated LCD wiring.
 im, d = frame('BOARD C | ST7789 LCD OUTPUT',
-              'Bare N16R8 Board C + DIYUSER 76 x 284 LCD; retest isolated pin map',
-              'Retest on N16R8 C', 1100)
+              'Bare N16R8 Board C + DIYUSER 76 x 284 LCD; isolated test passed',
+              'LCDTEST passed on N16R8 C', 1100)
 edge = power(d, [
     ('BLUE GND RAIL', BLUE, 'ESP GND -> N1', ['LCD GND -> N2; LCD BL -> N3']),
     ('3V3 VIA ROW 4', GREEN, 'ESP 3V3 -> A4', ['LCD VCC -> E4 (same A-E row)'])
@@ -140,7 +140,7 @@ breadboard(d, [
     (14, 'ESP GPIO10 -> A14', {'E':'LCD CS'}, GREEN, False),
 ], edge+28, 955, 'C male header -> female jumper -> A-row hole; LCD uses SPI.', 'C N16R8 MALE HEADERS')
 txt(d, (51, 1017), 'BL -> GND is specific to this tested active-low LCD module.', 21, RED, True)
-txt(d, (51, 1050), 'Retest LCDTEST 76 284 82 18 00 0 on N16R8 C; live values still need firmware.', 20, MUTED)
+txt(d, (51, 1050), '18 Nov: LCDTEST result=0 and visible colours/READY; live values still need firmware.', 20, MUTED)
 im.save(OUT / 'board-c-detailed.png')
 
 print(OUT)

@@ -1,6 +1,6 @@
 # ESP32-S3 boards with 8 MB octal PSRAM (ESP32-S3R8 chip, e.g. N16R8 modules on
-# DevKitC-style boards with two USB-C ports). For D6, A/B are mounted in
-# screw-terminal expansion plates and C is bare. This overlay changes the
+# DevKitC-style boards with two USB-C ports). For D6, A, B and C use
+# accessible male headers without expansion boards. This overlay changes the
 # PSRAM mode only: the base build still uses its 4 MB partition layout.
 # Use: BOARD=n16r8 NODE=<id> PORT=<port> sh tools/mtk.sh flash, with the
 # cable in the port wired to the chip's own USB (the console is USB-Serial-JTAG),

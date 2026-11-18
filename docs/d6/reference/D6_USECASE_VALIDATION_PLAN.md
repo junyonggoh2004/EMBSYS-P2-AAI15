@@ -12,7 +12,7 @@ coordination with Sitt/Hasif, scheduler and workload coordination with Brendan.
 Status: **plan for team review; nothing has been run on the board yet**. It
 changes no wiring or firmware. It defines one use case and the evidence needed
 to validate the existing implementation. The D3 tasks it relies on keep their
-own status in [README section 4](../README.md#4-d3-task-checklist).
+own status in [README section 4](../../../README.md#4-d3-task-checklist).
 
 ## 1. Intended result
 
@@ -31,12 +31,12 @@ model is required for the initial demonstration.
 
 Read these before preparing the fixture:
 
-- [Breadboard guide](../SENSOR_BREADBOARD_README.md) and
-  [active wiring](../esp32s3_mtk/WIRING.md).
-- [README §4 and §8 Parts E/G](../README.md#4-d3-task-checklist).
-- [Architecture](../ARCHITECTURE.md), [setup](../SETUP.md) and
-  [interrupt/wiring review](../D3_INTERRUPT_WIRING_REVIEW.md).
-- [Single-sonar capture procedure](D3_CAPTURE_V2_TEST.md).
+- [Breadboard guide](../../../SENSOR_BREADBOARD_README.md) and
+  [active wiring](../../../esp32s3_mtk/WIRING.md).
+- [README §4 and §8 Parts E/G](../../../README.md#4-d3-task-checklist).
+- [Architecture](../../../ARCHITECTURE.md), [setup](../../../SETUP.md) and
+  [interrupt/wiring review](../../../D3_INTERRUPT_WIRING_REVIEW.md).
+- [Single-sonar capture procedure](../../D3_CAPTURE_V2_TEST.md).
 
 The recorded V2 fixture has one HC-SR04+ on TRIG4/ECHO5, AHT/TSL2561 on
 I²C GPIO1/2, and retained LCD wiring on GPIO6–10. It does not establish an

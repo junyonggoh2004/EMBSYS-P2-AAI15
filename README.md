@@ -10,7 +10,7 @@ on the `d6` base; live output integration and D6 board tests remain pending.
 Board roles now specify **A physical inputs and local timed WINDOW assembly;
 B final occupancy, ML, storage, data handling and communication; C output**.
 The current D6 fixture uses [three photographed N16R8 boards](docs/d6/N16R8_BOARD_SETUP.md):
-A/B in green screw-terminal expansion plates and C bare with male headers.
+A, B and C as bare boards with accessible male headers, each wired to its own breadboard.
 See the [updated wiring diagrams](docs/d6/PIN_TO_HOLE_WIRING.md) and
 [wire count](docs/d6/JUMPER_WIRE_COUNT.md). Previous Super Mini tests remain
 historical evidence.
@@ -23,7 +23,9 @@ and all three-board physical trials remain pending.
 
 Project baseline integrated into `d6`: D1 (tasks 1–34), the D2 SPI checkpoint, the D3 timing checkpoint and the first D4 ML checkpoint. The agreed task lists for the D1 MQTT work and for D4 to D6 are in sections 2 and 5 to 7. This is the Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) ported to the ESP32-S3 Super Mini. Since Tribunal 1 the firmware runs on µT-Kernel 3 SMP through the course port ([MTK_REDESIGN.md](MTK_REDESIGN.md)), and D2's SPI and D3's timing run on it too; the earlier Arduino-ESP32/FreeRTOS port stays as the measured baseline. The same configuration lines, console commands, MQTT topics, output format and ML model work on both boards, because both builds compile the same shared code.
 
-**Current breadboard.** The three-sensor breadboard (AHT temperature and humidity, HC-SR04+ distance and TSL2561 light, with the LCD wiring kept) and its Windows and VS Code build workflow are in [SENSOR_BREADBOARD_README.md](SENSOR_BREADBOARD_README.md). The single-sonar, loopback, radar and SPI fixtures in this guide use other pins; do not apply them to that breadboard.
+**Board A wiring.** [JY's earlier three-sensor Super Mini fixture](SENSOR_BREADBOARD_README.md) recorded working AHT, HC-SR04+ and TSL2561 readings with GPIO1/2/4/5 and breadboard rows 4-9. The [bare N16R8 D6 Board A map](docs/d6/PIN_TO_HOLE_WIRING.md#board-a-aht-light-two-sonars-and-radar) retains those connections and adds Sonar B and radar on unused rows. The old LCD wires are removed from Board A; Board C owns the display. This N16R8 translation still requires physical retesting. The single-sonar, loopback, radar and SPI fixtures elsewhere in this guide use other pins; do not apply them to Board A.
+
+**Optional spacious Board A layout.** For the user's 65-row breadboard, the [spaced extension](docs/d6/BOARD_A_SPACED_65_ROW_LAYOUT.md) leaves JY's AHT/light/Sonar A rows 4-9 intact and allocates Sonar B and radar farther down the board. The older tables and diagrams are retained as historical and compact-layout references. GPIO assignments do not change; the new physical layout still needs testing.
 
 ## Deliverables at a glance
 

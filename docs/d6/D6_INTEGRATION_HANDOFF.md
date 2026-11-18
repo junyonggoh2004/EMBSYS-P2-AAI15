@@ -55,8 +55,7 @@ must be checked before the wiring is approved.
 
 | Item | Quantity | Board/use |
 |---|---:|---|
-| ESP32-S3 N16R8 development board | 3 | A and B in screw-terminal expansion plates; C bare with male headers |
-| Compatible screw-terminal expansion plate | 2 | A and B; verify the terminal labels against each inserted board |
+| ESP32-S3 N16R8 development board with male headers | 3 | Bare A, B and C boards, one per breadboard |
 | Verified 3.3 V-compatible HC-SR04+ | 2 | A, Sonar A and B |
 | HLK-LD2450 | 1 | A, radar |
 | TSL2561 light module | 1 | A, I2C |
@@ -65,18 +64,18 @@ must be checked before the wiring is approved.
 | DIYUSER 76 x 284 ST7789P3 LCD | 1 | C, output |
 | Breadboard | 3 | One per board, with known continuous rail sections |
 | USB data/power cable | 3 | One per board |
-| Male-to-female jumper leads | 41 in the photographed layout, conditional on module connectors | 26 module leads on A/B and 15 leads on C; see [per-board count](JUMPER_WIRE_COUNT.md) |
-| Expansion-terminal-to-breadboard leads | 17 | Eleven on A, six on B; one prepared insulated lead per used screw terminal |
+| Male-to-female jumper leads | Up to 58, conditional on module connectors | 31 device/header connections on A, 12 on B, 15 on C, plus one A ground-rail bridge; see [per-board count](JUMPER_WIRE_COUNT.md) |
 | Suitable four-wire radar connector or soldered leads | 1 set | The bare LD2450 cannot be reliably plugged into a breadboard by loose wire contact |
 | Multimeter | 1 | Check rails and actual signal levels |
 | Logic analyzer or oscilloscope | Access to 1 | Trigger/Echo guard, order and complete-pair timing evidence |
 | Broker laptop and reachable Wi-Fi | 1 setup | MQTT capture and configuration |
 | Second readable SPI device | 1, model pending | D6 5.4 swap/reconfiguration; select protocol before purchase |
 
-For the photographed N16R8 setup, A and B are inserted into green
-screw-terminal expansion plates; C has exposed male header pins. See the
-[board and connector identification](N16R8_BOARD_SETUP.md). The previous
-58 male-to-female estimate applied to a different all-male-header layout.
+All three N16R8 boards now use their accessible male headers and remain
+outside their breadboards. See the [board and connector identification](N16R8_BOARD_SETUP.md).
+The 58 figure counts listed device/header connections; Board A also needs
+one male-to-male jumper from B7 to its GND rail. Actual lead types depend
+on each module connector and any rail breaks.
 Board A's USB-powered ESP32 **5V** pin may supply the LD2450's 5V input for
 the initial fixture, as the user confirmed from the professor's approach.
 Share A's ground, keep 5V away from 3V3 and GPIO, and verify the USB/current
@@ -96,12 +95,13 @@ group across the center gap. Check any split power rail for continuity.
 
 | Board | Image | Pin status |
 |---|---|
-| A | [Inputs, radar, two sonars and I2C](images/board-a-inputs.png) | I2C GPIO1/2 and Sonar A GPIO4/5 follow the existing V2 fixture. Sonar B GPIO6/7 and radar UART GPIO17/18 are **proposals requiring the team pin/power review**. GPIO17/18 appear on the N16R8 header and expansion plate; their radar use is still proposed. |
-| B | [SPI flash](images/board-b-processing-flash.png) | D2 six-wire pin map previously tested on an earlier board (retest on this N16R8): VCC 3V3, GND, CS GPIO10, SCK GPIO11, MOSI/DI GPIO12, MISO/DO GPIO13. The complete D6 board and storage write path are untested. |
-| C | [LCD](images/board-c-lcd.png) | Previously verified isolated LCD pin map on the older Super Mini; retest with bare N16R8 Board C: VCC 3V3, GND, SCK GPIO12, MOSI GPIO11, RST GPIO8, DC GPIO9, CS GPIO10, and module-specific active-low BL to GND. The imported D6 diagnostic still needs a visible combined-firmware check. |
+| A | [Inputs, radar, two sonars and I2C](images/board-a-inputs.png) | JY's V2 rows 4-9 are retained for the AHT, light and Sonar A; only the ESP is translated to the bare N16R8. Rows 10-11 add Sonar B GPIO6/7 and rows 12-13 add radar UART GPIO17/18. These added GPIOs and radar power remain proposed and need the team review. On 18 November AHT and light passed on N16R8; Sonar A still timed out despite a passed GPIO4/5 loopback. Sonar B and radar remain unverified on this corrected map. See [Stage 1 bring-up](BOARD_A_STAGE1_BRINGUP_20261118.md). |
+| B | [SPI flash](images/board-b-processing-flash.png) | D2 six-wire map on N16R8 B: VCC 3V3, GND, CS GPIO10, SCK GPIO11, MOSI/DI GPIO12, MISO/DO GPIO13. On 18 November `SPIID EF4016` and read-only `SPICHECK` passed; the last sector was nonblank. The D6 storage writer is still unimplemented. |
+| C | [LCD](images/board-c-lcd.png) | Bare N16R8 Board C: VCC 3V3, GND, SCK GPIO12, MOSI GPIO11, RST GPIO8, DC GPIO9, CS GPIO10, and module-specific active-low BL to GND. On 18 November the `s3-003` D6 build returned `LCDTEST ... result=0`, and the user confirmed the colour bands and `LCD READY` visibly. Live B-to-C display remains unimplemented. See [bring-up](BOARD_C_BRINGUP_20261118.md). |
 
-On A, the **3V3 rail** supplies the AHT, TSL2561 and verified 3.3V sonars;
-the **separate 5V rail** supplies only the radar; all grounds join A's GND.
+On A, **row 4** supplies 3V3 to the AHT, TSL2561 and verified 3.3V
+sonars; the **separate 5V rail** supplies only the radar. Row 7 is bridged
+to the blue GND rail, shared by Sonar B and radar.
 Radar TX connects to ESP UART RX, and radar RX to ESP UART TX if the final
 UART configuration requires both. No signal wire joins A, B and C; the final
 application path is A -> broker -> B -> broker -> C.
@@ -153,3 +153,7 @@ and earlier fixture documentation during future integration.
 
 Use the [D6 worksheet](../D6_TRIAL_WORKSHEET.md) for actual decisions, session
 provenance, serial/MQTT logs, physical observations and pass/fail outcomes.
+
+### Optional spacious Board A layout
+
+The compact Board A connection table and diagram remain as earlier context. For easier identification and future expansion on the 65-row breadboard, the [new spaced Board A diagram](BOARD_A_SPACED_65_ROW_LAYOUT.md) keeps JY's original three sensors on rows 4-9 and moves only Sonar B and radar to distant spare rows. It does not change GPIOs, firmware sensor profiles or the unresolved Sonar A timeout.

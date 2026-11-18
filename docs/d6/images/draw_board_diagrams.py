@@ -76,36 +76,36 @@ def footer(d, lines):
         label(d, (58, 946 + i*30), t, 21, MUTED)
 
 im, d = base('BOARD A  |  PHYSICAL INPUTS',
-             'N16R8 Board A in green terminal plate; AHT + light + sonars + radar',
-             'Established + proposed pins')
+             'Bare N16R8; JY V2 rows 4-9 + Sonar B + radar',
+             'V2 base + added pins')
 rails(d, {
-    'source': 'A terminal',
-    '3v3': 'AHT VCC, TSL2561 VCC, Sonar A/B VCC*',
-    '5v': 'LD2450 5V ONLY',
-    'gnd': 'AHT, TSL2561, Sonar A/B, LD2450 GND',
+    'source': 'A header',
+    '3v3': 'A4 -> B4 Sonar B, C4 Sonar A, D4 TSL, E4 AHT',
+    '5v': 'R1 -> R2 LD2450 ONLY',
+    'gnd': 'A7 -> B7 bridge -> N1 rail; N2 Sonar B, N3 radar',
 })
 rows(d, [
-    (10, 'GPIO1  SDA', 'AHT SDA + TSL SDA', 'ESTABLISHED'),
-    (11, 'GPIO2  SCL', 'AHT SCL + TSL SCL', 'ESTABLISHED'),
-    (15, 'GPIO4', 'Sonar A TRIG', 'ESTABLISHED'),
-    (16, 'GPIO5', 'Sonar A ECHO*', 'ESTABLISHED'),
-    (18, 'GPIO6', 'Sonar B TRIG', 'PROPOSED'),
-    (19, 'GPIO7', 'Sonar B ECHO*', 'PROPOSED'),
-    (22, 'GPIO17  UART RX', 'Radar TX  ->  ESP RX', 'PROPOSED'),
-    (23, 'GPIO18  UART TX', 'Radar RX  <-  ESP TX', 'PROPOSED'),
-], 'Use plate terminals 17/18, not TX/RX (GPIO43/44); purple GPIOs need approval.')
+    (5, 'A5 GPIO1 SDA', 'D5 TSL + E5 AHT SDA', 'ESTABLISHED'),
+    (6, 'A6 GPIO2 SCL', 'D6 TSL + E6 AHT SCL', 'ESTABLISHED'),
+    (8, 'A8 GPIO4', 'E8 Sonar A TRIG', 'ESTABLISHED'),
+    (9, 'A9 GPIO5', 'E9 Sonar A ECHO*', 'ESTABLISHED'),
+    (10, 'A10 GPIO6', 'E10 Sonar B TRIG', 'PROPOSED'),
+    (11, 'A11 GPIO7', 'E11 Sonar B ECHO*', 'PROPOSED'),
+    (12, 'A12 GPIO17 RX', 'E12 Radar TX', 'PROPOSED'),
+    (13, 'A13 GPIO18 TX', 'E13 Radar RX optional', 'PROPOSED'),
+], 'Remove all old A LCD wires, including row 14; LCD belongs on C.')
 footer(d, [
-    '* Use only verified 3.3 V-compatible sonar modules; protect any 5 V ECHO.',
-    'Keep the 5 V rail isolated from 3V3 and GPIO. Unplug USB before wiring; confirm rail continuity.',
-    'Radar power: USB-backed ESP 5V as discussed; check current budget and common ground.',
+    '* Both sonars must have verified 3.3V ECHO. Connect B7 to GND rail N1.',
+    'Keep the separate radar 5V rail away from row 4 / 3V3. Unplug USB to rewire.',
+    'Earlier Super Mini readings do not verify the complete N16R8 fixture.',
 ])
 im.save(OUT / 'board-a-inputs.png')
 
 im, d = base('BOARD B  |  PROCESSING + STORAGE',
-             'N16R8 Board B in green terminal plate; W25QXX external SPI flash',
-             'D2 map; retest N16R8')
+             'Bare N16R8 Board B; W25QXX external SPI flash',
+             'N16R8 read-only SPI pass')
 rails(d, {
-    'source': 'B terminal',
+    'source': 'B header',
     '3v3': 'W25QXX VCC',
     'gnd': 'W25QXX GND',
 })
@@ -114,17 +114,17 @@ rows(d, [
     (11, 'GPIO11  SCK', 'Flash SLK / CLK', 'ESTABLISHED'),
     (12, 'GPIO12  MOSI', 'Flash DI / MOSI', 'ESTABLISHED'),
     (13, 'GPIO13  MISO', 'Flash DO / MISO', 'ESTABLISHED'),
-], 'B plate screw terminal -> prepared wire -> breadboard; retest SPIID.')
+], 'ESP B male header -> female jumper -> breadboard; SPIID EF4016 passed.')
 footer(d, [
     'Confirm printed flash-module labels; do not infer pin order from wire color.',
-    'Begin with read-only JEDEC ID. D6 record format and writable address remain undecided.',
+    'SPICHECK passed; sector 3FF000 is NONBLANK. D6 write area remains undecided.',
     'B receives A inputs and sends C output over MQTT; no signal wire joins the boards.',
 ])
 im.save(OUT / 'board-b-processing-flash.png')
 
 im, d = base('BOARD C  |  LCD OUTPUT',
              'Bare N16R8 Board C; DIYUSER 76 x 284 ST7789P3 display',
-             'Retest on N16R8 C')
+             'LCDTEST passed on N16R8 C')
 rails(d, {
     'source': 'C header',
     '3v3': 'LCD VCC',
@@ -139,7 +139,7 @@ rows(d, [
 ], 'C male header -> female jumper -> breadboard; LCD SCL/SDA mean SPI.')
 footer(d, [
     '* BL-to-GND applies only to the tested active-low module and existing fixture.',
-    'Retest LCDTEST 76 284 82 18 00 0 on N16R8 C before live display.',
+    '18 Nov: LCDTEST result=0 and visible colours/READY on N16R8 C.',
     'C receives B output over MQTT; live B-to-C rendering is not yet implemented.',
 ])
 im.save(OUT / 'board-c-lcd.png')
