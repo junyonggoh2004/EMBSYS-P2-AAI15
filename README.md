@@ -22,16 +22,16 @@ Project baseline integrated into `d6`: D1 (tasks 1–34), the D2 SPI checkpoint,
 
 ## Deliverables at a glance
 
-| Deliverable | What it is | Owners | State on `main` (10 Nov 2026) | Details |
+| Deliverable | What it is | Owners | State (16 Nov 2026) | Details |
 |---|---|---|---|---|
 | D1 | Port configpico2wedge to the ESP32-S3, on µT-Kernel 3 SMP since Tribunal 1 | Hasif, Cody, Sitt | Done (tag `d1-mtk-v1.0`); MQTT between real boards (1.1–1.5) done 10 Nov, 43/43 on two boards; task 7 rollout and six jumper or light-sensor stages pending | [Section 2](#2-d1-task-checklist) |
 | D2 | SPI support on the ESP32-S3 | Brendan, Jun Yong | Checkpoint merged (PR #3 on 27 Oct, PR #5 on 1 Nov); event logging, T-23 and sign-off open | [Section 3](#3-d2-task-checklist) |
 | D3 | Configurable timing: periodic, one-shot, event-driven, logical sequence | Cody | Checkpoint merged (PR #6 on 3 Nov, PR #8 on 9 Nov); board results pending | [Section 4](#4-d3-task-checklist) |
-| D4 | Embedded ML | Part 1: Jun Yong, Brendan. Part 2: Hasif, Sitt | Three bundled models swap on the board, the int8 one on the S3's vector instructions (2.1, 10 Nov); `ML` commands work over the console and MQTT; live switching (3.1–3.7) open | [Section 5](#5-d4-task-checklist) |
-| D5 | Benchmarking, cut down | Sitt, with Hasif | Task list agreed (4.1–4.6); B1–B8 plan on `s3-port-d5`, not merged | [Section 6](#6-d5-task-checklist) |
-| D6 | End-to-end use case and demo | Whole team, Cody leads | Task list agreed (5.1–5.8); use case to confirm (5.1) | [Section 7](#7-d6-task-checklist) |
+| D4 | Embedded ML | Part 1: Jun Yong. Part 2: Sitt | On `main`: three bundled models swap on the board, the int8 one on the S3's vector instructions (2.1, 10 Nov), and `ML` commands work over the console and MQTT. The classroom update adds comfort and doorway models, plus `ML LIST` and `ML REPLAY`. Their first board runs are pending. Live switching (3.1–3.7) open; a draft setup format is on `d4-live-ml-sitt` | [Section 5](#5-d4-task-checklist) |
+| D5 | Benchmarking, cut down to the D4 models on the S3 | Hasif | Refocused 17 Nov: measure and explain how the chosen models run on the S3 and what its acceleration adds (4.1–4.6); not started, 4.1 to 4.3 can start now | [Section 6](#6-d5-task-checklist-hasif) |
+| D6 | End-to-end use case and demo | Cody (lead), Brendan | Doorway headcount chosen 13 Nov: board A senses, board B counts and runs ML, board C shows it on the LCD. Plan, wiring diagrams, an LCD test command and a strict parser for readings sent over MQTT are on `D6-Integration`, not merged; no three-board run yet | [Section 7](#7-d6-task-checklist) |
 
-Owners are the team workload split of 28 Sep 2026, with D4 to D6 re-split on 10 Nov 2026. The D1 MQTT tasks 1.1–1.5 (section 2) and the D4 to D6 tasks 2.1–5.8 (sections 5 to 7) are the outline the team agreed on 10 Nov 2026; each owner turns their rows into technical steps later and keeps the numbers. Order: 1.4 and 2.1 come first because D4 part 2 needs them, 2.4 feeds 4.4, and the D1 MQTT tasks and both D4 parts feed D6. Each owner updates their row and section when their work merges.
+Owners are the team workload split of 28 Sep 2026, with D4 to D6 re-split on 10 Nov 2026 and confirmed on 16 Nov 2026 as D4 part 1 Jun Yong, D4 part 2 Sitt, D5 Hasif, and D6 Cody and Brendan. The D1 MQTT tasks 1.1–1.5 (section 2) and the D4 to D6 tasks 2.1–5.8 (sections 5 to 7) are the outline the team agreed on 10 Nov 2026; each owner turns their rows into technical steps later and keeps the numbers. Order: 1.4 and 2.1 come first because D4 part 2 needs them, 2.4 is measured as 4.2, and the D1 MQTT tasks and both D4 parts feed D6. Each owner updates their row and section when their work merges.
 
 ## Contents
 
@@ -44,7 +44,7 @@ Owners are the team workload split of 28 Sep 2026, with D4 to D6 re-split on 10 
 | [3. D2 task checklist](#3-d2-task-checklist) | D2 SPI tasks D2-1 to D2-11 with status, the checks before the merge, how to run the SPI tests, what D2 still needs; full list in [D2_SPI_TODO.md](D2_SPI_TODO.md) |
 | [4. D3 task checklist](#4-d3-task-checklist) | How the timing modes, the radar entrance window and event identity work, D3 tasks D3-1 to D3-12 with status, the D3 commands and tests |
 | [5. D4 task checklist](#5-d4-task-checklist) | What is on `main` now; part 1, the ML itself (2.1–2.6); part 2, configuring and switching ML (3.1–3.7) |
-| [6. D5 task checklist](#6-d5-task-checklist) | Cut-down benchmarking tasks 4.1–4.6 |
+| [6. D5 task checklist (Hasif)](#6-d5-task-checklist-hasif) | Benchmarking the D4 models on the S3, tasks 4.1–4.6 |
 | [7. D6 task checklist](#7-d6-task-checklist) | Use case and demo tasks 5.1–5.8 |
 | [8. Set up and test from scratch](#8-set-up-and-test-from-scratch-d1-to-d3) | Step-by-step on a new Mac for the µT-Kernel build (D1 to D3) |
 | &nbsp;&nbsp;[Part A: Install](#part-a-install) | Steps 1–4: tools, project, ESP-IDF and the course port, version check |
@@ -280,39 +280,48 @@ D3 replaces the Pico's fixed one-second loop with configurable timing per sensor
 
 # 5. D4 task checklist
 
-D4 has two parts, agreed on 10 Nov 2026. Part 1 is the ML itself (Jun Yong and Brendan); part 2 is configuring and switching it live (Hasif and Sitt). The professor's guidance: accuracy does not matter; use the S3's built-in acceleration, starting from its instruction set and then finding models and a format that use it; and a JSON or MQTT command should choose the model, where its data comes from (this board's sensors or the network) and where the result goes (used on the board or published), all switchable live. The point is that models can be changed on the fly, not which model is best. The rows below are the agreed outline; owners add the technical steps later and keep the numbers.
+D4 has two parts, agreed on 10 Nov 2026. Part 1 is the ML itself (Jun Yong); part 2 is configuring and switching it live (Sitt), as split on 16 Nov 2026. The professor's guidance: accuracy does not matter; use the S3's built-in acceleration, starting from its instruction set and then finding models and a format that use it; and a JSON or MQTT command should choose the model, where its data comes from (this board's sensors or the network) and where the result goes (used on the board or published), all switchable live. The point is that models can be changed on the fly, not which model is best. The rows below are the agreed outline; owners add the technical steps later and keep the numbers.
 
 ### What is on `main` now
 
-The model upload over MQTT and the two flash model slots are D1 task 31. The D4 checkpoint (branch `d4-live-ml-sitt`, Sitt) integrates Jun Yong's local sensor bindings and selectable bundled models from `dev-jy-ml`, and the existing `ML` commands can now also arrive on `pico/<node>/cmd`; SchedulerTask handles them through the same ML parser as serial commands. This is an integration checkpoint, not a completed live ML workflow or board result.
+The model upload over MQTT and the two flash model slots are D1 task 31. Jun Yong's ML pipeline feeds decoded AHT temperature and humidity, TSL2561 light and HC-SR04+ distance into configurable model bindings; run **MTK: load sensors and ML** for the full setup. Three bundled models are chosen at runtime without reflashing, but a change still needs `STOP`, then `ML PRESET` or `ML MODEL`, `ML RUN` and `RUN`. **sine-float** (3,164 bytes, Float32) and **sine-int8** (2,704 bytes, INT8 on ESP-NN's S3 vector kernel) predict the sine of the four scaled readings combined into one number; they show the pipeline and the acceleration, not room conditions. The 16-input autoencoder shows a vector model. `ML THRESHOLD` compares a one-number output against a limit. Every `ML` command also works on `pico/<node>/cmd` (task 1.4). Results print on the console only; nothing is published yet (task 3.4).
 
-The current implementation feeds decoded AHT temperature/humidity, TSL2561 light and HC-SR04+ distance into configurable model bindings. Run **MTK: load sensors and ML** for the full setup, including ultrasonic distance. The LCD remains disabled; existing wiring is unchanged. MQTT ML-result publishing is deferred.
+**Classroom model demo.** `comfort-summer` is a bundled 5,960-byte FP32 checkpoint. It estimates current comfort from AHT temperature and humidity. The desktop reference for 26.3 °C and 67% RH is 92/100. Its first board run is pending. `people-counter` is a bundled INT8 doorway classifier for 31 model-ready measurements from one ultrasonic sensor. The current command accepts replay input. Live doorway integration and on-board acceleration evidence for this model are pending. `ML LIST` shows which models are available, and `ML REPLAY` runs the selected model on typed inputs.
 
-The default pretrained **sine-float** model is a 3,164-byte Float32 dense network (1 → 16 → 16 → 1), trained on synthetic x → sin(x) pairs. The four sensor measurements are scaled to [0,1], averaged and multiplied by 2π; the network predicts the sine of that scalar. It does not predict occupancy or environmental conditions. Runtime alternatives are the 2,704-byte sine-int8 model and the existing 16-input autoencoder demonstration.
+In VS Code run **MTK: build → MTK: flash → MTK: load sensors and ML → MTK: monitor**. To switch to comfort during a sensor demo, click in the same monitor terminal and enter these lines individually. The incoming readings pause after `STOP`.
 
-See the [model specifications and deliverables](docs/embedded-ml/README.md), [step-by-step user guide](docs/embedded-ml/RUNNING.md) and [validation results](docs/embedded-ml/VALIDATION.md). The combined firmware builds and the host tests pass (10 Nov 2026); ML inference on the board still needs verifying (task 2.1).
+```text
+STOP
+ML PRESET comfort-summer
+ML RUN
+RUN
+```
 
-### Part 1: the ML itself (Jun Yong and Brendan)
+Repeat with `ML PRESET sine-int8` to switch back. For the replay demo and the acceleration trace, follow the [classroom model instructions](docs/embedded-ml/RUNNING.md#switch-between-the-classroom-demo-models).
 
-| # | Task | What it means | Owner | Status |
-|---|---|---|---|---|
-| 2.1 | ML running on the real board | Real model output on the S3, not just laptop tests, then merge the branch into `main` | Jun Yong | Done 10 Nov: three sensors and swaps between all three models on the board, outputs checked against the model weights ([BOARD_VALIDATION.md](docs/embedded-ml/BOARD_VALIDATION.md)) |
-| 2.2 | Research S3 acceleration | Which S3 instructions speed up ML, which Espressif library uses them, and which model formats benefit (likely int8); a short write-up to explain to the professor | Brendan | Pending |
-| 2.3 | A small set of swappable models | Two or three small models with different inputs, at least one that uses the acceleration; note what each takes in and puts out | Jun Yong | Done 10 Nov: sine-float, sine-int8 and the 16-input autoencoder, swapped on the board; sine-int8 runs on ESP-NN's S3 vector kernel ([BOARD_VALIDATION.md](docs/embedded-ml/BOARD_VALIDATION.md#acceleration-evidence)) |
-| 2.4 | Prove the acceleration works | Time the same model with and without the acceleration once; this also feeds D5 (4.4) | Brendan | Started: Jun Yong's run shows sine-int8 calling the S3 vector kernel; the with and without timing is still to do |
-| 2.5 | Load models without reflashing | Decide whether bundled models are enough or new models must also be sendable over MQTT | Jun Yong, Brendan | Pending |
-| 2.6 | Explain the ML flow | Sensor → model → result in plain words, for the report and Tribunal 2 | Jun Yong, Brendan | Pending |
+See the [model specifications and deliverables](docs/embedded-ml/README.md), [step-by-step user guide](docs/embedded-ml/RUNNING.md), [validation results](docs/embedded-ml/VALIDATION.md) and [board results](docs/embedded-ml/BOARD_VALIDATION.md).
 
-### Part 2: configuring and switching ML (Hasif and Sitt)
-
-Both prerequisites are done: every console command, `ML` included, works over MQTT (task 1.4, [section 2](#d1-mqtt-between-real-boards-tasks-1115)), and the ML runs on the board (task 2.1). How MQTT works and what it supports is in [Over MQTT](#over-mqtt-how-it-works-and-what-to-send).
+### Part 1: the ML itself (Jun Yong)
 
 | # | Task | What it means | Status |
 |---|---|---|---|
-| 3.1 | Agree the ML setup format | What a user sends to choose model, input and output, in the same style as the sensor config lines and MQTT JSON | Pending team agreement; the existing `ML` command syntax is only a stepping stone |
+| 2.1 | ML running on the real board | Real model output on the S3, not just laptop tests, then merge the branch into `main` | Done 10 Nov: three sensors and swaps between all three models on the board, outputs checked against the model weights ([BOARD_VALIDATION.md](docs/embedded-ml/BOARD_VALIDATION.md)) |
+| 2.2 | Research S3 acceleration | Which S3 instructions speed up ML, which Espressif library uses them, and which model formats benefit (likely int8); a short write-up to explain to the professor | Partly done: the library is ESP-NN, and its S3 assembly path runs for sine-int8 ([BOARD_VALIDATION.md](docs/embedded-ml/BOARD_VALIDATION.md#acceleration-evidence)); the short write-up is still to do |
+| 2.3 | A small set of swappable models | Two or three small models with different inputs, at least one that uses the acceleration; note what each takes in and puts out | Done 10 Nov: sine-float, sine-int8 and the 16-input autoencoder, swapped on the board; sine-int8 runs on ESP-NN's S3 vector kernel. The classroom update adds comfort-summer and the people-counter export to `main`. Both still need a board run. |
+| 2.4 | Prove the acceleration works | Time the same model with and without the acceleration once; this also feeds D5 | Started: Jun Yong's run shows sine-int8 calling the S3 vector kernel; the with and without timing is done as D5 task 4.2 |
+| 2.5 | Load models without reflashing | Decide whether bundled models are enough or new models must also be sendable over MQTT | Partly done: bundled models are chosen at runtime without reflashing; whether new models are also sent over MQTT (D1 task 31) is still to decide |
+| 2.6 | Explain the ML flow | Sensor → model → result in plain words, for the report and Tribunal 2 | Pending; [RUNNING.md](docs/embedded-ml/RUNNING.md) explains where the comfort score fits in the classroom display |
+
+### Part 2: configuring and switching ML (Sitt)
+
+Both prerequisites are done: every console command, `ML` included, works over MQTT (task 1.4, [section 2](#d1-mqtt-between-real-boards-tasks-1115)), and the ML runs on the board (task 2.1). How MQTT works and what it supports is in [Over MQTT](#over-mqtt-how-it-works-and-what-to-send). Use the merged classroom ML code in `sensor_ml.c` as the base for 3.2 to 3.4. D6 needs 3.3 and 3.4 first: board B runs comfort-summer on board A's readings and sends the score to the LCD board.
+
+| # | Task | What it means | Status |
+|---|---|---|---|
+| 3.1 | Agree the ML setup format | What a user sends to choose model, input and output, in the same style as the sensor config lines and MQTT JSON | Draft on `d4-live-ml-sitt` ([LIVE_SETUP_PROPOSAL.md](https://github.com/junyonggoh2004/EMBSYS-P2-AAI15/blob/d4-live-ml-sitt/docs/embedded-ml/LIVE_SETUP_PROPOSAL.md), 10 Nov, not merged): one JSON message on `pico/<node>/cmd` naming the model, its inputs (this board or another board) and where the result goes. To update for the 16 Nov models, then agree |
 | 3.2 | Switch model live from the network | Change models over MQTT while sensing continues, not only from the console | Partial: MQTT can deliver existing ML commands, but model changes still require `STOP`, then `ML PRESET`/`ML MODEL`, `ML RUN`, `RUN`; `ML` commands over MQTT answered on the board on 10 Nov (D1 task 1.4) |
-| 3.3 | Switch the data source live | Feed the model from this board's sensors or another board's data over MQTT, and swap between them live | Pending; ML bindings currently accept only local configured sensors |
-| 3.4 | Choose where results go | Use the result on the board (trigger a rule or the LCD) or publish it for other boards | Pending; ML results currently print to the console |
+| 3.3 | Switch the data source live | Feed the model from this board's sensors or another board's data over MQTT, and swap between them live | Pending; ML bindings accept only this board's configured sensors. `ML REPLAY` takes typed-in values, also over MQTT after `STOP`, but only as a manual stand-in |
+| 3.4 | Choose where results go | Use the result on the board (trigger a rule or the LCD) or publish it for other boards | Pending; ML results print on the console only |
 | 3.5 | Bad input is handled | A wrong model or setup gives a clear error and never stops the sensors | Partial: existing ML command validation; unified setup and recovery still pending |
 | 3.6 | User how-to and demo steps | A short guide plus the live demo sequence: switch the model, then switch the source | Pending; current serial/MQTT command guide covers the partial checkpoint |
 | 3.7 | Board evidence and update | Logs, then fill this section | Pending real-board verification |
@@ -322,27 +331,27 @@ Earlier research remains in [D4_EMBEDDED_ML_RESEARCH.md](D4_EMBEDDED_ML_RESEARCH
 
 ---
 
-# 6. D5 task checklist
+# 6. D5 task checklist (Hasif)
 
-D5 is cut down, agreed on 10 Nov 2026. The professor said benchmarking is not for this module and not to run the full study now, and that it is not about which model is best; his own comparison idea is hard-coded against configurable. D5 therefore measures a few differences between the configurable platform and a fixed, hard-coded build, and reuses results already measured. Sitt owns D5, with Hasif. The rows are the agreed outline; the technical steps come later.
+D5 was cut down on 10 Nov 2026 and refocused on 17 Nov 2026. The professor said benchmarking is not for this module and not to run the full study now; comparing the configurable platform against a hard-coded build belongs in a later research paper, and the result is not about which model is best. In D4 the team chose models because they use the S3's built-in acceleration, so D5 measures and explains that: how fast and how large each model is on the S3, how much the acceleration adds, and why. Accuracy and the cost of configurability are out of scope. Every comparison uses the same board, firmware build and settings, so only the item being compared changes. Each row reports the run count, median, 95th percentile and maximum.
 
 | # | Task | What it means | Status |
 |---|---|---|---|
-| 4.1 | Agree the reduced scope | Drop the full programme, keep a few measurements and confirm them with the team | Pending |
-| 4.2 | Changing live against reflashing | How long a sensor or model change takes live, against rebuilding and reflashing | Pending |
-| 4.3 | Cost of being configurable | Time and memory per reading through the configurable path, against a fixed hard-coded one | Pending |
-| 4.4 | Acceleration result | Take the with and without timing from 2.4 into the table | Pending |
-| 4.5 | Reuse what is already measured | FreeRTOS against µT-Kernel, the SPI benchmark and the timing tests, collected into one table | Pending |
-| 4.6 | Short write-up | Method, one table and one conclusion paragraph; the rest goes on a list for a later paper | Pending |
+| 4.1 | Agree the scope | The models measured, the numbers kept (inference time, model size, memory, speed-up) and the run rule (at least 100 inferences per case, after a warm-up), confirmed with the team | Pending; can start now |
+| 4.2 | Acceleration on against off | The same INT8 model (sine-int8) on the same inputs, built once with ESP-NN's S3 path (`CONFIG_NN_OPTIMIZED=y`, the default) and once with its plain C path (`CONFIG_NN_ANSI_C=y`); the speed-up is the D4 task 2.4 result | Pending. Use one bound sensor or fixed inputs with `ML REPLAY` |
+| 4.3 | Float against INT8 | sine-float against sine-int8 (the same network and task) for inference time, model bytes and tensor arena bytes, plus comfort-summer as a float model; ESP-NN speeds up INT8 operations only, so float models run on plain CPU code | Pending. All three model files for this comparison are on `main`. |
+| 4.4 | Where the time goes | The `Invoke()` time inside InferenceTask against the full request time seen by SchedulerTask, which adds the `infer_mbf` round trip; for models this small the round trip can be most of the time and hide the speed-up | Pending; needs a benchmark-only timer around `Invoke()` in `inference_mtk.cpp` |
+| 4.5 | In the running system | 4.2's fastest case again with the sensors and MQTT running, with `TASKS` checked for drops and stack use, to show the result holds in the real firmware | Pending; after 4.2 |
+| 4.6 | Explanation and write-up | How the S3's vector instructions speed up INT8 through ESP-NN, why the chosen models and format, one results table and a conclusion; uses Jun Yong's 2.2 research | Pending; last |
 
-**Where the work is.** The first B1 to B8 benchmark plan and its decision record are on branch `s3-port-d5`, not merged; task 4.1 decides which parts stay. Existing measured results, such as µT-Kernel against the FreeRTOS baseline, are in [parity/PARITY.md](parity/PARITY.md).
+**Where the work is.** sine-float, sine-int8, comfort-summer, and the doorway classifier are on `main`. `ML REPLAY` runs a model on fixed inputs without connected sensors. Every successful ML result line prints `invoke_us`, and every model load prints its tensor arena use. The proof that sine-int8 calls ESP-NN's S3 assembly is in [BOARD_VALIDATION.md](docs/embedded-ml/BOARD_VALIDATION.md#acceleration-evidence). Earlier inference times for context are in [parity/PARITY.md](parity/PARITY.md): the autoencoder took 500–525 µs on µT-Kernel against 265–280 µs on the Arduino build, a gap put down to the task round trip and the port's `-Og` optimisation. The older B1 to B8 plan on branch `s3-port-d5` is replaced by this list.
 
 
 ---
 
 # 7. D6 task checklist
 
-Cody leads D6 with the whole team, agreed on 10 Nov 2026. The professor's original suggested use case used motion/light, temperature/humidity and a separate LCD over MQTT. The user clarified the board split on 11 Nov: **A acquires inputs only; B handles ML, storage, data and communication; C provides outputs**. Physical inputs therefore feed A→B→C; a direct A→C display is insufficient for the selected path. Exact devices, pins and B→C/storage interfaces remain to agree. The live multi-bus demonstration still requires GPIO, I2C and SPI on one board, a configured byte write/read, and a device swap/reconfiguration. The rows retain the agreed task numbers.
+Cody and Brendan own D6, with Cody leading (split of 16 Nov 2026); the whole team joins the rehearsal and Tribunal 2 preparation. The professor's suggested use case is three S3 boards: one whose motion and light sensors drive an output, one with temperature and humidity, and an LCD board that shows both over MQTT. The user clarified the board split on 11 Nov: **A acquires inputs only; B handles ML, storage, data and communication; C provides outputs**. Physical inputs therefore feed A→B→C; a direct A→C display is insufficient for the selected path. Exact devices, pins and B→C/storage interfaces remain to agree. He also wants a live multi-bus demo: GPIO, I2C and SPI on one board, writing one byte over SPI and reading it back, then swapping the SPI device and reconfiguring. The rows retain the agreed task numbers.
 
 | # | Task | What it means | Owner | Status |
 |---|---|---|---|---|
@@ -350,8 +359,8 @@ Cody leads D6 with the whole team, agreed on 10 Nov 2026. The professor's origin
 | 5.2 | Define each board | Its sensors, what it publishes, what it reacts to and what the LCD shows; parts and wiring per board (jumper wires from Mr Ajah) | Cody | Pending |
 | 5.3 | Multi-bus demo script | Step-by-step live demo of GPIO, I2C and SPI on one board, configured live, with the whole setup sent at once and then piece by piece | Cody | Pending |
 | 5.4 | SPI write and read by config | Write one byte, read it back, swap the device and reconfigure; config cannot do this yet | Brendan | Pending |
-| 5.5 | LCD board shows live data | Import LCD component and connect C to B's agreed output data/status | Brendan | Diagnostic imported in current working change; live path and combined panel evidence pending |
-| 5.6 | ML inside the use case | B runs ML on A's inputs and communicates results to C; typed remote bindings and result transport required | Hasif, Sitt | Pending |
+| 5.5 | LCD board shows live data | Merge the LCD work and connect C to B's agreed output data/status | Brendan | Diagnostic imported on `d6`; live path and combined panel evidence pending |
+| 5.6 | ML inside the use case | B runs ML on A's inputs and communicates results to C; typed remote bindings and result transport required | Cody, Brendan, with Sitt | Pending |
 | 5.7 | Full rehearsal on three boards | Run the whole thing end to end, record it and fill this section | Team | Pending |
 | 5.8 | Tribunal 2 preparation | Each person can explain which of their functions would change under a new requirement (theory only) | Everyone | Pending |
 

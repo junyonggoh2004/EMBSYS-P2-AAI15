@@ -85,7 +85,7 @@ typedef struct {
 #define APP_MBF_MSGS    8
 #define BENCH_MBF_MSGS  16
 #define CTRL_MBF_MSGS   4
-#define INFER_MSG_MAX   80     // infer_mbf request: model pointer and size, or 16 input floats
+#define INFER_MSG_MAX   144    // Header and up to 31 input floats
 #define APP_MSG_MAX     ((INT)sizeof(application_message_t))
 
 // net_flg bits, set by MQTTTask and the network event handler

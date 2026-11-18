@@ -42,6 +42,28 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(len(first_burst.splitlines()), 2)
         self.assertEqual(len(next_burst.splitlines()), 1)
 
+    def test_classroom_output_interpretation(self):
+        monitor = PrettyTelemetry()
+        output = monitor.rx(
+            '{"type":"ml","timestamp_ms":1000,"model":"comfort-summer","status":"OK",'
+            '"outputs":[78],"comfort_score":78,"input_source":"replay"}\n'
+            '{"type":"ml","timestamp_ms":3000,"model":"people-counter","status":"OK",'
+            '"outputs":[2],"direction":"out","input_source":"replay"}\n'
+        )
+        self.assertIn("Comfort 78/100 (replay)", output)
+        self.assertIn("Direction OUT (replay)", output)
+
+    def test_scalar_output_threshold_decisions(self):
+        monitor = PrettyTelemetry()
+        output = monitor.rx(
+            '{"type":"ml","timestamp_ms":1000,"model":"sine-int8","status":"OK",'
+            '"outputs":[0.5554941],"threshold":0.5,"threshold_exceeded":true}\n'
+            '{"type":"ml","timestamp_ms":3000,"model":"sine-float","status":"OK",'
+            '"outputs":[0.5],"threshold":0.5,"threshold_exceeded":false}\n'
+        )
+        self.assertIn("out [0.5554941]  |  PASS (> 0.5)", output)
+        self.assertIn("out [0.5]  |  AT OR BELOW (0.5)", output)
+
     def test_diagnostics_spi_and_unknown_payloads_pass_through(self):
         monitor = PrettyTelemetry()
         original = (

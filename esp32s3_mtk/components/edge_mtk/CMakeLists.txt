@@ -10,6 +10,14 @@ idf_component_register(SRCS "console_mtk.c" "hal_mtk.c" "runtime_mtk.c" "spi_ben
                                 esp_partition espressif__esp-tflite-micro
                        LDFRAGMENTS "port_iram.lf")
 
+set(classroom_models "${CMAKE_CURRENT_LIST_DIR}/../../../models/classroom")
+target_add_binary_data(${COMPONENT_LIB} "${classroom_models}/comfort_summer.tflite" BINARY)
+file(GLOB people_counter_model CONFIGURE_DEPENDS "${classroom_models}/people_counter_raw_int8.tflite")
+if(people_counter_model)
+    target_add_binary_data(${COMPONENT_LIB} "${people_counter_model}" BINARY)
+    target_compile_definitions(${COMPONENT_LIB} PRIVATE HAVE_PEOPLE_COUNTER_MODEL=1)
+endif()
+
 # Every printf/vprintf/puts/putchar in the image goes through console_mtk.c,
 # so console output is serialised by a µT-Kernel mutex.
 target_link_libraries(${COMPONENT_LIB} INTERFACE "-Wl,--wrap=printf" "-Wl,--wrap=vprintf"

@@ -55,6 +55,12 @@ ML output includes model ID, configuration generation, physical `raw_features`, 
 
 Missing or failed sensor readings invalidate the affected feature. Missing/stale inputs emit `outputs:null` with `MISSING_OR_STALE`; inconsistent timestamps emit `SAMPLE_SKEW`. Zero lux is valid. Default freshness limit is 5000 ms, maximum timestamp skew 2500 ms, output period 2000 ms. An initial null line before all sensors have produced a sample is normal.
 
+## Set a scalar output threshold
+
+After starting **MTK: monitor**, enter `ML THRESHOLD 0.5` and wait for `ML: OK THRESHOLD 0.5`. You can change the cutoff during sampling. `ML SHOW` displays the setting, and `ML THRESHOLD OFF` clears it. A board reset clears the cutoff. To apply it each time you load a demo configuration, add `ML THRESHOLD 0.5` before the final `RUN` line in that file.
+
+The monitor displays `PASS (> 0.5)` for a successful scalar result above the cutoff and `AT OR BELOW (0.5)` for results equal to or below it. Raw JSON includes `threshold` and the Boolean `threshold_exceeded` alongside the inference status. Skipped inferences and the 16-output autoencoder omit the decision. The sine model cutoff tests a unitless demo score. Physical quantities such as distance in cm have separate thresholds.
+
 ## Switch models without rebuilding
 
 Use the monitor to send these commands **one line at a time**:
@@ -84,6 +90,50 @@ RUN
 The autoencoder preset is explicitly a shape/execution demonstration. Its repeated features do not reproduce its training distribution. No meaningful anomaly decision is made. All outputs are exposed as a numeric vector, with no forced MSE scoring or probability interpretation.
 
 `ML MODEL <id>` changes the model while retaining bindings, but disables ML until `ML RUN` validates them. `ML PRESET <id>` supplies the appropriate demonstration bindings. Models are immutable bundled assets selected at runtime; installing arbitrary new `.tflite` files over serial is not implemented in this first version. The existing MQTT transfer subsystem is retained, but model uploads or other model-loading flows change the model revision and cause this ML pipeline to stop with `MODEL_CHANGED` until reconfigured.
+
+## Switch between the classroom demo models
+
+Build and flash once with the models you want available. For live readings, run **MTK: load sensors and ML** before opening **MTK: monitor**. Click in the same monitor terminal where the readings are scrolling. It accepts serial commands while displaying output. Enter each command on its own line and press Enter. Use `ML LIST` to see which model weights are available.
+
+```text
+STOP
+ML PRESET comfort-summer
+ML RUN
+RUN
+```
+
+`STOP` pauses the readings. Look for `ML: OK PRESET comfort-summer` and `ML: OK RUN`. The final `RUN` resumes sampling. Repeat with `ML PRESET sine-int8` to switch back.
+
+| Model | How to supply inputs | Result |
+|---|---|---|
+| `sine-int8` | Load the three-sensor profile and start live inference, or replay a phase with `ML REPLAY 1.57` | Unitless sine output. The board capture shows its ESP-NN vector calls. |
+| `comfort-summer` | Bind the AHT and run live, or enter `ML REPLAY 26.3 67` after selecting the model | Estimated comfort score on the source model's scale of 0–99. The monitor shows it as a score out of 100. |
+| `people-counter` | Select the bundled INT8 model, then enter `ML REPLAY` followed by a complete 31-value model-ready window | `IN`, `OUT`, or `NONE` with the winning class score. Replay produces a classification only. |
+
+To replay without connected sensors, open **MTK: monitor raw** and enter these commands on the flashed ESP32-S3:
+
+```text
+STOP
+ML MODEL comfort-summer
+ML REPLAY 26.3 67
+ML MODEL sine-int8
+ML REPLAY 1.57
+```
+
+The comfort replay uses °C and % RH. Its desktop reference is **92/100**. The sine output should be near 1. On the first successful sine inference after loading, look for `[ML-ACCEL]` and a positive `vector_calls` count. Replay reports its input source in JSON and in the formatted monitor. The scalar threshold command applies to the sine outputs.
+
+The comfort checkpoint estimates current comfort under the original summer training assumptions. It used thermal-comfort simulations, and its class score indicates the model's preferred class. It takes temperature and humidity. For the classroom panel, show that score alongside occupancy, temperature and lux. Use occupancy to distinguish occupied and empty settings, lux for brighten/hold/dim, and temperature for increase/hold/reduce cooling. A low comfort score alone gives no direction for cooling. The published comfort checkpoint is FP32.
+
+### Doorway model replay and hardware follow-up
+
+- Select `ML MODEL people-counter` after `STOP`. For a quick model-loading check, send `ML REPLAY` with exactly 31 zeroes. This exercises the model on a synthetic input. Use a labelled sensor trace to judge whether the direction is correct. [Model file and provenance](../../models/classroom/README.md)
+
+```text
+ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+```
+
+- Use the source project's preprocessing and labelled 31-value windows for replay. The pretrained classifier came from a single Grove ultrasonic sensor. Keep live occupancy counting based on the confirmed two-zone crossing sequence while testing how the classroom traces differ.
+- **When Brendan returns the hardware**, confirm both HC-SR04+ modules, the final TRIG/ECHO pins, and the physical zones before updating the wiring table or adding a live doorway profile. The supplied modules have 3.3 V-compatible Echo and use no resistor in this setup. Name the hallway zone A and classroom zone B. Confirm A → B entry, B → A exit, and turn-backs or ambiguous crossings leaving occupancy unchanged. Alternate pings and validate the separation with both sensors fitted.
 
 ## Run the sensor configuration demos
 

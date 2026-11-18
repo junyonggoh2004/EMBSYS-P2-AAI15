@@ -9,7 +9,14 @@
 static uint32_t now,rev;
 static int runs,loads,dim=1,fail_loads;
 static bool ready=true,fail_invoke;
-static float seen[16];
+static float seen[31];
+static int output_dim=1;
+const uint8_t _binary_comfort_summer_tflite_start[] = {1};
+const uint8_t _binary_comfort_summer_tflite_end[] = {0};
+#ifdef HAVE_PEOPLE_COUNTER_MODEL
+const uint8_t _binary_people_counter_raw_int8_tflite_start[] = {1};
+const uint8_t _binary_people_counter_raw_int8_tflite_end[] = {0};
+#endif
 const unsigned char g_autoencoder_model_data[]={1};
 const int g_autoencoder_model_size=1;
 static app_cfg_t configs[3];
@@ -22,16 +29,42 @@ const app_cfg_t *scheduler_config_by_name(const char *name) {
 bool inference_mgr_load_bytes(const uint8_t *bytes,uint32_t size) {
     (void)bytes; loads++; rev++;
     if(fail_loads) { fail_loads--; ready=false; return false; }
-    ready=true; dim=size==16440 ? 16:1; return true;
+    ready = true;
+    dim = size == 16440 ? 16 : 1;
+    output_dim = dim;
+    if (bytes == _binary_comfort_summer_tflite_start) {
+        dim = 2;
+        output_dim = 100;
+    }
+#ifdef HAVE_PEOPLE_COUNTER_MODEL
+    if (bytes == _binary_people_counter_raw_int8_tflite_start) {
+        dim = 31;
+        output_dim = 3;
+    }
+#endif
+    return true;
 }
 uint32_t inference_mgr_revision(void) { return rev; }
 bool inference_mgr_is_ready(void) { return ready; }
 bool inference_mgr_set_inputs(const float *p,int n) { assert(n==dim); memcpy(seen,p,(size_t)n*sizeof(float)); return true; }
 bool inference_mgr_run(void) { runs++; return !fail_invoke; }
-int inference_mgr_output_count(void) { return dim; }
-bool inference_mgr_get_output(int i,float *v) { assert(i<dim); *v=seen[i]; return true; }
+int inference_mgr_input_count(void) { return dim; }
+int inference_mgr_output_count(void) { return output_dim; }
+bool inference_mgr_get_output(int i,float *v) {
+    assert(i < output_dim);
+    *v = dim == 2 ? (i == 78 ? 0.8f : 0.0f) :
+         dim == 31 ? (i == 2 ? 0.8f : 0.0f) : seen[i];
+    return true;
+}
+static char last_line[1800];
+static int capture_puts(const char *line) {
+    snprintf(last_line, sizeof last_line, "%s", line);
+    return puts(line);
+}
 /* Include the actual implementation, exposing private state only to assertions. */
+#define puts capture_puts
 #include "../esp32s3_mtk/components/edge_mtk/sensor_ml.c"
+#undef puts
 static const uint8_t aht[]={8,0x80,0,6,0,0};
 static const uint8_t light[]={0,0,0,0,0,0,0,0};
 static const uint8_t pulse[]={0xd0,7,1};
@@ -77,5 +110,40 @@ int main(void) {
     sensor_ml_invalidate(); tick(); assert(runs==8);
     // wrap-safe sample ages, with fresh zero-millisecond samples allowed
     now=UINT32_MAX-100; cmd("ML PRESET"); cmd("ML RUN"); samples(); now=100; sensor_ml_poll(true); assert(runs==9);
+    cmd("ML RESET"); cmd("ML BIND 0 LIGHT light_lux 0 1000"); cmd("ML RUN");
+    assert(sensor_ml_command("ML THRESHOLD -0.5", true));
+    assert(sensor_ml_command("ML THRESHOLD nan", true));
+    assert(sensor_ml_command("ML THRESHOLD 1e99", true));
+    assert(sensor_ml_command("ML THRESHOLD 1 extra", true));
+    samples(); tick();
+    assert(strstr(last_line, "\"threshold\":-0.5,\"threshold_exceeded\":true"));
+    assert(sensor_ml_command("ML THRESHOLD 0", true));
+    tick();
+    assert(strstr(last_line, "\"threshold\":0,\"threshold_exceeded\":false"));
+    cmd("ML THRESHOLD OFF"); samples(); tick();
+    assert(strstr(last_line, "\"status\":\"OK\"") && !strstr(last_line, "threshold"));
+    cmd("ML THRESHOLD 0.5");
+    cmd("ML PRESET autoencoder"); cmd("ML RUN"); samples(); tick();
+    assert(strstr(last_line, "\"status\":\"OK\"") && !strstr(last_line, "threshold"));
+    cmd("ML PRESET sine-int8"); cmd("ML RUN");
+    last_line[0] = '\0'; tick();
+    assert(!last_line[0]); // No successful result or threshold decision without fresh samples.
+    cmd("ML PRESET comfort-summer"); assert(dim == 2 && output_dim == 100);
+    cmd("ML REPLAY 26.3 67"); assert(fabsf(seen[0]-26.3f)<0.001f && seen[1]==67);
+    int after_replay = runs;
+    cmd("ML REPLAY 26.3 67 3"); cmd("ML REPLAY 26.3 nan"); assert(runs == after_replay);
+    cmd("ML RUN"); samples(); tick(); assert(runs == after_replay + 1);
+    assert(fabsf(seen[0]-25.0f)<0.001f && fabsf(seen[1]-50.0f)<0.001f);
+    cmd("ML PRESET people-counter");
+#ifdef HAVE_PEOPLE_COUNTER_MODEL
+    assert(dim == 31 && output_dim == 3);
+    cmd("ML RUN"); assert(!enabled);
+    cmd("ML REPLAY 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31");
+    assert(runs == after_replay + 2 && seen[0] == 1 && seen[30] == 31);
+#else
+    assert(dim == 2 && output_dim == 100 && enabled);
+#endif
+    cmd("ML MODEL sine-int8"); assert(dim == 1 && output_dim == 1);
+    cmd("ML REPLAY 1.57"); assert(fabsf(seen[0] - 1.57f) < 0.001f);
     puts("sensor ML integration tests PASS (interpreter boundary simulated)");
 }

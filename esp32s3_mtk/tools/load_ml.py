@@ -25,10 +25,10 @@ def configure(connection, commands, model, inputs="all"):
     # Reuse the proven loader; remove its final RUN so ML configuration is stopped.
     if inputs=='aht-light':
         if model=='autoencoder':
-            raise ValueError('aht-light currently supports the scalar sine models only')
+            raise ValueError('autoencoder needs the full sensor preset')
         commands=[c for c in commands if 'name=DISTANCE|' not in c]
     load(connection,commands[:-1])
-    if inputs=='all':
+    if inputs == 'all' or model == 'comfort-summer':
         ml_command(connection,'ML PRESET '+model)
     else:
         ml_command(connection,'ML MODEL '+model)
@@ -47,7 +47,7 @@ def read_configuration(path):
     for command in commands[2:-1]:
         sensor_config = command.startswith("BEGINCFG|") and command.endswith("|ENDCFG")
         ml_config = command.startswith(("ML MODEL ", "ML PRESET ", "ML BIND ",
-                                        "ML UNBIND ", "ML TIMING ")) or command in ("ML RESET", "ML RUN")
+                                        "ML UNBIND ", "ML TIMING ", "ML THRESHOLD ")) or command in ("ML RESET", "ML RUN")
         if not command.isascii() or len(command) >= 512 or not (sensor_config or ml_config or command == "SHOW"):
             raise ValueError(f"Unsupported configuration line: {command}")
     return commands
@@ -64,7 +64,7 @@ def apply_configuration(connection, commands):
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--port',required=True)
-    parser.add_argument('--model',choices=['sine-float','sine-int8','autoencoder'],default='sine-float')
+    parser.add_argument('--model',choices=['sine-float','sine-int8','autoencoder','comfort-summer'],default='sine-float')
     parser.add_argument('--inputs',choices=['all','aht-light'],default='all')
     parser.add_argument("--config", type=Path, help="Apply sensor and ML commands from this file.")
     args=parser.parse_args()
