@@ -24,3 +24,10 @@ D6 firmware was rebuilt and reflashed, and isolated
 firmware was not changed. The PC relay is not the intended B-to-C
 MQTT transport; live sensor, occupancy, ML, and stale-state integration
 remains to be implemented.
+
+## Private MQTT mock follow-up
+
+The opt-in Board B to C mock snapshot path, its local broker setup, and its
+limits are documented in [MQTT_MOCK_TEST.md](MQTT_MOCK_TEST.md). The firmware
+keeps `LCDTEST` available independently. MQTT values remain synthetic until
+Board A events and the final B application snapshot are integrated.

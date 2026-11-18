@@ -16,6 +16,9 @@ See the [updated wiring diagrams](docs/d6/PIN_TO_HOLE_WIRING.md) and
 historical evidence.
 The [next three integration steps](docs/d6/NEXT_STEPS.md) define the fixture,
 LCD import and remote-display gates.
+The opt-in [private MQTT Board B to C mock test](docs/d6/MQTT_MOCK_TEST.md)
+exercises the transport and portrait LCD with synthetic values while preserving
+the isolated `LCDTEST` command.
 D3 is the timing/sequencing subsystem, not the scope of the whole project.
 The user selected the doorway scenario on 13 November; the earlier doorway
 plan remains archived as reference evidence, and final fixture/team approval

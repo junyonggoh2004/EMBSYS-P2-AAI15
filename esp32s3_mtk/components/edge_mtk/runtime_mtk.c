@@ -212,6 +212,7 @@ static bool is_platform_command(const char *line)
     static const char *const k_words[] = {
         "TASKS", "APP", "WIFISCAN", "WIFIDROP", "SPIID", "SPILOGPLAN", "SPILOGVERIFY", "SPILOGWRITE",
         "SPICHECK", "SPISCAN", "SPIPROGRAM", "SPIVERIFY", "SPIBENCH", "STALL", "LCDTEST",
+        "D6MOCKPUB", "D6VIEW",
     };
     size_t n = strcspn(line, " \t");
     for (size_t i = 0; i < sizeof k_words / sizeof k_words[0]; i++)
@@ -395,6 +396,44 @@ static bool platform_command(const char *line)
 {
     if (strcasecmp(line, "TASKS") == 0) {
         runtime_print_tasks();
+    } else if (strcasecmp(line, "D6VIEW") == 0) {
+        if (strcmp(runtime_node_id(), "s3-003")) {
+            puts("[D6MQTT] D6VIEW is for Board C (s3-003)");
+        } else {
+            bench_msg_t b = { .name = "D6VIEW" };
+            puts(runtime_send(bench_mbf, &b, sizeof b) ?
+                 "[D6MQTT] display queued" : "[D6MQTT] display queue full");
+        }
+    } else if (strncasecmp(line, "D6MOCKPUB", 9) == 0 &&
+               (line[9] == 0 || line[9] == ' ' || line[9] == '\t')) {
+        unsigned occupancy;
+        char extra;
+        if (strcmp(runtime_node_id(), "s3-002")) {
+            puts("[D6MQTT] D6MOCKPUB is for Board B (s3-002)");
+        } else if (sscanf(line + 9, " %u %c", &occupancy, &extra) != 1 || occupancy > 9999) {
+            puts("[D6MQTT] usage: D6MOCKPUB <occupancy_0_to_9999>");
+        } else {
+            T_RFLG flags;
+            if (tk_ref_flg(net_flg, &flags) != E_OK || !(flags.flgptn & NET_MQTT_UP)) {
+                puts("[D6MQTT] broker disconnected; nothing published");
+            } else {
+                static uint32_t seq;
+                pub_msg_t out = { .op = PUB_PUBLISH, .qos = 1 };
+                snprintf(out.topic, sizeof out.topic, "d6/board-b/snapshot");
+                int n = snprintf(out.payload, sizeof out.payload,
+                    "{\"v\":1,\"seq\":%lu,\"occupancy\":%u,\"temperature_c\":27.5,\"humidity_pct\":65.2,\"light_lux\":420}",
+                    (unsigned long)(seq + 1), occupancy);
+                out.len = (uint16_t)n;
+                if (n < 0 || (size_t)n >= sizeof out.payload ||
+                    !runtime_send(pub_mbf, &out, sizeof out)) {
+                    puts("[D6MQTT] publish queue full");
+                } else {
+                    ++seq;
+                    printf("[D6MQTT] B mock snapshot queued seq=%lu occupancy=%u\n",
+                           (unsigned long)seq, occupancy);
+                }
+            }
+        }
     } else if (strncasecmp(line, "LCDTEST", 7) == 0 &&
                (line[7] == 0 || line[7] == ' ' || line[7] == '\t')) {
         unsigned width, height, x_offset, y_offset, madctl, invert;
@@ -605,14 +644,68 @@ static void application_task(INT stacd, void *exinf)
 
 // ---------- BenchmarkTask ----------
 
+void runtime_d6_snapshot_receive(const char *payload, int length)
+{
+    /* The temporary contract uses the documented key order. Reject partial,
+     * oversized and malformed messages before handing them to the LCD owner. */
+    if (!payload || length < 2 || length >= 192 || memchr(payload, 0, (size_t)length)) {
+        puts("[D6MQTT] rejected snapshot length");
+        return;
+    }
+    char json[192];
+    memcpy(json, payload, (size_t)length);
+    json[length] = 0;
+    unsigned version, seq, occupancy, light;
+    float temperature, humidity;
+    int consumed = 0;
+    int fields = sscanf(json,
+        "{\"v\":%u,\"seq\":%u,\"occupancy\":%u,\"temperature_c\":%f,\"humidity_pct\":%f,\"light_lux\":%u}%n",
+        &version, &seq, &occupancy, &temperature, &humidity, &light, &consumed);
+    if (fields != 6 || consumed != length || version != 1 || seq == 0 ||
+        occupancy > 9999 || !(temperature >= -40.0f && temperature <= 85.0f) ||
+        !(humidity >= 0.0f && humidity <= 100.0f) || light > 65535) {
+        puts("[D6MQTT] rejected snapshot schema/range");
+        return;
+    }
+    bench_msg_t b = { .name = "D6SNAP", .d6_seq = seq,
+                      .d6_occupancy = (uint16_t)occupancy,
+                      .d6_light = (uint16_t)light,
+                      .d6_temperature = temperature, .d6_humidity = humidity };
+    if (!runtime_send(bench_mbf, &b, sizeof b)) puts("[D6MQTT] display queue full");
+}
+
+static int d6_draw_snapshot(const bench_msg_t *b)
+{
+    const uint16_t bg = 0x080f, fg = 0xffff, accent = 0x37db;
+    char text[32];
+    int r = lcd_output_fill(bg);
+    if (r) return r;
+    if ((r = lcd_output_draw_text(2, 4, "ROOM MON", fg, bg, 1))) return r;
+    if ((r = lcd_output_draw_text(2, 20, "MOCK MQTT", accent, bg, 1))) return r;
+    snprintf(text, sizeof text, "OCC %u", (unsigned)b->d6_occupancy);
+    if ((r = lcd_output_draw_text(2, 46, text, fg, bg, 1))) return r;
+    snprintf(text, sizeof text, "TEMP %.1f C", (double)b->d6_temperature);
+    if ((r = lcd_output_draw_text(2, 86, text, fg, bg, 1))) return r;
+    snprintf(text, sizeof text, "HUM %.1f%%", (double)b->d6_humidity);
+    if ((r = lcd_output_draw_text(2, 126, text, fg, bg, 1))) return r;
+    snprintf(text, sizeof text, "LUX %u", (unsigned)b->d6_light);
+    if ((r = lcd_output_draw_text(2, 166, text, fg, bg, 1))) return r;
+    snprintf(text, sizeof text, "SEQ %lu", (unsigned long)b->d6_seq);
+    if ((r = lcd_output_draw_text(2, 206, text, accent, bg, 1))) return r;
+    return lcd_output_draw_text(2, 246, "B > C OK", 0x07e0, bg, 1);
+}
+
 static void benchmark_task(INT stacd, void *exinf)
 {
     (void)stacd; (void)exinf;
     bench_msg_t b;
+    bench_msg_t latest = { 0 };
+    bool d6_view = false;
     for (;;) {
         if (tk_rcv_mbf(bench_mbf, &b, TMO_FEVR) > 0) {
             runtime_alive(RT_BENCHMARK);
             if (strcmp(b.name, "LCDTEST") == 0) {
+                d6_view = false;
                 lcd_output_config_t config = {
                     .width = b.lcd_width, .height = b.lcd_height,
                     .x_offset = b.lcd_x_offset, .y_offset = b.lcd_y_offset,
@@ -628,6 +721,32 @@ static void benchmark_task(INT stacd, void *exinf)
                 printf("[LCD] test %s result=%d\n",
                        result == HAL_OK ? "complete" : "failed", result);
                 lcd_output_deinit();
+            }
+            else if (strcmp(b.name, "D6VIEW") == 0) {
+                const lcd_output_config_t config = {
+                    .width = 76, .height = 284, .x_offset = 82, .y_offset = 18,
+                    .madctl = 0, .invert_colors = false
+                };
+                lcd_output_deinit();
+                int result = lcd_output_init(&config);
+                d6_view = result == HAL_OK;
+                if (d6_view && latest.d6_seq) result = d6_draw_snapshot(&latest);
+                else if (d6_view) {
+                    result = lcd_output_fill(0x080f);
+                    if (result == HAL_OK) result = lcd_output_draw_text(2, 10, "WAIT B MQTT", 0xffff, 0x080f, 1);
+                }
+                printf("[D6MQTT] C view result=%d\n", result);
+            }
+            else if (strcmp(b.name, "D6SNAP") == 0) {
+                if (b.d6_seq <= latest.d6_seq) {
+                    printf("[D6MQTT] stale/duplicate seq=%lu\n", (unsigned long)b.d6_seq);
+                } else {
+                    latest = b;
+                    int result = d6_view ? d6_draw_snapshot(&latest) : HAL_OK;
+                    printf("[D6MQTT] C snapshot seq=%lu occupancy=%u display=%d active=%u\n",
+                           (unsigned long)b.d6_seq, (unsigned)b.d6_occupancy,
+                           result, d6_view ? 1u : 0u);
+                }
             }
             else if (strcmp(b.name, "SPIBENCH") == 0)
                 mtk_spi_benchmark(b.value_us >> 30, b.value_us & 0x3fffffffu);

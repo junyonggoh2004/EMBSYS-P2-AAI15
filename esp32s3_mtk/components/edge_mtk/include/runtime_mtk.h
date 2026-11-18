@@ -64,6 +64,10 @@ typedef struct {
     uint16_t lcd_width, lcd_height;
     uint16_t lcd_x_offset, lcd_y_offset;
     uint8_t  lcd_madctl, lcd_invert;
+    /* Temporary D6 MQTT display fixture; unused by LCDTEST and benchmarks. */
+    uint32_t d6_seq;
+    uint16_t d6_occupancy, d6_light;
+    float d6_temperature, d6_humidity;
 } bench_msg_t;
 
 // ---------- ctrl_mbf: platform commands that arrived over MQTT ----------
@@ -128,6 +132,9 @@ ER inference_mtk_init(void);
 
 // Records a timing sample for BenchmarkTask without blocking the caller.
 void runtime_bench(const char *name, uint32_t value_us);
+
+/* Fixed-schema, opt-in Board B -> C MQTT display fixture. */
+void runtime_d6_snapshot_receive(const char *payload, int length);
 
 // Registered by the MQTT layer (task 30); SchedulerTask calls them so that
 // configuration is only ever applied in that task.
