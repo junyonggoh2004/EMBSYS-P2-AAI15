@@ -83,6 +83,10 @@ bool mqtt_follow_remote_source(const char *other_node_id,
                                const char *remote_source,
                                const char *local_alias);
 
+// Forget every followed remote source: unsubscribe and stop re-subscribing
+// after reconnect. Called by CLEAR in the same task as mqtt_follow_remote_source().
+void mqtt_unfollow_remote_sources(void);
+
 // Register callback for remote sensor frames (after mapping)
 void mqtt_set_remote_sensor_cb(mqtt_remote_sensor_cb_t cb);
 

@@ -32,22 +32,19 @@
 #include "nvs_flash.h"
 
 #include "hal/hal.h"
+#include "mqtt/follow_list.h"
 #include "mqtt/mqtt_model_transfer.h"
 #include "mqtt/mqtt_telemetry.h"
 #include "mqtt/sensor_bridge.h"
 #include "runtime_mtk.h"
 
 #define MQTT_BUF_SIZE   (SCHED_TEXT_MAX + 512)
-#define MAX_FOLLOWS     8
 
 static char s_host[64];
 static uint16_t s_port = 1883;
 static char s_node[64] = "pico-node";
 static char s_client_id[64] = "pico";
 static volatile bool s_configured;          // set by mqtt_init() in SchedulerTask
-
-static char s_follows[MAX_FOLLOWS][PUB_TOPIC_MAX];   // re-subscribed on every connect
-static volatile int s_nfollows;
 
 static esp_mqtt_client_handle_t s_client;
 static volatile bool s_wifi_started;
@@ -174,6 +171,10 @@ void mqtt_publish_heartbeat(uint32_t uptime_s)
     enqueue(PUB_PUBLISH, topic, payload, strlen(payload), 0, false);
 }
 
+// Followed topics live in follow_list (SchedulerTask writes, MQTTTask
+// resubscribes on connect). A full list is refused before the bridge mapping
+// is added, so a configuration never succeeds with a topic that a reconnect
+// would silently drop.
 bool mqtt_follow_remote_source(const char *other_node_id, const char *remote_source,
                                const char *local_alias)
 {
@@ -181,21 +182,37 @@ bool mqtt_follow_remote_source(const char *other_node_id, const char *remote_sou
         printf("[MQTT] follow_remote_source: invalid args\n");
         return false;
     }
+    char topic[FOLLOW_LIST_TOPIC_MAX];
+    follow_add_t state = follow_list_check(other_node_id, remote_source, topic);
+    if (state == FOLLOW_INVALID) {
+        printf("[MQTT] follow_remote_source: invalid or overlong topic for %s/%s\n", other_node_id, remote_source);
+        return false;
+    }
+    if (state == FOLLOW_FULL) {
+        printf("[MQTT] follow_remote_source: follow list full (%d), %s refused; CLEAR first\n",
+               FOLLOW_LIST_MAX, topic);
+        return false;
+    }
     if (!sensor_bridge_add_mapping(other_node_id, remote_source, local_alias)) {
         printf("[MQTT] follow_remote_source: bridge add failed\n");
         return false;
     }
-    char topic[PUB_TOPIC_MAX];
-    snprintf(topic, sizeof topic, "pico/%s/sensor/%s/line", other_node_id, remote_source);
-    bool known = false;
-    for (int i = 0; i < s_nfollows; i++) known = known || strcmp(s_follows[i], topic) == 0;
-    if (!known && s_nfollows < MAX_FOLLOWS) {
-        snprintf(s_follows[s_nfollows], PUB_TOPIC_MAX, "%s", topic);
-        __atomic_add_fetch(&s_nfollows, 1, __ATOMIC_RELEASE);
-    }
+    if (state == FOLLOW_ADDED) follow_list_add(topic);   // checked above; same task
     enqueue(PUB_SUBSCRIBE, topic, "", 0, 1, false);   // also subscribed again on every connect
     printf("[MQTT] follow_remote_source: %s/%s -> %s via %s\n", other_node_id, remote_source, local_alias, topic);
     return true;
+}
+
+void mqtt_unfollow_remote_sources(void)
+{
+    int n = follow_list_count(), lost = 0;
+    for (int i = 0; i < n; i++)
+        if (!enqueue(PUB_UNSUBSCRIBE, follow_list_topic(i), "", 0, 0, false)) lost++;
+    follow_list_clear();
+    if (lost)
+        printf("[MQTT] unfollow: %d of %d unsubscribes not queued; they lapse at the next reconnect\n", lost, n);
+    else if (n)
+        printf("[MQTT] unfollow: %d remote topic(s)\n", n);
 }
 
 // ---------- inbound routing (runs in the esp-mqtt task) ----------
@@ -398,6 +415,24 @@ void mqtt_wifi_scan(void)
 
 // ---------- MQTTTask ----------
 
+// Retries if SchedulerTask clears the list mid-copy. Topics followed after a
+// clear also have their own PUB_SUBSCRIBE queued, so a bounded retry suffices.
+static void resubscribe_follows(char *topic, size_t size)
+{
+    for (int attempt = 0; attempt < 4; attempt++) {
+        int n;
+        uint32_t gen = follow_list_snapshot(&n);
+        bool stable = true;
+        for (int i = 0; i < n && stable; i++) {
+            follow_list_copy(i, topic, size);
+            stable = follow_list_unchanged(gen);
+            if (stable) esp_mqtt_client_subscribe(s_client, topic, 1);
+        }
+        if (stable) return;
+    }
+    printf("[MQTT] follow list kept changing during resubscribe\n");
+}
+
 static void on_connected(void)
 {
     printf("[MQTT] connected to broker\n");
@@ -409,8 +444,7 @@ static void on_connected(void)
     printf("[MQTT] Subscribing to broadcast: pico/broadcast/config\n");
     printf(esp_mqtt_client_subscribe(s_client, "pico/broadcast/config", 1) >= 0 ? "[MQTT] Subscribed OK to: broadcast\n"
                                                                                : "[MQTT] FAILED to subscribe to: broadcast\n");
-    int nf = __atomic_load_n(&s_nfollows, __ATOMIC_ACQUIRE);
-    for (int i = 0; i < nf; i++) esp_mqtt_client_subscribe(s_client, s_follows[i], 1);
+    resubscribe_follows(topic, sizeof topic);
 
     char payload[128];
     snprintf(topic, sizeof topic, "pico/%s/presence", s_node);
@@ -532,6 +566,7 @@ void mqtt_task_body(void)
         while (got > 0) {
             if (mqtt_up) {                   // offline: dropped, as on the Pico
                 if (m.op == PUB_SUBSCRIBE) esp_mqtt_client_subscribe(s_client, m.topic, m.qos);
+                else if (m.op == PUB_UNSUBSCRIBE) esp_mqtt_client_unsubscribe(s_client, m.topic);
                 else if (esp_mqtt_client_publish(s_client, m.topic, m.payload, m.len, m.qos, m.retain) < 0)
                     printf("[MQTT] pub err on %s\n", m.topic);
             }

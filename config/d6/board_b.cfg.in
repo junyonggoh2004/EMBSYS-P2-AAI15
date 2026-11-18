@@ -1,0 +1,4 @@
+# RAW TRANSPORT CHECKPOINT: validate/re-publish A's bytes under B's aliases.
+# Does not configure typed ML, physical sensor acquisition or storage writes.
+BEGINCFG|name=IN_AHT|proto=mqtt|mode=stream|freq_hz=1|remote_node=@NODE_A@|remote_source=AHT|ENDCFG
+BEGINCFG|name=IN_LIGHT|proto=mqtt|mode=stream|freq_hz=1|remote_node=@NODE_A@|remote_source=LIGHT|ENDCFG

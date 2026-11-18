@@ -1,0 +1,6 @@
+Host source base: 91212869981f9d49653e91a2e28ca37aab0fc70d
+Source state: uncommitted configuration/demo changes.
+Checks: sh tools/d6_test.sh; python3 -m unittest discover -s tests -p test_d6_demo.py
+The focused demo suite was rerun after adding the noninteractive no-publish regression.
+Native checks only: no broker connection, serial access, flash, storage writes or physical D6 trials.
+Reference fixtures remain subject to actual hardware inventory/wiring confirmation.

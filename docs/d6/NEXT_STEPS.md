@@ -8,6 +8,13 @@ Use the [plan](../D6_USECASE_VALIDATION_PLAN.md) and copy the
 [worksheet](../D6_TRIAL_WORKSHEET.md) for each actual session.
 Implemented changes, native/build results and remaining physical gates are in
 [integration status](INTEGRATION_STATUS.md).
+Reference [board configurations](BOARD_CONFIGURATIONS.md) and the
+[demo script](DEMO_SCRIPT.md) now cover raw A→B→C transport and complete versus
+piecewise setup. Physical fixture verification and full application/output
+policies remain open.
+The user subsequently selected A's existing AHT + TSL2561 (SDA1/SCL2) and C's
+reviewed LCD-only fixture. Actual wiring/panel checks, motion and B storage
+remain open; fixture selection alone does not pass a physical trial.
 
 ## Baseline checked
 

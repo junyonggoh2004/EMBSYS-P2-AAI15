@@ -230,6 +230,7 @@ static void cmd_cb(const char *cmd) {
         scheduler_reset();
         rules_reset();
         sensor_bridge_reset();
+        mqtt_unfollow_remote_sources();   // otherwise old topics resubscribe forever
 
         // No configs loaded after CLEAR → cfg_ready = false
         if (g_cfg_ready) *g_cfg_ready = false;

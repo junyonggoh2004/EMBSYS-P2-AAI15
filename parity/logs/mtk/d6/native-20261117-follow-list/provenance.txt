@@ -1,0 +1,9 @@
+Host source base: 91212869981f9d49653e91a2e28ca37aab0fc70d
+Source state: uncommitted D6 configuration/demo changes plus the follow-list fix (17 Nov 2026).
+Change: followed remote topics moved to EdgeCore mqtt/follow_list.c; full list refused before bridge mapping;
+MQTT CLEAR unsubscribes and empties it; reconnect resubscription retries if CLEAR runs mid-copy.
+Checks: sh tools/d6_test.sh (also with -fsanitize=address,undefined); sh tools/cody_test.sh;
+sh tools/d2_host_test.sh; sh tools/check_hal_boundary.sh; sh tools/mtk.sh purity; sh tools/mtk.sh check; sh tools/mtk.sh image.
+Linked map: follow_list s_topics 0x500 bytes at 0x3c123164 (EdgeCore BSS, PSRAM-mapped).
+Arduino EdgeS3 baseline and legacy Pico stub edited but NOT compiled here.
+Native/build checks only: no broker, serial, flash or physical D6 trial; T12 broker outage remains NOT RUN.

@@ -74,6 +74,25 @@ or allocation. It replaces the bridge's old local hex scratch with a bounded
 frame object. The application image is `0x13f260` bytes, with 58% of the app
 partition free. Runtime heap/stack margin under combined load is still unmeasured.
 
+## Follow-list fix — 17 November 2026
+
+MQTT `CLEAR` reset bridge mappings but left followed topics subscribed and
+listed for reconnect; once 8 topics had been followed, a new follow was
+subscribed once, not listed, and still reported success, so a broker
+reconnect (T12) silently lost it. Followed topics now live in portable
+`mqtt/follow_list.c`: a full list is refused (config `FAIL`) before any bridge
+mapping is added, MQTT `CLEAR` queues unsubscribes and empties the list, and
+MQTTTask's reconnect copy retries if a `CLEAR` lands mid-copy. Serial `CLEAR`
+is unchanged (it still resets neither bridge mappings nor follows).
+
+`tests/test_follow_list.c` is in `sh tools/d6_test.sh`. D6 native (also under
+address/undefined sanitizers), Cody, D2 host, HAL-boundary and purity checks,
+pinned-SDK `mtk.sh check` and `mtk.sh image` passed; the linked map places the
+1280-byte list in PSRAM-mapped EdgeCore BSS, replacing net_mtk's internal-RAM
+copy. Arduino EdgeS3 and the legacy Pico stub were edited but not compiled.
+No broker reconnect was exercised; T12 remains NOT RUN.
+[Logs and provenance](../../parity/logs/mtk/d6/native-20261117-follow-list/provenance.txt).
+
 ## Remaining acceptance gates
 
 1. Confirm A input inventory/pins, B handling/storage and B→C topic/payload,

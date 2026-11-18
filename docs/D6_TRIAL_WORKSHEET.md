@@ -7,9 +7,15 @@ Refined 11 November 2026 with decision and per-attempt evidence fields; see
 the [next integration steps](d6/NEXT_STEPS.md).
 
 Board roles clarified by the user on 11 November: **A input only; B ML,
-storage, data handling and communication; C output**. Exact fixture and B→C
-transport/storage contracts remain pending. A→C bypass alone does not prove
+storage, data handling and communication; C output**. The user selected the
+existing AHT + TSL2561 fixture on A and reviewed LCD-only fixture on C.
+Actual wiring/panel verification and B→C transport/storage contracts remain
+pending. A→C bypass alone does not prove
 the selected A→B→C path.
+Use the [board configurations](d6/BOARD_CONFIGURATIONS.md) and
+[demo script](d6/DEMO_SCRIPT.md) to record a reference-fixture transport
+rehearsal. Raw C receipt and an independent LCD pattern do not pass T02's
+live sensor display requirement.
 
 ## Decision register
 
@@ -18,6 +24,7 @@ trials. PENDING does not mean an interface or numerical limit is approved.
 
 | Decision | Agreed value / owner / date / evidence | Dependent trials |
 |---|---|---|
+| Initial demo fixtures | SELECTED by user, 11 Nov 2026: AHT + TSL2561 on A (SDA1/SCL2); reviewed LCD-only wiring on C. Physical verification NOT RUN; motion and B storage separate | Initial transport and panel bring-up |
 | Scenario, doorway inclusion, motion source and output behavior | PENDING | T01, T03, T16 |
 | A/B/C inventory, unique node/source names, pin/power diagrams | PENDING | All physical trials |
 | C panel geometry, offsets, orientation, colors and fixture | PENDING | All display trials |

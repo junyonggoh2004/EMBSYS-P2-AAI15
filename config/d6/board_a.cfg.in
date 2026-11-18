@@ -1,0 +1,4 @@
+# Reference v2-i2c input fixture: shared SDA1/SCL2, 100 kHz.
+# Rendering selects AHT only or AHT + LIGHT. No motion classification/output.
+BEGINCFG|name=AHT|proto=i2c|i2c.sensor=aht|mode=poll|freq_hz=0.5|timing.timeout_ms=600|i2c.sda=1|i2c.scl=2|i2c.addr=0x38|i2c.baud=100000|ENDCFG
+BEGINCFG|name=LIGHT|proto=i2c|i2c.sensor=tsl2561|mode=poll|freq_hz=0.5|timing.timeout_ms=600|i2c.sda=1|i2c.scl=2|i2c.addr=@LIGHT_ADDRESS@|i2c.baud=100000|ENDCFG

@@ -11,6 +11,9 @@ ${CC:-cc} ${CFLAGS:-} -std=c11 -Wall -Wextra -Werror -I libraries/EdgeCore/src \
   tests/test_sensor_bridge.c libraries/EdgeCore/src/mqtt/sensor_bridge.c \
   libraries/EdgeCore/src/mqtt/sensor_frame.c -o "$OUT_DIR/bridge"
 "$OUT_DIR/bridge"
+${CC:-cc} ${CFLAGS:-} -std=c11 -Wall -Wextra -Werror -I libraries/EdgeCore/src \
+  tests/test_follow_list.c libraries/EdgeCore/src/mqtt/follow_list.c -o "$OUT_DIR/follow"
+"$OUT_DIR/follow"
 LCD_DIR=esp32s3_mtk/components/lcd_output
 ${CC:-cc} ${CFLAGS:-} -std=c11 -Wall -Wextra -Werror \
   -I "$LCD_DIR/include" -I "$LCD_DIR" -I libraries/EdgeCore/src \
@@ -19,3 +22,4 @@ ${CC:-cc} ${CFLAGS:-} -std=c11 -Wall -Wextra -Werror \
   "$LCD_DIR/tests/test_lcd_output.c" -o "$OUT_DIR/lcd"
 "$OUT_DIR/lcd"
 python3 -m unittest discover -s tests -p test_mtk_check.py
+python3 -m unittest discover -s tests -p test_d6_demo.py

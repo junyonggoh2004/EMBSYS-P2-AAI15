@@ -44,6 +44,7 @@ typedef struct {
 typedef enum {
     PUB_PUBLISH = 0,
     PUB_SUBSCRIBE,             // topic only; MQTTTask owns the client, so others ask
+    PUB_UNSUBSCRIBE,           // topic only; used by CLEAR for followed remote sources
 } pub_op_t;
 
 typedef struct {

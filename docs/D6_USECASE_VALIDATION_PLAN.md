@@ -218,9 +218,13 @@ location and device owner approval. Power off before physical substitution.
 9. Run fault trials below separately, restore the known preset after each and
    capture recovery. Save TASKS/resources and independent display evidence.
 
-Runnable per-board `.cfg` files and exact SPI/display/ML commands are next-stage
-implementation artifacts after fixture and parser agreement. This plan does
-not present proposed interfaces as executable commands.
+Reference [board configurations](d6/BOARD_CONFIGURATIONS.md) and a
+[demo script](d6/DEMO_SCRIPT.md) now define the supported raw A→B→C transport
+checkpoint and separate LCD pattern. `tools/d6_demo.py` renders explicit-node
+MQTT plans for complete/piecewise configuration without contacting hardware.
+These target named reference fixtures; actual fixture agreement and physical
+runs remain open. Live LCD/ML/storage and SPI-swap commands still depend on
+their agreed interfaces and implementation.
 
 ## 9. Trials and acceptance
 

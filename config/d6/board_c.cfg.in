@@ -1,0 +1,4 @@
+# RAW TRANSPORT CHECKPOINT: C follows B, never A directly.
+# No physical sensors, automatic LCD initialization or live rendering.
+BEGINCFG|name=VIEW_AHT|proto=mqtt|mode=stream|freq_hz=1|remote_node=@NODE_B@|remote_source=IN_AHT|ENDCFG
+BEGINCFG|name=VIEW_LIGHT|proto=mqtt|mode=stream|freq_hz=1|remote_node=@NODE_B@|remote_source=IN_LIGHT|ENDCFG

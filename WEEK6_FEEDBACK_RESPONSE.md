@@ -65,6 +65,12 @@ This file is the single record of the professor's feedback on the Week 6 design 
 
 ### D6 LCD/parser integration and board roles (11 November 2026)
 
+**Configuration/demo follow-up:** reference A/B/C presets and an offline MQTT
+command generator now cover the existing A→B→C raw relay, complete/piecewise
+setup and C's separate LCD diagnostic. The [demo script](docs/d6/DEMO_SCRIPT.md)
+requires observed ACKs and subscriber/serial evidence; native parser tests
+do not close live LCD, ML, storage or physical acceptance gates.
+
 The user clarified **A input only; B ML, storage, data handling and
 communication; C output**. The current D6 plan/worksheet use A→B→C, with B's
 remote ML bindings, output transport and storage contract still open.

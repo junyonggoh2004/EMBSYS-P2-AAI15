@@ -500,6 +500,10 @@ bool mqtt_unfollow_node_line(const char *other_node_id) {
     return true;
 }
 
+// Shared CLEAR calls this. The legacy Pico keeps no follow list and does not
+// resubscribe followed topics after reconnect, so there is nothing to forget.
+void mqtt_unfollow_remote_sources(void) {}
+
 bool mqtt_follow_remote_source(const char *remote_node_id,
                                const char *remote_source,
                                const char *local_name)

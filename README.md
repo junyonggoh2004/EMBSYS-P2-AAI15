@@ -10,6 +10,9 @@ Board roles clarified on 11 November: **A input only; B ML, storage, data
 handling and communication; C output**.
 The [next three integration steps](docs/d6/NEXT_STEPS.md) define the fixture,
 LCD import and remote-display gates.
+Reference [board configurations](docs/d6/BOARD_CONFIGURATIONS.md) and the
+[demo script](docs/d6/DEMO_SCRIPT.md) provide explicit-node raw transport and
+complete/piecewise configuration plans; live LCD/ML/storage trials remain pending.
 D3 is the timing/sequencing subsystem, not the scope of the whole project.
 The earlier doorway plan is retained as a reference, not the selected final demo.
 
