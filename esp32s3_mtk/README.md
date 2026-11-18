@@ -1,5 +1,10 @@
 # Configurable ESP32-S3 firmware — ESP-IDF / µT-Kernel SMP
 
+For the current D6 three-board N16R8 fixture, see the
+[board identification](../docs/d6/N16R8_BOARD_SETUP.md),
+[pin-to-hole guide](../docs/d6/PIN_TO_HOLE_WIRING.md) and the
+`BOARD=n16r8` preset. Earlier Super Mini evidence below remains historical.
+
 This target uses main's complete configurable framework at upstream commit `49677c62c8738493f4e66667d1fe79afc947600d`, with optional AHT and TSL2561 I²C profiles and the existing asynchronous GPIO pulse driver. See the [breadboard guide](../SENSOR_BREADBOARD_README.md) for the full wiring tables, Windows build/flash/monitor instructions, preset commands and JSON formats. [WIRING.md](WIRING.md) contains the same complete connection tables.
 
 The corrected firmware now has board evidence of all three sensors returning OK/error 0 together; see [VALIDATION.md](VALIDATION.md). The older shared-breadboard LCD observation was dim/white with no text. D6 now imports an opt-in LCD diagnostic from `lcd-output` at `b1c1675`; its separate fixture has historical visible-pattern evidence. Follow the [LCD-only map](WIRING.md#separate-lcd-only-breadboard-test-current-lcd_output-firmware) and [component guide](components/lcd_output/README.md), not the older shared LCD pins. Combined D6 panel testing is pending; startup leaves the display inactive. The three-sensor preset never configures LCD GPIO6–10. Upstream SPI flash diagnostics use another fixture and must not be run with the LCD attached.

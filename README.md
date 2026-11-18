@@ -1,20 +1,28 @@
 # Configurable Edge Platform on the ESP32-S3 (D1 to D6)
 
-**D6 branch planning (refined 11 November 2026).** The three-board end-to-end demo is
+**D6 branch planning (updated 13 November 2026).** The three-board end-to-end demo is
 planned in [D6 validation plan](docs/D6_USECASE_VALIDATION_PLAN.md), with a
-[session worksheet](docs/D6_TRIAL_WORKSHEET.md). This branch starts from the
+[session worksheet](docs/D6_TRIAL_WORKSHEET.md) and the
+[selected doorway integration handoff](docs/d6/D6_INTEGRATION_HANDOFF.md). This branch starts from the
 older `d3-board` checkpoint; `origin/main` at `b389714` is now integrated in
 merge `3e029d0`. The LCD diagnostic is selectively imported from `b1c1675`
-in the current working change; live output integration and D6 board tests remain pending.
-Board roles clarified on 11 November: **A input only; B ML, storage, data
-handling and communication; C output**.
+on the `d6` base; live output integration and D6 board tests remain pending.
+Board roles now specify **A physical inputs and local timed WINDOW assembly;
+B final occupancy, ML, storage, data handling and communication; C output**.
+The current D6 fixture uses [three photographed N16R8 boards](docs/d6/N16R8_BOARD_SETUP.md):
+A/B in green screw-terminal expansion plates and C bare with male headers.
+See the [updated wiring diagrams](docs/d6/PIN_TO_HOLE_WIRING.md) and
+[wire count](docs/d6/JUMPER_WIRE_COUNT.md). Previous Super Mini tests remain
+historical evidence.
 The [next three integration steps](docs/d6/NEXT_STEPS.md) define the fixture,
 LCD import and remote-display gates.
 Reference [board configurations](docs/d6/BOARD_CONFIGURATIONS.md) and the
 [demo script](docs/d6/DEMO_SCRIPT.md) provide explicit-node raw transport and
 complete/piecewise configuration plans; live LCD/ML/storage trials remain pending.
 D3 is the timing/sequencing subsystem, not the scope of the whole project.
-The earlier doorway plan is retained as a reference, not the selected final demo.
+The user selected the doorway scenario on 13 November; the earlier doorway
+plan remains archived as reference evidence, and final fixture/team approval
+and all three-board physical trials remain pending.
 
 Project baseline integrated into `d6`: D1 (tasks 1–34), the D2 SPI checkpoint, the D3 timing checkpoint and the first D4 ML checkpoint. The agreed task lists for the D1 MQTT work and for D4 to D6 are in sections 2 and 5 to 7. This is the Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) ported to the ESP32-S3 Super Mini. Since Tribunal 1 the firmware runs on µT-Kernel 3 SMP through the course port ([MTK_REDESIGN.md](MTK_REDESIGN.md)), and D2's SPI and D3's timing run on it too; the earlier Arduino-ESP32/FreeRTOS port stays as the measured baseline. The same configuration lines, console commands, MQTT topics, output format and ML model work on both boards, because both builds compile the same shared code.
 
@@ -273,7 +281,7 @@ D3 replaces the Pico's fixed one-second loop with configurable timing per sensor
 
 **D3-1 native recheck (5 November 2026).** Parser, timing and scheduler regressions passed through `sh tools/cody_test.sh`; D2 host tests and source/HAL purity also passed. The [review and task mapping](D3_INTERRUPT_WIRING_REVIEW.md#alignment-with-readme-d3-task-list) links each covered D3-1 requirement to its tests and retains the [raw output](parity/logs/d3/d3-1-native-20261105.log). Active-window reconfiguration policy remains open. These native results do not close target build/image, electrical wiring, physical capture or timing acceptance.
 
-**Who waits on it.** D2's flash event logging (D2-8, D2-9), D5's B3 timing benchmark, and D6, the end-to-end use case. D6's current three-board proposal has a [validation plan](docs/D6_USECASE_VALIDATION_PLAN.md) and [trial worksheet](docs/D6_TRIAL_WORKSHEET.md); neither has been run on the board. The radar-triggered doorway counter built on `WINDOW` remains an optional extension pending the team's scope decision.
+**Who waits on it.** D2's flash event logging (D2-8, D2-9), D5's B3 timing benchmark, and D6, the end-to-end use case. D6's three-board proposal has a [validation plan](docs/D6_USECASE_VALIDATION_PLAN.md) and [trial worksheet](docs/D6_TRIAL_WORKSHEET.md); neither has been run on the board. The user selected the radar-triggered doorway counter on 13 November; see the [integration handoff](docs/d6/D6_INTEGRATION_HANDOFF.md) for the A-local WINDOW and B-only occupancy split still to implement and review.
 
 
 ---
@@ -351,11 +359,18 @@ D5 was cut down on 10 Nov 2026 and refocused on 17 Nov 2026. The professor said 
 
 # 7. D6 task checklist
 
-Cody and Brendan own D6, with Cody leading (split of 16 Nov 2026); the whole team joins the rehearsal and Tribunal 2 preparation. The professor's suggested use case is three S3 boards: one whose motion and light sensors drive an output, one with temperature and humidity, and an LCD board that shows both over MQTT. The user clarified the board split on 11 Nov: **A acquires inputs only; B handles ML, storage, data and communication; C provides outputs**. Physical inputs therefore feed A→B→C; a direct A→C display is insufficient for the selected path. Exact devices, pins and B→C/storage interfaces remain to agree. He also wants a live multi-bus demo: GPIO, I2C and SPI on one board, writing one byte over SPI and reading it back, then swapping the SPI device and reconfiguring. The rows retain the agreed task numbers.
+**13 November integration handoff:** The user selected the radar-and-two-sonar
+doorway scenario within the A -> B -> C split. A acquires and assembles the
+time-sensitive crossing locally; B is the sole occupancy writer and owns
+storage/ML; C displays B's valid snapshot. See the
+[materials, three board diagrams and staged implementation plan](docs/d6/D6_INTEGRATION_HANDOFF.md).
+This records direction, not completed wiring, firmware or D6 trials.
+
+Cody and Brendan own D6, with Cody leading (split of 16 Nov 2026); the whole team joins the rehearsal and Tribunal 2 preparation. The professor's suggested use case is three S3 boards: one whose motion and light sensors drive an output, one with temperature and humidity, and an LCD board that shows both over MQTT. The user clarified the board split on 11 Nov and selected the doorway scenario on 13 Nov: **A acquires inputs and assembles the time-sensitive crossing; B decides, counts, stores and communicates; C displays B's result**. Physical inputs therefore feed A→B→C; a direct A→C display is insufficient for the selected path. Exact devices, pins and B→C/storage interfaces remain to agree. He also wants a live multi-bus demo: GPIO, I2C and SPI on one board, writing one byte over SPI and reading it back, then swapping the SPI device and reconfiguring. The rows retain the agreed task numbers.
 
 | # | Task | What it means | Owner | Status |
 |---|---|---|---|---|
-| 5.1 | Confirm the use case | A input only, B processing/ML/storage/communication, C output; decide final scenario and doorway inclusion | Team | Role split clarified 11 Nov; final scenario pending |
+| 5.1 | Confirm the use case | A assembles timed doorway inputs, B decides/counts/stores, C displays; finalize team fixture and interface review | Team | User selected doorway 13 Nov; team acceptance and trials pending |
 | 5.2 | Define each board | Its sensors, what it publishes, what it reacts to and what the LCD shows; parts and wiring per board (jumper wires from Mr Ajah) | Cody | Pending |
 | 5.3 | Multi-bus demo script | Step-by-step live demo of GPIO, I2C and SPI on one board, configured live, with the whole setup sent at once and then piece by piece | Cody | Pending |
 | 5.4 | SPI write and read by config | Write one byte, read it back, swap the device and reconfigure; config cannot do this yet | Brendan | Pending |
@@ -364,7 +379,7 @@ Cody and Brendan own D6, with Cody leading (split of 16 Nov 2026); the whole tea
 | 5.7 | Full rehearsal on three boards | Run the whole thing end to end, record it and fill this section | Team | Pending |
 | 5.8 | Tribunal 2 preparation | Each person can explain which of their functions would change under a new requirement (theory only) | Everyone | Pending |
 
-**Where the work is.** The three-board demo has a [validation plan](docs/D6_USECASE_VALIDATION_PLAN.md) and a [trial worksheet](docs/D6_TRIAL_WORKSHEET.md), both planning only and not run. The earlier radar-triggered doorway draft is retained as an [archived plan](docs/d6/reference/D6_USECASE_VALIDATION_PLAN.md) and [archived worksheet](docs/d6/reference/D6_TRIAL_WORKSHEET.md); its inclusion in the final demo remains a team decision. Part of the application logic (the typed event record, ApplicationTask and occupancy) is already on `main` with D3 ([section 4](#4-d3-task-checklist)). Brendan's ST7789 driver and diagnostic from `lcd-output` at `b1c1675` are selectively imported in the current working change. The reference branch's panel evidence is retained; live B→C display and combined hardware evidence remain pending. Run `sh tools/d6_test.sh` for parser/bridge and LCD HAL checks; the current runtime tests also cover serial/MQTT diagnostic routing and nonblocking handoff.
+**Where the work is.** The three-board demo has a [validation plan](docs/D6_USECASE_VALIDATION_PLAN.md), a [trial worksheet](docs/D6_TRIAL_WORKSHEET.md), and the [13 November integration handoff](docs/d6/D6_INTEGRATION_HANDOFF.md), all planning only and not run. The earlier radar-triggered doorway draft is retained as an [archived plan](docs/d6/reference/D6_USECASE_VALIDATION_PLAN.md) and [archived worksheet](docs/d6/reference/D6_TRIAL_WORKSHEET.md). The user selected doorway inclusion; exact fixture and team acceptance remain pending. Part of the application logic (the typed event record, ApplicationTask and occupancy) is already on `main` with D3 ([section 4](#4-d3-task-checklist)); the new A→B crossing-event path is not implemented. Brendan's ST7789 driver and diagnostic from `lcd-output` at `b1c1675` were selectively imported. The reference branch's panel evidence is retained; live B→C display and combined hardware evidence remain pending. Run `sh tools/d6_test.sh` for parser/bridge and LCD HAL checks; the current runtime tests also cover serial/MQTT diagnostic routing and nonblocking handoff.
 
 
 ---

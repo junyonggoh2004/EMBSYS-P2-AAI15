@@ -1,5 +1,11 @@
 # Version 2 wiring — ESP32-S3 Super Mini
 
+This page preserves the older Super Mini fixture. The current D6 integration
+uses three photographed N16R8 boards: A/B in green screw-terminal expansion
+plates and C bare. Use the [D6 pin-to-hole guide](../docs/d6/PIN_TO_HOLE_WIRING.md)
+for that setup; do not transfer this page's physical Super Mini pinout image
+to the N16R8 boards.
+
 AHT, HC-SR04+ and Grove TSL2561 have worked in the team's hardware tests. The ST7789 LCD is not working for now; retain its existing connections while running the current ESP-IDF / µT-Kernel SMP sensor target.
 
 ## Complete breadboard connections
