@@ -128,6 +128,16 @@ bool sensor_ml_command(const char *line,bool sampling)
     return true;
 }
 void sensor_ml_invalidate(void) { ++ml_invalidations; }
+/* D5: MLBENCH runs in SchedulerTask, from the console and from MQTT. */
+static unsigned bench_commands;
+static bool bench_sampling;
+bool ml_bench_command(const char *line, bool sampling)
+{
+    if (strncasecmp(line, "MLBENCH", 7)) return false;
+    ++bench_commands;
+    bench_sampling = sampling;
+    return true;
+}
 /* D1 task 1.4: the shared REPL command table and the console STOP/RUN side effects. */
 static unsigned repl_commands, window_stops, pair_cancels;
 static char last_repl[64];
@@ -273,6 +283,13 @@ int main(void)
     strcpy(ml.text, "STOP");
     handle_sched_msg(&ml, &running, &cfg_ready);
     assert(ordinary_commands == 2 && ml_invalidations == 1);
+    strcpy(ml.text, "MLBENCH 100");
+    handle_sched_msg(&ml, &running, &cfg_ready);
+    assert(bench_commands == 1 && bench_sampling == running && ordinary_commands == 2);
+    ml.kind = SCHED_CONSOLE_LINE;
+    handle_sched_msg(&ml, &running, &cfg_ready);
+    assert(bench_commands == 2 && ordinary_commands == 2 && ml_commands == 1);
+    ml.kind = SCHED_MQTT_CMD;
 
     /* D1 task 1.4: every console command also works on pico/<node>/cmd. */
     assert(queue(ctrl_mbf)->config.maxmsz == sizeof(ctrl_msg_t));
