@@ -3,6 +3,8 @@
 #include "application/scheduler.h"
 #include "inference_engine/inference_manager.h"
 #include "inference_engine/tflite_wrapper.h"
+#include "third_party/jsmn/jsmn.h"
+#include "ml_mqtt.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -52,6 +54,7 @@ static bool threshold_enabled;
 static float output_threshold;
 static uint32_t generation,revision,last_ms;
 static uint32_t interval_ms=2000,max_age_ms=5000,max_skew_ms=2500;
+static bool publish_output;
 
 void sensor_ml_invalidate(void) {
     for(int i=0;i<16;i++) bindings[i].valid=false;
@@ -104,7 +107,199 @@ static bool select_model(int index) {
     active=index;
     revision=inference_mgr_revision();
     enabled=false;
+    publish_output=false;
     sensor_ml_invalidate();
+    return true;
+}
+
+/* D4 Part 2: parse a complete candidate before changing the running pipeline.
+   jsmn's parent links let us reject duplicate and unknown direct keys. */
+static const char *setup_json;
+static jsmntok_t setup_tokens[320];
+static int setup_ntokens;
+
+static bool token_eq(int t, const char *s) {
+    return t >= 0 && setup_tokens[t].type == JSMN_STRING &&
+        (int)strlen(s) == setup_tokens[t].end - setup_tokens[t].start &&
+        !strncmp(setup_json + setup_tokens[t].start, s, strlen(s));
+}
+static bool token_copy(int t, char *out, size_t capacity) {
+    if (t < 0 || setup_tokens[t].type != JSMN_STRING) return false;
+    int n = setup_tokens[t].end - setup_tokens[t].start;
+    if (n <= 0 || (size_t)n >= capacity ||
+        memchr(setup_json + setup_tokens[t].start, '\\', (size_t)n)) return false;
+    memcpy(out, setup_json + setup_tokens[t].start, (size_t)n);
+    out[n] = 0;
+    return true;
+}
+static bool token_number(int t, float *out) {
+    if (t < 0 || setup_tokens[t].type != JSMN_PRIMITIVE) return false;
+    int n = setup_tokens[t].end - setup_tokens[t].start;
+    char buf[32];
+    if (n < 1 || (size_t)n >= sizeof buf) return false;
+    memcpy(buf, setup_json + setup_tokens[t].start, (size_t)n);
+    buf[n] = 0;
+    char *end;
+    errno = 0;
+    *out = strtof(buf, &end);
+    return end != buf && !*end && errno != ERANGE && isfinite(*out);
+}
+static int token_raw_start(int t) {
+    return setup_tokens[t].start - (setup_tokens[t].type == JSMN_STRING ? 1 : 0);
+}
+static int token_raw_end(int t) {
+    return setup_tokens[t].end + (setup_tokens[t].type == JSMN_STRING ? 1 : 0);
+}
+static bool separator(int from, int to, char expected) {
+    while (from < to && isspace((unsigned char)setup_json[from])) from++;
+    if (expected && from < to && setup_json[from] == expected) from++;
+    else if (expected) return false;
+    while (from < to && isspace((unsigned char)setup_json[from])) from++;
+    return from == to;
+}
+static int object_field(int object, const char *key) {
+    if (object < 0 || setup_tokens[object].type != JSMN_OBJECT) return -1;
+    int found = -1, prev = -1;
+    for (int t = object + 1; t < setup_ntokens && setup_tokens[t].start < setup_tokens[object].end; t++) {
+        if (setup_tokens[t].parent != object) continue;
+        if (prev < 0) { prev = t; continue; }
+        if (token_eq(prev, key)) {
+            if (found >= 0) return -2;
+            found = t;
+        }
+        prev = -1;
+    }
+    return prev < 0 ? found : -2;
+}
+static bool object_keys(int object, const char *const *keys, int count) {
+    if (object < 0 || setup_tokens[object].type != JSMN_OBJECT) return false;
+    int children = 0, key = -1, previous_value = -1;
+    for (int t = object + 1; t < setup_ntokens && setup_tokens[t].start < setup_tokens[object].end; t++) {
+        if (setup_tokens[t].parent != object) continue;
+        if (key < 0) {
+            if (setup_tokens[t].type != JSMN_STRING ||
+                !separator(previous_value < 0 ? setup_tokens[object].start + 1 : token_raw_end(previous_value),
+                           token_raw_start(t), previous_value < 0 ? 0 : ',')) return false;
+            key = t;
+        } else {
+            if (!separator(token_raw_end(key), token_raw_start(t), ':')) return false;
+            previous_value = t;
+            key = -1;
+        }
+        children++;
+    }
+    if (key >= 0 || !separator(previous_value < 0 ? setup_tokens[object].start + 1 : token_raw_end(previous_value),
+                               setup_tokens[object].end - 1, 0)) return false;
+    if (children != count * 2) return false;
+    for (int k = 0; k < count; k++) if (object_field(object, keys[k]) < 0) return false;
+    return true;
+}
+static bool parse_binding(int item, int position, binding_t *out) {
+    static const char *const keys[] = {"index", "source", "field", "min", "max"};
+    static const char *const source_keys[] = {"kind", "name"};
+    if (!object_keys(item, keys, 5)) return false;
+    float index;
+    if (!token_number(object_field(item, "index"), &index) || index != position) return false;
+    int source = object_field(item, "source");
+    if (!object_keys(source, source_keys, 2) || !token_eq(object_field(source, "kind"), "local")) return false;
+    binding_t b = {.bound = true};
+    if (!token_copy(object_field(source, "name"), b.source, sizeof b.source) ||
+        !token_copy(object_field(item, "field"), b.field, sizeof b.field) ||
+        !identifier(b.source) || !identifier(b.field) ||
+        !token_number(object_field(item, "min"), &b.lo) ||
+        !token_number(object_field(item, "max"), &b.hi) ||
+        b.hi <= b.lo || !isfinite(b.hi - b.lo) ||
+        !field_supported(b.source, b.field)) return false;
+    *out = b;
+    return true;
+}
+static bool setup_error(const char *reason) {
+    printf("ML SETUP: ERROR %s\n", reason);
+    mqtt_pub_ml_status(false, reason, (unsigned long)generation);
+    return true;
+}
+bool sensor_ml_setup_json(const char *line, bool sampling) {
+    (void)sampling; /* Sensor sampling deliberately continues across a swap. */
+    if (!line || *line != '{' || !strstr(line, "\"ml_setup\"")) return false;
+    size_t length = strlen(line);
+    if (length >= 2048) return setup_error("command_too_long");
+    setup_json = line;
+    jsmn_parser parser;
+    jsmn_init(&parser);
+    setup_ntokens = jsmn_parse(&parser, line, length, setup_tokens,
+                               sizeof setup_tokens / sizeof setup_tokens[0]);
+    static const char *const root_keys[] = {"ml_setup"};
+    static const char *const setup_keys[] = {"version", "model", "inputs", "output"};
+    static const char *const output_keys[] = {"kind"};
+    float version;
+    int setup = setup_ntokens > 0 ? object_field(0, "ml_setup") : -1;
+    if (setup_ntokens < 1 || setup_tokens[0].start != 0 ||
+        setup_tokens[0].end != (int)length || !object_keys(0, root_keys, 1) ||
+        !object_keys(setup, setup_keys, 4) ||
+        !token_number(object_field(setup, "version"), &version) || version != 1) {
+        return setup_error("invalid_json_or_version");
+    }
+    char id[32];
+    if (!token_copy(object_field(setup, "model"), id, sizeof id)) {
+        return setup_error("model_id_required");
+    }
+    int model_index = -1;
+    for (size_t m = 0; m < sizeof models / sizeof models[0]; m++)
+        if (!strcmp(id, models[m].id)) { model_index = (int)m; break; }
+    if (model_index < 0 || !models[model_index].bytes || models[model_index].kind == DIRECTION) {
+        return setup_error("unsupported_live_model");
+    }
+    int output = object_field(setup, "output");
+    if (!object_keys(output, output_keys, 1) ||
+        (!token_eq(object_field(output, "kind"), "publish") &&
+         !token_eq(object_field(output, "kind"), "console"))) {
+        return setup_error("unsupported_output");
+    }
+    bool publish = token_eq(object_field(output, "kind"), "publish");
+    int inputs = object_field(setup, "inputs"), n = 0;
+    binding_t candidate[16] = {{0}};
+    if (inputs < 0 || setup_tokens[inputs].type != JSMN_ARRAY) {
+        return setup_error("inputs_not_array");
+    }
+    int previous_input = -1;
+    for (int t = inputs + 1; t < setup_ntokens && setup_tokens[t].start < setup_tokens[inputs].end; t++) {
+        if (setup_tokens[t].parent != inputs) continue;
+        if (!separator(previous_input < 0 ? setup_tokens[inputs].start + 1 : token_raw_end(previous_input),
+                       token_raw_start(t), previous_input < 0 ? 0 : ','))
+            return setup_error("invalid_input_array");
+        if (n >= 16 || !parse_binding(t, n, &candidate[n])) {
+            return setup_error("invalid_or_unavailable_local_input");
+        }
+        previous_input = t;
+        n++;
+    }
+    if (!separator(previous_input < 0 ? setup_tokens[inputs].start + 1 : token_raw_end(previous_input),
+                   setup_tokens[inputs].end - 1, 0)) return setup_error("invalid_input_array");
+    const model_t *model = &models[model_index];
+    if (!n || (model->kind != SINE && n != model->count) ||
+        (model->kind == COMFORT &&
+         (strcmp(candidate[0].field, "temperature_c") ||
+          strcmp(candidate[1].field, "humidity_pct")))) {
+        return setup_error("input_shape_mismatch");
+    }
+    int old = active;
+    bool was_enabled = enabled;
+    if (model_index != old && !load_model(model)) {
+        bool restored = old >= 0 && load_model(&models[old]);
+        if (restored) { revision = inference_mgr_revision(); enabled = was_enabled; }
+        else { active = -1; enabled = false; }
+        return setup_error(restored ? "model_load_failed_restored" : "model_load_failed_restore_failed");
+    }
+    active = model_index;
+    revision = inference_mgr_revision();
+    memcpy(bindings, candidate, sizeof bindings);
+    publish_output = publish;
+    threshold_enabled = false;
+    enabled = true;
+    sensor_ml_invalidate();
+    printf("ML SETUP: OK model=%s generation=%lu output=%s\n", id,
+           (unsigned long)generation, publish ? "publish" : "console");
+    mqtt_pub_ml_status(true, "applied", (unsigned long)generation);
     return true;
 }
 static bool set_threshold(const char *value) {
@@ -126,8 +321,9 @@ static bool set_threshold(const char *value) {
 }
 
 static void show(void) {
-    printf("ML: model=%s enabled=%u generation=%lu interval_ms=%lu max_age_ms=%lu max_skew_ms=%lu\n",
+    printf("ML: model=%s enabled=%u generation=%lu output=%s interval_ms=%lu max_age_ms=%lu max_skew_ms=%lu\n",
         active<0 ? "none":models[active].id,enabled,(unsigned long)generation,
+        publish_output ? "publish" : "console",
         (unsigned long)interval_ms,(unsigned long)max_age_ms,(unsigned long)max_skew_ms);
     if (threshold_enabled) printf("ML: threshold=%.9g (scalar output)\n", (double)output_threshold);
     else puts("ML: threshold=off");
@@ -169,11 +365,15 @@ static bool class_result(const model_t *model, const float *inputs, const char *
             confidence = value;
         }
     }
-    char fields[112];
-    printf("{\"type\":\"ml\",\"timestamp_ms\":%lu,\"generation\":%lu,\"model\":\"%s\","
-           "\"input_source\":\"%s\",\"outputs\":[%d]%s,\"invoke_us\":%lu,\"status\":\"OK\"}\n",
+    char fields[112], line[512];
+    int length = snprintf(line, sizeof line,
+           "{\"type\":\"ml\",\"timestamp_ms\":%lu,\"generation\":%lu,\"model\":\"%s\","
+           "\"input_source\":\"%s\",\"outputs\":[%d]%s,\"invoke_us\":%lu,\"status\":\"OK\"}",
            (unsigned long)now, (unsigned long)generation, model->id, source, winner,
            class_fields(model, winner, confidence, fields, sizeof fields), (unsigned long)elapsed);
+    if (length <= 0 || length >= (int)sizeof line) return false;
+    puts(line);
+    if (publish_output && !mqtt_pub_ml_result(line)) puts("ML: WARN result publish failed");
     return true;
 }
 
@@ -204,6 +404,23 @@ static bool scalar_or_vector_result(const float *inputs, int count, int raw_coun
     }
     snprintf(line+used,sizeof line-(size_t)used,",\"invoke_us\":%lu,\"status\":\"OK\"}",(unsigned long)elapsed);
     puts(line);
+    if (publish_output) {
+        char payload[512];
+        int n = snprintf(payload, sizeof payload,
+            "{\"type\":\"ml\",\"timestamp_ms\":%lu,\"generation\":%lu,\"model\":\"%s\",\"input_source\":\"%s\",\"outputs\":[",
+            (unsigned long)now, (unsigned long)generation, models[active].id, source);
+        if (n > 0 && n < (int)sizeof payload) {
+            for (int i = 0; i < out_count && n < (int)sizeof payload; i++)
+                n += snprintf(payload + n, sizeof payload - (size_t)n,
+                              "%s%.7g", i ? "," : "", (double)outputs[i]);
+            if (n < (int)sizeof payload)
+                n += snprintf(payload + n, sizeof payload - (size_t)n,
+                              "],\"invoke_us\":%lu,\"status\":\"OK\"}",
+                              (unsigned long)elapsed);
+        }
+        if (n <= 0 || n >= (int)sizeof payload || !mqtt_pub_ml_result(payload))
+            puts("ML: WARN result publish failed");
+    }
     return true;
 }
 
@@ -258,7 +475,7 @@ bool sensor_ml_command(const char *line,bool sampling) {
     int i; float lo,hi;
     unsigned period,age,skew;
     if(!strcmp(line,"ML RESET")) {
-        memset(bindings,0,sizeof bindings); enabled=false; sensor_ml_invalidate();
+        memset(bindings,0,sizeof bindings); enabled=false; publish_output=false; sensor_ml_invalidate();
     } else if(sscanf(line,"ML MODEL %31s %c",id,&extra)==1 || !strcmp(line,"ML PRESET") ||
               sscanf(line,"ML PRESET %31s %c",id,&extra)==1) {
         bool preset=!strncmp(line,"ML PRESET",9);

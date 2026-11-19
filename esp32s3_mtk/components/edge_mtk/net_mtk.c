@@ -36,6 +36,7 @@
 #include "mqtt/mqtt_telemetry.h"
 #include "mqtt/sensor_bridge.h"
 #include "runtime_mtk.h"
+#include "ml_mqtt.h"
 
 #define MQTT_BUF_SIZE   (SCHED_TEXT_MAX + 512)
 #define MAX_FOLLOWS     8
@@ -119,6 +120,27 @@ bool mqtt_pub_text(const char *topic, const char *fmt, ...)
     vsnprintf(payload, sizeof payload, fmt, ap);
     va_end(ap);
     return enqueue(PUB_PUBLISH, topic, payload, strlen(payload), 0, false);
+}
+
+bool mqtt_pub_ml_result(const char *json)
+{
+    if (!json || strlen(json) >= PUB_PAYLOAD_MAX) return false;
+    char topic[PUB_TOPIC_MAX];
+    int n = snprintf(topic, sizeof topic, "pico/%s/ml/result", s_node);
+    return n > 0 && n < (int)sizeof topic &&
+        enqueue(PUB_PUBLISH, topic, json, strlen(json), 1, false);
+}
+
+bool mqtt_pub_ml_status(bool ok, const char *reason, unsigned long generation)
+{
+    if (!reason) return false;
+    char topic[PUB_TOPIC_MAX], payload[160];
+    int t = snprintf(topic, sizeof topic, "pico/%s/ml/status", s_node);
+    int n = snprintf(payload, sizeof payload,
+        "{\"ok\":%s,\"reason\":\"%s\",\"generation\":%lu}",
+        ok ? "true" : "false", reason, generation);
+    return t > 0 && t < (int)sizeof topic && n > 0 && n < (int)sizeof payload &&
+        enqueue(PUB_PUBLISH, topic, payload, (size_t)n, 1, false);
 }
 
 bool mqtt_pub_bytes(const char *sensor_name, const uint8_t *bytes, size_t len, int qos, bool retain)

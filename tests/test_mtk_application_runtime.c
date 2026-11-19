@@ -120,6 +120,14 @@ UNUSED_VOID(model_transfer_init)
 UNUSED_VOID(model_transfer_poll)
 static unsigned ml_commands, ml_invalidations, ordinary_commands;
 static bool ml_sampling;
+static unsigned json_commands;
+bool sensor_ml_setup_json(const char *line, bool sampling)
+{
+    if (!strstr(line, "\"ml_setup\"")) return false;
+    assert(sampling);
+    json_commands++;
+    return true;
+}
 bool sensor_ml_command(const char *line,bool sampling)
 {
     if (strncmp(line, "ML ", 3)) return false;
@@ -277,6 +285,9 @@ int main(void)
     strcpy(ml.text, "ML SHOW");
     handle_sched_msg(&ml, &running, &cfg_ready);
     assert(ml_commands == 1 && ml_sampling && ml_invalidations == 0 && ordinary_commands == 0);
+    strcpy(ml.text, "{\"ml_setup\":{}}");
+    handle_sched_msg(&ml, &running, &cfg_ready);
+    assert(json_commands == 1 && ml_commands == 1 && ordinary_commands == 0);
     strcpy(ml.text, "SHOW");
     handle_sched_msg(&ml, &running, &cfg_ready);
     assert(ordinary_commands == 1 && ml_invalidations == 0);

@@ -11,6 +11,20 @@ static int runs,loads,dim=1,fail_loads;
 static bool ready=true,fail_invoke;
 static float seen[31];
 static int output_dim=1;
+static int published_results, published_status;
+static bool status_ok;
+static char last_published[512];
+bool mqtt_pub_ml_result(const char *json) {
+    published_results++;
+    snprintf(last_published, sizeof last_published, "%s", json);
+    return true;
+}
+bool mqtt_pub_ml_status(bool ok, const char *reason, unsigned long generation) {
+    (void)reason; (void)generation;
+    published_status++;
+    status_ok = ok;
+    return true;
+}
 const uint8_t _binary_comfort_summer_tflite_start[] = {1};
 const uint8_t _binary_comfort_summer_tflite_end[] = {0};
 #ifdef HAVE_PEOPLE_COUNTER_MODEL
@@ -145,5 +159,37 @@ int main(void) {
 #endif
     cmd("ML MODEL sine-int8"); assert(dim == 1 && output_dim == 1);
     cmd("ML REPLAY 1.57"); assert(fabsf(seen[0] - 1.57f) < 0.001f);
+    const char *live = "{\"ml_setup\":{\"version\":1,\"model\":\"sine-float\",\"inputs\":[{\"index\":0,\"source\":{\"kind\":\"local\",\"name\":\"AHT\"},\"field\":\"temperature_c\",\"min\":-10,\"max\":50}],\"output\":{\"kind\":\"publish\"}}}";
+    assert(sensor_ml_setup_json(live, true));
+    assert(active == 0 && enabled && publish_output && status_ok && published_status);
+    int previous_results = published_results;
+    samples(); tick();
+    assert(published_results == previous_results + 1);
+    assert(strstr(last_published, "\"model\":\"sine-float\""));
+    uint32_t before_bad = generation;
+    assert(sensor_ml_setup_json("{\"ml_setup\":{\"version\":1,\"model\":\"missing\",\"inputs\":[],\"output\":{\"kind\":\"publish\"}}}", true));
+    assert(!status_ok && generation == before_bad && active == 0 && enabled);
+    assert(sensor_ml_setup_json("{\"ml_setup\":{\"version\":1,\"model\":\"sine-float\",\"inputs\":[{\"index\":0,\"source\":{\"kind\":\"remote\",\"name\":\"AHT\"},\"field\":\"temperature_c\",\"min\":-10,\"max\":50}],\"output\":{\"kind\":\"publish\"}}}", true));
+    assert(generation == before_bad && active == 0 && enabled);
+    assert(sensor_ml_setup_json("{\"ml_setup\":{\"version\":1,\"model\":\"sine-float\",\"inputs\":[],\"output\":{\"kind\":\"publish\",}}}", true));
+    assert(generation == before_bad && active == 0 && enabled);
+    int before_resume = published_results;
+    samples(); tick();
+    assert(published_results == before_resume + 1);
+    assert(strstr(last_published, "\"model\":\"sine-float\""));
+    char live_int8[512];
+    snprintf(live_int8, sizeof live_int8, "%s", live);
+    char *model_name = strstr(live_int8, "sine-float");
+    assert(model_name);
+    memmove(model_name + 9, model_name + 10, strlen(model_name + 10) + 1);
+    memcpy(model_name, "sine-int8", 9);
+    assert(sensor_ml_setup_json(live_int8, true));
+    assert(active == 1 && enabled && generation == before_bad + 1 && status_ok);
+    samples(); tick();
+    assert(published_results == previous_results + 3);
+    uint32_t before_fail = generation;
+    fail_loads=1;
+    assert(sensor_ml_setup_json(live, true));
+    assert(generation == before_fail && active == 1 && enabled && !status_ok);
     puts("sensor ML integration tests PASS (interpreter boundary simulated)");
 }

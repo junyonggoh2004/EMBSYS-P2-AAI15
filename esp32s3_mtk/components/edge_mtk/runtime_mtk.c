@@ -247,6 +247,7 @@ static void mqtt_command(char *text, bool *running, bool *cfg_ready)
     while (n && (p[n - 1] == ' ' || p[n - 1] == '\t' || p[n - 1] == '\r' || p[n - 1] == '\n')) p[--n] = 0;
     if (!n) return;
 
+    if (sensor_ml_setup_json(p, *running)) return;
     if (sensor_ml_command(p, *running)) return;
     if (ml_bench_command(p, *running)) return;
     if (is_platform_command(p)) {
