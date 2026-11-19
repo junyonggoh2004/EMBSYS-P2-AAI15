@@ -27,12 +27,12 @@ Two things limit the gain for our models. They are small: sine-int8 is three ful
 | Model | Format | Layers | Inputs → outputs | File (bytes) | Uses ESP-NN's S3 assembly |
 |---|---|---|---|---|---|
 | sine-float | Float32 | Dense 1 → 16 → 16 → 1 | 1 → 1 | 3,164 | No (float) |
-| sine-int8 | INT8 | Dense 1 → 16 → 16 → 1 | 1 → 1 | 2,704 | Yes; the board run of 10 Nov shows its vector calls ([BOARD_VALIDATION.md](../embedded-ml/BOARD_VALIDATION.md#acceleration-evidence)) |
-| autoencoder | INT8 | Dense 16 → 64 → 32 → 8 → 32 → 64 → 16 | 16 → 16 | 16,440 | Expected (INT8); shown by 4.2 |
+| sine-int8 | INT8 | Dense 1 → 16 → 16 → 1 | 1 → 1 | 2,704 | Yes; the board run of 10 Nov shows its vector calls ([BOARD_VALIDATION.md](../embedded-ml/BOARD_VALIDATION.md#acceleration-evidence)), and it is 1.36 times faster with them (section 6) |
+| autoencoder | INT8 | Dense 16 → 64 → 32 → 8 → 32 → 64 → 16 | 16 → 16 | 16,440 | Yes; 2.83 times faster with it (section 6) |
 | comfort-summer | Float32 | Dense 2 → 10 → 100, softmax | 2 → 100 | 5,960 | No (float) |
-| people-counter | INT8 | Two convolution layers over the 31 readings (16 and 32 filters of width 4), then Dense 992 → 3, softmax | 31 → 3 | 10,736 | Expected (INT8); shown by 4.2 |
+| people-counter | INT8 | Two convolution layers over the 31 readings (16 and 32 filters of width 4), then Dense 992 → 3, softmax | 31 → 3 | 10,736 | Yes; 3.35 times faster with it (section 6) |
 
-Sizes and formats are from [docs/embedded-ml/README.md](../embedded-ml/README.md) and [models/classroom/README.md](../../models/classroom/README.md); the layers of the two classroom models were read from their model files. The tensor arena each model uses is printed when it loads and is recorded by the runner (section 5).
+Sizes and formats are from [docs/embedded-ml/README.md](../embedded-ml/README.md) and [models/classroom/README.md](../../models/classroom/README.md); the layers of the two classroom models were read from their model files. The tensor arena each model uses is printed when it loads and is recorded by the runner; the values are in section 6.
 
 **Build sizes**, measured on 19 Nov 2026 with `idf.py size` and `idf.py size-components` on both builds of the same source, `main` with the five models and the D5 changes (raw tables in [parity/logs/mtk/d5/static-20261119](../../parity/logs/mtk/d5/static-20261119/)):
 
@@ -50,13 +50,13 @@ The S3 assembly costs about 36 KB of flash, 1.2% of the 3 MB app partition, and 
 
 **MLBENCH** (console or `pico/<node>/cmd`, after `STOP` and `ML MODEL <id>`): `MLBENCH <runs> [RAW]` runs the loaded model five times as a warm-up and then `<runs>` times (10 to 1000) on a fixed input (every input 0.5), in SchedulerTask, the task that runs the ML pipeline. For every run it records the request time, `inference_mgr_set_inputs()` and `inference_mgr_run()` as SchedulerTask sees them (the same interval as `invoke_us` in the ML results, including the round trip to InferenceTask), and the time of `Invoke()` alone inside InferenceTask, and their difference. Nothing is printed while timing. It then prints the median, 95th percentile, minimum, maximum and mean of each, one JSON line, and the free internal RAM and PSRAM with Wi-Fi and MQTT still running. `RAW` also prints every run. Timing uses the firmware's microsecond clock (`hal_time_us()`). Code: [ml_bench.c](../../esp32s3_mtk/components/edge_mtk/ml_bench.c); the `Invoke()` timer is in [inference_mtk.cpp](../../esp32s3_mtk/components/edge_mtk/inference_mtk.cpp).
 
-**Plain C build**: `NN=ansi` before any `tools/mtk.sh` command builds the same firmware with [sdkconfig.nn_ansi](../../esp32s3_mtk/sdkconfig.nn_ansi) (`CONFIG_NN_ANSI_C=y`) in its own directory, `esp32s3_mtk/build-nn-ansi`, so the normal build is untouched.
+**Plain C build**: `NN=ansi` before any `tools/mtk.sh` command builds the same firmware with [sdkconfig.nn_ansi](../../esp32s3_mtk/sdkconfig.nn_ansi) (`CONFIG_NN_ANSI_C=y`) in its own directory, `esp32s3_mtk/build-nn-ansi` (`build-n16r8-nn-ansi` with `BOARD=n16r8`), so the normal build is untouched.
 
 **Runner**: [tools/d5_bench.py](../../tools/d5_bench.py) sends the commands, saves the console log and `results.json` under `parity/logs/mtk/d5/`, and prints the tables. `bench` times each model, `live` collects the ML pipeline's own `invoke_us` while sensors and MQTT run (task 4.5), and `compare` puts the two builds side by side. Laptop tests: `sh tools/d5_test.sh`.
 
 ## 5. Board session (tasks 4.2 to 4.5)
 
-One board on the hotspot with the broker running, as for the MQTT tests; no sensors are needed until step 4. Use `PORT=...` and `BOARD=n16r8` as usual if needed.
+One board on the same Wi-Fi network as the laptop running the broker, as for the MQTT tests (the board connects to the address in `MQTT_HOST` in its credentials file, so after the laptop changes network that line must match the laptop's new address and the firmware must be rebuilt); no sensors are needed until step 4. Use `PORT=...` and `BOARD=n16r8` as usual if needed.
 
 | Step | Command | Gives |
 |---|---|---|
@@ -68,13 +68,48 @@ One board on the hotspot with the broker running, as for the MQTT tests; no sens
 
 ## 6. Results
 
-| Task | Result |
-|---|---|
-| 4.2 Acceleration on against off | *pending board run* |
-| 4.3 Float against INT8 and memory | Static part in section 3; arena, timing and free memory *pending board run* |
-| 4.4 Where the time goes | *pending board run* |
-| 4.5 In the running system | *pending board run* |
+Measured on 20 Nov 2026 on one ESP32-S3 N16R8 with no sensors, Wi-Fi and MQTT connected to the broker throughout. The firmware is `main` at 06bf79d built twice, normally and with `NN=ansi`, so only ESP-NN's kernels differ. Each model had 5 warm-up runs and then 200 timed runs on the fixed input (every input 0.5). Logs, with every run in `results.json`: [S3 assembly](../../parity/logs/mtk/d5/optimized-20261120-0224/), [plain C](../../parity/logs/mtk/d5/ansi-20261120-0225/), [provenance](../../parity/logs/mtk/d5/board-20261120.txt).
+
+**4.2 Acceleration on against off.** `Invoke()` time in µs over 200 runs:
+
+| Model | Format | S3 assembly, median / p95 / max | Plain C, median / p95 / max | Speed-up (medians) | Same output |
+|---|---|---|---|---|---|
+| sine-float | Float32 | 26 / 26 / 27 | 26 / 26 / 27 | 1.00 | Yes |
+| sine-int8 | INT8 | 28 / 28 / 51 | 38 / 38 / 45 | 1.36 | Yes |
+| autoencoder | INT8 | 138 / 142 / 197 | 390 / 391 / 430 | 2.83 | Yes |
+| comfort-summer | Float32 | 112 / 113 / 115 | 112 / 113 / 125 | 1.00 | Yes |
+| people-counter | INT8 | 1,326 / 1,379 / 2,046 | 4,436 / 4,566 / 5,089 | 3.35 | Yes |
+
+The speed-up grows with the work in the INT8 layers: 1.36 times for sine-int8, whose first layer is too short for the vector loop, 2.83 times for the autoencoder and 3.35 times for people-counter, whose convolution layers hold most of its multiply-adds. The two Float32 models take the same time in both builds, which shows that the difference comes from ESP-NN alone, and every model gives the same output in both builds, so the S3 kernels change the time but not the result. The firmware's vector-call counter wraps only `esp_nn_fc_s16_esp32s3`, the S3 fully connected kernel that sine-int8's 16-wide layers use: it counts 2 calls per sine-int8 inference with the assembly and none in plain C. The autoencoder and people-counter run through other ESP-NN S3 kernels, so the counter shows 0 for them and their speed-up is the evidence.
+
+**4.3 Float against INT8, and does it fit.** Arena is the tensor arena the model uses at load; times are `Invoke()` medians:
+
+| Model | Format | File (bytes) | Arena, S3 assembly (bytes) | Arena, plain C (bytes) | `Invoke()` S3 assembly / plain C (µs) |
+|---|---|---|---|---|---|
+| sine-float | Float32 | 3,164 | 776 | 776 | 26 / 26 |
+| sine-int8 | INT8 | 2,704 | 716 | 716 | 28 / 38 |
+| autoencoder | INT8 | 16,440 | 2,908 | 2,908 | 138 / 390 |
+| comfort-summer | Float32 | 5,960 | 1,432 | 1,432 | 112 / 112 |
+| people-counter | INT8 | 10,736 | 6,204 | 3,916 | 1,326 / 4,436 |
+
+sine-int8 is 15% smaller than sine-float and uses 60 B less arena, but it is not faster: 28 µs against 26 µs with the S3 assembly and 38 µs in plain C. For a network of about 290 multiply-adds the per-operator costs dominate, so INT8's gain here is size. What INT8 buys on the S3 is access to ESP-NN's assembly at all: the Float32 models cannot use it, while the larger INT8 models run 2.8 to 3.4 times faster with it. people-counter's arena is 2,288 B larger with the S3 assembly because ESP-NN's S3 convolution kernels ask TensorFlow Lite Micro for scratch space in the arena (`esp_nn_get_conv_scratch_size`), which the plain C kernels do not need; the other models have no convolution layers and use the same arena in both builds. The largest arena, 6,204 B, is under a tenth of the 64 KB arena in PSRAM. Free memory does not change with the model because the arena is a fixed buffer: with Wi-Fi and MQTT connected the board had 30,684 B of internal RAM free (lowest since boot 25,516 B, largest block 20,480 B) and 8,176,484 B of PSRAM free with the S3 assembly, and 30,720 B (lowest 25,260 B) in plain C. Everything fits; internal RAM is the limit, as section 3 found.
+
+**4.4 Where the time goes.** Medians with the S3 assembly; the rest is the request time minus `Invoke()` for each run, which covers the round trip from SchedulerTask to InferenceTask through `infer_mbf` and back, and converting the inputs to the model's format and the outputs back:
+
+| Model | Request (µs) | `Invoke()` (µs) | Rest (µs) | `Invoke()` share of the request |
+|---|---|---|---|---|
+| sine-float | 120 | 26 | 94 | 22% |
+| sine-int8 | 123 | 28 | 96 | 23% |
+| autoencoder | 255 | 138 | 118 | 54% |
+| comfort-summer | 209 | 112 | 97 | 54% |
+| people-counter | 1,535 | 1,326 | 208 | 86% |
+
+The rest is about 95 µs for the models with one or two inputs and 118 µs for the autoencoder's 16 inputs and outputs, the same in both builds, since ESP-NN does not touch it. people-counter's rest is 208 µs with the S3 assembly and 167 µs in plain C; this run does not show where the 41 µs difference comes from. Because the rest is three quarters of a sine-int8 request, its 1.36 times faster `Invoke()` makes the whole request only 1.08 times faster (133 to 123 µs). The larger models keep most of the gain: the whole request is 1.99 times faster for the autoencoder (508 to 255 µs) and 3.00 times for people-counter (4,603 to 1,535 µs).
+
+**4.5 In the running system.** *Pending the run with the sensors.*
+
+**Model checks.** On the same board, `ML REPLAY 26.3 67` gives comfort-summer's desktop reference of 92, 31 zero readings give people-counter's `none` class (score 0.957), and `ML REPLAY 1.57` gives 1.003 for sine-int8 and 0.996 for sine-float ([log](../../parity/logs/mtk/d5/replay-20261120.log)).
 
 ## 7. Conclusion (task 4.6)
 
-*Pending the results.*
+On the ESP32-S3, ESP-NN's S3 assembly runs the INT8 models' `Invoke()` 1.36 to 3.35 times faster than the same library's plain C, with identical outputs, and the gain grows with the work in the INT8 layers: the small sine network barely uses the vector loop, while people-counter's convolutions gain the most. Float32 models cannot use it and run at the same speed in both builds. The cost is about 36 KB of flash and 56 B of internal RAM, plus 2,288 B more arena for the convolutional model. For the smallest models the firmware's fixed cost per request, about 95 to 120 µs for the task round trip and the data conversion, is larger than the inference itself, so in the running system the speed-up shows fully only for the larger models; that cost belongs to the request path, not the model. The results support the D4 choice of INT8 models to show the S3's acceleration, with people-counter the clearest case. Task 4.5 checks that the result holds with the sensors and MQTT running.

@@ -1,0 +1,14 @@
+D5 tasks 4.2 to 4.4: board runs, 20 Nov 2026.
+Board: ESP32-S3 N16R8 (BOARD=n16r8), native USB port, no sensors attached.
+Wi-Fi and MQTT connected to the broker on the laptop for the whole run.
+Source: main at 06bf79d, built twice from the same tree:
+  normal build (CONFIG_NN_OPTIMIZED=y)  esp32s3_mtk/build-n16r8          1,328,848 B image
+  NN=ansi build (CONFIG_NN_ANSI_C=y)    esp32s3_mtk/build-n16r8-nn-ansi  1,292,848 B image
+Toolchain as in static-20261119/provenance.txt: esp-tflite-micro 1.4.0, esp-nn 1.4.1, -Og.
+Runner: tools/d5_bench.py bench --build optimized, then --build ansi; each model gets
+STOP, ML MODEL <id>, MLBENCH 200 RAW (5 warm-up runs, 200 timed runs, every input 0.5),
+then TASKS once at the end.
+
+optimized-20261120-0224/  normal build: console.log and results.json (every run in raw)
+ansi-20261120-0225/       NN=ansi build: the same
+replay-20261120.log       ML REPLAY checks of the bundled models on the normal build

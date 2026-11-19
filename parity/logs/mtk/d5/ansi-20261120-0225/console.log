@@ -1,0 +1,1134 @@
+> STOP
+STOP
+[MQTT] Status: Connected, Broker: 192.168.1.49
+> ML MODEL sine-float
+[TFLITE] Unloading previous model state...
+[TFLITE] Unload complete.
+[TFLITE] Verifying FlatBuffer at 0x3c10afc0...
+[TFLITE] Schema version 3 verified.
+[TFLITE] Creating OpResolver...
+[TFLITE] Ops registered.
+[TFLITE] Creating Interpreter (Arena size 65536)...
+[TFLITE] Allocating tensors...
+[TFLITE] Tensors allocated.
+[TFLITE] Model loaded OK!
+[TFLITE]   Inputs:  1 tensor(s), 1 total element(s)
+[TFLITE]   Outputs: 1 tensor(s), 1 total element(s)
+[TFLITE]   Arena:   776 / 65536 bytes used
+ML: OK MODEL sine-float
+> MLBENCH 200 RAW
+[ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=0
+[MLBENCH] run=1 request_us=120 invoke_us=26
+[MLBENCH] run=2 request_us=120 invoke_us=26
+[MLBENCH] run=3 request_us=120 invoke_us=26
+[MLBENCH] run=4 request_us=120 invoke_us=26
+[MLBENCH] run=5 request_us=120 invoke_us=26
+[MLBENCH] run=6 request_us=123 invoke_us=26
+[MLBENCH] run=7 request_us=120 invoke_us=26
+[MLBENCH] run=8 request_us=120 invoke_us=26
+[MLBENCH] run=9 request_us=120 invoke_us=26
+[MLBENCH] run=10 request_us=120 invoke_us=26
+[MLBENCH] run=11 request_us=120 invoke_us=26
+[MLBENCH] run=12 request_us=120 invoke_us=26
+[MLBENCH] run=13 request_us=120 invoke_us=26
+[MLBENCH] run=14 request_us=120 invoke_us=26
+[MLBENCH] run=15 request_us=120 invoke_us=26
+[MLBENCH] run=16 request_us=121 invoke_us=26
+[MLBENCH] run=17 request_us=120 invoke_us=26
+[MLBENCH] run=18 request_us=120 invoke_us=26
+[MLBENCH] run=19 request_us=119 invoke_us=26
+[MLBENCH] run=20 request_us=120 invoke_us=26
+[MLBENCH] run=21 request_us=120 invoke_us=26
+[MLBENCH] run=22 request_us=120 invoke_us=26
+[MLBENCH] run=23 request_us=120 invoke_us=26
+[MLBENCH] run=24 request_us=120 invoke_us=26
+[MLBENCH] run=25 request_us=120 invoke_us=26
+[MLBENCH] run=26 request_us=120 invoke_us=26
+[MLBENCH] run=27 request_us=120 invoke_us=26
+[MLBENCH] run=28 request_us=120 invoke_us=26
+[MLBENCH] run=29 request_us=120 invoke_us=26
+[MLBENCH] run=30 request_us=126 invoke_us=26
+[MLBENCH] run=31 request_us=120 invoke_us=26
+[MLBENCH] run=32 request_us=120 invoke_us=26
+[MLBENCH] run=33 request_us=120 invoke_us=26
+[MLBENCH] run=34 request_us=120 invoke_us=26
+[MLBENCH] run=35 request_us=120 invoke_us=26
+[MLBENCH] run=36 request_us=120 invoke_us=26
+[MLBENCH] run=37 request_us=120 invoke_us=26
+[MLBENCH] run=38 request_us=126 invoke_us=26
+[MLBENCH] run=39 request_us=120 invoke_us=26
+[MLBENCH] run=40 request_us=120 invoke_us=26
+[MLBENCH] run=41 request_us=120 invoke_us=26
+[MLBENCH] run=42 request_us=120 invoke_us=26
+[MLBENCH] run=43 request_us=120 invoke_us=26
+[MLBENCH] run=44 request_us=120 invoke_us=26
+[MLBENCH] run=45 request_us=120 invoke_us=26
+[MLBENCH] run=46 request_us=120 invoke_us=26
+[MLBENCH] run=47 request_us=120 invoke_us=25
+[MLBENCH] run=48 request_us=120 invoke_us=26
+[MLBENCH] run=49 request_us=121 invoke_us=26
+[MLBENCH] run=50 request_us=120 invoke_us=26
+[MLBENCH] run=51 request_us=120 invoke_us=26
+[MLBENCH] run=52 request_us=120 invoke_us=26
+[MLBENCH] run=53 request_us=120 invoke_us=26
+[MLBENCH] run=54 request_us=120 invoke_us=26
+[MLBENCH] run=55 request_us=126 invoke_us=26
+[MLBENCH] run=56 request_us=120 invoke_us=26
+[MLBENCH] run=57 request_us=121 invoke_us=26
+[MLBENCH] run=58 request_us=120 invoke_us=26
+[MLBENCH] run=59 request_us=120 invoke_us=26
+[MLBENCH] run=60 request_us=119 invoke_us=26
+[MLBENCH] run=61 request_us=120 invoke_us=26
+[MLBENCH] run=62 request_us=120 invoke_us=26
+[MLBENCH] run=63 request_us=127 invoke_us=26
+[MLBENCH] run=64 request_us=120 invoke_us=26
+[MLBENCH] run=65 request_us=120 invoke_us=26
+[MLBENCH] run=66 request_us=120 invoke_us=26
+[MLBENCH] run=67 request_us=120 invoke_us=26
+[MLBENCH] run=68 request_us=120 invoke_us=26
+[MLBENCH] run=69 request_us=120 invoke_us=26
+[MLBENCH] run=70 request_us=120 invoke_us=26
+[MLBENCH] run=71 request_us=120 invoke_us=26
+[MLBENCH] run=72 request_us=120 invoke_us=26
+[MLBENCH] run=73 request_us=120 invoke_us=26
+[MLBENCH] run=74 request_us=120 invoke_us=26
+[MLBENCH] run=75 request_us=120 invoke_us=26
+[MLBENCH] run=76 request_us=120 invoke_us=26
+[MLBENCH] run=77 request_us=120 invoke_us=26
+[MLBENCH] run=78 request_us=120 invoke_us=26
+[MLBENCH] run=79 request_us=120 invoke_us=26
+[MLBENCH] run=80 request_us=121 invoke_us=26
+[MLBENCH] run=81 request_us=120 invoke_us=26
+[MLBENCH] run=82 request_us=120 invoke_us=26
+[MLBENCH] run=83 request_us=120 invoke_us=26
+[MLBENCH] run=84 request_us=120 invoke_us=26
+[MLBENCH] run=85 request_us=120 invoke_us=26
+[MLBENCH] run=86 request_us=120 invoke_us=26
+[MLBENCH] run=87 request_us=140 invoke_us=26
+[MLBENCH] run=88 request_us=140 invoke_us=26
+[MLBENCH] run=89 request_us=120 invoke_us=26
+[MLBENCH] run=90 request_us=120 invoke_us=26
+[MLBENCH] run=91 request_us=121 invoke_us=26
+[MLBENCH] run=92 request_us=120 invoke_us=26
+[MLBENCH] run=93 request_us=120 invoke_us=26
+[MLBENCH] run=94 request_us=120 invoke_us=26
+[MLBENCH] run=95 request_us=120 invoke_us=26
+[MLBENCH] run=96 request_us=120 invoke_us=26
+[MLBENCH] run=97 request_us=120 invoke_us=26
+[MLBENCH] run=98 request_us=120 invoke_us=26
+[MLBENCH] run=99 request_us=120 invoke_us=26
+[MLBENCH] run=100 request_us=120 invoke_us=26
+[MLBENCH] run=101 request_us=120 invoke_us=26
+[MLBENCH] run=102 request_us=120 invoke_us=26
+[MLBENCH] run=103 request_us=122 invoke_us=26
+[MLBENCH] run=104 request_us=120 invoke_us=26
+[MLBENCH] run=105 request_us=120 invoke_us=26
+[MLBENCH] run=106 request_us=120 invoke_us=26
+[MLBENCH] run=107 request_us=120 invoke_us=26
+[MLBENCH] run=108 request_us=120 invoke_us=26
+[MLBENCH] run=109 request_us=120 invoke_us=26
+[MLBENCH] run=110 request_us=120 invoke_us=26
+[MLBENCH] run=111 request_us=126 invoke_us=26
+[MLBENCH] run=112 request_us=120 invoke_us=26
+[MLBENCH] run=113 request_us=120 invoke_us=26
+[MLBENCH] run=114 request_us=119 invoke_us=26
+[MLBENCH] run=115 request_us=120 invoke_us=26
+[MLBENCH] run=116 request_us=120 invoke_us=26
+[MLBENCH] run=117 request_us=120 invoke_us=26
+[MLBENCH] run=118 request_us=120 invoke_us=26
+[MLBENCH] run=119 request_us=126 invoke_us=26
+[MLBENCH] run=120 request_us=120 invoke_us=26
+[MLBENCH] run=121 request_us=120 invoke_us=26
+[MLBENCH] run=122 request_us=120 invoke_us=26
+[MLBENCH] run=123 request_us=121 invoke_us=26
+[MLBENCH] run=124 request_us=120 invoke_us=26
+[MLBENCH] run=125 request_us=119 invoke_us=26
+[MLBENCH] run=126 request_us=120 invoke_us=26
+[MLBENCH] run=127 request_us=121 invoke_us=26
+[MLBENCH] run=128 request_us=120 invoke_us=26
+[MLBENCH] run=129 request_us=120 invoke_us=26
+[MLBENCH] run=130 request_us=120 invoke_us=26
+[MLBENCH] run=131 request_us=121 invoke_us=26
+[MLBENCH] run=132 request_us=120 invoke_us=26
+[MLBENCH] run=133 request_us=120 invoke_us=26
+[MLBENCH] run=134 request_us=120 invoke_us=26
+[MLBENCH] run=135 request_us=120 invoke_us=26
+[MLBENCH] run=136 request_us=126 invoke_us=26
+[MLBENCH] run=137 request_us=120 invoke_us=26
+[MLBENCH] run=138 request_us=120 invoke_us=26
+[MLBENCH] run=139 request_us=120 invoke_us=26
+[MLBENCH] run=140 request_us=120 invoke_us=26
+[MLBENCH] run=141 request_us=121 invoke_us=26
+[MLBENCH] run=142 request_us=120 invoke_us=26
+[MLBENCH] run=143 request_us=120 invoke_us=26
+[MLBENCH] run=144 request_us=126 invoke_us=26
+[MLBENCH] run=145 request_us=120 invoke_us=26
+[MLBENCH] run=146 request_us=120 invoke_us=26
+[MLBENCH] run=147 request_us=120 invoke_us=26
+[MLBENCH] run=148 request_us=120 invoke_us=26
+[MLBENCH] run=149 request_us=119 invoke_us=26
+[MLBENCH] run=150 request_us=120 invoke_us=26
+[MLBENCH] run=151 request_us=120 invoke_us=26
+[MLBENCH] run=152 request_us=120 invoke_us=27
+[MLBENCH] run=153 request_us=120 invoke_us=26
+[MLBENCH] run=154 request_us=120 invoke_us=26
+[MLBENCH] run=155 request_us=120 invoke_us=26
+[MLBENCH] run=156 request_us=120 invoke_us=26
+[MLBENCH] run=157 request_us=121 invoke_us=26
+[MLBENCH] run=158 request_us=120 invoke_us=26
+[MLBENCH] run=159 request_us=120 invoke_us=26
+[MLBENCH] run=160 request_us=120 invoke_us=26
+[MLBENCH] run=161 request_us=120 invoke_us=26
+[MLBENCH] run=162 request_us=120 invoke_us=26
+[MLBENCH] run=163 request_us=120 invoke_us=26
+[MLBENCH] run=164 request_us=120 invoke_us=26
+[MLBENCH] run=165 request_us=119 invoke_us=26
+[MLBENCH] run=166 request_us=120 invoke_us=26
+[MLBENCH] run=167 request_us=120 invoke_us=26
+[MLBENCH] run=168 request_us=126 invoke_us=26
+[MLBENCH] run=169 request_us=120 invoke_us=26
+[MLBENCH] run=170 request_us=120 invoke_us=26
+[MLBENCH] run=171 request_us=120 invoke_us=26
+[MLBENCH] run=172 request_us=120 invoke_us=26
+[MLBENCH] run=173 request_us=120 invoke_us=26
+[MLBENCH] run=174 request_us=120 invoke_us=26
+[MLBENCH] run=175 request_us=120 invoke_us=26
+[MLBENCH] run=176 request_us=141 invoke_us=26
+[MLBENCH] run=177 request_us=141 invoke_us=26
+[MLBENCH] run=178 request_us=120 invoke_us=26
+[MLBENCH] run=179 request_us=120 invoke_us=26
+[MLBENCH] run=180 request_us=120 invoke_us=26
+[MLBENCH] run=181 request_us=120 invoke_us=26
+[MLBENCH] run=182 request_us=120 invoke_us=26
+[MLBENCH] run=183 request_us=119 invoke_us=26
+[MLBENCH] run=184 request_us=120 invoke_us=26
+[MLBENCH] run=185 request_us=120 invoke_us=26
+[MLBENCH] run=186 request_us=120 invoke_us=26
+[MLBENCH] run=187 request_us=120 invoke_us=26
+[MLBENCH] run=188 request_us=120 invoke_us=26
+[MLBENCH] run=189 request_us=120 invoke_us=26
+[MLBENCH] run=190 request_us=120 invoke_us=26
+[MLBENCH] run=191 request_us=120 invoke_us=26
+[MLBENCH] run=192 request_us=126 invoke_us=26
+[MLBENCH] run=193 request_us=120 invoke_us=26
+[MLBENCH] run=194 request_us=120 invoke_us=26
+[MLBENCH] run=195 request_us=121 invoke_us=26
+[MLBENCH] run=196 request_us=120 invoke_us=26
+[MLBENCH] run=197 request_us=120 invoke_us=26
+[MLBENCH] run=198 request_us=120 invoke_us=26
+[MLBENCH] run=199 request_us=119 invoke_us=26
+[MLBENCH] run=200 request_us=126 invoke_us=26
+[MLBENCH] runs=200 warmup=5 inputs=1 outputs=1 input=0.5 output0=0.4539876
+[MLBENCH] request_us  median=120 p95=126 min=119 max=141 mean=121
+[MLBENCH] invoke_us   median=26 p95=26 min=25 max=27 mean=26
+[MLBENCH] overhead_us median=94 p95=100 min=93 max=115 mean=95
+{"type":"mlbench","runs":200,"warmup":5,"inputs":1,"outputs":1,"output0":0.4539876,"request_us":{"median":120,"p95":126,"min":119,"max":141,"mean":121},"invoke_us":{"median":26,"p95":26,"min":25,"max":27,"mean":26},"overhead_us":{"median":94,"p95":100,"min":93,"max":115,"mean":95}}
+[MLBENCH] memory internal_free=30720 B internal_min_free=25260 B psram_free=8176484 B
+> ML MODEL sine-int8
+[TFLITE] Unloading previous model state...
+[TFLITE] Unload complete.
+[TFLITE] Verifying FlatBuffer at 0x3c10a530...
+[TFLITE] Schema version 3 verified.
+[TFLITE] Creating OpResolver...
+[TFLITE] Ops registered.
+[TFLITE] Creating Interpreter (Arena size 65536)...
+[TFLITE] Allocating tensors...
+[TFLITE] Tensors allocated.
+[TFLITE] Model loaded OK!
+[TFLITE]   Inputs:  1 tensor(s), 1 total element(s)
+[TFLITE]   Outputs: 1 tensor(s), 1 total element(s)
+[TFLITE]   Arena:   716 / 65536 bytes used
+ML: OK MODEL sine-int8
+> MLBENCH 200 RAW
+[ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=0
+[MLBENCH] run=1 request_us=133 invoke_us=38
+[MLBENCH] run=2 request_us=133 invoke_us=38
+[MLBENCH] run=3 request_us=133 invoke_us=38
+[MLBENCH] run=4 request_us=133 invoke_us=37
+[MLBENCH] run=5 request_us=133 invoke_us=38
+[MLBENCH] run=6 request_us=133 invoke_us=37
+[MLBENCH] run=7 request_us=133 invoke_us=38
+[MLBENCH] run=8 request_us=132 invoke_us=38
+[MLBENCH] run=9 request_us=133 invoke_us=37
+[MLBENCH] run=10 request_us=132 invoke_us=38
+[MLBENCH] run=11 request_us=133 invoke_us=37
+[MLBENCH] run=12 request_us=153 invoke_us=37
+[MLBENCH] run=13 request_us=144 invoke_us=45
+[MLBENCH] run=14 request_us=134 invoke_us=38
+[MLBENCH] run=15 request_us=133 invoke_us=38
+[MLBENCH] run=16 request_us=133 invoke_us=38
+[MLBENCH] run=17 request_us=133 invoke_us=38
+[MLBENCH] run=18 request_us=133 invoke_us=37
+[MLBENCH] run=19 request_us=133 invoke_us=37
+[MLBENCH] run=20 request_us=132 invoke_us=38
+[MLBENCH] run=21 request_us=133 invoke_us=37
+[MLBENCH] run=22 request_us=133 invoke_us=38
+[MLBENCH] run=23 request_us=132 invoke_us=38
+[MLBENCH] run=24 request_us=133 invoke_us=37
+[MLBENCH] run=25 request_us=133 invoke_us=38
+[MLBENCH] run=26 request_us=133 invoke_us=38
+[MLBENCH] run=27 request_us=132 invoke_us=38
+[MLBENCH] run=28 request_us=133 invoke_us=37
+[MLBENCH] run=29 request_us=133 invoke_us=38
+[MLBENCH] run=30 request_us=133 invoke_us=38
+[MLBENCH] run=31 request_us=133 invoke_us=37
+[MLBENCH] run=32 request_us=133 invoke_us=38
+[MLBENCH] run=33 request_us=132 invoke_us=38
+[MLBENCH] run=34 request_us=139 invoke_us=38
+[MLBENCH] run=35 request_us=133 invoke_us=37
+[MLBENCH] run=36 request_us=133 invoke_us=38
+[MLBENCH] run=37 request_us=132 invoke_us=38
+[MLBENCH] run=38 request_us=133 invoke_us=37
+[MLBENCH] run=39 request_us=133 invoke_us=38
+[MLBENCH] run=40 request_us=132 invoke_us=38
+[MLBENCH] run=41 request_us=133 invoke_us=37
+[MLBENCH] run=42 request_us=135 invoke_us=38
+[MLBENCH] run=43 request_us=133 invoke_us=37
+[MLBENCH] run=44 request_us=133 invoke_us=37
+[MLBENCH] run=45 request_us=133 invoke_us=38
+[MLBENCH] run=46 request_us=133 invoke_us=38
+[MLBENCH] run=47 request_us=133 invoke_us=37
+[MLBENCH] run=48 request_us=133 invoke_us=38
+[MLBENCH] run=49 request_us=133 invoke_us=38
+[MLBENCH] run=50 request_us=133 invoke_us=38
+[MLBENCH] run=51 request_us=133 invoke_us=37
+[MLBENCH] run=52 request_us=132 invoke_us=38
+[MLBENCH] run=53 request_us=133 invoke_us=37
+[MLBENCH] run=54 request_us=133 invoke_us=38
+[MLBENCH] run=55 request_us=133 invoke_us=38
+[MLBENCH] run=56 request_us=139 invoke_us=37
+[MLBENCH] run=57 request_us=133 invoke_us=37
+[MLBENCH] run=58 request_us=132 invoke_us=38
+[MLBENCH] run=59 request_us=133 invoke_us=37
+[MLBENCH] run=60 request_us=133 invoke_us=38
+[MLBENCH] run=61 request_us=132 invoke_us=38
+[MLBENCH] run=62 request_us=133 invoke_us=37
+[MLBENCH] run=63 request_us=133 invoke_us=38
+[MLBENCH] run=64 request_us=139 invoke_us=37
+[MLBENCH] run=65 request_us=133 invoke_us=37
+[MLBENCH] run=66 request_us=133 invoke_us=38
+[MLBENCH] run=67 request_us=133 invoke_us=37
+[MLBENCH] run=68 request_us=132 invoke_us=38
+[MLBENCH] run=69 request_us=132 invoke_us=38
+[MLBENCH] run=70 request_us=133 invoke_us=37
+[MLBENCH] run=71 request_us=133 invoke_us=38
+[MLBENCH] run=72 request_us=132 invoke_us=38
+[MLBENCH] run=73 request_us=133 invoke_us=37
+[MLBENCH] run=74 request_us=132 invoke_us=38
+[MLBENCH] run=75 request_us=133 invoke_us=37
+[MLBENCH] run=76 request_us=133 invoke_us=37
+[MLBENCH] run=77 request_us=133 invoke_us=38
+[MLBENCH] run=78 request_us=138 invoke_us=38
+[MLBENCH] run=79 request_us=133 invoke_us=37
+[MLBENCH] run=80 request_us=133 invoke_us=37
+[MLBENCH] run=81 request_us=132 invoke_us=38
+[MLBENCH] run=82 request_us=133 invoke_us=37
+[MLBENCH] run=83 request_us=133 invoke_us=38
+[MLBENCH] run=84 request_us=132 invoke_us=38
+[MLBENCH] run=85 request_us=133 invoke_us=37
+[MLBENCH] run=86 request_us=135 invoke_us=38
+[MLBENCH] run=87 request_us=133 invoke_us=37
+[MLBENCH] run=88 request_us=133 invoke_us=37
+[MLBENCH] run=89 request_us=132 invoke_us=38
+[MLBENCH] run=90 request_us=133 invoke_us=37
+[MLBENCH] run=91 request_us=133 invoke_us=37
+[MLBENCH] run=92 request_us=132 invoke_us=38
+[MLBENCH] run=93 request_us=145 invoke_us=37
+[MLBENCH] run=94 request_us=153 invoke_us=38
+[MLBENCH] run=95 request_us=132 invoke_us=38
+[MLBENCH] run=96 request_us=133 invoke_us=37
+[MLBENCH] run=97 request_us=133 invoke_us=38
+[MLBENCH] run=98 request_us=133 invoke_us=37
+[MLBENCH] run=99 request_us=133 invoke_us=37
+[MLBENCH] run=100 request_us=139 invoke_us=37
+[MLBENCH] run=101 request_us=132 invoke_us=38
+[MLBENCH] run=102 request_us=133 invoke_us=38
+[MLBENCH] run=103 request_us=133 invoke_us=37
+[MLBENCH] run=104 request_us=133 invoke_us=38
+[MLBENCH] run=105 request_us=133 invoke_us=37
+[MLBENCH] run=106 request_us=132 invoke_us=38
+[MLBENCH] run=107 request_us=132 invoke_us=38
+[MLBENCH] run=108 request_us=139 invoke_us=37
+[MLBENCH] run=109 request_us=133 invoke_us=38
+[MLBENCH] run=110 request_us=132 invoke_us=38
+[MLBENCH] run=111 request_us=133 invoke_us=37
+[MLBENCH] run=112 request_us=133 invoke_us=38
+[MLBENCH] run=113 request_us=133 invoke_us=38
+[MLBENCH] run=114 request_us=133 invoke_us=38
+[MLBENCH] run=115 request_us=133 invoke_us=38
+[MLBENCH] run=116 request_us=133 invoke_us=37
+[MLBENCH] run=117 request_us=132 invoke_us=38
+[MLBENCH] run=118 request_us=133 invoke_us=38
+[MLBENCH] run=119 request_us=133 invoke_us=37
+[MLBENCH] run=120 request_us=134 invoke_us=38
+[MLBENCH] run=121 request_us=133 invoke_us=37
+[MLBENCH] run=122 request_us=138 invoke_us=38
+[MLBENCH] run=123 request_us=133 invoke_us=38
+[MLBENCH] run=124 request_us=133 invoke_us=37
+[MLBENCH] run=125 request_us=133 invoke_us=37
+[MLBENCH] run=126 request_us=132 invoke_us=38
+[MLBENCH] run=127 request_us=133 invoke_us=38
+[MLBENCH] run=128 request_us=133 invoke_us=37
+[MLBENCH] run=129 request_us=133 invoke_us=38
+[MLBENCH] run=130 request_us=139 invoke_us=38
+[MLBENCH] run=131 request_us=132 invoke_us=38
+[MLBENCH] run=132 request_us=133 invoke_us=37
+[MLBENCH] run=133 request_us=133 invoke_us=38
+[MLBENCH] run=134 request_us=132 invoke_us=38
+[MLBENCH] run=135 request_us=133 invoke_us=37
+[MLBENCH] run=136 request_us=133 invoke_us=37
+[MLBENCH] run=137 request_us=132 invoke_us=38
+[MLBENCH] run=138 request_us=133 invoke_us=37
+[MLBENCH] run=139 request_us=133 invoke_us=37
+[MLBENCH] run=140 request_us=132 invoke_us=38
+[MLBENCH] run=141 request_us=133 invoke_us=37
+[MLBENCH] run=142 request_us=133 invoke_us=37
+[MLBENCH] run=143 request_us=132 invoke_us=38
+[MLBENCH] run=144 request_us=139 invoke_us=38
+[MLBENCH] run=145 request_us=133 invoke_us=38
+[MLBENCH] run=146 request_us=133 invoke_us=37
+[MLBENCH] run=147 request_us=133 invoke_us=37
+[MLBENCH] run=148 request_us=132 invoke_us=38
+[MLBENCH] run=149 request_us=133 invoke_us=37
+[MLBENCH] run=150 request_us=133 invoke_us=37
+[MLBENCH] run=151 request_us=132 invoke_us=38
+[MLBENCH] run=152 request_us=135 invoke_us=38
+[MLBENCH] run=153 request_us=133 invoke_us=37
+[MLBENCH] run=154 request_us=132 invoke_us=38
+[MLBENCH] run=155 request_us=133 invoke_us=37
+[MLBENCH] run=156 request_us=133 invoke_us=38
+[MLBENCH] run=157 request_us=133 invoke_us=38
+[MLBENCH] run=158 request_us=133 invoke_us=37
+[MLBENCH] run=159 request_us=133 invoke_us=38
+[MLBENCH] run=160 request_us=133 invoke_us=38
+[MLBENCH] run=161 request_us=133 invoke_us=37
+[MLBENCH] run=162 request_us=132 invoke_us=38
+[MLBENCH] run=163 request_us=133 invoke_us=38
+[MLBENCH] run=164 request_us=133 invoke_us=38
+[MLBENCH] run=165 request_us=133 invoke_us=37
+[MLBENCH] run=166 request_us=134 invoke_us=38
+[MLBENCH] run=167 request_us=137 invoke_us=38
+[MLBENCH] run=168 request_us=132 invoke_us=38
+[MLBENCH] run=169 request_us=133 invoke_us=38
+[MLBENCH] run=170 request_us=133 invoke_us=38
+[MLBENCH] run=171 request_us=133 invoke_us=37
+[MLBENCH] run=172 request_us=133 invoke_us=38
+[MLBENCH] run=173 request_us=132 invoke_us=38
+[MLBENCH] run=174 request_us=141 invoke_us=37
+[MLBENCH] run=175 request_us=133 invoke_us=37
+[MLBENCH] run=176 request_us=133 invoke_us=37
+[MLBENCH] run=177 request_us=132 invoke_us=38
+[MLBENCH] run=178 request_us=133 invoke_us=37
+[MLBENCH] run=179 request_us=132 invoke_us=38
+[MLBENCH] run=180 request_us=132 invoke_us=38
+[MLBENCH] run=181 request_us=139 invoke_us=37
+[MLBENCH] run=182 request_us=133 invoke_us=38
+[MLBENCH] run=183 request_us=133 invoke_us=37
+[MLBENCH] run=184 request_us=133 invoke_us=38
+[MLBENCH] run=185 request_us=132 invoke_us=38
+[MLBENCH] run=186 request_us=133 invoke_us=38
+[MLBENCH] run=187 request_us=133 invoke_us=38
+[MLBENCH] run=188 request_us=133 invoke_us=37
+[MLBENCH] run=189 request_us=136 invoke_us=38
+[MLBENCH] run=190 request_us=133 invoke_us=38
+[MLBENCH] run=191 request_us=133 invoke_us=37
+[MLBENCH] run=192 request_us=132 invoke_us=38
+[MLBENCH] run=193 request_us=133 invoke_us=37
+[MLBENCH] run=194 request_us=133 invoke_us=38
+[MLBENCH] run=195 request_us=133 invoke_us=38
+[MLBENCH] run=196 request_us=133 invoke_us=37
+[MLBENCH] run=197 request_us=132 invoke_us=38
+[MLBENCH] run=198 request_us=133 invoke_us=38
+[MLBENCH] run=199 request_us=133 invoke_us=37
+[MLBENCH] run=200 request_us=133 invoke_us=38
+[MLBENCH] runs=200 warmup=5 inputs=1 outputs=1 input=0.5 output0=0.4560026
+[MLBENCH] request_us  median=133 p95=139 min=132 max=153 mean=134
+[MLBENCH] invoke_us   median=38 p95=38 min=37 max=45 mean=38
+[MLBENCH] overhead_us median=95 p95=101 min=94 max=116 mean=96
+{"type":"mlbench","runs":200,"warmup":5,"inputs":1,"outputs":1,"output0":0.4560026,"request_us":{"median":133,"p95":139,"min":132,"max":153,"mean":134},"invoke_us":{"median":38,"p95":38,"min":37,"max":45,"mean":38},"overhead_us":{"median":95,"p95":101,"min":94,"max":116,"mean":96}}
+[MLBENCH] memory internal_free=30720 B internal_min_free=25260 B psram_free=8176484 B
+> ML MODEL autoencoder
+[TFLITE] Unloading previous model state...
+[TFLITE] Unload complete.
+[TFLITE] Verifying FlatBuffer at 0x3c10ffbc...
+[TFLITE] Schema version 3 verified.
+[TFLITE] Creating OpResolver...
+[TFLITE] Ops registered.
+[TFLITE] Creating Interpreter (Arena size 65536)...
+[TFLITE] Allocating tensors...
+[TFLITE] Tensors allocated.
+[TFLITE] Model loaded OK!
+[TFLITE]   Inputs:  1 tensor(s), 16 total element(s)
+[TFLITE]   Outputs: 1 tensor(s), 16 total element(s)
+[TFLITE]   Arena:   2908 / 65536 bytes used
+ML: OK MODEL autoencoder
+> MLBENCH 200 RAW
+[ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=0
+[MLBENCH] run=1 request_us=508 invoke_us=390
+[MLBENCH] run=2 request_us=507 invoke_us=390
+[MLBENCH] run=3 request_us=508 invoke_us=390
+[MLBENCH] run=4 request_us=508 invoke_us=390
+[MLBENCH] run=5 request_us=508 invoke_us=390
+[MLBENCH] run=6 request_us=507 invoke_us=390
+[MLBENCH] run=7 request_us=508 invoke_us=391
+[MLBENCH] run=8 request_us=508 invoke_us=390
+[MLBENCH] run=9 request_us=509 invoke_us=390
+[MLBENCH] run=10 request_us=507 invoke_us=390
+[MLBENCH] run=11 request_us=507 invoke_us=390
+[MLBENCH] run=12 request_us=507 invoke_us=390
+[MLBENCH] run=13 request_us=507 invoke_us=390
+[MLBENCH] run=14 request_us=558 invoke_us=430
+[MLBENCH] run=15 request_us=518 invoke_us=390
+[MLBENCH] run=16 request_us=508 invoke_us=391
+[MLBENCH] run=17 request_us=508 invoke_us=390
+[MLBENCH] run=18 request_us=507 invoke_us=390
+[MLBENCH] run=19 request_us=507 invoke_us=390
+[MLBENCH] run=20 request_us=507 invoke_us=390
+[MLBENCH] run=21 request_us=507 invoke_us=390
+[MLBENCH] run=22 request_us=507 invoke_us=390
+[MLBENCH] run=23 request_us=507 invoke_us=390
+[MLBENCH] run=24 request_us=510 invoke_us=391
+[MLBENCH] run=25 request_us=508 invoke_us=390
+[MLBENCH] run=26 request_us=513 invoke_us=390
+[MLBENCH] run=27 request_us=514 invoke_us=391
+[MLBENCH] run=28 request_us=508 invoke_us=390
+[MLBENCH] run=29 request_us=514 invoke_us=390
+[MLBENCH] run=30 request_us=508 invoke_us=390
+[MLBENCH] run=31 request_us=508 invoke_us=390
+[MLBENCH] run=32 request_us=508 invoke_us=390
+[MLBENCH] run=33 request_us=509 invoke_us=390
+[MLBENCH] run=34 request_us=507 invoke_us=390
+[MLBENCH] run=35 request_us=507 invoke_us=390
+[MLBENCH] run=36 request_us=508 invoke_us=390
+[MLBENCH] run=37 request_us=508 invoke_us=390
+[MLBENCH] run=38 request_us=508 invoke_us=390
+[MLBENCH] run=39 request_us=508 invoke_us=390
+[MLBENCH] run=40 request_us=507 invoke_us=390
+[MLBENCH] run=41 request_us=508 invoke_us=391
+[MLBENCH] run=42 request_us=508 invoke_us=390
+[MLBENCH] run=43 request_us=508 invoke_us=390
+[MLBENCH] run=44 request_us=508 invoke_us=390
+[MLBENCH] run=45 request_us=508 invoke_us=390
+[MLBENCH] run=46 request_us=508 invoke_us=390
+[MLBENCH] run=47 request_us=507 invoke_us=390
+[MLBENCH] run=48 request_us=508 invoke_us=390
+[MLBENCH] run=49 request_us=509 invoke_us=391
+[MLBENCH] run=50 request_us=508 invoke_us=390
+[MLBENCH] run=51 request_us=507 invoke_us=390
+[MLBENCH] run=52 request_us=508 invoke_us=390
+[MLBENCH] run=53 request_us=508 invoke_us=390
+[MLBENCH] run=54 request_us=507 invoke_us=390
+[MLBENCH] run=55 request_us=508 invoke_us=390
+[MLBENCH] run=56 request_us=508 invoke_us=390
+[MLBENCH] run=57 request_us=507 invoke_us=390
+[MLBENCH] run=58 request_us=508 invoke_us=390
+[MLBENCH] run=59 request_us=508 invoke_us=390
+[MLBENCH] run=60 request_us=507 invoke_us=390
+[MLBENCH] run=61 request_us=528 invoke_us=409
+[MLBENCH] run=62 request_us=537 invoke_us=410
+[MLBENCH] run=63 request_us=511 invoke_us=390
+[MLBENCH] run=64 request_us=508 invoke_us=390
+[MLBENCH] run=65 request_us=507 invoke_us=390
+[MLBENCH] run=66 request_us=508 invoke_us=390
+[MLBENCH] run=67 request_us=513 invoke_us=390
+[MLBENCH] run=68 request_us=507 invoke_us=390
+[MLBENCH] run=69 request_us=508 invoke_us=391
+[MLBENCH] run=70 request_us=514 invoke_us=390
+[MLBENCH] run=71 request_us=508 invoke_us=391
+[MLBENCH] run=72 request_us=508 invoke_us=390
+[MLBENCH] run=73 request_us=508 invoke_us=390
+[MLBENCH] run=74 request_us=508 invoke_us=391
+[MLBENCH] run=75 request_us=508 invoke_us=390
+[MLBENCH] run=76 request_us=508 invoke_us=390
+[MLBENCH] run=77 request_us=508 invoke_us=390
+[MLBENCH] run=78 request_us=507 invoke_us=390
+[MLBENCH] run=79 request_us=507 invoke_us=390
+[MLBENCH] run=80 request_us=507 invoke_us=390
+[MLBENCH] run=81 request_us=507 invoke_us=390
+[MLBENCH] run=82 request_us=508 invoke_us=391
+[MLBENCH] run=83 request_us=510 invoke_us=392
+[MLBENCH] run=84 request_us=508 invoke_us=390
+[MLBENCH] run=85 request_us=508 invoke_us=390
+[MLBENCH] run=86 request_us=507 invoke_us=390
+[MLBENCH] run=87 request_us=508 invoke_us=391
+[MLBENCH] run=88 request_us=508 invoke_us=390
+[MLBENCH] run=89 request_us=508 invoke_us=390
+[MLBENCH] run=90 request_us=508 invoke_us=390
+[MLBENCH] run=91 request_us=507 invoke_us=390
+[MLBENCH] run=92 request_us=508 invoke_us=390
+[MLBENCH] run=93 request_us=508 invoke_us=390
+[MLBENCH] run=94 request_us=507 invoke_us=390
+[MLBENCH] run=95 request_us=508 invoke_us=391
+[MLBENCH] run=96 request_us=507 invoke_us=390
+[MLBENCH] run=97 request_us=508 invoke_us=390
+[MLBENCH] run=98 request_us=508 invoke_us=390
+[MLBENCH] run=99 request_us=508 invoke_us=390
+[MLBENCH] run=100 request_us=507 invoke_us=390
+[MLBENCH] run=101 request_us=508 invoke_us=390
+[MLBENCH] run=102 request_us=507 invoke_us=390
+[MLBENCH] run=103 request_us=508 invoke_us=391
+[MLBENCH] run=104 request_us=507 invoke_us=390
+[MLBENCH] run=105 request_us=507 invoke_us=390
+[MLBENCH] run=106 request_us=508 invoke_us=391
+[MLBENCH] run=107 request_us=508 invoke_us=390
+[MLBENCH] run=108 request_us=508 invoke_us=390
+[MLBENCH] run=109 request_us=508 invoke_us=390
+[MLBENCH] run=110 request_us=508 invoke_us=390
+[MLBENCH] run=111 request_us=507 invoke_us=390
+[MLBENCH] run=112 request_us=507 invoke_us=390
+[MLBENCH] run=113 request_us=508 invoke_us=391
+[MLBENCH] run=114 request_us=513 invoke_us=390
+[MLBENCH] run=115 request_us=508 invoke_us=390
+[MLBENCH] run=116 request_us=512 invoke_us=391
+[MLBENCH] run=117 request_us=514 invoke_us=390
+[MLBENCH] run=118 request_us=508 invoke_us=390
+[MLBENCH] run=119 request_us=511 invoke_us=391
+[MLBENCH] run=120 request_us=508 invoke_us=390
+[MLBENCH] run=121 request_us=507 invoke_us=390
+[MLBENCH] run=122 request_us=507 invoke_us=390
+[MLBENCH] run=123 request_us=507 invoke_us=390
+[MLBENCH] run=124 request_us=507 invoke_us=390
+[MLBENCH] run=125 request_us=507 invoke_us=390
+[MLBENCH] run=126 request_us=507 invoke_us=390
+[MLBENCH] run=127 request_us=508 invoke_us=390
+[MLBENCH] run=128 request_us=507 invoke_us=390
+[MLBENCH] run=129 request_us=508 invoke_us=391
+[MLBENCH] run=130 request_us=507 invoke_us=390
+[MLBENCH] run=131 request_us=507 invoke_us=390
+[MLBENCH] run=132 request_us=507 invoke_us=390
+[MLBENCH] run=133 request_us=507 invoke_us=390
+[MLBENCH] run=134 request_us=508 invoke_us=390
+[MLBENCH] run=135 request_us=508 invoke_us=390
+[MLBENCH] run=136 request_us=507 invoke_us=390
+[MLBENCH] run=137 request_us=508 invoke_us=390
+[MLBENCH] run=138 request_us=507 invoke_us=390
+[MLBENCH] run=139 request_us=507 invoke_us=390
+[MLBENCH] run=140 request_us=508 invoke_us=391
+[MLBENCH] run=141 request_us=507 invoke_us=390
+[MLBENCH] run=142 request_us=507 invoke_us=390
+[MLBENCH] run=143 request_us=508 invoke_us=391
+[MLBENCH] run=144 request_us=508 invoke_us=390
+[MLBENCH] run=145 request_us=508 invoke_us=390
+[MLBENCH] run=146 request_us=508 invoke_us=391
+[MLBENCH] run=147 request_us=508 invoke_us=390
+[MLBENCH] run=148 request_us=507 invoke_us=390
+[MLBENCH] run=149 request_us=507 invoke_us=390
+[MLBENCH] run=150 request_us=508 invoke_us=390
+[MLBENCH] run=151 request_us=508 invoke_us=390
+[MLBENCH] run=152 request_us=508 invoke_us=390
+[MLBENCH] run=153 request_us=508 invoke_us=390
+[MLBENCH] run=154 request_us=508 invoke_us=390
+[MLBENCH] run=155 request_us=508 invoke_us=390
+[MLBENCH] run=156 request_us=507 invoke_us=390
+[MLBENCH] run=157 request_us=508 invoke_us=390
+[MLBENCH] run=158 request_us=507 invoke_us=390
+[MLBENCH] run=159 request_us=507 invoke_us=390
+[MLBENCH] run=160 request_us=507 invoke_us=390
+[MLBENCH] run=161 request_us=518 invoke_us=394
+[MLBENCH] run=162 request_us=508 invoke_us=391
+[MLBENCH] run=163 request_us=516 invoke_us=394
+[MLBENCH] run=164 request_us=515 invoke_us=391
+[MLBENCH] run=165 request_us=511 invoke_us=394
+[MLBENCH] run=166 request_us=508 invoke_us=391
+[MLBENCH] run=167 request_us=512 invoke_us=394
+[MLBENCH] run=168 request_us=521 invoke_us=391
+[MLBENCH] run=169 request_us=509 invoke_us=391
+[MLBENCH] run=170 request_us=507 invoke_us=390
+[MLBENCH] run=171 request_us=507 invoke_us=390
+[MLBENCH] run=172 request_us=507 invoke_us=390
+[MLBENCH] run=173 request_us=507 invoke_us=390
+[MLBENCH] run=174 request_us=508 invoke_us=390
+[MLBENCH] run=175 request_us=508 invoke_us=390
+[MLBENCH] run=176 request_us=508 invoke_us=390
+[MLBENCH] run=177 request_us=508 invoke_us=390
+[MLBENCH] run=178 request_us=508 invoke_us=390
+[MLBENCH] run=179 request_us=508 invoke_us=390
+[MLBENCH] run=180 request_us=508 invoke_us=390
+[MLBENCH] run=181 request_us=508 invoke_us=390
+[MLBENCH] run=182 request_us=507 invoke_us=390
+[MLBENCH] run=183 request_us=507 invoke_us=390
+[MLBENCH] run=184 request_us=508 invoke_us=390
+[MLBENCH] run=185 request_us=507 invoke_us=390
+[MLBENCH] run=186 request_us=507 invoke_us=390
+[MLBENCH] run=187 request_us=508 invoke_us=390
+[MLBENCH] run=188 request_us=508 invoke_us=390
+[MLBENCH] run=189 request_us=508 invoke_us=390
+[MLBENCH] run=190 request_us=508 invoke_us=390
+[MLBENCH] run=191 request_us=508 invoke_us=390
+[MLBENCH] run=192 request_us=508 invoke_us=391
+[MLBENCH] run=193 request_us=508 invoke_us=390
+[MLBENCH] run=194 request_us=508 invoke_us=390
+[MLBENCH] run=195 request_us=508 invoke_us=390
+[MLBENCH] run=196 request_us=508 invoke_us=390
+[MLBENCH] run=197 request_us=507 invoke_us=391
+[MLBENCH] run=198 request_us=508 invoke_us=390
+[MLBENCH] run=199 request_us=507 invoke_us=390
+[MLBENCH] run=200 request_us=508 invoke_us=390
+[MLBENCH] runs=200 warmup=5 inputs=16 outputs=16 input=0.5 output0=0
+[MLBENCH] request_us  median=508 p95=514 min=507 max=558 mean=509
+[MLBENCH] invoke_us   median=390 p95=391 min=390 max=430 mean=391
+[MLBENCH] overhead_us median=118 p95=123 min=116 max=130 mean=118
+{"type":"mlbench","runs":200,"warmup":5,"inputs":16,"outputs":16,"output0":0,"request_us":{"median":508,"p95":514,"min":507,"max":558,"mean":509},"invoke_us":{"median":390,"p95":391,"min":390,"max":430,"mean":391},"overhead_us":{"median":118,"p95":123,"min":116,"max":130,"mean":118}}
+[MLBENCH] memory internal_free=30720 B internal_min_free=25260 B psram_free=8176484 B
+> ML MODEL comfort-summer
+[TFLITE] Unloading previous model state...
+[TFLITE] Unload complete.
+[TFLITE] Verifying FlatBuffer at 0x3c10bc1c...
+[TFLITE] Schema version 3 verified.
+[TFLITE] Creating OpResolver...
+[TFLITE] Ops registered.
+[TFLITE] Creating Interpreter (Arena size 65536)...
+[TFLITE] Allocating tensors...
+[TFLITE] Tensors allocated.
+[TFLITE] Model loaded OK!
+[TFLITE]   Inputs:  1 tensor(s), 2 total element(s)
+[TFLITE]   Outputs: 1 tensor(s), 100 total element(s)
+[TFLITE]   Arena:   1432 / 65536 bytes used
+ML: OK MODEL comfort-summer
+> MLBENCH 200 RAW
+[ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=0
+[MLBENCH] run=1 request_us=209 invoke_us=112
+[MLBENCH] run=2 request_us=208 invoke_us=112
+[MLBENCH] run=3 request_us=208 invoke_us=112
+[MLBENCH] run=4 request_us=209 invoke_us=112
+[MLBENCH] run=5 request_us=213 invoke_us=112
+[MLBENCH] run=6 request_us=209 invoke_us=113
+[MLBENCH] run=7 request_us=209 invoke_us=113
+[MLBENCH] run=8 request_us=209 invoke_us=112
+[MLBENCH] run=9 request_us=208 invoke_us=112
+[MLBENCH] run=10 request_us=208 invoke_us=113
+[MLBENCH] run=11 request_us=209 invoke_us=112
+[MLBENCH] run=12 request_us=209 invoke_us=112
+[MLBENCH] run=13 request_us=209 invoke_us=112
+[MLBENCH] run=14 request_us=231 invoke_us=122
+[MLBENCH] run=15 request_us=224 invoke_us=125
+[MLBENCH] run=16 request_us=209 invoke_us=112
+[MLBENCH] run=17 request_us=209 invoke_us=112
+[MLBENCH] run=18 request_us=208 invoke_us=113
+[MLBENCH] run=19 request_us=213 invoke_us=113
+[MLBENCH] run=20 request_us=208 invoke_us=112
+[MLBENCH] run=21 request_us=208 invoke_us=113
+[MLBENCH] run=22 request_us=208 invoke_us=113
+[MLBENCH] run=23 request_us=209 invoke_us=112
+[MLBENCH] run=24 request_us=209 invoke_us=113
+[MLBENCH] run=25 request_us=209 invoke_us=112
+[MLBENCH] run=26 request_us=209 invoke_us=113
+[MLBENCH] run=27 request_us=208 invoke_us=113
+[MLBENCH] run=28 request_us=209 invoke_us=112
+[MLBENCH] run=29 request_us=209 invoke_us=112
+[MLBENCH] run=30 request_us=209 invoke_us=112
+[MLBENCH] run=31 request_us=209 invoke_us=112
+[MLBENCH] run=32 request_us=208 invoke_us=112
+[MLBENCH] run=33 request_us=209 invoke_us=112
+[MLBENCH] run=34 request_us=209 invoke_us=113
+[MLBENCH] run=35 request_us=208 invoke_us=113
+[MLBENCH] run=36 request_us=209 invoke_us=112
+[MLBENCH] run=37 request_us=215 invoke_us=113
+[MLBENCH] run=38 request_us=208 invoke_us=113
+[MLBENCH] run=39 request_us=208 invoke_us=112
+[MLBENCH] run=40 request_us=208 invoke_us=113
+[MLBENCH] run=41 request_us=208 invoke_us=113
+[MLBENCH] run=42 request_us=209 invoke_us=112
+[MLBENCH] run=43 request_us=208 invoke_us=113
+[MLBENCH] run=44 request_us=209 invoke_us=112
+[MLBENCH] run=45 request_us=209 invoke_us=112
+[MLBENCH] run=46 request_us=208 invoke_us=112
+[MLBENCH] run=47 request_us=209 invoke_us=112
+[MLBENCH] run=48 request_us=208 invoke_us=113
+[MLBENCH] run=49 request_us=208 invoke_us=113
+[MLBENCH] run=50 request_us=209 invoke_us=112
+[MLBENCH] run=51 request_us=209 invoke_us=112
+[MLBENCH] run=52 request_us=214 invoke_us=113
+[MLBENCH] run=53 request_us=209 invoke_us=112
+[MLBENCH] run=54 request_us=209 invoke_us=112
+[MLBENCH] run=55 request_us=208 invoke_us=112
+[MLBENCH] run=56 request_us=215 invoke_us=112
+[MLBENCH] run=57 request_us=208 invoke_us=113
+[MLBENCH] run=58 request_us=209 invoke_us=112
+[MLBENCH] run=59 request_us=208 invoke_us=113
+[MLBENCH] run=60 request_us=209 invoke_us=112
+[MLBENCH] run=61 request_us=209 invoke_us=112
+[MLBENCH] run=62 request_us=209 invoke_us=112
+[MLBENCH] run=63 request_us=208 invoke_us=113
+[MLBENCH] run=64 request_us=209 invoke_us=112
+[MLBENCH] run=65 request_us=209 invoke_us=113
+[MLBENCH] run=66 request_us=209 invoke_us=112
+[MLBENCH] run=67 request_us=209 invoke_us=112
+[MLBENCH] run=68 request_us=209 invoke_us=112
+[MLBENCH] run=69 request_us=209 invoke_us=112
+[MLBENCH] run=70 request_us=209 invoke_us=112
+[MLBENCH] run=71 request_us=210 invoke_us=113
+[MLBENCH] run=72 request_us=209 invoke_us=113
+[MLBENCH] run=73 request_us=209 invoke_us=112
+[MLBENCH] run=74 request_us=209 invoke_us=112
+[MLBENCH] run=75 request_us=209 invoke_us=112
+[MLBENCH] run=76 request_us=209 invoke_us=112
+[MLBENCH] run=77 request_us=209 invoke_us=112
+[MLBENCH] run=78 request_us=209 invoke_us=112
+[MLBENCH] run=79 request_us=209 invoke_us=113
+[MLBENCH] run=80 request_us=209 invoke_us=113
+[MLBENCH] run=81 request_us=209 invoke_us=112
+[MLBENCH] run=82 request_us=209 invoke_us=112
+[MLBENCH] run=83 request_us=209 invoke_us=112
+[MLBENCH] run=84 request_us=208 invoke_us=113
+[MLBENCH] run=85 request_us=209 invoke_us=112
+[MLBENCH] run=86 request_us=208 invoke_us=113
+[MLBENCH] run=87 request_us=208 invoke_us=112
+[MLBENCH] run=88 request_us=208 invoke_us=112
+[MLBENCH] run=89 request_us=214 invoke_us=112
+[MLBENCH] run=90 request_us=208 invoke_us=112
+[MLBENCH] run=91 request_us=208 invoke_us=113
+[MLBENCH] run=92 request_us=209 invoke_us=112
+[MLBENCH] run=93 request_us=209 invoke_us=112
+[MLBENCH] run=94 request_us=208 invoke_us=113
+[MLBENCH] run=95 request_us=209 invoke_us=112
+[MLBENCH] run=96 request_us=209 invoke_us=112
+[MLBENCH] run=97 request_us=209 invoke_us=112
+[MLBENCH] run=98 request_us=209 invoke_us=113
+[MLBENCH] run=99 request_us=208 invoke_us=112
+[MLBENCH] run=100 request_us=208 invoke_us=112
+[MLBENCH] run=101 request_us=209 invoke_us=112
+[MLBENCH] run=102 request_us=209 invoke_us=112
+[MLBENCH] run=103 request_us=209 invoke_us=112
+[MLBENCH] run=104 request_us=215 invoke_us=112
+[MLBENCH] run=105 request_us=208 invoke_us=112
+[MLBENCH] run=106 request_us=208 invoke_us=113
+[MLBENCH] run=107 request_us=209 invoke_us=112
+[MLBENCH] run=108 request_us=215 invoke_us=112
+[MLBENCH] run=109 request_us=209 invoke_us=112
+[MLBENCH] run=110 request_us=209 invoke_us=113
+[MLBENCH] run=111 request_us=209 invoke_us=112
+[MLBENCH] run=112 request_us=208 invoke_us=112
+[MLBENCH] run=113 request_us=209 invoke_us=112
+[MLBENCH] run=114 request_us=209 invoke_us=112
+[MLBENCH] run=115 request_us=208 invoke_us=113
+[MLBENCH] run=116 request_us=208 invoke_us=113
+[MLBENCH] run=117 request_us=208 invoke_us=112
+[MLBENCH] run=118 request_us=208 invoke_us=113
+[MLBENCH] run=119 request_us=208 invoke_us=113
+[MLBENCH] run=120 request_us=209 invoke_us=112
+[MLBENCH] run=121 request_us=209 invoke_us=113
+[MLBENCH] run=122 request_us=208 invoke_us=112
+[MLBENCH] run=123 request_us=209 invoke_us=112
+[MLBENCH] run=124 request_us=209 invoke_us=112
+[MLBENCH] run=125 request_us=208 invoke_us=112
+[MLBENCH] run=126 request_us=208 invoke_us=112
+[MLBENCH] run=127 request_us=208 invoke_us=113
+[MLBENCH] run=128 request_us=208 invoke_us=113
+[MLBENCH] run=129 request_us=209 invoke_us=112
+[MLBENCH] run=130 request_us=208 invoke_us=112
+[MLBENCH] run=131 request_us=209 invoke_us=112
+[MLBENCH] run=132 request_us=209 invoke_us=112
+[MLBENCH] run=133 request_us=209 invoke_us=112
+[MLBENCH] run=134 request_us=208 invoke_us=112
+[MLBENCH] run=135 request_us=208 invoke_us=112
+[MLBENCH] run=136 request_us=208 invoke_us=113
+[MLBENCH] run=137 request_us=209 invoke_us=112
+[MLBENCH] run=138 request_us=208 invoke_us=113
+[MLBENCH] run=139 request_us=208 invoke_us=112
+[MLBENCH] run=140 request_us=208 invoke_us=113
+[MLBENCH] run=141 request_us=215 invoke_us=112
+[MLBENCH] run=142 request_us=209 invoke_us=112
+[MLBENCH] run=143 request_us=208 invoke_us=112
+[MLBENCH] run=144 request_us=209 invoke_us=112
+[MLBENCH] run=145 request_us=209 invoke_us=112
+[MLBENCH] run=146 request_us=208 invoke_us=113
+[MLBENCH] run=147 request_us=208 invoke_us=113
+[MLBENCH] run=148 request_us=208 invoke_us=113
+[MLBENCH] run=149 request_us=209 invoke_us=113
+[MLBENCH] run=150 request_us=209 invoke_us=112
+[MLBENCH] run=151 request_us=208 invoke_us=113
+[MLBENCH] run=152 request_us=208 invoke_us=112
+[MLBENCH] run=153 request_us=208 invoke_us=112
+[MLBENCH] run=154 request_us=209 invoke_us=112
+[MLBENCH] run=155 request_us=209 invoke_us=112
+[MLBENCH] run=156 request_us=215 invoke_us=112
+[MLBENCH] run=157 request_us=209 invoke_us=112
+[MLBENCH] run=158 request_us=208 invoke_us=112
+[MLBENCH] run=159 request_us=208 invoke_us=112
+[MLBENCH] run=160 request_us=215 invoke_us=113
+[MLBENCH] run=161 request_us=209 invoke_us=112
+[MLBENCH] run=162 request_us=208 invoke_us=113
+[MLBENCH] run=163 request_us=209 invoke_us=113
+[MLBENCH] run=164 request_us=209 invoke_us=112
+[MLBENCH] run=165 request_us=208 invoke_us=113
+[MLBENCH] run=166 request_us=208 invoke_us=113
+[MLBENCH] run=167 request_us=208 invoke_us=113
+[MLBENCH] run=168 request_us=208 invoke_us=112
+[MLBENCH] run=169 request_us=208 invoke_us=113
+[MLBENCH] run=170 request_us=209 invoke_us=112
+[MLBENCH] run=171 request_us=209 invoke_us=112
+[MLBENCH] run=172 request_us=208 invoke_us=112
+[MLBENCH] run=173 request_us=209 invoke_us=112
+[MLBENCH] run=174 request_us=208 invoke_us=113
+[MLBENCH] run=175 request_us=210 invoke_us=113
+[MLBENCH] run=176 request_us=209 invoke_us=112
+[MLBENCH] run=177 request_us=208 invoke_us=113
+[MLBENCH] run=178 request_us=209 invoke_us=112
+[MLBENCH] run=179 request_us=209 invoke_us=112
+[MLBENCH] run=180 request_us=208 invoke_us=113
+[MLBENCH] run=181 request_us=209 invoke_us=112
+[MLBENCH] run=182 request_us=209 invoke_us=112
+[MLBENCH] run=183 request_us=209 invoke_us=112
+[MLBENCH] run=184 request_us=208 invoke_us=112
+[MLBENCH] run=185 request_us=209 invoke_us=112
+[MLBENCH] run=186 request_us=208 invoke_us=113
+[MLBENCH] run=187 request_us=208 invoke_us=112
+[MLBENCH] run=188 request_us=208 invoke_us=112
+[MLBENCH] run=189 request_us=209 invoke_us=112
+[MLBENCH] run=190 request_us=208 invoke_us=112
+[MLBENCH] run=191 request_us=209 invoke_us=112
+[MLBENCH] run=192 request_us=209 invoke_us=112
+[MLBENCH] run=193 request_us=215 invoke_us=112
+[MLBENCH] run=194 request_us=209 invoke_us=112
+[MLBENCH] run=195 request_us=208 invoke_us=113
+[MLBENCH] run=196 request_us=209 invoke_us=112
+[MLBENCH] run=197 request_us=209 invoke_us=112
+[MLBENCH] run=198 request_us=209 invoke_us=112
+[MLBENCH] run=199 request_us=208 invoke_us=112
+[MLBENCH] run=200 request_us=208 invoke_us=112
+[MLBENCH] runs=200 warmup=5 inputs=2 outputs=100 input=0.5 output0=1
+[MLBENCH] request_us  median=209 p95=214 min=208 max=231 mean=209
+[MLBENCH] invoke_us   median=112 p95=113 min=112 max=125 mean=112
+[MLBENCH] overhead_us median=97 p95=101 min=95 max=109 mean=97
+{"type":"mlbench","runs":200,"warmup":5,"inputs":2,"outputs":100,"output0":1,"request_us":{"median":209,"p95":214,"min":208,"max":231,"mean":209},"invoke_us":{"median":112,"p95":113,"min":112,"max":125,"mean":112},"overhead_us":{"median":97,"p95":101,"min":95,"max":109,"mean":97}}
+[MLBENCH] memory internal_free=30720 B internal_min_free=25260 B psram_free=8176484 B
+> ML MODEL people-counter
+[TFLITE] Unloading previous model state...
+[TFLITE] Unload complete.
+[TFLITE] Verifying FlatBuffer at 0x3c10d368...
+[TFLITE] Schema version 3 verified.
+[TFLITE] Creating OpResolver...
+[TFLITE] Ops registered.
+[TFLITE] Creating Interpreter (Arena size 65536)...
+[TFLITE] Allocating tensors...
+[TFLITE] Tensors allocated.
+[TFLITE] Model loaded OK!
+[TFLITE]   Inputs:  1 tensor(s), 31 total element(s)
+[TFLITE]   Outputs: 1 tensor(s), 3 total element(s)
+[TFLITE]   Arena:   3916 / 65536 bytes used
+ML: OK MODEL people-counter
+> MLBENCH 200 RAW
+[ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=0
+[MLBENCH] run=1 request_us=4567 invoke_us=4408
+[MLBENCH] run=2 request_us=4610 invoke_us=4444
+[MLBENCH] run=3 request_us=4552 invoke_us=4396
+[MLBENCH] run=4 request_us=4571 invoke_us=4407
+[MLBENCH] run=5 request_us=4601 invoke_us=4436
+[MLBENCH] run=6 request_us=4580 invoke_us=4416
+[MLBENCH] run=7 request_us=4598 invoke_us=4436
+[MLBENCH] run=8 request_us=4644 invoke_us=4473
+[MLBENCH] run=9 request_us=4811 invoke_us=4604
+[MLBENCH] run=10 request_us=4565 invoke_us=4406
+[MLBENCH] run=11 request_us=4583 invoke_us=4418
+[MLBENCH] run=12 request_us=4615 invoke_us=4447
+[MLBENCH] run=13 request_us=4581 invoke_us=4416
+[MLBENCH] run=14 request_us=4613 invoke_us=4446
+[MLBENCH] run=15 request_us=4669 invoke_us=4489
+[MLBENCH] run=16 request_us=4851 invoke_us=4582
+[MLBENCH] run=17 request_us=4628 invoke_us=4457
+[MLBENCH] run=18 request_us=4600 invoke_us=4428
+[MLBENCH] run=19 request_us=4609 invoke_us=4445
+[MLBENCH] run=20 request_us=4588 invoke_us=4420
+[MLBENCH] run=21 request_us=4599 invoke_us=4434
+[MLBENCH] run=22 request_us=4565 invoke_us=4404
+[MLBENCH] run=23 request_us=4585 invoke_us=4420
+[MLBENCH] run=24 request_us=4609 invoke_us=4444
+[MLBENCH] run=25 request_us=4587 invoke_us=4419
+[MLBENCH] run=26 request_us=4599 invoke_us=4434
+[MLBENCH] run=27 request_us=4574 invoke_us=4410
+[MLBENCH] run=28 request_us=4618 invoke_us=4452
+[MLBENCH] run=29 request_us=4569 invoke_us=4408
+[MLBENCH] run=30 request_us=4583 invoke_us=4418
+[MLBENCH] run=31 request_us=4609 invoke_us=4444
+[MLBENCH] run=32 request_us=4587 invoke_us=4419
+[MLBENCH] run=33 request_us=4599 invoke_us=4434
+[MLBENCH] run=34 request_us=4565 invoke_us=4404
+[MLBENCH] run=35 request_us=4583 invoke_us=4419
+[MLBENCH] run=36 request_us=4608 invoke_us=4444
+[MLBENCH] run=37 request_us=4676 invoke_us=4489
+[MLBENCH] run=38 request_us=4753 invoke_us=4552
+[MLBENCH] run=39 request_us=5301 invoke_us=5089
+[MLBENCH] run=40 request_us=4752 invoke_us=4528
+[MLBENCH] run=41 request_us=4562 invoke_us=4405
+[MLBENCH] run=42 request_us=4639 invoke_us=4472
+[MLBENCH] run=43 request_us=4572 invoke_us=4411
+[MLBENCH] run=44 request_us=4753 invoke_us=4578
+[MLBENCH] run=45 request_us=4649 invoke_us=4468
+[MLBENCH] run=46 request_us=4641 invoke_us=4468
+[MLBENCH] run=47 request_us=4591 invoke_us=4422
+[MLBENCH] run=48 request_us=4560 invoke_us=4403
+[MLBENCH] run=49 request_us=4619 invoke_us=4452
+[MLBENCH] run=50 request_us=4574 invoke_us=4410
+[MLBENCH] run=51 request_us=4610 invoke_us=4445
+[MLBENCH] run=52 request_us=4574 invoke_us=4411
+[MLBENCH] run=53 request_us=4581 invoke_us=4421
+[MLBENCH] run=54 request_us=4599 invoke_us=4434
+[MLBENCH] run=55 request_us=4569 invoke_us=4407
+[MLBENCH] run=56 request_us=4616 invoke_us=4449
+[MLBENCH] run=57 request_us=4574 invoke_us=4411
+[MLBENCH] run=58 request_us=4752 invoke_us=4577
+[MLBENCH] run=59 request_us=4899 invoke_us=4672
+[MLBENCH] run=60 request_us=4675 invoke_us=4484
+[MLBENCH] run=61 request_us=4680 invoke_us=4480
+[MLBENCH] run=62 request_us=4758 invoke_us=4560
+[MLBENCH] run=63 request_us=4695 invoke_us=4505
+[MLBENCH] run=64 request_us=4593 invoke_us=4422
+[MLBENCH] run=65 request_us=4615 invoke_us=4447
+[MLBENCH] run=66 request_us=4585 invoke_us=4420
+[MLBENCH] run=67 request_us=4566 invoke_us=4407
+[MLBENCH] run=68 request_us=4618 invoke_us=4449
+[MLBENCH] run=69 request_us=4585 invoke_us=4420
+[MLBENCH] run=70 request_us=4615 invoke_us=4447
+[MLBENCH] run=71 request_us=4585 invoke_us=4419
+[MLBENCH] run=72 request_us=4616 invoke_us=4447
+[MLBENCH] run=73 request_us=4585 invoke_us=4420
+[MLBENCH] run=74 request_us=4566 invoke_us=4407
+[MLBENCH] run=75 request_us=4615 invoke_us=4447
+[MLBENCH] run=76 request_us=4591 invoke_us=4420
+[MLBENCH] run=77 request_us=4615 invoke_us=4446
+[MLBENCH] run=78 request_us=4585 invoke_us=4420
+[MLBENCH] run=79 request_us=4567 invoke_us=4408
+[MLBENCH] run=80 request_us=4617 invoke_us=4449
+[MLBENCH] run=81 request_us=4765 invoke_us=4569
+[MLBENCH] run=82 request_us=4722 invoke_us=4523
+[MLBENCH] run=83 request_us=4632 invoke_us=4449
+[MLBENCH] run=84 request_us=4638 invoke_us=4463
+[MLBENCH] run=85 request_us=4585 invoke_us=4419
+[MLBENCH] run=86 request_us=4567 invoke_us=4408
+[MLBENCH] run=87 request_us=4623 invoke_us=4449
+[MLBENCH] run=88 request_us=4586 invoke_us=4420
+[MLBENCH] run=89 request_us=4615 invoke_us=4447
+[MLBENCH] run=90 request_us=4585 invoke_us=4419
+[MLBENCH] run=91 request_us=4596 invoke_us=4430
+[MLBENCH] run=92 request_us=4609 invoke_us=4436
+[MLBENCH] run=93 request_us=4570 invoke_us=4409
+[MLBENCH] run=94 request_us=4615 invoke_us=4447
+[MLBENCH] run=95 request_us=4585 invoke_us=4420
+[MLBENCH] run=96 request_us=4615 invoke_us=4446
+[MLBENCH] run=97 request_us=4586 invoke_us=4420
+[MLBENCH] run=98 request_us=4566 invoke_us=4408
+[MLBENCH] run=99 request_us=4617 invoke_us=4449
+[MLBENCH] run=100 request_us=4585 invoke_us=4419
+[MLBENCH] run=101 request_us=4615 invoke_us=4447
+[MLBENCH] run=102 request_us=4591 invoke_us=4419
+[MLBENCH] run=103 request_us=4750 invoke_us=4561
+[MLBENCH] run=104 request_us=4676 invoke_us=4486
+[MLBENCH] run=105 request_us=4564 invoke_us=4403
+[MLBENCH] run=106 request_us=5121 invoke_us=4874
+[MLBENCH] run=107 request_us=4776 invoke_us=4556
+[MLBENCH] run=108 request_us=4610 invoke_us=4443
+[MLBENCH] run=109 request_us=4576 invoke_us=4414
+[MLBENCH] run=110 request_us=4559 invoke_us=4402
+[MLBENCH] run=111 request_us=4614 invoke_us=4447
+[MLBENCH] run=112 request_us=4577 invoke_us=4415
+[MLBENCH] run=113 request_us=4606 invoke_us=4440
+[MLBENCH] run=114 request_us=4578 invoke_us=4416
+[MLBENCH] run=115 request_us=4606 invoke_us=4440
+[MLBENCH] run=116 request_us=4736 invoke_us=4550
+[MLBENCH] run=117 request_us=4658 invoke_us=4475
+[MLBENCH] run=118 request_us=4631 invoke_us=4461
+[MLBENCH] run=119 request_us=4604 invoke_us=4434
+[MLBENCH] run=120 request_us=4619 invoke_us=4444
+[MLBENCH] run=121 request_us=4586 invoke_us=4422
+[MLBENCH] run=122 request_us=4566 invoke_us=4407
+[MLBENCH] run=123 request_us=4612 invoke_us=4443
+[MLBENCH] run=124 request_us=4586 invoke_us=4422
+[MLBENCH] run=125 request_us=4762 invoke_us=4573
+[MLBENCH] run=126 request_us=4698 invoke_us=4508
+[MLBENCH] run=127 request_us=4676 invoke_us=4495
+[MLBENCH] run=128 request_us=4627 invoke_us=4445
+[MLBENCH] run=129 request_us=4566 invoke_us=4407
+[MLBENCH] run=130 request_us=4612 invoke_us=4443
+[MLBENCH] run=131 request_us=4591 invoke_us=4427
+[MLBENCH] run=132 request_us=4613 invoke_us=4441
+[MLBENCH] run=133 request_us=4591 invoke_us=4427
+[MLBENCH] run=134 request_us=4610 invoke_us=4441
+[MLBENCH] run=135 request_us=4591 invoke_us=4427
+[MLBENCH] run=136 request_us=4567 invoke_us=4408
+[MLBENCH] run=137 request_us=4613 invoke_us=4442
+[MLBENCH] run=138 request_us=4591 invoke_us=4426
+[MLBENCH] run=139 request_us=4610 invoke_us=4442
+[MLBENCH] run=140 request_us=4591 invoke_us=4426
+[MLBENCH] run=141 request_us=4567 invoke_us=4408
+[MLBENCH] run=142 request_us=4631 invoke_us=4440
+[MLBENCH] run=143 request_us=4590 invoke_us=4426
+[MLBENCH] run=144 request_us=4609 invoke_us=4441
+[MLBENCH] run=145 request_us=4591 invoke_us=4426
+[MLBENCH] run=146 request_us=4617 invoke_us=4441
+[MLBENCH] run=147 request_us=4590 invoke_us=4426
+[MLBENCH] run=148 request_us=4742 invoke_us=4551
+[MLBENCH] run=149 request_us=4742 invoke_us=4543
+[MLBENCH] run=150 request_us=4613 invoke_us=4439
+[MLBENCH] run=151 request_us=4609 invoke_us=4442
+[MLBENCH] run=152 request_us=4602 invoke_us=4431
+[MLBENCH] run=153 request_us=4600 invoke_us=4432
+[MLBENCH] run=154 request_us=4602 invoke_us=4435
+[MLBENCH] run=155 request_us=4573 invoke_us=4412
+[MLBENCH] run=156 request_us=4605 invoke_us=4438
+[MLBENCH] run=157 request_us=4594 invoke_us=4427
+[MLBENCH] run=158 request_us=4610 invoke_us=4440
+[MLBENCH] run=159 request_us=4593 invoke_us=4428
+[MLBENCH] run=160 request_us=4568 invoke_us=4409
+[MLBENCH] run=161 request_us=4616 invoke_us=4448
+[MLBENCH] run=162 request_us=4587 invoke_us=4422
+[MLBENCH] run=163 request_us=4608 invoke_us=4438
+[MLBENCH] run=164 request_us=4593 invoke_us=4427
+[MLBENCH] run=165 request_us=4608 invoke_us=4440
+[MLBENCH] run=166 request_us=4594 invoke_us=4427
+[MLBENCH] run=167 request_us=4568 invoke_us=4409
+[MLBENCH] run=168 request_us=4611 invoke_us=4438
+[MLBENCH] run=169 request_us=4594 invoke_us=4428
+[MLBENCH] run=170 request_us=4757 invoke_us=4566
+[MLBENCH] run=171 request_us=4821 invoke_us=4571
+[MLBENCH] run=172 request_us=4634 invoke_us=4452
+[MLBENCH] run=173 request_us=4634 invoke_us=4456
+[MLBENCH] run=174 request_us=4572 invoke_us=4409
+[MLBENCH] run=175 request_us=4591 invoke_us=4429
+[MLBENCH] run=176 request_us=4608 invoke_us=4439
+[MLBENCH] run=177 request_us=4592 invoke_us=4429
+[MLBENCH] run=178 request_us=4607 invoke_us=4438
+[MLBENCH] run=179 request_us=4568 invoke_us=4407
+[MLBENCH] run=180 request_us=4600 invoke_us=4436
+[MLBENCH] run=181 request_us=4600 invoke_us=4431
+[MLBENCH] run=182 request_us=4590 invoke_us=4428
+[MLBENCH] run=183 request_us=4607 invoke_us=4439
+[MLBENCH] run=184 request_us=4593 invoke_us=4428
+[MLBENCH] run=185 request_us=4608 invoke_us=4439
+[MLBENCH] run=186 request_us=4568 invoke_us=4408
+[MLBENCH] run=187 request_us=4591 invoke_us=4428
+[MLBENCH] run=188 request_us=4609 invoke_us=4438
+[MLBENCH] run=189 request_us=4592 invoke_us=4428
+[MLBENCH] run=190 request_us=4607 invoke_us=4438
+[MLBENCH] run=191 request_us=4568 invoke_us=4407
+[MLBENCH] run=192 request_us=4738 invoke_us=4555
+[MLBENCH] run=193 request_us=4699 invoke_us=4504
+[MLBENCH] run=194 request_us=4657 invoke_us=4480
+[MLBENCH] run=195 request_us=4629 invoke_us=4444
+[MLBENCH] run=196 request_us=4595 invoke_us=4431
+[MLBENCH] run=197 request_us=4604 invoke_us=4436
+[MLBENCH] run=198 request_us=4567 invoke_us=4408
+[MLBENCH] run=199 request_us=4601 invoke_us=4436
+[MLBENCH] run=200 request_us=4609 invoke_us=4436
+[MLBENCH] runs=200 warmup=5 inputs=31 outputs=3 input=0.5 output0=0
+[MLBENCH] request_us  median=4603 p95=4757 min=4552 max=5301 mean=4623
+[MLBENCH] invoke_us   median=4436 p95=4566 min=4396 max=5089 mean=4452
+[MLBENCH] overhead_us median=167 p95=199 min=156 max=269 mean=172
+{"type":"mlbench","runs":200,"warmup":5,"inputs":31,"outputs":3,"output0":0,"request_us":{"median":4603,"p95":4757,"min":4552,"max":5301,"mean":4623},"invoke_us":{"median":4436,"p95":4566,"min":4396,"max":5089,"mean":4452},"overhead_us":{"median":167,"p95":199,"min":156,"max":269,"mean":172}}
+[MLBENCH] memory internal_free=30720 B internal_min_free=25260 B psram_free=8176484 B
+> TASKS
+[TASK] app_message=104 B app_buffer=864 B
+[TASK] SchedulerTask    id=8  core=1 pri=21 stack_free=13532 B ran_on_core0=0 ran_on_core1=1066
+[TASK] MQTTTask         id=9  core=0 pri=22 stack_free=14252 B ran_on_core0=2870 ran_on_core1=0
+[TASK] ControlTask      id=10 core=1 pri=23 stack_free=3036 B ran_on_core0=0 ran_on_core1=513
+[TASK] InferenceTask    id=11 core=1 pri=23 stack_free=6060 B ran_on_core0=0 ran_on_core1=1032
+[TASK] ApplicationTask  id=12 core=1 pri=23 stack_free=3228 B ran_on_core0=0 ran_on_core1=0
+[TASK] BenchmarkTask    id=13 core=1 pri=24 stack_free=2364 B ran_on_core0=0 ran_on_core1=0
+[TASK] MonitorTask      id=14 core=1 pri=24 stack_free=3308 B ran_on_core0=0 ran_on_core1=31
+[TASK] sched_mbf  free=12912 B dropped=0
+[TASK] pub_mbf    free=10944 B dropped=0
+[TASK] infer_mbf  free=592 B dropped=0
+[TASK] app_mbf    free=864 B dropped=0
+[TASK] bench_mbf  free=512 B dropped=0
+[TASK] ctrl_mbf   free=528 B dropped=0
+[TASK] heap_free=30720 B min_free=25260 B largest=20480 B console_rx_irqs=12 console_rx_dropped=0

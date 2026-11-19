@@ -1,0 +1,100 @@
+# ML REPLAY checks on the board, 20 Nov 2026 (D4 task 2.3 note, D5 board session).
+# ESP32-S3 N16R8, normal firmware (S3 assembly) built from main at 06bf79d, no sensors.
+# comfort-summer: ML REPLAY 26.3 67 gives 92 (desktop reference 92/100, docs/embedded-ml/RUNNING.md).
+# people-counter: 31 zero readings give class 1, none (scores in, none, out order), score 0.957.
+# sine-int8: ML REPLAY 1.57 gives 1.003 with 2 S3 vector calls; sine-float gives 0.996.
+# The esp-tls and mqtt_client errors are the board failing to reach the broker at the time;
+# the Wi-Fi network was fixed before the benchmark runs.
+> STOP
+STOP
+> CLEAR
+[RULE] reset
+CLEARED
+[shim] qcreate(st) h=0x3fcf0818 len=6 sz=4 ne=83 nf=84
+> ML MODEL comfort-summer
+[TFLITE] Unloading previous model state...
+[TFLITE] Unload complete.
+[TFLITE] Verifying FlatBuffer at 0x3c10bc7c...
+[TFLITE] Schema version 3 verified.
+[TFLITE] Creating OpResolver...
+[TFLITE] Ops registered.
+[TFLITE] Creating Interpreter (Arena size 65536)...
+[TFLITE] Allocating tensors...
+[TFLITE] Tensors allocated.
+[TFLITE] Model loaded OK!
+[TFLITE]   Inputs:  1 tensor(s), 2 total element(s)
+[TFLITE]   Outputs: 1 tensor(s), 100 total element(s)
+[TFLITE]   Arena:   1432 / 65536 bytes used
+ML: OK MODEL comfort-summer
+> ML REPLAY 26.3 67
+[ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=0
+{"type":"ml","timestamp_ms":4246357,"generation":3,"model":"comfort-summer","input_source":"replay","outputs":[92],"comfort_score":92,"class_score":0.5984691,"invoke_us":1008,"status":"OK"}
+ML: OK REPLAY 26.3 67
+E (3360017062) esp-tls: [sock=54] select() timeout
+E (3360017063) transport_base: Failed to open a new connection: 32774
+E (3360017063) mqtt_client: Error transport connect
+> ML MODEL people-counter
+[TFLITE] Unloading previous model state...
+[TFLITE] Unload complete.
+[TFLITE] Verifying FlatBuffer at 0x3c10d3c8...
+[TFLITE] Schema version 3 verified.
+[TFLITE] Creating OpResolver...
+[TFLITE] Ops registered.
+[TFLITE] Creating Interpreter (Arena size 65536)...
+[TFLITE] Allocating tensors...
+[TFLITE] Tensors allocated.
+[TFLITE] Model loaded OK!
+[TFLITE]   Inputs:  1 tensor(s), 31 total element(s)
+[TFLITE]   Outputs: 1 tensor(s), 3 total element(s)
+[TFLITE]   Arena:   6204 / 65536 bytes used
+ML: OK MODEL people-counter
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=0
+{"type":"ml","timestamp_ms":4251157,"generation":4,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":2643,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[shim] qcreate(st) h=0x3fcf0818 len=6 sz=4 ne=85 nf=86
+E (3360024071) esp-tls: [sock=54] select() timeout
+E (3360024072) transport_base: Failed to open a new connection: 32774
+E (3360024072) mqtt_client: Error transport connect
+> ML MODEL sine-int8
+[TFLITE] Unloading previous model state...
+[TFLITE] Unload complete.
+[TFLITE] Verifying FlatBuffer at 0x3c10a590...
+[TFLITE] Schema version 3 verified.
+[TFLITE] Creating OpResolver...
+[TFLITE] Ops registered.
+[TFLITE] Creating Interpreter (Arena size 65536)...
+[TFLITE] Allocating tensors...
+[TFLITE] Tensors allocated.
+[TFLITE] Model loaded OK!
+[TFLITE]   Inputs:  1 tensor(s), 1 total element(s)
+[TFLITE]   Outputs: 1 tensor(s), 1 total element(s)
+[TFLITE]   Arena:   716 / 65536 bytes used
+ML: OK MODEL sine-int8
+> ML REPLAY 1.57
+[ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=2
+{"type":"ml","timestamp_ms":4255749,"generation":5,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":583,"status":"OK"}
+ML: OK REPLAY 1.57
+[shim] qcreate(st) h=0x3fcf0818 len=6 sz=4 ne=87 nf=88
+> ML MODEL sine-float
+[TFLITE] Unloading previous model state...
+[TFLITE] Unload complete.
+[TFLITE] Verifying FlatBuffer at 0x3c10b020...
+[TFLITE] Schema version 3 verified.
+[TFLITE] Creating OpResolver...
+[TFLITE] Ops registered.
+[TFLITE] Creating Interpreter (Arena size 65536)...
+[TFLITE] Allocating tensors...
+[TFLITE] Tensors allocated.
+[TFLITE] Model loaded OK!
+[TFLITE]   Inputs:  1 tensor(s), 1 total element(s)
+[TFLITE]   Outputs: 1 tensor(s), 1 total element(s)
+[TFLITE]   Arena:   776 / 65536 bytes used
+ML: OK MODEL sine-float
+E (3360031079) esp-tls: [sock=54] select() timeout
+> ML REPLAY 1.57
+E (3360031080) transport_base: Failed to open a new connection: 32774
+E (3360031080) mqtt_client: Error transport connect
+[ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=0
+{"type":"ml","timestamp_ms":4260416,"generation":6,"model":"sine-float","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[0.9955145],"invoke_us":746,"status":"OK"}
+ML: OK REPLAY 1.57
