@@ -99,8 +99,9 @@ pass T02's live LCD requirement.
 Select a distinct observed change, not a repeated constant frame, for
 correlation. Record uncertainties and dropped samples. Different uptime
 timestamps are expected because each bridge re-emits with local time.
-Physical units require the configured AHT/TSL decoder; the generic bridge's
-hex output is not a typed ML feature or a displayed value.
+Physical units require a decoder: the templates set `remote_profile` on B and
+C, so their consoles also print decoded JSON for each relayed frame. That is
+console evidence only; C still draws nothing and no ML result is published.
 
 ## 4. Repeat with piecewise configuration
 

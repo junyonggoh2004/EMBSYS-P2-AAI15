@@ -64,6 +64,8 @@ static const bus_t radar_bus={.name="uart",.init_cfg=radar_init,.deinit=radar_de
 const bus_t *bus_lookup(const char *name) { return !strcmp(name,"uart")?&radar_bus:&bus_gpio; }
 bool mqtt_follow_remote_source(const char *node, const char *source, const char *alias)
 { (void)node; (void)source; (void)alias; return true; }
+bool sensor_bridge_set_profile(const char *local, sensor_profile_t profile)
+{ (void)local; (void)profile; return true; }
 bool mqtt_pub_bytes(const char *source, const uint8_t *data, size_t len, int qos, bool retain)
 { (void)source; (void)data; (void)len; (void)qos; (void)retain; return true; }
 bool mqtt_pub_line(const char *source, const char *line, int qos, bool retain)

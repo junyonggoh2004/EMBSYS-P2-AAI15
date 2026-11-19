@@ -1,0 +1,143 @@
+ML: OK PRESET
+ML: OK RUN
+{"type":"ml","timestamp_ms":2000,"generation":2,"model":"sine-float","outputs":null,"status":"MISSING_OR_STALE"}
+{"sensor":"AHT","timestamp_ms":2000,"temperature_c":25.00,"humidity_pct":50.00,"status":"OK","error":0}
+{"sensor":"LIGHT","timestamp_ms":2000,"light_lux":0,"status":"OK","error":0}
+{"sensor":"DISTANCE","timestamp_ms":2000,"distance_cm":34.3,"echo_us":2000,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":4000,"generation":2,"model":"sine-float","raw_features":[25,50,0,34.3],"input_source":"sensors","inputs":[1.829175],"outputs":[1.829175],"invoke_us":0,"status":"OK"}
+{"type":"ml","timestamp_ms":6000,"generation":2,"model":"sine-float","outputs":null,"status":"MISSING_OR_STALE"}
+{"sensor":"AHT","timestamp_ms":6000,"temperature_c":25.00,"humidity_pct":50.00,"status":"OK","error":0}
+{"sensor":"LIGHT","timestamp_ms":6000,"light_lux":0,"status":"OK","error":0}
+{"sensor":"DISTANCE","timestamp_ms":6000,"distance_cm":34.3,"echo_us":2000,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":8000,"generation":2,"model":"sine-float","raw_features":[25,50,0,34.3],"input_source":"sensors","inputs":[1.829175],"outputs":[1.829175],"invoke_us":0,"status":"OK"}
+{"type":"ml","timestamp_ms":14000,"generation":2,"model":"sine-float","outputs":null,"status":"MISSING_OR_STALE"}
+{"sensor":"AHT","timestamp_ms":14000,"temperature_c":25.00,"humidity_pct":50.00,"status":"OK","error":0}
+{"sensor":"LIGHT","timestamp_ms":14000,"light_lux":0,"status":"OK","error":0}
+{"sensor":"DISTANCE","timestamp_ms":14000,"distance_cm":34.3,"echo_us":2000,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":16600,"generation":2,"model":"sine-float","outputs":null,"status":"SAMPLE_SKEW"}
+ML: OK MODEL sine-int8
+ML: OK RUN
+{"sensor":"AHT","timestamp_ms":16600,"temperature_c":25.00,"humidity_pct":50.00,"status":"OK","error":0}
+{"sensor":"LIGHT","timestamp_ms":16600,"light_lux":0,"status":"OK","error":0}
+{"sensor":"DISTANCE","timestamp_ms":16600,"distance_cm":34.3,"echo_us":2000,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":18600,"generation":4,"model":"sine-int8","raw_features":[25,50,0,34.3],"input_source":"sensors","inputs":[1.829175],"outputs":[1.829175],"invoke_us":0,"status":"OK"}
+{"type":"ml","timestamp_ms":20600,"generation":4,"model":"sine-int8","outputs":null,"status":"MODEL_CHANGED"}
+ML: OK PRESET
+ML: OK RESET
+ML: OK BIND 0 DISTANCE distance_cm 2 400
+ML: OK RUN
+{"sensor":"AHT","timestamp_ms":20600,"temperature_c":25.00,"humidity_pct":50.00,"status":"OK","error":0}
+{"sensor":"LIGHT","timestamp_ms":20600,"light_lux":0,"status":"OK","error":0}
+{"sensor":"DISTANCE","timestamp_ms":20600,"distance_cm":34.3,"echo_us":2000,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":22600,"generation":8,"model":"sine-float","raw_features":[34.3],"input_source":"sensors","inputs":[0.5099168],"outputs":[0.5099168],"invoke_us":0,"status":"OK"}
+ML: OK BIND 0 LIGHT light_lux 0 1000
+ML: OK RUN
+{"sensor":"AHT","timestamp_ms":22600,"temperature_c":25.00,"humidity_pct":50.00,"status":"OK","error":0}
+{"sensor":"LIGHT","timestamp_ms":22600,"light_lux":0,"status":"OK","error":0}
+{"sensor":"DISTANCE","timestamp_ms":22600,"distance_cm":34.3,"echo_us":2000,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":24600,"generation":11,"model":"sine-float","raw_features":[0],"input_source":"sensors","inputs":[0],"outputs":[0],"invoke_us":0,"status":"OK"}
+ML: ERROR invalid command, model, field, binding layout or range; use ML HELP/SHOW
+ML: ERROR invalid command, model, field, binding layout or range; use ML HELP/SHOW
+ML: ERROR invalid command, model, field, binding layout or range; use ML HELP/SHOW
+ML: ERROR invalid command, model, field, binding layout or range; use ML HELP/SHOW
+ML: ERROR invalid command, model, field, binding layout or range; use ML HELP/SHOW
+ML: ERROR send STOP before changing ML configuration
+ML: OK PRESET autoencoder
+ML: OK RUN
+{"sensor":"AHT","timestamp_ms":24600,"temperature_c":25.00,"humidity_pct":50.00,"status":"OK","error":0}
+{"sensor":"LIGHT","timestamp_ms":24600,"light_lux":0,"status":"OK","error":0}
+{"sensor":"DISTANCE","timestamp_ms":24600,"distance_cm":34.3,"echo_us":2000,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":26600,"generation":13,"model":"autoencoder","raw_features":[25,50,0,34.3,25,50,0,34.3,25,50,0,34.3,25,50,0,34.3],"input_source":"sensors","inputs":[0.5833333,0.5,0,0.08115578,0.5833333,0.5,0,0.08115578,0.5833333,0.5,0,0.08115578,0.5833333,0.5,0,0.08115578],"outputs":[0.5833333,0.5,0,0.08115578,0.5833333,0.5,0,0.08115578,0.5833333,0.5,0,0.08115578,0.5833333,0.5,0,0.08115578],"invoke_us":0,"status":"OK"}
+ML: OK UNBIND 7
+ML: ERROR invalid command, model, field, binding layout or range; use ML HELP/SHOW
+ML: OK PRESET
+ML: ERROR model load failed; pipeline disabled
+ML: OK MODEL sine-float
+ML: OK RUN
+{"sensor":"AHT","timestamp_ms":26600,"temperature_c":25.00,"humidity_pct":50.00,"status":"OK","error":0}
+{"sensor":"LIGHT","timestamp_ms":26600,"light_lux":0,"status":"OK","error":0}
+{"sensor":"DISTANCE","timestamp_ms":26600,"distance_cm":34.3,"echo_us":2000,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":28600,"generation":18,"model":"sine-float","outputs":null,"status":"INVOKE_ERROR"}
+{"type":"ml","timestamp_ms":30600,"generation":18,"model":"sine-float","raw_features":[25,50,0,34.3],"input_source":"sensors","inputs":[1.829175],"outputs":[1.829175],"invoke_us":0,"status":"OK"}
+{"type":"ml","timestamp_ms":32600,"generation":19,"model":"sine-float","outputs":null,"status":"MISSING_OR_STALE"}
+ML: OK PRESET
+ML: OK RUN
+{"sensor":"AHT","timestamp_ms":4294967195,"temperature_c":25.00,"humidity_pct":50.00,"status":"OK","error":0}
+{"sensor":"LIGHT","timestamp_ms":4294967195,"light_lux":0,"status":"OK","error":0}
+{"sensor":"DISTANCE","timestamp_ms":4294967195,"distance_cm":34.3,"echo_us":2000,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":100,"generation":21,"model":"sine-float","raw_features":[25,50,0,34.3],"input_source":"sensors","inputs":[1.829175],"outputs":[1.829175],"invoke_us":0,"status":"OK"}
+ML: OK RESET
+ML: OK BIND 0 LIGHT light_lux 0 1000
+ML: OK RUN
+ML: OK THRESHOLD -0.5
+ML: ERROR expected ML THRESHOLD <finite value> or ML THRESHOLD OFF
+ML: ERROR expected ML THRESHOLD <finite value> or ML THRESHOLD OFF
+ML: ERROR expected ML THRESHOLD <finite value> or ML THRESHOLD OFF
+{"sensor":"AHT","timestamp_ms":100,"temperature_c":25.00,"humidity_pct":50.00,"status":"OK","error":0}
+{"sensor":"LIGHT","timestamp_ms":100,"light_lux":0,"status":"OK","error":0}
+{"sensor":"DISTANCE","timestamp_ms":100,"distance_cm":34.3,"echo_us":2000,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":2100,"generation":24,"model":"sine-float","raw_features":[0],"input_source":"sensors","inputs":[0],"outputs":[0],"threshold":-0.5,"threshold_exceeded":true,"invoke_us":0,"status":"OK"}
+ML: OK THRESHOLD 0
+{"type":"ml","timestamp_ms":4100,"generation":24,"model":"sine-float","raw_features":[0],"input_source":"sensors","inputs":[0],"outputs":[0],"threshold":0,"threshold_exceeded":false,"invoke_us":0,"status":"OK"}
+ML: OK THRESHOLD OFF
+{"sensor":"AHT","timestamp_ms":4100,"temperature_c":25.00,"humidity_pct":50.00,"status":"OK","error":0}
+{"sensor":"LIGHT","timestamp_ms":4100,"light_lux":0,"status":"OK","error":0}
+{"sensor":"DISTANCE","timestamp_ms":4100,"distance_cm":34.3,"echo_us":2000,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":6100,"generation":24,"model":"sine-float","raw_features":[0],"input_source":"sensors","inputs":[0],"outputs":[0],"invoke_us":0,"status":"OK"}
+ML: OK THRESHOLD 0.5
+ML: OK PRESET autoencoder
+ML: OK RUN
+{"sensor":"AHT","timestamp_ms":6100,"temperature_c":25.00,"humidity_pct":50.00,"status":"OK","error":0}
+{"sensor":"LIGHT","timestamp_ms":6100,"light_lux":0,"status":"OK","error":0}
+{"sensor":"DISTANCE","timestamp_ms":6100,"distance_cm":34.3,"echo_us":2000,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":8100,"generation":26,"model":"autoencoder","raw_features":[25,50,0,34.3,25,50,0,34.3,25,50,0,34.3,25,50,0,34.3],"input_source":"sensors","inputs":[0.5833333,0.5,0,0.08115578,0.5833333,0.5,0,0.08115578,0.5833333,0.5,0,0.08115578,0.5833333,0.5,0,0.08115578],"outputs":[0.5833333,0.5,0,0.08115578,0.5833333,0.5,0,0.08115578,0.5833333,0.5,0,0.08115578,0.5833333,0.5,0,0.08115578],"invoke_us":0,"status":"OK"}
+ML: OK PRESET sine-int8
+ML: OK RUN
+{"type":"ml","timestamp_ms":10100,"generation":28,"model":"sine-int8","outputs":null,"status":"MISSING_OR_STALE"}
+ML: OK PRESET comfort-summer
+{"type":"ml","timestamp_ms":10100,"generation":29,"model":"comfort-summer","input_source":"replay","outputs":[78],"comfort_score":78,"class_score":0.8,"invoke_us":0,"status":"OK"}
+ML: OK REPLAY 26.3 67
+ML: ERROR send STOP, select a model and supply its exact replay input vector
+ML: ERROR send STOP, select a model and supply its exact replay input vector
+ML: OK RUN
+{"sensor":"AHT","timestamp_ms":10100,"temperature_c":25.00,"humidity_pct":50.00,"status":"OK","error":0}
+{"sensor":"LIGHT","timestamp_ms":10100,"light_lux":0,"status":"OK","error":0}
+{"sensor":"DISTANCE","timestamp_ms":10100,"distance_cm":34.3,"echo_us":2000,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":12100,"generation":30,"model":"comfort-summer","input_source":"sensors","outputs":[78],"comfort_score":78,"class_score":0.8,"invoke_us":0,"status":"OK"}
+ML: ERROR people-counter local model export is missing from this build
+ML: OK MODEL sine-int8
+{"type":"ml","timestamp_ms":12100,"generation":31,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.57000005],"threshold":0.5,"threshold_exceeded":true,"invoke_us":0,"status":"OK"}
+ML: OK REPLAY 1.57
+ML: OK MODEL comfort-summer
+ML: OK RESET
+ML: ERROR invalid command, model, field, binding layout or range; use ML HELP/SHOW
+ML: ERROR invalid command, model, field, binding layout or range; use ML HELP/SHOW
+ML: OK BIND 0 IN_AHT temperature_c 0 60
+ML: OK BIND 1 IN_AHT humidity_pct 0 100
+ML: OK RUN
+{"type":"ml","timestamp_ms":14100,"generation":36,"model":"comfort-summer","outputs":null,"status":"MISSING_OR_STALE"}
+{"sensor":"IN_AHT","timestamp_ms":14100,"temperature_c":25.00,"humidity_pct":50.00,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":16100,"generation":36,"model":"comfort-summer","input_source":"sensors","outputs":[78],"comfort_score":78,"class_score":0.8,"invoke_us":0,"status":"OK"}
+sensor ML integration tests PASS (interpreter boundary simulated)
+In file included from tests/test_ml_manager.c:7:
+libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:33:52: warning: '/*' within block comment [-Wcomment]
+   33 |  * Call once after mqtt_init(). Subscribes to model/* topics. */
+      |                                                    ^
+libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:36:48: warning: '/*' within block comment [-Wcomment]
+   36 | /* Call from mqtt_incoming_data_cb when a model/* topic is detected. */
+      |                                                ^
+2 warnings generated.
+In file included from libraries/EdgeCore/src/inference_engine/inference_manager.c:11:
+libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:33:52: warning: '/*' within block comment [-Wcomment]
+   33 |  * Call once after mqtt_init(). Subscribes to model/* topics. */
+      |                                                    ^
+libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:36:48: warning: '/*' within block comment [-Wcomment]
+   36 | /* Call from mqtt_incoming_data_cb when a model/* topic is detected. */
+      |                                                ^
+2 warnings generated.
+[INFER] Inference manager initialised.
+[INFER] Invoke failed: error 4
+ML manager lifecycle tests PASS (interpreter boundary simulated)
+clang: warning: optimization flag '-fwhole-program' is not supported [-Wignored-optimization-argument]
+clang: warning: optimization flag '-fwhole-program' is not supported [-Wignored-optimization-argument]
+Actual REPL input editing tests PASS

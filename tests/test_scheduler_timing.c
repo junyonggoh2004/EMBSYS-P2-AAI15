@@ -66,6 +66,16 @@ static const bus_t bus = {
 const bus_t *bus_lookup(const char *name) { (void)name; return &bus; }
 bool mqtt_follow_remote_source(const char *node, const char *source, const char *alias)
 { (void)node; (void)source; (void)alias; return true; }
+static char profile_local[16];
+static sensor_profile_t profile_seen;
+static unsigned profile_calls;
+bool sensor_bridge_set_profile(const char *local, sensor_profile_t profile)
+{
+    snprintf(profile_local, sizeof profile_local, "%s", local);
+    profile_seen = profile;
+    ++profile_calls;
+    return true;
+}
 bool mqtt_pub_bytes(const char *source, const uint8_t *data, size_t len, int qos, bool retain)
 { (void)source; (void)data; (void)len; (void)qos; (void)retain; return true; }
 bool mqtt_pub_line(const char *source, const char *line, int qos, bool retain)
@@ -243,8 +253,32 @@ static void test_pending_acquisition(void)
     assert(fixtures[0]->cancels == 2);
 }
 
+/* A typed MQTT virtual sensor hands its decoder to the bridge; raw does not. */
+static void test_mqtt_remote_profile(void)
+{
+    reset();
+    profile_calls = 0;
+    app_cfg_t c = config("IN_AHT", TIMING_MODE_PERIODIC);
+    c.proto = proto_mqtt;
+    c.mode = sample_mode_stream;
+    snprintf(c.remote_node, sizeof c.remote_node, "s3-001");
+    snprintf(c.remote_source, sizeof c.remote_source, "AHT");
+    c.remote_profile = SENSOR_PROFILE_AHT;
+    assert(scheduler_add_config(&c) == 0);
+    assert(profile_calls == 1 && profile_seen == SENSOR_PROFILE_AHT && !strcmp(profile_local, "IN_AHT"));
+    const app_cfg_t *stored = scheduler_config_by_name("IN_AHT");
+    assert(stored && stored->remote_profile == SENSOR_PROFILE_AHT);
+
+    app_cfg_t raw = c;
+    snprintf(raw.name, sizeof raw.name, "IN_RAW");
+    raw.remote_profile = SENSOR_PROFILE_RAW;
+    assert(scheduler_add_config(&raw) == 1);
+    assert(profile_calls == 1);
+}
+
 int main(void)
 {
+    test_mqtt_remote_profile();
     test_one_shot();
     test_periodic_timeout_recovers();
     test_disabled_stream();
@@ -254,6 +288,6 @@ int main(void)
     test_periodic_skip_and_invalid_config();
     test_pending_acquisition();
     reset();
-    puts("scheduler timing: PASS (one-shot, timeout recovery, disabled stream, deadline, source handoff)");
+    puts("scheduler timing: PASS (one-shot, timeout recovery, disabled stream, deadline, source handoff, MQTT profile)");
     return 0;
 }

@@ -1,0 +1,69 @@
+[I2C] pre_len=0 :
+[I2C] pre_len=0 :
+[I2C] pre_len=0 :
+[I2C] pre_len=4 : 80 03 81 02
+[SCHED      1000ms] reset: cleared 8 slots
+[I2C] pre_len=0 :
+[SCHED      1000ms] add[0]: AHT on i2c freq=0.000Hz mode=poll I2C(sda=1,scl=2,addr=0x38,reg=0x0,len=0)
+[SCHED] added: AHT on i2c
+[I2C] pre_len=0 :
+[SCHED      1000ms] add[1]: LIGHT on i2c freq=0.000Hz mode=poll I2C(sda=1,scl=2,addr=0x29,reg=0x0,len=0)
+[SCHED] added: LIGHT on i2c
+[SCHED      1000ms] add[2]: DISTANCE on gpio freq=0.000Hz mode=poll method=pulse GPIO(pin=0)
+[SCHED] added: DISTANCE on gpio
+[SCHED      1000ms] run_all: running=1
+[SCHED      1000ms] arm[0/AHT]: mode=periodic armed=1
+[SCHED      1000ms] arm[1/LIGHT]: mode=periodic armed=1
+[SCHED      1000ms] arm[2/DISTANCE]: mode=periodic armed=1
+[SCHED      1002ms] publish[2/DISTANCE]: 3 bytes via gpio
+proto=gpio src=DISTANCE len=3 ts=1002 : D0 07 01
+{"sensor":"DISTANCE","timestamp_ms":1002,"distance_cm":34.3,"echo_us":2000,"status":"OK","error":0}
+[SCHED      1080ms] publish[0/AHT]: 6 bytes via i2c
+proto=i2c src=AHT len=6 ts=1080 : 08 80 00 06 00 00
+{"sensor":"AHT","timestamp_ms":1080,"temperature_c":25.00,"humidity_pct":50.00,"status":"OK","error":0}
+[SCHED      1120ms] publish[1/LIGHT]: 8 bytes via i2c
+proto=i2c src=LIGHT len=8 ts=1120 : E8 03 64 00 F1 06 00 00
+{"sensor":"LIGHT","timestamp_ms":1120,"light_lux":1777,"status":"OK","error":0}
+[SCHED      3000ms] run_all: running=1
+[SCHED      3000ms] publish[2/DISTANCE]: 3 bytes via gpio
+proto=gpio src=DISTANCE len=3 ts=3000 : D0 07 01
+{"sensor":"DISTANCE","timestamp_ms":3000,"distance_cm":34.3,"echo_us":2000,"status":"OK","error":0}
+[SCHED      3000ms] arm[0/AHT]: mode=periodic armed=1
+[SCHED      3000ms] arm[1/LIGHT]: mode=periodic armed=1
+[SCHED      3000ms] arm[2/DISTANCE]: mode=periodic armed=1
+[SCHED      3000ms] publish[2/DISTANCE]: 3 bytes via gpio
+proto=gpio src=DISTANCE len=3 ts=3000 : D0 07 01
+{"sensor":"DISTANCE","timestamp_ms":3000,"distance_cm":34.3,"echo_us":2000,"status":"OK","error":0}
+[SCHED      3000ms] reset: cleared 8 slots
+[I2C] pre_len=0 :
+[SCHED      3000ms] add[0]: AHT on i2c freq=0.000Hz mode=poll I2C(sda=1,scl=2,addr=0x38,reg=0x0,len=0)
+[SCHED] added: AHT on i2c
+[I2C] pre_len=0 :
+[SCHED      3000ms] add[1]: LIGHT on i2c freq=0.000Hz mode=poll I2C(sda=1,scl=2,addr=0x29,reg=0x0,len=0)
+[SCHED] added: LIGHT on i2c
+[SCHED      3000ms] add[2]: DISTANCE on gpio freq=0.000Hz mode=poll method=pulse GPIO(pin=0)
+[SCHED] added: DISTANCE on gpio
+[SCHED      3000ms] arm[0/AHT]: mode=periodic armed=1
+[SCHED      3000ms] arm[1/LIGHT]: mode=periodic armed=1
+[SCHED      3000ms] arm[2/DISTANCE]: mode=periodic armed=1
+{"sensor":"AHT","timestamp_ms":3000,"temperature_c":null,"humidity_pct":null,"status":"SENSOR_ERROR_OR_MISSING","error":-4}
+[SENSOR] name=AHT error=-4 total=1
+[SCHED      3002ms] publish[2/DISTANCE]: 3 bytes via gpio
+proto=gpio src=DISTANCE len=3 ts=3002 : D0 07 01
+{"sensor":"DISTANCE","timestamp_ms":3002,"distance_cm":34.3,"echo_us":2000,"status":"OK","error":0}
+[SCHED      3120ms] publish[1/LIGHT]: 8 bytes via i2c
+proto=i2c src=LIGHT len=8 ts=3120 : E8 03 64 00 F1 06 00 00
+{"sensor":"LIGHT","timestamp_ms":3120,"light_lux":1777,"status":"OK","error":0}
+[SCHED      5121ms] run_all: running=1
+[SCHED      5121ms] publish[2/DISTANCE]: 3 bytes via gpio
+proto=gpio src=DISTANCE len=3 ts=5121 : D0 07 01
+{"sensor":"DISTANCE","timestamp_ms":5121,"distance_cm":34.3,"echo_us":2000,"status":"OK","error":0}
+[SCHED      5201ms] publish[0/AHT]: 6 bytes via i2c
+proto=i2c src=AHT len=6 ts=5201 : 08 80 00 06 00 00
+{"sensor":"AHT","timestamp_ms":5201,"temperature_c":25.00,"humidity_pct":50.00,"status":"OK","error":0}
+[SCHED      5241ms] publish[1/LIGHT]: 8 bytes via i2c
+proto=i2c src=LIGHT len=8 ts=5241 : E8 03 64 00 F1 06 00 00
+{"sensor":"LIGHT","timestamp_ms":5241,"light_lux":1777,"status":"OK","error":0}
+[SCHED      5242ms] reset: cleared 8 slots
+Three-sensor scheduler integration: PASS (interleaving, independent faults, recovery, STOP/CLEAR lifecycle, valid-frame rules)
+I2C sensor profiles: PASS (full command packets, calibration, pending waits, deadlines, failures/recovery, STOP, raw compatibility, lux/null decoding)

@@ -1,4 +1,5 @@
-# RAW TRANSPORT CHECKPOINT: validate/re-publish A's bytes under B's aliases.
-# Does not configure typed ML, physical sensor acquisition or storage writes.
-BEGINCFG|name=IN_AHT|proto=mqtt|mode=stream|freq_hz=1|remote_node=@NODE_A@|remote_source=AHT|ENDCFG
-BEGINCFG|name=IN_LIGHT|proto=mqtt|mode=stream|freq_hz=1|remote_node=@NODE_A@|remote_source=LIGHT|ENDCFG
+# TRANSPORT CHECKPOINT: validate/re-publish A's bytes under B's aliases.
+# remote_profile lets B decode them (console JSON, ML BIND). Does not load a
+# model, acquire physical sensors or write storage.
+BEGINCFG|name=IN_AHT|proto=mqtt|mode=stream|freq_hz=1|remote_node=@NODE_A@|remote_source=AHT|remote_profile=aht|ENDCFG
+BEGINCFG|name=IN_LIGHT|proto=mqtt|mode=stream|freq_hz=1|remote_node=@NODE_A@|remote_source=LIGHT|remote_profile=tsl2561|ENDCFG

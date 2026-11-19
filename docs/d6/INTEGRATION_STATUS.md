@@ -93,6 +93,28 @@ copy. Arduino EdgeS3 and the legacy Pico stub were edited but not compiled.
 No broker reconnect was exercised; T12 remains NOT RUN.
 [Logs and provenance](../../parity/logs/mtk/d6/native-20261117-follow-list/provenance.txt).
 
+## Typed remote inputs — 18 November 2026
+
+`d6` now includes `main` at `bcbbfd2` (classroom ML models, `ML REPLAY`) and
+Brendan's `D6-Integration` at `b0e0b65` (doorway direction, N16R8 setup,
+wiring diagrams). Before this change B relayed A's frames as untyped
+`proto=mqtt` sources, so `ML BIND` rejected them and no decoded value existed.
+A new config key, `remote_profile=aht|tsl2561|pulse` (default `raw`, MQTT
+only), names the decoder. The scheduler hands it to the bridge mapping after a
+successful follow; every re-emitted frame carries it; `sensor_measurement.c`
+decodes local and relayed sources through the same profile. A re-added mapping
+starts raw until its config sets the profile again. The B/C templates use it.
+
+Native: D6 suite (also under address/undefined sanitizers), Cody, ML (also
+sanitized), sensor (also sanitized), D2 host, HAL-boundary, purity and
+`git diff --check` passed. Pinned-SDK `mtk.sh check` and `mtk.sh image`
+passed; app image `0x144760` bytes, 57% of the partition free. New coverage:
+parser accepts/rejects the key, scheduler registers it, bridge carries and
+resets it, relayed AHT decodes to 25.00 °C/50.00 %, and an ML model runs on a
+relayed AHT source while an untyped one cannot be bound. Arduino EdgeS3 was
+not compiled. No board was flashed; ML-on-B and C display trials remain NOT RUN.
+[Provenance](../../parity/logs/mtk/d6/native-20261118-remote-profile/provenance.txt).
+
 ## Remaining acceptance gates
 
 1. Confirm A input inventory/pins, B handling/storage and B→C topic/payload,

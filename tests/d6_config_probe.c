@@ -35,6 +35,8 @@ int main(void)
             } else {
                 assert(cfg.proto == proto_mqtt && cfg.mode == sample_mode_stream);
                 assert(cfg.remote_node[0] && cfg.remote_source[0]);
+                assert(cfg.remote_profile == (strstr(cfg.name, "LIGHT") ? SENSOR_PROFILE_TSL2561
+                                                                       : SENSOR_PROFILE_AHT));
             }
             printf("%s:%d:%s:%s:%u\n", cfg.name, (int)cfg.proto,
                    cfg.remote_node, cfg.remote_source, (unsigned)cfg.timing.interval_ms);

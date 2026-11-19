@@ -9,7 +9,8 @@ ${CC:-cc} ${CFLAGS:-} -std=c11 -Wall -Wextra -Werror -I libraries/EdgeCore/src \
 "$OUT_DIR/frame"
 ${CC:-cc} ${CFLAGS:-} -std=c11 -Wall -Wextra -Werror -I libraries/EdgeCore/src \
   tests/test_sensor_bridge.c libraries/EdgeCore/src/mqtt/sensor_bridge.c \
-  libraries/EdgeCore/src/mqtt/sensor_frame.c -o "$OUT_DIR/bridge"
+  libraries/EdgeCore/src/mqtt/sensor_frame.c \
+  libraries/EdgeCore/src/application/sensor_measurement.c -o "$OUT_DIR/bridge"
 "$OUT_DIR/bridge"
 ${CC:-cc} ${CFLAGS:-} -std=c11 -Wall -Wextra -Werror -I libraries/EdgeCore/src \
   tests/test_follow_list.c libraries/EdgeCore/src/mqtt/follow_list.c -o "$OUT_DIR/follow"

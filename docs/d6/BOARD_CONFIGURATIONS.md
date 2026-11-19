@@ -44,7 +44,7 @@ rule, local inference, motion classification or doorway counting in this
 profile. HC-SR04+ distance is not silently relabelled as motion. Add the
 selected activity input only after its device/decision rule is specified.
 
-## B — raw transport configuration
+## B — transport configuration
 
 Template: [board_b.cfg.in](../../config/d6/board_b.cfg.in). It claims no local
 physical bus pins; the MQTT virtual-sensor path does not open a sensor bus.
@@ -58,12 +58,16 @@ The existing bridge validates framing and source identity, then re-publishes
 with `proto=mqtt`, the local alias and a new local timestamp. It is not a
 provenance-preserving application envelope: correlate bytes and host/video
 time, not equal board uptimes. The bridge does not infer the physical decoder
-or refresh/stale policy from a name.
+or refresh/stale policy from a name: each virtual sensor names it with
+`remote_profile=aht|tsl2561|pulse` (default `raw`; added 18 November). With it,
+B's console prints decoded JSON for `IN_AHT`/`IN_LIGHT` and `ML BIND` accepts
+them, e.g. `ML BIND 0 IN_AHT temperature_c 0 60`. It does not set a freshness
+policy, load a model or publish an ML result.
 
 ML, storage device/pins, record content/identity, bounded writer ownership,
 failure behavior and production B→C payload remain implementation handoffs.
 No model setup, flash write, scratch reuse or erase command is generated.
-This raw profile does not close D4 remote input or D2 logging/T-23.
+This transport profile does not close D4 remote input or D2 logging/T-23.
 
 ## C — receiver and separate `lcd-only` fixture
 

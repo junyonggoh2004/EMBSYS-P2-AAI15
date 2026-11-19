@@ -26,6 +26,8 @@ static const bus_t fake_gpio={.name="gpio",.init_cfg=fake_gpio_init,.deinit=fake
 const bus_t *bus_lookup(const char *name) { return !strcmp(name,"i2c") ? &bus_i2c : &fake_gpio; }
 bool mqtt_follow_remote_source(const char *node,const char *source,const char *alias)
 { (void)node; (void)source; (void)alias; return false; }
+bool sensor_bridge_set_profile(const char *local, sensor_profile_t profile)
+{ (void)local; (void)profile; return true; }
 bool mqtt_pub_bytes(const char *source,const uint8_t *data,size_t len,int qos,bool retain)
 { (void)source; (void)data; (void)len; (void)qos; (void)retain; return true; }
 bool mqtt_pub_line(const char *source,const char *line,int qos,bool retain)
@@ -193,6 +195,32 @@ static void test_raw_and_configuration(void) {
     cfg=config(I2C_SENSOR_AHT); cfg.i2c_addr=0x76;
     cfg_parse_begin(); cfg_parse_end(&cfg); assert(cfg.cfg_error[0]);
 }
+/* remote_profile names the decoder for MQTT-relayed bytes; MQTT only. */
+static void test_remote_profile(void) {
+    static const char *names[]={"raw","aht","tsl2561","pulse"};
+    for(int i=0;i<4;i++) {
+        app_cfg_t cfg={0}; cfg_parse_begin();
+        cfg_parse_line("name=IN_X",&cfg); cfg_parse_line("proto=mqtt",&cfg); cfg_parse_line("mode=stream",&cfg);
+        cfg_parse_line("freq_hz=1",&cfg); cfg_parse_line("remote_node=s3-001",&cfg);
+        cfg_parse_line("remote_source=AHT",&cfg);
+        char line[40]; snprintf(line,sizeof line,"remote_profile=%s",names[i]);
+        cfg_parse_line(line,&cfg); cfg_parse_end(&cfg);
+        assert(!cfg.cfg_error[0] && cfg.remote_profile==(sensor_profile_t)i);
+    }
+    app_cfg_t cfg={0}; cfg_parse_begin();
+    cfg_parse_line("proto=mqtt",&cfg); cfg_parse_line("remote_profile=bme280",&cfg); cfg_parse_end(&cfg);
+    assert(cfg.cfg_error[0]);
+    cfg=config(I2C_SENSOR_AHT); cfg_parse_begin();
+    cfg_parse_line("remote_profile=aht",&cfg); cfg_parse_end(&cfg);
+    assert(strstr(cfg.cfg_error,"requires proto=mqtt"));
+    /* The JSON console line for a typed relayed source matches the local decoder. */
+    app_cfg_t remote={0}; remote.proto=proto_mqtt; remote.remote_profile=SENSOR_PROFILE_AHT;
+    snprintf(remote.name,sizeof remote.name,"IN_AHT");
+    const uint8_t aht[]={8,0x80,0,6,0,0}; char json[320];
+    assert(sensor_measurement_json(&remote,aht,6,json,sizeof json)>0 && strstr(json,"\"temperature_c\":25.00"));
+    remote.remote_profile=SENSOR_PROFILE_RAW;
+    assert(sensor_measurement_json(&remote,aht,6,json,sizeof json)==0);
+}
 static void test_distance_json(void) {
     app_cfg_t cfg={0}; cfg.proto=proto_gpio; cfg.gpio_mode="pulse";
     snprintf(cfg.name,sizeof cfg.name,"DISTANCE");
@@ -232,6 +260,7 @@ static void test_scheduler_integration(void) {
     puts("Three-sensor scheduler integration: PASS (interleaving, independent faults, recovery, STOP/CLEAR lifecycle, valid-frame rules)");
 }
 int main(void) {
+    test_remote_profile();
     test_aht(); test_aht20_calibration(); test_light(); test_raw_and_configuration(); test_distance_json();
     test_scheduler_integration();
     puts("I2C sensor profiles: PASS (full command packets, calibration, pending waits, deadlines, failures/recovery, STOP, raw compatibility, lux/null decoding)");

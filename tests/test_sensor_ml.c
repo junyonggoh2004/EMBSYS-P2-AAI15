@@ -19,11 +19,11 @@ const uint8_t _binary_people_counter_raw_int8_tflite_end[] = {0};
 #endif
 const unsigned char g_autoencoder_model_data[]={1};
 const int g_autoencoder_model_size=1;
-static app_cfg_t configs[3];
+static app_cfg_t configs[5];
 uint32_t hal_time_ms(void) { return now; }
 uint64_t hal_time_us(void) { return (uint64_t)now*1000; }
 const app_cfg_t *scheduler_config_by_name(const char *name) {
-    for(int i=0;i<3;i++) if(!strcmp(name,configs[i].name)) return &configs[i];
+    for(int i=0;i<5;i++) if(!strcmp(name,configs[i].name)) return &configs[i];
     return NULL;
 }
 bool inference_mgr_load_bytes(const uint8_t *bytes,uint32_t size) {
@@ -79,6 +79,9 @@ int main(void) {
     strcpy(configs[0].name,"AHT"); configs[0].proto=proto_i2c; configs[0].i2c_sensor=I2C_SENSOR_AHT;
     strcpy(configs[1].name,"LIGHT"); configs[1].proto=proto_i2c; configs[1].i2c_sensor=I2C_SENSOR_TSL2561;
     strcpy(configs[2].name,"DISTANCE"); configs[2].proto=proto_gpio; configs[2].gpio_mode="pulse";
+    /* Board B's view of A: MQTT virtual sensors, one typed and one left raw. */
+    strcpy(configs[3].name,"IN_AHT"); configs[3].proto=proto_mqtt; configs[3].remote_profile=SENSOR_PROFILE_AHT;
+    strcpy(configs[4].name,"IN_RAW"); configs[4].proto=proto_mqtt;
     assert(!sensor_ml_command("HELP",false));
     cmd("ML PRESET"); assert(active==0 && bound_count()==4 && !enabled);
     cmd("ML RUN"); assert(enabled); tick(); assert(runs==0);
@@ -145,5 +148,21 @@ int main(void) {
 #endif
     cmd("ML MODEL sine-int8"); assert(dim == 1 && output_dim == 1);
     cmd("ML REPLAY 1.57"); assert(fabsf(seen[0] - 1.57f) < 0.001f);
+
+    /* Remote inputs: a relayed AHT frame under a typed MQTT source decodes and
+     * drives the model; an untyped relayed source cannot be bound. */
+    cmd("ML MODEL comfort-summer"); cmd("ML RESET");
+    g=generation;
+    cmd("ML BIND 0 IN_RAW temperature_c 0 60"); assert(generation==g && bound_count()==0);
+    cmd("ML BIND 0 IN_AHT light_lux 0 1000"); assert(generation==g);
+    cmd("ML BIND 0 IN_AHT temperature_c 0 60"); cmd("ML BIND 1 IN_AHT humidity_pct 0 100");
+    assert(bound_count()==2);
+    int before_remote = runs;
+    cmd("ML RUN"); tick(); assert(runs == before_remote); // nothing received yet
+    sensor_measurement_emit(&configs[3],aht,6); tick();
+    assert(runs == before_remote + 1);
+    assert(fabsf(seen[0]-25.0f)<0.001f && fabsf(seen[1]-50.0f)<0.001f);
+    sensor_measurement_emit(&configs[4],aht,6); // raw relay: no typed update
+    assert(fabsf(bindings[0].raw-25.0f)<0.001f);
     puts("sensor ML integration tests PASS (interpreter boundary simulated)");
 }

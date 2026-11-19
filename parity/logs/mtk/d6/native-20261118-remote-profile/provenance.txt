@@ -1,0 +1,11 @@
+Host source base: 859af1a (d6 after merging main bcbbfd2 and D6-Integration b0e0b65), 18 Nov 2026.
+Source state: uncommitted remote_profile change on top of that base.
+Change: config key remote_profile=aht|tsl2561|pulse|raw for proto=mqtt sensors; scheduler passes it to
+sensor_bridge_set_profile() after a successful follow; bridged frames carry it; sensor_measurement decodes
+local and relayed sources by profile, so ML BIND and console JSON accept relayed data. B/C templates set it.
+Checks: sh tools/d6_test.sh (also CFLAGS=-fsanitize=address,undefined); sh tools/cody_test.sh;
+sh tools/ml_test.sh and sh tools/sensor_test.sh (each also CC with -fsanitize=address,undefined);
+sh tools/d2_host_test.sh; sh tools/check_hal_boundary.sh; sh tools/mtk.sh purity; sh tools/mtk.sh check; sh tools/mtk.sh image.
+App image 0x144760 bytes, 57% of the app partition free.
+Arduino EdgeS3 and the legacy Pico tree were not compiled.
+Native/build checks only: no broker, serial, flash or physical D6 trial. ML on B and C display remain NOT RUN.
