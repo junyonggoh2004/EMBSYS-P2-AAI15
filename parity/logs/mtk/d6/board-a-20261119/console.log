@@ -1,0 +1,150 @@
+# D6 Board A, 19 Nov 2026: Board A console (native USB) during the same test. Firmware: D6-Integration 09820c5 plus the sonar wait fix, BOARD=n16r8, node s3-001.
+[CMD] STOP
+[RULE] reset
+[BRIDGE] reset
+[CMD] CLEAR (scheduler + rules + bridge)
+[CFG] cfg_cb payload (first 120): BEGINCFG|name=AHT|proto=i2c|i2c.sensor=aht|mode=poll|freq_hz=0.5|timing.timeout_ms=600|i2c.sda=1|i2c.scl=2|i2c.addr=0x38
+[JSON] not starting with '{' after trim, char=0x22
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[I2C] pre_len=0 :
+[SCHED] added: AHT on i2c
+[CFG] added #0: AHT
+[I2C] pre_len=0 :
+[SCHED] added: LIGHT on i2c
+[CFG] added #1: LIGHT
+[SCHED] added: SONAR_A on gpio
+[CFG] added #2: SONAR_A
+[SCHED] added: SONAR_B on gpio
+[CFG] added #3: SONAR_B
+[MQTT] Status: Connected, Broker: 172.20.10.5
+[CMD] SHOW
+[WINDOW] enabled=0 state=0 events=0 dropped=0 radar_frames=0 malformed=0 rx_dropped=0 identity=1
+[SCHED] #0 name=AHT proto=i2c mode=poll freq=0.500Hz timing=periodic interval=2000ms timeout=600ms window=0ms trigger=- status=1
+[SCHED] #0 I2C sensor=aht sda=1 scl=2 addr=0x38
+[SENSOR] name=AHT pending=0 timeouts=0 errors=0 overruns=0
+[SCHED] #1 name=LIGHT proto=i2c mode=poll freq=0.500Hz timing=periodic interval=2000ms timeout=600ms window=0ms trigger=- status=1
+[SCHED] #1 I2C sensor=tsl2561 sda=1 scl=2 addr=0x29
+[SENSOR] name=LIGHT pending=0 timeouts=0 errors=0 overruns=0
+[SCHED] #2 name=SONAR_A proto=gpio mode=poll freq=2.000Hz timing=periodic interval=500ms timeout=100ms window=0ms trigger=- status=1
+[SENSOR] name=SONAR_A pending=0 timeouts=0 errors=0 overruns=0
+[SCHED] #3 name=SONAR_B proto=gpio mode=poll freq=2.000Hz timing=periodic interval=500ms timeout=100ms window=0ms trigger=- status=1
+[SENSOR] name=SONAR_B pending=0 timeouts=0 errors=0 overruns=0
+[RULE] count=0
+[CMD] RUN
+proto=gpio src=SONAR_A len=3 ts=486420 : 73 02 01
+{"sensor":"SONAR_A","timestamp_ms":486421,"distance_cm":10.8,"echo_us":627,"status":"OK","error":0}
+{"sensor":"SONAR_B","timestamp_ms":486471,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=SONAR_B error=-1 total=1
+proto=i2c src=AHT len=6 ts=486498 : 18 A1 38 26 09 4D
+{"sensor":"AHT","timestamp_ms":486499,"temperature_c":25.45,"humidity_pct":62.98,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=486541 : DD 00 20 00 71 01 00 00
+{"sensor":"LIGHT","timestamp_ms":486541,"light_lux":369,"status":"OK","error":0}
+proto=gpio src=SONAR_A len=3 ts=486919 : 8C 02 01
+{"sensor":"SONAR_A","timestamp_ms":486920,"distance_cm":11.2,"echo_us":652,"status":"OK","error":0}
+{"sensor":"SONAR_B","timestamp_ms":486970,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+proto=gpio src=SONAR_A len=3 ts=487421 : 74 0D 01
+{"sensor":"SONAR_A","timestamp_ms":487422,"distance_cm":59.1,"echo_us":3444,"status":"OK","error":0}
+{"sensor":"SONAR_B","timestamp_ms":487470,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+{"sensor":"SONAR_A","timestamp_ms":487939,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=SONAR_A error=-1 total=1
+{"sensor":"SONAR_B","timestamp_ms":487971,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=SONAR_B error=-1 total=4
+proto=gpio src=SONAR_A len=3 ts=488422 : 73 02 01
+{"sensor":"SONAR_A","timestamp_ms":488423,"distance_cm":10.8,"echo_us":627,"status":"OK","error":0}
+{"sensor":"SONAR_B","timestamp_ms":488473,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+proto=i2c src=AHT len=6 ts=488500 : 18 A1 1D A6 09 33
+{"sensor":"AHT","timestamp_ms":488501,"temperature_c":25.45,"humidity_pct":62.94,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=488543 : CE 00 1F 00 55 01 00 00
+{"sensor":"LIGHT","timestamp_ms":488543,"light_lux":341,"status":"OK","error":0}
+proto=gpio src=SONAR_A len=3 ts=488919 : 6F 02 01
+{"sensor":"SONAR_A","timestamp_ms":488920,"distance_cm":10.7,"echo_us":623,"status":"OK","error":0}
+{"sensor":"SONAR_B","timestamp_ms":488970,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+proto=gpio src=SONAR_A len=3 ts=489419 : 0B 02 01
+{"sensor":"SONAR_A","timestamp_ms":489420,"distance_cm":9.0,"echo_us":523,"status":"OK","error":0}
+{"sensor":"SONAR_B","timestamp_ms":489470,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=SONAR_B error=-1 total=7
+proto=gpio src=SONAR_A len=3 ts=489919 : 0E 02 01
+{"sensor":"SONAR_A","timestamp_ms":489920,"distance_cm":9.0,"echo_us":526,"status":"OK","error":0}
+{"sensor":"SONAR_B","timestamp_ms":489970,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+proto=gpio src=SONAR_A len=3 ts=490421 : 0E 02 01
+{"sensor":"SONAR_A","timestamp_ms":490422,"distance_cm":9.0,"echo_us":526,"status":"OK","error":0}
+{"sensor":"SONAR_B","timestamp_ms":490472,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=SONAR_B error=-1 total=9
+proto=i2c src=AHT len=6 ts=490499 : 18 A1 0A F6 09 93
+{"sensor":"AHT","timestamp_ms":490500,"temperature_c":25.47,"humidity_pct":62.91,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=490542 : CA 00 1E 00 4F 01 00 00
+{"sensor":"LIGHT","timestamp_ms":490542,"light_lux":335,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 172.20.10.5
+proto=gpio src=SONAR_A len=3 ts=490919 : 0E 02 01
+{"sensor":"SONAR_A","timestamp_ms":490920,"distance_cm":9.0,"echo_us":526,"status":"OK","error":0}
+{"sensor":"SONAR_B","timestamp_ms":490970,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+proto=gpio src=SONAR_A len=3 ts=491419 : 0B 02 01
+{"sensor":"SONAR_A","timestamp_ms":491420,"distance_cm":9.0,"echo_us":523,"status":"OK","error":0}
+{"sensor":"SONAR_B","timestamp_ms":491471,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+proto=gpio src=SONAR_A len=3 ts=491919 : 0E 02 01
+{"sensor":"SONAR_A","timestamp_ms":491920,"distance_cm":9.0,"echo_us":526,"status":"OK","error":0}
+{"sensor":"SONAR_B","timestamp_ms":491970,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=SONAR_B error=-1 total=12
+proto=gpio src=SONAR_A len=3 ts=492421 : 27 02 01
+{"sensor":"SONAR_A","timestamp_ms":492422,"distance_cm":9.4,"echo_us":551,"status":"OK","error":0}
+{"sensor":"SONAR_B","timestamp_ms":492472,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+proto=i2c src=AHT len=6 ts=492499 : 18 A1 0A D6 09 6A
+{"sensor":"AHT","timestamp_ms":492500,"temperature_c":25.46,"humidity_pct":62.91,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=492667 : D2 0B B5 01 3C 01 00 00
+{"sensor":"LIGHT","timestamp_ms":492668,"light_lux":316,"status":"OK","error":0}
+proto=gpio src=SONAR_A len=3 ts=492919 : 0B 02 01
+{"sensor":"SONAR_A","timestamp_ms":492920,"distance_cm":9.0,"echo_us":523,"status":"OK","error":0}
+{"sensor":"SONAR_B","timestamp_ms":492970,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=SONAR_B error=-1 total=14
+proto=gpio src=SONAR_A len=3 ts=493419 : 0B 02 01
+{"sensor":"SONAR_A","timestamp_ms":493420,"distance_cm":9.0,"echo_us":523,"status":"OK","error":0}
+{"sensor":"SONAR_B","timestamp_ms":493470,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+proto=gpio src=SONAR_A len=3 ts=493919 : 41 02 01
+{"sensor":"SONAR_A","timestamp_ms":493920,"distance_cm":9.9,"echo_us":577,"status":"OK","error":0}
+{"sensor":"SONAR_B","timestamp_ms":493970,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=SONAR_B error=-1 total=16
+{"sensor":"SONAR_A","timestamp_ms":494441,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=SONAR_A error=-1 total=2
+{"sensor":"SONAR_B","timestamp_ms":494471,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+proto=i2c src=AHT len=6 ts=494500 : 18 A0 D1 06 09 5E
+{"sensor":"AHT","timestamp_ms":494501,"temperature_c":25.46,"humidity_pct":62.82,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=494542 : CB 00 1E 00 51 01 00 00
+{"sensor":"LIGHT","timestamp_ms":494542,"light_lux":337,"status":"OK","error":0}
+{"sensor":"SONAR_A","timestamp_ms":494939,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+{"sensor":"SONAR_B","timestamp_ms":494971,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=SONAR_B error=-1 total=18
+{"sensor":"SONAR_A","timestamp_ms":495439,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+{"sensor":"SONAR_B","timestamp_ms":495471,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[MQTT] Status: Connected, Broker: 172.20.10.5
+{"sensor":"SONAR_A","timestamp_ms":495940,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=SONAR_A error=-1 total=5
+{"sensor":"SONAR_B","timestamp_ms":495972,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=SONAR_B error=-1 total=20
+{"sensor":"SONAR_A","timestamp_ms":496442,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+{"sensor":"SONAR_B","timestamp_ms":496474,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+proto=i2c src=AHT len=6 ts=496501 : 18 A0 BE E6 09 31
+{"sensor":"AHT","timestamp_ms":496502,"temperature_c":25.45,"humidity_pct":62.79,"status":"OK","error":0}
+proto=i2c src=LIGHT len=8 ts=496543 : D6 00 20 00 63 01 00 00
+{"sensor":"LIGHT","timestamp_ms":496543,"light_lux":355,"status":"OK","error":0}
+{"sensor":"SONAR_A","timestamp_ms":496939,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+{"sensor":"SONAR_B","timestamp_ms":496971,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+{"sensor":"SONAR_A","timestamp_ms":497440,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=SONAR_A error=-1 total=8
+{"sensor":"SONAR_B","timestamp_ms":497472,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+[SENSOR] name=SONAR_B error=-1 total=23
+{"sensor":"SONAR_A","timestamp_ms":497939,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+{"sensor":"SONAR_B","timestamp_ms":497971,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+proto=gpio src=SONAR_A len=3 ts=498422 : B8 00 01
+{"sensor":"SONAR_A","timestamp_ms":498423,"distance_cm":3.2,"echo_us":184,"status":"OK","error":0}
+[CMD] STOP
+[PAIR] armed A=SONAR_A B=SONAR_B first=A guard_us=5000 window_us=50000
+[PAIR] request=0
+[PAIR] state=failed outcome=1 elapsed_us=28072 window_us=50000
+[PAIR] sensor=A name=SONAR_A attempted=1 valid=1 status=0 rise_us=499267392 fall_us=499267598 width_us=206
+[PAIR] sensor=B name=SONAR_B attempted=1 valid=0 status=-1 rise_us=0 fall_us=0 width_us=0
+[MQTT] Status: Connected, Broker: 172.20.10.5
+[CMD] STOP
+[RULE] reset
+[BRIDGE] reset
+[CMD] CLEAR (scheduler + rules + bridge)
+[MQTT] Status: Connected, Broker: 172.20.10.5

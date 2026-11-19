@@ -159,11 +159,36 @@ static void test_async_lifecycle(void)
     memset(buf, 0xAA, sizeof buf);
     assert(bus_gpio.poll_once(ctx, buf, sizeof buf) == HAL_ERR_TIMEOUT);
     assert(buf[2] == 0xAA); // error never emits valid-distance bytes
+    // Another sonar holds the capture: wait for it (guard first), then measure.
     capture_start_rc = HAL_ERR_BUSY;
-    assert(bus_gpio.poll_once(ctx, buf, sizeof buf) == HAL_ERR_BUSY);
-    assert(legacy_calls == 0);
+    unsigned starts = capture_starts;
+    assert(bus_gpio.poll_once(ctx, buf, sizeof buf) == BUS_POLL_PENDING);
+    assert(capture_starts == starts + 1);
+    now_us += 29999;
+    assert(bus_gpio.poll_once(ctx, buf, sizeof buf) == BUS_POLL_PENDING);
+    assert(capture_starts == starts + 1); // no retry inside the guard
+    now_us += 1;
     capture_start_rc = HAL_OK;
     assert(bus_gpio.poll_once(ctx, buf, sizeof buf) == BUS_POLL_PENDING);
+    assert(capture_starts == starts + 2);
+    capture_poll_rc = HAL_OK;
+    assert(bus_gpio.poll_once(ctx, buf, sizeof buf) == 3 && buf[2] == 1);
+    // Held for longer than the wait limit: reported as busy, never a distance.
+    capture_start_rc = HAL_ERR_BUSY;
+    assert(bus_gpio.poll_once(ctx, buf, sizeof buf) == BUS_POLL_PENDING);
+    now_us += 99999;
+    assert(bus_gpio.poll_once(ctx, buf, sizeof buf) == BUS_POLL_PENDING);
+    now_us += 1;
+    assert(bus_gpio.poll_once(ctx, buf, sizeof buf) == HAL_ERR_BUSY);
+    assert(legacy_calls == 0);
+    // Cancelling (STOP/CLEAR) drops the wait; the next poll starts afresh.
+    assert(bus_gpio.poll_once(ctx, buf, sizeof buf) == BUS_POLL_PENDING);
+    bus_gpio.cancel(ctx);
+    capture_poll_rc = HAL_PULSE_PENDING;
+    capture_start_rc = HAL_OK;
+    starts = capture_starts;
+    assert(bus_gpio.poll_once(ctx, buf, sizeof buf) == BUS_POLL_PENDING);
+    assert(capture_starts == starts + 1);
     unsigned cancelled = capture_cancels;
     bus_gpio.cancel(ctx);
     bus_gpio.cancel(ctx);
