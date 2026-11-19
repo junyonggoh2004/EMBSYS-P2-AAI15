@@ -6,7 +6,7 @@ Owner: Hasif. Checklist: [README section 6](../../README.md#6-d5-task-checklist-
 
 The professor said benchmarking is not for this module and not to run the full study; comparing the configurable platform with a hard-coded build belongs in a later research paper, and the result is not about which model is best. In D4 the team chose models because they use the S3's built-in acceleration. D5 therefore measures and explains how those models run on the S3: their speed, their size and memory, how much ESP-NN's S3 assembly adds, and where the time goes. Accuracy and the cost of configurability are out of scope.
 
-| Item | Decision (proposed 17 Nov 2026, for the team to confirm) |
+| Item | Decision (proposed 17 Nov 2026, confirmed by the team 20 Nov 2026) |
 |---|---|
 | Models | The five bundled models on `main`: sine-float, sine-int8, the autoencoder, comfort-summer and people-counter |
 | Numbers | Inference time (request and `Invoke()` alone), model bytes, tensor arena bytes, free internal RAM and PSRAM, speed-up |
