@@ -72,3 +72,8 @@ and light are absent. Restore their historical rows only after selecting a
 verified power distribution and rechecking every connected sensor. A combined
 test must stagger the two sonar captures; polling them simultaneously produced
 `HAL_ERR_BUSY` from the single pulse-capture resource.
+
+The [Board A serial bring-up](BOARD_A_SERIAL_BRINGUP.md) records the separate
+`-1` Sonar A timeout, the sequential `PAIR` command and the native USB console
+procedure. The image remains a proposed conflict-free hole allocation, not a
+claim that the rail-fed power paths or all sensors have passed together.

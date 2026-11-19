@@ -42,3 +42,23 @@ AHT and light were removed. The spacious diagram's rail-fed Sonar B power and
 lower-rail radar GND have **not** passed electrical validation. Do not infer
 that a rail or jumper is continuous from its colour or position. The radar
 is not yet validated. No two-sonar or full A-board use-case pass is claimed.
+
+## Follow-up console check: 19 November 2026
+
+An isolated `SONAR_A` profile on GPIO4 TRIG/GPIO5 ECHO, with a 10 us trigger
+and 20,000 us pulse timeout, again produced repeated `TIMEOUT` / `error=-1`
+with null distance and echo fields. The supplied capture shows errors through
+`total=19`. This is a missing usable echo in an A-only run, not the `-6`
+capture-busy result from starting both periodic sonars together. The earlier
+physical swap remains the stronger isolation evidence: the A module and
+GPIO4/5 path produced valid distances with the proven B lead set; A's original
+complete jumper lead set remains suspect. No replacement-lead retest or new
+successful A result was supplied for this follow-up.
+
+Windows later enumerated a CH343 USB-to-serial bridge as COM9
+(`VID:PID=1A86:55D3`). `miniterm` opened that port and printed its banner, but
+that does not prove the firmware's REPL answered. The console for this build
+uses the native ESP32-S3 USB-Serial-JTAG socket; find its current COM number
+rather than reusing COM4 or COM9. `miniterm` local echo is off by default, so
+invisible keystrokes alone are not proof that the serial port cannot accept
+input. No native-port `HELP`/`SHOW` result has been supplied for this attempt.

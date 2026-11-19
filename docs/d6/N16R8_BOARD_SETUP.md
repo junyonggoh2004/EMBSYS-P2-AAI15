@@ -38,7 +38,12 @@ pins labelled `TX` and `RX`: on the DevKitC-style map those are GPIO43/44.
   connecting a module; a 5V Echo requires level protection.
 - Use the USB-C connector wired to the chip's **native USB** for this
   firmware's USB-Serial-JTAG console. The other connector may use a USB-UART
-  bridge. COM numbers depend on the board and USB mode.
+  bridge. COM numbers depend on the board and USB mode. On 19 November a
+  CH343 bridge appeared as COM9 (`VID:PID=1A86:55D3`); a `miniterm` banner on
+  that port was not proof of REPL access. Find the native Espressif port
+  (`VID=303A`) and require `HELP` -> `Commands:` before sending sensor configs.
+  See the [Board A serial bring-up](BOARD_A_SERIAL_BRINGUP.md) for the exact
+  PowerShell commands and the `miniterm` local-echo shortcut.
 - Build each node with `BOARD=n16r8`. This selects octal PSRAM; the current
   firmware still uses a 4 MB partition layout within the physical 16 MB
   flash. The external W25QXX on B is a separate device.

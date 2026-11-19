@@ -14,6 +14,9 @@ A, B and C as bare boards with accessible male headers, each wired to its own br
 See the [updated wiring diagrams](docs/d6/PIN_TO_HOLE_WIRING.md) and
 [wire count](docs/d6/JUMPER_WIRE_COUNT.md). Previous Super Mini tests remain
 historical evidence.
+For Board A's current sensor-by-sensor diagnosis, use the
+[N16R8 serial bring-up commands](docs/d6/BOARD_A_SERIAL_BRINGUP.md) and
+[observed results](docs/d6/BOARD_A_STAGE1_BRINGUP_20261118.md).
 The [next three integration steps](docs/d6/NEXT_STEPS.md) define the fixture,
 LCD import and remote-display gates.
 The opt-in [private MQTT Board B to C mock test](docs/d6/MQTT_MOCK_TEST.md)
