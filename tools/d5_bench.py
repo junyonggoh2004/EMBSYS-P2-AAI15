@@ -23,7 +23,7 @@ import sys
 import time
 from pathlib import Path
 
-MODELS = ["sine-float", "sine-int8", "autoencoder"]
+MODELS = ["sine-float", "sine-int8", "autoencoder", "comfort-summer", "people-counter"]
 LOG_ROOT = Path("parity/logs/mtk/d5")
 
 

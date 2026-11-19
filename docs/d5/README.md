@@ -8,7 +8,7 @@ The professor said benchmarking is not for this module and not to run the full s
 
 | Item | Decision (proposed 17 Nov 2026, for the team to confirm) |
 |---|---|
-| Models | sine-float, sine-int8 and the autoencoder on `main`; comfort-summer once `dev-jy-ml` is merged |
+| Models | The five bundled models on `main`: sine-float, sine-int8, the autoencoder, comfort-summer and people-counter |
 | Numbers | Inference time (request and `Invoke()` alone), model bytes, tensor arena bytes, free internal RAM and PSRAM, speed-up |
 | Run rule | Five warm-up inferences, then at least 100 timed inferences per case (the runner uses 200), on one fixed input; report the count, median, 95th percentile, minimum, maximum and mean |
 | Fair comparison | Same board, same firmware source and settings; only the item compared changes (ESP-NN's S3 assembly against its plain C, or the model) |
@@ -20,7 +20,7 @@ The ESP32-S3's two Xtensa LX7 cores have extra vector instructions on 128-bit re
 
 TensorFlow Lite Micro, as packaged by Espressif (`esp-tflite-micro` 1.4.0 with ESP-NN 1.4.1), calls ESP-NN for its INT8 fully connected, convolution, depthwise convolution, pooling, add, multiply and softmax operators. Which ESP-NN version runs is a build setting: `CONFIG_NN_OPTIMIZED` (the default) picks the S3 assembly, `CONFIG_NN_ANSI_C` the plain C version of the same functions, which ESP-NN keeps for checking. ESP-NN has only 8-bit kernels, so a Float32 model runs on TensorFlow Lite Micro's plain reference code whatever the setting: it cannot use the S3's vector instructions. This is why the D4 models that are meant to show the acceleration are INT8. Espressif's own figure for one fully connected layer (271 inputs, 3 outputs) on the S3 is 8,439 timer ticks in plain C against 1,543 with the assembly, 5.5 times faster ([ESP-NN README](https://github.com/espressif/esp-nn)); D5 measures what this gives for whole models on our firmware.
 
-Two things limit the gain for our models. They are small: sine-int8 is three fully connected layers (1 → 16 → 16 → 1, about 290 multiply-adds), and the vector loop only runs for rows of at least 8 values, so its first layer cannot use it; the autoencoder (16 → 64 → 32 → 8 → 32 → 64 → 16, about 6,700 multiply-adds) gives the kernels more work. And every inference has fixed costs that the assembly does not touch: TensorFlow Lite Micro's per-operator dispatch, converting inputs to 8-bit and outputs back, and on this firmware the request from SchedulerTask to InferenceTask and the reply through a µT-Kernel message buffer. Task 4.4 measures that second part separately. The firmware is built with the course port's `-Og` optimisation, which slows the C code (the plain C kernels and the overheads) more than the hand-written assembly; both builds use it, so the comparison is fair, but the speed-up applies to this build.
+Two things limit the gain for our models. They are small: sine-int8 is three fully connected layers (1 → 16 → 16 → 1, about 290 multiply-adds), and the vector loop only runs for rows of at least 8 values, so its first layer cannot use it; the autoencoder (16 → 64 → 32 → 8 → 32 → 64 → 16, about 6,700 multiply-adds) gives the kernels more work, and people-counter, a small convolutional network over 31 distance readings (about 68,000 multiply-adds, most of them in its second convolution layer), the most. It is also the only model with convolution layers, so it shows ESP-NN's convolution kernels as well as the fully connected one. And every inference has fixed costs that the assembly does not touch: TensorFlow Lite Micro's per-operator dispatch, converting inputs to 8-bit and outputs back, and on this firmware the request from SchedulerTask to InferenceTask and the reply through a µT-Kernel message buffer. Task 4.4 measures that second part separately. The firmware is built with the course port's `-Og` optimisation, which slows the C code (the plain C kernels and the overheads) more than the hand-written assembly; both builds use it, so the comparison is fair, but the speed-up applies to this build.
 
 ## 3. The models (task 4.3, static part)
 
@@ -29,21 +29,22 @@ Two things limit the gain for our models. They are small: sine-int8 is three ful
 | sine-float | Float32 | Dense 1 → 16 → 16 → 1 | 1 → 1 | 3,164 | No (float) |
 | sine-int8 | INT8 | Dense 1 → 16 → 16 → 1 | 1 → 1 | 2,704 | Yes; the board run of 10 Nov shows its vector calls ([BOARD_VALIDATION.md](../embedded-ml/BOARD_VALIDATION.md#acceleration-evidence)) |
 | autoencoder | INT8 | Dense 16 → 64 → 32 → 8 → 32 → 64 → 16 | 16 → 16 | 16,440 | Expected (INT8); shown by 4.2 |
-| comfort-summer (`dev-jy-ml`) | Float32 | Published thermal-comfort network | 2 → 100 | 5,960 | No (float) |
+| comfort-summer | Float32 | Dense 2 → 10 → 100, softmax | 2 → 100 | 5,960 | No (float) |
+| people-counter | INT8 | Two convolution layers over the 31 readings (16 and 32 filters of width 4), then Dense 992 → 3, softmax | 31 → 3 | 10,736 | Expected (INT8); shown by 4.2 |
 
-Sizes and formats are from [docs/embedded-ml/README.md](../embedded-ml/README.md) and, for comfort-summer, `models/classroom/README.md` on `dev-jy-ml`. The tensor arena each model uses is printed when it loads and is recorded by the runner (section 5).
+Sizes and formats are from [docs/embedded-ml/README.md](../embedded-ml/README.md) and [models/classroom/README.md](../../models/classroom/README.md); the layers of the two classroom models were read from their model files. The tensor arena each model uses is printed when it loads and is recorded by the runner (section 5).
 
-**Build sizes**, measured on 17 Nov 2026 with `idf.py size` and `idf.py size-components` on both builds of the same source (raw tables in [parity/logs/mtk/d5/static-20261117](../../parity/logs/mtk/d5/static-20261117/)):
+**Build sizes**, measured on 19 Nov 2026 with `idf.py size` and `idf.py size-components` on both builds of the same source, `main` with the five models and the D5 changes (raw tables in [parity/logs/mtk/d5/static-20261119](../../parity/logs/mtk/d5/static-20261119/)):
 
 | | S3 assembly (normal build) | Plain C (`NN=ansi`) | Difference |
 |---|---|---|---|
 | ESP-NN library, flash | 42,093 B | 6,386 B | +35,707 B |
 | ESP-NN library, internal RAM | 56 B | 0 B | +56 B |
-| Whole image | 1,305,937 B | 1,269,937 B | +36,000 B (2.8%) |
-| Internal RAM used (DIRAM) | 332,423 B (97.27%) | 332,367 B | +56 B |
-| App partition left | 58% | 59% | |
+| Whole image | 1,324,657 B | 1,288,657 B | +36,000 B (2.8%) |
+| Internal RAM used (DIRAM) | 333,751 B (97.66%) | 333,695 B | +56 B |
+| App partition left | 57% | 58% | |
 
-The S3 assembly costs about 36 KB of flash, 1.2% of the 3 MB app partition, and 56 bytes of internal RAM; the 64 KB tensor arena is in PSRAM in both builds. The D5 code itself (`MLBENCH` and the `Invoke()` timer) adds 2,408 B of flash and 16 B of internal RAM to `main`. Internal RAM is the tight resource (97% used before Wi-Fi starts), so the free memory with Wi-Fi and MQTT running is measured on the board (section 5).
+The S3 assembly costs about 36 KB of flash, 1.2% of the 3 MB app partition, and 56 bytes of internal RAM; the 64 KB tensor arena is in PSRAM in both builds. The D5 code itself (`MLBENCH` and the `Invoke()` timer) adds 2,400 B of flash and 32 B of internal RAM to `main`. Internal RAM is the tight resource (97.7% used before Wi-Fi starts), so the free memory with Wi-Fi and MQTT running is measured on the board (section 5).
 
 ## 4. Method and tools
 
@@ -64,7 +65,6 @@ One board on the hotspot with the broker running, as for the MQTT tests; no sens
 | 3 | `.venv/bin/python tools/d5_bench.py compare parity/logs/mtk/d5/optimized-<date>/results.json parity/logs/mtk/d5/ansi-<date>/results.json` | Task 4.2's table and speed-ups; sine-float should not change, which shows the difference comes from ESP-NN alone |
 | 4 | `sh tools/mtk.sh flash` again; load the sensors and ML (**MTK: load sensors and ML**, or `ML PRESET sine-int8`, `ML RUN`, `RUN`); then `.venv/bin/python tools/d5_bench.py live --port <port> --samples 100` | Task 4.5: `invoke_us` with sensors and MQTT running |
 
-Repeat step 1 after `dev-jy-ml` merges with `--models sine-float sine-int8 autoencoder comfort-summer`.
 
 ## 6. Results
 

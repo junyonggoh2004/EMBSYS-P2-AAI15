@@ -94,9 +94,11 @@ class TestD5Bench(unittest.TestCase):
         board = FakeBoard()
         log = []
         results = d5_bench.bench_session(d5_bench.Console(board, log), "optimized", d5_bench.MODELS, 20)
-        self.assertEqual(board.sent, ["STOP", "ML MODEL sine-float", "MLBENCH 20 RAW", "ML MODEL sine-int8",
-                                      "MLBENCH 20 RAW", "ML MODEL autoencoder", "MLBENCH 20 RAW", "TASKS"])
-        float_r, int8_r, _ = results["models"]
+        expected = ["STOP"]
+        for model in ("sine-float", "sine-int8", "autoencoder", "comfort-summer", "people-counter"):
+            expected += [f"ML MODEL {model}", "MLBENCH 20 RAW"]
+        self.assertEqual(board.sent, expected + ["TASKS"])
+        float_r, int8_r = results["models"][:2]
         self.assertEqual((float_r["vector_calls"], int8_r["vector_calls"]), (0, 2))
         self.assertEqual(int8_r["arena_bytes"], 1234)
         self.assertEqual(int8_r["invoke_us"]["median"], 104)
