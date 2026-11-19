@@ -9,7 +9,7 @@ Board A tested by Hasif on the N16R8 with Brendan's [spaced 65-row layout](BOARD
 | AHT and TSL2561 | Pass: 24.98 to 25.45 C, about 63 % RH, 172 to 355 lux |
 | Sonar A | Pass on GPIO10 TRIG and GPIO11 ECHO wired straight to the header pins |
 | Sonar B | Passed once on GPIO6/7 (5.2 to 14.4 cm), then lost power during the radar rewiring; to debug |
-| Two sonars polled together | Pass: both report every cycle and no `-6` (firmware change below) |
+| Two sonars polled together | `-6` fixed: both report every cycle (firmware change below). Valid distances from both at the same time not yet seen, because Sonar B was down whenever Sonar A worked |
 | MQTT | Pass on the hotspot's 2.4 GHz band: config over MQTT, readings published, commands answered ([logs](../../parity/logs/mtk/d6/board-a-20261119/)) |
 | LD2450 radar | Dropped from Board A: silent on two boards (see below) |
 
@@ -34,8 +34,8 @@ GPIO4 and GPIO5 were already in use on this board, so Sonar A moved to GPIO10/11
 
 ## What was wrong
 
-1. **Rail feeds missing.** The spaced layout powers Sonar B and the radar from the + and - strips, fed by jumpers B4 to + and B7 to -. Neither jumper was fitted, so both devices had no supply.
-2. **Sonar signals through the breadboard.** With the sonars' TRIG/ECHO leads in E8/E9 and E28/E29, no echo reached the ESP: ECHO read as floating (it followed the pin's own pull-up and pull-down). The ESP side was fine: a jumper from row 8 to row 9 and from row 28 to row 29 returned a 1,000 us trigger as about 1,020 us. Both modules read correctly wired direct, Sonar A also on a second N16R8. The faulty lead or contact was not identified, so the signals were moved to the header pins.
+1. **Rail feeds missing.** The spaced layout powers Sonar B and the radar from the + and - strips, fed by jumpers B4 to + and B7 to -. B7 was not fitted, and B4 was reported missing when Sonar B was rewired, so the strips had no supply.
+2. **Sonar signals through the breadboard.** Confirmed for Sonar B: with VCC and GND straight on the ESP's 3V3 and GND pins and TRIG/ECHO still in E28/E29, ECHO read as floating (it followed the pin's own pull-up and pull-down); with TRIG/ECHO moved to the header pins it read 5.4 cm. The ESP side was fine: a jumper from row 28 to row 29, and from row 8 to row 9, returned a 1,000 us trigger as about 1,020 us. Sonar A also floated on E8/E9 and read correctly direct (on a second N16R8, then on Board A), but its power and signal paths were not separated. The faulty lead or contact was not identified, so both sonars' signals were moved to the header pins.
 3. **Two periodic sonars** returned `-6` (fixed above).
 4. **MQTT disconnected** because the iPhone hotspot was on 5 GHz (channel 149). With Maximize Compatibility on and the laptop rejoined it moved to channel 6 and the board connected.
 5. **Console on the wrong port** (the CH343 port), see above.
@@ -46,7 +46,7 @@ After the radar work Sonar B stopped firing. GPIO6 and GPIO7 both read 0 even wi
 
 ## LD2450 radar
 
-No byte was ever received. Tried on Board A and on a second N16R8, with 3.3 V, 5 V through row 54, 5 V straight from the header and with both USB ports connected, at 256000, 115200, 57600 and 9600 baud with TX/RX both ways. The radar TX line (GPIO17) was never driven, and GPIO18 was held low throughout. A powered LD2450 holds TX high when idle, so the module is not starting: it is faulty or its 1.25 mm connector is not making contact. Measure 5 V across the radar's own 5V and GND pins before reusing it. Without the radar, `WINDOW` cannot open; counting with the two sonars alone needs a different trigger.
+No byte was ever received. On Board A: 3.3 V, 3.3 V and then 5 V through row 54, and 5 V straight from the header; at 256000 baud with TX/RX both ways, and at 115200, 57600 and 9600 baud on 3.3 V. On a second N16R8: 5 V straight from the header, then with both USB ports connected, at 256000 baud both ways. The radar TX line (GPIO17) was never driven high, and GPIO18 was held low throughout. A powered LD2450 holds TX high when idle, so the module is not starting: it is faulty or its 1.25 mm connector is not making contact. Measure 5 V across the radar's own 5V and GND pins before reusing it. Without the radar, `WINDOW` cannot open; counting with the two sonars alone needs a different trigger.
 
 Never wire anything to GPIO35, 36 or 37 on these boards: they are the octal PSRAM lines.
 
