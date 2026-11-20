@@ -1,4 +1,4 @@
-D5 tasks 4.2 to 4.4: board runs, 20 Nov 2026.
+D5 tasks 4.2 to 4.5: board runs, 20 Nov 2026.
 Board: ESP32-S3 N16R8 (BOARD=n16r8), native USB port, no sensors attached.
 Wi-Fi and MQTT connected to the broker on the laptop for the whole run.
 Source: main at 06bf79d, built twice from the same tree:
@@ -12,3 +12,12 @@ then TASKS once at the end.
 optimized-20261120-0224/  normal build: console.log and results.json (every run in raw)
 ansi-20261120-0225/       NN=ansi build: the same
 replay-20261120.log       ML REPLAY checks of the bundled models on the normal build
+
+Task 4.5, same day, same board and normal firmware, Wi-Fi and MQTT connected:
+live-20261120-1231/        one HC-SR04 (TRIG GPIO4, ECHO GPIO5, 2 Hz) feeding sine-int8 through
+                           ML BIND 0 DISTANCE distance_cm 2 400; tools/d5_bench.py live session,
+                           100 ML results, TASKS before and after
+spacing-optimized-20261120.log  ML REPLAY of sine-int8 and people-counter with sampling stopped:
+                           3 discarded, 20 back to back, 10 spaced 2 s apart (normal build)
+spacing-ansi-20261120.log  the same on the NN=ansi build (flashed from build-n16r8-nn-ansi,
+                           then the normal build flashed back)
