@@ -6,8 +6,8 @@ N16R8 node `s3-001`. Board A uses the four radar-free profiles in
 It proves sensor frames reach the broker and a laptop subscriber. It does not
 prove accurate sonar distance, doorway occupancy, Board B processing, SPI
 flash writes or a live Board C display. The combined A → B commands below
-are the next test procedure; B has accepted an AHT bridge configuration and
-sent heartbeats, but reception of all four sources is **not yet verified**.
+have now produced all four Board B sensor aliases; accuracy and the doorway
+workflow remain separate tests.
 
 ## Board A only — before each session
 
@@ -92,6 +92,104 @@ only proves the **laptop sent it to Mosquitto**. If Board A was offline,
 these non-retained commands missed it; wait for a fresh heartbeat or presence
 and send the block again. A configuration acknowledgement alone is not a
 valid sensor reading.
+
+## Test Board A sensors separately — normal PowerShell
+
+Keep the broker running and Board A connected. Use a **separate normal
+PowerShell window** for these commands; a `mosquitto_sub` window stays busy
+until you press `Ctrl+C`. Run **one sensor block at a time**. Each block sends
+`STOP` and `CLEAR`, so it replaces Board A's previous runtime profiles with
+only that sensor. It does not change wiring or flash firmware. Board B can
+forward the frames if its four MQTT bridge profiles are already configured.
+
+To watch only the selected source, use a separate normal PowerShell window:
+
+```powershell
+$brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
+& "$env:ProgramFiles\mosquitto\mosquitto_sub.exe" -h $brokerIp -t 'pico/s3-001/sensor/+/line' -v
+```
+
+### AHT temperature and humidity
+
+```powershell
+$brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
+$pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
+
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'STOP'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'CLEAR'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/config' -m 'BEGINCFG|name=AHT|proto=i2c|i2c.sensor=aht|mode=poll|freq_hz=0.5|timing.timeout_ms=600|i2c.sda=1|i2c.scl=2|i2c.addr=0x38|i2c.baud=100000|ENDCFG'
+Start-Sleep -Seconds 2
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'RUN'
+```
+
+Expect `pico/s3-001/sensor/AHT/line`. The decoded temperature and humidity
+are in Board A's serial `[SENSOR]` JSON. On 21 November, AHT first returned
+`error=-4` (I²C device did not respond), then returned valid readings after a
+`STOP`/`RUN` cycle without rewiring. Treat another `-4` as a current failure,
+not proof that the earlier reading was stable.
+
+### TSL2561 light
+
+```powershell
+$brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
+$pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
+
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'STOP'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'CLEAR'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/config' -m 'BEGINCFG|name=LIGHT|proto=i2c|i2c.sensor=tsl2561|mode=poll|freq_hz=0.5|timing.timeout_ms=600|i2c.sda=1|i2c.scl=2|i2c.addr=0x29|i2c.baud=100000|ENDCFG'
+Start-Sleep -Seconds 2
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'RUN'
+```
+
+Expect `pico/s3-001/sensor/LIGHT/line`; decoded lux is in Board A's serial
+`[SENSOR]` JSON. Shade and illuminate the sensor to check that lux changes.
+
+### Sonar A
+
+```powershell
+$brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
+$pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
+
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'STOP'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'CLEAR'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/config' -m 'BEGINCFG|name=SONAR_A|proto=gpio|gpio.mode=pulse|gpio.trig=10|gpio.echo=11|gpio.pull=down|gpio.trig_us=10|gpio.pulse_timeout_us=20000|mode=poll|freq_hz=2|timing.timeout_ms=100|ENDCFG'
+Start-Sleep -Seconds 2
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'RUN'
+```
+
+Expect `pico/s3-001/sensor/SONAR_A/line`; decoded `distance_cm` and any
+`TIMEOUT` appear in Board A's serial `[SENSOR]` JSON. Compare readings with a
+flat target at a measured distance; a frame alone does not prove accuracy.
+
+### Sonar B
+
+```powershell
+$brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
+$pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
+
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'STOP'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'CLEAR'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/config' -m 'BEGINCFG|name=SONAR_B|proto=gpio|gpio.mode=pulse|gpio.trig=6|gpio.echo=7|gpio.pull=down|gpio.trig_us=10|gpio.pulse_timeout_us=20000|mode=poll|freq_hz=2|timing.timeout_ms=100|ENDCFG'
+Start-Sleep -Seconds 2
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'RUN'
+```
+
+Expect `pico/s3-001/sensor/SONAR_B/line`; use the serial `[SENSOR]` JSON and
+a measured flat target to evaluate the distance and timeout rate.
+
+After isolated checks, restore all four Board A profiles before continuing
+the combined A → B test:
+
+```powershell
+cd 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
+$brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
+$pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'STOP'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'CLEAR'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/config' -f '.\config\board_a.cfg'
+Start-Sleep -Seconds 2
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'RUN'
+```
 
 ## Optional: Window 4 — normal PowerShell (Board A serial console)
 
@@ -215,6 +313,14 @@ B acknowledged `A_AHT` but only B heartbeats were visible afterward; that
 does not establish an AHT bridge failure or success. Broker `PUBLISH` lines
 and `config OK` only show transport or configuration, respectively. An
 `s3-002/sensor/<alias>/line` frame is the MQTT bridge evidence.
+
+On 21 November 2026, Board A's AHT initially returned `error=-4` and no
+MQTT frame. After restarting its runtime configuration without moving wires,
+AHT reported valid temperature/humidity and published frames. A 12-second
+subscriber check with the four-sensor Board A configuration then observed on
+Board B: `A_AHT` 6 frames, `A_LIGHT` 6, `A_SONAR_A` 24 and `A_SONAR_B` 24.
+This verifies all four A → B transport paths in that run; it does not show
+that intermittent sensor errors are resolved or that B has computed occupancy.
 
 ### Shut down the combined test
 
