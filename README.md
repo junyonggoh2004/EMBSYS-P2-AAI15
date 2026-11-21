@@ -2,6 +2,8 @@
 
 **Current D6 direction (21 November 2026): two sonars, no radar.** Board A's N16R8 runs AHT temperature/humidity, TSL2561 light, Sonar A and Sonar B. Read the [sonar-only use case](docs/d6/SONAR_ONLY_USECASE.md), [current Board A pinout and diagram](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md), and [PowerShell sensor-test commands](docs/d6/BOARD_A_SENSOR_TEST.md). [`config/board_a.cfg`](config/board_a.cfg) is the current four-sensor profile. AHT and light have valid readings; Sonar A has valid readings with intermittent errors. Sonar B returned valid readings again after its VCC/GND leads moved directly to B4/B7, but its fixed-target consistency remains unverified. A complete four-sensor run and sonar-triggered crossing logic remain to be verified or implemented. The radar `WINDOW` and older Board A diagrams below describe historical D3/proposed fixtures, not this D6 wiring.
 
+For the tested Board A broker workflow, use [MQTT_commands.md](MQTT_commands.md). Board B MQTT commands will be added after its physical integration test.
+
 **D6 branch planning (historical 13 November 2026 baseline).** The three-board end-to-end demo is
 planned in [D6 validation plan](docs/D6_USECASE_VALIDATION_PLAN.md), with a
 [session worksheet](docs/D6_TRIAL_WORKSHEET.md) and the
