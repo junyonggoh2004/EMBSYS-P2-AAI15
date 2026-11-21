@@ -1,19 +1,22 @@
-# D6 MQTT commands — Board A sensor telemetry
+# D6 MQTT commands — Board A telemetry and Board B bridge
 
 This is the **tested Board A → laptop Mosquitto** procedure for the ESP32-S3
 N16R8 node `s3-001`. Board A uses the four radar-free profiles in
 [`config/board_a.cfg`](config/board_a.cfg): AHT, light, Sonar A and Sonar B.
 It proves sensor frames reach the broker and a laptop subscriber. It does not
 prove accurate sonar distance, doorway occupancy, Board B processing, SPI
-flash writes or a live Board C display. Board B commands and evidence will
-be added **after its physical MQTT integration test**.
+flash writes or a live Board C display. The combined A → B commands below
+are the next test procedure; B has accepted an AHT bridge configuration and
+sent heartbeats, but reception of all four sources is **not yet verified**.
 
-## Before each session
+## Board A only — before each session
 
 - Connect the laptop and Board A to the same private **2.4 GHz Wi-Fi**.
 - Power Board A from USB. Its firmware must be built with the same Wi-Fi name,
   password and laptop broker IP in the ignored local
   `esp32s3_mtk/main/wifi_credentials.h`. Do not commit that private file.
+- For the combined test below, also power Board B from USB and confirm its
+  `s3-002` firmware uses the same Wi-Fi and broker address.
 - Use a **normal PowerShell** to check the laptop's current Wi-Fi address:
 
   ```powershell
@@ -129,20 +132,120 @@ Start-Service -Name mosquitto
 That service is not the temporary D6 network listener. Leave it stopped if
 you want all MQTT broker processes off for now.
 
+## Combined Board A → Board B test — startup to shutdown
+
+Both boards must be powered by USB, on the laptop's private 2.4 GHz Wi-Fi,
+and running distinct node identities: A is `s3-001`, B is `s3-002`. Board B
+has an external SPI flash module, but the commands in this section only test
+MQTT sensor-frame delivery. They do not write to flash or count occupancy.
+Board B's `s3-002` image was rebuilt/flashed and its heartbeat observed on
+21 November 2026. Start all subscriber windows **before** sending the config
+block so their status messages are visible.
+
+### Window 1 — Administrator PowerShell: temporary broker
+
+If the temporary broker is already running, keep its window open and skip
+this block. Do not start a second listener on port 1883. Otherwise:
+
+```powershell
+cd 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
+Stop-Service -Name mosquitto -ErrorAction SilentlyContinue
+& "$env:ProgramFiles\mosquitto\mosquitto.exe" -c '.\tools\mqtt-test.conf' -v
+```
+
+Keep this window open. The broker command stays in the foreground.
+
+### Window 2 — normal PowerShell: watch both boards' sensor frames
+
+```powershell
+$brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
+& "$env:ProgramFiles\mosquitto\mosquitto_sub.exe" -h $brokerIp -t 'pico/+/sensor/+/line' -v
+```
+
+Keep this window open. The four source topics are under `pico/s3-001/sensor/`;
+bridged aliases, if received, are under `pico/s3-002/sensor/`.
+
+### Window 3 — normal PowerShell: watch Board B status
+
+```powershell
+$brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
+& "$env:ProgramFiles\mosquitto\mosquitto_sub.exe" -h $brokerIp -t 'pico/s3-002/#' -v
+```
+
+Wait for a fresh `pico/s3-002/heartbeat`. This confirms B is currently
+connected. Keep this window open to see `config OK` messages and B sensor
+topics; `config OK` alone does not prove sensor delivery.
+
+### Window 4 — normal PowerShell: configure all four sources
+
+Paste this **one complete block** after both boards have connected. It
+replaces the boards' current runtime sensor configurations; it does not
+change wiring, flash firmware, or erase the external SPI flash. `CLEAR` on B
+also removes the earlier one-source AHT bridge, so all four B mappings are
+sent again here.
+
+```powershell
+cd 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
+$brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
+$pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
+
+# Board A: physical AHT, light, Sonar A, and Sonar B.
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'STOP'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'CLEAR'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/config' -f '.\config\board_a.cfg'
+Start-Sleep -Seconds 2
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'RUN'
+
+# Board B: bridge each of A's four sensor-frame topics to a local alias.
+& $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -m 'STOP'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -m 'CLEAR'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-002/config' -m 'BEGINCFG|name=A_AHT|proto=mqtt|mode=poll|freq_hz=0.5|remote_node=s3-001|remote_source=AHT|ENDCFG'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-002/config' -m 'BEGINCFG|name=A_LIGHT|proto=mqtt|mode=poll|freq_hz=0.5|remote_node=s3-001|remote_source=LIGHT|ENDCFG'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-002/config' -m 'BEGINCFG|name=A_SONAR_A|proto=mqtt|mode=poll|freq_hz=2|remote_node=s3-001|remote_source=SONAR_A|ENDCFG'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-002/config' -m 'BEGINCFG|name=A_SONAR_B|proto=mqtt|mode=poll|freq_hz=2|remote_node=s3-001|remote_source=SONAR_B|ENDCFG'
+Start-Sleep -Seconds 2
+& $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -m 'RUN'
+```
+
+Window 2 should show A's `AHT`, `LIGHT`, `SONAR_A`, and `SONAR_B` topics
+and B's `A_AHT`, `A_LIGHT`, `A_SONAR_A`, and `A_SONAR_B` aliases **when each
+source produces frames**. If a B alias is missing, first check whether the
+matching A source appears in the same window. In the first one-source B test,
+B acknowledged `A_AHT` but only B heartbeats were visible afterward; that
+does not establish an AHT bridge failure or success. Broker `PUBLISH` lines
+and `config OK` only show transport or configuration, respectively. An
+`s3-002/sensor/<alias>/line` frame is the MQTT bridge evidence.
+
+### Shut down the combined test
+
+While Window 1's broker is still running, enter this in **Window 4**:
+
+```powershell
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'STOP'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -m 'STOP'
+```
+
+Press `Ctrl+C` in Windows 2 and 3 to stop both subscribers, then `Ctrl+C`
+in Window 1 to stop the temporary broker. Unplug the boards if finished.
+The optional original Windows Mosquitto service can be restarted from an
+**Administrator PowerShell** with `Start-Service -Name mosquitto`; that
+localhost-only service is separate from the temporary network listener.
+
 ## When Wi-Fi or the broker address changes
 
-The broker IP is compiled into the ESP32 firmware; `mosquitto_pub` cannot
-change it. Update the ignored local file in a **normal PowerShell**:
+The broker IP is compiled into each ESP32 firmware image; `mosquitto_pub`
+cannot change it. Update the ignored local file in a **normal PowerShell**:
 
 ```powershell
 cd 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
 notepad .\esp32s3_mtk\main\wifi_credentials.h
 ```
 
-Set `WIFI_SSID`, `WIFI_PASS`, `MQTT_HOST` (the laptop's **Wi-Fi IPv4**),
-`MQTT_PORT 1883` and `NODE_ID "s3-001"`. Do not paste the password into
-chat or commit the filled file. Rebuild and flash only the identified Board A;
-unplug B and C, close Board A's serial monitor, and check its port:
+Set `WIFI_SSID`, `WIFI_PASS`, `MQTT_HOST` (the laptop's **Wi-Fi IPv4**) and
+`MQTT_PORT 1883`. Keep the board identities distinct: A is `s3-001`, B is
+`s3-002`. Do not paste the password into chat or commit the filled file.
+The steps below rebuild and flash **Board A only**; unplug B and C, close
+Board A's serial monitor, and check its port:
 
 ```powershell
 $py = "$env:USERPROFILE\.espressif\python_env\idf6.1_py3.14_env\Scripts\python.exe"
