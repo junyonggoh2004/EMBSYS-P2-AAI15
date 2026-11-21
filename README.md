@@ -2,7 +2,7 @@
 
 **Current D6 direction (21 November 2026): two sonars, no radar.** Board A's N16R8 runs AHT temperature/humidity, TSL2561 light, Sonar A and Sonar B. Read the [sonar-only use case](docs/d6/SONAR_ONLY_USECASE.md), [current Board A pinout and diagram](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md), and [PowerShell sensor-test commands](docs/d6/BOARD_A_SENSOR_TEST.md). [`config/board_a.cfg`](config/board_a.cfg) is the current four-sensor profile. AHT and light have valid readings; Sonar A has valid readings with intermittent errors. Sonar B returned valid readings again after its VCC/GND leads moved directly to B4/B7, but its fixed-target consistency remains unverified. A complete four-sensor run and sonar-triggered crossing logic remain to be verified or implemented. The radar `WINDOW` and older Board A diagrams below describe historical D3/proposed fixtures, not this D6 wiring.
 
-For the tested Board A broker workflow, use [MQTT_commands.md](MQTT_commands.md). Board B MQTT commands will be added after its physical integration test.
+For the tested Board A, B, and C broker commands, use [MQTT_commands.md](MQTT_commands.md).
 
 **D6 branch planning (historical 13 November 2026 baseline).** The three-board end-to-end demo is
 planned in [D6 validation plan](docs/D6_USECASE_VALIDATION_PLAN.md), with a
@@ -23,9 +23,10 @@ For Board A's current sensor-by-sensor diagnosis, use the
 [observed results](docs/d6/BOARD_A_STAGE1_BRINGUP_20261118.md).
 The [next three integration steps](docs/d6/NEXT_STEPS.md) define the fixture,
 LCD import and remote-display gates.
-The opt-in [private MQTT Board B to C mock test](docs/d6/MQTT_MOCK_TEST.md)
-exercises the transport and portrait LCD with synthetic values while preserving
-the isolated `LCDTEST` command.
+The opt-in [private MQTT Board B to C mock test](MQTT_commands.md#board-c-lcd-and-board-b--c-mock-mqtt-test)
+exercises the transport and dynamic landscape LCD with synthetic values while preserving
+the isolated `LCDTEST` command. The user confirmed the full horizontal dashboard
+and a subsequent occupancy update from 2 to 3 on 21 November 2026.
 D3 is the timing/sequencing subsystem, not the scope of the whole project.
 The user selected the doorway scenario on 13 November; the earlier doorway
 plan remains archived as reference evidence, and final fixture/team approval

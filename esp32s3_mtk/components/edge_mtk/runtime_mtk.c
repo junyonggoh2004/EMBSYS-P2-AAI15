@@ -421,7 +421,9 @@ static bool platform_command(const char *line)
                 pub_msg_t out = { .op = PUB_PUBLISH, .qos = 1 };
                 snprintf(out.topic, sizeof out.topic, "d6/board-b/snapshot");
                 int n = snprintf(out.payload, sizeof out.payload,
-                    "{\"v\":1,\"seq\":%lu,\"occupancy\":%u,\"temperature_c\":27.5,\"humidity_pct\":65.2,\"light_lux\":420}",
+                    "{\"v\":2,\"seq\":%lu,\"occupancy\":%u,\"distance_cm\":123.4,"
+                    "\"temperature_c\":27.5,\"humidity_pct\":65.2,\"light_lux\":420,"
+                    "\"ml_score\":0.953,\"ml_model\":\"sine-float\",\"source\":\"mock\"}",
                     (unsigned long)(seq + 1), occupancy);
                 out.len = (uint16_t)n;
                 if (n < 0 || (size_t)n >= sizeof out.payload ||
@@ -655,44 +657,101 @@ void runtime_d6_snapshot_receive(const char *payload, int length)
     char json[192];
     memcpy(json, payload, (size_t)length);
     json[length] = 0;
-    unsigned version, seq, occupancy, light;
-    float temperature, humidity;
+    unsigned version = 0, seq = 0, occupancy = 0, light = 0;
+    float temperature = 0, humidity = 0, distance = 0, ml_score = 0;
+    char ml_model[16] = {0}, source[8] = {0};
     int consumed = 0;
     int fields = sscanf(json,
-        "{\"v\":%u,\"seq\":%u,\"occupancy\":%u,\"temperature_c\":%f,\"humidity_pct\":%f,\"light_lux\":%u}%n",
-        &version, &seq, &occupancy, &temperature, &humidity, &light, &consumed);
-    if (fields != 6 || consumed != length || version != 1 || seq == 0 ||
+        "{\"v\":%u,\"seq\":%u,\"occupancy\":%u,\"distance_cm\":%f,"
+        "\"temperature_c\":%f,\"humidity_pct\":%f,\"light_lux\":%u,"
+        "\"ml_score\":%f,\"ml_model\":\"%15[^\"]\",\"source\":\"%7[a-z]\"}%n",
+        &version, &seq, &occupancy, &distance, &temperature, &humidity,
+        &light, &ml_score, ml_model, source, &consumed);
+    bool full = fields == 10 && consumed == length && version == 2 &&
+                strspn(ml_model, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-") == strlen(ml_model) &&
+                (strcmp(source, "mock") == 0 || strcmp(source, "live") == 0) &&
+                distance >= 2.0f && distance <= 400.0f &&
+                ml_score >= 0.0f && ml_score <= 1.0f;
+    if (!full) {
+        consumed = 0;
+        fields = sscanf(json,
+            "{\"v\":%u,\"seq\":%u,\"occupancy\":%u,\"temperature_c\":%f,"
+            "\"humidity_pct\":%f,\"light_lux\":%u}%n",
+            &version, &seq, &occupancy, &temperature, &humidity, &light, &consumed);
+    }
+    if ((!full && (fields != 6 || consumed != length || version != 1)) || seq == 0 ||
         occupancy > 9999 || !(temperature >= -40.0f && temperature <= 85.0f) ||
         !(humidity >= 0.0f && humidity <= 100.0f) || light > 65535) {
-        puts("[D6MQTT] rejected snapshot schema/range");
+        printf("[D6MQTT] rejected snapshot schema/range len=%d fields=%d consumed=%d v=%u seq=%u occ=%u dist=%.1f temp=%.1f hum=%.1f light=%u ml=%.3f model=%s source=%s\n",
+               length, fields, consumed, version, seq, occupancy, (double)distance,
+               (double)temperature, (double)humidity, light, (double)ml_score,
+               ml_model, source);
         return;
     }
     bench_msg_t b = { .name = "D6SNAP", .d6_seq = seq,
                       .d6_occupancy = (uint16_t)occupancy,
                       .d6_light = (uint16_t)light,
-                      .d6_temperature = temperature, .d6_humidity = humidity };
+                      .d6_temperature = temperature, .d6_humidity = humidity,
+                      .d6_mock = !full || strcmp(source, "mock") == 0 };
+    if (full) {
+        b.d6_distance = distance;
+        b.d6_ml_score = ml_score;
+        b.d6_has_distance = true;
+        b.d6_has_ml = true;
+        snprintf(b.d6_ml_model, sizeof b.d6_ml_model, "%s", ml_model);
+    }
     if (!runtime_send(bench_mbf, &b, sizeof b)) puts("[D6MQTT] display queue full");
+}
+
+static int d6_card(uint16_t x, uint16_t y, uint16_t accent,
+                   const char *label, const char *value)
+{
+    const uint16_t panel = 0x10a2u, border = 0x4a69u;
+    int r = lcd_output_fill_rect(x, y, 90, 28, panel);
+    if (r) return r;
+    if ((r = lcd_output_fill_rect(x, y, 3, 28, accent))) return r;
+    if ((r = lcd_output_fill_rect(x + 3, y, 87, 1, border))) return r;
+    if ((r = lcd_output_fill_rect(x + 3, y + 27, 87, 1, border))) return r;
+    if ((r = lcd_output_draw_text(x + 7, y + 2, label, 0xbdd7u, panel, 1))) return r;
+    return lcd_output_draw_text(x + 8, y + 10, value, 0xffffu, panel, 2);
 }
 
 static int d6_draw_snapshot(const bench_msg_t *b)
 {
-    const uint16_t bg = 0x080f, fg = 0xffff, accent = 0x37db;
+    const uint16_t bg = 0x080fu, fg = 0xffffu, panel = 0x10a2u;
     char text[32];
     int r = lcd_output_fill(bg);
     if (r) return r;
-    if ((r = lcd_output_draw_text(2, 4, "ROOM MON", fg, bg, 1))) return r;
-    if ((r = lcd_output_draw_text(2, 20, "MOCK MQTT", accent, bg, 1))) return r;
+    if ((r = lcd_output_draw_text(4, 2, "ROOM MONITOR", fg, bg, 1))) return r;
+    if ((r = lcd_output_fill_rect(82, 9, 112, 1, 0x5c9fu))) return r;
+    if ((r = lcd_output_draw_text(201, 2, b->d6_mock ? "MOCK" : "LIVE",
+                                  0x37dbu, bg, 1))) return r;
     snprintf(text, sizeof text, "OCC %u", (unsigned)b->d6_occupancy);
-    if ((r = lcd_output_draw_text(2, 46, text, fg, bg, 1))) return r;
-    snprintf(text, sizeof text, "TEMP %.1f C", (double)b->d6_temperature);
-    if ((r = lcd_output_draw_text(2, 86, text, fg, bg, 1))) return r;
-    snprintf(text, sizeof text, "HUM %.1f%%", (double)b->d6_humidity);
-    if ((r = lcd_output_draw_text(2, 126, text, fg, bg, 1))) return r;
-    snprintf(text, sizeof text, "LUX %u", (unsigned)b->d6_light);
-    if ((r = lcd_output_draw_text(2, 166, text, fg, bg, 1))) return r;
-    snprintf(text, sizeof text, "SEQ %lu", (unsigned long)b->d6_seq);
-    if ((r = lcd_output_draw_text(2, 206, text, accent, bg, 1))) return r;
-    return lcd_output_draw_text(2, 246, "B > C OK", 0x07e0, bg, 1);
+    if ((r = lcd_output_draw_text(234, 2, text, 0x07e0u, bg, 1))) return r;
+
+    if (b->d6_has_distance) snprintf(text, sizeof text, "%.1f", (double)b->d6_distance);
+    else snprintf(text, sizeof text, "--");
+    if ((r = d6_card(2, 14, 0x35dcu, "DISTANCE cm", text))) return r;
+    snprintf(text, sizeof text, "%.1f", (double)b->d6_temperature);
+    if ((r = d6_card(96, 14, 0xf3aeu, "TEMP C", text))) return r;
+    snprintf(text, sizeof text, "%.1f", (double)b->d6_humidity);
+    if ((r = d6_card(2, 45, 0x37dcu, "HUMIDITY %", text))) return r;
+    snprintf(text, sizeof text, "%u", (unsigned)b->d6_light);
+    if ((r = d6_card(96, 45, 0xff2eu, "LIGHT lux", text))) return r;
+
+    if ((r = lcd_output_fill_rect(190, 14, 92, 59, panel))) return r;
+    if ((r = lcd_output_fill_rect(190, 14, 3, 59, 0xb49fu))) return r;
+    if ((r = lcd_output_fill_rect(193, 14, 89, 1, 0xb49fu))) return r;
+    if ((r = lcd_output_fill_rect(193, 72, 89, 1, 0xb49fu))) return r;
+    if ((r = lcd_output_draw_text(196, 17, "ML OUTPUT", 0xbdd7u, panel, 1))) return r;
+    if (b->d6_has_ml) snprintf(text, sizeof text, "%.3f", (double)b->d6_ml_score);
+    else snprintf(text, sizeof text, "--");
+    if ((r = lcd_output_draw_text(200, 34, text, fg, panel, 2))) return r;
+    if ((r = lcd_output_draw_text(196, 58,
+                                  b->d6_has_ml ? b->d6_ml_model : "NO MODEL",
+                                  0xb49fu, panel, 1))) return r;
+    return lcd_output_draw_text(265, 58, b->d6_has_ml ? "OK" : "--",
+                                0x07e0u, panel, 1);
 }
 
 static void benchmark_task(INT stacd, void *exinf)
@@ -724,8 +783,8 @@ static void benchmark_task(INT stacd, void *exinf)
             }
             else if (strcmp(b.name, "D6VIEW") == 0) {
                 const lcd_output_config_t config = {
-                    .width = 76, .height = 284, .x_offset = 82, .y_offset = 18,
-                    .madctl = 0, .invert_colors = false
+                    .width = 284, .height = 76, .x_offset = 18, .y_offset = 82,
+                    .madctl = 0x60, .invert_colors = false
                 };
                 lcd_output_deinit();
                 int result = lcd_output_init(&config);
@@ -733,7 +792,10 @@ static void benchmark_task(INT stacd, void *exinf)
                 if (d6_view && latest.d6_seq) result = d6_draw_snapshot(&latest);
                 else if (d6_view) {
                     result = lcd_output_fill(0x080f);
-                    if (result == HAL_OK) result = lcd_output_draw_text(2, 10, "WAIT B MQTT", 0xffff, 0x080f, 1);
+                    if (result == HAL_OK)
+                        result = lcd_output_draw_text(4, 2, "ROOM MONITOR", 0xffff, 0x080f, 1);
+                    if (result == HAL_OK)
+                        result = lcd_output_draw_text(94, 35, "WAIT B MQTT", 0x37db, 0x080f, 1);
                 }
                 printf("[D6MQTT] C view result=%d\n", result);
             }

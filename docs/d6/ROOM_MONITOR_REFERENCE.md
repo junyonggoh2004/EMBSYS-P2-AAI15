@@ -3,9 +3,12 @@
 ![User-supplied room monitor mockup](images/room-monitor-mock-reference.png)
 
 The user supplied this landscape mockup as the visual reference on
-18 November 2026. The actual Board C LCD is a 76 x 284 portrait panel,
-so the fields must be stacked vertically. Keep units, validity, source,
-and status legible. Do not present mock values as live sensor readings.
+18 November 2026. Board C's 76 x 284 panel can be rotated in firmware to
+284 x 76. On 21 November, `LCDTEST 284 76 18 82 60 0` produced a full
+landscape pattern, confirmed visually by the user. The D6 MQTT view now uses
+that orientation and a compact version of the reference layout: four reading
+cards on the left and ML output on the right. It labels synthetic values
+`MOCK` and reserves `LIVE` for a future application snapshot.
 
 ## Temporary USB relay trial
 
@@ -27,7 +30,13 @@ remains to be implemented.
 
 ## Private MQTT mock follow-up
 
-The opt-in Board B to C mock snapshot path, its local broker setup, and its
-limits are documented in [MQTT_MOCK_TEST.md](MQTT_MOCK_TEST.md). The firmware
-keeps `LCDTEST` available independently. MQTT values remain synthetic until
-Board A events and the final B application snapshot are integrated.
+The opt-in Board B to C mock snapshot path and local broker commands are in
+[MQTT_commands.md](../../MQTT_commands.md#board-c-lcd-and-board-b--c-mock-mqtt-test).
+Board B's v2 fixture sends distance 123.4 cm, temperature 27.5 C, humidity
+65.2%, light 420 lux, and ML score 0.953 (`sine-float`). Board C accepted and
+drew the v2 snapshot in landscape; the user confirmed every field visible.
+A second snapshot changed occupancy from 2 to 3 without re-entering view mode.
+All accepted D6 snapshots use this landscape renderer. Legacy v1 snapshots
+show placeholders for absent distance and ML fields. The independent
+`LCDTEST 76 284 82 18 00 0` remains available. MQTT values remain
+synthetic until Board A events and B's final application snapshot are integrated.

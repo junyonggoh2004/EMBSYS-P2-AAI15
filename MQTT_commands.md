@@ -342,7 +342,9 @@ localhost-only service is separate from the temporary network listener.
 This is a **separate display/transport test**. Board B's `D6MOCKPUB` command
 publishes a synthetic snapshot; it does not use Board A's sensor readings,
 calculate occupancy, run ML, or write the external SPI flash. Board C's
-isolated `LCDTEST` remains available independently of this MQTT path.
+isolated `LCDTEST` remains available independently of this MQTT path. The
+D6 snapshot view uses the verified 284 x 76 landscape orientation for every
+accepted snapshot, including future live snapshots.
 
 On 21 November 2026, the bare N16R8 LCD board appeared as native USB
 `COM13` with node ID `s3-003`. The `s3-003` image was rebuilt for the current
@@ -392,6 +394,10 @@ has no connected readback line. The 21 November test passed in both console
 output and the user's visual check. `LCDTEST` ends the D6 view mode, so send
 `D6VIEW` again before every mock snapshot test that follows a pattern test.
 
+For a separate orientation check, `LCDTEST 284 76 18 82 60 0` shows the same
+pattern across the full screen when held horizontally. The user confirmed
+this on 21 November. It does not replace the original portrait `LCDTEST`.
+
 ### Send a mock snapshot from B to C
 
 In a **third normal PowerShell** window, send these commands in order:
@@ -408,14 +414,22 @@ The subscriber should show a JSON snapshot on `d6/board-b/snapshot`.
 C's serial console should print `[D6MQTT] C view result=0` followed by
 `[D6MQTT] C snapshot seq=<n> occupancy=2 display=0 active=1`.
 `seq` increases with B's mock publishes and may reset when B reboots.
-The LCD should show `ROOM MON`, `MOCK MQTT`, `OCC 2`, `TEMP 27.5 C`,
-`HUM 65.2%`, `LUX 420`, `SEQ <n>` and `B > C OK` in portrait orientation.
+Hold the LCD horizontally. The compact ROOM MONITOR dashboard should show
+`MOCK`, `OCC 2`, distance `123.4` cm, temperature `27.5` C, humidity `65.2`%,
+light `420` lux, and ML score `0.953` with model `SINE-FLOAT`. The word
+`MOCK` is deliberate: these are fixture values. The v2 payload on
+`d6/board-b/snapshot` includes `distance_cm`, `ml_score`, `ml_model`, and
+`source` in addition to the original fields. C also accepts the original
+v1 snapshot and shows `--` / `NO MODEL` where distance or ML was absent.
 
-The 21 November test produced C's `view result=0` and
+The original portrait test produced C's `view result=0` and
 `snapshot seq=1 occupancy=2 display=0 active=1`; the user's photo showed
-all those fields on the LCD. This verifies B → broker → C mock transport,
-snapshot parsing and a visible display update. It does **not** establish a
-live A → B → C occupancy display, or that B's mock values came from sensors.
+all portrait fields. After the landscape firmware update, C logged
+`snapshot seq=5 occupancy=2 display=0 active=1`, and the user confirmed all
+reference fields visible horizontally. A second `D6MOCKPUB 3` logged
+`snapshot seq=6 occupancy=3 display=0 active=1`; the user saw `OCC 3` without
+changing orientation. This verifies B → broker → C mock transport and
+dynamic LCD refresh. Live A → B → C occupancy and live ML are still pending.
 
 ### End the Board C test
 
