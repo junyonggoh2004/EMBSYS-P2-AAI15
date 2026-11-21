@@ -2,6 +2,12 @@
 
 **Current Board A image:** [sonar-only N16R8 wiring](board-a-sonar-only.svg), with Sonar B VCC→B4/GND→B7, direct signal leads, four sensor profiles and no radar; see its [connection table](../BOARD_A_SONAR_ONLY_WIRING.md). The other Board A images below preserve earlier radar/GPIO4/5 proposals. Board B and C diagrams remain separate fixtures.
 
+**Board C display update (21 November):** the user confirmed the 284 x 76
+landscape LCD pattern and a visible B → C mock MQTT dashboard with all fields.
+Occupancy changed from 2 to 3 on the next snapshot. The diagram below remains
+the same physical pin map; see the [display reference](../ROOM_MONITOR_REFERENCE.md)
+and [MQTT commands](../../../MQTT_commands.md#board-c-lcd-and-board-b--c-mock-mqtt-test).
+
 The current and historical images depict three bare ESP32-S3 N16R8 boards with accessible
 male headers, each outside its breadboard. See [board identification and source photos](../N16R8_BOARD_SETUP.md).
 The old Super Mini test evidence remains historical.

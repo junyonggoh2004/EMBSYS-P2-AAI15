@@ -2,6 +2,15 @@
 
 **Current Board A (21 November 2026):** [sonar-only wiring](BOARD_A_SONAR_ONLY_WIRING.md), [`board_a.cfg`](../../config/board_a.cfg), [test commands](BOARD_A_SENSOR_TEST.md). No radar or 5V feed is used on A. The later radar pin and power paragraphs below are earlier proposals retained for history.
 
+**Current Board C (21 November 2026):** the original portrait
+`LCDTEST 76 284 82 18 00 0` remains available. The user also confirmed the
+full landscape pattern with `LCDTEST 284 76 18 82 60 0` and the Board B → C
+MQTT mock dashboard in that orientation. Every mock field was visible; a
+second snapshot changed occupancy from 2 to 3 on the LCD. See the
+[commands](../../MQTT_commands.md#board-c-lcd-and-board-b--c-mock-mqtt-test)
+and [display reference](ROOM_MONITOR_REFERENCE.md). Live sensor-derived
+snapshots are still pending.
+
 Updated 17 November 2026 after the user removed the expansion boards. Boards
 **A, B and C** are bare ESP32-S3 N16R8 development boards with accessible male
 headers. Each ESP32 and its modules sit outside a separate breadboard. Use a

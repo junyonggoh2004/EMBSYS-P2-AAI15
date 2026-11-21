@@ -1,5 +1,30 @@
 # Temporary Board B to C MQTT mock test
 
+## Current result (21 November 2026)
+
+The complete Windows broker, Board B, and Board C commands are now maintained
+in [MQTT_commands.md](../../MQTT_commands.md#board-c-lcd-and-board-b--c-mock-mqtt-test).
+The steps and observations below preserve the earlier 18–19 November trial;
+its portrait v1 fixture and USB diagnosis are historical, not the current
+Board C status.
+
+Board C's native USB port enumerated, the `s3-003` firmware was flashed and
+verified, and the user saw the isolated `LCDTEST` RGB bands and `LCD READY`.
+The user also confirmed a full landscape pattern with
+`LCDTEST 284 76 18 82 60 0`. Board B's `D6MOCKPUB` now publishes a v2
+snapshot with distance 123.4 cm, temperature 27.5 C, humidity 65.2%, light
+420 lux, ML score 0.953, model `sine-float`, and `source:"mock"`. Board C
+accepted and drew it in the 284 x 76 landscape ROOM MONITOR dashboard.
+The user confirmed all fields visible, then confirmed the LCD changed from
+`OCC 2` to `OCC 3` on a second snapshot. The console reported
+`C snapshot seq=5 occupancy=2 display=0 active=1` and
+`C snapshot seq=6 occupancy=3 display=0 active=1`. The mock values are not
+Board A measurements or B's live occupancy/ML result. `LCDTEST` remains an
+independent diagnostic; send `D6VIEW` after it or after a reboot to return
+to the MQTT dashboard.
+
+## Earlier trial and commands (18–19 November 2026)
+
 This test is opt-in and uses synthetic values. It does not establish live Board A acquisition, flash logging, or ML inference. It leaves the isolated `LCDTEST` command intact.
 
 ## Local configuration
