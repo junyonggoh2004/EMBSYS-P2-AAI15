@@ -32,17 +32,17 @@
     <g stroke="#0877b5"><circle cx="445" cy="586" r="9"/><circle cx="563" cy="586" r="9"/><circle cx="681" cy="586" r="9"/><circle cx="799" cy="586" r="9"/><circle cx="917" cy="586" r="9"/></g>
   </g>
   <g font-family="Arial,sans-serif" font-size="22" fill="#17314f">
-    <text x="1030" y="279">B4 → 3V3 + rail</text><text x="1030" y="308">C4 Sonar A VCC · D4 Light VCC · E4 AHT VCC</text>
+    <text x="1030" y="279">B4 Sonar B VCC · C4 Sonar A VCC</text><text x="1030" y="308">D4 Light VCC · E4 AHT VCC</text>
     <text x="1030" y="379">D5 Light SDA · E5 AHT SDA</text>
     <text x="1030" y="479">D6 Light SCL · E6 AHT SCL</text>
-    <text x="1030" y="579">B7 → GND − rail</text><text x="1030" y="608">C7 Sonar A GND · D7 Light GND · E7 AHT GND</text>
+    <text x="1030" y="579">B7 Sonar B GND · C7 Sonar A GND</text><text x="1030" y="608">D7 Light GND · E7 AHT GND</text>
   </g>
 
   <rect x="42" y="644" width="1516" height="168" rx="20" fill="#e6f3f7" stroke="#b7d0dc" stroke-width="3"/>
-  <text x="66" y="686" fill="#17314f" font-family="Arial,sans-serif" font-weight="700" font-size="28">SONAR B POWER | SAME CONTINUOUS TOP RAIL SECTIONS</text>
-  <text x="73" y="734" fill="#18824c" font-family="Arial,sans-serif" font-size="25">B4 → top red + rail → Sonar B VCC  (3V3, not 5V)</text>
-  <text x="73" y="779" fill="#0877b5" font-family="Arial,sans-serif" font-size="25">B7 → top blue − rail → Sonar B GND</text>
-  <text x="855" y="758" fill="#a33a22" font-family="Arial,sans-serif" font-size="22">Both feeds must be present; B power remains unverified.</text>
+  <text x="66" y="686" fill="#17314f" font-family="Arial,sans-serif" font-weight="700" font-size="28">SONAR B POWER | DIRECTLY INTO SHARED ROWS</text>
+  <text x="73" y="734" fill="#18824c" font-family="Arial,sans-serif" font-size="25">Sonar B VCC → B4  (same 3V3 row as ESP A4)</text>
+  <text x="73" y="779" fill="#0877b5" font-family="Arial,sans-serif" font-size="25">Sonar B GND → B7  (same GND row as ESP A7)</text>
+  <text x="855" y="758" fill="#a33a22" font-family="Arial,sans-serif" font-size="22">No power-rail jumpers in this fixture.</text>
 
   <rect x="42" y="836" width="740" height="178" rx="20" fill="#fff" stroke="#d6c5a0" stroke-width="3"/>
   <rect x="818" y="836" width="740" height="178" rx="20" fill="#fff" stroke="#d6c5a0" stroke-width="3"/>

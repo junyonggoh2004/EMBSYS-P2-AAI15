@@ -1,6 +1,6 @@
 # Board A: test AHT, light and two sonars from PowerShell
 
-**Current D6 fixture, 21 November 2026.** Use the [current wiring map](BOARD_A_SONAR_ONLY_WIRING.md) and [`config/board_a.cfg`](../../config/board_a.cfg). There is no radar profile or radar wire. This tests sensor readings, not automatic doorway counting. The 19 November record has valid AHT, light and Sonar A readings and one Sonar B pass before its rail power was disturbed; a complete four-sensor pass is still unverified.
+**Current D6 fixture, 21 November 2026.** Use the [current wiring map](BOARD_A_SONAR_ONLY_WIRING.md) and [`config/board_a.cfg`](../../config/board_a.cfg). There is no radar profile or radar wire. This tests sensor readings, not automatic doorway counting. AHT, light and both sonars have produced valid individual readings; the sonars also have intermittent timeout/invalid readings or apparent background returns. A stable fixed-target result and complete four-sensor pass remain unverified.
 
 ## 1. Start the Board A console
 
@@ -70,7 +70,7 @@ SHOW
 RUN
 ```
 
-Hold the target in front of B. Require valid changing distance readings. If B times out, check its **3V3 red-rail and GND blue-rail feeds** against the current wiring guide with USB unplugged; its earlier pass was lost after those rails changed. Then type `STOP`.
+Hold a flat target still about 40 cm in front of B for 10 seconds, then move it to a measured second distance. Require plausible values that track the change, and note timeouts separately. If B times out repeatedly, check **VCC→B4 and GND→B7** against the current wiring guide with USB unplugged; the earlier rail-fed path timed out. Then type `STOP`.
 
 ## 3. Four-sensor run and sequential pair
 

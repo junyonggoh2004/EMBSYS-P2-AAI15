@@ -59,17 +59,20 @@ real Board A doorway events reach the LCD. A raw distance is not occupancy.
 
 The [19 November record](BOARD_A_BRINGUP_20261119.md) reports AHT and light
 passing, Sonar A passing on direct GPIO10/11 signal leads, and Sonar B passing
-once on direct GPIO6/7 leads before losing power during later rewiring. It
-does **not** show valid simultaneous distances from both sonars or a completed
-doorway crossing. Sonar B's 3V3 and GND feeds must be verified, then both
-sonars retested separately and with `PAIR` in both orders. Do not infer
+once on direct GPIO6/7 leads before losing power during later rewiring. On
+21 November, Sonar B returned valid echoes after its VCC/GND leads moved
+directly to B4/B7; the capture also included varying distances and a timeout.
+It does **not** show stable fixed-target measurements, valid simultaneous
+distances from both sonars or a completed doorway crossing. Both sonars need
+controlled fixed-target and `PAIR` checks in both orders. Do not infer
 hardware success from a config ACK or from a `PAIR` request alone.
 
 1. Confirm Board A's native USB console, actual wiring and correct flashed
    firmware. Run the [Windows Board A test procedure](BOARD_A_SENSOR_TEST.md)
    with each sensor isolated and record raw results.
-2. Restore both sonar power paths, obtain valid changing distances from each
-   separately, then verify a sequential pair and its 50 ms ceiling. Include
+2. Keep Sonar B power directly on B4/B7, obtain stable readings at measured
+   target distances from each sonar separately, then verify a sequential pair
+   and its 50 ms ceiling. Include
    no Echo and stuck/loose-contact trials.
 3. Implement the sonar-first crossing state machine with bounded timing and
    a single event per completed sequence; test entry, exit, lone approach,
