@@ -1,0 +1,34 @@
+> STOP
+23:29:31 STOP
+23:29:31 [MQTT] Status: Connected, Broker: 192.168.1.49
+> CLEAR
+23:29:33 [RULE] reset
+23:29:33 CLEARED
+# D3-9 missing sensor: AHT configured on SDA GPIO1 / SCL GPIO2 with nothing wired
+> BEGINCFG|name=AHT|proto=i2c|i2c.sensor=aht|mode=poll|freq_hz=0.5|timing.timeout_ms=600|i2c.sda=1|i2c.scl=2|i2c.addr=0x38|i2c.baud=100000|ENDCFG
+23:29:34 OK: Config applied (inline, delim='|')
+23:29:34 [I2C] pre_len=0 :
+23:29:34 [SCHED] added: AHT on i2c
+23:29:34 CFG: ok (added #0: AHT)
+> RUN
+23:29:36 RUN
+23:29:36 {"sensor":"AHT","timestamp_ms":496893,"temperature_c":null,"humidity_pct":null,"status":"SENSOR_ERROR_OR_MISSING","error":-4}
+23:29:36 [SENSOR] name=AHT error=-4 total=1
+23:29:36 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:29:38 {"sensor":"AHT","timestamp_ms":498894,"temperature_c":null,"humidity_pct":null,"status":"SENSOR_ERROR_OR_MISSING","error":-4}
+23:29:38 [SENSOR] name=AHT error=-4 total=2
+23:29:40 {"sensor":"AHT","timestamp_ms":500894,"temperature_c":null,"humidity_pct":null,"status":"SENSOR_ERROR_OR_MISSING","error":-4}
+23:29:40 [SENSOR] name=AHT error=-4 total=3
+23:29:41 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:29:42 {"sensor":"AHT","timestamp_ms":502894,"temperature_c":null,"humidity_pct":null,"status":"SENSOR_ERROR_OR_MISSING","error":-4}
+23:29:42 [SENSOR] name=AHT error=-4 total=4
+23:29:44 {"sensor":"AHT","timestamp_ms":504894,"temperature_c":null,"humidity_pct":null,"status":"SENSOR_ERROR_OR_MISSING","error":-4}
+23:29:44 [SENSOR] name=AHT error=-4 total=5
+> STOP
+23:29:44 STOP
+> CLEAR
+23:29:45 [RULE] reset
+23:29:45 CLEARED
+23:29:46 [MQTT] Status: Connected, Broker: 192.168.1.49
+# missing AHT: 10 explicit error lines, 0 valid-looking readings
+# summary {"missing_i2c": {"error_lines": 10, "valid_looking_readings": 0}}

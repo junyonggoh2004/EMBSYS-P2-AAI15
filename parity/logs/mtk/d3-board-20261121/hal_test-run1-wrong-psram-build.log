@@ -1,0 +1,494 @@
+00:46:32 entry 0x403c8900
+00:46:32 I (24) boot: ESP-IDF v6.1-dev-2300-g17a74c925c 2nd stage bootloader
+00:46:32 I (24) boot: Multicore bootloader
+00:46:32 I (24) boot: chip revision: v0.2
+00:46:32 I (24) boot: efuse block revision: v1.4
+00:46:32 I (25) boot.esp32s3: Boot SPI Speed : 80MHz
+00:46:32 I (25) boot.esp32s3: SPI Mode       : DIO
+00:46:32 I (25) boot.esp32s3: SPI Flash Size : 4MB
+00:46:32 I (25) boot: Enabling RNG early entropy source...
+00:46:32 I (25) boot: Partition Table:
+00:46:32 I (25) boot: ## Label            Usage          Type ST Offset   Length
+00:46:32 I (26) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+00:46:32 I (26) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+00:46:32 I (27) boot:  2 factory          factory app      00 00 00010000 002f0000
+00:46:32 I (27) boot:  3 model            Unknown data     01 40 00300000 00082000
+00:46:32 I (27) boot: End of partition table
+00:46:32 I (28) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=081e8h ( 33256) map
+00:46:32 I (34) esp_image: segment 1: paddr=00018210 vaddr=3fc96800 size=03604h ( 13828) load
+00:46:32 I (37) esp_image: segment 2: paddr=0001b81c vaddr=40374000 size=047fch ( 18428) load
+00:46:32 I (42) esp_image: segment 3: paddr=00020020 vaddr=42000020 size=107bch ( 67516) map
+00:46:32 I (54) esp_image: segment 4: paddr=000307e4 vaddr=403787fc size=0df88h ( 57224) load
+00:46:32 I (67) esp_image: segment 5: paddr=0003e774 vaddr=50000000 size=00024h (    36) load
+00:46:32 I (75) boot: Loaded app from partition at offset 0x10000
+00:46:32 I (75) boot: Disabling RNG early entropy source...
+00:46:32 E (77) quad_psram: PSRAM chip is not connected, or wrong PSRAM line mode
+00:46:32 E cpu_start: Failed to init external RAM!
+00:46:32 
+00:46:32 abort() was called at PC 0x42001cfb on core 0
+00:46:32 
+00:46:32 
+00:46:32 Backtrace: 0x4037bfa1:0x3fceb220 0x4037bf69:0x3fceb240 0x4037b145:0x3fceb260 0x42001cfb:0x3fceb2d0 0x4037595f:0x3fceb2f0 0x403ccd73:0x3fceb330 0x403cd119:0x3fceb370 0x403c896c:0x3fceb4a0 0x40045c01:0x3fceb570 0x40043ab6:0x3fceb6f0 0x40034c45:0x3fceb710
+00:46:32 
+00:46:32 
+00:46:32 
+00:46:32 
+00:46:32 ELF file SHA256: 
+00:46:32 
+00:46:32 Rebooting...
+00:46:32 ESP-ROM:esp32s3-20210327
+00:46:32 Build:Mar 27 2021
+00:46:32 rst:0xc (RTC_SW_CPU_RST),boot:0x8 (SPI_FAST_FLASH_BOOT)
+00:46:32 Saved PC:0x4037c141
+00:46:32 SPIWP:0xee
+00:46:32 mode:DIO, clock div:1
+00:46:32 load:0x3fce2820,len:0x1524
+00:46:32 load:0x403c8700,len:0xd48
+00:46:32 load:0x403cb700,len:0x2f60
+00:46:32 entry 0x403c8900
+00:46:32 I (24) boot: ESP-IDF v6.1-dev-2300-g17a74c925c 2nd stage bootloader
+00:46:32 I (24) boot: Multicore bootloader
+00:46:32 I (24) boot: chip revision: v0.2
+00:46:32 I (24) boot: efuse block revision: v1.4
+00:46:32 I (25) boot.esp32s3: Boot SPI Speed : 80MHz
+00:46:32 I (25) boot.esp32s3: SPI Mode       : DIO
+00:46:32 I (25) boot.esp32s3: SPI Flash Size : 4MB
+00:46:32 I (25) boot: Enabling RNG early entropy source...
+00:46:32 I (25) boot: Partition Table:
+00:46:32 I (25) boot: ## Label            Usage          Type ST Offset   Length
+00:46:32 I (26) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+00:46:32 I (26) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+00:46:32 I (27) boot:  2 factory          factory app      00 00 00010000 002f0000
+00:46:32 I (27) boot:  3 model            Unknown data     01 40 00300000 00082000
+00:46:32 I (27) boot: End of partition table
+00:46:32 I (28) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=081e8h ( 33256) map
+00:46:32 I (34) esp_image: segment 1: paddr=00018210 vaddr=3fc96800 size=03604h ( 13828) load
+00:46:32 I (37) esp_image: segment 2: paddr=0001b81c vaddr=40374000 size=047fch ( 18428) load
+00:46:32 I (42) esp_image: segment 3: paddr=00020020 vaddr=42000020 size=107bch ( 67516) map
+00:46:32 I (54) esp_image: segment 4: paddr=000307e4 vaddr=403787fc size=0df88h ( 57224) load
+00:46:32 I (67) esp_image: segment 5: paddr=0003e774 vaddr=50000000 size=00024h (    36) load
+00:46:32 I (75) boot: Loaded app from partition at offset 0x10000
+00:46:32 I (75) boot: Disabling RNG early entropy source...
+00:46:32 E (77) quad_psram: PSRAM chip is not connected, or wrong PSRAM line mode
+00:46:32 E cpu_start: Failed to init external RAM!
+00:46:32 
+00:46:32 abort() was called at PC 0x42001cfb on core 0
+00:46:32 
+00:46:32 
+00:46:32 Backtrace: 0x4037bfa1:0x3fceb220 0x4037bf69:0x3fceb240 0x4037b145:0x3fceb260 0x42001cfb:0x3fceb2d0 0x4037595f:0x3fceb2f0 0x403ccd73:0x3fceb330 0x403cd119:0x3fceb370 0x403c896c:0x3fceb4a0 0x40045c01:0x3fceb570 0x40043ab6:0x3fceb6f0 0x40034c45:0x3fceb710
+00:46:32 
+00:46:32 
+00:46:32 
+00:46:32 
+00:46:32 ELF file SHA256: 
+00:46:32 
+00:46:32 Rebooting...
+00:46:32 ESP-ROM:esp32s3-20210327
+00:46:32 Build:Mar 27 2021
+00:46:32 rst:0xc (RTC_SW_CPU_RST),boot:0x8 (SPI_FAST_FLASH_BOOT)
+00:46:32 Saved PC:0x4037c141
+00:46:32 SPIWP:0xee
+00:46:32 mode:DIO, clock div:1
+00:46:32 load:0x3fce2820,len:0x1524
+00:46:32 load:0x403c8700,len:0xd48
+00:46:32 load:0x403cb700,len:0x2f60
+00:46:32 entry 0x403c8900
+00:46:32 I (24) boot: ESP-IDF v6.1-dev-2300-g17a74c925c 2nd stage bootloader
+00:46:32 I (24) boot: Multicore bootloader
+00:46:32 I (24) boot: chip revision: v0.2
+00:46:32 I (24) boot: efuse block revision: v1.4
+00:46:32 I (25) boot.esp32s3: Boot SPI Speed : 80MHz
+00:46:32 I (25) boot.esp32s3: SPI Mode       : DIO
+00:46:32 I (25) boot.esp32s3: SPI Flash Size : 4MB
+00:46:32 I (25) boot: Enabling RNG early entropy source...
+00:46:32 I (25) boot: Partition Table:
+00:46:32 I (25) boot: ## Label            Usage          Type ST Offset   Length
+00:46:32 I (26) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+00:46:32 I (26) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+00:46:32 I (27) boot:  2 factory          factory app      00 00 00010000 002f0000
+00:46:32 I (27) boot:  3 model            Unknown data     01 40 00300000 00082000
+00:46:32 I (27) boot: End of partition table
+00:46:32 I (28) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=081e8h ( 33256) map
+00:46:32 I (34) esp_image: segment 1: paddr=00018210 vaddr=3fc96800 size=03604h ( 13828) load
+00:46:32 I (37) esp_image: segment 2: paddr=0001b81c vaddr=40374000 size=047fch ( 18428) load
+00:46:32 I (42) esp_image: segment 3: paddr=00020020 vaddr=42000020 size=107bch ( 67516) map
+00:46:32 I (54) esp_image: segment 4: paddr=000307e4 vaddr=403787fc size=0df88h ( 57224) load
+00:46:32 I (67) esp_image: segment 5: paddr=0003e774 vaddr=50000000 size=00024h (    36) load
+00:46:32 I (75) boot: Loaded app from partition at offset 0x10000
+00:46:32 I (76) boot: Disabling RNG early entropy source...
+00:46:32 E (77) quad_psram: PSRAM chip is not connected, or wrong PSRAM line mode
+00:46:32 E cpu_start: Failed to init external RAM!
+00:46:32 
+00:46:32 abort() was called at PC 0x42001cfb on core 0
+00:46:32 
+00:46:32 
+00:46:32 Backtrace: 0x4037bfa1:0x3fceb220 0x4037bf69:0x3fceb240 0x4037b145:0x3fceb260 0x42001cfb:0x3fceb2d0 0x4037595f:0x3fceb2f0 0x403ccd73:0x3fceb330 0x403cd119:0x3fceb370 0x403c896c:0x3fceb4a0 0x40045c01:0x3fceb570 0x40043ab6:0x3fceb6f0 0x40034c45:0x3fceb710
+00:46:32 
+00:46:32 
+00:46:32 
+00:46:32 
+00:46:32 ELF file SHA256: 
+00:46:32 
+00:46:32 Rebooting...
+00:46:32 ESP-ROM:esp32s3-20210327
+00:46:32 Build:Mar 27 2021
+00:46:32 rst:0xc (RTC_SW_CPU_RST),boot:0x8 (SPI_FAST_FLASH_BOOT)
+00:46:32 Saved PC:0x4037c141
+00:46:32 SPIWP:0xee
+00:46:32 mode:DIO, clock div:1
+00:46:32 load:0x3fce2820,len:0x1524
+00:46:32 load:0x403c8700,len:0xd48
+00:46:32 load:0x403cb700,len:0x2f60
+00:46:32 entry 0x403c8900
+00:46:32 I (24) boot: ESP-IDF v6.1-dev-2300-g17a74c925c 2nd stage bootloader
+00:46:32 I (24) boot: Multicore bootloader
+00:46:32 I (24) boot: chip revision: v0.2
+00:46:32 I (24) boot: efuse block revision: v1.4
+00:46:32 I (25) boot.esp32s3: Boot SPI Speed : 80MHz
+00:46:32 I (25) boot.esp32s3: SPI Mode       : DIO
+00:46:32 I (25) boot.esp32s3: SPI Flash Size : 4MB
+00:46:32 I (25) boot: Enabling RNG early entropy source...
+00:46:32 I (25) boot: Partition Table:
+00:46:32 I (25) boot: ## Label            Usage          Type ST Offset   Length
+00:46:32 I (26) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+00:46:32 I (26) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+00:46:32 I (27) boot:  2 factory          factory app      00 00 00010000 002f0000
+00:46:32 I (27) boot:  3 model            Unknown data     01 40 00300000 00082000
+00:46:32 I (27) boot: End of partition table
+00:46:32 I (28) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=081e8h ( 33256) map
+00:46:32 I (34) esp_image: segment 1: paddr=00018210 vaddr=3fc96800 size=03604h ( 13828) load
+00:46:32 I (37) esp_image: segment 2: paddr=0001b81c vaddr=40374000 size=047fch ( 18428) load
+00:46:32 I (42) esp_image: segment 3: paddr=00020020 vaddr=42000020 size=107bch ( 67516) map
+00:46:32 I (54) esp_image: segment 4: paddr=000307e4 vaddr=403787fc size=0df88h ( 57224) load
+00:46:32 I (67) esp_image: segment 5: paddr=0003e774 vaddr=50000000 size=00024h (    36) load
+00:46:32 I (75) boot: Loaded app from partition at offset 0x10000
+00:46:32 I (76) boot: Disabling RNG early entropy source...
+00:46:32 E (77) quad_psram: PSRAM chip is not connected, or wrong PSRAM line mode
+00:46:32 E cpu_start: Failed to init external RAM!
+00:46:32 
+00:46:32 abort() was called at PC 0x42001cfb on core 0
+00:46:32 
+00:46:32 
+00:46:32 Backtrace: 0x4037bfa1:0x3fceb220 0x4037bf69:0x3fceb240 0x4037b145:0x3fceb260 0x42001cfb:0x3fceb2d0 0x4037595f:0x3fceb2f0 0x403ccd73:0x3fceb330 0x403cd119:0x3fceb370 0x403c896c:0x3fceb4a0 0x40045c01:0x3fceb570 0x40043ab6:0x3fceb6f0 0x40034c45:0x3fceb710
+00:46:32 
+00:46:32 
+00:46:32 
+00:46:32 
+00:46:32 ELF file SHA256: 
+00:46:32 
+00:46:32 Rebooting...
+00:46:32 ESP-ROM:esp32s3-20210327
+00:46:32 Build:Mar 27 2021
+00:46:32 rst:0xc (RTC_SW_CPU_RST),boot:0x8 (SPI_FAST_FLASH_BOOT)
+00:46:32 Saved PC:0x4037c141
+00:46:32 SPIWP:0xee
+00:46:32 mode:DIO, clock div:1
+00:46:32 load:0x3fce2820,len:0x1524
+00:46:32 load:0x403c8700,len:0xd48
+00:46:32 load:0x403cb700,len:0x2f60
+00:46:32 entry 0x403c8900
+00:46:32 I (24) boot: ESP-IDF v6.1-dev-2300-g17a74c925c 2nd stage bootloader
+00:46:32 I (24) boot: Multicore bootloader
+00:46:32 I (24) boot: chip revision: v0.2
+00:46:32 I (24) boot: efuse block revision: v1.4
+00:46:32 I (25) boot.esp32s3: Boot SPI Speed : 80MHz
+00:46:32 I (25) boot.esp32s3: SPI Mode       : DIO
+00:46:32 I (25) boot.esp32s3: SPI Flash Size : 4MB
+00:46:32 I (25) boot: Enabling RNG early entropy source...
+00:46:32 I (25) boot: Partition Table:
+00:46:32 I (25) boot: ## Label            Usage          Type ST Offset   Length
+00:46:32 I (26) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+00:46:32 I (26) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+00:46:32 I (27) boot:  2 factory          factory app      00 00 00010000 002f0000
+00:46:32 I (27) boot:  3 model            Unknown data     01 40 00300000 00082000
+00:46:32 I (27) boot: End of partition table
+00:46:32 I (28) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=081e8h ( 33256) map
+00:46:32 I (34) esp_image: segment 1: paddr=00018210 vaddr=3fc96800 size=03604h ( 13828) load
+00:46:32 I (37) esp_image: segment 2: paddr=0001b81c vaddr=40374000 size=047fch ( 18428) load
+00:46:32 I (42) esp_image: segment 3: paddr=00020020 vaddr=42000020 size=107bch ( 67516) map
+00:46:32 I (54) esp_image: segment 4: paddr=000307e4 vaddr=403787fc size=0df88h ( 57224) load
+00:46:32 I (67) esp_image: segment 5: paddr=0003e774 vaddr=50000000 size=00024h (    36) load
+00:46:32 I (75) boot: Loaded app from partition at offset 0x10000
+00:46:32 I (75) boot: Disabling RNG early entropy source...
+00:46:32 E (77) quad_psram: PSRAM chip is not connected, or wrong PSRAM line mode
+00:46:32 E cpu_start: Failed to init external RAM!
+00:46:32 
+00:46:32 abort() was called at PC 0x42001cfb on core 0
+00:46:32 
+00:46:32 
+00:46:32 Backtrace: 0x4037bfa1:0x3fceb220 0x4037bf69:0x3fceb240 0x4037b145:0x3fceb260 0x42001cfb:0x3fceb2d0 0x4037595f:0x3fceb2f0 0x403ccd73:0x3fceb330 0x403cd119:0x3fceb370 0x403c896c:0x3fceb4a0 0x40045c01:0x3fceb570 0x40043ab6:0x3fceb6f0 0x40034c45:0x3fceb710
+00:46:32 
+00:46:32 
+00:46:32 
+00:46:32 
+00:46:32 ELF file SHA256: 
+00:46:32 
+00:46:32 Rebooting...
+00:46:32 ESP-ROM:esp32s3-20210327
+00:46:32 Build:Mar 27 2021
+00:46:32 rst:0xc (RTC_SW_CPU_RST),boot:0x8 (SPI_FAST_FLASH_BOOT)
+00:46:32 Saved PC:0x4037c141
+00:46:32 SPIWP:0xee
+00:46:32 mode:DIO, clock div:1
+00:46:32 load:0x3fce2820,len:0x1524
+00:46:32 load:0x403c8700,len:0xd48
+00:46:32 load:0x403cb700,len:0x2f60
+00:46:32 entry 0x403c8900
+00:46:32 I (24) boot: ESP-IDF v6.1-dev-2300-g17a74c925c 2nd stage bootloader
+00:46:32 I (24) boot: Multicore bootloader
+00:46:32 I (24) boot: chip revision: v0.2
+00:46:32 I (24) boot: efuse block revision: v1.4
+00:46:32 I (25) boot.esp32s3: Boot SPI Speed : 80MHz
+00:46:32 I (25) boot.esp32s3: SPI Mode       : DIO
+00:46:32 I (25) boot.esp32s3: SPI Flash Size : 4MB
+00:46:32 I (25) boot: Enabling RNG early entropy source...
+00:46:32 I (25) boot: Partition Table:
+00:46:32 I (25) boot: ## Label            Usage          Type ST Offset   Length
+00:46:32 I (26) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+00:46:32 I (26) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+00:46:32 I (27) boot:  2 factory          factory app      00 00 00010000 002f0000
+00:46:32 I (27) boot:  3 model            Unknown data     01 40 00300000 00082000
+00:46:32 I (27) boot: End of partition table
+00:46:32 I (28) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=081e8h ( 33256) map
+00:46:32 I (34) esp_image: segment 1: paddr=00018210 vaddr=3fc96800 size=03604h ( 13828) load
+00:46:32 I (37) esp_image: segment 2: paddr=0001b81c vaddr=40374000 size=047fch ( 18428) load
+00:46:32 I (42) esp_image: segment 3: paddr=00020020 vaddr=42000020 size=107bch ( 67516) map
+00:46:32 I (54) esp_image: segment 4: paddr=000307e4 vaddr=403787fc size=0df88h ( 57224) load
+00:46:32 I (67) esp_image: segment 5: paddr=0003e774 vaddr=50000000 size=00024h (    36) load
+00:46:32 I (75) boot: Loaded app from partition at offset 0x10000
+00:46:32 I (76) boot: Disabling RNG early entropy source...
+00:46:32 E (77) quad_psram: PSRAM chip is not connected, or wrong PSRAM line mode
+00:46:32 E cpu_start: Failed to init external RAM!
+00:46:32 
+00:46:32 abort() was called at PC 0x42001cfb on core 0
+00:46:32 
+00:46:32 
+00:46:32 Backtrace: 0x4037bfa1:0x3fceb220 0x4037bf69:0x3fceb240 0x4037b145:0x3fceb260 0x42001cfb:0x3fceb2d0 0x4037595f:0x3fceb2f0 0x403ccd73:0x3fceb330 0x403cd119:0x3fceb370 0x403c896c:0x3fceb4a0 0x40045c01:0x3fceb570 0x40043ab6:0x3fceb6f0 0x40034c45:0x3fceb710
+00:46:32 
+00:46:32 
+00:46:32 
+00:46:32 
+00:46:32 ELF file SHA256: 
+00:46:32 
+00:46:32 Rebooting...
+00:46:32 ESP-ROM:esp32s3-20210327
+00:46:32 Build:Mar 27 2021
+00:46:32 rst:0xc (RTC_SW_CPU_RST),boot:0x8 (SPI_FAST_FLASH_BOOT)
+00:46:32 Saved PC:0x4037c141
+00:46:32 SPIWP:0xee
+00:46:32 mode:DIO, clock div:1
+00:46:32 load:0x3fce2820,len:0x1524
+00:46:32 load:0x403c8700,len:0xd48
+00:46:32 load:0x403cb700,len:0x2f60
+00:46:32 entry 0x403c8900
+00:46:32 I (24) boot: ESP-IDF v6.1-dev-2300-g17a74c925c 2nd stage bootloader
+00:46:32 I (24) boot: Multicore bootloader
+00:46:32 I (24) boot: chip revision: v0.2
+00:46:32 I (24) boot: efuse block revision: v1.4
+00:46:32 I (25) boot.esp32s3: Boot SPI Speed : 80MHz
+00:46:32 I (25) boot.esp32s3: SPI Mode       : DIO
+00:46:32 I (25) boot.esp32s3: SPI Flash Size : 4MB
+00:46:32 I (25) boot: Enabling RNG early entropy source...
+00:46:32 I (25) boot: Partition Table:
+00:46:32 I (25) boot: ## Label            Usage          Type ST Offset   Length
+00:46:32 I (26) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+00:46:32 I (26) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+00:46:32 I (27) boot:  2 factory          factory app      00 00 00010000 002f0000
+00:46:32 I (27) boot:  3 model            Unknown data     01 40 00300000 00082000
+00:46:32 I (27) boot: End of partition table
+00:46:32 I (28) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=081e8h ( 33256) map
+00:46:32 I (34) esp_image: segment 1: paddr=00018210 vaddr=3fc96800 size=03604h ( 13828) load
+00:46:32 I (37) esp_image: segment 2: paddr=0001b81c vaddr=40374000 size=047fch ( 18428) load
+00:46:32 I (42) esp_image: segment 3: paddr=00020020 vaddr=42000020 size=107bch ( 67516) map
+00:46:32 I (54) esp_image: segment 4: paddr=000307e4 vaddr=403787fc size=0df88h ( 57224) load
+00:46:32 I (67) esp_image: segment 5: paddr=0003e774 vaddr=50000000 size=00024h (    36) load
+00:46:32 I (75) boot: Loaded app from partition at offset 0x10000
+00:46:32 I (75) boot: Disabling RNG early entropy source...
+00:46:32 E (77) quad_psram: PSRAM chip is not connected, or wrong PSRAM line mode
+00:46:32 E cpu_start: Failed to init external RAM!
+00:46:32 
+00:46:32 abort() was called at PC 0x42001cfb on core 0
+00:46:32 
+00:46:32 
+00:46:32 Backtrace: 0x4037bfa1:0x3fceb220 0x4037bf69:0x3fceb240 0x4037b145:0x3fceb260 0x42001cfb:0x3fceb2d0 0x4037595f:0x3fceb2f0 0x403ccd73:0x3fceb330 0x403cd119:0x3fceb370 0x403c896c:0x3fceb4a0 0x40045c01:0x3fceb570 0x40043ab6:0x3fceb6f0 0x40034c45:0x3fceb710
+00:46:32 
+00:46:32 
+00:46:32 
+00:46:32 
+00:46:32 ELF file SHA256: 
+00:46:32 
+00:46:32 Rebooting...
+00:46:32 ESP-ROM:esp32s3-20210327
+00:46:32 Build:Mar 27 2021
+00:46:32 rst:0xc (RTC_SW_CPU_RST),boot:0x8 (SPI_FAST_FLASH_BOOT)
+00:46:32 Saved PC:0x4037c141
+00:46:32 SPIWP:0xee
+00:46:32 mode:DIO, clock div:1
+00:46:32 load:0x3fce2820,len:0x1524
+00:46:32 load:0x403c8700,len:0xd48
+00:46:32 load:0x403cb700,len:0x2f60
+00:46:32 entry 0x403c8900
+00:46:32 I (24) boot: ESP-IDF v6.1-dev-2300-g17a74c925c 2nd stage bootloader
+00:46:32 I (24) boot: Multicore bootloader
+00:46:32 I (24) boot: chip revision: v0.2
+00:46:32 I (24) boot: efuse block revision: v1.4
+00:46:32 I (25) boot.esp32s3: Boot SPI Speed : 80MHz
+00:46:32 I (25) boot.esp32s3: SPI Mode       : DIO
+00:46:32 I (25) boot.esp32s3: SPI Flash Size : 4MB
+00:46:32 I (25) boot: Enabling RNG early entropy source...
+00:46:32 I (25) boot: Partition Table:
+00:46:32 I (26) boot: ## Label            Usage          Type ST Offset   Length
+00:46:32 I (26) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+00:46:32 I (26) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+00:46:32 I (27) boot:  2 factory          factory app      00 00 00010000 002f0000
+00:46:32 I (27) boot:  3 model            Unknown data     01 40 00300000 00082000
+00:46:32 I (28) boot: End of partition table
+00:46:32 I (28) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=081e8h ( 33256) map
+00:46:32 I (34) esp_image: segment 1: paddr=00018210 vaddr=3fc96800 size=03604h ( 13828) load
+00:46:32 I (37) esp_image: segment 2: paddr=0001b81c vaddr=40374000 size=047fch ( 18428) load
+00:46:32 I (42) esp_image: segment 3: paddr=00020020 vaddr=42000020 size=107bch ( 67516) map
+00:46:32 I (54) esp_image: segment 4: paddr=000307e4 vaddr=403787fc size=0df88h ( 57224) load
+00:46:32 I (67) esp_image: segment 5: paddr=0003e774 vaddr=50000000 size=00024h (    36) load
+00:46:32 I (75) boot: Loaded app from partition at offset 0x10000
+00:46:32 I (76) boot: Disabling RNG early entropy source...
+00:46:32 E (77) quad_psram: PSRAM chip is not connected, or wrong PSRAM line mode
+00:46:32 E cpu_start: Failed to init external RAM!
+00:46:32 
+00:46:32 abort() was called at PC 0x42001cfb on core 0
+00:46:32 
+00:46:32 
+00:46:32 Backtrace: 0x4037bfa1:0x3fceb220 0x4037bf69:0x3fceb240 0x4037b145:0x3fceb260 0x42001cfb:0x3fceb2d0 0x4037595f:0x3fceb2f0 0x403ccd73:0x3fceb330 0x403cd119:0x3fceb370 0x403c896c:0x3fceb4a0 0x40045c01:0x3fceb570 0x40043ab6:0x3fceb6f0 0x40034c45:0x3fceb710
+00:46:32 
+00:46:32 
+00:46:32 
+00:46:32 
+00:46:32 ELF file SHA256: 
+00:46:32 
+00:46:32 Rebooting...
+00:46:32 ESP-ROM:esp32s3-20210327
+00:46:32 Build:Mar 27 2021
+00:46:32 rst:0xc (RTC_SW_CPU_RST),boot:0x8 (SPI_FAST_FLASH_BOOT)
+00:46:32 Saved PC:0x4037c141
+00:46:32 SPIWP:0xee
+00:46:32 mode:DIO, clock div:1
+00:46:32 load:0x3fce2820,len:0x1524
+00:46:32 load:0x403c8700,len:0xd48
+00:46:32 load:0x403cb700,len:0x2f60
+00:46:32 entry 0x403c8900
+00:46:32 I (24) boot: ESP-IDF v6.1-dev-2300-g17a74c925c 2nd stage bootloader
+00:46:32 I (24) boot: Multicore bootloader
+00:46:32 I (24) boot: chip revision: v0.2
+00:46:32 I (24) boot: efuse block revision: v1.4
+00:46:32 I (25) boot.esp32s3: Boot SPI Speed : 80MHz
+00:46:32 I (25) boot.esp32s3: SPI Mode       : DIO
+00:46:32 I (25) boot.esp32s3: SPI Flash Size : 4MB
+00:46:32 I (25) boot: Enabling RNG early entropy source...
+00:46:32 I (25) boot: Partition Table:
+00:46:32 I (25) boot: ## Label            Usage          Type ST Offset   Length
+00:46:32 I (26) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+00:46:32 I (26) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+00:46:33 I (27) boot:  2 factory          factory app      00 00 00010000 002f0000
+00:46:33 I (27) boot:  3 model            Unknown data     01 40 00300000 00082000
+00:46:33 I (27) boot: End of partition table
+00:46:33 I (28) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=081e8h ( 33256) map
+00:46:33 I (34) esp_image: segment 1: paddr=00018210 vaddr=3fc96800 size=03604h ( 13828) load
+00:46:33 I (37) esp_image: segment 2: paddr=0001b81c vaddr=40374000 size=047fch ( 18428) load
+00:46:33 I (42) esp_image: segment 3: paddr=00020020 vaddr=42000020 size=107bch ( 67516) map
+00:46:33 I (54) esp_image: segment 4: paddr=000307e4 vaddr=403787fc size=0df88h ( 57224) load
+00:46:33 I (67) esp_image: segment 5: paddr=0003e774 vaddr=50000000 size=00024h (    36) load
+00:46:33 I (75) boot: Loaded app from partition at offset 0x10000
+00:46:33 I (75) boot: Disabling RNG early entropy source...
+00:46:33 E (77) quad_psram: PSRAM chip is not connected, or wrong PSRAM line mode
+00:46:33 E cpu_start: Failed to init external RAM!
+00:46:33 
+00:46:33 abort() was called at PC 0x42001cfb on core 0
+00:46:33 
+00:46:33 
+00:46:33 Backtrace: 0x4037bfa1:0x3fceb220 0x4037bf69:0x3fceb240 0x4037b145:0x3fceb260 0x42001cfb:0x3fceb2d0 0x4037595f:0x3fceb2f0 0x403ccd73:0x3fceb330 0x403cd119:0x3fceb370 0x403c896c:0x3fceb4a0 0x40045c01:0x3fceb570 0x40043ab6:0x3fceb6f0 0x40034c45:0x3fceb710
+00:46:33 
+00:46:33 
+00:46:33 
+00:46:33 
+00:46:33 ELF file SHA256: 
+00:46:33 
+00:46:33 Rebooting...
+00:46:33 ESP-ROM:esp32s3-20210327
+00:46:33 Build:Mar 27 2021
+00:46:33 rst:0xc (RTC_SW_CPU_RST),boot:0x8 (SPI_FAST_FLASH_BOOT)
+00:46:33 Saved PC:0x4037c141
+00:46:33 SPIWP:0xee
+00:46:33 mode:DIO, clock div:1
+00:46:33 load:0x3fce2820,len:0x1524
+00:46:33 load:0x403c8700,len:0xd48
+00:46:33 load:0x403cb700,len:0x2f60
+00:46:33 entry 0x403c8900
+00:46:33 I (24) boot: ESP-IDF v6.1-dev-2300-g17a74c925c 2nd stage bootloader
+00:46:33 I (24) boot: Multicore bootloader
+00:46:33 I (24) boot: chip revision: v0.2
+00:46:33 I (24) boot: efuse block revision: v1.4
+00:46:33 I (25) boot.esp32s3: Boot SPI Speed : 80MHz
+00:46:33 I (25) boot.esp32s3: SPI Mode       : DIO
+00:46:33 I (25) boot.esp32s3: SPI Flash Size : 4MB
+00:46:33 I (25) boot: Enabling RNG early entropy source...
+00:46:33 I (25) boot: Partition Table:
+00:46:33 I (25) boot: ## Label            Usage          Type ST Offset   Length
+00:46:33 I (26) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+00:46:33 I (26) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+00:46:33 I (27) boot:  2 factory          factory app      00 00 00010000 002f0000
+00:46:33 I (27) boot:  3 model            Unknown data     01 40 00300000 00082000
+00:46:33 I (27) boot: End of partition table
+00:46:33 I (28) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=081e8h ( 33256) map
+00:46:33 I (34) esp_image: segment 1: paddr=00018210 vaddr=3fc96800 size=03604h ( 13828) load
+00:46:33 I (37) esp_image: segment 2: paddr=0001b81c vaddr=40374000 size=047fch ( 18428) load
+00:46:33 I (42) esp_image: segment 3: paddr=00020020 vaddr=42000020 size=107bch ( 67516) map
+00:46:33 I (54) esp_image: segment 4: paddr=000307e4 vaddr=403787fc size=0df88h ( 57224) load
+00:46:33 I (67) esp_image: segment 5: paddr=0003e774 vaddr=50000000 size=00024h (    36) load
+00:46:33 I (75) boot: Loaded app from partition at offset 0x10000
+00:46:33 I (75) boot: Disabling RNG early entropy source...
+00:46:33 E (77) quad_psram: PSRAM chip is not connected, or wrong PSRAM line mode
+00:46:33 E cpu_start: Failed to init external RAM!
+00:46:33 
+00:46:33 abort() was called at PC 0x42001cfb on core 0
+00:46:33 
+00:46:33 
+00:46:33 Backtrace: 0x4037bfa1:0x3fceb220 0x4037bf69:0x3fceb240 0x4037b145:0x3fceb260 0x42001cfb:0x3fceb2d0 0x4037595f:0x3fceb2f0 0x403ccd73:0x3fceb330 0x403cd119:0x3fceb370 0x403c896c:0x3fceb4a0 0x40045c01:0x3fceb570 0x40043ab6:0x3fceb6f0 0x40034c45:0x3fceb710
+00:46:33 
+00:46:33 
+00:46:33 
+00:46:33 
+00:46:33 ELF file SHA256: 
+00:46:33 
+00:46:33 Rebooting...
+00:46:33 ESP-ROM:esp32s3-20210327
+00:46:33 Build:Mar 27 2021
+00:46:33 rst:0xc (RTC_SW_CPU_RST),boot:0x8 (SPI_FAST_FLASH_BOOT)
+00:46:33 Saved PC:0x4037c141
+00:46:33 SPIWP:0xee
+00:46:33 mode:DIO, clock div:1
+00:46:33 load:0x3fce2820,len:0x1524
+00:46:33 load:0x403c8700,len:0xd48
+00:46:33 load:0x403cb700,len:0x2f60
+00:46:33 entry 0x403c8900
+00:46:33 I (24) boot: ESP-IDF v6.1-dev-2300-g17a74c925c 2nd stage bootloader
+00:46:33 I (24) boot: Multicore bootloader
+00:46:33 I (24) boot: chip revision: v0.2
+00:46:33 I (24) boot: efuse block revision: v1.4
+00:46:33 I (25) boot.esp32s3: Boot SPI Speed : 80MHz
+00:46:33 I (25) boot.esp32s3: SPI Mode       : DIO
+00:46:33 I (25) boot.esp32s3: SPI Flash Size : 4MB
+00:46:33 I (25) boot: Enabling RNG early entropy source...
+00:46:33 I (25) boot: Partition Table:
+00:46:33 I (25) boot: ## Label            Usage          Type ST Offset   Length
+00:46:33 I (26) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+00:46:33 I (26) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+00:46:33 I (27) boot:  2 factory          factory app      00 00 00010000 002f0000
+00:46:33 I (27) boot:  3 model            Unknown data     01 40 00300000 00082000
+00:46:33 I (27) boot: End of partition table
+00:46:33 I (28) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=081e8h ( 33256) map
+00:46:33 I (34) esp_image: segment 1: paddr=00018210 vaddr=3fc96800 size=03604h ( 13828) load
+00:46:33 I (37) esp_image: segment 2: paddr=0001b81c vaddr=40374000 size=047fch ( 18428) load
+00:46:33 I (42) esp_image: segment 3: paddr=00020020 vaddr=42000020 size=107bch ( 67516) map
+00:46:33 I (54) esp_image: segment 4: paddr=000307e4 vaddr=403787fc size=0df88h ( 57224) load
+00:46:33 I (67) esp_image: segment 5: paddr=0003e774 vaddr=50000000 size=00024h (    36) load
+00:46:33 I (75) boot: Loaded app from partition at offset 0x10000
+00:46:33 I (75) boot: Disabling RNG early entropy source...

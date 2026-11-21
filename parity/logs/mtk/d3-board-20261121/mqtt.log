@@ -1,0 +1,473 @@
+23:18:08 --- connect: None None
+23:18:09 BROKER pico/s3-002/presence {"node":"s3-002","cap":["config","telemetry","node-msg"]}
+23:18:09 BROKER pico/s3-001/presence {"node":"s3-001","cap":["config","telemetry","node-msg"]}
+23:18:10 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:18:12 BROKER pico/s3-001/heartbeat {"uptime_s":302}
+23:18:12 --- cfg-text: pico/s3-001/config BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+23:18:12 [CFG] cfg_cb payload (first 120): BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+23:18:12 [JSON] not starting with '{' after trim, char=0x22
+23:18:12 [CFG] mqtt_json_try_convert_to_inline -> 0
+23:18:12 [SCHED] added: DIG on gpio
+23:18:12 [CFG] added #0: DIG
+23:18:13 BROKER pico/s3-001/config BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+23:18:13 BROKER pico/s3-001/status/config OK:DIG
+23:18:14 --- rule-text: pico/s3-001/config BEGINRULE|name=R_LOG|source=DIG|calc=s=u8(0)|when=s==0|action=log:pin low|ENDRULE
+23:18:15 [CFG] cfg_cb payload (first 120): BEGINRULE|name=R_LOG|source=DIG|calc=s=u8(0)|when=s==0|action=log:pin low|ENDRULE
+23:18:15 [JSON] not starting with '{' after trim, char=0x22
+23:18:15 [CFG] mqtt_json_try_convert_to_inline -> 0
+23:18:15 [RULE] added name=R_LOG src=DIG vars=1 action=log:pin low
+23:18:15 [RULE] added name=R_LOG
+23:18:15 BROKER pico/s3-001/config BEGINRULE|name=R_LOG|source=DIG|calc=s=u8(0)|when=s==0|action=log:pin low|ENDRULE
+23:18:15 BROKER pico/s3-001/status/rule OK:R_LOG
+23:18:15 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:18:17 --- cmd-run: pico/s3-001/cmd RUN
+23:18:17 [CMD] RUN
+23:18:17 proto=gpio src=DIG len=3 ts=306875 : 00 E0 10
+23:18:17 [RULE] R_LOG: pin low (value=0.000 ts=306875)
+23:18:17 [TRACE] Total Rule Eval (DIG): 452us
+23:18:17 BROKER pico/s3-001/cmd RUN
+23:18:17 BROKER pico/rule/R_LOG/event ts=306875 rule=R_LOG type=log value=0.000 msg=pin low
+23:18:17 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=306875 : 00 E0 10
+23:18:17 proto=gpio src=DIG len=3 ts=307375 : 00 D4 12
+23:18:17 [RULE] R_LOG: pin low (value=0.000 ts=307375)
+23:18:17 [TRACE] Total Rule Eval (DIG): 363us
+23:18:18 proto=gpio src=DIG len=3 ts=307876 : 00 C9 14
+23:18:18 [RULE] R_LOG: pin low (value=0.000 ts=307876)
+23:18:18 [TRACE] Total Rule Eval (DIG): 365us
+23:18:18 BROKER pico/rule/R_LOG/event ts=307375 rule=R_LOG type=log value=0.000 msg=pin low
+23:18:18 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=307375 : 00 D4 12
+23:18:18 proto=gpio src=DIG len=3 ts=308376 : 00 BD 16
+23:18:18 [RULE] R_LOG: pin low (value=0.000 ts=308376)
+23:18:18 [TRACE] Total Rule Eval (DIG): 377us
+23:18:18 BROKER pico/rule/R_LOG/event ts=307876 rule=R_LOG type=log value=0.000 msg=pin low
+23:18:18 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=307876 : 00 C9 14
+23:18:18 BROKER pico/rule/R_LOG/event ts=308376 rule=R_LOG type=log value=0.000 msg=pin low
+23:18:18 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=308376 : 00 BD 16
+23:18:19 proto=gpio src=DIG len=3 ts=308876 : 00 B1 18
+23:18:19 [RULE] R_LOG: pin low (value=0.000 ts=308876)
+23:18:19 [TRACE] Total Rule Eval (DIG): 367us
+23:18:19 BROKER pico/rule/R_LOG/event ts=308876 rule=R_LOG type=log value=0.000 msg=pin low
+23:18:19 --- cmd-show: pico/s3-001/cmd SHOW
+23:18:19 [CMD] SHOW
+23:18:19 [WINDOW] enabled=0 state=0 events=0 dropped=0 radar_frames=0 malformed=0 rx_dropped=0 identity=1
+23:18:19 [SCHED] #0 name=DIG proto=gpio mode=poll freq=2.000Hz timing=periodic interval=500ms timeout=0ms window=0ms trigger=- status=1
+23:18:19 [SENSOR] name=DIG pending=0 timeouts=0 errors=0 overruns=0
+23:18:19 [RULE] count=1
+23:18:19   #0 name=R_LOG src=DIG vars=1 action=log:pin low prev_init=1
+23:18:19 proto=gpio src=DIG len=3 ts=309375 : 00 A4 1A
+23:18:19 [RULE] R_LOG: pin low (value=0.000 ts=309375)
+23:18:19 [TRACE] Total Rule Eval (DIG): 374us
+23:18:19 BROKER pico/s3-001/cmd SHOW
+23:18:19 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=308876 : 00 B1 18
+23:18:19 BROKER pico/rule/R_LOG/event ts=309375 rule=R_LOG type=log value=0.000 msg=pin low
+23:18:19 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=309375 : 00 A4 1A
+23:18:20 proto=gpio src=DIG len=3 ts=309876 : 00 99 1C
+23:18:20 [RULE] R_LOG: pin low (value=0.000 ts=309876)
+23:18:20 [TRACE] Total Rule Eval (DIG): 377us
+23:18:20 BROKER pico/rule/R_LOG/event ts=309876 rule=R_LOG type=log value=0.000 msg=pin low
+23:18:20 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=309876 : 00 99 1C
+23:18:20 proto=gpio src=DIG len=3 ts=310376 : 00 8D 1E
+23:18:20 [RULE] R_LOG: pin low (value=0.000 ts=310376)
+23:18:20 [TRACE] Total Rule Eval (DIG): 388us
+23:18:20 BROKER pico/rule/R_LOG/event ts=310376 rule=R_LOG type=log value=0.000 msg=pin low
+23:18:20 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=310376 : 00 8D 1E
+23:18:20 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:18:21 proto=gpio src=DIG len=3 ts=310876 : 00 81 20
+23:18:21 [RULE] R_LOG: pin low (value=0.000 ts=310876)
+23:18:21 [TRACE] Total Rule Eval (DIG): 369us
+23:18:21 BROKER pico/rule/R_LOG/event ts=310876 rule=R_LOG type=log value=0.000 msg=pin low
+23:18:21 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=310876 : 00 81 20
+23:18:21 --- cmd-stop: pico/s3-001/cmd STOP
+23:18:21 [CMD] STOP
+23:18:21 BROKER pico/s3-001/cmd STOP
+23:18:22 BROKER pico/s3-001/heartbeat {"uptime_s":312}
+23:18:23 --- cmd-clear: pico/s3-001/cmd CLEAR
+23:18:24 BROKER pico/s3-001/cmd CLEAR
+23:18:24 [RULE] reset
+23:18:24 [BRIDGE] reset
+23:18:24 [CMD] CLEAR (scheduler + rules + bridge)
+23:18:25 --- cfg-json: pico/s3-001/config {"configs":[{"name":"JDIG","proto":"gpio","mode":"poll","freq_hz":1,"gpio":{"pin":6,"pull":"down","mode":"digital"}}],"rules":[{"name":"R_JSON","source":"JDIG","calc":["s=u8(0)"],"when":"s==0","action":"log:json rule"}]}
+23:18:25 [CFG] cfg_cb payload (first 120): {"configs":[{"name":"JDIG","proto":"gpio","mode":"poll","freq_hz":1,"gpio":{"pin":6,"pull":"down","mode":"digital"}}],"r
+23:18:25 [JSON] configs processed: 1
+23:18:25 [JSON] rules processed: 1
+23:18:25 [CFG] mqtt_json_try_convert_to_inline -> 185
+23:18:25 [CFG] inline from JSON: BEGINCFG|name=JDIG|proto=gpio|mode=poll|freq_hz=1|gpio.pin=6|gpio.pull=down|gpio.mode=digital|ENDCFGBEGINRULE|name=R_JSON|source=JDIG|calc=s=u8(0)|when=s==0|action=log:json rule|ENDRULE
+23:18:25 [SCHED] added: JDIG on gpio
+23:18:25 [CFG] added #0: JDIG
+23:18:25 [RULE] added name=R_JSON src=JDIG vars=1 action=log:json rule
+23:18:25 [RULE] added name=R_JSON
+23:18:25 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:18:26 BROKER pico/s3-001/config {"configs":[{"name":"JDIG","proto":"gpio","mode":"poll","freq_hz":1,"gpio":{"pin":6,"pull":"down","mode":"digital"}}],"rules":[{"name":"R_JSON","source":"JDIG","calc":["s=u8(0)"],"when":"s==0","action":"log:json rule"}]}
+23:18:26 BROKER pico/s3-001/status/config OK:JDIG
+23:18:26 BROKER pico/s3-001/status/rule OK:R_JSON
+23:18:27 --- json-run: pico/s3-001/cmd RUN
+23:18:27 [CMD] RUN
+23:18:27 proto=gpio src=JDIG len=3 ts=317517 : 00 45 08
+23:18:27 [RULE] R_JSON: json rule (value=0.000 ts=317517)
+23:18:27 [TRACE] Total Rule Eval (JDIG): 470us
+23:18:28 BROKER pico/s3-001/cmd RUN
+23:18:28 BROKER pico/rule/R_JSON/event ts=317517 rule=R_JSON type=log value=0.000 msg=json rule
+23:18:28 BROKER pico/s3-001/sensor/JDIG/line proto=gpio src=JDIG len=3 ts=317517 : 00 45 08
+23:18:28 proto=gpio src=JDIG len=3 ts=318518 : 00 2E 0C
+23:18:28 [RULE] R_JSON: json rule (value=0.000 ts=318518)
+23:18:28 [TRACE] Total Rule Eval (JDIG): 367us
+23:18:28 BROKER pico/rule/R_JSON/event ts=318518 rule=R_JSON type=log value=0.000 msg=json rule
+23:18:28 BROKER pico/s3-001/sensor/JDIG/line proto=gpio src=JDIG len=3 ts=318518 : 00 2E 0C
+23:18:29 proto=gpio src=JDIG len=3 ts=319519 : 00 17 10
+23:18:29 [RULE] R_JSON: json rule (value=0.000 ts=319519)
+23:18:29 [TRACE] Total Rule Eval (JDIG): 368us
+23:18:29 BROKER pico/rule/R_JSON/event ts=319519 rule=R_JSON type=log value=0.000 msg=json rule
+23:18:29 BROKER pico/s3-001/sensor/JDIG/line proto=gpio src=JDIG len=3 ts=319519 : 00 17 10
+23:18:29 --- json-stop: pico/s3-001/cmd STOP
+23:18:30 [CMD] STOP
+23:18:30 BROKER pico/s3-001/cmd STOP
+23:18:30 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:18:32 --- cmd-unknown: pico/s3-001/cmd FOO
+23:18:32 [CMD] Unknown: FOO
+23:18:32 BROKER pico/s3-001/cmd FOO
+23:18:33 BROKER pico/s3-001/heartbeat {"uptime_s":322}
+23:18:34 --- cmd-clear-2: pico/s3-001/cmd CLEAR
+23:18:34 [RULE] reset
+23:18:34 [BRIDGE] reset
+23:18:34 [CMD] CLEAR (scheduler + rules + bridge)
+23:18:34 BROKER pico/s3-001/cmd CLEAR
+23:18:35 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:18:36 --- to-cfg: pico/s3-001/config BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+23:18:36 [CFG] cfg_cb payload (first 120): BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+23:18:36 [JSON] not starting with '{' after trim, char=0x22
+23:18:36 [CFG] mqtt_json_try_convert_to_inline -> 0
+23:18:36 [SCHED] added: DIG on gpio
+23:18:36 [CFG] added #0: DIG
+23:18:36 BROKER pico/s3-001/config BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+23:18:36 BROKER pico/s3-001/status/config OK:DIG
+23:18:38 --- to-rule-cmd: pico/s3-001/config BEGINRULE|name=R_CMDTO|source=DIG|calc=s=u8(0)|when=s==0|action=cmd.to:pico-002:RUN|ENDRULE
+23:18:38 [CFG] cfg_cb payload (first 120): BEGINRULE|name=R_CMDTO|source=DIG|calc=s=u8(0)|when=s==0|action=cmd.to:pico-002:RUN|ENDRULE
+23:18:38 [JSON] not starting with '{' after trim, char=0x22
+23:18:38 [CFG] mqtt_json_try_convert_to_inline -> 0
+23:18:38 [RULE] added name=R_CMDTO src=DIG vars=1 action=cmd.to:pico-002:RUN
+23:18:38 [RULE] added name=R_CMDTO
+23:18:38 BROKER pico/s3-001/config BEGINRULE|name=R_CMDTO|source=DIG|calc=s=u8(0)|when=s==0|action=cmd.to:pico-002:RUN|ENDRULE
+23:18:38 BROKER pico/s3-001/status/rule OK:R_CMDTO
+23:18:40 --- to-rule-cfg: pico/s3-001/config BEGINRULE|name=R_CFGTO|source=DIG|calc=s=u8(0)|when=s==0|action=cfg.to:pico-002:BEGINCFG\|name=LED\|proto=gpio\|gpio.mode=digital\|gpio.pin=8\|ENDCFG|ENDRULE
+23:18:40 [CFG] cfg_cb payload (first 120): BEGINRULE|name=R_CFGTO|source=DIG|calc=s=u8(0)|when=s==0|action=cfg.to:pico-002:BEGINCFG\|name=LED\|proto=gpio\|gpio.mod
+23:18:40 [JSON] not starting with '{' after trim, char=0x22
+23:18:40 [CFG] mqtt_json_try_convert_to_inline -> 0
+23:18:40 [RULE] added name=R_CFGTO src=DIG vars=1 action=cfg.to:pico-002:BEGINCFG\|name=LED\|proto=gpio\|gpio.mode=digital\|gpio.pin=8\|ENDCFG
+23:18:40 [RULE] added name=R_CFGTO
+23:18:40 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:18:41 BROKER pico/s3-001/config BEGINRULE|name=R_CFGTO|source=DIG|calc=s=u8(0)|when=s==0|action=cfg.to:pico-002:BEGINCFG\|name=LED\|proto=gpio\|gpio.mode=digital\|gpio.pin=8\|ENDCFG|ENDRULE
+23:18:41 BROKER pico/s3-001/status/rule OK:R_CFGTO
+23:18:42 BROKER pico/s3-001/heartbeat {"uptime_s":332}
+23:18:42 --- to-run: pico/s3-001/cmd RUN
+23:18:42 [CMD] RUN
+23:18:42 proto=gpio src=DIG len=3 ts=332503 : 00 4E 19
+23:18:42 [RULE] R_CMDTO: cmd.to -> node=pico-002 cmd='RUN'
+23:18:42 BEGINCFG\|name=LED\|proto=gpio\|gpio.mode=digital\|gpio.pin=8\|ENDCFG
+23:18:42 BEGINCFG|name=LED|proto=gpio|gpio.mode=digital|gpio.pin=8|ENDCFG
+23:18:42 [RULE] R_CFGTO: cfg.to -> node=pico-002
+23:18:42 [TRACE] Total Rule Eval (DIG): 1162us
+23:18:43 BROKER pico/s3-001/cmd RUN
+23:18:43 BROKER pico/pico-002/cmd RUN
+23:18:43 BROKER pico/rule/R_CMDTO/event ts=332503 rule=R_CMDTO type=cmd.to value=0.000 msg=pico-002
+23:18:43 BROKER pico/pico-002/config BEGINCFG|name=LED|proto=gpio|gpio.mode=digital|gpio.pin=8|ENDCFG
+23:18:43 BROKER pico/rule/R_CFGTO/event ts=332503 rule=R_CFGTO type=cfg.to value=0.000 msg=pico-002
+23:18:43 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=332503 : 00 4E 19
+23:18:43 proto=gpio src=DIG len=3 ts=333004 : 00 43 1B
+23:18:43 [RULE] R_CMDTO: cmd.to -> node=pico-002 cmd='RUN'
+23:18:43 BEGINCFG\|name=LED\|proto=gpio\|gpio.mode=digital\|gpio.pin=8\|ENDCFG
+23:18:43 BEGINCFG|name=LED|proto=gpio|gpio.mode=digital|gpio.pin=8|ENDCFG
+23:18:43 [RULE] R_CFGTO: cfg.to -> node=pico-002
+23:18:43 [TRACE] Total Rule Eval (DIG): 876us
+23:18:43 BROKER pico/pico-002/cmd RUN
+23:18:43 BROKER pico/rule/R_CMDTO/event ts=333004 rule=R_CMDTO type=cmd.to value=0.000 msg=pico-002
+23:18:43 BROKER pico/pico-002/config BEGINCFG|name=LED|proto=gpio|gpio.mode=digital|gpio.pin=8|ENDCFG
+23:18:43 BROKER pico/rule/R_CFGTO/event ts=333004 rule=R_CFGTO type=cfg.to value=0.000 msg=pico-002
+23:18:43 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=333004 : 00 43 1B
+23:18:43 proto=gpio src=DIG len=3 ts=333503 : 00 36 1D
+23:18:43 [RULE] R_CMDTO: cmd.to -> node=pico-002 cmd='RUN'
+23:18:43 BEGINCFG\|name=LED\|proto=gpio\|gpio.mode=digital\|gpio.pin=8\|ENDCFG
+23:18:43 BEGINCFG|name=LED|proto=gpio|gpio.mode=digital|gpio.pin=8|ENDCFG
+23:18:43 [RULE] R_CFGTO: cfg.to -> node=pico-002
+23:18:43 [TRACE] Total Rule Eval (DIG): 869us
+23:18:44 proto=gpio src=DIG len=3 ts=334003 : 00 2A 1F
+23:18:44 BROKER pico/pico-002/cmd RUN
+23:18:44 BROKER pico/rule/R_CMDTO/event ts=333503 rule=R_CMDTO type=cmd.to value=0.000 msg=pico-002
+23:18:44 BROKER pico/pico-002/config BEGINCFG|name=LED|proto=gpio|gpio.mode=digital|gpio.pin=8|ENDCFG
+23:18:44 BROKER pico/rule/R_CFGTO/event ts=333503 rule=R_CFGTO type=cfg.to value=0.000 msg=pico-002
+23:18:44 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=333503 : 00 36 1D
+23:18:44 [RULE] R_CMDTO: cmd.to -> node=pico-002 cmd='RUN'
+23:18:44 BEGINCFG\|name=LED\|proto=gpio\|gpio.mode=digital\|gpio.pin=8\|ENDCFG
+23:18:44 BEGINCFG|name=LED|proto=gpio|gpio.mode=digital|gpio.pin=8|ENDCFG
+23:18:44 [RULE] R_CFGTO: cfg.to -> node=pico-002
+23:18:44 [TRACE] Total Rule Eval (DIG): 866us
+23:18:44 proto=gpio src=DIG len=3 ts=334503 : 00 1E 21
+23:18:44 [RULE] R_CMDTO: cmd.to -> node=pico-002 cmd='RUN'
+23:18:44 BEGINCFG\|name=LED\|proto=gpio\|gpio.mode=digital\|gpio.pin=8\|ENDCFG
+23:18:44 BEGINCFG|name=LED|proto=gpio|gpio.mode=digital|gpio.pin=8|ENDCFG
+23:18:44 [RULE] R_CFGTO: cfg.to -> node=pico-002
+23:18:44 [TRACE] Total Rule Eval (DIG): 875us
+23:18:44 BROKER pico/pico-002/cmd RUN
+23:18:44 BROKER pico/rule/R_CMDTO/event ts=334003 rule=R_CMDTO type=cmd.to value=0.000 msg=pico-002
+23:18:44 BROKER pico/pico-002/config BEGINCFG|name=LED|proto=gpio|gpio.mode=digital|gpio.pin=8|ENDCFG
+23:18:44 BROKER pico/rule/R_CFGTO/event ts=334003 rule=R_CFGTO type=cfg.to value=0.000 msg=pico-002
+23:18:44 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=334003 : 00 2A 1F
+23:18:44 BROKER pico/pico-002/cmd RUN
+23:18:44 BROKER pico/rule/R_CMDTO/event ts=334503 rule=R_CMDTO type=cmd.to value=0.000 msg=pico-002
+23:18:44 BROKER pico/pico-002/config BEGINCFG|name=LED|proto=gpio|gpio.mode=digital|gpio.pin=8|ENDCFG
+23:18:44 BROKER pico/rule/R_CFGTO/event ts=334503 rule=R_CFGTO type=cfg.to value=0.000 msg=pico-002
+23:18:44 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=334503 : 00 1E 21
+23:18:44 --- to-stop: pico/s3-001/cmd STOP
+23:18:45 [CMD] STOP
+23:18:45 BROKER pico/s3-001/cmd STOP
+23:18:45 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:18:46 --- to-clear: pico/s3-001/cmd CLEAR
+23:18:47 [RULE] reset
+23:18:47 [BRIDGE] reset
+23:18:47 [CMD] CLEAR (scheduler + rules + bridge)
+23:18:47 BROKER pico/s3-001/cmd CLEAR
+23:18:49 --- model-upload: send_model.py None
+23:18:51 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:18:52 BROKER pico/s3-001/heartbeat {"uptime_s":342}
+23:18:53 [MQTT] Model data on: pico/s3-001/model/start (36 bytes)
+23:18:53 [MODEL] Transfer starting: 16440 bytes, CRC32=0xF6AED6F8
+23:18:53 BROKER pico/s3-001/model/start {"size": 16440, "crc32": 4138653432}
+23:18:54 [MQTT] Model data on: pico/s3-001/model/chunk/0 (512 bytes)
+23:18:54 [MODEL] Chunk 0: 512 / 16440 bytes (3%)
+23:18:54 BROKER pico/s3-001/model/chunk/0 <512 bytes>
+23:18:56 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:18:56 [MQTT] Model data on: pico/s3-001/model/chunk/1 (512 bytes)
+23:18:56 [MODEL] Chunk 1: 1024 / 16440 bytes (6%)
+23:18:56 BROKER pico/s3-001/model/chunk/1 <512 bytes>
+23:18:57 [MQTT] Model data on: pico/s3-001/model/chunk/2 (512 bytes)
+23:18:57 [MODEL] Chunk 2: 1536 / 16440 bytes (9%)
+23:18:57 BROKER pico/s3-001/model/chunk/2 <512 bytes>
+23:18:58 [MQTT] Model data on: pico/s3-001/model/chunk/3 (512 bytes)
+23:18:58 [MODEL] Chunk 3: 2048 / 16440 bytes (12%)
+23:18:58 BROKER pico/s3-001/model/chunk/3 <512 bytes>
+23:18:59 [MQTT] Model data on: pico/s3-001/model/chunk/4 (512 bytes)
+23:18:59 [MODEL] Chunk 4: 2560 / 16440 bytes (15%)
+23:18:59 BROKER pico/s3-001/model/chunk/4 <512 bytes>
+23:19:00 [MQTT] Model data on: pico/s3-001/model/chunk/5 (512 bytes)
+23:19:00 [MODEL] Chunk 5: 3072 / 16440 bytes (18%)
+23:19:00 BROKER pico/s3-001/model/chunk/5 <512 bytes>
+23:19:00 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:19:02 [MQTT] Model data on: pico/s3-001/model/chunk/6 (512 bytes)
+23:19:02 [MODEL] Chunk 6: 3584 / 16440 bytes (21%)
+23:19:02 BROKER pico/s3-001/model/chunk/6 <512 bytes>
+23:19:02 BROKER pico/s3-001/heartbeat {"uptime_s":352}
+23:19:03 [MQTT] Model data on: pico/s3-001/model/chunk/7 (512 bytes)
+23:19:03 [MODEL] Chunk 7: 4096 / 16440 bytes (24%)
+23:19:03 BROKER pico/s3-001/model/chunk/7 <512 bytes>
+23:19:04 [MQTT] Model data on: pico/s3-001/model/chunk/8 (512 bytes)
+23:19:04 [MODEL] Chunk 8: 4608 / 16440 bytes (28%)
+23:19:04 BROKER pico/s3-001/model/chunk/8 <512 bytes>
+23:19:05 BROKER pico/s3-001/model/chunk/9 <512 bytes>
+23:19:05 [MQTT] Model data on: pico/s3-001/model/chunk/9 (512 bytes)
+23:19:05 [MODEL] Chunk 9: 5120 / 16440 bytes (31%)
+23:19:05 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:19:06 [MQTT] Model data on: pico/s3-001/model/chunk/10 (512 bytes)
+23:19:06 [MODEL] Chunk 10: 5632 / 16440 bytes (34%)
+23:19:07 BROKER pico/s3-001/model/chunk/10 <512 bytes>
+23:19:08 [MQTT] Model data on: pico/s3-001/model/chunk/11 (512 bytes)
+23:19:08 [MODEL] Chunk 11: 6144 / 16440 bytes (37%)
+23:19:08 BROKER pico/s3-001/model/chunk/11 <512 bytes>
+23:19:09 [MQTT] Model data on: pico/s3-001/model/chunk/12 (512 bytes)
+23:19:09 [MODEL] Chunk 12: 6656 / 16440 bytes (40%)
+23:19:09 BROKER pico/s3-001/model/chunk/12 <512 bytes>
+23:19:10 [MQTT] Model data on: pico/s3-001/model/chunk/13 (512 bytes)
+23:19:10 [MODEL] Chunk 13: 7168 / 16440 bytes (43%)
+23:19:10 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:19:10 BROKER pico/s3-001/model/chunk/13 <512 bytes>
+23:19:11 [MQTT] Model data on: pico/s3-001/model/chunk/14 (512 bytes)
+23:19:11 [MODEL] Chunk 14: 7680 / 16440 bytes (46%)
+23:19:12 BROKER pico/s3-001/model/chunk/14 <512 bytes>
+23:19:12 [MQTT] Model data on: pico/s3-001/model/chunk/15 (512 bytes)
+23:19:12 [MODEL] Chunk 15: 8192 / 16440 bytes (49%)
+23:19:13 BROKER pico/s3-001/heartbeat {"uptime_s":362}
+23:19:13 BROKER pico/s3-001/model/chunk/15 <512 bytes>
+23:19:14 [MQTT] Model data on: pico/s3-001/model/chunk/16 (512 bytes)
+23:19:14 [MODEL] Chunk 16: 8704 / 16440 bytes (52%)
+23:19:14 BROKER pico/s3-001/model/chunk/16 <512 bytes>
+23:19:15 [MQTT] Model data on: pico/s3-001/model/chunk/17 (512 bytes)
+23:19:15 [MODEL] Chunk 17: 9216 / 16440 bytes (56%)
+23:19:15 BROKER pico/s3-001/model/chunk/17 <512 bytes>
+23:19:15 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:19:16 [MQTT] Model data on: pico/s3-001/model/chunk/18 (512 bytes)
+23:19:16 [MODEL] Chunk 18: 9728 / 16440 bytes (59%)
+23:19:16 BROKER pico/s3-001/model/chunk/18 <512 bytes>
+23:19:17 [MQTT] Model data on: pico/s3-001/model/chunk/19 (512 bytes)
+23:19:17 [MODEL] Chunk 19: 10240 / 16440 bytes (62%)
+23:19:17 BROKER pico/s3-001/model/chunk/19 <512 bytes>
+23:19:18 [MQTT] Model data on: pico/s3-001/model/chunk/20 (512 bytes)
+23:19:18 [MODEL] Chunk 20: 10752 / 16440 bytes (65%)
+23:19:18 BROKER pico/s3-001/model/chunk/20 <512 bytes>
+23:19:20 [MQTT] Model data on: pico/s3-001/model/chunk/21 (512 bytes)
+23:19:20 [MODEL] Chunk 21: 11264 / 16440 bytes (68%)
+23:19:20 BROKER pico/s3-001/model/chunk/21 <512 bytes>
+23:19:20 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:19:21 [MQTT] Model data on: pico/s3-001/model/chunk/22 (512 bytes)
+23:19:21 [MODEL] Chunk 22: 11776 / 16440 bytes (71%)
+23:19:21 BROKER pico/s3-001/model/chunk/22 <512 bytes>
+23:19:22 [MQTT] Model data on: pico/s3-001/model/chunk/23 (512 bytes)
+23:19:22 [MODEL] Chunk 23: 12288 / 16440 bytes (74%)
+23:19:22 BROKER pico/s3-001/model/chunk/23 <512 bytes>
+23:19:22 BROKER pico/s3-001/heartbeat {"uptime_s":372}
+23:19:23 [MQTT] Model data on: pico/s3-001/model/chunk/24 (512 bytes)
+23:19:23 BROKER pico/s3-001/model/chunk/24 <512 bytes>
+23:19:23 [MODEL] Chunk 24: 12800 / 16440 bytes (77%)
+23:19:25 [MQTT] Model data on: pico/s3-001/model/chunk/25 (512 bytes)
+23:19:25 [MODEL] Chunk 25: 13312 / 16440 bytes (80%)
+23:19:25 BROKER pico/s3-001/model/chunk/25 <512 bytes>
+23:19:26 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:19:26 [MQTT] Model data on: pico/s3-001/model/chunk/26 (512 bytes)
+23:19:26 [MODEL] Chunk 26: 13824 / 16440 bytes (84%)
+23:19:26 BROKER pico/s3-001/model/chunk/26 <512 bytes>
+23:19:27 [MQTT] Model data on: pico/s3-001/model/chunk/27 (512 bytes)
+23:19:27 [MODEL] Chunk 27: 14336 / 16440 bytes (87%)
+23:19:27 BROKER pico/s3-001/model/chunk/27 <512 bytes>
+23:19:28 [MQTT] Model data on: pico/s3-001/model/chunk/28 (512 bytes)
+23:19:28 [MODEL] Chunk 28: 14848 / 16440 bytes (90%)
+23:19:29 BROKER pico/s3-001/model/chunk/28 <512 bytes>
+23:19:29 [MQTT] Model data on: pico/s3-001/model/chunk/29 (512 bytes)
+23:19:29 [MODEL] Chunk 29: 15360 / 16440 bytes (93%)
+23:19:30 BROKER pico/s3-001/model/chunk/29 <512 bytes>
+23:19:31 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:19:31 [MQTT] Model data on: pico/s3-001/model/chunk/30 (512 bytes)
+23:19:31 [MODEL] Chunk 30: 15872 / 16440 bytes (96%)
+23:19:31 BROKER pico/s3-001/model/chunk/30 <512 bytes>
+23:19:32 [MQTT] Model data on: pico/s3-001/model/chunk/31 (512 bytes)
+23:19:32 [MODEL] Chunk 31: 16384 / 16440 bytes (99%)
+23:19:32 BROKER pico/s3-001/model/chunk/31 <512 bytes>
+23:19:32 BROKER pico/s3-001/heartbeat {"uptime_s":382}
+23:19:33 [MQTT] Model data on: pico/s3-001/model/chunk/32 (56 bytes)
+23:19:33 [MODEL] Chunk 32: 16440 / 16440 bytes (100%)
+23:19:33 BROKER pico/s3-001/model/chunk/32 <56 bytes>
+23:19:34 [MQTT] Model data on: pico/s3-001/model/end (0 bytes)
+23:19:34 [MODEL] Transfer complete! 16440 bytes verified, saved to flash slot 0
+23:19:34 BROKER pico/s3-001/model/end 
+23:19:35 [INFER] MODEL_READY detected — starting auto-load...
+23:19:35 [TFLITE] Unloading previous model state...
+23:19:35 [TFLITE] Unload complete.
+23:19:35 [TFLITE] Verifying FlatBuffer at 0x3c941000...
+23:19:35 [TFLITE] Schema version 3 verified.
+23:19:35 [TFLITE] Creating OpResolver...
+23:19:35 [TFLITE] Ops registered.
+23:19:35 [TFLITE] Creating Interpreter (Arena size 65536)...
+23:19:35 [TFLITE] Allocating tensors...
+23:19:35 [TFLITE] Tensors allocated.
+23:19:35 [TFLITE] Model loaded OK!
+23:19:35 [TFLITE]   Inputs:  1 tensor(s), 16 total element(s)
+23:19:35 [TFLITE]   Outputs: 1 tensor(s), 16 total element(s)
+23:19:35 [TFLITE]   Arena:   2908 / 65536 bytes used
+23:19:35 [INFER] Model loaded: 16 inputs, 16 outputs
+23:19:35 [INFER] Auto-load successful.
+23:19:36 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:19:36 [MQTT] Norm params on: pico/s3-001/model/params (251 bytes)
+23:19:36 [INFER] Loaded 16 normalization params
+23:19:36 [INFER] Loaded 15 threshold masks
+23:19:36 [INFER] Score mode: MSE (Autoencoder)
+Reading model: autoencoder_int8 (2).tflite
+Size: 16440 bytes, CRC32: 0xF6AED6F8
+Packing normalization params from: norm_stats (2).json
+  Packed 15 threshold masks
+  Score mode: MSE (Autoencoder)
+  Binary params blob: 251 bytes for 16 features
+Waiting for Pico heartbeat (to ensure same broker)...
+Connected to broker 192.168.1.49
+Subscribing to pico/s3-001/heartbeat for verification...
+RECEIVED Heartbeat from Pico: {"uptime_s":342}
+Publishing to pico/s3-001/model/start...
+Sending 16440 bytes in 512-byte chunks...
+  Sent chunk 0
+RECEIVED Heartbeat from Pico: {"uptime_s":352}
+  Sent chunk 10
+RECEIVED Heartbeat from Pico: {"uptime_s":362}
+  Sent chunk 20
+RECEIVED Heartbeat from Pico: {"uptime_s":372}
+  Sent chunk 30
+RECEIVED Heartbeat from Pico: {"uptime_s":382}
+Publishing to pico/s3-001/model/end...
+Model transfer complete!
+Publishing norm params to pico/s3-001/model/params (251 bytes)...
+Normalization params sent!
+
+Done! Check the Pico serial monitor for confirmation.
+23:19:37 BROKER pico/s3-001/model/params <251 bytes>
+23:19:38 --- infer-cfg: pico/s3-001/config BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+23:19:38 [CFG] cfg_cb payload (first 120): BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+23:19:38 [JSON] not starting with '{' after trim, char=0x22
+23:19:38 [CFG] mqtt_json_try_convert_to_inline -> 0
+23:19:38 [SCHED] added: DIG on gpio
+23:19:38 [CFG] added #0: DIG
+23:19:39 BROKER pico/s3-001/config BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+23:19:39 BROKER pico/s3-001/status/config OK:DIG
+23:19:40 --- infer-rule: pico/s3-001/config BEGINRULE|name=R_INF|source=DIG|calc=s=u8(0)|when=1|action=batch: infer.set:0:1.0 \| infer.run|ENDRULE
+23:19:40 [CFG] cfg_cb payload (first 120): BEGINRULE|name=R_INF|source=DIG|calc=s=u8(0)|when=1|action=batch: infer.set:0:1.0 \| infer.run|ENDRULE
+23:19:40 [JSON] not starting with '{' after trim, char=0x22
+23:19:40 [CFG] mqtt_json_try_convert_to_inline -> 0
+23:19:40 [RULE] added name=R_INF src=DIG vars=1 action=batch: infer.set:0:1.0 \| infer.run
+23:19:40 [RULE] added name=R_INF
+23:19:40 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:19:41 BROKER pico/s3-001/config BEGINRULE|name=R_INF|source=DIG|calc=s=u8(0)|when=1|action=batch: infer.set:0:1.0 \| infer.run|ENDRULE
+23:19:41 BROKER pico/s3-001/status/rule OK:R_INF
+23:19:42 BROKER pico/s3-001/heartbeat {"uptime_s":392}
+23:19:42 --- infer-run: pico/s3-001/cmd RUN
+23:19:43 [CMD] RUN
+23:19:43 proto=gpio src=DIG len=3 ts=392670 : 00 BA 10
+23:19:43 [ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=0
+23:19:43 [INFER] invoke=2263us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+23:19:43 [TRACE] Rule Parse + Batch Actions executed in 3339us
+23:19:43 [TRACE] Total Rule Eval (DIG): 3549us
+23:19:43 proto=gpio src=DIG len=3 ts=393170 : 00 AF 12
+23:19:43 [INFER] invoke=592us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+23:19:43 [TRACE] Rule Parse + Batch Actions executed in 1226us
+23:19:43 [TRACE] Total Rule Eval (DIG): 1398us
+23:19:43 BROKER pico/s3-001/cmd RUN
+23:19:43 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=392670 : 00 BA 10
+23:19:43 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=393170 : 00 AF 12
+23:19:44 proto=gpio src=DIG len=3 ts=393671 : 00 A4 14
+23:19:44 [INFER] invoke=567us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+23:19:44 [TRACE] Rule Parse + Batch Actions executed in 1194us
+23:19:44 [TRACE] Total Rule Eval (DIG): 1358us
+23:19:44 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=393671 : 00 A4 14
+23:19:44 proto=gpio src=DIG len=3 ts=394171 : 00 98 16
+23:19:44 [INFER] invoke=556us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+23:19:44 [TRACE] Rule Parse + Batch Actions executed in 1182us
+23:19:44 [TRACE] Total Rule Eval (DIG): 1343us
+23:19:44 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=394171 : 00 98 16
+23:19:44 proto=gpio src=DIG len=3 ts=394671 : 00 8C 18
+23:19:44 [INFER] invoke=567us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+23:19:44 [TRACE] Rule Parse + Batch Actions executed in 1198us
+23:19:44 [TRACE] Total Rule Eval (DIG): 1364us
+23:19:45 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=394671 : 00 8C 18
+23:19:45 --- infer-stop: pico/s3-001/cmd STOP
+23:19:45 [CMD] STOP
+23:19:45 BROKER pico/s3-001/cmd STOP
+23:19:46 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:19:47 --- infer-clear: pico/s3-001/cmd CLEAR
+23:19:47 [RULE] reset
+23:19:47 [BRIDGE] reset
+23:19:47 [CMD] CLEAR (scheduler + rules + bridge)
+23:19:47 BROKER pico/s3-001/cmd CLEAR
+23:19:49 --- bridge-cfg: pico/s3-001/config BEGINCFG|name=REM|proto=mqtt|mode=poll|freq_hz=1|remote_node=pico-002|remote_source=LIGHT|ENDCFG
+23:19:49 [CFG] cfg_cb payload (first 120): BEGINCFG|name=REM|proto=mqtt|mode=poll|freq_hz=1|remote_node=pico-002|remote_source=LIGHT|ENDCFG
+23:19:49 [JSON] not starting with '{' after trim, char=0x22
+23:19:49 [CFG] mqtt_json_try_convert_to_inline -> 0
+23:19:49 [BRIDGE] updated mapping: pico-002/LIGHT -> REM
+23:19:49 [MQTT] follow_remote_source: pico-002/LIGHT -> REM via pico/pico-002/sensor/LIGHT/line
+23:19:49 [SCHED] added MQTT-remote: local=REM <- pico-002/LIGHT
+23:19:49 [CFG] added #0: REM
+23:19:49 BROKER pico/s3-001/config BEGINCFG|name=REM|proto=mqtt|mode=poll|freq_hz=1|remote_node=pico-002|remote_source=LIGHT|ENDCFG
+23:19:49 BROKER pico/s3-001/status/config OK:REM
+23:19:51 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:19:51 --- bridge-line: pico/pico-002/sensor/LIGHT/line proto=i2c src=LIGHT len=2 ts=1 : 12 34
+23:19:51 [BRIDGE] on_remote_line: pico-002/LIGHT -> local=REM line='proto=i2c src=LIGHT len=2 ts=1 : 12 34'
+23:19:51 proto=mqtt src=REM len=2 ts=401253 : 12 34
+23:19:52 BROKER pico/pico-002/sensor/LIGHT/line proto=i2c src=LIGHT len=2 ts=1 : 12 34
+23:19:52 BROKER pico/s3-001/sensor/REM/line proto=mqtt src=REM len=2 ts=401253 : 12 34
+23:19:53 BROKER pico/s3-001/heartbeat {"uptime_s":402}
+23:19:53 --- bridge-clear: pico/s3-001/cmd CLEAR
+23:19:53 [RULE] reset
+23:19:53 [BRIDGE] reset
+23:19:53 [CMD] CLEAR (scheduler + rules + bridge)
+23:19:54 BROKER pico/s3-001/cmd CLEAR

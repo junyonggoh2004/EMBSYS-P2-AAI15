@@ -1,0 +1,42 @@
+03:16:26 [TICK] 19588
+03:16:26 [HALTEST] start
+03:16:26 [HALTEST] PASS time-monotonic 19602259 -> 19602260 us
+03:16:26 [HALTEST] PASS time-ms-matches-us ms=19602 us/1000=19602
+03:16:26 [HALTEST] PASS delay-ms-100 100003 us
+03:16:26 [HALTEST] PASS delay-ms-1 1003 us
+03:16:26 [HALTEST] PASS delay-us-500 501 us
+03:16:26 [HALTEST] PASS console-getc-timeout ret=-1 after 20527 us
+03:16:26 [HALTEST] PASS gpio-reserved-pins-refused -1 19 20 22 26 32 49 99
+03:16:26 [HALTEST] PASS gpio-input-pulldown mode=0 read=0
+03:16:26 [HALTEST] PASS gpio-input-pullup mode=0 read=1
+03:16:26 [HALTEST] PASS gpio-output-toggle toggle 1/1 then 0/0
+03:16:26 [HALTEST] PASS pwm-set-and-stop set=0 set=0 stop=0 read=0
+03:16:26 [HALTEST] PASS pwm-duty-25-self set 0.25 measured 0.250
+03:16:27 [HALTEST] PASS pwm-duty-50-self set 0.50 measured 0.500
+03:16:27 [HALTEST] PASS pwm-duty-75-self set 0.75 measured 0.749
+03:16:27 [HALTEST] PASS pulse-200ms-nonblocking-self returned after 24 us, high 201589 us
+03:16:28 [HALTEST] PASS edge-count-no-loss-self 20000 edges at 19.8 kHz, 20000 counted (er=0)
+03:16:28 [HALTEST] PASS echo-width-self measured 5624 us for a 5 ms PULSE (alarm resolution 1 ms)
+03:16:28 [HALTEST] PASS echo-none-times-out returned -1 after 25855 us
+03:16:28 [HALTEST] PASS echo-stuck-high-reports-timeout returned 25001 (D-07: the timeout reported as a width)
+03:16:28 [HALTEST] PASS echo-wait-releases-cpu spinner: sleep 541579, echo wait 562902, busy-wait 0
+03:16:28 [HALTEST] PASS uart-internal-loopback port=0 got 34/34 bytes
+03:16:28 [HALTEST] PASS i2c-missing-device-nack bus=0 write=-4 write-nostop=1 read=-4
+03:16:28 [HALTEST] SKIP jumper-measurements no jumper between GPIO5 and GPIO6
+03:16:28 [HALTEST] PASS test-task-on-core-1 running on core 1
+03:16:28 [HALTEST] done failures=0
+03:16:28 [ECHO] hello parity 12345
+03:16:28 [TICK] 21589
+03:16:29 [TICK] 22588
+03:16:30 [TICK] 23588
+03:16:31 [TICK] 24589
+03:16:32 [TICK] 25589
+03:16:33 [TICK] 26588
+03:16:34 [TICK] 27589
+03:16:35 [TICK] 28589
+03:16:36 [TICK] 29588
+03:16:37 [TICK] 30588
+03:16:38 [TICK] 31589
+03:16:39 [TICK] 32589
+03:16:40 [TICK] 33588
+03:16:41 [TICK] 34588
