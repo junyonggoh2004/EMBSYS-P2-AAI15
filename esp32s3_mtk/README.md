@@ -1,6 +1,8 @@
 # Configurable ESP32-S3 firmware — ESP-IDF / µT-Kernel SMP
 
-For the current D6 three-board N16R8 fixture, see the
+**Current D6 Board A (21 November 2026):** ESP32-S3 N16R8 with AHT, TSL2561 and two sonars, without radar. Use the [current pinout and diagram](../docs/d6/BOARD_A_SONAR_ONLY_WIRING.md), [`board_a.cfg`](../config/board_a.cfg), and [PowerShell sensor-test commands](../docs/d6/BOARD_A_SENSOR_TEST.md). GPIO1/2 are I2C; GPIO10/11 are Sonar A; GPIO6/7 are Sonar B. The generic three-sensor preset and older radar diagrams below document different fixtures.
+
+For the earlier proposed D6 three-board N16R8 fixture, see the
 [board identification](../docs/d6/N16R8_BOARD_SETUP.md),
 [pin-to-hole guide](../docs/d6/PIN_TO_HOLE_WIRING.md) and the
 `BOARD=n16r8` preset. Earlier Super Mini evidence below remains historical.

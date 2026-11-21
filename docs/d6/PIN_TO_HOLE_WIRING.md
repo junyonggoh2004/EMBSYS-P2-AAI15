@@ -1,5 +1,7 @@
 # D6 pin-to-hole breadboard diagrams
 
+**Current Board A (21 November 2026):** [sonar-only N16R8 wiring and diagram](BOARD_A_SONAR_ONLY_WIRING.md). The Board A radar and GPIO4/5 maps below are earlier proposals retained for context. They do not match [`config/board_a.cfg`](../../config/board_a.cfg). Board B and C tables below remain their separate fixtures.
+
 Updated 18 November 2026 for three separate bare ESP32-S3 N16R8
 development boards with accessible male headers. These are **proposed integration fixtures**, not
 evidence that all D6 devices have been powered or tested together. See the
@@ -18,7 +20,7 @@ continuous power-rail section, not labels printed on a breadboard. If a rail
 has a center break, bridge it deliberately or choose a single continuous
 section. Check continuity with USB unplugged.
 
-## Board A: AHT, light, two sonars and radar
+## Historical Board A proposal: AHT, light, two sonars and radar
 
 ![Board A pin-to-hole wiring](images/board-a-detailed.png)
 

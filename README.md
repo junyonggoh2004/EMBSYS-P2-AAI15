@@ -1,21 +1,23 @@
 # Configurable Edge Platform on the ESP32-S3 (D1 to D6)
 
-**D6 branch planning (updated 13 November 2026).** The three-board end-to-end demo is
+**Current D6 direction (21 November 2026): two sonars, no radar.** Board A's N16R8 runs AHT temperature/humidity, TSL2561 light, Sonar A and Sonar B. Read the [sonar-only use case](docs/d6/SONAR_ONLY_USECASE.md), [current Board A pinout and diagram](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md), and [PowerShell sensor-test commands](docs/d6/BOARD_A_SENSOR_TEST.md). [`config/board_a.cfg`](config/board_a.cfg) is the current four-sensor profile. AHT/light and Sonar A have physical passes; Sonar B had one direct-wire pass before a rail change. A complete four-sensor run and sonar-triggered crossing logic remain to be verified or implemented. The radar `WINDOW` and older Board A diagrams below describe historical D3/proposed fixtures, not this D6 wiring.
+
+**D6 branch planning (historical 13 November 2026 baseline).** The three-board end-to-end demo is
 planned in [D6 validation plan](docs/D6_USECASE_VALIDATION_PLAN.md), with a
 [session worksheet](docs/D6_TRIAL_WORKSHEET.md) and the
 [selected doorway integration handoff](docs/d6/D6_INTEGRATION_HANDOFF.md). This branch starts from the
 older `d3-board` checkpoint; `origin/main` at `b389714` is now integrated in
 merge `3e029d0`. The LCD diagnostic is selectively imported from `b1c1675`
 on the `d6` base; live output integration and D6 board tests remain pending.
-Board roles now specify **A physical inputs and local timed WINDOW assembly;
+The historical handoff specified **A physical inputs and local timed WINDOW assembly;
 B final occupancy, ML, storage, data handling and communication; C output**.
 The current D6 fixture uses [three photographed N16R8 boards](docs/d6/N16R8_BOARD_SETUP.md):
 A, B and C as bare boards with accessible male headers, each wired to its own breadboard.
-See the [updated wiring diagrams](docs/d6/PIN_TO_HOLE_WIRING.md) and
+For B/C and historical A diagrams see the [pin-to-hole guide](docs/d6/PIN_TO_HOLE_WIRING.md) and
 [wire count](docs/d6/JUMPER_WIRE_COUNT.md). Previous Super Mini tests remain
 historical evidence.
 For Board A's current sensor-by-sensor diagnosis, use the
-[N16R8 serial bring-up commands](docs/d6/BOARD_A_SERIAL_BRINGUP.md) and
+[sonar-only N16R8 commands](docs/d6/BOARD_A_SENSOR_TEST.md) and
 [observed results](docs/d6/BOARD_A_STAGE1_BRINGUP_20261118.md).
 The [next three integration steps](docs/d6/NEXT_STEPS.md) define the fixture,
 LCD import and remote-display gates.
@@ -286,7 +288,7 @@ D3 replaces the Pico's fixed one-second loop with configurable timing per sensor
 
 **D3-1 native recheck (5 November 2026).** Parser, timing and scheduler regressions passed through `sh tools/cody_test.sh`; D2 host tests and source/HAL purity also passed. The [review and task mapping](D3_INTERRUPT_WIRING_REVIEW.md#alignment-with-readme-d3-task-list) links each covered D3-1 requirement to its tests and retains the [raw output](parity/logs/d3/d3-1-native-20261105.log). Active-window reconfiguration policy remains open. These native results do not close target build/image, electrical wiring, physical capture or timing acceptance.
 
-**Who waits on it.** D2's flash event logging (D2-8, D2-9), D5's B3 timing benchmark, and D6, the end-to-end use case. D6's three-board proposal has a [validation plan](docs/D6_USECASE_VALIDATION_PLAN.md) and [trial worksheet](docs/D6_TRIAL_WORKSHEET.md); neither has been run on the board. The user selected the radar-triggered doorway counter on 13 November; see the [integration handoff](docs/d6/D6_INTEGRATION_HANDOFF.md) for the A-local WINDOW and B-only occupancy split still to implement and review.
+**Who waits on it.** D2's flash event logging (D2-8, D2-9), D5's B3 timing benchmark, and D6, the end-to-end use case. D6's three-board proposal has a [validation plan](docs/D6_USECASE_VALIDATION_PLAN.md) and [trial worksheet](docs/D6_TRIAL_WORKSHEET.md); end-to-end trials have not run. The current D6 [sonar-only doorway](docs/d6/SONAR_ONLY_USECASE.md) replaces the 13 November radar trigger; the radar `WINDOW` remains a D3 component, while a sonar-first crossing state machine remains to implement.
 
 
 ---
@@ -355,7 +357,9 @@ D5 is cut down, agreed on 10 Nov 2026. The professor said benchmarking is not fo
 
 # 7. D6 task checklist
 
-**13 November integration handoff:** The user selected the radar-and-two-sonar
+**Current D6 direction:** The user selected a two-sonar doorway without radar on 21 November. The [sonar-only use case](docs/d6/SONAR_ONLY_USECASE.md), [Board A wiring](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md) and [test commands](docs/d6/BOARD_A_SENSOR_TEST.md) govern current Board A work. The 13 November handoff below records the earlier radar proposal.
+
+**13 November integration handoff (historical):** The user selected the radar-and-two-sonar
 doorway scenario within the A -> B -> C split. A acquires and assembles the
 time-sensitive crossing locally; B is the sole occupancy writer and owns
 storage/ML; C displays B's valid snapshot. See the
@@ -366,7 +370,7 @@ Cody leads D6 with the whole team, agreed on 10 Nov 2026. The professor's origin
 
 | # | Task | What it means | Owner | Status |
 |---|---|---|---|---|
-| 5.1 | Confirm the use case | A assembles timed doorway inputs, B decides/counts/stores, C displays; finalize team fixture and interface review | Team | User selected doorway 13 Nov; team acceptance and trials pending |
+| 5.1 | Confirm the use case | A assembles timed two-sonar doorway inputs without radar, B decides/counts/stores, C displays; finalize team fixture and interface review | Team | User selected sonar-only doorway 21 Nov; team acceptance and trials pending |
 | 5.2 | Define each board | Its sensors, what it publishes, what it reacts to and what the LCD shows; parts and wiring per board (jumper wires from Mr Ajah) | Cody | Pending |
 | 5.3 | Multi-bus demo script | Step-by-step live demo of GPIO, I2C and SPI on one board, configured live, with the whole setup sent at once and then piece by piece | Cody | Pending |
 | 5.4 | SPI write and read by config | Write one byte, read it back, swap the device and reconfigure; config cannot do this yet | Brendan | Pending |

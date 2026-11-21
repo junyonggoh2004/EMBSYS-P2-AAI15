@@ -1,5 +1,7 @@
 # D6 board diagrams
 
+**Current Board A image:** [sonar-only N16R8 wiring](board-a-sonar-only.svg), with four sensor profiles and no radar; see its [connection table](../BOARD_A_SONAR_ONLY_WIRING.md). The other Board A images below preserve earlier radar/GPIO4/5 proposals. Board B and C diagrams remain separate fixtures.
+
 The active images depict three bare ESP32-S3 N16R8 boards with accessible
 male headers, each outside its breadboard. See [board identification and source photos](../N16R8_BOARD_SETUP.md).
 The old Super Mini test evidence remains historical.

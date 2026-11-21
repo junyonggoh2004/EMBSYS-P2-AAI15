@@ -3,8 +3,7 @@
 Template prepared 10 November 2026. **NOT RUN**. Use with the
 [validation plan](D6_USECASE_VALIDATION_PLAN.md). Copy once per session; a blank
 field is unknown, never zero/pass. Record failures and retries separately.
-The [13 November integration handoff](d6/D6_INTEGRATION_HANDOFF.md) records
-the user's doorway selection and A-local WINDOW / B-final-occupancy split.
+The [current sonar-only use case](d6/SONAR_ONLY_USECASE.md) defines the D6 doorway without radar and the A-local timing / B-final-occupancy split. The [13 November handoff](d6/D6_INTEGRATION_HANDOFF.md) records the earlier radar proposal.
 Actual pins, power, transport, storage and team fixture review are still pending.
 Refined 11 November 2026 with decision and per-attempt evidence fields; see
 the [next integration steps](d6/NEXT_STEPS.md).
@@ -21,7 +20,7 @@ trials. PENDING does not mean an interface or numerical limit is approved.
 
 | Decision | Agreed value / owner / date / evidence | Dependent trials |
 |---|---|---|
-| Scenario, doorway inclusion, motion source and output behavior | User selected radar + Sonar A/B doorway on 13 Nov; team fixture/behavior review PENDING | T01, T03, T16 |
+| Scenario, doorway inclusion, motion source and output behavior | User selected Sonar A/B doorway without radar on 21 Nov; first qualifying sonar would open a bounded crossing interval; implementation and team fixture/behavior review PENDING | T01, T03, T16–T19 |
 | A/B/C inventory, unique node/source names, pin/power diagrams | PENDING | All physical trials |
 | C panel geometry, offsets, orientation, colors and fixture | PENDING | All display trials |
 | Source/profile/field mapping, units and display precision | PENDING | T01, T02, T10 |
@@ -78,8 +77,8 @@ INCONCLUSIVE, BLOCKED or NOT RUN explicitly. Add one row per attempt.
 | T14 | Display reset, re-subscribe and fresh data | NOT RUN | Pending |
 | T15 | Missing ML input produces explicit invalid result | NOT RUN | Pending |
 | T16 | Combined-load run and resource capture | NOT RUN | Pending |
-| T17 | Real entry: A then B sonar sequence, one B occupancy increment | NOT RUN | Pending A-local WINDOW and B-only occupancy implementation |
-| T18 | Real exit: B then A sonar sequence, one B occupancy decrement | NOT RUN | Pending A-local WINDOW and B-only occupancy implementation |
+| T17 | Real entry: outside A then inside B sonar sequence, one B occupancy increment | NOT RUN | Pending sonar-triggered crossing state machine, A→B event path and B-only occupancy implementation |
+| T18 | Real exit: inside B then outside A sonar sequence, one B occupancy decrement | NOT RUN | Pending sonar-triggered crossing state machine, A→B event path and B-only occupancy implementation |
 | T19 | Approach-only, turnaround, ambiguity and essential faults cause no B occupancy change | NOT RUN | Pending physical trial fixtures and fault policy |
 
 ## Per-attempt evidence (copy for each attempt)

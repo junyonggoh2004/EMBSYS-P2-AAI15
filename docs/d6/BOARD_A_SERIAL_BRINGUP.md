@@ -1,5 +1,7 @@
 # Board A N16R8: serial bring-up, one sensor at a time
 
+**Historical 19 November radar fixture.** Use the [current sonar-only test commands](BOARD_A_SENSOR_TEST.md) and [wiring](BOARD_A_SONAR_ONLY_WIRING.md) for D6 Board A. The GPIO4/5 and radar instructions below are preserved as a dated troubleshooting record.
+
 Updated 19 November 2026. Use this with the [65-row Board A layout](BOARD_A_SPACED_65_ROW_LAYOUT.md)
 and [physical test record](BOARD_A_STAGE1_BRINGUP_20261118.md). The layout
 assigns different GPIOs to I2C, both sonars and radar. Its power rails and

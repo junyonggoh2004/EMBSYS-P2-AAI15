@@ -1,11 +1,11 @@
 # D6: three-board end-to-end validation plan
 
 Prepared 10 November 2026; refined 11 November 2026 on branch `d6`.
-Status: **integration in progress; D6 trials NOT RUN**. See the [next three integration steps](d6/NEXT_STEPS.md)
+Status: **integration in progress; D6 end-to-end trials NOT RUN**. The [current sonar-only doorway use case](d6/SONAR_ONLY_USECASE.md), [Board A wiring](d6/BOARD_A_SONAR_ONLY_WIRING.md), and [Board A test commands](d6/BOARD_A_SENSOR_TEST.md) supersede the earlier radar fixture for D6. See the [next three integration steps](d6/NEXT_STEPS.md)
 for concrete changes, dependencies and review gates.
-The [13 November handoff](d6/D6_INTEGRATION_HANDOFF.md) records the user's
-selected doorway scenario, revised A-local WINDOW / B-occupancy ownership,
-materials and proposed board diagrams. It is the current integration direction;
+The [13 November handoff](d6/D6_INTEGRATION_HANDOFF.md) records the earlier
+radar-triggered doorway proposal, A-local timing / B-occupancy ownership,
+materials and proposed board diagrams. It is historical context;
 the detailed fixture, transport and storage decisions below still need review.
 See [integration status](d6/INTEGRATION_STATUS.md) for the LCD/parser changes
 and actual native/build evidence; all physical trials remain NOT RUN.
@@ -22,9 +22,12 @@ Change supported configuration on the same firmware image and show the effect.
 Also demonstrate GPIO, I2C and SPI together, including a configured SPI byte
 write/read and a device substitution after safe power-off and reconfiguration.
 
-The selected application is a radar-and-two-sonar doorway counter with light,
-temperature and humidity readings. A locally acquires and assembles the timed
-crossing using D3 `WINDOW`, then sends one identified candidate event to B.
+The selected application is a **two-sonar doorway counter without radar**, with
+light, temperature and humidity readings. The first qualifying sonar detection
+would open a bounded crossing interval on A; A would assemble one identified
+candidate event from the sonar order and quality checks, then send it to B.
+This sonar-triggered state machine is planned, not yet implemented. The existing
+D3 `WINDOW` command still requires radar and is not the D6 trigger.
 B validates and deduplicates events, decides and changes occupancy, stores the
 agreed record, and publishes the output state. C displays B's latest valid
 state. A has no actuator or final occupancy role. The exact devices, fixture,
@@ -76,7 +79,7 @@ They do not redefine canonical event identity or cross-node time contracts.
 
 | Board | Proposed node | Input and responsibility | Visible evidence |
 |---|---|---|---|
-| A: acquisition and timed assembly | `s3-001` | Physical AHT/light, two sonar and radar acquisition; locally pair sonar samples and run the radar `WINDOW`; publish one identified crossing candidate/event per completed window plus environmental frames. Exact pins and event schema pending | Ground-truth input and window evidence; no final occupancy update or actuator output on A |
+| A: acquisition and timed assembly | `s3-001` | Physical AHT/light and two sonar acquisition; sequential sonar measurements; eventually open a bounded interval from the first qualifying sonar detection and publish one identified candidate per crossing plus environmental frames. Current GPIOs are in `config/board_a.cfg`; event schema pending | Ground-truth readings and crossing evidence; no final occupancy update or actuator output on A |
 | B: decision and storage | `s3-002` | Receive/validate/deduplicate A events, make the final occupancy update, later apply ML, own agreed SPI-flash records and onward communication to C; storage and B→C contracts pending | Correlated accepted event, single occupancy transition, storage outcome when implemented, and outgoing publication |
 | C: output | `s3-003` | Consume B's agreed output snapshot/status and draw through Brendan's LCD driver; other output devices pending selection | Correctly associated readings, occupancy and validity from B are visibly rendered |
 | Laptop | Broker and evidence | Mosquitto, command publication, raw MQTT/serial capture | Independent evidence that messages reach a subscriber |
@@ -99,14 +102,14 @@ timed crossing candidate, while B validates it and changes occupancy at most
 once. Select exact devices, pins, thresholds and failure behaviour with the
 team before writing runnable presets.
 Output behavior belongs to C; B handles its data and control routing. The
-doorway alternative needs an approved second sonar, radar, geometry and
+doorway scenario needs two working sonars, agreed geometry and
 its own acceptance; the existing one-sonar fixture does not provide that proof.
 
 ## 4. Close these decisions before implementation
 
 | Decision | Responsible participants | Required recorded result |
 |---|---|---|
-| 5.1 final scenario and doorway inclusion | Cody, Brendan, team | User selected radar + Sonar A/B doorway on 13 Nov; record team acceptance, fixture and final demo boundary |
+| 5.1 final scenario and doorway inclusion | Cody, Brendan, team | User changed D6 to Sonar A/B doorway without radar on 21 Nov; record team acceptance, geometry and final demo boundary |
 | 5.2 inventory and per-board fixture | Cody, Sitt, Brendan | Exact board/module, voltages, unique node, pin/power diagram; no conflicts |
 | Rule/output behavior | Cody, Sitt, Brendan | B processing/control routing and C output: condition, thresholds/units, debounce or hysteresis, polarity and fault behavior |
 | Display and remote validity | Cody, Brendan, Hasif | Fields, source names, decoding, age limit, reconnect/reset behavior, refresh budget |
@@ -258,9 +261,10 @@ W3 = W2 + verified ML publication/display; W4 = W3 + live reconfiguration and
 approved SPI activity. Use unchanged fixtures/rates or assign a new revision.
 B storage is required by the clarified role split, but its writer, record
 contract and dedicated acceptance trials must be defined before enabling
-writes. The existing D3 `WINDOW` implementation runs with local application
-state; the A-local event export and B-only occupancy path described in the
-13 November handoff are **not yet implemented or physically validated**.
+writes. The existing D3 `WINDOW` implementation is radar-dependent and is not
+the current D6 trigger. The sonar-first crossing assembly, A-local event
+export and B-only occupancy path are **not yet implemented or physically
+validated**.
 
 ## 10. Verification and evidence handoff
 

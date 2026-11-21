@@ -1,5 +1,7 @@
 # Board A: spacious 65-row extension of JY V2
 
+**Historical radar proposal.** The [current sonar-only Board A wiring](BOARD_A_SONAR_ONLY_WIRING.md) uses direct GPIO10/11 for Sonar A and GPIO6/7 for Sonar B, with no radar. The older rows and GPIOs below are retained for context; do not use them with [`board_a.cfg`](../../config/board_a.cfg).
+
 ![Spacious Board A pin-to-hole diagram](images/board-a-spaced.png)
 
 This is an **additional proposed physical layout** for the user's 65-row breadboard. It does not replace [JY's original Super Mini wiring](../../esp32s3_mtk/WIRING.md) or the [earlier compact N16R8 proposal](PIN_TO_HOLE_WIRING.md#board-a-aht-light-two-sonars-and-radar). The original AHT, TSL2561 and Sonar A connections on rows 4-9 remain exactly where JY placed them. Only the new Sonar B and radar connections are spread out. Firmware GPIO assignments remain GPIO1/2/4/5 for JY's sensors, GPIO6/7 for Sonar B and GPIO17/18 for radar. `config/three_sensors.cfg` remains the three-sensor firmware profile; breadboard row numbers are not firmware settings.

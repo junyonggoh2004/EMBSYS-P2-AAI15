@@ -1,9 +1,11 @@
 # Version 2 wiring — ESP32-S3 Super Mini
 
+**Current D6 Board A (21 November 2026):** use the [sonar-only N16R8 pinout and diagram](../docs/d6/BOARD_A_SONAR_ONLY_WIRING.md) and [test procedure](../docs/d6/BOARD_A_SENSOR_TEST.md). This Super Mini page and the old Board A radar translations are preserved for historical comparison; they are not current wiring instructions.
+
 This page preserves the older Super Mini fixture. The current D6 integration
 uses three bare N16R8 boards with male headers outside their breadboards.
-Use the [D6 pin-to-hole guide](../docs/d6/PIN_TO_HOLE_WIRING.md)
-for that setup. Board A keeps this Version 2 fixture's rows 4-9 and GPIO1/2/4/5, then adds Sonar B and radar in separate rows. The old LCD wires on this page must be removed from A; Board C owns the display. Do not transfer this page's physical Super Mini pinout image to the N16R8 boards. Earlier successful Super Mini readings are not proof of a complete N16R8 sensor pass.
+The [earlier D6 pin-to-hole guide](../docs/d6/PIN_TO_HOLE_WIRING.md)
+records a proposed radar fixture. The old LCD wires on this page are not used on A; Board C owns the display. Do not transfer this page's physical Super Mini pinout image to the N16R8 boards. Earlier successful Super Mini readings are not proof of a complete N16R8 sensor pass.
 
 AHT, HC-SR04+ and Grove TSL2561 have worked in the team's hardware tests. The ST7789 LCD is not working for now; retain its existing connections while running the current ESP-IDF / µT-Kernel SMP sensor target.
 

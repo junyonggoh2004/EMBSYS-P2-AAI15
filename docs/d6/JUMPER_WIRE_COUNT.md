@@ -1,5 +1,7 @@
 # D6 wire count for three bare N16R8 boards
 
+**Current sonar-only Board A (21 November 2026):** The [current wiring guide](BOARD_A_SONAR_ONLY_WIRING.md) uses 4 ESP-to-breadboard leads (3V3, GND, SDA, SCL), 8 AHT/light module leads, 4 sonar power leads, 4 direct female-to-female sonar signal leads, and 2 male-to-male rail feeds: **22 leads for A**, assuming the modules expose matching male headers and the rail sections are continuous. Board B remains 12 and C 15 leads in the earlier plans, for **49 total** under those assumptions. Grove adapters or rail breaks can change lead types/counts. The radar-based 59-lead estimate below is retained as a historical proposal.
+
 Updated 18 November 2026. [Board identification](N16R8_BOARD_SETUP.md) and
 [pin-to-hole wiring](PIN_TO_HOLE_WIRING.md) define the fixture. Boards A, B
 and C have accessible male headers and sit outside their breadboards.

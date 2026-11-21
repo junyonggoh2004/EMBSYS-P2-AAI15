@@ -1,5 +1,7 @@
 # D6 next integration steps
 
+**Current D6 direction (21 November):** [two-sonar doorway without radar](SONAR_ONLY_USECASE.md). The radar `WINDOW` steps below are the 13 November planning record. For current Board A use [sonar-only wiring](BOARD_A_SONAR_ONLY_WIRING.md) and [sensor-test commands](BOARD_A_SENSOR_TEST.md).
+
 **13 November update:** Read the [selected doorway handoff](D6_INTEGRATION_HANDOFF.md)
 before using this 11 November baseline. It adds A-local timed `WINDOW` assembly,
 B-only occupancy updates and three board diagrams. The steps below remain a

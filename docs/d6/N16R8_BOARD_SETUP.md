@@ -1,5 +1,7 @@
 # N16R8 boards selected for D6
 
+**Current Board A (21 November 2026):** [sonar-only wiring](BOARD_A_SONAR_ONLY_WIRING.md), [`board_a.cfg`](../../config/board_a.cfg), [test commands](BOARD_A_SENSOR_TEST.md). No radar or 5V feed is used on A. The later radar pin and power paragraphs below are earlier proposals retained for history.
+
 Updated 17 November 2026 after the user removed the expansion boards. Boards
 **A, B and C** are bare ESP32-S3 N16R8 development boards with accessible male
 headers. Each ESP32 and its modules sit outside a separate breadboard. Use a
@@ -9,7 +11,7 @@ capacity, not a unique PCB pinout.
 
 | Board | ESP connection to its breadboard |
 |---|---|
-| A: inputs | Male header pins for GND, 3V3, USB-backed 5V, GPIO1/2, GPIO4/5, and proposed GPIO6/7/17/18 |
+| A: inputs | 3V3, GND and GPIO1/2 to breadboard; direct Sonar A TRIG/ECHO to GPIO10/11 and Sonar B TRIG/ECHO to GPIO6/7 |
 | B: processing/storage | Male header pins for GND, 3V3, GPIO10/11/12/13 |
 | C: LCD | Male header pins for GND, 3V3, GPIO12/11/8/9/10 |
 
@@ -65,7 +67,7 @@ timed out, and GPIO4-to-GPIO5 loopback passed. See
 [Stage 1 bring-up](BOARD_A_STAGE1_BRINGUP_20261118.md). Inspect Sonar A
 before a combined doorway trial.
 
-The active [Board A pin-to-hole map](PIN_TO_HOLE_WIRING.md#board-a-aht-light-two-sonars-and-radar) now retains JY's V2 three-sensor rows 4-9, with Sonar B on rows 10-11 and radar UART on rows 12-13. Remove all old Board A LCD wires, including row 14 and its power/BL leads; Board C owns the LCD. This change preserves the historical working GPIO map but has not yet passed a full N16R8 sensor run. Older Super Mini wiring and tests in other project folders remain historical fixtures.
+The [earlier Board A pin-to-hole map](PIN_TO_HOLE_WIRING.md#historical-board-a-proposal-aht-light-two-sonars-and-radar) retained JY's V2 three-sensor rows 4-9, with Sonar B on rows 10-11 and radar UART on rows 12-13. It is not the current D6 wiring. The [current Board A map](BOARD_A_SONAR_ONLY_WIRING.md) uses direct sonar GPIO10/11 and GPIO6/7 with no radar; Board C owns the LCD. Older Super Mini wiring and tests remain historical fixtures.
 
 On 18 November, Board B was flashed as node `s3-002` and reached the native
 USB console on COM11. GPIO12-to-GPIO13 SPI loopback passed 11/11 samples,

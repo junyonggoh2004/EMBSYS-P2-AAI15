@@ -1,5 +1,7 @@
 # D6 integration handoff: doorway inputs, processing, LCD
 
+**Historical handoff (13 November).** The user removed radar from the D6 use case on 21 November. Use the [current sonar-only use case](SONAR_ONLY_USECASE.md), [Board A wiring](BOARD_A_SONAR_ONLY_WIRING.md) and [test commands](BOARD_A_SENSOR_TEST.md). The radar inventory, `WINDOW` flow and Board A diagrams below record the earlier proposal and must not be used as the current fixture.
+
 Recorded 13 November 2026 from the project chat. This is the selected setup
 direction and a work plan, **not evidence of a completed three-board run**.
 `D6-Integration` starts from `origin/d6` at `9121286`, preserving its code,

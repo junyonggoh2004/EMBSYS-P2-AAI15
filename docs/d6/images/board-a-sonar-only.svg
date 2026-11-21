@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1120" viewBox="0 0 1600 1120" role="img" aria-label="Board A N16R8 sonar-only wiring: shared I2C on GPIO1 and 2, Sonar A direct on GPIO10 and 11, Sonar B direct on GPIO6 and 7, no radar">
+  <rect width="1600" height="1120" fill="#f4f7fb"/>
+  <text x="48" y="67" fill="#17314f" font-family="Arial,sans-serif" font-weight="700" font-size="45">BOARD A | CURRENT SONAR-ONLY WIRING</text>
+  <text x="49" y="108" fill="#47607b" font-family="Arial,sans-serif" font-size="25">Bare ESP32-S3 N16R8  •  AHT + TSL2561 + Sonar A + Sonar B  •  Radar removed</text>
+
+  <rect x="42" y="150" width="1516" height="470" rx="20" fill="#fff" stroke="#c7d6e6" stroke-width="3"/>
+  <text x="66" y="191" fill="#17314f" font-family="Arial,sans-serif" font-weight="700" font-size="29">ESP HEADER → BREADBOARD A-E ROW → MODULE PIN</text>
+  <text x="441" y="236" fill="#47607b" font-family="Arial,sans-serif" font-size="20">A</text>
+  <text x="559" y="236" fill="#47607b" font-family="Arial,sans-serif" font-size="20">B</text>
+  <text x="677" y="236" fill="#47607b" font-family="Arial,sans-serif" font-size="20">C</text>
+  <text x="795" y="236" fill="#47607b" font-family="Arial,sans-serif" font-size="20">D</text>
+  <text x="913" y="236" fill="#47607b" font-family="Arial,sans-serif" font-size="20">E</text>
+  <text x="1030" y="236" fill="#47607b" font-family="Arial,sans-serif" font-size="20">Connections on this row</text>
+
+  <g font-family="Arial,sans-serif" font-size="25" fill="#17314f">
+    <text x="70" y="295">ESP 3V3 → A4</text>
+    <text x="70" y="395">ESP GPIO1 → A5</text>
+    <text x="70" y="495">ESP GPIO2 → A6</text>
+    <text x="70" y="595">ESP GND → A7</text>
+  </g>
+  <g stroke-width="5" fill="none">
+    <path d="M440 286H930" stroke="#18824c"/><path d="M440 386H930" stroke="#7550a8"/>
+    <path d="M440 486H930" stroke="#7550a8"/><path d="M440 586H930" stroke="#0877b5"/>
+  </g>
+  <g font-family="Arial,sans-serif" font-weight="700" font-size="23" fill="#17314f">
+    <text x="396" y="294">4</text><text x="396" y="394">5</text>
+    <text x="396" y="494">6</text><text x="396" y="594">7</text>
+  </g>
+  <g fill="#fff" stroke-width="4">
+    <g stroke="#18824c"><circle cx="445" cy="286" r="9"/><circle cx="563" cy="286" r="9"/><circle cx="681" cy="286" r="9"/><circle cx="799" cy="286" r="9"/><circle cx="917" cy="286" r="9"/></g>
+    <g stroke="#7550a8"><circle cx="445" cy="386" r="9"/><circle cx="563" cy="386" r="9"/><circle cx="681" cy="386" r="9"/><circle cx="799" cy="386" r="9"/><circle cx="917" cy="386" r="9"/><circle cx="445" cy="486" r="9"/><circle cx="563" cy="486" r="9"/><circle cx="681" cy="486" r="9"/><circle cx="799" cy="486" r="9"/><circle cx="917" cy="486" r="9"/></g>
+    <g stroke="#0877b5"><circle cx="445" cy="586" r="9"/><circle cx="563" cy="586" r="9"/><circle cx="681" cy="586" r="9"/><circle cx="799" cy="586" r="9"/><circle cx="917" cy="586" r="9"/></g>
+  </g>
+  <g font-family="Arial,sans-serif" font-size="22" fill="#17314f">
+    <text x="1030" y="279">B4 → 3V3 + rail</text><text x="1030" y="308">C4 Sonar A VCC · D4 Light VCC · E4 AHT VCC</text>
+    <text x="1030" y="379">D5 Light SDA · E5 AHT SDA</text>
+    <text x="1030" y="479">D6 Light SCL · E6 AHT SCL</text>
+    <text x="1030" y="579">B7 → GND − rail</text><text x="1030" y="608">C7 Sonar A GND · D7 Light GND · E7 AHT GND</text>
+  </g>
+
+  <rect x="42" y="644" width="1516" height="168" rx="20" fill="#e6f3f7" stroke="#b7d0dc" stroke-width="3"/>
+  <text x="66" y="686" fill="#17314f" font-family="Arial,sans-serif" font-weight="700" font-size="28">SONAR B POWER | SAME CONTINUOUS TOP RAIL SECTIONS</text>
+  <text x="73" y="734" fill="#18824c" font-family="Arial,sans-serif" font-size="25">B4 → top red + rail → Sonar B VCC  (3V3, not 5V)</text>
+  <text x="73" y="779" fill="#0877b5" font-family="Arial,sans-serif" font-size="25">B7 → top blue − rail → Sonar B GND</text>
+  <text x="855" y="758" fill="#a33a22" font-family="Arial,sans-serif" font-size="22">Both feeds must be present; B power remains unverified.</text>
+
+  <rect x="42" y="836" width="740" height="178" rx="20" fill="#fff" stroke="#d6c5a0" stroke-width="3"/>
+  <rect x="818" y="836" width="740" height="178" rx="20" fill="#fff" stroke="#d6c5a0" stroke-width="3"/>
+  <text x="68" y="879" fill="#17314f" font-family="Arial,sans-serif" font-weight="700" font-size="29">SONAR A | DIRECT SIGNAL LEADS</text>
+  <text x="68" y="927" fill="#17314f" font-family="Arial,sans-serif" font-size="25">Sonar A TRIG → ESP GPIO10</text>
+  <text x="68" y="972" fill="#17314f" font-family="Arial,sans-serif" font-size="25">Sonar A ECHO → ESP GPIO11</text>
+  <text x="844" y="879" fill="#17314f" font-family="Arial,sans-serif" font-weight="700" font-size="29">SONAR B | DIRECT SIGNAL LEADS</text>
+  <text x="844" y="927" fill="#17314f" font-family="Arial,sans-serif" font-size="25">Sonar B TRIG → ESP GPIO6</text>
+  <text x="844" y="972" fill="#17314f" font-family="Arial,sans-serif" font-size="25">Sonar B ECHO → ESP GPIO7</text>
+  <text x="50" y="1060" fill="#a33a22" font-family="Arial,sans-serif" font-weight="700" font-size="23">No radar · No Board A 5V · No E8/E9 or E28/E29 sonar signal wires · Unplug USB before rewiring</text>
+</svg>

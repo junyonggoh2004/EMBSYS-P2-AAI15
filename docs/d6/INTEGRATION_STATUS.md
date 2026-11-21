@@ -1,5 +1,7 @@
 # D6 LCD and sensor-frame integration — 11 November 2026
 
+**Dated implementation record.** For the current 21 November D6 fixture without radar, use the [sonar-only use case](SONAR_ONLY_USECASE.md), [Board A pinout](BOARD_A_SONAR_ONLY_WIRING.md) and [test commands](BOARD_A_SENSOR_TEST.md). Status below describes the earlier 11 November integration state.
+
 Implemented on `d6` over source base `035d7fc`, as an uncommitted working
 change. LCD component reference: `b1c1675`. Board roles clarified by the user:
 **A input only; B ML/storage/data handling/communication; C output**.
