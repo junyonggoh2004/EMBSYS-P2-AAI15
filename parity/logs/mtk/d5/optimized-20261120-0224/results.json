@@ -1,0 +1,5207 @@
+{
+ "kind": "bench",
+ "build": "optimized",
+ "runs": 200,
+ "models": [
+  {
+   "model": "sine-float",
+   "arena_bytes": 776,
+   "arena_size": 65536,
+   "vector_calls": 0,
+   "runs": 200,
+   "warmup": 5,
+   "inputs": 1,
+   "outputs": 1,
+   "output0": 0.4539876,
+   "request_us": {
+    "median": 120,
+    "p95": 126,
+    "min": 119,
+    "max": 155,
+    "mean": 121
+   },
+   "invoke_us": {
+    "median": 26,
+    "p95": 26,
+    "min": 25,
+    "max": 27,
+    "mean": 26
+   },
+   "overhead_us": {
+    "median": 94,
+    "p95": 100,
+    "min": 93,
+    "max": 128,
+    "mean": 95
+   },
+   "memory": {
+    "internal_free": 30684,
+    "internal_min_free": 25516,
+    "psram_free": 8176484
+   },
+   "raw": [
+    {
+     "run": 1,
+     "request_us": 121,
+     "invoke_us": 26
+    },
+    {
+     "run": 2,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 3,
+     "request_us": 126,
+     "invoke_us": 26
+    },
+    {
+     "run": 4,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 5,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 6,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 7,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 8,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 9,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 10,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 11,
+     "request_us": 127,
+     "invoke_us": 25
+    },
+    {
+     "run": 12,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 13,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 14,
+     "request_us": 119,
+     "invoke_us": 26
+    },
+    {
+     "run": 15,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 16,
+     "request_us": 121,
+     "invoke_us": 26
+    },
+    {
+     "run": 17,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 18,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 19,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 20,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 21,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 22,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 23,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 24,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 25,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 26,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 27,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 28,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 29,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 30,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 31,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 32,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 33,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 34,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 35,
+     "request_us": 126,
+     "invoke_us": 26
+    },
+    {
+     "run": 36,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 37,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 38,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 39,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 40,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 41,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 42,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 43,
+     "request_us": 127,
+     "invoke_us": 26
+    },
+    {
+     "run": 44,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 45,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 46,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 47,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 48,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 49,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 50,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 51,
+     "request_us": 141,
+     "invoke_us": 26
+    },
+    {
+     "run": 52,
+     "request_us": 122,
+     "invoke_us": 26
+    },
+    {
+     "run": 53,
+     "request_us": 121,
+     "invoke_us": 26
+    },
+    {
+     "run": 54,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 55,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 56,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 57,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 58,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 59,
+     "request_us": 125,
+     "invoke_us": 26
+    },
+    {
+     "run": 60,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 61,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 62,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 63,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 64,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 65,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 66,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 67,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 68,
+     "request_us": 122,
+     "invoke_us": 26
+    },
+    {
+     "run": 69,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 70,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 71,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 72,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 73,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 74,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 75,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 76,
+     "request_us": 127,
+     "invoke_us": 26
+    },
+    {
+     "run": 77,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 78,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 79,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 80,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 81,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 82,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 83,
+     "request_us": 119,
+     "invoke_us": 26
+    },
+    {
+     "run": 84,
+     "request_us": 126,
+     "invoke_us": 25
+    },
+    {
+     "run": 85,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 86,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 87,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 88,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 89,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 90,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 91,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 92,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 93,
+     "request_us": 121,
+     "invoke_us": 26
+    },
+    {
+     "run": 94,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 95,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 96,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 97,
+     "request_us": 119,
+     "invoke_us": 26
+    },
+    {
+     "run": 98,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 99,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 100,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 101,
+     "request_us": 119,
+     "invoke_us": 26
+    },
+    {
+     "run": 102,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 103,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 104,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 105,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 106,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 107,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 108,
+     "request_us": 126,
+     "invoke_us": 26
+    },
+    {
+     "run": 109,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 110,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 111,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 112,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 113,
+     "request_us": 119,
+     "invoke_us": 26
+    },
+    {
+     "run": 114,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 115,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 116,
+     "request_us": 126,
+     "invoke_us": 26
+    },
+    {
+     "run": 117,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 118,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 119,
+     "request_us": 121,
+     "invoke_us": 26
+    },
+    {
+     "run": 120,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 121,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 122,
+     "request_us": 121,
+     "invoke_us": 26
+    },
+    {
+     "run": 123,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 124,
+     "request_us": 126,
+     "invoke_us": 26
+    },
+    {
+     "run": 125,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 126,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 127,
+     "request_us": 121,
+     "invoke_us": 26
+    },
+    {
+     "run": 128,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 129,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 130,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 131,
+     "request_us": 121,
+     "invoke_us": 26
+    },
+    {
+     "run": 132,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 133,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 134,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 135,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 136,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 137,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 138,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 139,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 140,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 141,
+     "request_us": 141,
+     "invoke_us": 26
+    },
+    {
+     "run": 142,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 143,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 144,
+     "request_us": 155,
+     "invoke_us": 27
+    },
+    {
+     "run": 145,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 146,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 147,
+     "request_us": 121,
+     "invoke_us": 26
+    },
+    {
+     "run": 148,
+     "request_us": 126,
+     "invoke_us": 26
+    },
+    {
+     "run": 149,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 150,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 151,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 152,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 153,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 154,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 155,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 156,
+     "request_us": 123,
+     "invoke_us": 26
+    },
+    {
+     "run": 157,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 158,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 159,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 160,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 161,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 162,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 163,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 164,
+     "request_us": 121,
+     "invoke_us": 26
+    },
+    {
+     "run": 165,
+     "request_us": 123,
+     "invoke_us": 26
+    },
+    {
+     "run": 166,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 167,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 168,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 169,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 170,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 171,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 172,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 173,
+     "request_us": 126,
+     "invoke_us": 26
+    },
+    {
+     "run": 174,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 175,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 176,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 177,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 178,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 179,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 180,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 181,
+     "request_us": 122,
+     "invoke_us": 26
+    },
+    {
+     "run": 182,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 183,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 184,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 185,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 186,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 187,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 188,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 189,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 190,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 191,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 192,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 193,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 194,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 195,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 196,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 197,
+     "request_us": 121,
+     "invoke_us": 26
+    },
+    {
+     "run": 198,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 199,
+     "request_us": 120,
+     "invoke_us": 26
+    },
+    {
+     "run": 200,
+     "request_us": 120,
+     "invoke_us": 26
+    }
+   ]
+  },
+  {
+   "model": "sine-int8",
+   "arena_bytes": 716,
+   "arena_size": 65536,
+   "vector_calls": 2,
+   "runs": 200,
+   "warmup": 5,
+   "inputs": 1,
+   "outputs": 1,
+   "output0": 0.4560026,
+   "request_us": {
+    "median": 123,
+    "p95": 129,
+    "min": 122,
+    "max": 189,
+    "mean": 124
+   },
+   "invoke_us": {
+    "median": 28,
+    "p95": 28,
+    "min": 27,
+    "max": 51,
+    "mean": 28
+   },
+   "overhead_us": {
+    "median": 96,
+    "p95": 101,
+    "min": 94,
+    "max": 138,
+    "mean": 96
+   },
+   "memory": {
+    "internal_free": 30684,
+    "internal_min_free": 25516,
+    "psram_free": 8176484
+   },
+   "raw": [
+    {
+     "run": 1,
+     "request_us": 124,
+     "invoke_us": 27
+    },
+    {
+     "run": 2,
+     "request_us": 180,
+     "invoke_us": 49
+    },
+    {
+     "run": 3,
+     "request_us": 138,
+     "invoke_us": 33
+    },
+    {
+     "run": 4,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 5,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 6,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 7,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 8,
+     "request_us": 123,
+     "invoke_us": 28
+    },
+    {
+     "run": 9,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 10,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 11,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 12,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 13,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 14,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 15,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 16,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 17,
+     "request_us": 123,
+     "invoke_us": 28
+    },
+    {
+     "run": 18,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 19,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 20,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 21,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 22,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 23,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 24,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 25,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 26,
+     "request_us": 123,
+     "invoke_us": 28
+    },
+    {
+     "run": 27,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 28,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 29,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 30,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 31,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 32,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 33,
+     "request_us": 123,
+     "invoke_us": 28
+    },
+    {
+     "run": 34,
+     "request_us": 123,
+     "invoke_us": 28
+    },
+    {
+     "run": 35,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 36,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 37,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 38,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 39,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 40,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 41,
+     "request_us": 123,
+     "invoke_us": 28
+    },
+    {
+     "run": 42,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 43,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 44,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 45,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 46,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 47,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 48,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 49,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 50,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 51,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 52,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 53,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 54,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 55,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 56,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 57,
+     "request_us": 150,
+     "invoke_us": 37
+    },
+    {
+     "run": 58,
+     "request_us": 189,
+     "invoke_us": 51
+    },
+    {
+     "run": 59,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 60,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 61,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 62,
+     "request_us": 123,
+     "invoke_us": 28
+    },
+    {
+     "run": 63,
+     "request_us": 123,
+     "invoke_us": 28
+    },
+    {
+     "run": 64,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 65,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 66,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 67,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 68,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 69,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 70,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 71,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 72,
+     "request_us": 123,
+     "invoke_us": 28
+    },
+    {
+     "run": 73,
+     "request_us": 123,
+     "invoke_us": 28
+    },
+    {
+     "run": 74,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 75,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 76,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 77,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 78,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 79,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 80,
+     "request_us": 123,
+     "invoke_us": 28
+    },
+    {
+     "run": 81,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 82,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 83,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 84,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 85,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 86,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 87,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 88,
+     "request_us": 129,
+     "invoke_us": 28
+    },
+    {
+     "run": 89,
+     "request_us": 168,
+     "invoke_us": 39
+    },
+    {
+     "run": 90,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 91,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 92,
+     "request_us": 122,
+     "invoke_us": 27
+    },
+    {
+     "run": 93,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 94,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 95,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 96,
+     "request_us": 129,
+     "invoke_us": 28
+    },
+    {
+     "run": 97,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 98,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 99,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 100,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 101,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 102,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 103,
+     "request_us": 123,
+     "invoke_us": 28
+    },
+    {
+     "run": 104,
+     "request_us": 125,
+     "invoke_us": 28
+    },
+    {
+     "run": 105,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 106,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 107,
+     "request_us": 145,
+     "invoke_us": 27
+    },
+    {
+     "run": 108,
+     "request_us": 158,
+     "invoke_us": 32
+    },
+    {
+     "run": 109,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 110,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 111,
+     "request_us": 123,
+     "invoke_us": 28
+    },
+    {
+     "run": 112,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 113,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 114,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 115,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 116,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 117,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 118,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 119,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 120,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 121,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 122,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 123,
+     "request_us": 123,
+     "invoke_us": 28
+    },
+    {
+     "run": 124,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 125,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 126,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 127,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 128,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 129,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 130,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 131,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 132,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 133,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 134,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 135,
+     "request_us": 123,
+     "invoke_us": 28
+    },
+    {
+     "run": 136,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 137,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 138,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 139,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 140,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 141,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 142,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 143,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 144,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 145,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 146,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 147,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 148,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 149,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 150,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 151,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 152,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 153,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 154,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 155,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 156,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 157,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 158,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 159,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 160,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 161,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 162,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 163,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 164,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 165,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 166,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 167,
+     "request_us": 122,
+     "invoke_us": 27
+    },
+    {
+     "run": 168,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 169,
+     "request_us": 123,
+     "invoke_us": 28
+    },
+    {
+     "run": 170,
+     "request_us": 122,
+     "invoke_us": 27
+    },
+    {
+     "run": 171,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 172,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 173,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 174,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 175,
+     "request_us": 145,
+     "invoke_us": 28
+    },
+    {
+     "run": 176,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 177,
+     "request_us": 123,
+     "invoke_us": 28
+    },
+    {
+     "run": 178,
+     "request_us": 122,
+     "invoke_us": 27
+    },
+    {
+     "run": 179,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 180,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 181,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 182,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 183,
+     "request_us": 125,
+     "invoke_us": 27
+    },
+    {
+     "run": 184,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 185,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 186,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 187,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 188,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 189,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 190,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 191,
+     "request_us": 129,
+     "invoke_us": 27
+    },
+    {
+     "run": 192,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 193,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 194,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 195,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 196,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 197,
+     "request_us": 122,
+     "invoke_us": 28
+    },
+    {
+     "run": 198,
+     "request_us": 123,
+     "invoke_us": 27
+    },
+    {
+     "run": 199,
+     "request_us": 129,
+     "invoke_us": 27
+    },
+    {
+     "run": 200,
+     "request_us": 123,
+     "invoke_us": 27
+    }
+   ]
+  },
+  {
+   "model": "autoencoder",
+   "arena_bytes": 2908,
+   "arena_size": 65536,
+   "vector_calls": 0,
+   "runs": 200,
+   "warmup": 5,
+   "inputs": 16,
+   "outputs": 16,
+   "output0": 0,
+   "request_us": {
+    "median": 255,
+    "p95": 270,
+    "min": 254,
+    "max": 349,
+    "mean": 258
+   },
+   "invoke_us": {
+    "median": 138,
+    "p95": 142,
+    "min": 137,
+    "max": 197,
+    "mean": 139
+   },
+   "overhead_us": {
+    "median": 118,
+    "p95": 125,
+    "min": 117,
+    "max": 152,
+    "mean": 119
+   },
+   "memory": {
+    "internal_free": 30684,
+    "internal_min_free": 25516,
+    "psram_free": 8176484
+   },
+   "raw": [
+    {
+     "run": 1,
+     "request_us": 256,
+     "invoke_us": 137
+    },
+    {
+     "run": 2,
+     "request_us": 261,
+     "invoke_us": 138
+    },
+    {
+     "run": 3,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 4,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 5,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 6,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 7,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 8,
+     "request_us": 256,
+     "invoke_us": 138
+    },
+    {
+     "run": 9,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 10,
+     "request_us": 288,
+     "invoke_us": 149
+    },
+    {
+     "run": 11,
+     "request_us": 270,
+     "invoke_us": 145
+    },
+    {
+     "run": 12,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 13,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 14,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 15,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 16,
+     "request_us": 256,
+     "invoke_us": 138
+    },
+    {
+     "run": 17,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 18,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 19,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 20,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 21,
+     "request_us": 256,
+     "invoke_us": 137
+    },
+    {
+     "run": 22,
+     "request_us": 262,
+     "invoke_us": 137
+    },
+    {
+     "run": 23,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 24,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 25,
+     "request_us": 266,
+     "invoke_us": 139
+    },
+    {
+     "run": 26,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 27,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 28,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 29,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 30,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 31,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 32,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 33,
+     "request_us": 257,
+     "invoke_us": 137
+    },
+    {
+     "run": 34,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 35,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 36,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 37,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 38,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 39,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 40,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 41,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 42,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 43,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 44,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 45,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 46,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 47,
+     "request_us": 256,
+     "invoke_us": 138
+    },
+    {
+     "run": 48,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 49,
+     "request_us": 305,
+     "invoke_us": 177
+    },
+    {
+     "run": 50,
+     "request_us": 289,
+     "invoke_us": 154
+    },
+    {
+     "run": 51,
+     "request_us": 256,
+     "invoke_us": 138
+    },
+    {
+     "run": 52,
+     "request_us": 272,
+     "invoke_us": 139
+    },
+    {
+     "run": 53,
+     "request_us": 270,
+     "invoke_us": 145
+    },
+    {
+     "run": 54,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 55,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 56,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 57,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 58,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 59,
+     "request_us": 256,
+     "invoke_us": 138
+    },
+    {
+     "run": 60,
+     "request_us": 256,
+     "invoke_us": 137
+    },
+    {
+     "run": 61,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 62,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 63,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 64,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 65,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 66,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 67,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 68,
+     "request_us": 261,
+     "invoke_us": 138
+    },
+    {
+     "run": 69,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 70,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 71,
+     "request_us": 261,
+     "invoke_us": 138
+    },
+    {
+     "run": 72,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 73,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 74,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 75,
+     "request_us": 256,
+     "invoke_us": 138
+    },
+    {
+     "run": 76,
+     "request_us": 256,
+     "invoke_us": 138
+    },
+    {
+     "run": 77,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 78,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 79,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 80,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 81,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 82,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 83,
+     "request_us": 256,
+     "invoke_us": 138
+    },
+    {
+     "run": 84,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 85,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 86,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 87,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 88,
+     "request_us": 256,
+     "invoke_us": 138
+    },
+    {
+     "run": 89,
+     "request_us": 256,
+     "invoke_us": 137
+    },
+    {
+     "run": 90,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 91,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 92,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 93,
+     "request_us": 256,
+     "invoke_us": 138
+    },
+    {
+     "run": 94,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 95,
+     "request_us": 256,
+     "invoke_us": 138
+    },
+    {
+     "run": 96,
+     "request_us": 270,
+     "invoke_us": 145
+    },
+    {
+     "run": 97,
+     "request_us": 256,
+     "invoke_us": 138
+    },
+    {
+     "run": 98,
+     "request_us": 256,
+     "invoke_us": 138
+    },
+    {
+     "run": 99,
+     "request_us": 258,
+     "invoke_us": 137
+    },
+    {
+     "run": 100,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 101,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 102,
+     "request_us": 261,
+     "invoke_us": 137
+    },
+    {
+     "run": 103,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 104,
+     "request_us": 256,
+     "invoke_us": 138
+    },
+    {
+     "run": 105,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 106,
+     "request_us": 257,
+     "invoke_us": 140
+    },
+    {
+     "run": 107,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 108,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 109,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 110,
+     "request_us": 256,
+     "invoke_us": 137
+    },
+    {
+     "run": 111,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 112,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 113,
+     "request_us": 256,
+     "invoke_us": 137
+    },
+    {
+     "run": 114,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 115,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 116,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 117,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 118,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 119,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 120,
+     "request_us": 256,
+     "invoke_us": 137
+    },
+    {
+     "run": 121,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 122,
+     "request_us": 256,
+     "invoke_us": 138
+    },
+    {
+     "run": 123,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 124,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 125,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 126,
+     "request_us": 257,
+     "invoke_us": 137
+    },
+    {
+     "run": 127,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 128,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 129,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 130,
+     "request_us": 260,
+     "invoke_us": 137
+    },
+    {
+     "run": 131,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 132,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 133,
+     "request_us": 261,
+     "invoke_us": 138
+    },
+    {
+     "run": 134,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 135,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 136,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 137,
+     "request_us": 279,
+     "invoke_us": 138
+    },
+    {
+     "run": 138,
+     "request_us": 270,
+     "invoke_us": 144
+    },
+    {
+     "run": 139,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 140,
+     "request_us": 256,
+     "invoke_us": 138
+    },
+    {
+     "run": 141,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 142,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 143,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 144,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 145,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 146,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 147,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 148,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 149,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 150,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 151,
+     "request_us": 256,
+     "invoke_us": 137
+    },
+    {
+     "run": 152,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 153,
+     "request_us": 261,
+     "invoke_us": 138
+    },
+    {
+     "run": 154,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 155,
+     "request_us": 256,
+     "invoke_us": 138
+    },
+    {
+     "run": 156,
+     "request_us": 257,
+     "invoke_us": 137
+    },
+    {
+     "run": 157,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 158,
+     "request_us": 256,
+     "invoke_us": 137
+    },
+    {
+     "run": 159,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 160,
+     "request_us": 261,
+     "invoke_us": 138
+    },
+    {
+     "run": 161,
+     "request_us": 254,
+     "invoke_us": 137
+    },
+    {
+     "run": 162,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 163,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 164,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 165,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 166,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 167,
+     "request_us": 256,
+     "invoke_us": 137
+    },
+    {
+     "run": 168,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 169,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 170,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 171,
+     "request_us": 256,
+     "invoke_us": 138
+    },
+    {
+     "run": 172,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 173,
+     "request_us": 256,
+     "invoke_us": 138
+    },
+    {
+     "run": 174,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 175,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 176,
+     "request_us": 254,
+     "invoke_us": 137
+    },
+    {
+     "run": 177,
+     "request_us": 260,
+     "invoke_us": 138
+    },
+    {
+     "run": 178,
+     "request_us": 349,
+     "invoke_us": 197
+    },
+    {
+     "run": 179,
+     "request_us": 306,
+     "invoke_us": 154
+    },
+    {
+     "run": 180,
+     "request_us": 276,
+     "invoke_us": 153
+    },
+    {
+     "run": 181,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 182,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 183,
+     "request_us": 256,
+     "invoke_us": 138
+    },
+    {
+     "run": 184,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 185,
+     "request_us": 259,
+     "invoke_us": 142
+    },
+    {
+     "run": 186,
+     "request_us": 256,
+     "invoke_us": 139
+    },
+    {
+     "run": 187,
+     "request_us": 258,
+     "invoke_us": 141
+    },
+    {
+     "run": 188,
+     "request_us": 256,
+     "invoke_us": 139
+    },
+    {
+     "run": 189,
+     "request_us": 259,
+     "invoke_us": 142
+    },
+    {
+     "run": 190,
+     "request_us": 256,
+     "invoke_us": 138
+    },
+    {
+     "run": 191,
+     "request_us": 265,
+     "invoke_us": 142
+    },
+    {
+     "run": 192,
+     "request_us": 257,
+     "invoke_us": 139
+    },
+    {
+     "run": 193,
+     "request_us": 256,
+     "invoke_us": 138
+    },
+    {
+     "run": 194,
+     "request_us": 258,
+     "invoke_us": 138
+    },
+    {
+     "run": 195,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 196,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 197,
+     "request_us": 255,
+     "invoke_us": 137
+    },
+    {
+     "run": 198,
+     "request_us": 261,
+     "invoke_us": 138
+    },
+    {
+     "run": 199,
+     "request_us": 255,
+     "invoke_us": 138
+    },
+    {
+     "run": 200,
+     "request_us": 256,
+     "invoke_us": 138
+    }
+   ]
+  },
+  {
+   "model": "comfort-summer",
+   "arena_bytes": 1432,
+   "arena_size": 65536,
+   "vector_calls": 0,
+   "runs": 200,
+   "warmup": 5,
+   "inputs": 2,
+   "outputs": 100,
+   "output0": 1,
+   "request_us": {
+    "median": 209,
+    "p95": 214,
+    "min": 208,
+    "max": 229,
+    "mean": 209
+   },
+   "invoke_us": {
+    "median": 112,
+    "p95": 113,
+    "min": 112,
+    "max": 115,
+    "mean": 112
+   },
+   "overhead_us": {
+    "median": 97,
+    "p95": 102,
+    "min": 95,
+    "max": 117,
+    "mean": 97
+   },
+   "memory": {
+    "internal_free": 30684,
+    "internal_min_free": 25516,
+    "psram_free": 8176484
+   },
+   "raw": [
+    {
+     "run": 1,
+     "request_us": 210,
+     "invoke_us": 113
+    },
+    {
+     "run": 2,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 3,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 4,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 5,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 6,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 7,
+     "request_us": 215,
+     "invoke_us": 113
+    },
+    {
+     "run": 8,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 9,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 10,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 11,
+     "request_us": 228,
+     "invoke_us": 113
+    },
+    {
+     "run": 12,
+     "request_us": 213,
+     "invoke_us": 115
+    },
+    {
+     "run": 13,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 14,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 15,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 16,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 17,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 18,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 19,
+     "request_us": 209,
+     "invoke_us": 113
+    },
+    {
+     "run": 20,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 21,
+     "request_us": 211,
+     "invoke_us": 112
+    },
+    {
+     "run": 22,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 23,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 24,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 25,
+     "request_us": 215,
+     "invoke_us": 113
+    },
+    {
+     "run": 26,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 27,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 28,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 29,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 30,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 31,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 32,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 33,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 34,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 35,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 36,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 37,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 38,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 39,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 40,
+     "request_us": 215,
+     "invoke_us": 112
+    },
+    {
+     "run": 41,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 42,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 43,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 44,
+     "request_us": 214,
+     "invoke_us": 112
+    },
+    {
+     "run": 45,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 46,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 47,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 48,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 49,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 50,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 51,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 52,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 53,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 54,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 55,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 56,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 57,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 58,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 59,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 60,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 61,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 62,
+     "request_us": 209,
+     "invoke_us": 113
+    },
+    {
+     "run": 63,
+     "request_us": 210,
+     "invoke_us": 113
+    },
+    {
+     "run": 64,
+     "request_us": 229,
+     "invoke_us": 112
+    },
+    {
+     "run": 65,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 66,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 67,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 68,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 69,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 70,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 71,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 72,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 73,
+     "request_us": 215,
+     "invoke_us": 113
+    },
+    {
+     "run": 74,
+     "request_us": 209,
+     "invoke_us": 113
+    },
+    {
+     "run": 75,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 76,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 77,
+     "request_us": 211,
+     "invoke_us": 113
+    },
+    {
+     "run": 78,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 79,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 80,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 81,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 82,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 83,
+     "request_us": 209,
+     "invoke_us": 113
+    },
+    {
+     "run": 84,
+     "request_us": 209,
+     "invoke_us": 113
+    },
+    {
+     "run": 85,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 86,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 87,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 88,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 89,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 90,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 91,
+     "request_us": 209,
+     "invoke_us": 113
+    },
+    {
+     "run": 92,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 93,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 94,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 95,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 96,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 97,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 98,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 99,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 100,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 101,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 102,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 103,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 104,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 105,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 106,
+     "request_us": 211,
+     "invoke_us": 112
+    },
+    {
+     "run": 107,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 108,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 109,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 110,
+     "request_us": 214,
+     "invoke_us": 112
+    },
+    {
+     "run": 111,
+     "request_us": 209,
+     "invoke_us": 113
+    },
+    {
+     "run": 112,
+     "request_us": 209,
+     "invoke_us": 113
+    },
+    {
+     "run": 113,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 114,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 115,
+     "request_us": 218,
+     "invoke_us": 113
+    },
+    {
+     "run": 116,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 117,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 118,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 119,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 120,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 121,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 122,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 123,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 124,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 125,
+     "request_us": 213,
+     "invoke_us": 113
+    },
+    {
+     "run": 126,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 127,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 128,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 129,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 130,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 131,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 132,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 133,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 134,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 135,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 136,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 137,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 138,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 139,
+     "request_us": 209,
+     "invoke_us": 113
+    },
+    {
+     "run": 140,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 141,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 142,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 143,
+     "request_us": 215,
+     "invoke_us": 112
+    },
+    {
+     "run": 144,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 145,
+     "request_us": 209,
+     "invoke_us": 113
+    },
+    {
+     "run": 146,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 147,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 148,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 149,
+     "request_us": 209,
+     "invoke_us": 113
+    },
+    {
+     "run": 150,
+     "request_us": 209,
+     "invoke_us": 113
+    },
+    {
+     "run": 151,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 152,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 153,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 154,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 155,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 156,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 157,
+     "request_us": 209,
+     "invoke_us": 113
+    },
+    {
+     "run": 158,
+     "request_us": 215,
+     "invoke_us": 112
+    },
+    {
+     "run": 159,
+     "request_us": 209,
+     "invoke_us": 113
+    },
+    {
+     "run": 160,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 161,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 162,
+     "request_us": 215,
+     "invoke_us": 112
+    },
+    {
+     "run": 163,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 164,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 165,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 166,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 167,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 168,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 169,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 170,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 171,
+     "request_us": 209,
+     "invoke_us": 113
+    },
+    {
+     "run": 172,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 173,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 174,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 175,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 176,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 177,
+     "request_us": 210,
+     "invoke_us": 112
+    },
+    {
+     "run": 178,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 179,
+     "request_us": 209,
+     "invoke_us": 113
+    },
+    {
+     "run": 180,
+     "request_us": 209,
+     "invoke_us": 113
+    },
+    {
+     "run": 181,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 182,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 183,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 184,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 185,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 186,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 187,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 188,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 189,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 190,
+     "request_us": 208,
+     "invoke_us": 113
+    },
+    {
+     "run": 191,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 192,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 193,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 194,
+     "request_us": 209,
+     "invoke_us": 113
+    },
+    {
+     "run": 195,
+     "request_us": 214,
+     "invoke_us": 113
+    },
+    {
+     "run": 196,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 197,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 198,
+     "request_us": 209,
+     "invoke_us": 112
+    },
+    {
+     "run": 199,
+     "request_us": 208,
+     "invoke_us": 112
+    },
+    {
+     "run": 200,
+     "request_us": 208,
+     "invoke_us": 112
+    }
+   ]
+  },
+  {
+   "model": "people-counter",
+   "arena_bytes": 6204,
+   "arena_size": 65536,
+   "vector_calls": 0,
+   "runs": 200,
+   "warmup": 5,
+   "inputs": 31,
+   "outputs": 3,
+   "output0": 0,
+   "request_us": {
+    "median": 1535,
+    "p95": 1603,
+    "min": 1521,
+    "max": 2324,
+    "mean": 1546
+   },
+   "invoke_us": {
+    "median": 1326,
+    "p95": 1379,
+    "min": 1320,
+    "max": 2046,
+    "mean": 1336
+   },
+   "overhead_us": {
+    "median": 208,
+    "p95": 228,
+    "min": 199,
+    "max": 278,
+    "mean": 210
+   },
+   "memory": {
+    "internal_free": 30684,
+    "internal_min_free": 25516,
+    "psram_free": 8176484
+   },
+   "raw": [
+    {
+     "run": 1,
+     "request_us": 1548,
+     "invoke_us": 1336
+    },
+    {
+     "run": 2,
+     "request_us": 1535,
+     "invoke_us": 1327
+    },
+    {
+     "run": 3,
+     "request_us": 1528,
+     "invoke_us": 1320
+    },
+    {
+     "run": 4,
+     "request_us": 1522,
+     "invoke_us": 1321
+    },
+    {
+     "run": 5,
+     "request_us": 1541,
+     "invoke_us": 1328
+    },
+    {
+     "run": 6,
+     "request_us": 1539,
+     "invoke_us": 1324
+    },
+    {
+     "run": 7,
+     "request_us": 1545,
+     "invoke_us": 1337
+    },
+    {
+     "run": 8,
+     "request_us": 1536,
+     "invoke_us": 1327
+    },
+    {
+     "run": 9,
+     "request_us": 1532,
+     "invoke_us": 1324
+    },
+    {
+     "run": 10,
+     "request_us": 1533,
+     "invoke_us": 1326
+    },
+    {
+     "run": 11,
+     "request_us": 1535,
+     "invoke_us": 1327
+    },
+    {
+     "run": 12,
+     "request_us": 1527,
+     "invoke_us": 1320
+    },
+    {
+     "run": 13,
+     "request_us": 1526,
+     "invoke_us": 1322
+    },
+    {
+     "run": 14,
+     "request_us": 1542,
+     "invoke_us": 1334
+    },
+    {
+     "run": 15,
+     "request_us": 1523,
+     "invoke_us": 1320
+    },
+    {
+     "run": 16,
+     "request_us": 1538,
+     "invoke_us": 1325
+    },
+    {
+     "run": 17,
+     "request_us": 1540,
+     "invoke_us": 1327
+    },
+    {
+     "run": 18,
+     "request_us": 1532,
+     "invoke_us": 1325
+    },
+    {
+     "run": 19,
+     "request_us": 1533,
+     "invoke_us": 1326
+    },
+    {
+     "run": 20,
+     "request_us": 1538,
+     "invoke_us": 1329
+    },
+    {
+     "run": 21,
+     "request_us": 1544,
+     "invoke_us": 1336
+    },
+    {
+     "run": 22,
+     "request_us": 1535,
+     "invoke_us": 1325
+    },
+    {
+     "run": 23,
+     "request_us": 1536,
+     "invoke_us": 1328
+    },
+    {
+     "run": 24,
+     "request_us": 1532,
+     "invoke_us": 1324
+    },
+    {
+     "run": 25,
+     "request_us": 1528,
+     "invoke_us": 1321
+    },
+    {
+     "run": 26,
+     "request_us": 1523,
+     "invoke_us": 1322
+    },
+    {
+     "run": 27,
+     "request_us": 1541,
+     "invoke_us": 1326
+    },
+    {
+     "run": 28,
+     "request_us": 1540,
+     "invoke_us": 1333
+    },
+    {
+     "run": 29,
+     "request_us": 1536,
+     "invoke_us": 1327
+    },
+    {
+     "run": 30,
+     "request_us": 1532,
+     "invoke_us": 1325
+    },
+    {
+     "run": 31,
+     "request_us": 1532,
+     "invoke_us": 1325
+    },
+    {
+     "run": 32,
+     "request_us": 1535,
+     "invoke_us": 1327
+    },
+    {
+     "run": 33,
+     "request_us": 1532,
+     "invoke_us": 1324
+    },
+    {
+     "run": 34,
+     "request_us": 1534,
+     "invoke_us": 1325
+    },
+    {
+     "run": 35,
+     "request_us": 1547,
+     "invoke_us": 1338
+    },
+    {
+     "run": 36,
+     "request_us": 1530,
+     "invoke_us": 1320
+    },
+    {
+     "run": 37,
+     "request_us": 1523,
+     "invoke_us": 1321
+    },
+    {
+     "run": 38,
+     "request_us": 1538,
+     "invoke_us": 1324
+    },
+    {
+     "run": 39,
+     "request_us": 1527,
+     "invoke_us": 1320
+    },
+    {
+     "run": 40,
+     "request_us": 1533,
+     "invoke_us": 1325
+    },
+    {
+     "run": 41,
+     "request_us": 1542,
+     "invoke_us": 1333
+    },
+    {
+     "run": 42,
+     "request_us": 1544,
+     "invoke_us": 1336
+    },
+    {
+     "run": 43,
+     "request_us": 1535,
+     "invoke_us": 1325
+    },
+    {
+     "run": 44,
+     "request_us": 1535,
+     "invoke_us": 1327
+    },
+    {
+     "run": 45,
+     "request_us": 1533,
+     "invoke_us": 1326
+    },
+    {
+     "run": 46,
+     "request_us": 1534,
+     "invoke_us": 1326
+    },
+    {
+     "run": 47,
+     "request_us": 1530,
+     "invoke_us": 1322
+    },
+    {
+     "run": 48,
+     "request_us": 1521,
+     "invoke_us": 1320
+    },
+    {
+     "run": 49,
+     "request_us": 1568,
+     "invoke_us": 1338
+    },
+    {
+     "run": 50,
+     "request_us": 1536,
+     "invoke_us": 1326
+    },
+    {
+     "run": 51,
+     "request_us": 1532,
+     "invoke_us": 1324
+    },
+    {
+     "run": 52,
+     "request_us": 1533,
+     "invoke_us": 1325
+    },
+    {
+     "run": 53,
+     "request_us": 1723,
+     "invoke_us": 1445
+    },
+    {
+     "run": 54,
+     "request_us": 1575,
+     "invoke_us": 1355
+    },
+    {
+     "run": 55,
+     "request_us": 1522,
+     "invoke_us": 1323
+    },
+    {
+     "run": 56,
+     "request_us": 1590,
+     "invoke_us": 1353
+    },
+    {
+     "run": 57,
+     "request_us": 1548,
+     "invoke_us": 1336
+    },
+    {
+     "run": 58,
+     "request_us": 1533,
+     "invoke_us": 1325
+    },
+    {
+     "run": 59,
+     "request_us": 1535,
+     "invoke_us": 1327
+    },
+    {
+     "run": 60,
+     "request_us": 1533,
+     "invoke_us": 1325
+    },
+    {
+     "run": 61,
+     "request_us": 1699,
+     "invoke_us": 1470
+    },
+    {
+     "run": 62,
+     "request_us": 1664,
+     "invoke_us": 1430
+    },
+    {
+     "run": 63,
+     "request_us": 1603,
+     "invoke_us": 1379
+    },
+    {
+     "run": 64,
+     "request_us": 1539,
+     "invoke_us": 1327
+    },
+    {
+     "run": 65,
+     "request_us": 1524,
+     "invoke_us": 1322
+    },
+    {
+     "run": 66,
+     "request_us": 1529,
+     "invoke_us": 1321
+    },
+    {
+     "run": 67,
+     "request_us": 1522,
+     "invoke_us": 1321
+    },
+    {
+     "run": 68,
+     "request_us": 1538,
+     "invoke_us": 1325
+    },
+    {
+     "run": 69,
+     "request_us": 1569,
+     "invoke_us": 1321
+    },
+    {
+     "run": 70,
+     "request_us": 1548,
+     "invoke_us": 1338
+    },
+    {
+     "run": 71,
+     "request_us": 1536,
+     "invoke_us": 1327
+    },
+    {
+     "run": 72,
+     "request_us": 1533,
+     "invoke_us": 1325
+    },
+    {
+     "run": 73,
+     "request_us": 1533,
+     "invoke_us": 1326
+    },
+    {
+     "run": 74,
+     "request_us": 1535,
+     "invoke_us": 1327
+    },
+    {
+     "run": 75,
+     "request_us": 1529,
+     "invoke_us": 1321
+    },
+    {
+     "run": 76,
+     "request_us": 1523,
+     "invoke_us": 1321
+    },
+    {
+     "run": 77,
+     "request_us": 1550,
+     "invoke_us": 1341
+    },
+    {
+     "run": 78,
+     "request_us": 1524,
+     "invoke_us": 1320
+    },
+    {
+     "run": 79,
+     "request_us": 1539,
+     "invoke_us": 1327
+    },
+    {
+     "run": 80,
+     "request_us": 1535,
+     "invoke_us": 1326
+    },
+    {
+     "run": 81,
+     "request_us": 1533,
+     "invoke_us": 1325
+    },
+    {
+     "run": 82,
+     "request_us": 1533,
+     "invoke_us": 1326
+    },
+    {
+     "run": 83,
+     "request_us": 1535,
+     "invoke_us": 1327
+    },
+    {
+     "run": 84,
+     "request_us": 1546,
+     "invoke_us": 1336
+    },
+    {
+     "run": 85,
+     "request_us": 1536,
+     "invoke_us": 1325
+    },
+    {
+     "run": 86,
+     "request_us": 1530,
+     "invoke_us": 1323
+    },
+    {
+     "run": 87,
+     "request_us": 1522,
+     "invoke_us": 1321
+    },
+    {
+     "run": 88,
+     "request_us": 1530,
+     "invoke_us": 1321
+    },
+    {
+     "run": 89,
+     "request_us": 1524,
+     "invoke_us": 1322
+    },
+    {
+     "run": 90,
+     "request_us": 1537,
+     "invoke_us": 1322
+    },
+    {
+     "run": 91,
+     "request_us": 1528,
+     "invoke_us": 1321
+    },
+    {
+     "run": 92,
+     "request_us": 1549,
+     "invoke_us": 1339
+    },
+    {
+     "run": 93,
+     "request_us": 1534,
+     "invoke_us": 1325
+    },
+    {
+     "run": 94,
+     "request_us": 1533,
+     "invoke_us": 1326
+    },
+    {
+     "run": 95,
+     "request_us": 1535,
+     "invoke_us": 1327
+    },
+    {
+     "run": 96,
+     "request_us": 1533,
+     "invoke_us": 1325
+    },
+    {
+     "run": 97,
+     "request_us": 1533,
+     "invoke_us": 1325
+    },
+    {
+     "run": 98,
+     "request_us": 1537,
+     "invoke_us": 1329
+    },
+    {
+     "run": 99,
+     "request_us": 1543,
+     "invoke_us": 1333
+    },
+    {
+     "run": 100,
+     "request_us": 1524,
+     "invoke_us": 1321
+    },
+    {
+     "run": 101,
+     "request_us": 1533,
+     "invoke_us": 1324
+    },
+    {
+     "run": 102,
+     "request_us": 1522,
+     "invoke_us": 1321
+    },
+    {
+     "run": 103,
+     "request_us": 1534,
+     "invoke_us": 1325
+    },
+    {
+     "run": 104,
+     "request_us": 1536,
+     "invoke_us": 1328
+    },
+    {
+     "run": 105,
+     "request_us": 1535,
+     "invoke_us": 1327
+    },
+    {
+     "run": 106,
+     "request_us": 1547,
+     "invoke_us": 1338
+    },
+    {
+     "run": 107,
+     "request_us": 1536,
+     "invoke_us": 1327
+    },
+    {
+     "run": 108,
+     "request_us": 1534,
+     "invoke_us": 1325
+    },
+    {
+     "run": 109,
+     "request_us": 1533,
+     "invoke_us": 1325
+    },
+    {
+     "run": 110,
+     "request_us": 1530,
+     "invoke_us": 1323
+    },
+    {
+     "run": 111,
+     "request_us": 1522,
+     "invoke_us": 1321
+    },
+    {
+     "run": 112,
+     "request_us": 1530,
+     "invoke_us": 1322
+    },
+    {
+     "run": 113,
+     "request_us": 1537,
+     "invoke_us": 1334
+    },
+    {
+     "run": 114,
+     "request_us": 1535,
+     "invoke_us": 1325
+    },
+    {
+     "run": 115,
+     "request_us": 1535,
+     "invoke_us": 1327
+    },
+    {
+     "run": 116,
+     "request_us": 1535,
+     "invoke_us": 1327
+    },
+    {
+     "run": 117,
+     "request_us": 1533,
+     "invoke_us": 1325
+    },
+    {
+     "run": 118,
+     "request_us": 1589,
+     "invoke_us": 1352
+    },
+    {
+     "run": 119,
+     "request_us": 1618,
+     "invoke_us": 1390
+    },
+    {
+     "run": 120,
+     "request_us": 1573,
+     "invoke_us": 1362
+    },
+    {
+     "run": 121,
+     "request_us": 1542,
+     "invoke_us": 1332
+    },
+    {
+     "run": 122,
+     "request_us": 1534,
+     "invoke_us": 1327
+    },
+    {
+     "run": 123,
+     "request_us": 2324,
+     "invoke_us": 2046
+    },
+    {
+     "run": 124,
+     "request_us": 1665,
+     "invoke_us": 1410
+    },
+    {
+     "run": 125,
+     "request_us": 1533,
+     "invoke_us": 1327
+    },
+    {
+     "run": 126,
+     "request_us": 1561,
+     "invoke_us": 1353
+    },
+    {
+     "run": 127,
+     "request_us": 1533,
+     "invoke_us": 1326
+    },
+    {
+     "run": 128,
+     "request_us": 1533,
+     "invoke_us": 1326
+    },
+    {
+     "run": 129,
+     "request_us": 1534,
+     "invoke_us": 1327
+    },
+    {
+     "run": 130,
+     "request_us": 1528,
+     "invoke_us": 1321
+    },
+    {
+     "run": 131,
+     "request_us": 1522,
+     "invoke_us": 1322
+    },
+    {
+     "run": 132,
+     "request_us": 1531,
+     "invoke_us": 1326
+    },
+    {
+     "run": 133,
+     "request_us": 1523,
+     "invoke_us": 1323
+    },
+    {
+     "run": 134,
+     "request_us": 1546,
+     "invoke_us": 1338
+    },
+    {
+     "run": 135,
+     "request_us": 1538,
+     "invoke_us": 1329
+    },
+    {
+     "run": 136,
+     "request_us": 1532,
+     "invoke_us": 1325
+    },
+    {
+     "run": 137,
+     "request_us": 1532,
+     "invoke_us": 1326
+    },
+    {
+     "run": 138,
+     "request_us": 1534,
+     "invoke_us": 1328
+    },
+    {
+     "run": 139,
+     "request_us": 1532,
+     "invoke_us": 1326
+    },
+    {
+     "run": 140,
+     "request_us": 1534,
+     "invoke_us": 1328
+    },
+    {
+     "run": 141,
+     "request_us": 1544,
+     "invoke_us": 1336
+    },
+    {
+     "run": 142,
+     "request_us": 1524,
+     "invoke_us": 1321
+    },
+    {
+     "run": 143,
+     "request_us": 1528,
+     "invoke_us": 1322
+    },
+    {
+     "run": 144,
+     "request_us": 1524,
+     "invoke_us": 1323
+    },
+    {
+     "run": 145,
+     "request_us": 1535,
+     "invoke_us": 1326
+    },
+    {
+     "run": 146,
+     "request_us": 1535,
+     "invoke_us": 1326
+    },
+    {
+     "run": 147,
+     "request_us": 1535,
+     "invoke_us": 1329
+    },
+    {
+     "run": 148,
+     "request_us": 1546,
+     "invoke_us": 1338
+    },
+    {
+     "run": 149,
+     "request_us": 1534,
+     "invoke_us": 1327
+    },
+    {
+     "run": 150,
+     "request_us": 1534,
+     "invoke_us": 1328
+    },
+    {
+     "run": 151,
+     "request_us": 1532,
+     "invoke_us": 1326
+    },
+    {
+     "run": 152,
+     "request_us": 1536,
+     "invoke_us": 1329
+    },
+    {
+     "run": 153,
+     "request_us": 1636,
+     "invoke_us": 1424
+    },
+    {
+     "run": 154,
+     "request_us": 1647,
+     "invoke_us": 1426
+    },
+    {
+     "run": 155,
+     "request_us": 1553,
+     "invoke_us": 1334
+    },
+    {
+     "run": 156,
+     "request_us": 1535,
+     "invoke_us": 1327
+    },
+    {
+     "run": 157,
+     "request_us": 1533,
+     "invoke_us": 1325
+    },
+    {
+     "run": 158,
+     "request_us": 1533,
+     "invoke_us": 1325
+    },
+    {
+     "run": 159,
+     "request_us": 1531,
+     "invoke_us": 1323
+    },
+    {
+     "run": 160,
+     "request_us": 1522,
+     "invoke_us": 1321
+    },
+    {
+     "run": 161,
+     "request_us": 1531,
+     "invoke_us": 1325
+    },
+    {
+     "run": 162,
+     "request_us": 1530,
+     "invoke_us": 1327
+    },
+    {
+     "run": 163,
+     "request_us": 1543,
+     "invoke_us": 1333
+    },
+    {
+     "run": 164,
+     "request_us": 1534,
+     "invoke_us": 1327
+    },
+    {
+     "run": 165,
+     "request_us": 1535,
+     "invoke_us": 1327
+    },
+    {
+     "run": 166,
+     "request_us": 1533,
+     "invoke_us": 1325
+    },
+    {
+     "run": 167,
+     "request_us": 1533,
+     "invoke_us": 1325
+    },
+    {
+     "run": 168,
+     "request_us": 1535,
+     "invoke_us": 1328
+    },
+    {
+     "run": 169,
+     "request_us": 1539,
+     "invoke_us": 1329
+    },
+    {
+     "run": 170,
+     "request_us": 1538,
+     "invoke_us": 1329
+    },
+    {
+     "run": 171,
+     "request_us": 1525,
+     "invoke_us": 1323
+    },
+    {
+     "run": 172,
+     "request_us": 1528,
+     "invoke_us": 1321
+    },
+    {
+     "run": 173,
+     "request_us": 1523,
+     "invoke_us": 1321
+    },
+    {
+     "run": 174,
+     "request_us": 1537,
+     "invoke_us": 1329
+    },
+    {
+     "run": 175,
+     "request_us": 1545,
+     "invoke_us": 1325
+    },
+    {
+     "run": 176,
+     "request_us": 1538,
+     "invoke_us": 1330
+    },
+    {
+     "run": 177,
+     "request_us": 1545,
+     "invoke_us": 1335
+    },
+    {
+     "run": 178,
+     "request_us": 1532,
+     "invoke_us": 1326
+    },
+    {
+     "run": 179,
+     "request_us": 1533,
+     "invoke_us": 1326
+    },
+    {
+     "run": 180,
+     "request_us": 1535,
+     "invoke_us": 1327
+    },
+    {
+     "run": 181,
+     "request_us": 1528,
+     "invoke_us": 1322
+    },
+    {
+     "run": 182,
+     "request_us": 1523,
+     "invoke_us": 1321
+    },
+    {
+     "run": 183,
+     "request_us": 1542,
+     "invoke_us": 1334
+    },
+    {
+     "run": 184,
+     "request_us": 1642,
+     "invoke_us": 1426
+    },
+    {
+     "run": 185,
+     "request_us": 1661,
+     "invoke_us": 1442
+    },
+    {
+     "run": 186,
+     "request_us": 1554,
+     "invoke_us": 1339
+    },
+    {
+     "run": 187,
+     "request_us": 1538,
+     "invoke_us": 1329
+    },
+    {
+     "run": 188,
+     "request_us": 1556,
+     "invoke_us": 1347
+    },
+    {
+     "run": 189,
+     "request_us": 1570,
+     "invoke_us": 1348
+    },
+    {
+     "run": 190,
+     "request_us": 1574,
+     "invoke_us": 1335
+    },
+    {
+     "run": 191,
+     "request_us": 1545,
+     "invoke_us": 1337
+    },
+    {
+     "run": 192,
+     "request_us": 1534,
+     "invoke_us": 1326
+    },
+    {
+     "run": 193,
+     "request_us": 1535,
+     "invoke_us": 1327
+    },
+    {
+     "run": 194,
+     "request_us": 1536,
+     "invoke_us": 1329
+    },
+    {
+     "run": 195,
+     "request_us": 1530,
+     "invoke_us": 1323
+    },
+    {
+     "run": 196,
+     "request_us": 1524,
+     "invoke_us": 1323
+    },
+    {
+     "run": 197,
+     "request_us": 1543,
+     "invoke_us": 1335
+    },
+    {
+     "run": 198,
+     "request_us": 1533,
+     "invoke_us": 1330
+    },
+    {
+     "run": 199,
+     "request_us": 1538,
+     "invoke_us": 1329
+    },
+    {
+     "run": 200,
+     "request_us": 1536,
+     "invoke_us": 1329
+    }
+   ]
+  }
+ ],
+ "tasks_heap": {
+  "heap_free": 30684,
+  "min_free": 25516,
+  "largest": 20480
+ }
+}

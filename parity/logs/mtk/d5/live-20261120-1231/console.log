@@ -1,0 +1,1014 @@
+> STOP
+STOP
+[MQTT] Status: Connected, Broker: 192.168.1.49
+> CLEAR
+[RULE] reset
+CLEARED
+> BEGINCFG|name=DISTANCE|proto=gpio|gpio.mode=pulse|mode=poll|freq_hz=2|timing.timeout_ms=100|gpio.trig=4|gpio.echo=5|gpio.pull=down|gpio.trig_us=10|gpio.pulse_timeout_us=30000|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED] added: DISTANCE on gpio
+CFG: ok (added #0: DISTANCE)
+> ML MODEL sine-int8
+[TFLITE] Unloading previous model state...
+[TFLITE] Unload complete.
+[TFLITE] Verifying FlatBuffer at 0x3c10a590...
+[TFLITE] Schema version 3 verified.
+[TFLITE] Creating OpResolver...
+[TFLITE] Ops registered.
+[TFLITE] Creating Interpreter (Arena size 65536)...
+[TFLITE] Allocating tensors...
+[TFLITE] Tensors allocated.
+[TFLITE] Model loaded OK!
+[TFLITE]   Inputs:  1 tensor(s), 1 total element(s)
+[TFLITE]   Outputs: 1 tensor(s), 1 total element(s)
+[TFLITE]   Arena:   716 / 65536 bytes used
+ML: OK MODEL sine-int8
+> ML RESET
+ML: OK RESET
+> ML BIND 0 DISTANCE distance_cm 2 400
+ML: OK BIND 0 DISTANCE distance_cm 2 400
+> ML RUN
+ML: OK RUN
+> SHOW
+[SHOW] sampling=0
+[WINDOW] enabled=0 state=0 events=0 dropped=0 radar_frames=0 malformed=0 rx_dropped=0 identity=1
+[SCHED] #0 name=DISTANCE proto=gpio mode=poll freq=2.000Hz timing=periodic interval=500ms timeout=100ms window=0ms trigger=- status=1
+[SENSOR] name=DISTANCE pending=0 timeouts=0 errors=0 overruns=0
+[RULE] count=0
+> RUN
+RUN
+{"type":"ml","timestamp_ms":60202,"generation":11,"model":"sine-int8","outputs":null,"status":"MISSING_OR_STALE"}
+proto=gpio src=DISTANCE len=3 ts=60212 : F3 1F 01
+{"sensor":"DISTANCE","timestamp_ms":60213,"distance_cm":140.3,"echo_us":8179,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=60713 : 7F 1F 01
+{"sensor":"DISTANCE","timestamp_ms":60714,"distance_cm":138.3,"echo_us":8063,"status":"OK","error":0}
+> TASKS
+[TASK] app_message=104 B app_buffer=864 B
+[TASK] SchedulerTask    id=8  core=1 pri=21 stack_free=13804 B ran_on_core0=0 ran_on_core1=149
+[TASK] MQTTTask         id=9  core=0 pri=22 stack_free=14332 B ran_on_core0=5501 ran_on_core1=0
+[TASK] ControlTask      id=10 core=1 pri=23 stack_free=3036 B ran_on_core0=0 ran_on_core1=1093
+[TASK] InferenceTask    id=11 core=1 pri=23 stack_free=6796 B ran_on_core0=0 ran_on_core1=3
+[TASK] ApplicationTask  id=12 core=1 pri=23 stack_free=3228 B ran_on_core0=0 ran_on_core1=0
+[TASK] BenchmarkTask    id=13 core=1 pri=24 stack_free=2364 B ran_on_core0=0 ran_on_core1=0
+[TASK] MonitorTask      id=14 core=1 pri=24 stack_free=3308 B ran_on_core0=0 ran_on_core1=60
+[TASK] sched_mbf  free=12912 B dropped=0
+[TASK] pub_mbf    free=10944 B dropped=0
+[TASK] infer_mbf  free=592 B dropped=0
+[TASK] app_mbf    free=864 B dropped=0
+[TASK] bench_mbf  free=512 B dropped=0
+[TASK] ctrl_mbf   free=528 B dropped=0
+[TASK] heap_free=30108 B min_free=24684 B largest=20480 B console_rx_irqs=19 console_rx_dropped=0
+[TASK] SchedulerTask cycles=149 mean_us=432 p95_us=<1000 max_us=26277
+proto=gpio src=DISTANCE len=3 ts=61213 : F3 1F 01
+{"sensor":"DISTANCE","timestamp_ms":61214,"distance_cm":140.3,"echo_us":8179,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=61713 : F4 1F 01
+{"sensor":"DISTANCE","timestamp_ms":61714,"distance_cm":140.3,"echo_us":8180,"status":"OK","error":0}
+[ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=2
+{"type":"ml","timestamp_ms":62204,"generation":11,"model":"sine-int8","raw_features":[140.287],"input_source":"sensors","inputs":[2.183123],"outputs":[0.7876409],"invoke_us":641,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=62212 : 94 1F 01
+{"sensor":"DISTANCE","timestamp_ms":62213,"distance_cm":138.6,"echo_us":8084,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=62712 : AE 1F 01
+{"sensor":"DISTANCE","timestamp_ms":62713,"distance_cm":139.1,"echo_us":8110,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=63213 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":63214,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=63713 : 94 1F 01
+{"sensor":"DISTANCE","timestamp_ms":63714,"distance_cm":138.6,"echo_us":8084,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":64204,"generation":11,"model":"sine-int8","raw_features":[138.6406],"input_source":"sensors","inputs":[2.157131],"outputs":[0.8125138],"invoke_us":451,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=64212 : F4 1F 01
+{"sensor":"DISTANCE","timestamp_ms":64213,"distance_cm":140.3,"echo_us":8180,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=64712 : C1 1F 01
+{"sensor":"DISTANCE","timestamp_ms":64713,"distance_cm":139.4,"echo_us":8129,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=65213 : 7A 1F 01
+{"sensor":"DISTANCE","timestamp_ms":65214,"distance_cm":138.2,"echo_us":8058,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=65713 : C0 1F 01
+{"sensor":"DISTANCE","timestamp_ms":65714,"distance_cm":139.4,"echo_us":8128,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":66204,"generation":11,"model":"sine-int8","raw_features":[139.3952],"input_source":"sensors","inputs":[2.169044],"outputs":[0.7876409],"invoke_us":453,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=66212 : F2 1F 01
+{"sensor":"DISTANCE","timestamp_ms":66213,"distance_cm":140.3,"echo_us":8178,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=66712 : 7A 1F 01
+{"sensor":"DISTANCE","timestamp_ms":66713,"distance_cm":138.2,"echo_us":8058,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=67213 : C1 1F 01
+{"sensor":"DISTANCE","timestamp_ms":67214,"distance_cm":139.4,"echo_us":8129,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=67713 : C1 1F 01
+{"sensor":"DISTANCE","timestamp_ms":67714,"distance_cm":139.4,"echo_us":8129,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":68204,"generation":11,"model":"sine-int8","raw_features":[139.4124],"input_source":"sensors","inputs":[2.169315],"outputs":[0.7876409],"invoke_us":453,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=68212 : F4 1F 01
+{"sensor":"DISTANCE","timestamp_ms":68213,"distance_cm":140.3,"echo_us":8180,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=68712 : 94 1F 01
+{"sensor":"DISTANCE","timestamp_ms":68713,"distance_cm":138.6,"echo_us":8084,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=69213 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":69214,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=69713 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":69714,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":70204,"generation":11,"model":"sine-int8","raw_features":[139.0522],"input_source":"sensors","inputs":[2.163629],"outputs":[0.8125138],"invoke_us":448,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=70212 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":70213,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=70712 : C1 1F 01
+{"sensor":"DISTANCE","timestamp_ms":70713,"distance_cm":139.4,"echo_us":8129,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=71213 : 93 1F 01
+{"sensor":"DISTANCE","timestamp_ms":71214,"distance_cm":138.6,"echo_us":8083,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=71713 : F3 1F 01
+{"sensor":"DISTANCE","timestamp_ms":71714,"distance_cm":140.3,"echo_us":8179,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":72204,"generation":11,"model":"sine-int8","raw_features":[140.2699],"input_source":"sensors","inputs":[2.182852],"outputs":[0.7876409],"invoke_us":447,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=72212 : F2 1F 01
+{"sensor":"DISTANCE","timestamp_ms":72213,"distance_cm":140.3,"echo_us":8178,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=72712 : 94 1F 01
+{"sensor":"DISTANCE","timestamp_ms":72713,"distance_cm":138.6,"echo_us":8084,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=73213 : F4 1F 01
+{"sensor":"DISTANCE","timestamp_ms":73214,"distance_cm":140.3,"echo_us":8180,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=73713 : 93 1F 01
+{"sensor":"DISTANCE","timestamp_ms":73714,"distance_cm":138.6,"echo_us":8083,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":74204,"generation":11,"model":"sine-int8","raw_features":[138.6234],"input_source":"sensors","inputs":[2.15686],"outputs":[0.8125138],"invoke_us":449,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=74212 : 92 1F 01
+{"sensor":"DISTANCE","timestamp_ms":74213,"distance_cm":138.6,"echo_us":8082,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=74712 : 94 1F 01
+{"sensor":"DISTANCE","timestamp_ms":74713,"distance_cm":138.6,"echo_us":8084,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=75213 : F4 1F 01
+{"sensor":"DISTANCE","timestamp_ms":75214,"distance_cm":140.3,"echo_us":8180,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=75713 : 95 1F 01
+{"sensor":"DISTANCE","timestamp_ms":75714,"distance_cm":138.7,"echo_us":8085,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":76204,"generation":11,"model":"sine-int8","raw_features":[138.6577],"input_source":"sensors","inputs":[2.157402],"outputs":[0.8125138],"invoke_us":449,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=76213 : F4 1F 01
+{"sensor":"DISTANCE","timestamp_ms":76213,"distance_cm":140.3,"echo_us":8180,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=76712 : F5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":76713,"distance_cm":140.3,"echo_us":8181,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=77213 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":77214,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=77713 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":77714,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":78204,"generation":11,"model":"sine-int8","raw_features":[139.4981],"input_source":"sensors","inputs":[2.170668],"outputs":[0.7876409],"invoke_us":447,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=78212 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":78213,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=78712 : 94 1F 01
+{"sensor":"DISTANCE","timestamp_ms":78713,"distance_cm":138.6,"echo_us":8084,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=79213 : C2 1F 01
+{"sensor":"DISTANCE","timestamp_ms":79214,"distance_cm":139.4,"echo_us":8130,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=79713 : F4 1F 01
+{"sensor":"DISTANCE","timestamp_ms":79714,"distance_cm":140.3,"echo_us":8180,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":80204,"generation":11,"model":"sine-int8","raw_features":[140.287],"input_source":"sensors","inputs":[2.183123],"outputs":[0.7876409],"invoke_us":449,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=80212 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":80213,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=80713 : 94 1F 01
+{"sensor":"DISTANCE","timestamp_ms":80714,"distance_cm":138.6,"echo_us":8084,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=81213 : 94 1F 01
+{"sensor":"DISTANCE","timestamp_ms":81214,"distance_cm":138.6,"echo_us":8084,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=81713 : F4 1F 01
+{"sensor":"DISTANCE","timestamp_ms":81714,"distance_cm":140.3,"echo_us":8180,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":82204,"generation":11,"model":"sine-int8","raw_features":[140.287],"input_source":"sensors","inputs":[2.183123],"outputs":[0.7876409],"invoke_us":449,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=82212 : 8F 1F 01
+{"sensor":"DISTANCE","timestamp_ms":82213,"distance_cm":138.6,"echo_us":8079,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=82712 : C1 1F 01
+{"sensor":"DISTANCE","timestamp_ms":82713,"distance_cm":139.4,"echo_us":8129,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=83213 : C2 1F 01
+{"sensor":"DISTANCE","timestamp_ms":83214,"distance_cm":139.4,"echo_us":8130,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=83713 : 94 1F 01
+{"sensor":"DISTANCE","timestamp_ms":83714,"distance_cm":138.6,"echo_us":8084,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":84204,"generation":11,"model":"sine-int8","raw_features":[138.6406],"input_source":"sensors","inputs":[2.157131],"outputs":[0.8125138],"invoke_us":478,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=84213 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":84213,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=84713 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":84714,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=85213 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":85214,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=85713 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":85714,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":86204,"generation":11,"model":"sine-int8","raw_features":[139.0522],"input_source":"sensors","inputs":[2.163629],"outputs":[0.8125138],"invoke_us":452,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=86212 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":86213,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=86712 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":86713,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=87213 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":87214,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=87713 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":87714,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":88204,"generation":11,"model":"sine-int8","raw_features":[139.4809],"input_source":"sensors","inputs":[2.170398],"outputs":[0.7876409],"invoke_us":451,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=88212 : 7E 1F 01
+{"sensor":"DISTANCE","timestamp_ms":88213,"distance_cm":138.3,"echo_us":8062,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=88712 : 7F 1F 01
+{"sensor":"DISTANCE","timestamp_ms":88713,"distance_cm":138.3,"echo_us":8063,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=89213 : F3 1F 01
+{"sensor":"DISTANCE","timestamp_ms":89214,"distance_cm":140.3,"echo_us":8179,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=89713 : F3 1F 01
+{"sensor":"DISTANCE","timestamp_ms":89714,"distance_cm":140.3,"echo_us":8179,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":90204,"generation":11,"model":"sine-int8","raw_features":[140.2699],"input_source":"sensors","inputs":[2.182852],"outputs":[0.7876409],"invoke_us":451,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=90212 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":90213,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=90712 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":90713,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=91213 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":91214,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=91713 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":91714,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":92204,"generation":11,"model":"sine-int8","raw_features":[139.4809],"input_source":"sensors","inputs":[2.170398],"outputs":[0.7876409],"invoke_us":451,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=92212 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":92213,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=92712 : AE 1F 01
+{"sensor":"DISTANCE","timestamp_ms":92713,"distance_cm":139.1,"echo_us":8110,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=93213 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":93214,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=93713 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":93714,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":94204,"generation":11,"model":"sine-int8","raw_features":[139.0694],"input_source":"sensors","inputs":[2.1639],"outputs":[0.8125138],"invoke_us":450,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=94212 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":94213,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=94712 : 7F 1F 01
+{"sensor":"DISTANCE","timestamp_ms":94713,"distance_cm":138.3,"echo_us":8063,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=95213 : 7F 1F 01
+{"sensor":"DISTANCE","timestamp_ms":95214,"distance_cm":138.3,"echo_us":8063,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=95713 : 93 1F 01
+{"sensor":"DISTANCE","timestamp_ms":95714,"distance_cm":138.6,"echo_us":8083,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":96204,"generation":11,"model":"sine-int8","raw_features":[138.6234],"input_source":"sensors","inputs":[2.15686],"outputs":[0.8125138],"invoke_us":450,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=96212 : 94 1F 01
+{"sensor":"DISTANCE","timestamp_ms":96213,"distance_cm":138.6,"echo_us":8084,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=96712 : 93 1F 01
+{"sensor":"DISTANCE","timestamp_ms":96713,"distance_cm":138.6,"echo_us":8083,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=97213 : F3 1F 01
+{"sensor":"DISTANCE","timestamp_ms":97214,"distance_cm":140.3,"echo_us":8179,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=97713 : C1 1F 01
+{"sensor":"DISTANCE","timestamp_ms":97714,"distance_cm":139.4,"echo_us":8129,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":98204,"generation":11,"model":"sine-int8","raw_features":[139.4124],"input_source":"sensors","inputs":[2.169315],"outputs":[0.7876409],"invoke_us":455,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=98212 : C1 1F 01
+{"sensor":"DISTANCE","timestamp_ms":98213,"distance_cm":139.4,"echo_us":8129,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=98712 : C1 1F 01
+{"sensor":"DISTANCE","timestamp_ms":98713,"distance_cm":139.4,"echo_us":8129,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=99213 : A8 1F 01
+{"sensor":"DISTANCE","timestamp_ms":99214,"distance_cm":139.0,"echo_us":8104,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=99713 : 93 1F 01
+{"sensor":"DISTANCE","timestamp_ms":99714,"distance_cm":138.6,"echo_us":8083,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":100204,"generation":11,"model":"sine-int8","raw_features":[138.6234],"input_source":"sensors","inputs":[2.15686],"outputs":[0.8125138],"invoke_us":450,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=100213 : 93 1F 01
+{"sensor":"DISTANCE","timestamp_ms":100213,"distance_cm":138.6,"echo_us":8083,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=100712 : 93 1F 01
+{"sensor":"DISTANCE","timestamp_ms":100713,"distance_cm":138.6,"echo_us":8083,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=101213 : F3 1F 01
+{"sensor":"DISTANCE","timestamp_ms":101214,"distance_cm":140.3,"echo_us":8179,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=101713 : 7B 1F 01
+{"sensor":"DISTANCE","timestamp_ms":101714,"distance_cm":138.2,"echo_us":8059,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":102204,"generation":11,"model":"sine-int8","raw_features":[138.2119],"input_source":"sensors","inputs":[2.150363],"outputs":[0.8125138],"invoke_us":456,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=102212 : C1 1F 01
+{"sensor":"DISTANCE","timestamp_ms":102213,"distance_cm":139.4,"echo_us":8129,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=102712 : 94 1F 01
+{"sensor":"DISTANCE","timestamp_ms":102713,"distance_cm":138.6,"echo_us":8084,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=103213 : F4 1F 01
+{"sensor":"DISTANCE","timestamp_ms":103214,"distance_cm":140.3,"echo_us":8180,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=103713 : 94 1F 01
+{"sensor":"DISTANCE","timestamp_ms":103714,"distance_cm":138.6,"echo_us":8084,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":104204,"generation":11,"model":"sine-int8","raw_features":[138.6406],"input_source":"sensors","inputs":[2.157131],"outputs":[0.8125138],"invoke_us":457,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=104212 : 80 1F 01
+{"sensor":"DISTANCE","timestamp_ms":104213,"distance_cm":138.3,"echo_us":8064,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=104712 : C7 1F 01
+{"sensor":"DISTANCE","timestamp_ms":104713,"distance_cm":139.5,"echo_us":8135,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=105213 : 7F 1F 01
+{"sensor":"DISTANCE","timestamp_ms":105214,"distance_cm":138.3,"echo_us":8063,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=105713 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":105714,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":106204,"generation":11,"model":"sine-int8","raw_features":[139.4809],"input_source":"sensors","inputs":[2.170398],"outputs":[0.7876409],"invoke_us":454,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=106212 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":106213,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=106712 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":106713,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=107213 : F3 1F 01
+{"sensor":"DISTANCE","timestamp_ms":107214,"distance_cm":140.3,"echo_us":8179,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=107713 : 94 1F 01
+{"sensor":"DISTANCE","timestamp_ms":107714,"distance_cm":138.6,"echo_us":8084,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":108204,"generation":11,"model":"sine-int8","raw_features":[138.6406],"input_source":"sensors","inputs":[2.157131],"outputs":[0.8125138],"invoke_us":452,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=108212 : F3 1F 01
+{"sensor":"DISTANCE","timestamp_ms":108213,"distance_cm":140.3,"echo_us":8179,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=108712 : 94 1F 01
+{"sensor":"DISTANCE","timestamp_ms":108713,"distance_cm":138.6,"echo_us":8084,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=109213 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":109214,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=109714 : AF 1F 01
+{"sensor":"DISTANCE","timestamp_ms":109714,"distance_cm":139.1,"echo_us":8111,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":110204,"generation":11,"model":"sine-int8","raw_features":[139.1037],"input_source":"sensors","inputs":[2.164441],"outputs":[0.8125138],"invoke_us":452,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=110212 : 7D 1F 01
+{"sensor":"DISTANCE","timestamp_ms":110213,"distance_cm":138.2,"echo_us":8061,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=110712 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":110713,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=111213 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":111214,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=111713 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":111714,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":112204,"generation":11,"model":"sine-int8","raw_features":[139.0694],"input_source":"sensors","inputs":[2.1639],"outputs":[0.8125138],"invoke_us":452,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=112212 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":112213,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=112712 : 7F 1F 01
+{"sensor":"DISTANCE","timestamp_ms":112713,"distance_cm":138.3,"echo_us":8063,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=113213 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":113214,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=113713 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":113714,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":114204,"generation":11,"model":"sine-int8","raw_features":[139.4809],"input_source":"sensors","inputs":[2.170398],"outputs":[0.7876409],"invoke_us":453,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=114212 : 98 1F 01
+{"sensor":"DISTANCE","timestamp_ms":114213,"distance_cm":138.7,"echo_us":8088,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=114712 : 7F 1F 01
+{"sensor":"DISTANCE","timestamp_ms":114713,"distance_cm":138.3,"echo_us":8063,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=115213 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":115214,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=115713 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":115714,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":116204,"generation":11,"model":"sine-int8","raw_features":[139.4981],"input_source":"sensors","inputs":[2.170668],"outputs":[0.7876409],"invoke_us":450,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=116212 : 80 1F 01
+{"sensor":"DISTANCE","timestamp_ms":116213,"distance_cm":138.3,"echo_us":8064,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=116712 : 98 1F 01
+{"sensor":"DISTANCE","timestamp_ms":116713,"distance_cm":138.7,"echo_us":8088,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=117213 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":117214,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=117713 : 98 1F 01
+{"sensor":"DISTANCE","timestamp_ms":117714,"distance_cm":138.7,"echo_us":8088,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":118204,"generation":11,"model":"sine-int8","raw_features":[138.7092],"input_source":"sensors","inputs":[2.158214],"outputs":[0.8125138],"invoke_us":453,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=118212 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":118213,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=118712 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":118713,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=119213 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":119214,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=119713 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":119714,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":120204,"generation":11,"model":"sine-int8","raw_features":[139.4809],"input_source":"sensors","inputs":[2.170398],"outputs":[0.7876409],"invoke_us":452,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=120212 : 7F 1F 01
+{"sensor":"DISTANCE","timestamp_ms":120213,"distance_cm":138.3,"echo_us":8063,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=120712 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":120713,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=121213 : 7F 1F 01
+{"sensor":"DISTANCE","timestamp_ms":121214,"distance_cm":138.3,"echo_us":8063,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=121713 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":121714,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":122204,"generation":11,"model":"sine-int8","raw_features":[139.0694],"input_source":"sensors","inputs":[2.1639],"outputs":[0.8125138],"invoke_us":456,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=122212 : AB 1F 01
+{"sensor":"DISTANCE","timestamp_ms":122213,"distance_cm":139.0,"echo_us":8107,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=122712 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":122713,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=123213 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":123214,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=123713 : B0 1F 01
+{"sensor":"DISTANCE","timestamp_ms":123714,"distance_cm":139.1,"echo_us":8112,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":124204,"generation":11,"model":"sine-int8","raw_features":[139.1208],"input_source":"sensors","inputs":[2.164712],"outputs":[0.8125138],"invoke_us":452,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=124212 : 97 1F 01
+{"sensor":"DISTANCE","timestamp_ms":124213,"distance_cm":138.7,"echo_us":8087,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=124712 : B1 1F 01
+{"sensor":"DISTANCE","timestamp_ms":124713,"distance_cm":139.1,"echo_us":8113,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=125213 : F9 1F 01
+{"sensor":"DISTANCE","timestamp_ms":125214,"distance_cm":140.4,"echo_us":8185,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=125713 : B2 1F 01
+{"sensor":"DISTANCE","timestamp_ms":125714,"distance_cm":139.2,"echo_us":8114,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":126204,"generation":11,"model":"sine-int8","raw_features":[139.1551],"input_source":"sensors","inputs":[2.165253],"outputs":[0.8125138],"invoke_us":459,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=126212 : 99 1F 01
+{"sensor":"DISTANCE","timestamp_ms":126213,"distance_cm":138.7,"echo_us":8089,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=126712 : F8 1F 01
+{"sensor":"DISTANCE","timestamp_ms":126713,"distance_cm":140.4,"echo_us":8184,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=127213 : 99 1F 01
+{"sensor":"DISTANCE","timestamp_ms":127214,"distance_cm":138.7,"echo_us":8089,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=127713 : CC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":127714,"distance_cm":139.6,"echo_us":8140,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":128204,"generation":11,"model":"sine-int8","raw_features":[139.601],"input_source":"sensors","inputs":[2.172293],"outputs":[0.7876409],"invoke_us":458,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=128212 : CB 1F 01
+{"sensor":"DISTANCE","timestamp_ms":128213,"distance_cm":139.6,"echo_us":8139,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=128712 : 98 1F 01
+{"sensor":"DISTANCE","timestamp_ms":128713,"distance_cm":138.7,"echo_us":8088,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=129213 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":129214,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=129713 : F4 1F 01
+{"sensor":"DISTANCE","timestamp_ms":129714,"distance_cm":140.3,"echo_us":8180,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":130204,"generation":11,"model":"sine-int8","raw_features":[140.287],"input_source":"sensors","inputs":[2.183123],"outputs":[0.7876409],"invoke_us":450,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=130212 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":130213,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=130712 : C4 1F 01
+{"sensor":"DISTANCE","timestamp_ms":130713,"distance_cm":139.5,"echo_us":8132,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=131213 : 7F 1F 01
+{"sensor":"DISTANCE","timestamp_ms":131214,"distance_cm":138.3,"echo_us":8063,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=131713 : C7 1F 01
+{"sensor":"DISTANCE","timestamp_ms":131714,"distance_cm":139.5,"echo_us":8135,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":132204,"generation":11,"model":"sine-int8","raw_features":[139.5152],"input_source":"sensors","inputs":[2.170939],"outputs":[0.7876409],"invoke_us":452,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=132212 : 7E 1F 01
+{"sensor":"DISTANCE","timestamp_ms":132213,"distance_cm":138.3,"echo_us":8062,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=132712 : 94 1F 01
+{"sensor":"DISTANCE","timestamp_ms":132713,"distance_cm":138.6,"echo_us":8084,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=133213 : 94 1F 01
+{"sensor":"DISTANCE","timestamp_ms":133214,"distance_cm":138.6,"echo_us":8084,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=133713 : 94 1F 01
+{"sensor":"DISTANCE","timestamp_ms":133714,"distance_cm":138.6,"echo_us":8084,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":134204,"generation":11,"model":"sine-int8","raw_features":[138.6406],"input_source":"sensors","inputs":[2.157131],"outputs":[0.8125138],"invoke_us":450,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=134212 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":134213,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=134712 : F4 1F 01
+{"sensor":"DISTANCE","timestamp_ms":134713,"distance_cm":140.3,"echo_us":8180,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=135213 : F4 1F 01
+{"sensor":"DISTANCE","timestamp_ms":135214,"distance_cm":140.3,"echo_us":8180,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=135713 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":135714,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":136204,"generation":11,"model":"sine-int8","raw_features":[139.0694],"input_source":"sensors","inputs":[2.1639],"outputs":[0.8125138],"invoke_us":452,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=136212 : 94 1F 01
+{"sensor":"DISTANCE","timestamp_ms":136213,"distance_cm":138.6,"echo_us":8084,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=136712 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":136713,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=137213 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":137214,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=137713 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":137714,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":138204,"generation":11,"model":"sine-int8","raw_features":[139.4809],"input_source":"sensors","inputs":[2.170398],"outputs":[0.7876409],"invoke_us":450,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=138212 : 0B 20 01
+{"sensor":"DISTANCE","timestamp_ms":138213,"distance_cm":140.7,"echo_us":8203,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=138712 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":138713,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=139213 : 98 1F 01
+{"sensor":"DISTANCE","timestamp_ms":139214,"distance_cm":138.7,"echo_us":8088,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=139713 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":139714,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":140204,"generation":11,"model":"sine-int8","raw_features":[139.4981],"input_source":"sensors","inputs":[2.170668],"outputs":[0.7876409],"invoke_us":450,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=140212 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":140213,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=140712 : F7 1F 01
+{"sensor":"DISTANCE","timestamp_ms":140713,"distance_cm":140.3,"echo_us":8183,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=141213 : 7F 1F 01
+{"sensor":"DISTANCE","timestamp_ms":141214,"distance_cm":138.3,"echo_us":8063,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=141713 : AE 1F 01
+{"sensor":"DISTANCE","timestamp_ms":141714,"distance_cm":139.1,"echo_us":8110,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":142204,"generation":11,"model":"sine-int8","raw_features":[139.0865],"input_source":"sensors","inputs":[2.164171],"outputs":[0.8125138],"invoke_us":450,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=142212 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":142213,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=142712 : 94 1F 01
+{"sensor":"DISTANCE","timestamp_ms":142713,"distance_cm":138.6,"echo_us":8084,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=143213 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":143214,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=143713 : AE 1F 01
+{"sensor":"DISTANCE","timestamp_ms":143714,"distance_cm":139.1,"echo_us":8110,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":144204,"generation":11,"model":"sine-int8","raw_features":[139.0865],"input_source":"sensors","inputs":[2.164171],"outputs":[0.8125138],"invoke_us":448,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=144212 : 93 1F 01
+{"sensor":"DISTANCE","timestamp_ms":144213,"distance_cm":138.6,"echo_us":8083,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=144712 : 93 1F 01
+{"sensor":"DISTANCE","timestamp_ms":144713,"distance_cm":138.6,"echo_us":8083,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=145213 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":145214,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=145713 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":145714,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":146204,"generation":11,"model":"sine-int8","raw_features":[139.0522],"input_source":"sensors","inputs":[2.163629],"outputs":[0.8125138],"invoke_us":450,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=146212 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":146213,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=146712 : 7F 1F 01
+{"sensor":"DISTANCE","timestamp_ms":146713,"distance_cm":138.3,"echo_us":8063,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=147213 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":147214,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=147713 : 98 1F 01
+{"sensor":"DISTANCE","timestamp_ms":147714,"distance_cm":138.7,"echo_us":8088,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":148204,"generation":11,"model":"sine-int8","raw_features":[138.7092],"input_source":"sensors","inputs":[2.158214],"outputs":[0.8125138],"invoke_us":454,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=148212 : 7F 1F 01
+{"sensor":"DISTANCE","timestamp_ms":148213,"distance_cm":138.3,"echo_us":8063,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=148713 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":148714,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=149213 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":149214,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=149713 : 7F 1F 01
+{"sensor":"DISTANCE","timestamp_ms":149714,"distance_cm":138.3,"echo_us":8063,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":150204,"generation":11,"model":"sine-int8","raw_features":[138.2804],"input_source":"sensors","inputs":[2.151445],"outputs":[0.8125138],"invoke_us":451,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=150212 : C4 1F 01
+{"sensor":"DISTANCE","timestamp_ms":150213,"distance_cm":139.5,"echo_us":8132,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=150712 : F7 1F 01
+{"sensor":"DISTANCE","timestamp_ms":150713,"distance_cm":140.3,"echo_us":8183,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=151213 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":151214,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=151713 : 97 1F 01
+{"sensor":"DISTANCE","timestamp_ms":151714,"distance_cm":138.7,"echo_us":8087,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":152204,"generation":11,"model":"sine-int8","raw_features":[138.692],"input_source":"sensors","inputs":[2.157943],"outputs":[0.8125138],"invoke_us":453,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=152212 : 97 1F 01
+{"sensor":"DISTANCE","timestamp_ms":152213,"distance_cm":138.7,"echo_us":8087,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=152712 : 97 1F 01
+{"sensor":"DISTANCE","timestamp_ms":152713,"distance_cm":138.7,"echo_us":8087,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=153213 : F7 1F 01
+{"sensor":"DISTANCE","timestamp_ms":153214,"distance_cm":140.3,"echo_us":8183,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=153713 : 97 1F 01
+{"sensor":"DISTANCE","timestamp_ms":153714,"distance_cm":138.7,"echo_us":8087,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":154204,"generation":11,"model":"sine-int8","raw_features":[138.692],"input_source":"sensors","inputs":[2.157943],"outputs":[0.8125138],"invoke_us":450,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=154212 : C4 1F 01
+{"sensor":"DISTANCE","timestamp_ms":154213,"distance_cm":139.5,"echo_us":8132,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=154712 : 7E 1F 01
+{"sensor":"DISTANCE","timestamp_ms":154713,"distance_cm":138.3,"echo_us":8062,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=155213 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":155214,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=155713 : 93 1F 01
+{"sensor":"DISTANCE","timestamp_ms":155714,"distance_cm":138.6,"echo_us":8083,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":156204,"generation":11,"model":"sine-int8","raw_features":[138.6234],"input_source":"sensors","inputs":[2.15686],"outputs":[0.8125138],"invoke_us":451,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=156212 : AB 1F 01
+{"sensor":"DISTANCE","timestamp_ms":156213,"distance_cm":139.0,"echo_us":8107,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=156712 : 93 1F 01
+{"sensor":"DISTANCE","timestamp_ms":156713,"distance_cm":138.6,"echo_us":8083,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=157213 : 93 1F 01
+{"sensor":"DISTANCE","timestamp_ms":157214,"distance_cm":138.6,"echo_us":8083,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=157713 : F3 1F 01
+{"sensor":"DISTANCE","timestamp_ms":157714,"distance_cm":140.3,"echo_us":8179,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":158204,"generation":11,"model":"sine-int8","raw_features":[140.2699],"input_source":"sensors","inputs":[2.182852],"outputs":[0.7876409],"invoke_us":451,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=158212 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":158213,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=158712 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":158713,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=159213 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":159214,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=159713 : F2 1F 01
+{"sensor":"DISTANCE","timestamp_ms":159714,"distance_cm":140.3,"echo_us":8178,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":160204,"generation":11,"model":"sine-int8","raw_features":[140.2527],"input_source":"sensors","inputs":[2.182581],"outputs":[0.7876409],"invoke_us":453,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=160212 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":160213,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=160712 : 7F 1F 01
+{"sensor":"DISTANCE","timestamp_ms":160713,"distance_cm":138.3,"echo_us":8063,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=161213 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":161214,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=161713 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":161714,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":162204,"generation":11,"model":"sine-int8","raw_features":[139.0522],"input_source":"sensors","inputs":[2.163629],"outputs":[0.8125138],"invoke_us":458,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=162212 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":162213,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=162712 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":162713,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=163213 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":163214,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=163713 : 93 1F 01
+{"sensor":"DISTANCE","timestamp_ms":163714,"distance_cm":138.6,"echo_us":8083,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":164204,"generation":11,"model":"sine-int8","raw_features":[138.6234],"input_source":"sensors","inputs":[2.15686],"outputs":[0.8125138],"invoke_us":458,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=164212 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":164213,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=164712 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":164713,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=165213 : 94 1F 01
+{"sensor":"DISTANCE","timestamp_ms":165214,"distance_cm":138.6,"echo_us":8084,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=165713 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":165714,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":166204,"generation":11,"model":"sine-int8","raw_features":[139.4981],"input_source":"sensors","inputs":[2.170668],"outputs":[0.7876409],"invoke_us":457,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=166212 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":166213,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=166712 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":166713,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=167213 : F8 1F 01
+{"sensor":"DISTANCE","timestamp_ms":167214,"distance_cm":140.4,"echo_us":8184,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=167713 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":167714,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":168204,"generation":11,"model":"sine-int8","raw_features":[139.4981],"input_source":"sensors","inputs":[2.170668],"outputs":[0.7876409],"invoke_us":451,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=168212 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":168213,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=168712 : 98 1F 01
+{"sensor":"DISTANCE","timestamp_ms":168713,"distance_cm":138.7,"echo_us":8088,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=169213 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":169214,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=169713 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":169714,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":170204,"generation":11,"model":"sine-int8","raw_features":[139.4981],"input_source":"sensors","inputs":[2.170668],"outputs":[0.7876409],"invoke_us":445,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=170212 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":170213,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=170712 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":170713,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=171213 : F4 1F 01
+{"sensor":"DISTANCE","timestamp_ms":171214,"distance_cm":140.3,"echo_us":8180,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=171713 : 94 1F 01
+{"sensor":"DISTANCE","timestamp_ms":171714,"distance_cm":138.6,"echo_us":8084,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":172204,"generation":11,"model":"sine-int8","raw_features":[138.6406],"input_source":"sensors","inputs":[2.157131],"outputs":[0.8125138],"invoke_us":449,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=172212 : F3 1F 01
+{"sensor":"DISTANCE","timestamp_ms":172213,"distance_cm":140.3,"echo_us":8179,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=172712 : 7E 1F 01
+{"sensor":"DISTANCE","timestamp_ms":172713,"distance_cm":138.3,"echo_us":8062,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=173213 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":173214,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=173713 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":173714,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":174204,"generation":11,"model":"sine-int8","raw_features":[139.0694],"input_source":"sensors","inputs":[2.1639],"outputs":[0.8125138],"invoke_us":450,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=174213 : BF 1F 01
+{"sensor":"DISTANCE","timestamp_ms":174213,"distance_cm":139.4,"echo_us":8127,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=174712 : C1 1F 01
+{"sensor":"DISTANCE","timestamp_ms":174713,"distance_cm":139.4,"echo_us":8129,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=175213 : C0 1F 01
+{"sensor":"DISTANCE","timestamp_ms":175214,"distance_cm":139.4,"echo_us":8128,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=175713 : 94 1F 01
+{"sensor":"DISTANCE","timestamp_ms":175714,"distance_cm":138.6,"echo_us":8084,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":176204,"generation":11,"model":"sine-int8","raw_features":[138.6406],"input_source":"sensors","inputs":[2.157131],"outputs":[0.8125138],"invoke_us":446,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=176212 : F2 1F 01
+{"sensor":"DISTANCE","timestamp_ms":176213,"distance_cm":140.3,"echo_us":8178,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=176712 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":176713,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=177213 : F7 1F 01
+{"sensor":"DISTANCE","timestamp_ms":177214,"distance_cm":140.3,"echo_us":8183,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=177713 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":177714,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":178204,"generation":11,"model":"sine-int8","raw_features":[139.4981],"input_source":"sensors","inputs":[2.170668],"outputs":[0.7876409],"invoke_us":449,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=178212 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":178213,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=178713 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":178714,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=179213 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":179214,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=179713 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":179714,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":180204,"generation":11,"model":"sine-int8","raw_features":[139.4981],"input_source":"sensors","inputs":[2.170668],"outputs":[0.7876409],"invoke_us":456,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=180212 : C7 1F 01
+{"sensor":"DISTANCE","timestamp_ms":180213,"distance_cm":139.5,"echo_us":8135,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=180712 : F8 1F 01
+{"sensor":"DISTANCE","timestamp_ms":180713,"distance_cm":140.4,"echo_us":8184,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=181213 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":181214,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=181713 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":181714,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":182204,"generation":11,"model":"sine-int8","raw_features":[139.0694],"input_source":"sensors","inputs":[2.1639],"outputs":[0.8125138],"invoke_us":455,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=182212 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":182213,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=182712 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":182713,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=183213 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":183214,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=183713 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":183714,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":184204,"generation":11,"model":"sine-int8","raw_features":[139.4981],"input_source":"sensors","inputs":[2.170668],"outputs":[0.7876409],"invoke_us":448,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=184212 : 7D 1F 01
+{"sensor":"DISTANCE","timestamp_ms":184213,"distance_cm":138.2,"echo_us":8061,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=184712 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":184713,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=185213 : 7F 1F 01
+{"sensor":"DISTANCE","timestamp_ms":185214,"distance_cm":138.3,"echo_us":8063,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=185713 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":185714,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":186204,"generation":11,"model":"sine-int8","raw_features":[139.0694],"input_source":"sensors","inputs":[2.1639],"outputs":[0.8125138],"invoke_us":451,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=186212 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":186213,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=186712 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":186713,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=187213 : C7 1F 01
+{"sensor":"DISTANCE","timestamp_ms":187214,"distance_cm":139.5,"echo_us":8135,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=187713 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":187714,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":188204,"generation":11,"model":"sine-int8","raw_features":[139.4981],"input_source":"sensors","inputs":[2.170668],"outputs":[0.7876409],"invoke_us":450,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=188212 : 97 1F 01
+{"sensor":"DISTANCE","timestamp_ms":188213,"distance_cm":138.7,"echo_us":8087,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=188712 : F8 1F 01
+{"sensor":"DISTANCE","timestamp_ms":188713,"distance_cm":140.4,"echo_us":8184,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=189213 : C7 1F 01
+{"sensor":"DISTANCE","timestamp_ms":189214,"distance_cm":139.5,"echo_us":8135,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=189713 : 7F 1F 01
+{"sensor":"DISTANCE","timestamp_ms":189714,"distance_cm":138.3,"echo_us":8063,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":190204,"generation":11,"model":"sine-int8","raw_features":[138.2804],"input_source":"sensors","inputs":[2.151445],"outputs":[0.8125138],"invoke_us":447,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=190212 : F4 1F 01
+{"sensor":"DISTANCE","timestamp_ms":190213,"distance_cm":140.3,"echo_us":8180,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=190712 : 93 1F 01
+{"sensor":"DISTANCE","timestamp_ms":190713,"distance_cm":138.6,"echo_us":8083,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=191213 : 93 1F 01
+{"sensor":"DISTANCE","timestamp_ms":191214,"distance_cm":138.6,"echo_us":8083,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=191713 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":191714,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":192204,"generation":11,"model":"sine-int8","raw_features":[139.0522],"input_source":"sensors","inputs":[2.163629],"outputs":[0.8125138],"invoke_us":453,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=192212 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":192213,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=192713 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":192714,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=193213 : F9 1F 01
+{"sensor":"DISTANCE","timestamp_ms":193214,"distance_cm":140.4,"echo_us":8185,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=193713 : F8 1F 01
+{"sensor":"DISTANCE","timestamp_ms":193714,"distance_cm":140.4,"echo_us":8184,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":194204,"generation":11,"model":"sine-int8","raw_features":[140.3556],"input_source":"sensors","inputs":[2.184206],"outputs":[0.7876409],"invoke_us":449,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=194212 : 96 1F 01
+{"sensor":"DISTANCE","timestamp_ms":194213,"distance_cm":138.7,"echo_us":8086,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=194712 : 7F 1F 01
+{"sensor":"DISTANCE","timestamp_ms":194713,"distance_cm":138.3,"echo_us":8063,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=195213 : 98 1F 01
+{"sensor":"DISTANCE","timestamp_ms":195214,"distance_cm":138.7,"echo_us":8088,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=195713 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":195714,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":196204,"generation":11,"model":"sine-int8","raw_features":[139.4809],"input_source":"sensors","inputs":[2.170398],"outputs":[0.7876409],"invoke_us":448,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=196212 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":196213,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=196712 : 98 1F 01
+{"sensor":"DISTANCE","timestamp_ms":196713,"distance_cm":138.7,"echo_us":8088,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=197213 : 97 1F 01
+{"sensor":"DISTANCE","timestamp_ms":197214,"distance_cm":138.7,"echo_us":8087,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=197713 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":197714,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":198204,"generation":11,"model":"sine-int8","raw_features":[139.4981],"input_source":"sensors","inputs":[2.170668],"outputs":[0.7876409],"invoke_us":450,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=198212 : 97 1F 01
+{"sensor":"DISTANCE","timestamp_ms":198213,"distance_cm":138.7,"echo_us":8087,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=198712 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":198713,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=199213 : 7E 1F 01
+{"sensor":"DISTANCE","timestamp_ms":199214,"distance_cm":138.3,"echo_us":8062,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=199713 : 7F 1F 01
+{"sensor":"DISTANCE","timestamp_ms":199714,"distance_cm":138.3,"echo_us":8063,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":200204,"generation":11,"model":"sine-int8","raw_features":[138.2804],"input_source":"sensors","inputs":[2.151445],"outputs":[0.8125138],"invoke_us":448,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=200212 : F3 1F 01
+{"sensor":"DISTANCE","timestamp_ms":200213,"distance_cm":140.3,"echo_us":8179,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=200712 : 98 1F 01
+{"sensor":"DISTANCE","timestamp_ms":200713,"distance_cm":138.7,"echo_us":8088,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=201213 : 98 1F 01
+{"sensor":"DISTANCE","timestamp_ms":201214,"distance_cm":138.7,"echo_us":8088,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=201713 : 98 1F 01
+{"sensor":"DISTANCE","timestamp_ms":201714,"distance_cm":138.7,"echo_us":8088,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":202204,"generation":11,"model":"sine-int8","raw_features":[138.7092],"input_source":"sensors","inputs":[2.158214],"outputs":[0.8125138],"invoke_us":454,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=202212 : 97 1F 01
+{"sensor":"DISTANCE","timestamp_ms":202213,"distance_cm":138.7,"echo_us":8087,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=202712 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":202713,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=203213 : C7 1F 01
+{"sensor":"DISTANCE","timestamp_ms":203214,"distance_cm":139.5,"echo_us":8135,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=203713 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":203714,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":204204,"generation":11,"model":"sine-int8","raw_features":[139.0694],"input_source":"sensors","inputs":[2.1639],"outputs":[0.8125138],"invoke_us":448,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=204212 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":204213,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=204712 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":204713,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=205213 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":205214,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=205713 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":205714,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":206204,"generation":11,"model":"sine-int8","raw_features":[139.4809],"input_source":"sensors","inputs":[2.170398],"outputs":[0.7876409],"invoke_us":452,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=206212 : 80 1F 01
+{"sensor":"DISTANCE","timestamp_ms":206213,"distance_cm":138.3,"echo_us":8064,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=206712 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":206713,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=207213 : 94 1F 01
+{"sensor":"DISTANCE","timestamp_ms":207214,"distance_cm":138.6,"echo_us":8084,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=207713 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":207714,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":208204,"generation":11,"model":"sine-int8","raw_features":[139.4809],"input_source":"sensors","inputs":[2.170398],"outputs":[0.7876409],"invoke_us":450,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=208212 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":208213,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=208712 : 97 1F 01
+{"sensor":"DISTANCE","timestamp_ms":208713,"distance_cm":138.7,"echo_us":8087,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=209213 : 97 1F 01
+{"sensor":"DISTANCE","timestamp_ms":209214,"distance_cm":138.7,"echo_us":8087,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=209713 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":209714,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":210204,"generation":11,"model":"sine-int8","raw_features":[139.4809],"input_source":"sensors","inputs":[2.170398],"outputs":[0.7876409],"invoke_us":449,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=210212 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":210213,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=210712 : AB 1F 01
+{"sensor":"DISTANCE","timestamp_ms":210713,"distance_cm":139.0,"echo_us":8107,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=211213 : F3 1F 01
+{"sensor":"DISTANCE","timestamp_ms":211214,"distance_cm":140.3,"echo_us":8179,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=211713 : AB 1F 01
+{"sensor":"DISTANCE","timestamp_ms":211714,"distance_cm":139.0,"echo_us":8107,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":212204,"generation":11,"model":"sine-int8","raw_features":[139.035],"input_source":"sensors","inputs":[2.163358],"outputs":[0.8125138],"invoke_us":458,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=212212 : 7D 1F 01
+{"sensor":"DISTANCE","timestamp_ms":212213,"distance_cm":138.2,"echo_us":8061,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=212712 : C4 1F 01
+{"sensor":"DISTANCE","timestamp_ms":212713,"distance_cm":139.5,"echo_us":8132,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=213213 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":213214,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=213713 : C4 1F 01
+{"sensor":"DISTANCE","timestamp_ms":213714,"distance_cm":139.5,"echo_us":8132,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":214204,"generation":11,"model":"sine-int8","raw_features":[139.4638],"input_source":"sensors","inputs":[2.170127],"outputs":[0.7876409],"invoke_us":448,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=214212 : F7 1F 01
+{"sensor":"DISTANCE","timestamp_ms":214213,"distance_cm":140.3,"echo_us":8183,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=214712 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":214713,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=215213 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":215214,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=215713 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":215714,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":216204,"generation":11,"model":"sine-int8","raw_features":[139.4809],"input_source":"sensors","inputs":[2.170398],"outputs":[0.7876409],"invoke_us":451,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=216213 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":216213,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=216713 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":216714,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=217213 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":217214,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=217713 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":217714,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":218204,"generation":11,"model":"sine-int8","raw_features":[139.0522],"input_source":"sensors","inputs":[2.163629],"outputs":[0.8125138],"invoke_us":450,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=218212 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":218213,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=218712 : AB 1F 01
+{"sensor":"DISTANCE","timestamp_ms":218713,"distance_cm":139.0,"echo_us":8107,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=219213 : F2 1F 01
+{"sensor":"DISTANCE","timestamp_ms":219214,"distance_cm":140.3,"echo_us":8178,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=219713 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":219714,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":220204,"generation":11,"model":"sine-int8","raw_features":[139.4809],"input_source":"sensors","inputs":[2.170398],"outputs":[0.7876409],"invoke_us":450,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=220212 : AB 1F 01
+{"sensor":"DISTANCE","timestamp_ms":220213,"distance_cm":139.0,"echo_us":8107,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=220712 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":220713,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=221213 : C4 1F 01
+{"sensor":"DISTANCE","timestamp_ms":221214,"distance_cm":139.5,"echo_us":8132,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=221713 : C4 1F 01
+{"sensor":"DISTANCE","timestamp_ms":221714,"distance_cm":139.5,"echo_us":8132,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":222204,"generation":11,"model":"sine-int8","raw_features":[139.4638],"input_source":"sensors","inputs":[2.170127],"outputs":[0.7876409],"invoke_us":451,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=222212 : C4 1F 01
+{"sensor":"DISTANCE","timestamp_ms":222213,"distance_cm":139.5,"echo_us":8132,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=222712 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":222713,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=223213 : 97 1F 01
+{"sensor":"DISTANCE","timestamp_ms":223214,"distance_cm":138.7,"echo_us":8087,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=223713 : 98 1F 01
+{"sensor":"DISTANCE","timestamp_ms":223714,"distance_cm":138.7,"echo_us":8088,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":224204,"generation":11,"model":"sine-int8","raw_features":[138.7092],"input_source":"sensors","inputs":[2.158214],"outputs":[0.8125138],"invoke_us":445,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=224212 : 97 1F 01
+{"sensor":"DISTANCE","timestamp_ms":224213,"distance_cm":138.7,"echo_us":8087,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=224712 : 98 1F 01
+{"sensor":"DISTANCE","timestamp_ms":224713,"distance_cm":138.7,"echo_us":8088,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=225213 : 98 1F 01
+{"sensor":"DISTANCE","timestamp_ms":225214,"distance_cm":138.7,"echo_us":8088,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=225713 : F8 1F 01
+{"sensor":"DISTANCE","timestamp_ms":225714,"distance_cm":140.4,"echo_us":8184,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":226204,"generation":11,"model":"sine-int8","raw_features":[140.3556],"input_source":"sensors","inputs":[2.184206],"outputs":[0.7876409],"invoke_us":448,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=226212 : F8 1F 01
+{"sensor":"DISTANCE","timestamp_ms":226213,"distance_cm":140.4,"echo_us":8184,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=226712 : F8 1F 01
+{"sensor":"DISTANCE","timestamp_ms":226713,"distance_cm":140.4,"echo_us":8184,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=227213 : F8 1F 01
+{"sensor":"DISTANCE","timestamp_ms":227214,"distance_cm":140.4,"echo_us":8184,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=227713 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":227714,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":228204,"generation":11,"model":"sine-int8","raw_features":[139.4809],"input_source":"sensors","inputs":[2.170398],"outputs":[0.7876409],"invoke_us":452,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=228212 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":228213,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=228712 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":228713,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=229213 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":229214,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=229713 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":229714,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":230204,"generation":11,"model":"sine-int8","raw_features":[139.4809],"input_source":"sensors","inputs":[2.170398],"outputs":[0.7876409],"invoke_us":452,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=230212 : C2 1F 01
+{"sensor":"DISTANCE","timestamp_ms":230213,"distance_cm":139.4,"echo_us":8130,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=230712 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":230713,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=231213 : F8 1F 01
+{"sensor":"DISTANCE","timestamp_ms":231214,"distance_cm":140.4,"echo_us":8184,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=231713 : 98 1F 01
+{"sensor":"DISTANCE","timestamp_ms":231714,"distance_cm":138.7,"echo_us":8088,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":232204,"generation":11,"model":"sine-int8","raw_features":[138.7092],"input_source":"sensors","inputs":[2.158214],"outputs":[0.8125138],"invoke_us":453,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=232212 : B1 1F 01
+{"sensor":"DISTANCE","timestamp_ms":232213,"distance_cm":139.1,"echo_us":8113,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=232712 : F7 1F 01
+{"sensor":"DISTANCE","timestamp_ms":232713,"distance_cm":140.3,"echo_us":8183,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=233213 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":233214,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=233713 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":233714,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":234204,"generation":11,"model":"sine-int8","raw_features":[139.0522],"input_source":"sensors","inputs":[2.163629],"outputs":[0.8125138],"invoke_us":452,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=234212 : C3 1F 01
+{"sensor":"DISTANCE","timestamp_ms":234213,"distance_cm":139.4,"echo_us":8131,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=234712 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":234713,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=235213 : 97 1F 01
+{"sensor":"DISTANCE","timestamp_ms":235214,"distance_cm":138.7,"echo_us":8087,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=235713 : 7E 1F 01
+{"sensor":"DISTANCE","timestamp_ms":235714,"distance_cm":138.3,"echo_us":8062,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":236204,"generation":11,"model":"sine-int8","raw_features":[138.2633],"input_source":"sensors","inputs":[2.151175],"outputs":[0.8125138],"invoke_us":453,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=236212 : 90 1F 01
+{"sensor":"DISTANCE","timestamp_ms":236213,"distance_cm":138.6,"echo_us":8080,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=236712 : 93 1F 01
+{"sensor":"DISTANCE","timestamp_ms":236713,"distance_cm":138.6,"echo_us":8083,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=237214 : F6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":237214,"distance_cm":140.3,"echo_us":8182,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=237713 : C1 1F 01
+{"sensor":"DISTANCE","timestamp_ms":237714,"distance_cm":139.4,"echo_us":8129,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":238204,"generation":11,"model":"sine-int8","raw_features":[139.4124],"input_source":"sensors","inputs":[2.169315],"outputs":[0.7876409],"invoke_us":451,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=238212 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":238213,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=238712 : 7E 1F 01
+{"sensor":"DISTANCE","timestamp_ms":238713,"distance_cm":138.3,"echo_us":8062,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=239213 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":239214,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=239713 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":239714,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":240204,"generation":11,"model":"sine-int8","raw_features":[139.4809],"input_source":"sensors","inputs":[2.170398],"outputs":[0.7876409],"invoke_us":458,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=240212 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":240213,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=240712 : AD 1F 01
+{"sensor":"DISTANCE","timestamp_ms":240713,"distance_cm":139.1,"echo_us":8109,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=241213 : AC 1F 01
+{"sensor":"DISTANCE","timestamp_ms":241214,"distance_cm":139.1,"echo_us":8108,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=241713 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":241714,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":242204,"generation":11,"model":"sine-int8","raw_features":[139.4981],"input_source":"sensors","inputs":[2.170668],"outputs":[0.7876409],"invoke_us":457,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=242212 : 7E 1F 01
+{"sensor":"DISTANCE","timestamp_ms":242213,"distance_cm":138.3,"echo_us":8062,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=242712 : 7F 1F 01
+{"sensor":"DISTANCE","timestamp_ms":242713,"distance_cm":138.3,"echo_us":8063,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=243213 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":243214,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=243713 : 7F 1F 01
+{"sensor":"DISTANCE","timestamp_ms":243714,"distance_cm":138.3,"echo_us":8063,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":244204,"generation":11,"model":"sine-int8","raw_features":[138.2804],"input_source":"sensors","inputs":[2.151445],"outputs":[0.8125138],"invoke_us":452,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=244212 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":244213,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=244712 : F7 1F 01
+{"sensor":"DISTANCE","timestamp_ms":244713,"distance_cm":140.3,"echo_us":8183,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=245213 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":245214,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=245713 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":245714,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":246204,"generation":11,"model":"sine-int8","raw_features":[139.4809],"input_source":"sensors","inputs":[2.170398],"outputs":[0.7876409],"invoke_us":461,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=246212 : 97 1F 01
+{"sensor":"DISTANCE","timestamp_ms":246213,"distance_cm":138.7,"echo_us":8087,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=246713 : 97 1F 01
+{"sensor":"DISTANCE","timestamp_ms":246714,"distance_cm":138.7,"echo_us":8087,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=247213 : F7 1F 01
+{"sensor":"DISTANCE","timestamp_ms":247214,"distance_cm":140.3,"echo_us":8183,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=247713 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":247714,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":248204,"generation":11,"model":"sine-int8","raw_features":[139.4981],"input_source":"sensors","inputs":[2.170668],"outputs":[0.7876409],"invoke_us":450,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=248212 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":248213,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=248712 : F8 1F 01
+{"sensor":"DISTANCE","timestamp_ms":248713,"distance_cm":140.4,"echo_us":8184,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=249213 : 99 1F 01
+{"sensor":"DISTANCE","timestamp_ms":249214,"distance_cm":138.7,"echo_us":8089,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=249713 : B1 1F 01
+{"sensor":"DISTANCE","timestamp_ms":249714,"distance_cm":139.1,"echo_us":8113,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":250204,"generation":11,"model":"sine-int8","raw_features":[139.138],"input_source":"sensors","inputs":[2.164983],"outputs":[0.8125138],"invoke_us":452,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=250212 : 98 1F 01
+{"sensor":"DISTANCE","timestamp_ms":250213,"distance_cm":138.7,"echo_us":8088,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=250712 : F7 1F 01
+{"sensor":"DISTANCE","timestamp_ms":250713,"distance_cm":140.3,"echo_us":8183,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=251213 : 97 1F 01
+{"sensor":"DISTANCE","timestamp_ms":251214,"distance_cm":138.7,"echo_us":8087,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=251713 : CA 1F 01
+{"sensor":"DISTANCE","timestamp_ms":251714,"distance_cm":139.6,"echo_us":8138,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":252204,"generation":11,"model":"sine-int8","raw_features":[139.5667],"input_source":"sensors","inputs":[2.171751],"outputs":[0.7876409],"invoke_us":448,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=252212 : B0 1F 01
+{"sensor":"DISTANCE","timestamp_ms":252213,"distance_cm":139.1,"echo_us":8112,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=252712 : B0 1F 01
+{"sensor":"DISTANCE","timestamp_ms":252713,"distance_cm":139.1,"echo_us":8112,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=253213 : CB 1F 01
+{"sensor":"DISTANCE","timestamp_ms":253214,"distance_cm":139.6,"echo_us":8139,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=253713 : B2 1F 01
+{"sensor":"DISTANCE","timestamp_ms":253714,"distance_cm":139.2,"echo_us":8114,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":254204,"generation":11,"model":"sine-int8","raw_features":[139.1551],"input_source":"sensors","inputs":[2.165253],"outputs":[0.8125138],"invoke_us":448,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=254212 : B1 1F 01
+{"sensor":"DISTANCE","timestamp_ms":254213,"distance_cm":139.1,"echo_us":8113,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=254712 : B2 1F 01
+{"sensor":"DISTANCE","timestamp_ms":254713,"distance_cm":139.2,"echo_us":8114,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=255213 : B1 1F 01
+{"sensor":"DISTANCE","timestamp_ms":255214,"distance_cm":139.1,"echo_us":8113,"status":"OK","error":0}
+[MQTT] Status: Connected, Broker: 192.168.1.49
+proto=gpio src=DISTANCE len=3 ts=255713 : CB 1F 01
+{"sensor":"DISTANCE","timestamp_ms":255714,"distance_cm":139.6,"echo_us":8139,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":256204,"generation":11,"model":"sine-int8","raw_features":[139.5838],"input_source":"sensors","inputs":[2.172022],"outputs":[0.7876409],"invoke_us":450,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=256212 : 84 1F 01
+{"sensor":"DISTANCE","timestamp_ms":256213,"distance_cm":138.4,"echo_us":8068,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=256712 : 84 1F 01
+{"sensor":"DISTANCE","timestamp_ms":256713,"distance_cm":138.4,"echo_us":8068,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=257213 : 98 1F 01
+{"sensor":"DISTANCE","timestamp_ms":257214,"distance_cm":138.7,"echo_us":8088,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=257713 : C5 1F 01
+{"sensor":"DISTANCE","timestamp_ms":257714,"distance_cm":139.5,"echo_us":8133,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":258204,"generation":11,"model":"sine-int8","raw_features":[139.4809],"input_source":"sensors","inputs":[2.170398],"outputs":[0.7876409],"invoke_us":457,"status":"OK"}
+proto=gpio src=DISTANCE len=3 ts=258212 : C6 1F 01
+{"sensor":"DISTANCE","timestamp_ms":258213,"distance_cm":139.5,"echo_us":8134,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=258712 : F8 1F 01
+{"sensor":"DISTANCE","timestamp_ms":258713,"distance_cm":140.4,"echo_us":8184,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=259213 : F8 1F 01
+{"sensor":"DISTANCE","timestamp_ms":259214,"distance_cm":140.4,"echo_us":8184,"status":"OK","error":0}
+proto=gpio src=DISTANCE len=3 ts=259713 : 97 1F 01
+{"sensor":"DISTANCE","timestamp_ms":259714,"distance_cm":138.7,"echo_us":8087,"status":"OK","error":0}
+{"type":"ml","timestamp_ms":260204,"generation":11,"model":"sine-int8","raw_features":[138.692],"input_source":"sensors","inputs":[2.157943],"outputs":[0.8125138],"invoke_us":453,"status":"OK"}
+> TASKS
+[TASK] app_message=104 B app_buffer=864 B
+[TASK] SchedulerTask    id=8  core=1 pri=21 stack_free=12396 B ran_on_core0=0 ran_on_core1=2440
+[TASK] MQTTTask         id=9  core=0 pri=22 stack_free=14332 B ran_on_core0=23722 ran_on_core1=0
+[TASK] ControlTask      id=10 core=1 pri=23 stack_free=2988 B ran_on_core0=0 ran_on_core1=3073
+[TASK] InferenceTask    id=11 core=1 pri=23 stack_free=6396 B ran_on_core0=0 ran_on_core1=103
+[TASK] ApplicationTask  id=12 core=1 pri=23 stack_free=3228 B ran_on_core0=0 ran_on_core1=0
+[TASK] BenchmarkTask    id=13 core=1 pri=24 stack_free=2364 B ran_on_core0=0 ran_on_core1=0
+[TASK] MonitorTask      id=14 core=1 pri=24 stack_free=3308 B ran_on_core0=0 ran_on_core1=260
+[TASK] sched_mbf  free=12912 B dropped=0
+[TASK] pub_mbf    free=10944 B dropped=0
+[TASK] infer_mbf  free=592 B dropped=0
+[TASK] app_mbf    free=864 B dropped=0
+[TASK] bench_mbf  free=512 B dropped=0
+[TASK] ctrl_mbf   free=528 B dropped=0
+[TASK] heap_free=30128 B min_free=23404 B largest=20480 B console_rx_irqs=20 console_rx_dropped=0
