@@ -337,6 +337,93 @@ The optional original Windows Mosquitto service can be restarted from an
 **Administrator PowerShell** with `Start-Service -Name mosquitto`; that
 localhost-only service is separate from the temporary network listener.
 
+## Board C LCD and Board B → C mock MQTT test
+
+This is a **separate display/transport test**. Board B's `D6MOCKPUB` command
+publishes a synthetic snapshot; it does not use Board A's sensor readings,
+calculate occupancy, run ML, or write the external SPI flash. Board C's
+isolated `LCDTEST` remains available independently of this MQTT path.
+
+On 21 November 2026, the bare N16R8 LCD board appeared as native USB
+`COM13` with node ID `s3-003`. The `s3-003` image was rebuilt for the current
+private Wi-Fi/broker address, passed its build audit, and flashed with hash
+verification. After a manual RST press, C sent MQTT heartbeats. COM numbers
+can change, so identify the LCD board before opening a monitor or flashing.
+
+### Start: broker and Board C console
+
+Keep the temporary broker from [Window 1](#start-window-1--administrator-powershell-broker)
+running. Power Boards B and C from USB and keep the laptop on the same
+private 2.4 GHz Wi-Fi. Use a **normal PowerShell** to identify C's native
+port, then open its console (replace `COM13` if Windows assigned another
+port):
+
+```powershell
+$py = "$env:USERPROFILE\.espressif\python_env\idf6.1_py3.14_env\Scripts\python.exe"
+& $py -m serial.tools.list_ports -v
+& $py -m serial.tools.miniterm COM13 115200 --dtr 0 --rts 0 --eol CRLF
+```
+
+The console occupies this window. If C is silent and has no MQTT heartbeat
+after a fresh flash, press and release **RST once, without BOOT**, then
+reopen the console if Windows disconnects the port. On this board the manual
+RST was needed after flashing. In a second **normal PowerShell** window,
+watch C's heartbeat and B's snapshot topic:
+
+```powershell
+$brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
+& "$env:ProgramFiles\mosquitto\mosquitto_sub.exe" -h $brokerIp -t 'pico/s3-003/heartbeat' -t 'd6/board-b/snapshot' -v
+```
+
+Leave the subscriber running. A fresh `pico/s3-003/heartbeat` confirms C is
+connected to the broker; a USB COM port alone does not.
+
+### Check the isolated LCD first
+
+Type this **inside C's miniterm window** and press Enter:
+
+```text
+LCDTEST 76 284 82 18 00 0
+```
+
+Expect `[LCD] test complete result=0` and visibly red, green, blue and black
+bands with `LCD READY`. The screen is the decisive check because this LCD
+has no connected readback line. The 21 November test passed in both console
+output and the user's visual check. `LCDTEST` ends the D6 view mode, so send
+`D6VIEW` again before every mock snapshot test that follows a pattern test.
+
+### Send a mock snapshot from B to C
+
+In a **third normal PowerShell** window, send these commands in order:
+
+```powershell
+$brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
+$pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
+& $pub -h $brokerIp -q 1 -t 'pico/s3-003/cmd' -m 'D6VIEW'
+Start-Sleep -Seconds 2
+& $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -m 'D6MOCKPUB 2'
+```
+
+The subscriber should show a JSON snapshot on `d6/board-b/snapshot`.
+C's serial console should print `[D6MQTT] C view result=0` followed by
+`[D6MQTT] C snapshot seq=<n> occupancy=2 display=0 active=1`.
+`seq` increases with B's mock publishes and may reset when B reboots.
+The LCD should show `ROOM MON`, `MOCK MQTT`, `OCC 2`, `TEMP 27.5 C`,
+`HUM 65.2%`, `LUX 420`, `SEQ <n>` and `B > C OK` in portrait orientation.
+
+The 21 November test produced C's `view result=0` and
+`snapshot seq=1 occupancy=2 display=0 active=1`; the user's photo showed
+all those fields on the LCD. This verifies B → broker → C mock transport,
+snapshot parsing and a visible display update. It does **not** establish a
+live A → B → C occupancy display, or that B's mock values came from sensors.
+
+### End the Board C test
+
+Press `Ctrl+]` in C's miniterm window and `Ctrl+C` in the subscriber window.
+The display keeps the last mock snapshot until another display command or
+reset. Leave the broker running if still testing A/B; otherwise stop it with
+`Ctrl+C` in its Administrator PowerShell window. Unplug C when finished.
+
 ## When Wi-Fi or the broker address changes
 
 The broker IP is compiled into each ESP32 firmware image; `mosquitto_pub`
