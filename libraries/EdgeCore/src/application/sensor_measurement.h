@@ -6,7 +6,9 @@
  * Positive frame length = data, negative HAL_ERR_* = acquisition failure.
  * Returns 0 for generic sensors without a physical-unit decoder.
  */
-/* Typed, bus-independent numeric decoding shared with console output. */
+/* Typed, bus-independent numeric decoding shared with console output.
+ * proto=mqtt sensors decode by their remote_profile (raw: no fields). */
+sensor_profile_t sensor_measurement_profile(const app_cfg_t *cfg);
 bool sensor_measurement_field_supported(const app_cfg_t *cfg,const char *field);
 bool sensor_measurement_value(const app_cfg_t *cfg,const uint8_t *data,int length,const char *field,float *value);
 void sensor_measurement_notify(const app_cfg_t *cfg,const uint8_t *data,int length);
