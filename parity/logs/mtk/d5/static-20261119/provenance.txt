@@ -1,0 +1,19 @@
+D5 task 4.3, static part: firmware sizes from the build, no board.
+Date: 19 Nov 2026. Source: main at bcbbfd2 (all five bundled models,
+including comfort-summer and people-counter) with the D5 changes (MLBENCH,
+the Invoke() timer, the NN=ansi option), and unchanged main at bcbbfd2.
+Toolchain: ESP-IDF v6.1-dev-2300-g17a74c925c, xtensa-esp-elf-gcc
+esp-15.2.0_20251204, course port e92874d, esp-nn 1.4.1, optimisation -Og
+(port default). Replaces the 17 Nov tables, measured before the classroom
+models were merged; the ESP-NN figures did not change.
+
+size-optimized.txt             idf.py size, normal build (CONFIG_NN_OPTIMIZED=y)
+size-ansi.txt                  idf.py size, NN=ansi build (CONFIG_NN_ANSI_C=y)
+size-main.txt                  idf.py size, main without the D5 changes
+size-components-optimized.txt  idf.py size-components, normal build
+size-components-ansi.txt       idf.py size-components, NN=ansi build
+
+The ANSI image links esp_nn_fully_connected_s8_ansi and esp_nn_conv_s8_ansi
+and no *_esp32s3 ESP-NN kernel; the normal image links the esp32s3 kernels
+for fully connected, convolution, depthwise convolution, pooling, add,
+multiply and softmax.

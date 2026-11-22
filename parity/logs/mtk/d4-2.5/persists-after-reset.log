@@ -1,0 +1,39 @@
+# D4 task 2.5: a model sent over MQTT survives a reset. Captured 2026-11-19 on the N16R8 DevKitC (BOARD=n16r8, main at 76c453d) after model_test.py uploaded a 16,440-byte model to flash slot 0: the board is reset through the USB RTS line and the console is read from the first boot line. The saved model is loaded from the model partition (FlatBuffer at 0x3c931000) after the built-in one (0x3c11001c). Excerpt; the course port's start-up trace and Wi-Fi driver lines are left out.
+[BOOT] esp32s3_mtk node s3-001: micro T-Kernel 3 SMP, 2 processors, reset reason: USB
+[BOOT] application startup stack: 16384 bytes, kernel processor 1
+[BOOT] micro T-Kernel 3 SMP runtime: 7 tasks, 7 message buffers, 1 event flag, 1 cyclic handler
+[MODEL] Model transfer subsystem initialised.
+[MODEL] Loaded saved model: 16440 bytes from flash slot 0
+[INFER] Inference manager initialised.
+[TFLITE] Unloading previous model state...
+[TFLITE] Unload complete.
+[TFLITE] Verifying FlatBuffer at 0x3c11001c...
+[TFLITE] Schema version 3 verified.
+[TFLITE] Creating OpResolver...
+[TFLITE] Ops registered.
+[TFLITE] Creating Interpreter (Arena size 65536)...
+[TFLITE] Tensors allocated.
+[TFLITE] Model loaded OK!
+[TFLITE]   Inputs:  1 tensor(s), 16 total element(s)
+[TFLITE]   Outputs: 1 tensor(s), 16 total element(s)
+[TFLITE]   Arena:   2908 / 65536 bytes used
+[INFER] Base model loaded: 16 inputs, 16 outputs
+[INFER] Loaded 16 base normalization params and 16 threshold masks
+[INFER] MODEL_READY detected — starting auto-load...
+[TFLITE] Unloading previous model state...
+[TFLITE] Unload complete.
+[TFLITE] Verifying FlatBuffer at 0x3c931000...
+[TFLITE] Schema version 3 verified.
+[TFLITE] Creating OpResolver...
+[TFLITE] Ops registered.
+[TFLITE] Creating Interpreter (Arena size 65536)...
+[TFLITE] Allocating tensors...
+[TFLITE] Tensors allocated.
+[TFLITE] Model loaded OK!
+[TFLITE]   Inputs:  1 tensor(s), 16 total element(s)
+[TFLITE]   Outputs: 1 tensor(s), 16 total element(s)
+[TFLITE]   Arena:   2908 / 65536 bytes used
+[INFER] Model loaded: 16 inputs, 16 outputs
+[INFER] Auto-load successful.
+WiFi connected
+[MQTT] connected to broker

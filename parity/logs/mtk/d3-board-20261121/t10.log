@@ -1,0 +1,47 @@
+# board=s3 fixture=upstream stage=t10
+23:17:44 --- clear-t10: CLEAR
+23:17:45 [RULE] reset
+23:17:45 CLEARED
+23:17:45 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:17:47 --- cfg-t10: BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=1|ENDCFG
+23:17:47 OK: Config applied (inline, delim='|')
+23:17:47 [SCHED] added: DIG on gpio
+23:17:47 CFG: ok (added #0: DIG)
+23:17:50 --- rule-false: BEGINRULE|name=RF|source=DIG|calc=s=u8(0)|when=s==1|action=log:should not fire|ENDRULE
+23:17:50 [RULE] added name=RF src=DIG vars=1 action=log:should not fire
+23:17:50 RULE: ok
+23:17:50 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:17:52 --- rule-true: BEGINRULE|name=RT|source=DIG|calc=s=u8(0)|when=s==0|action=log:control fired|ENDRULE
+23:17:52 [RULE] added name=RT src=DIG vars=1 action=log:control fired
+23:17:52 RULE: ok
+23:17:55 --- run-t10: RUN
+23:17:55 RUN
+23:17:55 proto=gpio src=DIG len=3 ts=285287 : 00 3E 1F
+23:17:55 [RULE] RT: control fired (value=0.000 ts=285287)
+23:17:55 [TRACE] Total Rule Eval (DIG): 422us
+23:17:55 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:17:56 proto=gpio src=DIG len=3 ts=286287 : 00 27 23
+23:17:56 [RULE] RT: control fired (value=0.000 ts=286287)
+23:17:56 [TRACE] Total Rule Eval (DIG): 398us
+23:17:57 proto=gpio src=DIG len=3 ts=287288 : 00 10 27
+23:17:57 [RULE] RT: control fired (value=0.000 ts=287288)
+23:17:57 [TRACE] Total Rule Eval (DIG): 374us
+23:17:58 proto=gpio src=DIG len=3 ts=288288 : 00 F8 2A
+23:17:58 [RULE] RT: control fired (value=0.000 ts=288288)
+23:17:58 [TRACE] Total Rule Eval (DIG): 373us
+23:17:59 proto=gpio src=DIG len=3 ts=289288 : 00 E0 2E
+23:17:59 [RULE] RT: control fired (value=0.000 ts=289288)
+23:17:59 [TRACE] Total Rule Eval (DIG): 376us
+23:18:00 proto=gpio src=DIG len=3 ts=290288 : 00 C8 32
+23:18:00 [RULE] RT: control fired (value=0.000 ts=290288)
+23:18:00 [TRACE] Total Rule Eval (DIG): 376us
+23:18:00 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:18:01 proto=gpio src=DIG len=3 ts=291288 : 00 B0 36
+23:18:01 [RULE] RT: control fired (value=0.000 ts=291288)
+23:18:01 [TRACE] Total Rule Eval (DIG): 369us
+23:18:01 --- stop-t10: STOP
+23:18:02 STOP
+23:18:04 --- clear-t10-end: CLEAR
+23:18:04 [RULE] reset
+23:18:04 CLEARED
+23:18:05 [MQTT] Status: Connected, Broker: 192.168.1.49

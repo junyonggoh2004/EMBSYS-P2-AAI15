@@ -1,0 +1,176 @@
+--- boot capture on /dev/cu.usbmodem2101 ---
+23:13:09 I (254) esp_image: segment 4: paddr=0013f874 vaddr=40379f88 size=15d90h ( 89488) load
+23:13:09 I (274) esp_image: segment 5: paddr=0015560c vaddr=50000000 size=00024h (    36) load
+23:13:09 I (286) boot: Loaded app from partition at offset 0x10000
+23:13:09 I (286) boot: Disabling RNG early entropy source...
+23:13:09 I (288) octal_psram: vendor id    : 0x0d (AP)
+23:13:09 I (288) octal_psram: dev id       : 0x02 (generation 3)
+23:13:09 I (289) octal_psram: density      : 0x03 (64 Mbit)
+23:13:09 I (289) octal_psram: good-die     : 0x01 (Pass)
+23:13:09 I (289) octal_psram: Latency      : 0x01 (Fixed)
+23:13:09 I (289) octal_psram: VCC          : 0x01 (3V)
+23:13:09 I (289) octal_psram: SRF          : 0x01 (Fast Refresh)
+23:13:09 I (290) octal_psram: BurstType    : 0x01 (Hybrid Wrap)
+23:13:09 I (290) octal_psram: BurstLen     : 0x01 (32 Byte)
+23:13:09 I (290) octal_psram: Readlatency  : 0x02 (10 cycles@Fixed)
+23:13:09 I (290) octal_psram: DriveStrength: 0x00 (1/1)
+23:13:09 I (290) MSPI Timing: Enter psram timing tuning
+23:13:09 I (291) esp_psram: Found 8MB PSRAM device
+23:13:09 I (292) esp_psram: Speed: 80MHz
+23:13:09 I (292) cpu_start: Multicore app
+23:13:10 I (725) esp_psram: SPI SRAM memory test OK
+23:13:10 I (739) cpu_start: Pro cpu start user code
+23:13:10 I (739) cpu_start: cpu freq: 240000000 Hz
+23:13:10 I (739) app_init: Application information:
+23:13:10 I (739) app_init: Project name:     esp32s3_mtk
+23:13:10 I (739) app_init: ELF file SHA256:  6be87f8d1...
+23:13:10 I (739) app_init: ESP-IDF:          v6.1-dev-2300-g17a74c925c
+23:13:10 I (739) efuse_init: Min chip rev:     v0.0
+23:13:10 I (740) efuse_init: Max chip rev:     v0.99 
+23:13:10 I (740) efuse_init: Chip rev:         v0.2
+23:13:10 I (740) heap_init: Initializing. RAM available for dynamic allocation:
+23:13:10 I (740) heap_init: At 3FCDA900 len 0000EE10 (59 KiB): RAM
+23:13:10 I (740) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+23:13:10 I (740) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+23:13:10 I (741) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+23:13:10 I (741) esp_psram: Adding pool of 8050K of PSRAM memory to heap allocator
+23:13:10 I (742) spi_flash: detected chip: boya
+23:13:10 I (742) spi_flash: flash io: dio
+23:13:10 W (742) spi_flash: Detected size(16384k) larger than the size in the binary image header(4096k). Using the size in the binary image header.
+23:13:10 [shim] xTaskCreate enter: 'ipc0' prio=24 core=0 stack=1280
+23:13:10 [shim] xTaskCreate: 'ipc0' tk_id=1 pri=1
+23:13:10 [shim] xTaskCreate enter: 'ipc1' prio=24 core=1 stack=1280
+23:13:10 [shim] xTaskCreate: 'ipc1' tk_id=2 pri=1
+23:13:10 [shim] xTaskCreate enter: 'esp_timer' prio=22 core=0 stack=4096
+23:13:10 [shim] xTaskCreate: 'esp_timer' tk_id=3 pri=3
+23:13:10 I (743) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+23:13:10 I (744) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+23:13:10 
+23:13:10 
+23:13:10 [mtkernel] __wrap_esp_startup_start_app: bypassing FreeRTOS
+23:13:10 [crumb] cold boot, no flight-recorder data
+23:13:10 [mtkernel] core[1s:m pb]y pcaosrsein0g  IFPrIe eaRlTlOoSc,  beengtienr isnogu rScMeP= park79
+23:13:10 
+23:13:10 [smp] core1 entry, prid=1
+23:13:10 [smp] core0 IPI alloc done err=0
+23:13:10 [smp] core1 waiting for core0 IPI allocator
+23:13:10 [smp] core1 direct IPI install b[esgmipn]  scoourrec0e =wait8i0ng
+23:13:10  for core1 interru[pstm ps]e tcuopre
+23:13:10 1 direct IPI install done int=0 level=1
+23:13:10 [smp] [csomrpe]1  cIoPrIe 0r eocbesievrevre du pc o(rFeR1O Mi_nCtPeUr_rIuNpTtR 1s)e,t uppa rckoimnpgle
+23:13:10 te
+23:13:10 [mtkernel] heap 0x3fcabf08..0x3fcb6f08 (45056 bytes)
+23:13:10 [mtkernel] calling knl_main()
+23:13:10 SYSTIMER started!
+23:13:10 
+23:13:10 
+23:13:10 microT-Kernel Version 3.00
+23:13:10 
+23:13:10 [BOOT] esp32s3_mtk node s3-001: micro T-Kernel 3 SMP, 2 processors, reset reason: USB
+23:13:10 [BOOT] application startup stack: 16384 bytes, kernel processor 1
+23:13:10 [BOOT] micro T-Kernel 3 SMP runtime: 7 tasks, 7 message buffers, 1 event flag, 1 cyclic handler
+23:13:10 [WIFI] Connecting to <ssid>
+23:13:10 [MODEL] Model transfer subsystem initialised.
+23:13:10 [shim] qcreate(st) h=0x3fcddaf8 len=32 sz=4 ne=7 nf=8
+23:13:10 [shim] xTaskCreate enter: 'tcpip' prio=18 core=2147483647 stack=3584
+23:13:10 [shim]   tskNO_AFFINITY -> pinning 'tcpip' to core 0 (coprocessor tasks must be pinned)
+23:13:10 [shim] xTaskCreate: 'tcpip' tk_id=15 pri=7
+23:13:10 [shim] qcreate h=0x3c1541e4 len=32 sz=16 ne=12 nf=13
+23:13:10 [shim] xTaskCreate enter: 'sys_evt' prio=20 core=0 stack=2816
+23:13:10 [shim] xTaskCreate: 'sys_evt' tk_id=16 pri=5
+23:13:10 I (3355770631) pp: pp rom version: e7ae62f
+23:13:10 I (3355770631) net80211: net80211 rom version: e7ae62f
+23:13:10 [shim] qcreate(st) h=0x3fce03cc len=200 sz=8 ne=15 nf=16
+23:13:10 [shim] xTaskCreate enter: 'wifi' prio=23 core=0 stack=3584
+23:13:10 [shim] xTaskCreate: 'wifi' tk_id=17 pri=2
+23:13:10 I (3355770642) wifi_init: rx ba win: 6
+23:13:10 I (3355770642) wifi_init: accept mbox: 6
+23:13:10 I (3355770643) wifi_init: tcpip mbox: 32
+23:13:10 I (3355770643) wifi_init: udp mbox: 6
+23:13:10 I (3355770643) wifi_init: tcp mbox: 6
+23:13:10 I (3355770643) wifi_init: tcp tx win: 5760
+23:13:10 I (3355770643) wifi_init: tcp rx win: 5760
+23:13:10 I (3355770643) wifi_init: tcp mss: 1440
+23:13:10 I (3355770643) wifi_init: WiFi IRAM OP enabled
+23:13:10 I (3355770643) wifi_init: WiFi RX IRAM OP enabled
+23:13:10 W (-939196652) wifi:Password length matches WPA2 standards, authmode threshold changes from OPEN to WPA2
+23:13:10 I (3355770645) phy_init: phy_version 711,97bcf0a2,Aug 25 2025,19:04:10
+23:13:10 [MODEL] Loaded saved model: 16440 bytes from flash slot 1
+23:13:10 [INFER] Inference manager initialised.
+23:13:10 [TFLITE] Unloading previous model state...
+23:13:10 [TFLITE] Unload complete.
+23:13:10 [TFLITE] Verifying FlatBuffer at 0x3c1102fc...
+23:13:10 [TFLITE] Schema version 3 verified.
+23:13:10 [TFLITE] Creating OpResolver...
+23:13:10 [TFLITE] Ops registered.
+23:13:10 [TFLITE] Creating Interpreter (Arena size 65536)...
+23:13:10 [TFLITE] Allocating tensors...
+23:13:10 [TFLITE] Tensors allocated.
+23:13:10 [TFLITE] Model loaded OK!
+23:13:10 [TFLITE]   Inputs:  1 tensor(s), 16 total element(s)
+23:13:10 [TFLITE]   Outputs: 1 tensor(s), 16 total element(s)
+23:13:10 [TFLITE]   Arena:   2908 / 65536 bytes used
+23:13:10 [INFER] Base model loaded: 16 inputs, 16 outputs
+23:13:10 [INFER] Loaded 16 base normalization params and 16 threshold masks
+23:13:10 [MON] hardware watchdog armed: 10 s, fed while SchedulerTask, ControlTask and MQTTTask are alive
+23:13:10 [MQTT] Status: Disconnected, Broker: 192.168.1.49
+23:13:11 [INFER] MODEL_READY detected — starting auto-load...
+23:13:11 [TFLITE] Unloading previous model state...
+23:13:11 [TFLITE] Unload complete.
+23:13:11 [TFLITE] Verifying FlatBuffer at 0x3c932000...
+23:13:11 [TFLITE] Schema version 3 verified.
+23:13:11 [TFLITE] Creating OpResolver...
+23:13:11 [TFLITE] Ops registered.
+23:13:11 [TFLITE] Creating Interpreter (Arena size 65536)...
+23:13:11 [TFLITE] Allocating tensors...
+23:13:11 [TFLITE] Tensors allocated.
+23:13:11 [TFLITE] Model loaded OK!
+23:13:11 [TFLITE]   Inputs:  1 tensor(s), 16 total element(s)
+23:13:11 [TFLITE]   Outputs: 1 tensor(s), 16 total element(s)
+23:13:11 [TFLITE]   Arena:   2908 / 65536 bytes used
+23:13:11 [INFER] Model loaded: 16 inputs, 16 outputs
+23:13:11 [INFER] Auto-load successful.
+23:13:12 I (3355772533) esp_netif_handlers: sta ip: 192.168.1.55, mask: 255.255.255.0, gw: 192.168.1.1
+23:13:12 WiFi connected
+23:13:12 [WIFI] ip=192.168.1.55
+23:13:12 [shim] qcreate h=0x3c165484 len=1 sz=16 ne=22 nf=23
+23:13:12 [MQTT] Connecting to 192.168.1.49 port 1883...
+23:13:12 [shim] xTaskCreate enter: 'mqtt_task' prio=5 core=2147483647 stack=6144
+23:13:12 [shim]   tskNO_AFFINITY -> pinning 'mqtt_task' to core 0 (coprocessor tasks must be pinned)
+23:13:12 [shim] xTaskCreate: 'mqtt_task' tk_id=18 pri=20
+23:13:12 [shim] qcreate(st) h=0x3fcf0764 len=6 sz=4 ne=26 nf=27
+23:13:12 [MQTT] connected to broker
+23:13:12 [MQTT] Subscribing to node wildcard: pico/s3-001/#
+23:13:12 [MQTT] Subscribed OK to: node-wildcard
+23:13:12 [MQTT] Subscribing to broadcast: pico/broadcast/config
+23:13:12 [MQTT] Subscribed OK to: broadcast
+23:13:15 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:13:20 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:13:25 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:13:30 [MQTT] Status: Connected, Broker: 192.168.1.49
+--- TASKS
+23:13:34 [TASK] app_message=104 B app_buffer=864 B
+23:13:34 [TASK] SchedulerTask    id=8  core=1 pri=21 stack_free=14428 B ran_on_core0=0 ran_on_core1=24
+23:13:34 [TASK] MQTTTask         id=9  core=0 pri=22 stack_free=14332 B ran_on_core0=2207 ran_on_core1=0
+23:13:34 [TASK] ControlTask      id=10 core=1 pri=23 stack_free=3036 B ran_on_core0=0 ran_on_core1=248
+23:13:34 [TASK] InferenceTask    id=11 core=1 pri=23 stack_free=6796 B ran_on_core0=0 ran_on_core1=2
+23:13:34 [TASK] ApplicationTask  id=12 core=1 pri=23 stack_free=3228 B ran_on_core0=0 ran_on_core1=0
+23:13:34 [TASK] BenchmarkTask    id=13 core=1 pri=24 stack_free=2364 B ran_on_core0=0 ran_on_core1=0
+23:13:34 [TASK] MonitorTask      id=14 core=1 pri=24 stack_free=3308 B ran_on_core0=0 ran_on_core1=24
+23:13:34 [TASK] sched_mbf  free=12912 B dropped=0
+23:13:34 [TASK] pub_mbf    free=10944 B dropped=0
+23:13:34 [TASK] infer_mbf  free=592 B dropped=0
+23:13:34 [TASK] app_mbf    free=864 B dropped=0
+23:13:34 [TASK] bench_mbf  free=512 B dropped=0
+23:13:34 [TASK] ctrl_mbf   free=528 B dropped=0
+23:13:34 [TASK] heap_free=30788 B min_free=23948 B largest=20480 B console_rx_irqs=1 console_rx_dropped=0
+23:13:34 [TASK] SchedulerTask cycles=24 mean_us=1175 p95_us=<250 max_us=26725
+23:13:35 [MQTT] Status: Connected, Broker: 192.168.1.49
+--- APP STATUS
+23:13:37 [APP] request=3 synthetic=0 queued=1
+23:13:37 [APP] status occupancy=0 processed=0 resets=0 malformed=0 publish_enqueued=0 publish_failed=0
+23:13:40 [MQTT] Status: Connected, Broker: 192.168.1.49
+--- SHOW
+23:13:40 [SHOW] sampling=0
+23:13:40 [WINDOW] enabled=0 state=0 events=0 dropped=0 radar_frames=0 malformed=0 rx_dropped=0 identity=1
+23:13:40 [RULE] count=0

@@ -22,8 +22,13 @@ extern "C" {
  */
 
 /* Maximum supported tensor dimensions */
+#ifdef ESP_PLATFORM
+#define TFLITE_MAX_INPUTS   31  /* Seeed ultrasonic replay window */
+#define TFLITE_MAX_OUTPUTS  100 /* comfort_summer class scores */
+#else
 #define TFLITE_MAX_INPUTS   16
 #define TFLITE_MAX_OUTPUTS  16
+#endif
 
 /* Arena size for the interpreter (tune as needed) */
 #define TFLITE_ARENA_SIZE   (64 * 1024)   /* 64 KB */

@@ -1,0 +1,31 @@
+D3 board acceptance run, 21 to 22 November 2026 (Hasif)
+
+Board: ESP32-S3 N16R8 (octal PSRAM), native USB port. Firmware: main at bf8d3f3 plus bbfa767 (branch fix-n16r8-ram, the PSRAM fix for the ML setup token buffer, without which the N16R8 build does not link), built with BOARD=n16r8. Broker: mosquitto on the laptop over the room Wi-Fi. SSIDs and MAC addresses are removed from these logs.
+
+The test scripts print their pass counts to the terminal and write the raw board console to the logs; the counts below are from the terminal.
+
+Wiring: one HC-SR04 on 5V and GND with Trig on GPIO4 and Echo on GPIO5 (parity_test.py --fixture v2-sonar). Nothing else was connected. The HAL test ran with Echo unplugged, since its jumper check drives GPIO5.
+
+D3-10, D1 regression on the D3 firmware. boot.log: clean boot with the NVS boot counter working (no "durable event identity unavailable" line, and SHOW reports identity=1), 7 tasks, 7 message buffers, Wi-Fi and MQTT up. 4a 14/14, 5-neg 27/27, t03 6/6, t04 13/13, t06 7/7, t10 7/7, mqtt 27/27, model 8/9 (persists-after-reset, the same port-reopen timing miss as every earlier run; infer-after-reset passed), faults 9/9 (lowest free internal heap 23,280 B), flood pass (2,247 messages, heartbeat kept), HAL test 27/27 with the jumper check skipped. The HAL test image was built in a separate build directory with octal PSRAM, because esp32s3_mtk/haltest fixes its sdkconfig defaults to the HW-747's quad PSRAM and that image stops at boot on the N16R8 (hal_test-run1-wrong-psram-build.log); hal_test-run1-silent.log is the first try after flashing, before the board was reset.
+
+5-neg-run1.log failed 26/27 and 4c-sonic-run2-old-check.log failed one check because both looked for scheduler debug lines (init_cfg FAILED, method=pulse) that the µT-Kernel build has not printed since SCHED_DEBUG=0 on 3 November. parity_test.py now also accepts the I2C driver's own refusal line and the scheduler's added line. The reruns, 5-neg.log and 4c-sonic.log, passed.
+
+D3-8, ApplicationTask: app-test.log passed (ApplicationTask on core 1 at priority 23, 104-byte messages, duplicate rejection, occupancy, publishing).
+
+D3-6, timing. timing.log is the raw output of timing_test.py; its table, which the script prints to the terminal only, was:
+
+sensor   target     n   mean ms     p95    min    max   stdev missed  result
+T10          10 21389     10.07      11      9     21    0.97    147  measured
+T50          50  4279     50.33      51     49    101    4.06     28  measured
+T100        100  2136    100.80     101     98    201    8.88     17  PASS
+T500        500   426    504.70     501    498   1001   48.28      4  PASS
+T1000      1000   213   1009.40    1001    998   2001   96.45      2  PASS
+T2000      2000   106   2018.88    2001   1998   4000  193.34      1  PASS
+
+modes.log: event-driven FOLLOW read 21 times for SRC's 21 readings over 10 s and never on its own; one-shot ONE read once after RUN and once after each of two TRIGGER commands, nothing in between.
+
+D3-2, HC-SR04 without blocking SchedulerTask: t06 7/7; 4c-sonic 6/6; sonic-rule 9/9 with the sonar pointed at the ceiling for the far reading. pending.log and pending-show.log: a sensor with a 1 s echo wait shows pending=1, and STOP or CLEAR during the wait leaves pending=0 and timeouts=0 with no reading afterwards. The sonic-rule-run1 to run4 and 4c-sonic-run1 logs are the earlier tries while the sonar wiring and target were sorted out (loose Echo wire, no hard surface for the far reading).
+
+D3-9, faults never look like readings: no echo gives error=-1; two pulse sensors with long echo waits give error=-6 for the busy capture (pending.log, 7 error lines, no valid-looking reading); an AHT configured with nothing wired gives 10 error lines and no reading (missing.log); invalid configurations are refused in 5-neg.log.
+
+faults.broker.log is the broker output from the fault test's restart, trimmed at 23:23:00 after the fault test ended.

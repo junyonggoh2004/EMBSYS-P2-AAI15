@@ -1,0 +1,102 @@
+23:28:21 [MQTT] Status: Connected, Broker: 192.168.1.49
+> STOP
+23:28:21 STOP
+> CLEAR
+23:28:23 [RULE] reset
+23:28:23 CLEARED
+# D3-6 event-driven: SRC digital every 500 ms on GPIO8, FOLLOW reads only after SRC (GPIO9, window 50 ms)
+> BEGINCFG|name=SRC|proto=gpio|gpio.mode=digital|gpio.pin=8|gpio.pull=up|mode=poll|timing.mode=periodic|timing.interval_ms=500|ENDCFG
+23:28:24 OK: Config applied (inline, delim='|')
+23:28:24 [SCHED] added: SRC on gpio
+23:28:24 CFG: ok (added #0: SRC)
+> BEGINCFG|name=FOLLOW|proto=gpio|gpio.mode=digital|gpio.pin=9|gpio.pull=up|mode=poll|timing.mode=event_driven|timing.trigger_source=SRC|timing.window_ms=50|ENDCFG
+23:28:26 OK: Config applied (inline, delim='|')
+23:28:26 [SCHED] added: FOLLOW on gpio
+23:28:26 CFG: ok (added #1: FOLLOW)
+23:28:26 [MQTT] Status: Connected, Broker: 192.168.1.49
+> SHOW
+23:28:27 [SHOW] sampling=0
+23:28:27 [WINDOW] enabled=0 state=0 events=0 dropped=0 radar_frames=0 malformed=0 rx_dropped=0 identity=1
+23:28:27 [SCHED] #0 name=SRC proto=gpio mode=poll freq=1.000Hz timing=periodic interval=500ms timeout=0ms window=0ms trigger=- status=1
+23:28:27 [SENSOR] name=SRC pending=0 timeouts=0 errors=0 overruns=0
+23:28:27 [SCHED] #1 name=FOLLOW proto=gpio mode=poll freq=1.000Hz timing=event_driven interval=1000ms timeout=0ms window=50ms trigger=SRC status=0
+23:28:27 [SENSOR] name=FOLLOW pending=0 timeouts=0 errors=0 overruns=0
+23:28:27 [RULE] count=0
+> RUN
+23:28:29 RUN
+23:28:29 proto=gpio src=SRC len=3 ts=430270 : 01 0E 12
+23:28:29 proto=gpio src=FOLLOW len=3 ts=430270 : 01 0E 0C
+23:28:29 proto=gpio src=SRC len=3 ts=430771 : 01 03 14
+23:28:29 proto=gpio src=FOLLOW len=3 ts=430772 : 01 04 0E
+23:28:30 proto=gpio src=SRC len=3 ts=431271 : 01 F7 15
+23:28:30 proto=gpio src=FOLLOW len=3 ts=431272 : 01 F8 0F
+23:28:30 proto=gpio src=SRC len=3 ts=431770 : 01 EA 17
+23:28:30 proto=gpio src=FOLLOW len=3 ts=431771 : 01 EB 11
+23:28:31 proto=gpio src=SRC len=3 ts=432270 : 01 DE 19
+23:28:31 proto=gpio src=FOLLOW len=3 ts=432271 : 01 DF 13
+23:28:31 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:28:31 proto=gpio src=SRC len=3 ts=432770 : 01 D2 1B
+23:28:31 proto=gpio src=FOLLOW len=3 ts=432771 : 01 D3 15
+23:28:32 proto=gpio src=SRC len=3 ts=433270 : 01 C6 1D
+23:28:32 proto=gpio src=FOLLOW len=3 ts=433271 : 01 C7 17
+23:28:33 proto=gpio src=SRC len=3 ts=433770 : 01 BA 1F
+23:28:33 proto=gpio src=FOLLOW len=3 ts=433771 : 01 BB 19
+23:28:33 proto=gpio src=SRC len=3 ts=434271 : 01 AF 21
+23:28:33 proto=gpio src=FOLLOW len=3 ts=434272 : 01 B0 1B
+23:28:33 proto=gpio src=SRC len=3 ts=434770 : 01 A2 23
+23:28:33 proto=gpio src=FOLLOW len=3 ts=434771 : 01 A3 1D
+23:28:34 proto=gpio src=SRC len=3 ts=435270 : 01 96 25
+23:28:34 proto=gpio src=FOLLOW len=3 ts=435271 : 01 97 1F
+23:28:34 proto=gpio src=SRC len=3 ts=435770 : 01 8A 27
+23:28:35 proto=gpio src=FOLLOW len=3 ts=435771 : 01 8B 21
+23:28:35 proto=gpio src=SRC len=3 ts=436270 : 01 7E 29
+23:28:35 proto=gpio src=FOLLOW len=3 ts=436271 : 01 7F 23
+23:28:35 proto=gpio src=SRC len=3 ts=436771 : 01 73 2B
+23:28:35 proto=gpio src=FOLLOW len=3 ts=436772 : 01 74 25
+23:28:36 proto=gpio src=SRC len=3 ts=437270 : 01 66 2D
+23:28:36 proto=gpio src=FOLLOW len=3 ts=437271 : 01 67 27
+23:28:36 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:28:37 proto=gpio src=SRC len=3 ts=437770 : 01 5A 2F
+23:28:37 proto=gpio src=FOLLOW len=3 ts=437771 : 01 5B 29
+23:28:37 proto=gpio src=SRC len=3 ts=438270 : 01 4E 31
+23:28:37 proto=gpio src=FOLLOW len=3 ts=438271 : 01 4F 2B
+23:28:38 proto=gpio src=SRC len=3 ts=438770 : 01 42 33
+23:28:38 proto=gpio src=FOLLOW len=3 ts=438771 : 01 43 2D
+23:28:38 proto=gpio src=SRC len=3 ts=439270 : 01 36 35
+23:28:38 proto=gpio src=FOLLOW len=3 ts=439271 : 01 37 2F
+23:28:38 proto=gpio src=SRC len=3 ts=439770 : 01 2A 37
+23:28:38 proto=gpio src=FOLLOW len=3 ts=439771 : 01 2B 31
+23:28:39 proto=gpio src=SRC len=3 ts=440270 : 01 1E 39
+23:28:39 proto=gpio src=FOLLOW len=3 ts=440271 : 01 1F 33
+> STOP
+23:28:39 STOP
+# event-driven over 10 s: SRC 21 readings, FOLLOW 21 readings
+> CLEAR
+23:28:41 [RULE] reset
+23:28:41 CLEARED
+23:28:41 [MQTT] Status: Connected, Broker: 192.168.1.49
+# D3-6 one-shot: ONE on GPIO10 reads once per RUN and once per TRIGGER ONE, nothing in between
+> BEGINCFG|name=ONE|proto=gpio|gpio.mode=digital|gpio.pin=10|gpio.pull=up|mode=poll|timing.mode=one_shot|ENDCFG
+23:28:42 OK: Config applied (inline, delim='|')
+23:28:42 [SCHED] added: ONE on gpio
+23:28:42 CFG: ok (added #0: ONE)
+> RUN
+23:28:44 RUN
+23:28:44 proto=gpio src=ONE len=3 ts=444925 : 01 01 06
+23:28:46 [MQTT] Status: Connected, Broker: 192.168.1.49
+> TRIGGER ONE
+23:28:49 [TIMING] trigger=ONE armed=1
+23:28:49 proto=gpio src=ONE len=3 ts=449947 : 01 9F 19
+23:28:51 [MQTT] Status: Connected, Broker: 192.168.1.49
+> TRIGGER ONE
+23:28:54 [TIMING] trigger=ONE armed=1
+23:28:54 proto=gpio src=ONE len=3 ts=454980 : 01 48 2D
+23:28:56 [MQTT] Status: Connected, Broker: 192.168.1.49
+> STOP
+23:28:59 STOP
+> CLEAR
+23:29:00 [RULE] reset
+23:29:00 CLEARED
+23:29:01 [MQTT] Status: Connected, Broker: 192.168.1.49
+# one-shot: 1 reading in 5 s after RUN, 1 after the first TRIGGER, 1 after the second
+# summary {"event_driven": {"src_readings": 21, "follow_readings": 21}, "one_shot": {"after_run_5s": 1, "after_trigger1_5s": 1, "after_trigger2_5s": 1}}

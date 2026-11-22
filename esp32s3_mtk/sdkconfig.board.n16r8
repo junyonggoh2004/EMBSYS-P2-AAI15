@@ -1,0 +1,7 @@
+# ESP32-S3 boards with 8 MB octal PSRAM (ESP32-S3R8 chip, e.g. N16R8 modules on
+# DevKitC-style boards with two USB-C ports). Everything else is the Super Mini
+# build. Use: BOARD=n16r8 NODE=<id> PORT=<port> sh tools/mtk.sh flash, with the
+# cable in the port wired to the chip's own USB (the console is USB-Serial-JTAG),
+# not the one through the CH343 UART bridge.
+# CONFIG_SPIRAM_MODE_QUAD is not set
+CONFIG_SPIRAM_MODE_OCT=y

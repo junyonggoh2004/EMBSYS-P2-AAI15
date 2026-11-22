@@ -85,7 +85,7 @@ Reproducing the reference bugs for strict parity would build known faults into t
 | D-08 nonexistent pin accepted | Fix: `hal_gpio_valid()` checks the task 8 pin table | Refused | T-03 |
 | D-09 boot reports Wi-Fi failure, then connects | Fix: non-blocking connect; state printed on every change | Accurate state | P-25 |
 | D-10 bridging drops every remote line | Fix: discard only the node's own topics | Remote line bridged | P-28 |
-| D-11 `cfg.to` payload not applied | Fix: remove the `\|` escapes before forwarding | Applied by receiver | P-28 |
+| D-11 `cfg.to` payload not applied | Fix: remove the `\|` escapes before forwarding; accept bare-word JSON on receipt; do not check a forwarded payload's pins on the sender (D1 task 1.2) | Applied by receiver, shown between two real boards | P-28, `parity/logs/mtk/d1-mqtt/control.log` |
 | D-12 `uptime_s` counts heartbeats | Fix: report seconds since boot | Seconds | P-25 |
 
 ## 4. HAL boundary

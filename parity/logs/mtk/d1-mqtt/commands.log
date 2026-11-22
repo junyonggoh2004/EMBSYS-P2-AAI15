@@ -1,0 +1,219 @@
+18:32:49 ---    stage commands: A=s3-001 B=s3-002
+18:32:49 ---    step reset: STOP and CLEAR over MQTT
+18:32:49 ---    publish pico/s3-001/cmd: STOP
+18:32:49 BROKER pico/s3-001/cmd STOP
+18:32:49 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:32:49 A      [CMD] STOP
+18:32:50 ---    publish pico/s3-001/cmd: CLEAR
+18:32:50 BROKER pico/s3-001/cmd CLEAR
+18:32:50 A      [RULE] reset
+18:32:50 A      [BRIDGE] reset
+18:32:50 A      [CMD] CLEAR (scheduler + rules + bridge)
+18:32:50 A      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:32:52 ---    step tasks: TASKS (ControlTask) lists the tasks and the new ctrl_mbf
+18:32:52 ---    publish pico/s3-001/cmd: TASKS
+18:32:52 BROKER pico/s3-001/cmd TASKS
+18:32:52 A      [TASK] app_message=104 B app_buffer=864 B
+18:32:52 A      [TASK] SchedulerTask    id=8  core=1 pri=21 stack_free=14652 B ran_on_core0=0 ran_on_core1=39
+18:32:52 A      [TASK] MQTTTask         id=9  core=0 pri=22 stack_free=14316 B ran_on_core0=3336 ran_on_core1=0
+18:32:52 A      [TASK] ControlTask      id=10 core=1 pri=23 stack_free=3036 B ran_on_core0=0 ran_on_core1=365
+18:32:52 A      [TASK] InferenceTask    id=11 core=1 pri=23 stack_free=6796 B ran_on_core0=0 ran_on_core1=2
+18:32:52 A      [TASK] ApplicationTask  id=12 core=1 pri=23 stack_free=3228 B ran_on_core0=0 ran_on_core1=0
+18:32:52 A      [TASK] BenchmarkTask    id=13 core=1 pri=24 stack_free=2364 B ran_on_core0=0 ran_on_core1=0
+18:32:52 A      [TASK] MonitorTask      id=14 core=1 pri=24 stack_free=3308 B ran_on_core0=0 ran_on_core1=36
+18:32:52 A      [TASK] sched_mbf  free=12912 B dropped=0
+18:32:52 A      [TASK] pub_mbf    free=10944 B dropped=0
+18:32:52 A      [TASK] infer_mbf  free=336 B dropped=0
+18:32:52 A      [TASK] app_mbf    free=864 B dropped=0
+18:32:52 A      [TASK] bench_mbf  free=512 B dropped=0
+18:32:52 A      [TASK] ctrl_mbf   free=528 B dropped=0
+18:32:52 A      [TASK] heap_free=36324 B min_free=27920 B largest=24576 B console_rx_irqs=0 console_rx_dropped=0
+18:32:52 A      [TASK] SchedulerTask cycles=39 mean_us=993 p95_us=<10000 max_us=28840
+18:32:54 ---    step app: APP STATUS (ControlTask) reaches ApplicationTask
+18:32:54 ---    publish pico/s3-001/cmd: APP STATUS
+18:32:54 BROKER pico/s3-001/cmd APP STATUS
+18:32:54 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:32:54 A      [APP] request=3 synthetic=0 queued=1
+18:32:54 A      [APP] status occupancy=0 processed=0 resets=0 malformed=0 publish_enqueued=0 publish_failed=0
+18:32:55 A      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:32:57 ---    step wifiscan: WIFISCAN (ControlTask) scans while connected
+18:32:57 ---    publish pico/s3-001/cmd: WIFISCAN
+18:32:57 BROKER pico/s3-001/cmd WIFISCAN
+18:32:57 BROKER pico/s3-002/heartbeat {"uptime_s":22}
+18:32:57 A      [WIFI] scanning...
+18:32:58 BROKER pico/s3-001/heartbeat {"uptime_s":42}
+18:32:59 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:33:00 A      [WIFI] "<ssid>" (3 chars) ch  6 rssi  -66 WPA2 <mac>
+18:33:00 A      [WIFI] "<ssid>" (7 chars) ch  1 rssi  -70 WPA2-ENT <mac>
+18:33:00 A      [WIFI] "<ssid>" (8 chars) ch  1 rssi  -71 WPA2-ENT <mac>
+18:33:00 A      [WIFI] "<ssid>" (12 chars) ch  1 rssi  -71 WPA2 <mac>
+18:33:00 A      [WIFI] "<ssid>" (8 chars) ch  6 rssi  -72 WPA2-ENT <mac>
+18:33:00 A      [WIFI] "<ssid>" (7 chars) ch  6 rssi  -72 WPA2-ENT <mac>
+18:33:00 A      [WIFI] "<ssid>" (12 chars) ch  6 rssi  -72 WPA2 <mac>
+18:33:00 A      [WIFI] "<ssid>" (8 chars) ch  1 rssi  -80 WPA2-ENT <mac>
+18:33:00 A      [WIFI] "<ssid>" (12 chars) ch  1 rssi  -80 WPA2 <mac>
+18:33:00 A      [WIFI] "<ssid>" (12 chars) ch  6 rssi  -80 WPA2 <mac>
+18:33:00 A      [WIFI] "<ssid>" (8 chars) ch  1 rssi  -82 WPA2-ENT <mac>
+18:33:00 A      [WIFI] "<ssid>" (12 chars) ch 11 rssi  -82 WPA2 <mac>
+18:33:00 A      [WIFI] "<ssid>" (7 chars) ch 11 rssi  -83 WPA2-ENT <mac>
+18:33:00 A      [WIFI] "<ssid>" (12 chars) ch  1 rssi  -85 WPA2 <mac>
+18:33:00 A      [WIFI] "<ssid>" (7 chars) ch  1 rssi  -86 WPA2-ENT <mac>
+18:33:00 A      [WIFI] "<ssid>" (7 chars) ch  6 rssi  -92 WPA2-ENT <mac>
+18:33:00 A      [WIFI] "<ssid>" (8 chars) ch  6 rssi  -92 WPA2-ENT <mac>
+18:33:00 A      [WIFI] 17 networks; this node uses "<ssid>", status connected (scan err 0, 2928 ms)
+18:33:00 ---    step spiid: SPIID (ControlTask, then BenchmarkTask) reads the flash ID or reports none
+18:33:00 ---    publish pico/s3-001/cmd: SPIID
+18:33:00 BROKER pico/s3-001/cmd SPIID
+18:33:00 A      [SPIID] INVALID raw=000000; check module and wiring
+18:33:00 A      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:33:02 ---    step spi-args: SPIBENCH with bad arguments is checked by ControlTask
+18:33:02 ---    publish pico/s3-001/cmd: SPIBENCH 9 1
+18:33:02 BROKER pico/s3-001/cmd SPIBENCH 9 1
+18:33:02 A      [SPIBENCH] ERROR expected SPIBENCH <mode 0..3> <hz 1000000..20000000>
+18:33:04 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:33:04 ---    step stall: STALL 500 (ControlTask) stalls briefly, below the watchdog limit
+18:33:04 ---    publish pico/s3-001/cmd: STALL 500
+18:33:04 BROKER pico/s3-001/cmd STALL 500
+18:33:04 A      [CTRL] stalling ControlTask for 500 ms (watchdog test)
+18:33:05 A      [CTRL] stall over
+18:33:05 A      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:33:07 ---    step window: WINDOW STATUS (shared REPL) answers while stopped
+18:33:07 ---    publish pico/s3-001/cmd: WINDOW STATUS
+18:33:07 BROKER pico/s3-001/cmd WINDOW STATUS
+18:33:07 BROKER pico/s3-002/heartbeat {"uptime_s":32}
+18:33:07 A      [WINDOW_REPORT] token=00000000 kind=state version=1 configured=0 enabled=0 state=0 events=0 dropped=0 radar_frames=0 malformed=0 rx_dropped=0 rx_dropped_start=0 identity=1 event_schema=2 now_us=51818070
+18:33:07 A      [WINDOW_REPORT] token=00000000 kind=timing pairs=0 valid=0 failed=0 cancelled=0 deadline_misses=0 skipped=0 min_us=0 mean_us=0 max_us=0 p95_le_us=0 p99_le_us=0
+18:33:07 A      [WINDOW_REPORT] token=00000000 kind=events entry=0 exit=0 incomplete=0 false_events=0 window_deadlines=0 radar_stale=0 window_faults=0
+18:33:07 A      [WINDOW_REPORT] token=00000000 kind=config period_us=100000 window_us=2000000 pair_limit_us=50000 clear_us=200000 radar_stale_us=300000 max_pairs=20 guard_us=0 timeout_a_us=0 timeout_b_us=0 occupied_a_mm=0 occupied_b_mm=0
+18:33:07 A      [WINDOW_REPORT] token=00000000 kind=geometry a_name=- a_trig=-1 a_echo=-1 b_name=- b_trig=-1 b_echo=-1 radar_name=- radar_tx=-1 radar_rx=-1 xmin=0 xmax=0 ymin=0 ymax=0
+18:33:07 A      [WINDOW_REPORT] token=00000000 kind=end
+18:33:08 BROKER pico/s3-001/heartbeat {"uptime_s":52}
+18:33:09 ---    step pair: PAIR (shared REPL) answers with its usage
+18:33:09 ---    publish pico/s3-001/cmd: PAIR
+18:33:09 BROKER pico/s3-001/cmd PAIR
+18:33:09 A      [PAIR] request=-5
+18:33:09 A      [PAIR] STOP first; usage: PAIR <pulse_sensor_A> <pulse_sensor_B> <A|B> <guard_us>; timeouts + guard <= 50000 us
+18:33:09 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:33:10 A      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:33:11 ---    step trigger: TRIGGER (shared REPL) reaches the scheduler
+18:33:11 ---    publish pico/s3-001/cmd: TRIGGER NOPE
+18:33:11 BROKER pico/s3-001/cmd TRIGGER NOPE
+18:33:11 A      [TIMING] trigger=NOPE armed=0
+18:33:14 ---    step rules-add: A rule over the config topic, listed by SHOWRULES over the command topic
+18:33:14 ---    publish pico/s3-001/config: BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+18:33:14 BROKER pico/s3-001/config BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+18:33:14 BROKER pico/s3-001/status/config OK:DIG
+18:33:14 A      [CFG] cfg_cb payload (first 120): BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+18:33:14 A      [JSON] not starting with '{' after trim, char=0x22
+18:33:14 A      [CFG] mqtt_json_try_convert_to_inline -> 0
+18:33:14 A      [SCHED] added: DIG on gpio
+18:33:14 A      [CFG] added #0: DIG
+18:33:14 ---    publish pico/s3-001/config: BEGINRULE|name=R_LOW|source=DIG|calc=s=u8(0)|when=s==0|action=log:pin low|ENDRULE
+18:33:14 BROKER pico/s3-001/config BEGINRULE|name=R_LOW|source=DIG|calc=s=u8(0)|when=s==0|action=log:pin low|ENDRULE
+18:33:14 A      [CFG] cfg_cb payload (first 120): BEGINRULE|name=R_LOW|source=DIG|calc=s=u8(0)|when=s==0|action=log:pin low|ENDRULE
+18:33:14 A      [JSON] not starting with '{' after trim, char=0x22
+18:33:14 A      [CFG] mqtt_json_try_convert_to_inline -> 0
+18:33:14 A      [RULE] added name=R_LOW src=DIG vars=1 action=log:pin low
+18:33:14 A      [RULE] added name=R_LOW
+18:33:14 BROKER pico/s3-001/status/rule OK:R_LOW
+18:33:14 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:33:14 ---    publish pico/s3-001/cmd: SHOWRULES
+18:33:14 BROKER pico/s3-001/cmd SHOWRULES
+18:33:14 A      [RULE] count=1
+18:33:14 A        #0 name=R_LOW src=DIG vars=1 action=log:pin low prev_init=0
+18:33:15 A      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:33:17 BROKER pico/s3-002/heartbeat {"uptime_s":42}
+18:33:17 ---    step rules-clear: CLEARRULES, then SHOWRULES shows none
+18:33:17 ---    publish pico/s3-001/cmd: CLEARRULES
+18:33:17 BROKER pico/s3-001/cmd CLEARRULES
+18:33:17 A      [RULE] reset
+18:33:17 ---    publish pico/s3-001/cmd: SHOWRULES
+18:33:17 BROKER pico/s3-001/cmd SHOWRULES
+18:33:17 A      [RULE] count=0
+18:33:18 BROKER pico/s3-001/heartbeat {"uptime_s":62}
+18:33:19 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:33:19 ---    step help: HELP (shared REPL)
+18:33:19 ---    publish pico/s3-001/cmd: HELP
+18:33:19 BROKER pico/s3-001/cmd HELP
+18:33:19 A      Commands:
+18:33:19 A        BEGINCFG ... ENDCFG        - add sensor config (multi-line)
+18:33:19 A        BEGINCFG|k=v|...|ENDCFG    - add sensor config (inline with '|', supports \|)
+18:33:19 A        BEGINRULE ... ENDRULE      - add rule (multi-line)
+18:33:19 A        BEGINRULE|k=v|...|ENDRULE  - add rule (inline with '|', supports \|)
+18:33:19 A        RUN / STOP                 - control sampling
+18:33:19 A        TRIGGER <sensor|source>     - arm one-shot/event-driven sensor(s)
+18:33:19 A        PAIR <A> <B> <A|B> <guard_us> - one stopped-mode sonar pair diagnostic (50 ms)
+18:33:19 A        WINDOW <A> <B> <radar> <guard_us> <A_mm> <B_mm> <xmin> <xmax> <ymin> <ymax>
+18:33:19 A        WINDOW STATUS [8-hex nonce] - read-only metrics after STOP (no reset)
+18:33:19 A        CLEAR                      - clear sensors + rules
+18:33:19 A        SHOW / SHOWRULES           - show sensors / rules
+18:33:19 A        CLEARRULES                 - clear only rules
+18:33:19 A        HELP                       - this text
+18:33:19 A      
+18:33:19 A      Example inline rule (HMC5883L big-endian X,Z,Y at 0x03):
+18:33:19 A      BEGINRULE|name=GY511_MAG|source=GY511_ACC|calc=mx=s16be(0)|calc=mz=s16be(2)|calc=my=s16be(4)|calc=mag=sqrt(mx*mx+my*my+mz*mz)|when=mag>350|action=log:MAG change detected|ENDRULE
+18:33:20 A      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:33:22 ---    step ml: ML SHOW (ML parser)
+18:33:22 ---    publish pico/s3-001/cmd: ML SHOW
+18:33:22 BROKER pico/s3-001/cmd ML SHOW
+18:33:22 A      ML: model=none enabled=0 generation=4 interval_ms=2000 max_age_ms=5000 max_skew_ms=2500
+18:33:24 ---    step config-refused: Configuration on the command topic is pointed to the config topic
+18:33:24 ---    publish pico/s3-001/cmd: BEGINCFG|name=X|proto=gpio|gpio.pin=6|ENDCFG
+18:33:24 BROKER pico/s3-001/cmd BEGINCFG|name=X|proto=gpio|gpio.pin=6|ENDCFG
+18:33:24 A      [CMD] configuration goes to pico/s3-001/config
+18:33:24 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:33:25 A      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:33:26 ---    step unknown: Unknown text is still rejected
+18:33:26 ---    publish pico/s3-001/cmd: FOO
+18:33:26 BROKER pico/s3-001/cmd FOO
+18:33:26 A      [CMD] Unknown: FOO
+18:33:27 BROKER pico/s3-002/heartbeat {"uptime_s":52}
+18:33:28 BROKER pico/s3-001/heartbeat {"uptime_s":72}
+18:33:29 ---    step clear: CLEAR
+18:33:29 ---    publish pico/s3-001/cmd: CLEAR
+18:33:29 BROKER pico/s3-001/cmd CLEAR
+18:33:29 A      [RULE] reset
+18:33:29 A      [BRIDGE] reset
+18:33:29 A      [CMD] CLEAR (scheduler + rules + bridge)
+18:33:29 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:33:30 A      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:33:31 ---    step wifidrop: WIFIDROP (ControlTask) drops Wi-Fi for 10 s; the node reconnects by itself
+18:33:31 ---    publish pico/s3-001/cmd: WIFIDROP
+18:33:31 BROKER pico/s3-001/cmd WIFIDROP
+18:33:31 A      [WIFI] dropping the connection for 10 s (test)
+18:33:31 A      E (3355846600) transport_base: tcp_read error, errno=Software caused connection abort
+18:33:31 A      E (3355846601) mqtt_client: esp_mqtt_handle_transport_read_error: transport_read() error: errno=113
+18:33:31 A      E (3355846601) mqtt_client: mqtt_process_receive: mqtt_message_receive() returned -2
+18:33:31 A      [WIFI] not connected: reason 8, see esp_wifi_types.h
+18:33:31 A      [WIFI] connection lost; reconnecting
+18:33:31 A      [MQTT] disconnected from broker
+18:33:34 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:33:35 A      [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:33:36 A      [shim] qcreate(st) h=0x3fce830c len=6 sz=4 ne=30 nf=31
+18:33:36 A      E (3355851605) esp-tls: [sock=54] connect() error: Host is unreachable
+18:33:36 A      E (3355851606) transport_base: Failed to open a new connection: 32772
+18:33:36 A      E (3355851606) mqtt_client: Error transport connect
+18:33:37 BROKER pico/s3-002/heartbeat {"uptime_s":62}
+18:33:39 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:33:40 A      [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:33:41 A      [WIFI] hold over, reconnecting
+18:33:41 A      [shim] qcreate(st) h=0x3fce8484 len=6 sz=4 ne=32 nf=33
+18:33:41 A      E (3355856611) esp-tls: [sock=54] connect() error: Host is unreachable
+18:33:41 A      E (3355856612) transport_base: Failed to open a new connection: 32772
+18:33:41 A      E (3355856612) mqtt_client: Error transport connect
+18:33:42 A      I (3355857724) esp_netif_handlers: sta ip: 172.20.10.6, mask: 255.255.255.240, gw: 172.20.10.1
+18:33:42 A      WiFi connected
+18:33:42 A      [WIFI] ip=172.20.10.6
+18:33:44 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:33:45 A      [MQTT] Status: Disconnected, Broker: 172.20.10.5
+18:33:46 A      [shim] qcreate(st) h=0x3fce8298 len=6 sz=4 ne=34 nf=35
+18:33:46 BROKER pico/s3-001/presence {"node":"s3-001","cap":["config","telemetry","node-msg"]}
+18:33:46 BROKER pico/s3-001/heartbeat {"uptime_s":91}
+18:33:46 A      [MQTT] connected to broker
+18:33:46 A      [MQTT] Subscribing to node wildcard: pico/s3-001/#
+18:33:46 A      [MQTT] Subscribed OK to: node-wildcard
+18:33:46 A      [MQTT] Subscribing to broadcast: pico/broadcast/config
+18:33:46 A      [MQTT] Subscribed OK to: broadcast
+18:33:47 BROKER pico/s3-002/heartbeat {"uptime_s":72}
+18:33:49 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:33:50 A      [MQTT] Status: Connected, Broker: 172.20.10.5

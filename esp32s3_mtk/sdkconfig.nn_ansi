@@ -1,0 +1,6 @@
+# D5 task 4.2: the same firmware with ESP-NN's plain C kernels instead of its
+# ESP32-S3 assembly, to time the models without the S3's vector instructions.
+# Use: NN=ansi sh tools/mtk.sh flash (own build directory and sdkconfig). The
+# normal build keeps ESP-NN's default, CONFIG_NN_OPTIMIZED.
+# CONFIG_NN_OPTIMIZED is not set
+CONFIG_NN_ANSI_C=y

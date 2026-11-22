@@ -1,0 +1,122 @@
+# board=s3 fixture=upstream stage=4a
+23:14:10 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:14:11 --- repl-help: HELP
+23:14:11 Commands:
+23:14:11   BEGINCFG ... ENDCFG        - add sensor config (multi-line)
+23:14:11   BEGINCFG|k=v|...|ENDCFG    - add sensor config (inline with '|', supports \|)
+23:14:11   BEGINRULE ... ENDRULE      - add rule (multi-line)
+23:14:11   BEGINRULE|k=v|...|ENDRULE  - add rule (inline with '|', supports \|)
+23:14:11   RUN / STOP                 - control sampling
+23:14:11   TRIGGER <sensor|source>     - arm one-shot/event-driven sensor(s)
+23:14:11   PAIR <A> <B> <A|B> <guard_us> - one stopped-mode sonar pair diagnostic (50 ms)
+23:14:11   WINDOW <A> <B> <radar> <guard_us> <A_mm> <B_mm> <xmin> <xmax> <ymin> <ymax>
+23:14:11   WINDOW STATUS [8-hex nonce] - read-only metrics after STOP (no reset)
+23:14:11   CLEAR                      - clear sensors + rules
+23:14:11   SHOW / SHOWRULES           - show sensors / rules
+23:14:11   CLEARRULES                 - clear only rules
+23:14:11   HELP                       - this text
+23:14:11 
+23:14:11 Example inline rule (HMC5883L big-endian X,Z,Y at 0x03):
+23:14:11 BEGINRULE|name=GY511_MAG|source=GY511_ACC|calc=mx=s16be(0)|calc=mz=s16be(2)|calc=my=s16be(4)|calc=mag=sqrt(mx*mx+my*my+mz*mz)|when=mag>350|action=log:MAG change detected|ENDRULE
+23:14:13 --- repl-show: SHOW
+23:14:13 [SHOW] sampling=0
+23:14:13 [WINDOW] enabled=0 state=0 events=0 dropped=0 radar_frames=0 malformed=0 rx_dropped=0 identity=1
+23:14:13 [RULE] count=0
+23:14:15 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:14:16 --- repl-run: RUN
+23:14:16 RUN
+23:14:18 --- repl-stop: STOP
+23:14:19 STOP
+23:14:20 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:14:21 --- repl-unknown: FOO
+23:14:21 Unknown: FOO
+23:14:24 --- cfg-digital: BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+23:14:24 OK: Config applied (inline, delim='|')
+23:14:24 [SCHED] added: DIG on gpio
+23:14:24 CFG: ok (added #0: DIG)
+23:14:25 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:14:26 --- repl-show-cfg: SHOW
+23:14:26 [SHOW] sampling=0
+23:14:26 [WINDOW] enabled=0 state=0 events=0 dropped=0 radar_frames=0 malformed=0 rx_dropped=0 identity=1
+23:14:26 [SCHED] #0 name=DIG proto=gpio mode=poll freq=2.000Hz timing=periodic interval=500ms timeout=0ms window=0ms trigger=- status=1
+23:14:26 [SENSOR] name=DIG pending=0 timeouts=0 errors=0 overruns=0
+23:14:26 [RULE] count=0
+23:14:29 --- rule-log: BEGINRULE|name=R_LOG|source=DIG|calc=s=u8(0)|when=s==0|action=log:pin low|ENDRULE
+23:14:29 [RULE] added name=R_LOG src=DIG vars=1 action=log:pin low
+23:14:29 RULE: ok
+23:14:30 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:14:31 --- rule-infer: BEGINRULE|name=R_INF|source=DIG|calc=s=u8(0)|when=1|action=batch: infer.set:0:1.0 \| infer.run|ENDRULE
+23:14:31 [RULE] added name=R_INF src=DIG vars=1 action=batch: infer.set:0:1.0 \| infer.run
+23:14:31 RULE: ok
+23:14:34 --- run-data: RUN
+23:14:34 RUN
+23:14:34 proto=gpio src=DIG len=3 ts=84201 : 00 7A 28
+23:14:34 [RULE] R_LOG: pin low (value=0.000 ts=84201)
+23:14:34 [ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=0
+23:14:34 [INFER] invoke=1893us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+23:14:34 [TRACE] Rule Parse + Batch Actions executed in 2909us
+23:14:34 [TRACE] Total Rule Eval (DIG): 3435us
+23:14:34 proto=gpio src=DIG len=3 ts=84702 : 00 6F 2A
+23:14:34 [RULE] R_LOG: pin low (value=0.000 ts=84702)
+23:14:34 [INFER] invoke=583us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+23:14:34 [TRACE] Rule Parse + Batch Actions executed in 1562us
+23:14:34 [TRACE] Total Rule Eval (DIG): 2014us
+23:14:35 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:14:35 proto=gpio src=DIG len=3 ts=85203 : 00 64 2C
+23:14:35 [RULE] R_LOG: pin low (value=0.000 ts=85203)
+23:14:35 [INFER] invoke=576us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+23:14:35 [TRACE] Rule Parse + Batch Actions executed in 1559us
+23:14:35 [TRACE] Total Rule Eval (DIG): 2007us
+23:14:36 proto=gpio src=DIG len=3 ts=85702 : 00 57 2E
+23:14:36 [RULE] R_LOG: pin low (value=0.000 ts=85702)
+23:14:36 [INFER] invoke=590us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+23:14:36 [TRACE] Rule Parse + Batch Actions executed in 1569us
+23:14:36 [TRACE] Total Rule Eval (DIG): 2018us
+23:14:36 proto=gpio src=DIG len=3 ts=86203 : 00 4C 30
+23:14:36 [RULE] R_LOG: pin low (value=0.000 ts=86203)
+23:14:36 [INFER] invoke=588us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+23:14:36 [TRACE] Rule Parse + Batch Actions executed in 1551us
+23:14:36 [TRACE] Total Rule Eval (DIG): 1987us
+23:14:37 proto=gpio src=DIG len=3 ts=86702 : 00 3F 32
+23:14:37 [RULE] R_LOG: pin low (value=0.000 ts=86702)
+23:14:37 [INFER] invoke=586us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+23:14:37 [TRACE] Rule Parse + Batch Actions executed in 1567us
+23:14:37 [TRACE] Total Rule Eval (DIG): 2016us
+23:14:37 proto=gpio src=DIG len=3 ts=87203 : 00 34 34
+23:14:37 [RULE] R_LOG: pin low (value=0.000 ts=87203)
+23:14:37 [INFER] invoke=583us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+23:14:37 [TRACE] Rule Parse + Batch Actions executed in 1558us
+23:14:37 [TRACE] Total Rule Eval (DIG): 2000us
+23:14:38 proto=gpio src=DIG len=3 ts=87702 : 00 27 36
+23:14:38 [RULE] R_LOG: pin low (value=0.000 ts=87702)
+23:14:38 [INFER] invoke=591us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+23:14:38 [TRACE] Rule Parse + Batch Actions executed in 1561us
+23:14:38 [TRACE] Total Rule Eval (DIG): 2006us
+23:14:38 proto=gpio src=DIG len=3 ts=88203 : 00 1C 38
+23:14:38 [RULE] R_LOG: pin low (value=0.000 ts=88203)
+23:14:38 [INFER] invoke=579us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+23:14:38 [TRACE] Rule Parse + Batch Actions executed in 1545us
+23:14:38 [TRACE] Total Rule Eval (DIG): 1994us
+23:14:39 proto=gpio src=DIG len=3 ts=88702 : 00 0F 3A
+23:14:39 [RULE] R_LOG: pin low (value=0.000 ts=88702)
+23:14:39 [INFER] invoke=594us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+23:14:39 [TRACE] Rule Parse + Batch Actions executed in 1591us
+23:14:39 [TRACE] Total Rule Eval (DIG): 2052us
+23:14:39 proto=gpio src=DIG len=3 ts=89203 : 00 04 3C
+23:14:39 [RULE] R_LOG: pin low (value=0.000 ts=89203)
+23:14:39 [INFER] invoke=586us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+23:14:39 [TRACE] Rule Parse + Batch Actions executed in 1571us
+23:14:39 [TRACE] Total Rule Eval (DIG): 2017us
+23:14:39 --- run-stop: STOP
+23:14:39 STOP
+23:14:40 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:14:42 --- repl-showrules: SHOWRULES
+23:14:42 [RULE] count=2
+23:14:42   #0 name=R_LOG src=DIG vars=1 action=log:pin low prev_init=1
+23:14:42   #1 name=R_INF src=DIG vars=1 action=batch: infer.set:0:1.0 \| infer.run prev_init=1
+23:14:44 --- repl-clearrules: CLEARRULES
+23:14:44 [RULE] reset
+23:14:45 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:14:47 --- repl-clear: CLEAR
+23:14:47 [RULE] reset
+23:14:47 CLEARED

@@ -1,0 +1,363 @@
+# board=s3 fixture=v2-sonar stage=sonic-rule
+00:44:30 --- fixture-stop: STOP
+00:44:30 STOP
+00:44:32 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:44:33 --- fixture-clear: CLEAR
+00:44:33 [RULE] reset
+00:44:33 CLEARED
+00:44:35 --- clear-sr: CLEAR
+00:44:36 [RULE] reset
+00:44:36 CLEARED
+00:44:37 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:44:38 --- cfg-sr: BEGINCFG|name=HCSR04|proto=gpio|gpio.mode=pulse|mode=poll|freq_hz=2|gpio.trig=4|gpio.echo=5|gpio.trig_us=10|gpio.pulse_timeout_us=25000|ENDCFG
+00:44:38 OK: Config applied (inline, delim='|')
+00:44:38 [SCHED] added: HCSR04 on gpio
+00:44:38 CFG: ok (added #0: HCSR04)
+00:44:41 --- rule-near: BEGINRULE|name=R_NEAR|source=HCSR04|calc=w=u16le(0)|when=w<1740|action=log:near|ENDRULE
+00:44:41 [RULE] added name=R_NEAR src=HCSR04 vars=1 action=log:near
+00:44:41 RULE: ok
+00:44:42 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:44:44 --- rule-far: BEGINRULE|name=R_FAR|source=HCSR04|calc=w=u16le(0)|when=w>=1740|action=log:far|ENDRULE
+00:44:44 [RULE] added name=R_FAR src=HCSR04 vars=1 action=log:far
+00:44:44 RULE: ok
+00:44:46 --- sonic-rules-run: RUN
+00:44:46 RUN
+00:44:46 proto=gpio src=HCSR04 len=3 ts=5007584 : EB 03 01
+00:44:46 {"sensor":"HCSR04","timestamp_ms":5007585,"distance_cm":17.2,"echo_us":1003,"status":"OK","error":0}
+00:44:46 [RULE] R_NEAR: near (value=1003.000 ts=5007584)
+00:44:46 [TRACE] Total Rule Eval (HCSR04): 476us
+00:44:47 proto=gpio src=HCSR04 len=3 ts=5008085 : 27 04 01
+00:44:47 {"sensor":"HCSR04","timestamp_ms":5008086,"distance_cm":18.2,"echo_us":1063,"status":"OK","error":0}
+00:44:47 [RULE] R_NEAR: near (value=1063.000 ts=5008085)
+00:44:47 [TRACE] Total Rule Eval (HCSR04): 423us
+00:44:47 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:44:47 proto=gpio src=HCSR04 len=3 ts=5008596 : E4 2A 01
+00:44:47 {"sensor":"HCSR04","timestamp_ms":5008597,"distance_cm":188.3,"echo_us":10980,"status":"OK","error":0}
+00:44:47 [RULE] R_FAR: far (value=10980.000 ts=5008596)
+00:44:47 [TRACE] Total Rule Eval (HCSR04): 390us
+00:44:48 proto=gpio src=HCSR04 len=3 ts=5009086 : E6 03 01
+00:44:48 {"sensor":"HCSR04","timestamp_ms":5009087,"distance_cm":17.1,"echo_us":998,"status":"OK","error":0}
+00:44:48 [RULE] R_NEAR: near (value=998.000 ts=5009086)
+00:44:48 [TRACE] Total Rule Eval (HCSR04): 421us
+00:44:48 proto=gpio src=HCSR04 len=3 ts=5009586 : E6 03 01
+00:44:48 {"sensor":"HCSR04","timestamp_ms":5009587,"distance_cm":17.1,"echo_us":998,"status":"OK","error":0}
+00:44:48 [RULE] R_NEAR: near (value=998.000 ts=5009586)
+00:44:48 [TRACE] Total Rule Eval (HCSR04): 420us
+00:44:49 proto=gpio src=HCSR04 len=3 ts=5010093 : 04 21 01
+00:44:49 {"sensor":"HCSR04","timestamp_ms":5010094,"distance_cm":145.0,"echo_us":8452,"status":"OK","error":0}
+00:44:49 [RULE] R_FAR: far (value=8452.000 ts=5010093)
+00:44:49 [TRACE] Total Rule Eval (HCSR04): 391us
+00:44:49 proto=gpio src=HCSR04 len=3 ts=5010586 : 0F 05 01
+00:44:49 {"sensor":"HCSR04","timestamp_ms":5010587,"distance_cm":22.2,"echo_us":1295,"status":"OK","error":0}
+00:44:49 [RULE] R_NEAR: near (value=1295.000 ts=5010586)
+00:44:49 [TRACE] Total Rule Eval (HCSR04): 423us
+00:44:50 proto=gpio src=HCSR04 len=3 ts=5011095 : 4D 2B 01
+00:44:50 {"sensor":"HCSR04","timestamp_ms":5011096,"distance_cm":190.1,"echo_us":11085,"status":"OK","error":0}
+00:44:50 [RULE] R_FAR: far (value=11085.000 ts=5011095)
+00:44:50 [TRACE] Total Rule Eval (HCSR04): 388us
+00:44:50 proto=gpio src=HCSR04 len=3 ts=5011592 : 2E 16 01
+00:44:50 {"sensor":"HCSR04","timestamp_ms":5011593,"distance_cm":97.4,"echo_us":5678,"status":"OK","error":0}
+00:44:50 [RULE] R_FAR: far (value=5678.000 ts=5011592)
+00:44:50 [TRACE] Total Rule Eval (HCSR04): 407us
+00:44:51 proto=gpio src=HCSR04 len=3 ts=5012086 : 80 03 01
+00:44:51 {"sensor":"HCSR04","timestamp_ms":5012087,"distance_cm":15.4,"echo_us":896,"status":"OK","error":0}
+00:44:51 [RULE] R_NEAR: near (value=896.000 ts=5012086)
+00:44:51 [TRACE] Total Rule Eval (HCSR04): 417us
+00:44:51 proto=gpio src=HCSR04 len=3 ts=5012593 : BC 20 01
+00:44:51 {"sensor":"HCSR04","timestamp_ms":5012594,"distance_cm":143.7,"echo_us":8380,"status":"OK","error":0}
+00:44:51 [RULE] R_FAR: far (value=8380.000 ts=5012593)
+00:44:51 [TRACE] Total Rule Eval (HCSR04): 389us
+00:44:52 proto=gpio src=HCSR04 len=3 ts=5013096 : 38 2B 01
+00:44:52 {"sensor":"HCSR04","timestamp_ms":5013097,"distance_cm":189.7,"echo_us":11064,"status":"OK","error":0}
+00:44:52 [RULE] R_FAR: far (value=11064.000 ts=5013096)
+00:44:52 [TRACE] Total Rule Eval (HCSR04): 391us
+00:44:52 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:44:52 proto=gpio src=HCSR04 len=3 ts=5013586 : 67 03 01
+00:44:52 {"sensor":"HCSR04","timestamp_ms":5013587,"distance_cm":14.9,"echo_us":871,"status":"OK","error":0}
+00:44:52 [RULE] R_NEAR: near (value=871.000 ts=5013586)
+00:44:52 [TRACE] Total Rule Eval (HCSR04): 472us
+00:44:53 proto=gpio src=HCSR04 len=3 ts=5014094 : 9B 21 01
+00:44:53 {"sensor":"HCSR04","timestamp_ms":5014095,"distance_cm":147.5,"echo_us":8603,"status":"OK","error":0}
+00:44:53 [RULE] R_FAR: far (value=8603.000 ts=5014094)
+00:44:53 [TRACE] Total Rule Eval (HCSR04): 393us
+00:44:53 proto=gpio src=HCSR04 len=3 ts=5014594 : FC 21 01
+00:44:53 {"sensor":"HCSR04","timestamp_ms":5014595,"distance_cm":149.2,"echo_us":8700,"status":"OK","error":0}
+00:44:53 [RULE] R_FAR: far (value=8700.000 ts=5014594)
+00:44:53 [TRACE] Total Rule Eval (HCSR04): 390us
+00:44:54 proto=gpio src=HCSR04 len=3 ts=5015094 : 03 21 01
+00:44:54 {"sensor":"HCSR04","timestamp_ms":5015095,"distance_cm":144.9,"echo_us":8451,"status":"OK","error":0}
+00:44:54 [RULE] R_FAR: far (value=8451.000 ts=5015094)
+00:44:54 [TRACE] Total Rule Eval (HCSR04): 387us
+00:44:54 proto=gpio src=HCSR04 len=3 ts=5015586 : 0E 04 01
+00:44:54 {"sensor":"HCSR04","timestamp_ms":5015587,"distance_cm":17.8,"echo_us":1038,"status":"OK","error":0}
+00:44:54 [RULE] R_NEAR: near (value=1038.000 ts=5015586)
+00:44:54 [TRACE] Total Rule Eval (HCSR04): 441us
+00:44:55 proto=gpio src=HCSR04 len=3 ts=5016086 : EE 02 01
+00:44:55 {"sensor":"HCSR04","timestamp_ms":5016087,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:44:55 [RULE] R_NEAR: near (value=750.000 ts=5016086)
+00:44:55 [TRACE] Total Rule Eval (HCSR04): 421us
+00:44:55 proto=gpio src=HCSR04 len=3 ts=5016594 : A6 20 01
+00:44:55 {"sensor":"HCSR04","timestamp_ms":5016595,"distance_cm":143.3,"echo_us":8358,"status":"OK","error":0}
+00:44:55 [RULE] R_FAR: far (value=8358.000 ts=5016594)
+00:44:55 [TRACE] Total Rule Eval (HCSR04): 392us
+00:44:56 proto=gpio src=HCSR04 len=3 ts=5017094 : 37 21 01
+00:44:56 {"sensor":"HCSR04","timestamp_ms":5017095,"distance_cm":145.8,"echo_us":8503,"status":"OK","error":0}
+00:44:56 [RULE] R_FAR: far (value=8503.000 ts=5017094)
+00:44:56 [TRACE] Total Rule Eval (HCSR04): 392us
+00:44:56 proto=gpio src=HCSR04 len=3 ts=5017594 : 1D 21 01
+00:44:56 {"sensor":"HCSR04","timestamp_ms":5017595,"distance_cm":145.4,"echo_us":8477,"status":"OK","error":0}
+00:44:56 [RULE] R_FAR: far (value=8477.000 ts=5017594)
+00:44:56 [TRACE] Total Rule Eval (HCSR04): 409us
+00:44:57 proto=gpio src=HCSR04 len=3 ts=5018096 : 47 2A 01
+00:44:57 {"sensor":"HCSR04","timestamp_ms":5018097,"distance_cm":185.6,"echo_us":10823,"status":"OK","error":0}
+00:44:57 [RULE] R_FAR: far (value=10823.000 ts=5018096)
+00:44:57 [TRACE] Total Rule Eval (HCSR04): 390us
+00:44:57 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:44:57 proto=gpio src=HCSR04 len=3 ts=5018596 : E7 29 01
+00:44:57 {"sensor":"HCSR04","timestamp_ms":5018597,"distance_cm":184.0,"echo_us":10727,"status":"OK","error":0}
+00:44:57 [RULE] R_FAR: far (value=10727.000 ts=5018596)
+00:44:57 [TRACE] Total Rule Eval (HCSR04): 396us
+00:44:58 proto=gpio src=HCSR04 len=3 ts=5019086 : AF 04 01
+00:44:58 {"sensor":"HCSR04","timestamp_ms":5019087,"distance_cm":20.6,"echo_us":1199,"status":"OK","error":0}
+00:44:58 [RULE] R_NEAR: near (value=1199.000 ts=5019086)
+00:44:58 [TRACE] Total Rule Eval (HCSR04): 423us
+00:44:58 proto=gpio src=HCSR04 len=3 ts=5019594 : 4B 21 01
+00:44:58 {"sensor":"HCSR04","timestamp_ms":5019595,"distance_cm":146.2,"echo_us":8523,"status":"OK","error":0}
+00:44:58 [RULE] R_FAR: far (value=8523.000 ts=5019594)
+00:44:58 [TRACE] Total Rule Eval (HCSR04): 391us
+00:44:59 proto=gpio src=HCSR04 len=3 ts=5020094 : B9 20 01
+00:44:59 {"sensor":"HCSR04","timestamp_ms":5020095,"distance_cm":143.7,"echo_us":8377,"status":"OK","error":0}
+00:44:59 [RULE] R_FAR: far (value=8377.000 ts=5020094)
+00:44:59 [TRACE] Total Rule Eval (HCSR04): 389us
+00:44:59 proto=gpio src=HCSR04 len=3 ts=5020596 : 5E 27 01
+00:44:59 {"sensor":"HCSR04","timestamp_ms":5020597,"distance_cm":172.8,"echo_us":10078,"status":"OK","error":0}
+00:44:59 [RULE] R_FAR: far (value=10078.000 ts=5020596)
+00:44:59 [TRACE] Total Rule Eval (HCSR04): 388us
+00:45:00 proto=gpio src=HCSR04 len=3 ts=5021096 : 4A 2B 01
+00:45:00 {"sensor":"HCSR04","timestamp_ms":5021097,"distance_cm":190.1,"echo_us":11082,"status":"OK","error":0}
+00:45:00 [RULE] R_FAR: far (value=11082.000 ts=5021096)
+00:45:00 [TRACE] Total Rule Eval (HCSR04): 508us
+00:45:00 proto=gpio src=HCSR04 len=3 ts=5021585 : EB 03 01
+00:45:00 {"sensor":"HCSR04","timestamp_ms":5021586,"distance_cm":17.2,"echo_us":1003,"status":"OK","error":0}
+00:45:00 [RULE] R_NEAR: near (value=1003.000 ts=5021585)
+00:45:00 [TRACE] Total Rule Eval (HCSR04): 422us
+00:45:01 proto=gpio src=HCSR04 len=3 ts=5022096 : 25 2A 01
+00:45:01 {"sensor":"HCSR04","timestamp_ms":5022097,"distance_cm":185.0,"echo_us":10789,"status":"OK","error":0}
+00:45:01 [RULE] R_FAR: far (value=10789.000 ts=5022096)
+00:45:01 [TRACE] Total Rule Eval (HCSR04): 391us
+00:45:01 proto=gpio src=HCSR04 len=3 ts=5022586 : 72 03 01
+00:45:01 {"sensor":"HCSR04","timestamp_ms":5022587,"distance_cm":15.1,"echo_us":882,"status":"OK","error":0}
+00:45:01 [RULE] R_NEAR: near (value=882.000 ts=5022586)
+00:45:01 [TRACE] Total Rule Eval (HCSR04): 422us
+00:45:02 proto=gpio src=HCSR04 len=3 ts=5023096 : 17 2B 01
+00:45:02 {"sensor":"HCSR04","timestamp_ms":5023097,"distance_cm":189.2,"echo_us":11031,"status":"OK","error":0}
+00:45:02 [RULE] R_FAR: far (value=11031.000 ts=5023096)
+00:45:02 [TRACE] Total Rule Eval (HCSR04): 391us
+00:45:02 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:45:02 proto=gpio src=HCSR04 len=3 ts=5023596 : 6B 2A 01
+00:45:02 {"sensor":"HCSR04","timestamp_ms":5023597,"distance_cm":186.2,"echo_us":10859,"status":"OK","error":0}
+00:45:02 [RULE] R_FAR: far (value=10859.000 ts=5023596)
+00:45:02 [TRACE] Total Rule Eval (HCSR04): 395us
+00:45:03 proto=gpio src=HCSR04 len=3 ts=5024094 : FB 21 01
+00:45:03 {"sensor":"HCSR04","timestamp_ms":5024095,"distance_cm":149.2,"echo_us":8699,"status":"OK","error":0}
+00:45:03 [RULE] R_FAR: far (value=8699.000 ts=5024094)
+00:45:03 [TRACE] Total Rule Eval (HCSR04): 392us
+00:45:03 proto=gpio src=HCSR04 len=3 ts=5024596 : 31 2B 01
+00:45:03 {"sensor":"HCSR04","timestamp_ms":5024597,"distance_cm":189.6,"echo_us":11057,"status":"OK","error":0}
+00:45:03 [RULE] R_FAR: far (value=11057.000 ts=5024596)
+00:45:03 [TRACE] Total Rule Eval (HCSR04): 392us
+00:45:04 proto=gpio src=HCSR04 len=3 ts=5025086 : B7 02 01
+00:45:04 {"sensor":"HCSR04","timestamp_ms":5025087,"distance_cm":11.9,"echo_us":695,"status":"OK","error":0}
+00:45:04 [RULE] R_NEAR: near (value=695.000 ts=5025086)
+00:45:04 [TRACE] Total Rule Eval (HCSR04): 421us
+00:45:04 proto=gpio src=HCSR04 len=3 ts=5025586 : E6 03 01
+00:45:04 {"sensor":"HCSR04","timestamp_ms":5025587,"distance_cm":17.1,"echo_us":998,"status":"OK","error":0}
+00:45:04 [RULE] R_NEAR: near (value=998.000 ts=5025586)
+00:45:04 [TRACE] Total Rule Eval (HCSR04): 418us
+00:45:05 proto=gpio src=HCSR04 len=3 ts=5026093 : 47 22 01
+00:45:05 {"sensor":"HCSR04","timestamp_ms":5026094,"distance_cm":150.5,"echo_us":8775,"status":"OK","error":0}
+00:45:05 [RULE] R_FAR: far (value=8775.000 ts=5026093)
+00:45:05 [TRACE] Total Rule Eval (HCSR04): 388us
+00:45:05 proto=gpio src=HCSR04 len=3 ts=5026594 : 79 21 01
+00:45:05 {"sensor":"HCSR04","timestamp_ms":5026595,"distance_cm":147.0,"echo_us":8569,"status":"OK","error":0}
+00:45:05 [RULE] R_FAR: far (value=8569.000 ts=5026594)
+00:45:05 [TRACE] Total Rule Eval (HCSR04): 390us
+00:45:06 proto=gpio src=HCSR04 len=3 ts=5027086 : 90 03 01
+00:45:06 {"sensor":"HCSR04","timestamp_ms":5027087,"distance_cm":15.6,"echo_us":912,"status":"OK","error":0}
+00:45:06 [RULE] R_NEAR: near (value=912.000 ts=5027086)
+00:45:06 [TRACE] Total Rule Eval (HCSR04): 415us
+00:45:06 proto=gpio src=HCSR04 len=3 ts=5027586 : CD 03 01
+00:45:06 {"sensor":"HCSR04","timestamp_ms":5027587,"distance_cm":16.7,"echo_us":973,"status":"OK","error":0}
+00:45:06 [RULE] R_NEAR: near (value=973.000 ts=5027586)
+00:45:06 [TRACE] Total Rule Eval (HCSR04): 422us
+00:45:07 proto=gpio src=HCSR04 len=3 ts=5028096 : 18 2B 01
+00:45:07 {"sensor":"HCSR04","timestamp_ms":5028097,"distance_cm":189.2,"echo_us":11032,"status":"OK","error":0}
+00:45:07 [RULE] R_FAR: far (value=11032.000 ts=5028096)
+00:45:07 [TRACE] Total Rule Eval (HCSR04): 397us
+00:45:07 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:45:07 proto=gpio src=HCSR04 len=3 ts=5028594 : B9 20 01
+00:45:07 {"sensor":"HCSR04","timestamp_ms":5028595,"distance_cm":143.7,"echo_us":8377,"status":"OK","error":0}
+00:45:07 [RULE] R_FAR: far (value=8377.000 ts=5028594)
+00:45:07 [TRACE] Total Rule Eval (HCSR04): 416us
+00:45:08 proto=gpio src=HCSR04 len=3 ts=5029096 : 3A 2A 01
+00:45:08 {"sensor":"HCSR04","timestamp_ms":5029097,"distance_cm":185.4,"echo_us":10810,"status":"OK","error":0}
+00:45:08 [RULE] R_FAR: far (value=10810.000 ts=5029096)
+00:45:08 [TRACE] Total Rule Eval (HCSR04): 391us
+00:45:08 proto=gpio src=HCSR04 len=3 ts=5029594 : B9 20 01
+00:45:08 {"sensor":"HCSR04","timestamp_ms":5029595,"distance_cm":143.7,"echo_us":8377,"status":"OK","error":0}
+00:45:08 [RULE] R_FAR: far (value=8377.000 ts=5029594)
+00:45:08 [TRACE] Total Rule Eval (HCSR04): 391us
+00:45:09 proto=gpio src=HCSR04 len=3 ts=5030094 : B9 20 01
+00:45:09 {"sensor":"HCSR04","timestamp_ms":5030095,"distance_cm":143.7,"echo_us":8377,"status":"OK","error":0}
+00:45:09 [RULE] R_FAR: far (value=8377.000 ts=5030094)
+00:45:09 [TRACE] Total Rule Eval (HCSR04): 386us
+00:45:09 proto=gpio src=HCSR04 len=3 ts=5030596 : 16 2A 01
+00:45:09 {"sensor":"HCSR04","timestamp_ms":5030597,"distance_cm":184.8,"echo_us":10774,"status":"OK","error":0}
+00:45:09 [RULE] R_FAR: far (value=10774.000 ts=5030596)
+00:45:09 [TRACE] Total Rule Eval (HCSR04): 393us
+00:45:10 proto=gpio src=HCSR04 len=3 ts=5031096 : 03 2B 01
+00:45:10 {"sensor":"HCSR04","timestamp_ms":5031097,"distance_cm":188.8,"echo_us":11011,"status":"OK","error":0}
+00:45:10 [RULE] R_FAR: far (value=11011.000 ts=5031096)
+00:45:10 [TRACE] Total Rule Eval (HCSR04): 394us
+00:45:10 proto=gpio src=HCSR04 len=3 ts=5031596 : C5 29 01
+00:45:10 {"sensor":"HCSR04","timestamp_ms":5031597,"distance_cm":183.4,"echo_us":10693,"status":"OK","error":0}
+00:45:10 [RULE] R_FAR: far (value=10693.000 ts=5031596)
+00:45:10 [TRACE] Total Rule Eval (HCSR04): 395us
+00:45:11 proto=gpio src=HCSR04 len=3 ts=5032094 : E2 21 01
+00:45:11 {"sensor":"HCSR04","timestamp_ms":5032095,"distance_cm":148.8,"echo_us":8674,"status":"OK","error":0}
+00:45:11 [RULE] R_FAR: far (value=8674.000 ts=5032094)
+00:45:11 [TRACE] Total Rule Eval (HCSR04): 389us
+00:45:11 proto=gpio src=HCSR04 len=3 ts=5032594 : 36 21 01
+00:45:11 {"sensor":"HCSR04","timestamp_ms":5032595,"distance_cm":145.8,"echo_us":8502,"status":"OK","error":0}
+00:45:11 [RULE] R_FAR: far (value=8502.000 ts=5032594)
+00:45:11 [TRACE] Total Rule Eval (HCSR04): 392us
+00:45:12 proto=gpio src=HCSR04 len=3 ts=5033096 : 25 2A 01
+00:45:12 {"sensor":"HCSR04","timestamp_ms":5033097,"distance_cm":185.0,"echo_us":10789,"status":"OK","error":0}
+00:45:12 [RULE] R_FAR: far (value=10789.000 ts=5033096)
+00:45:12 [TRACE] Total Rule Eval (HCSR04): 389us
+00:45:12 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:45:12 proto=gpio src=HCSR04 len=3 ts=5033594 : 06 21 01
+00:45:12 {"sensor":"HCSR04","timestamp_ms":5033595,"distance_cm":145.0,"echo_us":8454,"status":"OK","error":0}
+00:45:12 [RULE] R_FAR: far (value=8454.000 ts=5033594)
+00:45:12 [TRACE] Total Rule Eval (HCSR04): 406us
+00:45:13 proto=gpio src=HCSR04 len=3 ts=5034094 : 05 21 01
+00:45:13 {"sensor":"HCSR04","timestamp_ms":5034095,"distance_cm":145.0,"echo_us":8453,"status":"OK","error":0}
+00:45:13 [RULE] R_FAR: far (value=8453.000 ts=5034094)
+00:45:13 [TRACE] Total Rule Eval (HCSR04): 392us
+00:45:13 proto=gpio src=HCSR04 len=3 ts=5034594 : 69 21 01
+00:45:13 {"sensor":"HCSR04","timestamp_ms":5034595,"distance_cm":146.7,"echo_us":8553,"status":"OK","error":0}
+00:45:13 [RULE] R_FAR: far (value=8553.000 ts=5034594)
+00:45:13 [TRACE] Total Rule Eval (HCSR04): 392us
+00:45:14 proto=gpio src=HCSR04 len=3 ts=5035096 : D9 29 01
+00:45:14 {"sensor":"HCSR04","timestamp_ms":5035097,"distance_cm":183.7,"echo_us":10713,"status":"OK","error":0}
+00:45:14 [RULE] R_FAR: far (value=10713.000 ts=5035096)
+00:45:14 [TRACE] Total Rule Eval (HCSR04): 390us
+00:45:14 proto=gpio src=HCSR04 len=3 ts=5035594 : 4F 21 01
+00:45:14 {"sensor":"HCSR04","timestamp_ms":5035595,"distance_cm":146.2,"echo_us":8527,"status":"OK","error":0}
+00:45:14 [RULE] R_FAR: far (value=8527.000 ts=5035594)
+00:45:14 [TRACE] Total Rule Eval (HCSR04): 392us
+00:45:15 proto=gpio src=HCSR04 len=3 ts=5036086 : 62 03 01
+00:45:15 {"sensor":"HCSR04","timestamp_ms":5036087,"distance_cm":14.9,"echo_us":866,"status":"OK","error":0}
+00:45:15 [RULE] R_NEAR: near (value=866.000 ts=5036086)
+00:45:15 [TRACE] Total Rule Eval (HCSR04): 422us
+00:45:15 proto=gpio src=HCSR04 len=3 ts=5036586 : EE 02 01
+00:45:15 {"sensor":"HCSR04","timestamp_ms":5036587,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:45:15 [RULE] R_NEAR: near (value=750.000 ts=5036586)
+00:45:15 [TRACE] Total Rule Eval (HCSR04): 421us
+00:45:16 proto=gpio src=HCSR04 len=3 ts=5037094 : 04 21 01
+00:45:16 {"sensor":"HCSR04","timestamp_ms":5037095,"distance_cm":145.0,"echo_us":8452,"status":"OK","error":0}
+00:45:16 [RULE] R_FAR: far (value=8452.000 ts=5037094)
+00:45:16 [TRACE] Total Rule Eval (HCSR04): 387us
+00:45:16 proto=gpio src=HCSR04 len=3 ts=5037594 : 69 21 01
+00:45:16 {"sensor":"HCSR04","timestamp_ms":5037595,"distance_cm":146.7,"echo_us":8553,"status":"OK","error":0}
+00:45:16 [RULE] R_FAR: far (value=8553.000 ts=5037594)
+00:45:16 [TRACE] Total Rule Eval (HCSR04): 393us
+00:45:17 proto=gpio src=HCSR04 len=3 ts=5038094 : 4F 21 01
+00:45:17 {"sensor":"HCSR04","timestamp_ms":5038095,"distance_cm":146.2,"echo_us":8527,"status":"OK","error":0}
+00:45:17 [RULE] R_FAR: far (value=8527.000 ts=5038094)
+00:45:17 [TRACE] Total Rule Eval (HCSR04): 388us
+00:45:17 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:45:17 proto=gpio src=HCSR04 len=3 ts=5038596 : DD 29 01
+00:45:17 {"sensor":"HCSR04","timestamp_ms":5038597,"distance_cm":183.8,"echo_us":10717,"status":"OK","error":0}
+00:45:17 [RULE] R_FAR: far (value=10717.000 ts=5038596)
+00:45:17 [TRACE] Total Rule Eval (HCSR04): 408us
+00:45:18 proto=gpio src=HCSR04 len=3 ts=5039094 : 04 21 01
+00:45:18 {"sensor":"HCSR04","timestamp_ms":5039095,"distance_cm":145.0,"echo_us":8452,"status":"OK","error":0}
+00:45:18 [RULE] R_FAR: far (value=8452.000 ts=5039094)
+00:45:18 [TRACE] Total Rule Eval (HCSR04): 389us
+00:45:18 proto=gpio src=HCSR04 len=3 ts=5039594 : 04 21 01
+00:45:18 {"sensor":"HCSR04","timestamp_ms":5039595,"distance_cm":145.0,"echo_us":8452,"status":"OK","error":0}
+00:45:18 [RULE] R_FAR: far (value=8452.000 ts=5039594)
+00:45:18 [TRACE] Total Rule Eval (HCSR04): 405us
+00:45:19 proto=gpio src=HCSR04 len=3 ts=5040094 : 04 21 01
+00:45:19 {"sensor":"HCSR04","timestamp_ms":5040095,"distance_cm":145.0,"echo_us":8452,"status":"OK","error":0}
+00:45:19 [RULE] R_FAR: far (value=8452.000 ts=5040094)
+00:45:19 [TRACE] Total Rule Eval (HCSR04): 391us
+00:45:19 proto=gpio src=HCSR04 len=3 ts=5040594 : BE 20 01
+00:45:19 {"sensor":"HCSR04","timestamp_ms":5040595,"distance_cm":143.8,"echo_us":8382,"status":"OK","error":0}
+00:45:19 [RULE] R_FAR: far (value=8382.000 ts=5040594)
+00:45:19 [TRACE] Total Rule Eval (HCSR04): 390us
+00:45:20 proto=gpio src=HCSR04 len=3 ts=5041094 : 1D 21 01
+00:45:20 {"sensor":"HCSR04","timestamp_ms":5041095,"distance_cm":145.4,"echo_us":8477,"status":"OK","error":0}
+00:45:20 [RULE] R_FAR: far (value=8477.000 ts=5041094)
+00:45:20 [TRACE] Total Rule Eval (HCSR04): 388us
+00:45:20 proto=gpio src=HCSR04 len=3 ts=5041594 : 04 21 01
+00:45:20 {"sensor":"HCSR04","timestamp_ms":5041595,"distance_cm":145.0,"echo_us":8452,"status":"OK","error":0}
+00:45:20 [RULE] R_FAR: far (value=8452.000 ts=5041594)
+00:45:20 [TRACE] Total Rule Eval (HCSR04): 392us
+00:45:21 proto=gpio src=HCSR04 len=3 ts=5042094 : 68 21 01
+00:45:21 {"sensor":"HCSR04","timestamp_ms":5042095,"distance_cm":146.7,"echo_us":8552,"status":"OK","error":0}
+00:45:21 [RULE] R_FAR: far (value=8552.000 ts=5042094)
+00:45:21 [TRACE] Total Rule Eval (HCSR04): 392us
+00:45:21 proto=gpio src=HCSR04 len=3 ts=5042594 : 36 21 01
+00:45:21 {"sensor":"HCSR04","timestamp_ms":5042595,"distance_cm":145.8,"echo_us":8502,"status":"OK","error":0}
+00:45:21 [RULE] R_FAR: far (value=8502.000 ts=5042594)
+00:45:21 [TRACE] Total Rule Eval (HCSR04): 392us
+00:45:22 proto=gpio src=HCSR04 len=3 ts=5043096 : 2A 27 01
+00:45:22 {"sensor":"HCSR04","timestamp_ms":5043097,"distance_cm":171.9,"echo_us":10026,"status":"OK","error":0}
+00:45:22 [RULE] R_FAR: far (value=10026.000 ts=5043096)
+00:45:22 [TRACE] Total Rule Eval (HCSR04): 391us
+00:45:22 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:45:22 proto=gpio src=HCSR04 len=3 ts=5043594 : 68 21 01
+00:45:22 {"sensor":"HCSR04","timestamp_ms":5043595,"distance_cm":146.7,"echo_us":8552,"status":"OK","error":0}
+00:45:22 [RULE] R_FAR: far (value=8552.000 ts=5043594)
+00:45:22 [TRACE] Total Rule Eval (HCSR04): 413us
+00:45:23 proto=gpio src=HCSR04 len=3 ts=5044096 : 3D 2A 01
+00:45:23 {"sensor":"HCSR04","timestamp_ms":5044097,"distance_cm":185.4,"echo_us":10813,"status":"OK","error":0}
+00:45:23 [RULE] R_FAR: far (value=10813.000 ts=5044096)
+00:45:23 [TRACE] Total Rule Eval (HCSR04): 389us
+00:45:23 proto=gpio src=HCSR04 len=3 ts=5044596 : D0 2A 01
+00:45:23 {"sensor":"HCSR04","timestamp_ms":5044597,"distance_cm":188.0,"echo_us":10960,"status":"OK","error":0}
+00:45:23 [RULE] R_FAR: far (value=10960.000 ts=5044596)
+00:45:23 [TRACE] Total Rule Eval (HCSR04): 394us
+00:45:24 proto=gpio src=HCSR04 len=3 ts=5045096 : AB 29 01
+00:45:24 {"sensor":"HCSR04","timestamp_ms":5045097,"distance_cm":182.9,"echo_us":10667,"status":"OK","error":0}
+00:45:24 [RULE] R_FAR: far (value=10667.000 ts=5045096)
+00:45:24 [TRACE] Total Rule Eval (HCSR04): 390us
+00:45:24 proto=gpio src=HCSR04 len=3 ts=5045594 : EB 20 01
+00:45:24 {"sensor":"HCSR04","timestamp_ms":5045595,"distance_cm":144.5,"echo_us":8427,"status":"OK","error":0}
+00:45:24 [RULE] R_FAR: far (value=8427.000 ts=5045594)
+00:45:24 [TRACE] Total Rule Eval (HCSR04): 391us
+00:45:25 proto=gpio src=HCSR04 len=3 ts=5046094 : 1D 21 01
+00:45:25 {"sensor":"HCSR04","timestamp_ms":5046095,"distance_cm":145.4,"echo_us":8477,"status":"OK","error":0}
+00:45:25 [RULE] R_FAR: far (value=8477.000 ts=5046094)
+00:45:25 [TRACE] Total Rule Eval (HCSR04): 388us
+00:45:25 proto=gpio src=HCSR04 len=3 ts=5046594 : 1D 21 01
+00:45:25 {"sensor":"HCSR04","timestamp_ms":5046595,"distance_cm":145.4,"echo_us":8477,"status":"OK","error":0}
+00:45:25 [RULE] R_FAR: far (value=8477.000 ts=5046594)
+00:45:25 [TRACE] Total Rule Eval (HCSR04): 392us
+00:45:26 proto=gpio src=HCSR04 len=3 ts=5047094 : BD 20 01
+00:45:26 {"sensor":"HCSR04","timestamp_ms":5047095,"distance_cm":143.7,"echo_us":8381,"status":"OK","error":0}
+00:45:26 [RULE] R_FAR: far (value=8381.000 ts=5047094)
+00:45:26 [TRACE] Total Rule Eval (HCSR04): 388us
+00:45:26 proto=gpio src=HCSR04 len=3 ts=5047594 : F0 20 01
+00:45:26 {"sensor":"HCSR04","timestamp_ms":5047595,"distance_cm":144.6,"echo_us":8432,"status":"OK","error":0}
+00:45:26 [RULE] R_FAR: far (value=8432.000 ts=5047594)
+00:45:26 [TRACE] Total Rule Eval (HCSR04): 388us
+00:45:27 --- stop-sr: STOP
+00:45:27 STOP
+00:45:27 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:45:29 --- clear-sr-end: CLEAR
+00:45:29 [RULE] reset
+00:45:29 CLEARED
+00:45:32 [MQTT] Status: Connected, Broker: 192.168.1.49

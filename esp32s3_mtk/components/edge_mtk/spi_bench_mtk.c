@@ -282,7 +282,7 @@ void mtk_spi_flash_scan(uint32_t expected_id)
     }
 }
 
-// One-time hardware acceptance at the user-approved address. The device layer
+// One-time hardware acceptance at the team-approved address. The device layer
 // rejects non-FF content and verifies status, complete program, readback and ID.
 void mtk_spi_flash_program(uint32_t expected_id)
 {

@@ -33,6 +33,11 @@ class Tests(unittest.TestCase):
             load_ml.configure(None,['STOP','CLEAR','SHOW','RUN'],'sine-int8')
         self.assertEqual(calls,['STOP','CLEAR','SHOW','ML PRESET sine-int8','ML RUN','RUN'])
 
+    def test_threshold_in_configuration(self):
+        commands = ["STOP", "CLEAR", "ML THRESHOLD 0.5", "RUN"]
+        path = types.SimpleNamespace(read_text=lambda **_: "\n".join(commands))
+        self.assertEqual(load_ml.read_configuration(path), commands)
+
 class AhtLightTests(unittest.TestCase):
     def test_only_working_sources(self):
         calls=[]

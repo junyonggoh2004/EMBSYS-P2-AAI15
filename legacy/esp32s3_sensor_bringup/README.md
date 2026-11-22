@@ -6,7 +6,7 @@ Scope: AHT10/AHT20 temperature/humidity, 3.3 V-compatible HC-SR04+, and Grove TS
 
 ## Hardware status and connections
 
-The user confirms that the AHT, HC-SR04+ and Grove TSL2561 sensors have worked in hardware testing. The ST7789 LCD is **not working for now** (dim/white screen without text). All existing Version 2 connections, including the LCD connections, can remain. The current firmware leaves LCD GPIO6–10 unused and does not initialise the display.
+The team confirms that the AHT, HC-SR04+ and Grove TSL2561 sensors have worked in hardware testing. The ST7789 LCD is **not working for now** (dim/white screen without text). All existing Version 2 connections, including the LCD connections, can remain. The current firmware leaves LCD GPIO6–10 unused and does not initialise the display.
 
 See [WIRING.md](WIRING.md) for every ESP32, sensor, LCD and ground-rail connection, and the [branch README](../README.md) for the complete branch guide. These hardware results are user-reported; the recorded migration checks establish a successful build and link, with on-board µT-Kernel execution still to be captured.
 

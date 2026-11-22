@@ -6,9 +6,9 @@ Date: 3 November 2026. Branch: `dev-jy-sensors`. Reviewed main snapshot: `49677c
 
 ### Board startup finding and correction
 
-The first user-provided startup capture confirms a successful flash, USB console output and a passing 2 MB PSRAM memory test, followed by `STACK OVERFLOW: task id=4 ... HALT` immediately after the application BOOT message. The port's initial task has a 1 KiB stack (`include/sys/inittask.h`); the original application entry performed console formatting, network settings, NVS identity initialization and runtime creation on that stack.
+The first startup capture from the board confirms a successful flash, USB console output and a passing 2 MB PSRAM memory test, followed by `STACK OVERFLOW: task id=4 ... HALT` immediately after the application BOOT message. The port's initial task has a 1 KiB stack (`include/sys/inittask.h`); the original application entry performed console formatting, network settings, NVS identity initialization and runtime creation on that stack.
 
-The corrected entry only creates/starts a pinned, FPU-enabled µT-Kernel startup task with a 16 KiB kernel-allocated stack. All application initialization runs there. The startup task deletes itself when initialization completes, releasing its temporary stack; the kernel's small initial task remains asleep. The kernel source and stack guards are unchanged. Native tests of the actual entry cover separation from the small stack, ordering, worker cleanup, initialization failure and task-creation/start failure. A subsequent user-provided startup capture reached the seven-task runtime, loaded the built-in model and continued scheduling. The later sensor capture below confirms readings on the corrected firmware; the overflow belongs to the preceding image.
+The corrected entry only creates/starts a pinned, FPU-enabled µT-Kernel startup task with a 16 KiB kernel-allocated stack. All application initialization runs there. The startup task deletes itself when initialization completes, releasing its temporary stack; the kernel's small initial task remains asleep. The kernel source and stack guards are unchanged. Native tests of the actual entry cover separation from the small stack, ordering, worker cleanup, initialization failure and task-creation/start failure. A later startup capture reached the seven-task runtime, loaded the built-in model and continued scheduling. The later sensor capture below confirms readings on the corrected firmware; the overflow belongs to the preceding image.
 
 Serial monitor tasks now display a startup banner and local echo so typed input is visible. Local echo is not acknowledgement from the board. Use the ESP-IDF diagnostic monitor when capturing reset/boot output, as a USB reset can invalidate miniterm's connection.
 
@@ -48,7 +48,7 @@ The main source snapshot and submodule reference were imported into the existing
 
 ## Remaining board checks
 
-The user reports that AHT, HC-SR04+ and Grove TSL2561 worked in earlier hardware tests. The LCD remains dim/white without text. The corrected integration has now produced readings from all three sensors on the physical board, as documented below.
+The team reports that AHT, HC-SR04+ and Grove TSL2561 worked in earlier hardware tests. The LCD remains dim/white without text. The corrected integration has now produced readings from all three sensors on the physical board, as documented below.
 
 1. Keep [WIRING.md](WIRING.md): SDA1/SCL2, TRIG4/ECHO5, shared 3V3/GND. This assumes the identified 3.3 V-compatible HC-SR04+. LCD wiring can remain; its pins 6–10 are unused by the preset.
 2. Build, flash, then run `tools/build.ps1 sensors -Port COMx` to load the three configurations and RUN. The loader replaces volatile sensor/rule configuration via STOP/CLEAR. Load it again after a reset.
@@ -62,7 +62,7 @@ The current physical-unit output is per-sensor JSON alongside main's raw lines, 
 
 ## Observed board runtime — 3 November 2026
 
-After uploading the startup-stack correction, the user supplied a boot capture showing the 16 KiB startup task, the seven-task µT-Kernel SMP runtime, successful built-in model loading and a live scheduler. The sensor loader then acknowledged all three configurations and RUN. A subsequent [runtime screenshot](../docs/evidence/sensors-runtime-20261103.png) shows concurrent readings:
+After uploading the startup-stack correction, a boot capture showed the 16 KiB startup task, the seven-task µT-Kernel SMP runtime, successful built-in model loading and a live scheduler. The sensor loader then acknowledged all three configurations and RUN. A subsequent [runtime screenshot](../docs/evidence/sensors-runtime-20261103.png) shows concurrent readings:
 
 | Sensor | Observed readings | Status |
 |---|---|---|

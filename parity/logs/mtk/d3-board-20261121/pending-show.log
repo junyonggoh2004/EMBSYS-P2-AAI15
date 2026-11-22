@@ -1,0 +1,55 @@
+> STOP
+23:30:06 STOP
+23:30:06 [MQTT] Status: Connected, Broker: 192.168.1.49
+> CLEAR
+23:30:08 [RULE] reset
+23:30:08 CLEARED
+# D3-2: SHOW while the echo wait is pending, then STOP, then SHOW; same for CLEAR
+> BEGINCFG|name=LONG|proto=gpio|gpio.mode=pulse|gpio.trig=4|gpio.echo=7|gpio.pull=down|gpio.trig_us=10|gpio.pulse_timeout_us=1000000|mode=poll|freq_hz=0.5|ENDCFG
+23:30:09 OK: Config applied (inline, delim='|')
+23:30:09 [SCHED] added: LONG on gpio
+23:30:09 CFG: ok (added #0: LONG)
+> RUN
+23:30:11 RUN
+> SHOW
+23:30:11 [SHOW] sampling=1
+23:30:11 [WINDOW] enabled=0 state=0 events=0 dropped=0 radar_frames=0 malformed=0 rx_dropped=0 identity=1
+23:30:11 [SCHED] #0 name=LONG proto=gpio mode=poll freq=0.500Hz timing=periodic interval=2000ms timeout=0ms window=0ms trigger=- status=2
+23:30:11 [SENSOR] name=LONG pending=1 timeouts=0 errors=0 overruns=0
+23:30:11 [RULE] count=0
+23:30:11 [MQTT] Status: Connected, Broker: 192.168.1.49
+> STOP
+23:30:11 STOP
+> SHOW
+23:30:12 [SHOW] sampling=0
+23:30:12 [WINDOW] enabled=0 state=0 events=0 dropped=0 radar_frames=0 malformed=0 rx_dropped=0 identity=1
+23:30:12 [SCHED] #0 name=LONG proto=gpio mode=poll freq=0.500Hz timing=periodic interval=2000ms timeout=0ms window=0ms trigger=- status=2
+23:30:12 [SENSOR] name=LONG pending=0 timeouts=0 errors=0 overruns=0
+23:30:12 [RULE] count=0
+# STOP: during=[('1', '0')] after=[('0', '0')] readings after=0
+> BEGINCFG|name=LONG|proto=gpio|gpio.mode=pulse|gpio.trig=4|gpio.echo=7|gpio.pull=down|gpio.trig_us=10|gpio.pulse_timeout_us=1000000|mode=poll|freq_hz=0.5|ENDCFG
+23:30:15 OK: Config applied (inline, delim='|')
+23:30:15 [SCHED] config LONG refused: pulse pin 4 is used by LONG
+23:30:15 CFG: add failed (-5)
+> RUN
+23:30:16 RUN
+23:30:16 [MQTT] Status: Connected, Broker: 192.168.1.49
+> SHOW
+23:30:17 [SHOW] sampling=1
+23:30:17 [WINDOW] enabled=0 state=0 events=0 dropped=0 radar_frames=0 malformed=0 rx_dropped=0 identity=1
+23:30:17 [SCHED] #0 name=LONG proto=gpio mode=poll freq=0.500Hz timing=periodic interval=2000ms timeout=0ms window=0ms trigger=- status=2
+23:30:17 [SENSOR] name=LONG pending=1 timeouts=0 errors=0 overruns=0
+23:30:17 [RULE] count=0
+> CLEAR
+23:30:17 [RULE] reset
+23:30:17 CLEARED
+> SHOW
+23:30:17 [SHOW] sampling=1
+23:30:17 [WINDOW] enabled=0 state=0 events=0 dropped=0 radar_frames=0 malformed=0 rx_dropped=0 identity=1
+23:30:17 [RULE] count=0
+# CLEAR: during=[('1', '0')] after=[] readings after=0
+> CLEAR
+23:30:20 [RULE] reset
+23:30:20 CLEARED
+23:30:21 [MQTT] Status: Connected, Broker: 192.168.1.49
+# summary {"STOP": {"during_pending_timeouts": [["1", "0"]], "after_pending_timeouts": [["0", "0"]], "readings_after": 0}, "CLEAR": {"during_pending_timeouts": [["1", "0"]], "after_pending_timeouts": [], "readings_after": 0}}

@@ -10,7 +10,7 @@ extern "C" {
 /* One finite, two-sensor acquisition. All calls belong to one scheduler
  * owner. The caller supplies every physical timing value and maps A/B to
  * configured capture resources. This module defines no entrance classifier,
- * radar policy or event identity. D3's user-confirmed 50 ms limit applies to
+ * radar policy or event identity. D3's team-confirmed 50 ms limit applies to
  * the complete pair, including both captures and the acoustic guard. */
 #define PULSE_SEQUENCE_WINDOW_MAX_US 50000u
 #define PULSE_SEQUENCE_NOT_ATTEMPTED 2

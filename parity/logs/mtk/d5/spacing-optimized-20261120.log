@@ -1,0 +1,242 @@
+# ML REPLAY timing, optimized build, 20 Nov 2026: per model 3 discarded, 20 back-to-back, 10 spaced 2 s apart. Sampling stopped; Wi-Fi and MQTT connected.
+> STOP
+> ML MODEL sine-int8
+STOP
+[TFLITE] Unloading previous model state...
+[TFLITE] Unload complete.
+[TFLITE] Verifying FlatBuffer at 0x3c10a590...
+[TFLITE] Schema version 3 verified.
+[TFLITE] Creating OpResolver...
+[TFLITE] Ops registered.
+[TFLITE] Creating Interpreter (Arena size 65536)...
+[TFLITE] Allocating tensors...
+[TFLITE] Tensors allocated.
+[TFLITE] Model loaded OK!
+[TFLITE]   Inputs:  1 tensor(s), 1 total element(s)
+[TFLITE]   Outputs: 1 tensor(s), 1 total element(s)
+[TFLITE]   Arena:   716 / 65536 bytes used
+ML: OK MODEL sine-int8
+> ML REPLAY 1.57
+[ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=2
+{"type":"ml","timestamp_ms":383422,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":550,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":383425,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":342,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":383428,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":350,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":383431,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":350,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":383434,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":379,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":383437,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":348,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":383440,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":357,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":383443,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":348,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":383446,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":351,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":383449,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":347,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":383452,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":351,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":383455,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":346,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":383458,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":349,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":383460,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":346,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":383464,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":355,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":383469,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":348,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":383473,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":351,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":383476,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":347,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":383478,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":349,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":383481,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":345,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":383484,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":353,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":383487,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":348,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":383490,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":351,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":385503,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":480,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+[MQTT] Status: Connected, Broker: 192.168.1.49
+{"type":"ml","timestamp_ms":387513,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":471,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":389523,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":467,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+[MQTT] Status: Connected, Broker: 192.168.1.49
+{"type":"ml","timestamp_ms":391535,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":466,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":393543,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":471,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+[MQTT] Status: Connected, Broker: 192.168.1.49
+{"type":"ml","timestamp_ms":395607,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":452,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":397620,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":462,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":399626,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":460,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+[MQTT] Status: Connected, Broker: 192.168.1.49
+{"type":"ml","timestamp_ms":401632,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":453,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML REPLAY 1.57
+{"type":"ml","timestamp_ms":403641,"generation":15,"model":"sine-int8","raw_features":[],"input_source":"replay","inputs":[1.57],"outputs":[1.003206],"invoke_us":479,"status":"OK"}
+ML: OK REPLAY 1.57
+> ML MODEL people-counter
+[TFLITE] Unloading previous model state...
+[TFLITE] Unload complete.
+[TFLITE] Verifying FlatBuffer at 0x3c10d3c8...
+[TFLITE] Schema version 3 verified.
+[TFLITE] Creating OpResolver...
+[TFLITE] Ops registered.
+[TFLITE] Creating Interpreter (Arena size 65536)...
+[TFLITE] Allocating tensors...
+[TFLITE] Tensors allocated.
+[TFLITE] Model loaded OK!
+[TFLITE]   Inputs:  1 tensor(s), 31 total element(s)
+[TFLITE]   Outputs: 1 tensor(s), 3 total element(s)
+[TFLITE]   Arena:   6204 / 65536 bytes used
+ML: OK MODEL people-counter
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=0
+{"type":"ml","timestamp_ms":403652,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":2604,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":403658,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":1902,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":403663,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":1941,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":403668,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":1899,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":403672,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":1969,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":403677,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":1966,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":403682,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":1939,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":403687,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":1899,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":403692,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":1933,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":403697,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":1904,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":403702,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":1927,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":403709,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":1994,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":403714,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":1955,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":403719,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":2074,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":403724,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":2097,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":403730,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":1894,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":403734,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":1940,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":403739,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":1894,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":403745,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":1931,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":403750,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":1903,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":403755,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":1919,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":403760,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":1927,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":403765,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":1904,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[MQTT] Status: Connected, Broker: 192.168.1.49
+{"type":"ml","timestamp_ms":405776,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":2073,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":407785,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":2053,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":409795,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":2062,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[MQTT] Status: Connected, Broker: 192.168.1.49
+{"type":"ml","timestamp_ms":411805,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":2081,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":413815,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":2066,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[MQTT] Status: Connected, Broker: 192.168.1.49
+{"type":"ml","timestamp_ms":415822,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":2067,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":417837,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":2061,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":419852,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":2063,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[MQTT] Status: Connected, Broker: 192.168.1.49
+{"type":"ml","timestamp_ms":421865,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":2056,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+{"type":"ml","timestamp_ms":423877,"generation":16,"model":"people-counter","input_source":"replay","outputs":[1],"direction":"none","class_score":0.9570312,"invoke_us":2072,"status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+# summary {"sine-int8": {"back_to_back": [350, 379, 348, 357, 348, 351, 347, 351, 346, 349, 346, 355, 348, 351, 347, 349, 345, 353, 348, 351], "spaced_2s": [480, 471, 467, 466, 471, 452, 462, 460, 453, 479], "back_median": 349.0, "spaced_median": 466.5}, "people-counter": {"back_to_back": [1899, 1969, 1966, 1939, 1899, 1933, 1904, 1927, 1994, 1955, 2074, 2097, 1894, 1940, 1894, 1931, 1903, 1919, 1927, 1904], "spaced_2s": [2073, 2053, 2062, 2081, 2066, 2067, 2061, 2063, 2056, 2072], "back_median": 1929.0, "spaced_median": 2064.5}}

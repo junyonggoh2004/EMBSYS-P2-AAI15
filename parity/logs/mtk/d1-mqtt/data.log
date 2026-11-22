@@ -1,0 +1,178 @@
+18:33:50 ---    stage data: A=s3-001 B=s3-002
+18:33:50 ---    step reset: Both nodes stopped and cleared over MQTT
+18:33:50 ---    publish pico/s3-001/cmd: STOP
+18:33:50 BROKER pico/s3-001/cmd STOP
+18:33:50 A      [CMD] STOP
+18:33:51 ---    publish pico/s3-001/cmd: CLEAR
+18:33:51 BROKER pico/s3-001/cmd CLEAR
+18:33:51 A      [RULE] reset
+18:33:51 A      [BRIDGE] reset
+18:33:51 A      [CMD] CLEAR (scheduler + rules + bridge)
+18:33:51 ---    publish pico/s3-002/cmd: STOP
+18:33:51 BROKER pico/s3-002/cmd STOP
+18:33:51 B      [CMD] STOP
+18:33:51 ---    publish pico/s3-002/cmd: CLEAR
+18:33:51 BROKER pico/s3-002/cmd CLEAR
+18:33:51 B      [RULE] reset
+18:33:51 B      [BRIDGE] reset
+18:33:51 B      [CMD] CLEAR (scheduler + rules + bridge)
+18:33:54 ---    step a-sensor: A gets a GPIO input (GPIO6, pulled down) over MQTT
+18:33:54 ---    publish pico/s3-001/config: BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+18:33:54 BROKER pico/s3-001/config BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+18:33:54 A      [CFG] cfg_cb payload (first 120): BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=down|mode=poll|freq_hz=2|ENDCFG
+18:33:54 A      [JSON] not starting with '{' after trim, char=0x22
+18:33:54 A      [CFG] mqtt_json_try_convert_to_inline -> 0
+18:33:54 A      [SCHED] added: DIG on gpio
+18:33:54 A      [CFG] added #0: DIG
+18:33:54 BROKER pico/s3-001/status/config OK:DIG
+18:33:54 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:33:55 A      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:33:56 ---    step b-follow: B follows A's DIG as its own sensor REM, with rules on its value
+18:33:56 ---    publish pico/s3-002/config: BEGINCFG|name=REM|proto=mqtt|mode=poll|freq_hz=2|remote_node=s3-001|remote_source=DIG|ENDCFG
+18:33:56 BROKER pico/s3-002/config BEGINCFG|name=REM|proto=mqtt|mode=poll|freq_hz=2|remote_node=s3-001|remote_source=DIG|ENDCFG
+18:33:56 B      [CFG] cfg_cb payload (first 120): BEGINCFG|name=REM|proto=mqtt|mode=poll|freq_hz=2|remote_node=s3-001|remote_source=DIG|ENDCFG
+18:33:56 BROKER pico/s3-002/status/config OK:REM
+18:33:56 B      [JSON] not starting with '{' after trim, char=0x22
+18:33:56 B      [CFG] mqtt_json_try_convert_to_inline -> 0
+18:33:56 B      [BRIDGE] updated mapping: s3-001/DIG -> REM
+18:33:56 B      [MQTT] follow_remote_source: s3-001/DIG -> REM via pico/s3-001/sensor/DIG/line
+18:33:56 B      [SCHED] added MQTT-remote: local=REM <- s3-001/DIG
+18:33:56 B      [CFG] added #0: REM
+18:33:56 ---    publish pico/s3-002/config: BEGINRULE|name=R_LOW|source=REM|calc=s=u8(0)|when=s==0|action=log:A reads low|ENDRULE
+18:33:56 BROKER pico/s3-002/config BEGINRULE|name=R_LOW|source=REM|calc=s=u8(0)|when=s==0|action=log:A reads low|ENDRULE
+18:33:56 BROKER pico/s3-001/heartbeat {"uptime_s":101}
+18:33:56 BROKER pico/s3-002/status/rule OK:R_LOW
+18:33:56 B      [CFG] cfg_cb payload (first 120): BEGINRULE|name=R_LOW|source=REM|calc=s=u8(0)|when=s==0|action=log:A reads low|ENDRULE
+18:33:56 B      [JSON] not starting with '{' after trim, char=0x22
+18:33:56 B      [CFG] mqtt_json_try_convert_to_inline -> 0
+18:33:56 B      [RULE] added name=R_LOW src=REM vars=1 action=log:A reads low
+18:33:56 B      [RULE] added name=R_LOW
+18:33:56 ---    publish pico/s3-002/config: BEGINRULE|name=R_HIGH|source=REM|calc=s=u8(0)|when=s==1|action=log:A reads high|ENDRULE
+18:33:56 BROKER pico/s3-002/config BEGINRULE|name=R_HIGH|source=REM|calc=s=u8(0)|when=s==1|action=log:A reads high|ENDRULE
+18:33:57 BROKER pico/s3-002/status/rule OK:R_HIGH
+18:33:57 B      [CFG] cfg_cb payload (first 120): BEGINRULE|name=R_HIGH|source=REM|calc=s=u8(0)|when=s==1|action=log:A reads high|ENDRULE
+18:33:57 B      [JSON] not starting with '{' after trim, char=0x22
+18:33:57 B      [CFG] mqtt_json_try_convert_to_inline -> 0
+18:33:57 B      [RULE] added name=R_HIGH src=REM vars=1 action=log:A reads high
+18:33:57 B      [RULE] added name=R_HIGH
+18:33:57 BROKER pico/s3-002/heartbeat {"uptime_s":82}
+18:33:57 ---    publish pico/s3-002/cmd: RUN
+18:33:57 BROKER pico/s3-002/cmd RUN
+18:33:57 B      [CMD] RUN
+18:33:59 ---    step a-run: A samples; B receives the same bytes and its rule acts on them
+18:33:59 ---    publish pico/s3-001/cmd: RUN
+18:33:59 BROKER pico/s3-001/cmd RUN
+18:33:59 A      [CMD] RUN
+18:33:59 A      proto=gpio src=DIG len=3 ts=104230 : 00 DB 15
+18:33:59 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=104230 : 00 DB 15
+18:33:59 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:33:59 BROKER pico/rule/R_LOW/event ts=85248 rule=R_LOW type=log value=0.000 msg=A reads low
+18:33:59 BROKER pico/s3-002/sensor/REM/line proto=mqtt src=REM len=3 ts=85248 : 00 DB 15
+18:33:59 B      [BRIDGE] on_remote_line: s3-001/DIG -> local=REM line='proto=gpio src=DIG len=3 ts=104230 : 00 DB 15'
+18:33:59 B      proto=mqtt src=REM len=3 ts=85248 : 00 DB 15
+18:33:59 B      [RULE] R_LOW: A reads low (value=0.000 ts=85248)
+18:33:59 B      [TRACE] Total Rule Eval (REM): 442us
+18:34:00 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=104732 : 00 D1 17
+18:34:00 A      proto=gpio src=DIG len=3 ts=104732 : 00 D1 17
+18:34:00 BROKER pico/rule/R_LOW/event ts=85675 rule=R_LOW type=log value=0.000 msg=A reads low
+18:34:00 B      [BRIDGE] on_remote_line: s3-001/DIG -> local=REM line='proto=gpio src=DIG len=3 ts=104732 : 00 D1 17'
+18:34:00 B      proto=mqtt src=REM len=3 ts=85675 : 00 D1 17
+18:34:00 B      [RULE] R_LOW: A reads low (value=0.000 ts=85675)
+18:34:00 B      [TRACE] Total Rule Eval (REM): 366us
+18:34:00 BROKER pico/s3-002/sensor/REM/line proto=mqtt src=REM len=3 ts=85675 : 00 D1 17
+18:34:00 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=105231 : 00 C4 19
+18:34:00 A      proto=gpio src=DIG len=3 ts=105231 : 00 C4 19
+18:34:00 A      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:00 B      [BRIDGE] on_remote_line: s3-001/DIG -> local=REM line='proto=gpio src=DIG len=3 ts=105231 : 00 C4 19'
+18:34:00 B      proto=mqtt src=REM len=3 ts=86181 : 00 C4 19
+18:34:00 B      [RULE] R_LOW: A reads low (value=0.000 ts=86181)
+18:34:00 B      [TRACE] Total Rule Eval (REM): 365us
+18:34:00 BROKER pico/rule/R_LOW/event ts=86181 rule=R_LOW type=log value=0.000 msg=A reads low
+18:34:00 BROKER pico/s3-002/sensor/REM/line proto=mqtt src=REM len=3 ts=86181 : 00 C4 19
+18:34:01 A      proto=gpio src=DIG len=3 ts=105731 : 00 B8 1B
+18:34:01 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=105731 : 00 B8 1B
+18:34:01 BROKER pico/rule/R_LOW/event ts=86753 rule=R_LOW type=log value=0.000 msg=A reads low
+18:34:01 B      [BRIDGE] on_remote_line: s3-001/DIG -> local=REM line='proto=gpio src=DIG len=3 ts=105731 : 00 B8 1B'
+18:34:01 B      proto=mqtt src=REM len=3 ts=86753 : 00 B8 1B
+18:34:01 B      [RULE] R_LOW: A reads low (value=0.000 ts=86753)
+18:34:01 B      [TRACE] Total Rule Eval (REM): 383us
+18:34:01 BROKER pico/s3-002/sensor/REM/line proto=mqtt src=REM len=3 ts=86753 : 00 B8 1B
+18:34:01 A      proto=gpio src=DIG len=3 ts=106231 : 00 AC 1D
+18:34:01 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=106231 : 00 AC 1D
+18:34:01 BROKER pico/rule/R_LOW/event ts=87266 rule=R_LOW type=log value=0.000 msg=A reads low
+18:34:01 B      [BRIDGE] on_remote_line: s3-001/DIG -> local=REM line='proto=gpio src=DIG len=3 ts=106231 : 00 AC 1D'
+18:34:01 B      proto=mqtt src=REM len=3 ts=87266 : 00 AC 1D
+18:34:01 B      [RULE] R_LOW: A reads low (value=0.000 ts=87266)
+18:34:01 B      [TRACE] Total Rule Eval (REM): 370us
+18:34:01 BROKER pico/s3-002/sensor/REM/line proto=mqtt src=REM len=3 ts=87266 : 00 AC 1D
+18:34:01 ---    step a-change: A's input is reconfigured live (pull-up); B sees the new value and the other rule fires
+18:34:01 ---    publish pico/s3-001/cmd: STOP
+18:34:01 BROKER pico/s3-001/cmd STOP
+18:34:02 A      [CMD] STOP
+18:34:02 ---    publish pico/s3-001/cmd: CLEAR
+18:34:02 BROKER pico/s3-001/cmd CLEAR
+18:34:02 A      [RULE] reset
+18:34:02 A      [BRIDGE] reset
+18:34:02 A      [CMD] CLEAR (scheduler + rules + bridge)
+18:34:02 ---    publish pico/s3-001/config: BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=up|mode=poll|freq_hz=2|ENDCFG
+18:34:02 BROKER pico/s3-001/config BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=up|mode=poll|freq_hz=2|ENDCFG
+18:34:02 BROKER pico/s3-001/status/config OK:DIG
+18:34:02 A      [CFG] cfg_cb payload (first 120): BEGINCFG|name=DIG|proto=gpio|gpio.mode=digital|gpio.pin=6|gpio.pull=up|mode=poll|freq_hz=2|ENDCFG
+18:34:02 A      [JSON] not starting with '{' after trim, char=0x22
+18:34:02 A      [CFG] mqtt_json_try_convert_to_inline -> 0
+18:34:02 A      [SCHED] added: DIG on gpio
+18:34:02 A      [CFG] added #0: DIG
+18:34:02 ---    publish pico/s3-001/cmd: RUN
+18:34:02 BROKER pico/s3-001/cmd RUN
+18:34:02 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=107496 : 01 51 01
+18:34:02 A      [CMD] RUN
+18:34:02 A      proto=gpio src=DIG len=3 ts=107496 : 01 51 01
+18:34:03 BROKER pico/rule/R_HIGH/event ts=88490 rule=R_HIGH type=log value=1.000 msg=A reads high
+18:34:03 B      [BRIDGE] on_remote_line: s3-001/DIG -> local=REM line='proto=gpio src=DIG len=3 ts=107496 : 01 51 01'
+18:34:03 B      proto=mqtt src=REM len=3 ts=88490 : 01 51 01
+18:34:03 B      [RULE] R_HIGH: A reads high (value=1.000 ts=88490)
+18:34:03 B      [TRACE] Total Rule Eval (REM): 690us
+18:34:03 BROKER pico/s3-002/sensor/REM/line proto=mqtt src=REM len=3 ts=88490 : 01 51 01
+18:34:03 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=107998 : 01 47 03
+18:34:03 A      proto=gpio src=DIG len=3 ts=107998 : 01 47 03
+18:34:03 BROKER pico/rule/R_HIGH/event ts=88986 rule=R_HIGH type=log value=1.000 msg=A reads high
+18:34:03 BROKER pico/s3-002/sensor/REM/line proto=mqtt src=REM len=3 ts=88986 : 01 47 03
+18:34:03 B      [BRIDGE] on_remote_line: s3-001/DIG -> local=REM line='proto=gpio src=DIG len=3 ts=107998 : 01 47 03'
+18:34:03 B      proto=mqtt src=REM len=3 ts=88986 : 01 47 03
+18:34:03 B      [RULE] R_HIGH: A reads high (value=1.000 ts=88986)
+18:34:03 B      [TRACE] Total Rule Eval (REM): 660us
+18:34:03 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=108497 : 01 3A 05
+18:34:03 BROKER pico/rule/R_HIGH/event ts=89443 rule=R_HIGH type=log value=1.000 msg=A reads high
+18:34:04 B      [BRIDGE] on_remote_line: s3-001/DIG -> local=REM line='proto=gpio src=DIG len=3 ts=108497 : 01 3A 05'
+18:34:04 B      proto=mqtt src=REM len=3 ts=89443 : 01 3A 05
+18:34:04 B      [RULE] R_HIGH: A reads high (value=1.000 ts=89443)
+18:34:04 B      [TRACE] Total Rule Eval (REM): 639us
+18:34:04 A      proto=gpio src=DIG len=3 ts=108497 : 01 3A 05
+18:34:04 BROKER pico/s3-002/sensor/REM/line proto=mqtt src=REM len=3 ts=89443 : 01 3A 05
+18:34:04 A      proto=gpio src=DIG len=3 ts=108997 : 01 2E 07
+18:34:04 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=108997 : 01 2E 07
+18:34:04 BROKER pico/rule/R_HIGH/event ts=90050 rule=R_HIGH type=log value=1.000 msg=A reads high
+18:34:04 BROKER pico/s3-002/sensor/REM/line proto=mqtt src=REM len=3 ts=90050 : 01 2E 07
+18:34:04 B      [BRIDGE] on_remote_line: s3-001/DIG -> local=REM line='proto=gpio src=DIG len=3 ts=108997 : 01 2E 07'
+18:34:04 B      proto=mqtt src=REM len=3 ts=90050 : 01 2E 07
+18:34:04 B      [RULE] R_HIGH: A reads high (value=1.000 ts=90050)
+18:34:04 B      [TRACE] Total Rule Eval (REM): 659us
+18:34:04 B      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:04 BROKER pico/s3-001/sensor/DIG/line proto=gpio src=DIG len=3 ts=109497 : 01 22 09
+18:34:04 A      proto=gpio src=DIG len=3 ts=109497 : 01 22 09
+18:34:04 BROKER pico/rule/R_HIGH/event ts=90448 rule=R_HIGH type=log value=1.000 msg=A reads high
+18:34:05 BROKER pico/s3-002/sensor/REM/line proto=mqtt src=REM len=3 ts=90448 : 01 22 09
+18:34:05 B      [BRIDGE] on_remote_line: s3-001/DIG -> local=REM line='proto=gpio src=DIG len=3 ts=109497 : 01 22 09'
+18:34:05 B      proto=mqtt src=REM len=3 ts=90448 : 01 22 09
+18:34:05 B      [RULE] R_HIGH: A reads high (value=1.000 ts=90448)
+18:34:05 B      [TRACE] Total Rule Eval (REM): 650us
+18:34:05 ---    step stop: Both stopped
+18:34:05 ---    publish pico/s3-001/cmd: STOP
+18:34:05 BROKER pico/s3-001/cmd STOP
+18:34:05 A      [CMD] STOP
+18:34:05 ---    publish pico/s3-002/cmd: STOP
+18:34:05 BROKER pico/s3-002/cmd STOP
+18:34:05 B      [CMD] STOP
+18:34:05 A      [MQTT] Status: Connected, Broker: 172.20.10.5
+18:34:06 BROKER pico/s3-001/heartbeat {"uptime_s":111}
+18:34:07 BROKER pico/s3-002/heartbeat {"uptime_s":92}

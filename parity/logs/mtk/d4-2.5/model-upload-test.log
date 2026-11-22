@@ -1,0 +1,226 @@
+# D4 task 2.5: a new model sent over MQTT without reflashing. Captured 2026-11-19 16:30 on the N16R8 DevKitC (BOARD=n16r8, main at 76c453d) with `.venv/bin/python parity/model_test.py --broker <laptop-ip> --node s3-001 --port /dev/cu.usbmodem1101 --log parity/logs/mtk/d4-2.5/model-upload-test.log`. Result 8/9: valid-upload, infer-after-upload, corrupt-refused, oversized-refused, interrupted-restarts, infer-after-bad-uploads, infer-after-reset and arena-recorded (2908 / 65536 bytes) pass. The miss, persists-after-reset, is the script reopening the port 4 s after its reset, by which time the model has already reloaded (as in D1 task 31); persists-after-reset.log shows the reload. Below: send_model.py output, then the board console.
+Reading model: autoencoder_int8 (2).tflite
+Size: 16440 bytes, CRC32: 0xF6AED6F8
+Packing normalization params from: norm_stats (2).json
+  Packed 15 threshold masks
+  Score mode: MSE (Autoencoder)
+  Binary params blob: 251 bytes for 16 features
+Waiting for Pico heartbeat (to ensure same broker)...
+Connected to broker 172.20.10.5
+Subscribing to pico/s3-001/heartbeat for verification...
+RECEIVED Heartbeat from Pico: {"uptime_s":42}
+Publishing to pico/s3-001/model/start...
+Sending 16440 bytes in 512-byte chunks...
+  Sent chunk 0
+RECEIVED Heartbeat from Pico: {"uptime_s":52}
+  Sent chunk 10
+RECEIVED Heartbeat from Pico: {"uptime_s":62}
+  Sent chunk 20
+RECEIVED Heartbeat from Pico: {"uptime_s":72}
+  Sent chunk 30
+RECEIVED Heartbeat from Pico: {"uptime_s":82}
+Publishing to pico/s3-001/model/end...
+Model transfer complete!
+Publishing norm params to pico/s3-001/model/params (251 bytes)...
+Normalization params sent!
+
+Done! Check the Pico serial monitor for confirmation.
+16:30:25 [MQTT] Status: Connected, Broker: 172.20.10.5
+16:30:25 [MQTT] Model data on: pico/s3-001/model/start (36 bytes)
+16:30:25 [MODEL] Transfer starting: 16440 bytes, CRC32=0xF6AED6F8
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/0 (512 bytes)
+16:30:25 [MODEL] Chunk 0: 512 / 16440 bytes (3%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/1 (512 bytes)
+16:30:25 [MODEL] Chunk 1: 1024 / 16440 bytes (6%)
+16:30:25 [MQTT] Status: Connected, Broker: 172.20.10.5
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/2 (512 bytes)
+16:30:25 [MODEL] Chunk 2: 1536 / 16440 bytes (9%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/3 (512 bytes)
+16:30:25 [MODEL] Chunk 3: 2048 / 16440 bytes (12%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/4 (512 bytes)
+16:30:25 [MODEL] Chunk 4: 2560 / 16440 bytes (15%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/5 (512 bytes)
+16:30:25 [MODEL] Chunk 5: 3072 / 16440 bytes (18%)
+16:30:25 [MQTT] Status: Connected, Broker: 172.20.10.5
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/6 (512 bytes)
+16:30:25 [MODEL] Chunk 6: 3584 / 16440 bytes (21%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/7 (512 bytes)
+16:30:25 [MODEL] Chunk 7: 4096 / 16440 bytes (24%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/8 (512 bytes)
+16:30:25 [MODEL] Chunk 8: 4608 / 16440 bytes (28%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/9 (512 bytes)
+16:30:25 [MODEL] Chunk 9: 5120 / 16440 bytes (31%)
+16:30:25 [MQTT] Status: Connected, Broker: 172.20.10.5
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/10 (512 bytes)
+16:30:25 [MODEL] Chunk 10: 5632 / 16440 bytes (34%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/11 (512 bytes)
+16:30:25 [MODEL] Chunk 11: 6144 / 16440 bytes (37%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/12 (512 bytes)
+16:30:25 [MODEL] Chunk 12: 6656 / 16440 bytes (40%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/13 (512 bytes)
+16:30:25 [MODEL] Chunk 13: 7168 / 16440 bytes (43%)
+16:30:25 [MQTT] Status: Connected, Broker: 172.20.10.5
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/14 (512 bytes)
+16:30:25 [MODEL] Chunk 14: 7680 / 16440 bytes (46%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/15 (512 bytes)
+16:30:25 [MODEL] Chunk 15: 8192 / 16440 bytes (49%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/16 (512 bytes)
+16:30:25 [MODEL] Chunk 16: 8704 / 16440 bytes (52%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/17 (512 bytes)
+16:30:25 [MODEL] Chunk 17: 9216 / 16440 bytes (56%)
+16:30:25 [MQTT] Status: Connected, Broker: 172.20.10.5
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/18 (512 bytes)
+16:30:25 [MODEL] Chunk 18: 9728 / 16440 bytes (59%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/19 (512 bytes)
+16:30:25 [MODEL] Chunk 19: 10240 / 16440 bytes (62%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/20 (512 bytes)
+16:30:25 [MODEL] Chunk 20: 10752 / 16440 bytes (65%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/21 (512 bytes)
+16:30:25 [MODEL] Chunk 21: 11264 / 16440 bytes (68%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/22 (512 bytes)
+16:30:25 [MODEL] Chunk 22: 11776 / 16440 bytes (71%)
+16:30:25 [MQTT] Status: Connected, Broker: 172.20.10.5
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/23 (512 bytes)
+16:30:25 [MODEL] Chunk 23: 12288 / 16440 bytes (74%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/24 (512 bytes)
+16:30:25 [MODEL] Chunk 24: 12800 / 16440 bytes (77%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/25 (512 bytes)
+16:30:25 [MODEL] Chunk 25: 13312 / 16440 bytes (80%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/26 (512 bytes)
+16:30:25 [MODEL] Chunk 26: 13824 / 16440 bytes (84%)
+16:30:25 [MQTT] Status: Connected, Broker: 172.20.10.5
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/27 (512 bytes)
+16:30:25 [MODEL] Chunk 27: 14336 / 16440 bytes (87%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/28 (512 bytes)
+16:30:25 [MODEL] Chunk 28: 14848 / 16440 bytes (90%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/29 (512 bytes)
+16:30:25 [MODEL] Chunk 29: 15360 / 16440 bytes (93%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/30 (512 bytes)
+16:30:25 [MODEL] Chunk 30: 15872 / 16440 bytes (96%)
+16:30:25 [MQTT] Status: Connected, Broker: 172.20.10.5
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/31 (512 bytes)
+16:30:25 [MODEL] Chunk 31: 16384 / 16440 bytes (99%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/chunk/32 (56 bytes)
+16:30:25 [MODEL] Chunk 32: 16440 / 16440 bytes (100%)
+16:30:25 [MQTT] Model data on: pico/s3-001/model/end (0 bytes)
+16:30:25 [MODEL] Transfer complete! 16440 bytes verified, saved to flash slot 0
+16:30:25 [INFER] MODEL_READY detected — starting auto-load...
+16:30:25 [TFLITE] Unloading previous model state...
+16:30:25 [TFLITE] Unload complete.
+16:30:25 [TFLITE] Verifying FlatBuffer at 0x3c931000...
+16:30:25 [TFLITE] Schema version 3 verified.
+16:30:25 [TFLITE] Creating OpResolver...
+16:30:25 [TFLITE] Ops registered.
+16:30:25 [TFLITE] Creating Interpreter (Arena size 65536)...
+16:30:25 [TFLITE] Allocating tensors...
+16:30:25 [TFLITE] Tensors allocated.
+16:30:25 [TFLITE] Model loaded OK!
+16:30:25 [TFLITE]   Inputs:  1 tensor(s), 16 total element(s)
+16:30:25 [TFLITE]   Outputs: 1 tensor(s), 16 total element(s)
+16:30:25 [TFLITE]   Arena:   2908 / 65536 bytes used
+16:30:25 [INFER] Model loaded: 16 inputs, 16 outputs
+16:30:25 [INFER] Auto-load successful.
+16:30:25 [MQTT] Status: Connected, Broker: 172.20.10.5
+16:30:25 [MQTT] Norm params on: pico/s3-001/model/params (251 bytes)
+16:30:25 [INFER] Loaded 16 normalization params
+16:30:25 [INFER] Loaded 15 threshold masks
+16:30:25 [INFER] Score mode: MSE (Autoencoder)
+16:30:28 [MQTT] Status: Connected, Broker: 172.20.10.5
+16:30:33 [MQTT] Status: Connected, Broker: 172.20.10.5
+16:30:33 [CMD] Executing batch...
+16:30:33 [ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=0
+16:30:33 [INFER] invoke=2090us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+16:30:33 [TRACE] Rule Parse + Batch Actions executed in 3077us
+16:30:38 [MQTT] Status: Connected, Broker: 172.20.10.5
+16:30:39 [MQTT] Model data on: pico/s3-001/model/start (33 bytes)
+16:30:39 [MODEL] Transfer starting: 16440 bytes, CRC32=0xF6AED6F9
+16:30:39 [MQTT] Model data on: pico/s3-001/model/chunk/0 (1024 bytes)
+16:30:39 [MODEL] Chunk 0: 1024 / 16440 bytes (6%)
+16:30:39 [MQTT] Model data on: pico/s3-001/model/chunk/1 (1024 bytes)
+16:30:39 [MODEL] Chunk 1: 2048 / 16440 bytes (12%)
+16:30:39 [MQTT] Model data on: pico/s3-001/model/chunk/2 (1024 bytes)
+16:30:39 [MODEL] Chunk 2: 3072 / 16440 bytes (18%)
+16:30:39 [MQTT] Model data on: pico/s3-001/model/chunk/3 (1024 bytes)
+16:30:39 [MODEL] Chunk 3: 4096 / 16440 bytes (24%)
+16:30:39 [MQTT] Model data on: pico/s3-001/model/chunk/4 (1024 bytes)
+16:30:39 [MODEL] Chunk 4: 5120 / 16440 bytes (31%)
+16:30:39 [MQTT] Model data on: pico/s3-001/model/chunk/5 (1024 bytes)
+16:30:39 [MODEL] Chunk 5: 6144 / 16440 bytes (37%)
+16:30:39 [MQTT] Model data on: pico/s3-001/model/chunk/6 (1024 bytes)
+16:30:39 [MODEL] Chunk 6: 7168 / 16440 bytes (43%)
+16:30:39 [MQTT] Model data on: pico/s3-001/model/chunk/7 (1024 bytes)
+16:30:39 [MODEL] Chunk 7: 8192 / 16440 bytes (49%)
+16:30:39 [MQTT] Model data on: pico/s3-001/model/chunk/8 (1024 bytes)
+16:30:39 [MODEL] Chunk 8: 9216 / 16440 bytes (56%)
+16:30:39 [MQTT] Model data on: pico/s3-001/model/chunk/9 (1024 bytes)
+16:30:39 [MODEL] Chunk 9: 10240 / 16440 bytes (62%)
+16:30:39 [MQTT] Model data on: pico/s3-001/model/chunk/10 (1024 bytes)
+16:30:39 [MODEL] Chunk 10: 11264 / 16440 bytes (68%)
+16:30:39 [MQTT] Model data on: pico/s3-001/model/chunk/11 (1024 bytes)
+16:30:39 [MODEL] Chunk 11: 12288 / 16440 bytes (74%)
+16:30:39 [MQTT] Model data on: pico/s3-001/model/chunk/12 (1024 bytes)
+16:30:39 [MODEL] Chunk 12: 13312 / 16440 bytes (80%)
+16:30:39 [MQTT] Model data on: pico/s3-001/model/chunk/13 (1024 bytes)
+16:30:39 [MODEL] Chunk 13: 14336 / 16440 bytes (87%)
+16:30:39 [MQTT] Model data on: pico/s3-001/model/chunk/14 (1024 bytes)
+16:30:39 [MODEL] Chunk 14: 15360 / 16440 bytes (93%)
+16:30:39 [MQTT] Model data on: pico/s3-001/model/chunk/15 (1024 bytes)
+16:30:39 [MODEL] Chunk 15: 16384 / 16440 bytes (99%)
+16:30:39 [MQTT] Model data on: pico/s3-001/model/chunk/16 (56 bytes)
+16:30:39 [MODEL] Chunk 16: 16440 / 16440 bytes (100%)
+16:30:39 [MQTT] Model data on: pico/s3-001/model/end (0 bytes)
+16:30:39 [MODEL] CRC32 mismatch: got 0xF6AED6F8, expected 0xF6AED6F9
+16:30:39 [MODEL] Previous model kept (16440 bytes)
+16:30:39 [INFER] MODEL_READY detected — starting auto-load...
+16:30:39 [TFLITE] Unloading previous model state...
+16:30:39 [TFLITE] Unload complete.
+16:30:39 [TFLITE] Verifying FlatBuffer at 0x3c931000...
+16:30:39 [TFLITE] Schema version 3 verified.
+16:30:39 [TFLITE] Creating OpResolver...
+16:30:39 [TFLITE] Ops registered.
+16:30:39 [TFLITE] Creating Interpreter (Arena size 65536)...
+16:30:39 [TFLITE] Allocating tensors...
+16:30:39 [TFLITE] Tensors allocated.
+16:30:39 [TFLITE] Model loaded OK!
+16:30:39 [TFLITE]   Inputs:  1 tensor(s), 16 total element(s)
+16:30:39 [TFLITE]   Outputs: 1 tensor(s), 16 total element(s)
+16:30:39 [TFLITE]   Arena:   2908 / 65536 bytes used
+16:30:39 [INFER] Model loaded: 16 inputs, 16 outputs
+16:30:39 [INFER] Auto-load successful.
+16:30:43 [MQTT] Status: Connected, Broker: 172.20.10.5
+16:30:44 [MQTT] Model data on: pico/s3-001/model/start (25 bytes)
+16:30:44 [MODEL] Invalid size 300000 (max 262144)
+16:30:44 [MODEL] Previous model kept (16440 bytes)
+16:30:47 [MQTT] Model data on: pico/s3-001/model/start (33 bytes)
+16:30:47 [MODEL] Transfer starting: 16440 bytes, CRC32=0xF6AED6F8
+16:30:47 [MQTT] Model data on: pico/s3-001/model/chunk/0 (1024 bytes)
+16:30:47 [MODEL] Chunk 0: 1024 / 16440 bytes (6%)
+16:30:47 [MQTT] Model data on: pico/s3-001/model/chunk/1 (1024 bytes)
+16:30:47 [MODEL] Chunk 1: 2048 / 16440 bytes (12%)
+16:30:47 [MQTT] Model data on: pico/s3-001/model/chunk/2 (1024 bytes)
+16:30:47 [MODEL] Chunk 2: 3072 / 16440 bytes (18%)
+16:30:47 [MQTT] Model data on: pico/s3-001/model/chunk/3 (1024 bytes)
+16:30:47 [MODEL] Chunk 3: 4096 / 16440 bytes (24%)
+16:30:47 [MQTT] Model data on: pico/s3-001/model/chunk/4 (1024 bytes)
+16:30:47 [MODEL] Chunk 4: 5120 / 16440 bytes (31%)
+16:30:47 [MQTT] Model data on: pico/s3-001/model/start (33 bytes)
+16:30:47 [MODEL] Previous upload interrupted; restarting
+16:30:47 [MODEL] Transfer starting: 16440 bytes, CRC32=0xF6AED6F8
+16:30:48 [MQTT] Status: Connected, Broker: 172.20.10.5
+16:30:50 [CMD] Executing batch...
+16:30:50 [ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=0
+16:30:50 [INFER] invoke=2097us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+16:30:50 [TRACE] Rule Parse + Batch Actions executed in 3113us
+16:30:53 [MQTT] Status: Connected, Broker: 172.20.10.5
+16:31:01 [MQTT] Status: Connected, Broker: 172.20.10.5
+16:31:06 [MQTT] Status: Connected, Broker: 172.20.10.5
+16:31:11 [MQTT] Status: Connected, Broker: 172.20.10.5
+16:31:16 [MQTT] Status: Connected, Broker: 172.20.10.5
+16:31:21 [MQTT] Status: Connected, Broker: 172.20.10.5
+16:31:26 [MQTT] Status: Connected, Broker: 172.20.10.5
+16:31:31 [MQTT] Status: Connected, Broker: 172.20.10.5
+16:31:34 [CMD] Executing batch...
+16:31:34 [ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=0
+16:31:34 [INFER] invoke=2132us | MSE=0.4179 mask=1000 thresh=1.1407 OK
+16:31:34 [TRACE] Rule Parse + Batch Actions executed in 3128us
+16:31:36 [MQTT] Status: Connected, Broker: 172.20.10.5

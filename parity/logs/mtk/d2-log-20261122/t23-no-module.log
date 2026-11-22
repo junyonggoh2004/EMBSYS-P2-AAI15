@@ -1,0 +1,2056 @@
+> STOP
+09:14:56 STOP
+> CLEAR
+09:14:56 [RULE] reset
+09:14:56 CLEARED
+> ML STOP
+09:14:57 ML: OK STOP
+> BEGINCFG|name=DISTANCE|proto=gpio|gpio.mode=pulse|mode=poll|freq_hz=2|timing.timeout_ms=100|gpio.trig=4|gpio.echo=5|gpio.pull=down|gpio.trig_us=10|gpio.pulse_timeout_us=30000|ENDCFG
+09:14:58 OK: Config applied (inline, delim='|')
+09:14:58 [SCHED] added: DISTANCE on gpio
+09:14:58 CFG: ok (added #0: DISTANCE)
+> BEGINCFG|name=T100|proto=gpio|gpio.mode=digital|gpio.pin=8|gpio.pull=up|mode=poll|timing.mode=periodic|timing.interval_ms=100|ENDCFG
+09:14:58 OK: Config applied (inline, delim='|')
+09:14:58 [SCHED] added: T100 on gpio
+09:14:58 CFG: ok (added #1: T100)
+> ML MODEL sine-int8
+09:14:59 [TFLITE] Unloading previous model state...
+09:14:59 [TFLITE] Unload complete.
+09:14:59 [TFLITE] Verifying FlatBuffer at 0x3c11ac10...
+09:14:59 [TFLITE] Schema version 3 verified.
+09:14:59 [TFLITE] Creating OpResolver...
+09:14:59 [TFLITE] Ops registered.
+09:14:59 [TFLITE] Creating Interpreter (Arena size 65536)...
+09:14:59 [TFLITE] Allocating tensors...
+09:14:59 [TFLITE] Tensors allocated.
+09:14:59 [TFLITE] Model loaded OK!
+09:14:59 [TFLITE]   Inputs:  1 tensor(s), 1 total element(s)
+09:14:59 [TFLITE]   Outputs: 1 tensor(s), 1 total element(s)
+09:14:59 [TFLITE]   Arena:   716 / 65536 bytes used
+09:14:59 ML: OK MODEL sine-int8
+> ML RESET
+09:14:59 ML: OK RESET
+09:15:00 [MQTT] Status: Connected, Broker: 192.168.1.49
+> ML BIND 0 DISTANCE distance_cm 2 400
+09:15:00 ML: OK BIND 0 DISTANCE distance_cm 2 400
+> APP RESET
+09:15:01 [APP] request=2 synthetic=0 queued=1
+09:15:01 [APP] reset occupancy=0 processed=223 resets=3 malformed=0 publish_enqueued=223 publish_failed=0
+> LOG ON
+09:15:01 [LOG] on: every processed event is written to the W25Q32 at 3FF100-3FFFFF
+> ML RUN
+09:15:02 ML: OK RUN
+> RUN
+09:15:03 RUN
+09:15:03 proto=gpio src=T100 len=3 ts=693559 : 01 0D 11
+09:15:03 {"type":"ml","timestamp_ms":693559,"generation":28,"model":"sine-int8","outputs":null,"status":"MISSING_OR_STALE"}
+09:15:03 proto=gpio src=DISTANCE len=3 ts=693569 : BA 20 01
+09:15:03 {"sensor":"DISTANCE","timestamp_ms":693570,"distance_cm":143.7,"echo_us":8378,"status":"OK","error":0}
+09:15:03 proto=gpio src=T100 len=3 ts=693660 : 01 72 11
+09:15:03 proto=gpio src=T100 len=3 ts=693759 : 01 D5 11
+> APP EVENT 1001 1 entry
+09:15:03 [APP] request=1 synthetic=1 queued=1
+09:15:03 [APP] id=1001 seq=1 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:03 [LOG] seq=223 event=1001 not stored: flash error=-9 read=-5 match=0 write_us=394; occupancy and sampling unaffected
+09:15:03 [BENCH] application_event 620 us
+09:15:03 proto=gpio src=T100 len=3 ts=693859 : 01 39 12
+09:15:03 proto=gpio src=T100 len=3 ts=693959 : 01 9D 12
+09:15:03 proto=gpio src=T100 len=3 ts=694060 : 01 02 13
+> APP EVENT 1002 2 exit
+09:15:03 [APP] request=1 synthetic=1 queued=1
+09:15:03 [APP] id=1002 seq=2 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:03 [LOG] seq=224 event=1002 not stored: flash error=-9 read=-5 match=0 write_us=613; occupancy and sampling unaffected
+09:15:03 [BENCH] application_event 523 us
+09:15:03 proto=gpio src=DISTANCE len=3 ts=694065 : 9F 0E 01
+09:15:03 {"sensor":"DISTANCE","timestamp_ms":694066,"distance_cm":64.2,"echo_us":3743,"status":"OK","error":0}
+09:15:03 proto=gpio src=T100 len=3 ts=694159 : 01 65 13
+09:15:03 proto=gpio src=T100 len=3 ts=694259 : 01 C9 13
+> APP EVENT 1003 3 entry
+09:15:03 [APP] request=1 synthetic=1 queued=1
+09:15:03 [APP] id=1003 seq=3 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:03 [LOG] seq=225 event=1003 not stored: flash error=-9 read=-5 match=0 write_us=385; occupancy and sampling unaffected
+09:15:03 [BENCH] application_event 584 us
+09:15:03 proto=gpio src=T100 len=3 ts=694359 : 01 2D 14
+09:15:03 proto=gpio src=T100 len=3 ts=694459 : 01 91 14
+09:15:04 proto=gpio src=T100 len=3 ts=694559 : 01 F5 14
+09:15:04 proto=gpio src=DISTANCE len=3 ts=694569 : EF 20 01
+09:15:04 {"sensor":"DISTANCE","timestamp_ms":694570,"distance_cm":144.6,"echo_us":8431,"status":"OK","error":0}
+> APP EVENT 1004 4 exit
+09:15:04 [APP] request=1 synthetic=1 queued=1
+09:15:04 [APP] id=1004 seq=4 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:04 [LOG] seq=226 event=1004 not stored: flash error=-9 read=-5 match=0 write_us=388; occupancy and sampling unaffected
+09:15:04 [BENCH] application_event 577 us
+09:15:04 proto=gpio src=T100 len=3 ts=694660 : 01 5A 15
+09:15:04 proto=gpio src=T100 len=3 ts=694759 : 01 BD 15
+09:15:04 proto=gpio src=T100 len=3 ts=694859 : 01 21 16
+> APP EVENT 1005 5 entry
+09:15:04 [APP] request=1 synthetic=1 queued=1
+09:15:04 [APP] id=1005 seq=5 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:04 [LOG] seq=227 event=1005 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:04 [BENCH] application_event 556 us
+09:15:04 proto=gpio src=T100 len=3 ts=694959 : 01 85 16
+09:15:04 proto=gpio src=T100 len=3 ts=695059 : 01 E9 16
+09:15:04 proto=gpio src=DISTANCE len=3 ts=695062 : E3 02 01
+09:15:04 {"sensor":"DISTANCE","timestamp_ms":695063,"distance_cm":12.7,"echo_us":739,"status":"OK","error":0}
+09:15:04 proto=gpio src=T100 len=3 ts=695160 : 01 4E 17
+> APP EVENT 1006 6 exit
+09:15:04 [APP] request=1 synthetic=1 queued=1
+09:15:04 [APP] id=1006 seq=6 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:04 [LOG] seq=228 event=1006 not stored: flash error=-9 read=-5 match=0 write_us=506; occupancy and sampling unaffected
+09:15:04 [BENCH] application_event 816 us
+09:15:04 proto=gpio src=T100 len=3 ts=695259 : 01 B1 17
+09:15:04 proto=gpio src=T100 len=3 ts=695359 : 01 15 18
+> APP EVENT 1007 7 entry
+09:15:04 [APP] request=1 synthetic=1 queued=1
+09:15:04 [APP] id=1007 seq=7 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:04 [LOG] seq=229 event=1007 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected
+09:15:04 [BENCH] application_event 560 us
+09:15:04 proto=gpio src=T100 len=3 ts=695459 : 01 79 18
+09:15:05 proto=gpio src=T100 len=3 ts=695559 : 01 DD 18
+09:15:05 [ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=2
+09:15:05 {"type":"ml","timestamp_ms":695560,"generation":28,"model":"sine-int8","raw_features":[12.67385],"input_source":"sensors","inputs":[0.168507],"outputs":[0.1658191],"invoke_us":605,"status":"OK"}
+09:15:05 proto=gpio src=DISTANCE len=3 ts=695569 : 90 20 01
+09:15:05 {"sensor":"DISTANCE","timestamp_ms":695570,"distance_cm":143.0,"echo_us":8336,"status":"OK","error":0}
+09:15:05 proto=gpio src=T100 len=3 ts=695660 : 01 42 19
+> APP EVENT 1008 8 exit
+09:15:05 [APP] request=1 synthetic=1 queued=1
+09:15:05 [APP] id=1008 seq=8 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:05 [LOG] seq=230 event=1008 not stored: flash error=-9 read=-5 match=0 write_us=383; occupancy and sampling unaffected
+09:15:05 [BENCH] application_event 555 us
+09:15:05 proto=gpio src=T100 len=3 ts=695759 : 01 A5 19
+09:15:05 proto=gpio src=T100 len=3 ts=695859 : 01 09 1A
+09:15:05 [MQTT] Status: Connected, Broker: 192.168.1.49
+09:15:05 proto=gpio src=T100 len=3 ts=695959 : 01 6D 1A
+> APP EVENT 1009 9 entry
+09:15:05 [APP] request=1 synthetic=1 queued=1
+09:15:05 [APP] id=1009 seq=9 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:05 [LOG] seq=231 event=1009 not stored: flash error=-9 read=-5 match=0 write_us=466; occupancy and sampling unaffected
+09:15:05 [BENCH] application_event 580 us
+09:15:05 proto=gpio src=T100 len=3 ts=696059 : 01 D1 1A
+09:15:05 proto=gpio src=DISTANCE len=3 ts=696067 : 17 1C 01
+09:15:05 {"sensor":"DISTANCE","timestamp_ms":696068,"distance_cm":123.3,"echo_us":7191,"status":"OK","error":0}
+09:15:05 proto=gpio src=T100 len=3 ts=696160 : 01 36 1B
+09:15:05 proto=gpio src=T100 len=3 ts=696259 : 01 99 1B
+> APP EVENT 1010 10 exit
+09:15:05 [APP] request=1 synthetic=1 queued=1
+09:15:05 [APP] id=1010 seq=10 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:05 [LOG] seq=232 event=1010 not stored: flash error=-9 read=-5 match=0 write_us=634; occupancy and sampling unaffected
+09:15:05 [BENCH] application_event 804 us
+09:15:05 proto=gpio src=T100 len=3 ts=696359 : 01 FD 1B
+09:15:05 proto=gpio src=T100 len=3 ts=696459 : 01 61 1C
+> APP EVENT 1011 11 entry
+09:15:06 [APP] request=1 synthetic=1 queued=1
+09:15:06 [APP] id=1011 seq=11 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:06 [LOG] seq=233 event=1011 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected
+09:15:06 [BENCH] application_event 583 us
+09:15:06 proto=gpio src=T100 len=3 ts=696559 : 01 C5 1C
+09:15:06 proto=gpio src=DISTANCE len=3 ts=696568 : 0C 1D 01
+09:15:06 {"sensor":"DISTANCE","timestamp_ms":696569,"distance_cm":127.5,"echo_us":7436,"status":"OK","error":0}
+09:15:06 proto=gpio src=T100 len=3 ts=696660 : 01 2A 1D
+09:15:06 proto=gpio src=T100 len=3 ts=696759 : 01 8D 1D
+> APP EVENT 1012 12 exit
+09:15:06 [APP] request=1 synthetic=1 queued=1
+09:15:06 [APP] id=1012 seq=12 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:06 [LOG] seq=234 event=1012 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected
+09:15:06 [BENCH] application_event 564 us
+09:15:06 proto=gpio src=T100 len=3 ts=696859 : 01 F1 1D
+09:15:06 proto=gpio src=T100 len=3 ts=696959 : 01 55 1E
+09:15:06 proto=gpio src=T100 len=3 ts=697059 : 01 B9 1E
+09:15:06 proto=gpio src=DISTANCE len=3 ts=697064 : 12 0D 01
+09:15:06 {"sensor":"DISTANCE","timestamp_ms":697065,"distance_cm":57.4,"echo_us":3346,"status":"OK","error":0}
+> APP EVENT 1013 13 entry
+09:15:06 [APP] request=1 synthetic=1 queued=1
+09:15:06 [APP] id=1013 seq=13 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:06 [LOG] seq=235 event=1013 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected
+09:15:06 [BENCH] application_event 609 us
+09:15:06 proto=gpio src=T100 len=3 ts=697160 : 01 1E 1F
+09:15:06 proto=gpio src=T100 len=3 ts=697259 : 01 81 1F
+09:15:06 proto=gpio src=T100 len=3 ts=697359 : 01 E5 1F
+> APP EVENT 1014 14 exit
+09:15:06 [APP] request=1 synthetic=1 queued=1
+09:15:06 [APP] id=1014 seq=14 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:06 [LOG] seq=236 event=1014 not stored: flash error=-9 read=-5 match=0 write_us=393; occupancy and sampling unaffected
+09:15:06 [BENCH] application_event 607 us
+09:15:06 proto=gpio src=T100 len=3 ts=697459 : 01 49 20
+09:15:07 proto=gpio src=T100 len=3 ts=697559 : 01 AD 20
+09:15:07 {"type":"ml","timestamp_ms":697560,"generation":28,"model":"sine-int8","raw_features":[57.3839],"input_source":"sensors","inputs":[0.8743399],"outputs":[0.7378951],"invoke_us":513,"status":"OK"}
+09:15:07 proto=gpio src=DISTANCE len=3 ts=697563 : 39 09 01
+09:15:07 {"sensor":"DISTANCE","timestamp_ms":697564,"distance_cm":40.5,"echo_us":2361,"status":"OK","error":0}
+09:15:07 proto=gpio src=T100 len=3 ts=697659 : 01 11 21
+> APP EVENT 1015 15 entry
+09:15:07 [APP] request=1 synthetic=1 queued=1
+09:15:07 [APP] id=1015 seq=15 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:07 [LOG] seq=237 event=1015 not stored: flash error=-9 read=-5 match=0 write_us=558; occupancy and sampling unaffected
+09:15:07 [BENCH] application_event 577 us
+09:15:07 proto=gpio src=T100 len=3 ts=697759 : 01 75 21
+09:15:07 proto=gpio src=T100 len=3 ts=697859 : 01 D9 21
+> APP EVENT 1016 16 exit
+09:15:07 [APP] request=1 synthetic=1 queued=1
+09:15:07 [APP] id=1016 seq=16 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:07 [LOG] seq=238 event=1016 not stored: flash error=-9 read=-5 match=0 write_us=383; occupancy and sampling unaffected
+09:15:07 [BENCH] application_event 575 us
+09:15:07 proto=gpio src=T100 len=3 ts=697959 : 01 3D 22
+09:15:07 proto=gpio src=T100 len=3 ts=698059 : 01 A1 22
+09:15:07 proto=gpio src=DISTANCE len=3 ts=698069 : 27 24 01
+09:15:07 {"sensor":"DISTANCE","timestamp_ms":698070,"distance_cm":158.7,"echo_us":9255,"status":"OK","error":0}
+09:15:07 proto=gpio src=T100 len=3 ts=698160 : 01 06 23
+> APP EVENT 1017 17 entry
+09:15:07 [APP] request=1 synthetic=1 queued=1
+09:15:07 [APP] id=1017 seq=17 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:07 [LOG] seq=239 event=1017 not stored: flash error=-9 read=-5 match=0 write_us=385; occupancy and sampling unaffected
+09:15:07 [BENCH] application_event 592 us
+09:15:07 proto=gpio src=T100 len=3 ts=698259 : 01 69 23
+09:15:07 proto=gpio src=T100 len=3 ts=698359 : 01 CD 23
+09:15:07 proto=gpio src=T100 len=3 ts=698459 : 01 31 24
+> APP EVENT 1018 18 exit
+09:15:07 [APP] request=1 synthetic=1 queued=1
+09:15:07 [APP] id=1018 seq=18 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:07 [LOG] seq=240 event=1018 not stored: flash error=-9 read=-5 match=0 write_us=392; occupancy and sampling unaffected
+09:15:07 [BENCH] application_event 583 us
+09:15:08 proto=gpio src=T100 len=3 ts=698559 : 01 95 24
+09:15:08 proto=gpio src=DISTANCE len=3 ts=698569 : 81 21 01
+09:15:08 {"sensor":"DISTANCE","timestamp_ms":698570,"distance_cm":147.1,"echo_us":8577,"status":"OK","error":0}
+09:15:08 proto=gpio src=T100 len=3 ts=698660 : 01 FA 24
+> APP EVENT 1019 19 entry
+09:15:08 [APP] request=1 synthetic=1 queued=1
+09:15:08 [APP] id=1019 seq=19 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:08 [LOG] seq=241 event=1019 not stored: flash error=-9 read=-5 match=0 write_us=388; occupancy and sampling unaffected
+09:15:08 [BENCH] application_event 580 us
+09:15:08 proto=gpio src=T100 len=3 ts=698759 : 01 5D 25
+09:15:08 proto=gpio src=T100 len=3 ts=698859 : 01 C1 25
+09:15:08 proto=gpio src=T100 len=3 ts=698959 : 01 25 26
+> APP EVENT 1020 20 exit
+09:15:08 [APP] request=1 synthetic=1 queued=1
+09:15:08 [APP] id=1020 seq=20 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:08 [LOG] seq=242 event=1020 not stored: flash error=-9 read=-5 match=0 write_us=382; occupancy and sampling unaffected
+09:15:08 [BENCH] application_event 559 us
+09:15:08 proto=gpio src=T100 len=3 ts=699059 : 01 89 26
+09:15:08 proto=gpio src=DISTANCE len=3 ts=699068 : 1A 20 01
+09:15:08 {"sensor":"DISTANCE","timestamp_ms":699069,"distance_cm":140.9,"echo_us":8218,"status":"OK","error":0}
+09:15:08 proto=gpio src=T100 len=3 ts=699159 : 01 ED 26
+09:15:08 proto=gpio src=T100 len=3 ts=699259 : 01 51 27
+> APP EVENT 1021 21 entry
+09:15:08 [APP] request=1 synthetic=1 queued=1
+09:15:08 [APP] id=1021 seq=21 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:08 [LOG] seq=243 event=1021 not stored: flash error=-9 read=-5 match=0 write_us=391; occupancy and sampling unaffected
+09:15:08 [BENCH] application_event 568 us
+09:15:08 proto=gpio src=T100 len=3 ts=699359 : 01 B5 27
+09:15:08 proto=gpio src=T100 len=3 ts=699459 : 01 19 28
+09:15:09 proto=gpio src=T100 len=3 ts=699559 : 01 7D 28
+09:15:09 {"type":"ml","timestamp_ms":699560,"generation":28,"model":"sine-int8","raw_features":[140.9387],"input_source":"sensors","inputs":[2.193411],"outputs":[0.7959318],"invoke_us":497,"status":"OK"}
+09:15:09 proto=gpio src=DISTANCE len=3 ts=699563 : 63 0B 01
+09:15:09 {"sensor":"DISTANCE","timestamp_ms":699564,"distance_cm":50.0,"echo_us":2915,"status":"OK","error":0}
+> APP EVENT 1022 22 exit
+09:15:09 [APP] request=1 synthetic=1 queued=1
+09:15:09 [APP] id=1022 seq=22 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:09 [LOG] seq=244 event=1022 not stored: flash error=-9 read=-5 match=0 write_us=390; occupancy and sampling unaffected
+09:15:09 [BENCH] application_event 575 us
+09:15:09 proto=gpio src=T100 len=3 ts=699659 : 01 E1 28
+09:15:09 proto=gpio src=T100 len=3 ts=699759 : 01 45 29
+09:15:09 proto=gpio src=T100 len=3 ts=699859 : 01 A9 29
+> APP EVENT 1023 23 entry
+09:15:09 [APP] request=1 synthetic=1 queued=1
+09:15:09 [APP] id=1023 seq=23 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:09 [LOG] seq=245 event=1023 not stored: flash error=-9 read=-5 match=0 write_us=635; occupancy and sampling unaffected
+09:15:09 [BENCH] application_event 623 us
+09:15:09 proto=gpio src=T100 len=3 ts=699959 : 01 0D 2A
+09:15:09 proto=gpio src=T100 len=3 ts=700059 : 01 71 2A
+09:15:09 proto=gpio src=DISTANCE len=3 ts=700069 : 78 23 01
+09:15:09 {"sensor":"DISTANCE","timestamp_ms":700070,"distance_cm":155.7,"echo_us":9080,"status":"OK","error":0}
+> APP EVENT 1024 24 exit
+09:15:09 [APP] request=1 synthetic=1 queued=1
+09:15:09 [APP] id=1024 seq=24 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:09 [LOG] seq=246 event=1024 not stored: flash error=-9 read=-5 match=0 write_us=435; occupancy and sampling unaffected
+09:15:09 [BENCH] application_event 630 us
+09:15:09 proto=gpio src=T100 len=3 ts=700160 : 01 D6 2A
+09:15:09 proto=gpio src=T100 len=3 ts=700259 : 01 39 2B
+09:15:09 proto=gpio src=T100 len=3 ts=700359 : 01 9D 2B
+> APP EVENT 1025 25 entry
+09:15:09 [APP] request=1 synthetic=1 queued=1
+09:15:09 [APP] id=1025 seq=25 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:09 [LOG] seq=247 event=1025 not stored: flash error=-9 read=-5 match=0 write_us=387; occupancy and sampling unaffected
+09:15:09 [BENCH] application_event 564 us
+09:15:09 proto=gpio src=T100 len=3 ts=700459 : 01 01 2C
+09:15:10 proto=gpio src=T100 len=3 ts=700559 : 01 65 2C
+09:15:10 proto=gpio src=DISTANCE len=3 ts=700565 : 2D 11 01
+09:15:10 {"sensor":"DISTANCE","timestamp_ms":700566,"distance_cm":75.4,"echo_us":4397,"status":"OK","error":0}
+09:15:10 proto=gpio src=T100 len=3 ts=700660 : 01 CA 2C
+> APP EVENT 1026 26 exit
+09:15:10 [APP] request=1 synthetic=1 queued=1
+09:15:10 [APP] id=1026 seq=26 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:10 [LOG] seq=248 event=1026 not stored: flash error=-9 read=-5 match=0 write_us=383; occupancy and sampling unaffected
+09:15:10 [BENCH] application_event 564 us
+09:15:10 proto=gpio src=T100 len=3 ts=700759 : 01 2D 2D
+09:15:10 proto=gpio src=T100 len=3 ts=700859 : 01 91 2D
+09:15:10 [MQTT] Status: Connected, Broker: 192.168.1.49
+09:15:10 proto=gpio src=T100 len=3 ts=700959 : 01 F5 2D
+> APP EVENT 1027 27 entry
+09:15:10 [APP] request=1 synthetic=1 queued=1
+09:15:10 [APP] id=1027 seq=27 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:10 [LOG] seq=249 event=1027 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:10 [BENCH] application_event 615 us
+09:15:10 proto=gpio src=T100 len=3 ts=701059 : 01 59 2E
+09:15:10 proto=gpio src=DISTANCE len=3 ts=701069 : 1F 21 01
+09:15:10 {"sensor":"DISTANCE","timestamp_ms":701070,"distance_cm":145.4,"echo_us":8479,"status":"OK","error":0}
+09:15:10 proto=gpio src=T100 len=3 ts=701160 : 01 BE 2E
+09:15:10 proto=gpio src=T100 len=3 ts=701259 : 01 21 2F
+> APP EVENT 1028 28 exit
+09:15:10 [APP] request=1 synthetic=1 queued=1
+09:15:10 [APP] id=1028 seq=28 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:10 [LOG] seq=250 event=1028 not stored: flash error=-9 read=-5 match=0 write_us=385; occupancy and sampling unaffected
+09:15:10 [BENCH] application_event 710 us
+09:15:10 proto=gpio src=T100 len=3 ts=701359 : 01 85 2F
+09:15:10 proto=gpio src=T100 len=3 ts=701459 : 01 E9 2F
+09:15:10 proto=gpio src=T100 len=3 ts=701559 : 01 4D 30
+09:15:10 {"type":"ml","timestamp_ms":701560,"generation":28,"model":"sine-int8","raw_features":[145.4148],"input_source":"sensors","inputs":[2.264076],"outputs":[0.762768],"invoke_us":505,"status":"OK"}
+09:15:10 proto=gpio src=DISTANCE len=3 ts=701565 : E6 0F 01
+> APP EVENT 1029 29 entry
+09:15:11 {"sensor":"DISTANCE","timestamp_ms":701566,"distance_cm":69.8,"echo_us":4070,"status":"OK","error":0}
+09:15:11 [APP] request=1 synthetic=1 queued=1
+09:15:11 [APP] id=1029 seq=29 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:11 [LOG] seq=251 event=1029 not stored: flash error=-9 read=-5 match=0 write_us=610; occupancy and sampling unaffected
+09:15:11 [BENCH] application_event 546 us
+09:15:11 proto=gpio src=T100 len=3 ts=701660 : 01 B2 30
+09:15:11 proto=gpio src=T100 len=3 ts=701759 : 01 15 31
+> APP EVENT 1030 30 exit
+09:15:11 [APP] request=1 synthetic=1 queued=1
+09:15:11 [APP] id=1030 seq=30 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:11 [LOG] seq=252 event=1030 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:11 [BENCH] application_event 576 us
+09:15:11 proto=gpio src=T100 len=3 ts=701859 : 01 79 31
+09:15:11 proto=gpio src=T100 len=3 ts=701959 : 01 DD 31
+09:15:11 proto=gpio src=T100 len=3 ts=702059 : 01 41 32
+09:15:11 proto=gpio src=DISTANCE len=3 ts=702063 : EC 0D 01
+09:15:11 {"sensor":"DISTANCE","timestamp_ms":702064,"distance_cm":61.1,"echo_us":3564,"status":"OK","error":0}
+> APP EVENT 1031 31 entry
+09:15:11 [APP] request=1 synthetic=1 queued=1
+09:15:11 [APP] id=1031 seq=31 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:11 [LOG] seq=253 event=1031 not stored: flash error=-9 read=-5 match=0 write_us=387; occupancy and sampling unaffected
+09:15:11 [BENCH] application_event 584 us
+09:15:11 proto=gpio src=T100 len=3 ts=702159 : 01 A5 32
+09:15:11 proto=gpio src=T100 len=3 ts=702259 : 01 09 33
+09:15:11 proto=gpio src=T100 len=3 ts=702359 : 01 6D 33
+> APP EVENT 1032 32 exit
+09:15:11 [APP] request=1 synthetic=1 queued=1
+09:15:11 [APP] id=1032 seq=32 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:11 [LOG] seq=254 event=1032 not stored: flash error=-9 read=-5 match=0 write_us=388; occupancy and sampling unaffected
+09:15:11 [BENCH] application_event 580 us
+09:15:11 proto=gpio src=T100 len=3 ts=702459 : 01 D1 33
+09:15:11 proto=gpio src=T100 len=3 ts=702559 : 01 35 34
+09:15:11 proto=gpio src=DISTANCE len=3 ts=702563 : 87 0C 01
+09:15:11 {"sensor":"DISTANCE","timestamp_ms":702564,"distance_cm":55.0,"echo_us":3207,"status":"OK","error":0}
+09:15:12 proto=gpio src=T100 len=3 ts=702659 : 01 99 34
+> APP EVENT 1033 33 entry
+09:15:12 [APP] request=1 synthetic=1 queued=1
+09:15:12 [APP] id=1033 seq=33 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:12 [LOG] seq=255 event=1033 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:12 [BENCH] application_event 548 us
+09:15:12 proto=gpio src=T100 len=3 ts=702759 : 01 FD 34
+09:15:12 proto=gpio src=T100 len=3 ts=702859 : 01 61 35
+09:15:12 proto=gpio src=T100 len=3 ts=702959 : 01 C5 35
+> APP EVENT 1034 34 exit
+09:15:12 [APP] request=1 synthetic=1 queued=1
+09:15:12 [APP] id=1034 seq=34 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:12 [LOG] seq=256 event=1034 not stored: flash error=-9 read=-5 match=0 write_us=621; occupancy and sampling unaffected
+09:15:12 [BENCH] application_event 540 us
+09:15:12 proto=gpio src=T100 len=3 ts=703059 : 01 29 36
+09:15:12 proto=gpio src=DISTANCE len=3 ts=703064 : 91 11 01
+09:15:12 {"sensor":"DISTANCE","timestamp_ms":703065,"distance_cm":77.1,"echo_us":4497,"status":"OK","error":0}
+09:15:12 proto=gpio src=T100 len=3 ts=703159 : 01 8D 36
+> APP EVENT 1035 35 entry
+09:15:12 [APP] request=1 synthetic=1 queued=1
+09:15:12 [APP] id=1035 seq=35 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:12 [LOG] seq=257 event=1035 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:12 [BENCH] application_event 568 us
+09:15:12 proto=gpio src=T100 len=3 ts=703259 : 01 F1 36
+09:15:12 proto=gpio src=T100 len=3 ts=703359 : 01 55 37
+09:15:12 proto=gpio src=T100 len=3 ts=703459 : 01 B9 37
+> APP EVENT 1036 36 exit
+09:15:12 [APP] request=1 synthetic=1 queued=1
+09:15:12 [APP] id=1036 seq=36 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:12 [LOG] seq=258 event=1036 not stored: flash error=-9 read=-5 match=0 write_us=388; occupancy and sampling unaffected
+09:15:12 [BENCH] application_event 583 us
+09:15:13 proto=gpio src=T100 len=3 ts=703559 : 01 1D 38
+09:15:13 {"type":"ml","timestamp_ms":703560,"generation":28,"model":"sine-int8","raw_features":[77.12355],"input_source":"sensors","inputs":[1.185968],"outputs":[0.9120052],"invoke_us":513,"status":"OK"}
+09:15:13 proto=gpio src=DISTANCE len=3 ts=703565 : 6E 0F 01
+09:15:13 {"sensor":"DISTANCE","timestamp_ms":703566,"distance_cm":67.7,"echo_us":3950,"status":"OK","error":0}
+09:15:13 proto=gpio src=T100 len=3 ts=703660 : 01 82 38
+09:15:13 proto=gpio src=T100 len=3 ts=703759 : 01 E5 38
+> APP EVENT 1037 37 entry
+09:15:13 [APP] request=1 synthetic=1 queued=1
+09:15:13 [APP] id=1037 seq=37 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:13 [LOG] seq=259 event=1037 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected
+09:15:13 [BENCH] application_event 584 us
+09:15:13 proto=gpio src=T100 len=3 ts=703859 : 01 49 39
+09:15:13 proto=gpio src=T100 len=3 ts=703959 : 01 AD 39
+> APP EVENT 1038 38 exit
+09:15:13 [APP] request=1 synthetic=1 queued=1
+09:15:13 [APP] id=1038 seq=38 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:13 [LOG] seq=260 event=1038 not stored: flash error=-9 read=-5 match=0 write_us=383; occupancy and sampling unaffected
+09:15:13 [BENCH] application_event 566 us
+09:15:13 proto=gpio src=T100 len=3 ts=704059 : 01 11 3A
+09:15:13 proto=gpio src=DISTANCE len=3 ts=704069 : 05 21 01
+09:15:13 {"sensor":"DISTANCE","timestamp_ms":704070,"distance_cm":145.0,"echo_us":8453,"status":"OK","error":0}
+09:15:13 proto=gpio src=T100 len=3 ts=704160 : 01 76 3A
+09:15:13 proto=gpio src=T100 len=3 ts=704259 : 01 D9 3A
+> APP EVENT 1039 39 entry
+09:15:13 [APP] request=1 synthetic=1 queued=1
+09:15:13 [APP] id=1039 seq=39 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:13 [LOG] seq=261 event=1039 not stored: flash error=-9 read=-5 match=0 write_us=388; occupancy and sampling unaffected
+09:15:13 [BENCH] application_event 582 us
+09:15:13 proto=gpio src=T100 len=3 ts=704359 : 01 3D 3B
+09:15:13 proto=gpio src=T100 len=3 ts=704459 : 01 A1 3B
+09:15:14 proto=gpio src=T100 len=3 ts=704559 : 01 05 3C
+09:15:14 proto=gpio src=DISTANCE len=3 ts=704563 : 2F 0C 01
+09:15:14 {"sensor":"DISTANCE","timestamp_ms":704564,"distance_cm":53.5,"echo_us":3119,"status":"OK","error":0}
+> APP EVENT 1040 40 exit
+09:15:14 [APP] request=1 synthetic=1 queued=1
+09:15:14 [APP] id=1040 seq=40 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:14 [LOG] seq=262 event=1040 not stored: flash error=-9 read=-5 match=0 write_us=388; occupancy and sampling unaffected
+09:15:14 [BENCH] application_event 584 us
+09:15:14 proto=gpio src=T100 len=3 ts=704659 : 01 69 3C
+09:15:14 proto=gpio src=T100 len=3 ts=704759 : 01 CD 3C
+09:15:14 proto=gpio src=T100 len=3 ts=704859 : 01 31 3D
+> APP EVENT 1041 41 entry
+09:15:14 [APP] request=1 synthetic=1 queued=1
+09:15:14 [APP] id=1041 seq=41 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:14 [LOG] seq=263 event=1041 not stored: flash error=-9 read=-5 match=0 write_us=385; occupancy and sampling unaffected
+09:15:14 [BENCH] application_event 593 us
+09:15:14 proto=gpio src=T100 len=3 ts=704959 : 01 95 3D
+09:15:14 proto=gpio src=T100 len=3 ts=705059 : 01 F9 3D
+09:15:14 proto=gpio src=DISTANCE len=3 ts=705063 : 20 0C 01
+09:15:14 {"sensor":"DISTANCE","timestamp_ms":705064,"distance_cm":53.2,"echo_us":3104,"status":"OK","error":0}
+> APP EVENT 1042 42 exit
+09:15:14 [APP] request=1 synthetic=1 queued=1
+09:15:14 [APP] id=1042 seq=42 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:14 [LOG] seq=264 event=1042 not stored: flash error=-9 read=-5 match=0 write_us=396; occupancy and sampling unaffected
+09:15:14 [BENCH] application_event 568 us
+09:15:14 proto=gpio src=T100 len=3 ts=705159 : 01 5D 3E
+09:15:14 proto=gpio src=T100 len=3 ts=705259 : 01 C1 3E
+09:15:14 proto=gpio src=T100 len=3 ts=705359 : 01 25 3F
+> APP EVENT 1043 43 entry
+09:15:14 [APP] request=1 synthetic=1 queued=1
+09:15:14 [APP] id=1043 seq=43 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:14 [LOG] seq=265 event=1043 not stored: flash error=-9 read=-5 match=0 write_us=391; occupancy and sampling unaffected
+09:15:14 [BENCH] application_event 589 us
+09:15:14 proto=gpio src=T100 len=3 ts=705459 : 01 89 3F
+09:15:15 proto=gpio src=T100 len=3 ts=705559 : 01 ED 3F
+09:15:15 {"type":"ml","timestamp_ms":705560,"generation":28,"model":"sine-int8","raw_features":[53.2336],"input_source":"sensors","inputs":[0.8088197],"outputs":[0.7296042],"invoke_us":516,"status":"OK"}
+09:15:15 proto=gpio src=DISTANCE len=3 ts=705563 : CE 0C 01
+09:15:15 {"sensor":"DISTANCE","timestamp_ms":705564,"distance_cm":56.2,"echo_us":3278,"status":"OK","error":0}
+09:15:15 proto=gpio src=T100 len=3 ts=705659 : 01 51 40
+> APP EVENT 1044 44 exit
+09:15:15 [APP] request=1 synthetic=1 queued=1
+09:15:15 [APP] id=1044 seq=44 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:15 [LOG] seq=266 event=1044 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:15 [BENCH] application_event 582 us
+09:15:15 proto=gpio src=T100 len=3 ts=705759 : 01 B5 40
+09:15:15 proto=gpio src=T100 len=3 ts=705859 : 01 19 41
+09:15:15 [MQTT] Status: Connected, Broker: 192.168.1.49
+09:15:15 proto=gpio src=T100 len=3 ts=705959 : 01 7D 41
+> APP EVENT 1045 45 entry
+09:15:15 [APP] request=1 synthetic=1 queued=1
+09:15:15 [APP] id=1045 seq=45 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:15 [LOG] seq=267 event=1045 not stored: flash error=-9 read=-5 match=0 write_us=382; occupancy and sampling unaffected
+09:15:15 [BENCH] application_event 568 us
+09:15:15 proto=gpio src=T100 len=3 ts=706059 : 01 E1 41
+09:15:15 proto=gpio src=DISTANCE len=3 ts=706065 : 75 0F 01
+09:15:15 {"sensor":"DISTANCE","timestamp_ms":706066,"distance_cm":67.9,"echo_us":3957,"status":"OK","error":0}
+09:15:15 proto=gpio src=T100 len=3 ts=706160 : 01 46 42
+09:15:15 proto=gpio src=T100 len=3 ts=706259 : 01 A9 42
+> APP EVENT 1046 46 exit
+09:15:15 [APP] request=1 synthetic=1 queued=1
+09:15:15 [APP] id=1046 seq=46 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:15 [LOG] seq=268 event=1046 not stored: flash error=-9 read=-5 match=0 write_us=390; occupancy and sampling unaffected
+09:15:15 [BENCH] application_event 584 us
+09:15:15 proto=gpio src=T100 len=3 ts=706359 : 01 0D 43
+09:15:15 proto=gpio src=T100 len=3 ts=706459 : 01 71 43
+> APP EVENT 1047 47 entry
+09:15:16 [APP] request=1 synthetic=1 queued=1
+09:15:16 [APP] id=1047 seq=47 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:16 [LOG] seq=269 event=1047 not stored: flash error=-9 read=-5 match=0 write_us=385; occupancy and sampling unaffected
+09:15:16 [BENCH] application_event 583 us
+09:15:16 proto=gpio src=T100 len=3 ts=706559 : 01 D5 43
+09:15:16 proto=gpio src=DISTANCE len=3 ts=706565 : 6E 13 01
+09:15:16 {"sensor":"DISTANCE","timestamp_ms":706566,"distance_cm":85.3,"echo_us":4974,"status":"OK","error":0}
+09:15:16 proto=gpio src=T100 len=3 ts=706659 : 01 39 44
+09:15:16 proto=gpio src=T100 len=3 ts=706759 : 01 9D 44
+> APP EVENT 1048 48 exit
+09:15:16 [APP] request=1 synthetic=1 queued=1
+09:15:16 [APP] id=1048 seq=48 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:16 [LOG] seq=270 event=1048 not stored: flash error=-9 read=-5 match=0 write_us=392; occupancy and sampling unaffected
+09:15:16 [BENCH] application_event 577 us
+09:15:16 proto=gpio src=T100 len=3 ts=706859 : 01 01 45
+09:15:16 proto=gpio src=T100 len=3 ts=706959 : 01 65 45
+09:15:16 proto=gpio src=T100 len=3 ts=707059 : 01 C9 45
+09:15:16 proto=gpio src=DISTANCE len=3 ts=707069 : 60 23 01
+09:15:16 {"sensor":"DISTANCE","timestamp_ms":707070,"distance_cm":155.3,"echo_us":9056,"status":"OK","error":0}
+> APP EVENT 1049 49 entry
+09:15:16 [APP] request=1 synthetic=1 queued=1
+09:15:16 [APP] id=1049 seq=49 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:16 [LOG] seq=271 event=1049 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:16 [BENCH] application_event 578 us
+09:15:16 proto=gpio src=T100 len=3 ts=707159 : 01 2D 46
+09:15:16 proto=gpio src=T100 len=3 ts=707259 : 01 91 46
+09:15:16 proto=gpio src=T100 len=3 ts=707359 : 01 F5 46
+> APP EVENT 1050 50 exit
+09:15:16 [APP] request=1 synthetic=1 queued=1
+09:15:16 [APP] id=1050 seq=50 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:16 [LOG] seq=272 event=1050 not stored: flash error=-9 read=-5 match=0 write_us=385; occupancy and sampling unaffected
+09:15:16 [BENCH] application_event 564 us
+09:15:16 proto=gpio src=T100 len=3 ts=707459 : 01 59 47
+09:15:17 proto=gpio src=T100 len=3 ts=707559 : 01 BD 47
+09:15:17 {"type":"ml","timestamp_ms":707560,"generation":28,"model":"sine-int8","raw_features":[155.3104],"input_source":"sensors","inputs":[2.420295],"outputs":[0.6466946],"invoke_us":502,"status":"OK"}
+09:15:17 proto=gpio src=DISTANCE len=3 ts=707563 : F8 0B 01
+09:15:17 {"sensor":"DISTANCE","timestamp_ms":707564,"distance_cm":52.5,"echo_us":3064,"status":"OK","error":0}
+09:15:17 proto=gpio src=T100 len=3 ts=707659 : 01 21 48
+> APP EVENT 1051 51 entry
+09:15:17 [APP] request=1 synthetic=1 queued=1
+09:15:17 [APP] id=1051 seq=51 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:17 [LOG] seq=273 event=1051 not stored: flash error=-9 read=-5 match=0 write_us=472; occupancy and sampling unaffected
+09:15:17 [BENCH] application_event 582 us
+09:15:17 proto=gpio src=T100 len=3 ts=707759 : 01 85 48
+09:15:17 proto=gpio src=T100 len=3 ts=707859 : 01 E9 48
+> APP EVENT 1052 52 exit
+09:15:17 [APP] request=1 synthetic=1 queued=1
+09:15:17 [APP] id=1052 seq=52 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:17 [LOG] seq=274 event=1052 not stored: flash error=-9 read=-5 match=0 write_us=384; occupancy and sampling unaffected
+09:15:17 [BENCH] application_event 583 us
+09:15:17 proto=gpio src=T100 len=3 ts=707959 : 01 4D 49
+09:15:17 proto=gpio src=T100 len=3 ts=708059 : 01 B1 49
+09:15:17 proto=gpio src=DISTANCE len=3 ts=708063 : 5B 0E 01
+09:15:17 {"sensor":"DISTANCE","timestamp_ms":708064,"distance_cm":63.0,"echo_us":3675,"status":"OK","error":0}
+09:15:17 proto=gpio src=T100 len=3 ts=708159 : 01 15 4A
+> APP EVENT 1053 53 entry
+09:15:17 [APP] request=1 synthetic=1 queued=1
+09:15:17 [APP] id=1053 seq=53 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:17 [LOG] seq=275 event=1053 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:17 [BENCH] application_event 571 us
+09:15:17 proto=gpio src=T100 len=3 ts=708259 : 01 79 4A
+09:15:17 proto=gpio src=T100 len=3 ts=708359 : 01 DD 4A
+09:15:17 proto=gpio src=T100 len=3 ts=708459 : 01 41 4B
+> APP EVENT 1054 54 exit
+09:15:17 [APP] request=1 synthetic=1 queued=1
+09:15:17 [APP] id=1054 seq=54 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:17 [LOG] seq=276 event=1054 not stored: flash error=-9 read=-5 match=0 write_us=382; occupancy and sampling unaffected
+09:15:17 [BENCH] application_event 597 us
+09:15:17 proto=gpio src=T100 len=3 ts=708559 : 01 A5 4B
+09:15:18 proto=gpio src=DISTANCE len=3 ts=708567 : 17 1A 01
+09:15:18 {"sensor":"DISTANCE","timestamp_ms":708568,"distance_cm":114.5,"echo_us":6679,"status":"OK","error":0}
+09:15:18 proto=gpio src=T100 len=3 ts=708659 : 01 09 4C
+09:15:18 proto=gpio src=T100 len=3 ts=708759 : 01 6D 4C
+> APP EVENT 1055 55 entry
+09:15:18 [APP] request=1 synthetic=1 queued=1
+09:15:18 [APP] id=1055 seq=55 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:18 [LOG] seq=277 event=1055 not stored: flash error=-9 read=-5 match=0 write_us=387; occupancy and sampling unaffected
+09:15:18 [BENCH] application_event 589 us
+09:15:18 proto=gpio src=T100 len=3 ts=708859 : 01 D1 4C
+09:15:18 proto=gpio src=T100 len=3 ts=708959 : 01 35 4D
+09:15:18 proto=gpio src=T100 len=3 ts=709059 : 01 99 4D
+> APP EVENT 1056 56 exit
+09:15:18 [APP] request=1 synthetic=1 queued=1
+09:15:18 [APP] id=1056 seq=56 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:18 proto=gpio src=DISTANCE len=3 ts=709063 : 97 0E 01
+09:15:18 {"sensor":"DISTANCE","timestamp_ms":709064,"distance_cm":64.1,"echo_us":3735,"status":"OK","error":0}
+09:15:18 [LOG] seq=278 event=1056 not stored: flash error=-9 read=-5 match=0 write_us=2330; occupancy and sampling unaffected
+09:15:18 [BENCH] application_event 704 us
+09:15:18 proto=gpio src=T100 len=3 ts=709159 : 01 FD 4D
+09:15:18 proto=gpio src=T100 len=3 ts=709259 : 01 61 4E
+> APP EVENT 1057 57 entry
+09:15:18 [APP] request=1 synthetic=1 queued=1
+09:15:18 [APP] id=1057 seq=57 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:18 [LOG] seq=279 event=1057 not stored: flash error=-9 read=-5 match=0 write_us=390; occupancy and sampling unaffected
+09:15:18 [BENCH] application_event 587 us
+09:15:18 proto=gpio src=T100 len=3 ts=709359 : 01 C5 4E
+09:15:18 proto=gpio src=T100 len=3 ts=709460 : 01 2A 4F
+09:15:18 proto=gpio src=T100 len=3 ts=709559 : 01 8D 4F
+09:15:18 {"type":"ml","timestamp_ms":709560,"generation":28,"model":"sine-int8","raw_features":[64.05525],"input_source":"sensors","inputs":[0.97966],"outputs":[0.8125138],"invoke_us":513,"status":"OK"}
+09:15:18 proto=gpio src=DISTANCE len=3 ts=709563 : 2E 0B 01
+09:15:18 {"sensor":"DISTANCE","timestamp_ms":709564,"distance_cm":49.1,"echo_us":2862,"status":"OK","error":0}
+> APP EVENT 1058 58 exit
+09:15:19 [APP] request=1 synthetic=1 queued=1
+09:15:19 [APP] id=1058 seq=58 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:19 [LOG] seq=280 event=1058 not stored: flash error=-9 read=-5 match=0 write_us=387; occupancy and sampling unaffected
+09:15:19 [BENCH] application_event 566 us
+09:15:19 proto=gpio src=T100 len=3 ts=709659 : 01 F1 4F
+09:15:19 proto=gpio src=T100 len=3 ts=709759 : 01 55 50
+09:15:19 proto=gpio src=T100 len=3 ts=709859 : 01 B9 50
+> APP EVENT 1059 59 entry
+09:15:19 [APP] request=1 synthetic=1 queued=1
+09:15:19 [APP] id=1059 seq=59 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:19 [LOG] seq=281 event=1059 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:19 [BENCH] application_event 598 us
+09:15:19 proto=gpio src=T100 len=3 ts=709959 : 01 1D 51
+09:15:19 proto=gpio src=T100 len=3 ts=710059 : 01 81 51
+09:15:19 proto=gpio src=DISTANCE len=3 ts=710063 : 4C 0E 01
+09:15:19 {"sensor":"DISTANCE","timestamp_ms":710064,"distance_cm":62.8,"echo_us":3660,"status":"OK","error":0}
+09:15:19 proto=gpio src=T100 len=3 ts=710159 : 01 E5 51
+> APP EVENT 1060 60 exit
+09:15:19 [APP] request=1 synthetic=1 queued=1
+09:15:19 [APP] id=1060 seq=60 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:19 [LOG] seq=282 event=1060 not stored: flash error=-7 read=-5 match=0 write_us=392; occupancy and sampling unaffected
+09:15:19 [BENCH] application_event 587 us
+09:15:19 proto=gpio src=T100 len=3 ts=710259 : 01 49 52
+09:15:19 proto=gpio src=T100 len=3 ts=710359 : 01 AD 52
+> APP EVENT 1061 61 entry
+09:15:19 proto=gpio src=T100 len=3 ts=710459 : 01 11 53
+09:15:19 [APP] request=1 synthetic=1 queued=1
+09:15:19 [APP] id=1061 seq=61 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:19 [LOG] seq=283 event=1061 not stored: flash error=-9 read=-5 match=0 write_us=615; occupancy and sampling unaffected
+09:15:19 [BENCH] application_event 545 us
+09:15:19 proto=gpio src=T100 len=3 ts=710559 : 01 75 53
+09:15:19 proto=gpio src=DISTANCE len=3 ts=710569 : 3B 21 01
+09:15:20 {"sensor":"DISTANCE","timestamp_ms":710570,"distance_cm":145.9,"echo_us":8507,"status":"OK","error":0}
+09:15:20 proto=gpio src=T100 len=3 ts=710660 : 01 DA 53
+> APP EVENT 1062 62 exit
+09:15:20 [APP] request=1 synthetic=1 queued=1
+09:15:20 [APP] id=1062 seq=62 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:20 [LOG] seq=284 event=1062 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected
+09:15:20 [BENCH] application_event 589 us
+09:15:20 proto=gpio src=T100 len=3 ts=710759 : 01 3D 54
+09:15:20 proto=gpio src=T100 len=3 ts=710859 : 01 A1 54
+09:15:20 [MQTT] Status: Connected, Broker: 192.168.1.49
+09:15:20 proto=gpio src=T100 len=3 ts=710959 : 01 05 55
+> APP EVENT 1063 63 entry
+09:15:20 [APP] request=1 synthetic=1 queued=1
+09:15:20 [APP] id=1063 seq=63 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:20 [LOG] seq=285 event=1063 not stored: flash error=-9 read=-5 match=0 write_us=385; occupancy and sampling unaffected
+09:15:20 [BENCH] application_event 565 us
+09:15:20 proto=gpio src=T100 len=3 ts=711059 : 01 69 55
+09:15:20 proto=gpio src=DISTANCE len=3 ts=711069 : 19 1F 01
+09:15:20 {"sensor":"DISTANCE","timestamp_ms":711070,"distance_cm":136.5,"echo_us":7961,"status":"OK","error":0}
+09:15:20 proto=gpio src=T100 len=3 ts=711160 : 01 CE 55
+09:15:20 proto=gpio src=T100 len=3 ts=711259 : 01 31 56
+> APP EVENT 1064 64 exit
+09:15:20 [APP] request=1 synthetic=1 queued=1
+09:15:20 [APP] id=1064 seq=64 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:20 [LOG] seq=286 event=1064 not stored: flash error=-9 read=-5 match=0 write_us=384; occupancy and sampling unaffected
+09:15:20 [BENCH] application_event 567 us
+09:15:20 proto=gpio src=T100 len=3 ts=711359 : 01 95 56
+09:15:20 proto=gpio src=T100 len=3 ts=711459 : 01 F9 56
+09:15:20 proto=gpio src=T100 len=3 ts=711559 : 01 5D 57
+09:15:20 {"type":"ml","timestamp_ms":711560,"generation":28,"model":"sine-int8","raw_features":[136.5311],"input_source":"sensors","inputs":[2.123829],"outputs":[0.8456776],"invoke_us":505,"status":"OK"}
+09:15:20 proto=gpio src=DISTANCE len=3 ts=711567 : B0 1B 01
+> APP EVENT 1065 65 entry
+09:15:21 {"sensor":"DISTANCE","timestamp_ms":711568,"distance_cm":121.6,"echo_us":7088,"status":"OK","error":0}
+09:15:21 [APP] request=1 synthetic=1 queued=1
+09:15:21 [APP] id=1065 seq=65 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:21 [LOG] seq=287 event=1065 not stored: flash error=-9 read=-5 match=0 write_us=587; occupancy and sampling unaffected
+09:15:21 [BENCH] application_event 519 us
+09:15:21 proto=gpio src=T100 len=3 ts=711659 : 01 C1 57
+09:15:21 proto=gpio src=T100 len=3 ts=711759 : 01 25 58
+> APP EVENT 1066 66 exit
+09:15:21 [APP] request=1 synthetic=1 queued=1
+09:15:21 [APP] id=1066 seq=66 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:21 [LOG] seq=288 event=1066 not stored: flash error=-9 read=-5 match=0 write_us=396; occupancy and sampling unaffected
+09:15:21 [BENCH] application_event 572 us
+09:15:21 proto=gpio src=T100 len=3 ts=711859 : 01 89 58
+09:15:21 proto=gpio src=T100 len=3 ts=711959 : 01 ED 58
+09:15:21 proto=gpio src=T100 len=3 ts=712059 : 01 51 59
+09:15:21 proto=gpio src=DISTANCE len=3 ts=712071 : A6 29 01
+09:15:21 {"sensor":"DISTANCE","timestamp_ms":712072,"distance_cm":182.9,"echo_us":10662,"status":"OK","error":0}
+> APP EVENT 1067 67 entry
+09:15:21 [APP] request=1 synthetic=1 queued=1
+09:15:21 [APP] id=1067 seq=67 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:21 [LOG] seq=289 event=1067 not stored: flash error=-9 read=-5 match=0 write_us=394; occupancy and sampling unaffected
+09:15:21 [BENCH] application_event 588 us
+09:15:21 proto=gpio src=T100 len=3 ts=712160 : 01 B6 59
+09:15:21 proto=gpio src=T100 len=3 ts=712259 : 01 19 5A
+09:15:21 proto=gpio src=T100 len=3 ts=712359 : 01 7D 5A
+> APP EVENT 1068 68 exit
+09:15:21 [APP] request=1 synthetic=1 queued=1
+09:15:21 [APP] id=1068 seq=68 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:21 [LOG] seq=290 event=1068 not stored: flash error=-9 read=-5 match=0 write_us=384; occupancy and sampling unaffected
+09:15:21 [BENCH] application_event 593 us
+09:15:21 proto=gpio src=T100 len=3 ts=712459 : 01 E1 5A
+09:15:22 proto=gpio src=T100 len=3 ts=712559 : 01 45 5B
+09:15:22 proto=gpio src=DISTANCE len=3 ts=712563 : D6 0C 01
+09:15:22 {"sensor":"DISTANCE","timestamp_ms":712564,"distance_cm":56.4,"echo_us":3286,"status":"OK","error":0}
+09:15:22 proto=gpio src=T100 len=3 ts=712659 : 01 A9 5B
+> APP EVENT 1069 69 entry
+09:15:22 [APP] request=1 synthetic=1 queued=1
+09:15:22 [APP] id=1069 seq=69 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:22 [LOG] seq=291 event=1069 not stored: flash error=-9 read=-5 match=0 write_us=384; occupancy and sampling unaffected
+09:15:22 [BENCH] application_event 642 us
+09:15:22 proto=gpio src=T100 len=3 ts=712759 : 01 0D 5C
+09:15:22 proto=gpio src=T100 len=3 ts=712859 : 01 71 5C
+09:15:22 proto=gpio src=T100 len=3 ts=712959 : 01 D5 5C
+> APP EVENT 1070 70 exit
+09:15:22 [APP] request=1 synthetic=1 queued=1
+09:15:22 [APP] id=1070 seq=70 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:22 [LOG] seq=292 event=1070 not stored: flash error=-9 read=-5 match=0 write_us=382; occupancy and sampling unaffected
+09:15:22 [BENCH] application_event 557 us
+09:15:22 proto=gpio src=T100 len=3 ts=713059 : 01 39 5D
+09:15:22 proto=gpio src=DISTANCE len=3 ts=713063 : 32 0C 01
+09:15:22 {"sensor":"DISTANCE","timestamp_ms":713064,"distance_cm":53.5,"echo_us":3122,"status":"OK","error":0}
+09:15:22 proto=gpio src=T100 len=3 ts=713159 : 01 9D 5D
+09:15:22 proto=gpio src=T100 len=3 ts=713259 : 01 01 5E
+> APP EVENT 1071 71 entry
+09:15:22 [APP] request=1 synthetic=1 queued=1
+09:15:22 [APP] id=1071 seq=71 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:22 [LOG] seq=293 event=1071 not stored: flash error=-9 read=-5 match=0 write_us=624; occupancy and sampling unaffected
+09:15:22 [BENCH] application_event 549 us
+09:15:22 proto=gpio src=T100 len=3 ts=713359 : 01 65 5E
+09:15:22 proto=gpio src=T100 len=3 ts=713459 : 01 C9 5E
+> APP EVENT 1072 72 exit
+09:15:23 [APP] request=1 synthetic=1 queued=1
+09:15:23 [APP] id=1072 seq=72 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:23 [LOG] seq=294 event=1072 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected
+09:15:23 [BENCH] application_event 569 us
+09:15:23 proto=gpio src=T100 len=3 ts=713560 : 01 2E 5F
+09:15:23 {"type":"ml","timestamp_ms":713560,"generation":28,"model":"sine-int8","raw_features":[53.5423],"input_source":"sensors","inputs":[0.813693],"outputs":[0.7296042],"invoke_us":444,"status":"OK"}
+09:15:23 proto=gpio src=DISTANCE len=3 ts=713569 : 04 21 01
+09:15:23 {"sensor":"DISTANCE","timestamp_ms":713570,"distance_cm":145.0,"echo_us":8452,"status":"OK","error":0}
+09:15:23 proto=gpio src=T100 len=3 ts=713660 : 01 92 5F
+09:15:23 proto=gpio src=T100 len=3 ts=713759 : 01 F5 5F
+> APP EVENT 1073 73 entry
+09:15:23 [APP] request=1 synthetic=1 queued=1
+09:15:23 [APP] id=1073 seq=73 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:23 [LOG] seq=295 event=1073 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected
+09:15:23 [BENCH] application_event 590 us
+09:15:23 proto=gpio src=T100 len=3 ts=713859 : 01 59 60
+09:15:23 proto=gpio src=T100 len=3 ts=713959 : 01 BD 60
+09:15:23 proto=gpio src=T100 len=3 ts=714059 : 01 21 61
+09:15:23 proto=gpio src=DISTANCE len=3 ts=714065 : 09 10 01
+09:15:23 {"sensor":"DISTANCE","timestamp_ms":714066,"distance_cm":70.4,"echo_us":4105,"status":"OK","error":0}
+> APP EVENT 1074 74 exit
+09:15:23 [APP] request=1 synthetic=1 queued=1
+09:15:23 [APP] id=1074 seq=74 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:23 [LOG] seq=296 event=1074 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:23 [BENCH] application_event 580 us
+09:15:23 proto=gpio src=T100 len=3 ts=714160 : 01 86 61
+09:15:23 proto=gpio src=T100 len=3 ts=714259 : 01 E9 61
+09:15:23 proto=gpio src=T100 len=3 ts=714359 : 01 4D 62
+> APP EVENT 1075 75 entry
+09:15:23 [APP] request=1 synthetic=1 queued=1
+09:15:23 [APP] id=1075 seq=75 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:23 [LOG] seq=297 event=1075 not stored: flash error=-9 read=-5 match=0 write_us=382; occupancy and sampling unaffected
+09:15:23 [BENCH] application_event 568 us
+09:15:23 proto=gpio src=T100 len=3 ts=714459 : 01 B1 62
+09:15:24 proto=gpio src=T100 len=3 ts=714559 : 01 15 63
+09:15:24 proto=gpio src=DISTANCE len=3 ts=714565 : 10 10 01
+09:15:24 {"sensor":"DISTANCE","timestamp_ms":714566,"distance_cm":70.5,"echo_us":4112,"status":"OK","error":0}
+09:15:24 proto=gpio src=T100 len=3 ts=714660 : 01 7A 63
+> APP EVENT 1076 76 exit
+09:15:24 [APP] request=1 synthetic=1 queued=1
+09:15:24 [APP] id=1076 seq=76 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:24 [LOG] seq=298 event=1076 not stored: flash error=-9 read=-5 match=0 write_us=384; occupancy and sampling unaffected
+09:15:24 [BENCH] application_event 588 us
+09:15:24 proto=gpio src=T100 len=3 ts=714759 : 01 DD 63
+09:15:24 proto=gpio src=T100 len=3 ts=714859 : 01 41 64
+> APP EVENT 1077 77 entry
+09:15:24 [APP] request=1 synthetic=1 queued=1
+09:15:24 [APP] id=1077 seq=77 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:24 [LOG] seq=299 event=1077 not stored: flash error=-9 read=-5 match=0 write_us=387; occupancy and sampling unaffected
+09:15:24 [BENCH] application_event 596 us
+09:15:24 proto=gpio src=T100 len=3 ts=714959 : 01 A5 64
+09:15:24 proto=gpio src=T100 len=3 ts=715059 : 01 09 65
+09:15:24 proto=gpio src=DISTANCE len=3 ts=715063 : C5 0C 01
+09:15:24 {"sensor":"DISTANCE","timestamp_ms":715064,"distance_cm":56.1,"echo_us":3269,"status":"OK","error":0}
+09:15:24 proto=gpio src=T100 len=3 ts=715159 : 01 6D 65
+> APP EVENT 1078 78 exit
+09:15:24 [APP] request=1 synthetic=1 queued=1
+09:15:24 [APP] id=1078 seq=78 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:24 [LOG] seq=300 event=1078 not stored: flash error=-9 read=-5 match=0 write_us=385; occupancy and sampling unaffected
+09:15:24 [BENCH] application_event 572 us
+09:15:24 proto=gpio src=T100 len=3 ts=715259 : 01 D1 65
+09:15:24 proto=gpio src=T100 len=3 ts=715359 : 01 35 66
+09:15:24 proto=gpio src=T100 len=3 ts=715459 : 01 99 66
+> APP EVENT 1079 79 entry
+09:15:24 [APP] request=1 synthetic=1 queued=1
+09:15:24 [APP] id=1079 seq=79 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:24 [LOG] seq=301 event=1079 not stored: flash error=-9 read=-5 match=0 write_us=383; occupancy and sampling unaffected
+09:15:24 [BENCH] application_event 560 us
+09:15:25 proto=gpio src=T100 len=3 ts=715559 : 01 FD 66
+09:15:25 {"type":"ml","timestamp_ms":715560,"generation":28,"model":"sine-int8","raw_features":[56.06335],"input_source":"sensors","inputs":[0.8534926],"outputs":[0.7461861],"invoke_us":500,"status":"OK"}
+09:15:25 proto=gpio src=DISTANCE len=3 ts=715569 : 3A 21 01
+09:15:25 {"sensor":"DISTANCE","timestamp_ms":715570,"distance_cm":145.9,"echo_us":8506,"status":"OK","error":0}
+09:15:25 proto=gpio src=T100 len=3 ts=715659 : 01 61 67
+09:15:25 proto=gpio src=T100 len=3 ts=715759 : 01 C5 67
+> APP EVENT 1080 80 exit
+09:15:25 [APP] request=1 synthetic=1 queued=1
+09:15:25 [APP] id=1080 seq=80 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:25 [LOG] seq=302 event=1080 not stored: flash error=-9 read=-5 match=0 write_us=396; occupancy and sampling unaffected
+09:15:25 [BENCH] application_event 696 us
+09:15:25 proto=gpio src=T100 len=3 ts=715859 : 01 29 68
+09:15:25 [MQTT] Status: Connected, Broker: 192.168.1.49
+09:15:25 proto=gpio src=T100 len=3 ts=715959 : 01 8D 68
+> APP EVENT 1081 81 entry
+09:15:25 proto=gpio src=T100 len=3 ts=716059 : 01 F1 68
+09:15:25 [APP] request=1 synthetic=1 queued=1
+09:15:25 [APP] id=1081 seq=81 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:25 [LOG] seq=303 event=1081 not stored: flash error=-9 read=-5 match=0 write_us=889; occupancy and sampling unaffected
+09:15:25 [BENCH] application_event 511 us
+09:15:25 proto=gpio src=DISTANCE len=3 ts=716063 : 7E 0E 01
+09:15:25 {"sensor":"DISTANCE","timestamp_ms":716064,"distance_cm":63.6,"echo_us":3710,"status":"OK","error":0}
+09:15:25 proto=gpio src=T100 len=3 ts=716159 : 01 55 69
+09:15:25 proto=gpio src=T100 len=3 ts=716259 : 01 B9 69
+> APP EVENT 1082 82 exit
+09:15:25 [APP] request=1 synthetic=1 queued=1
+09:15:25 [APP] id=1082 seq=82 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:25 [LOG] seq=304 event=1082 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:25 [BENCH] application_event 581 us
+09:15:25 proto=gpio src=T100 len=3 ts=716359 : 01 1D 6A
+09:15:25 proto=gpio src=T100 len=3 ts=716459 : 01 81 6A
+09:15:25 proto=gpio src=T100 len=3 ts=716559 : 01 E5 6A
+09:15:26 proto=gpio src=DISTANCE len=3 ts=716567 : 70 1D 01
+09:15:26 {"sensor":"DISTANCE","timestamp_ms":716568,"distance_cm":129.2,"echo_us":7536,"status":"OK","error":0}
+> APP EVENT 1083 83 entry
+09:15:26 [APP] request=1 synthetic=1 queued=1
+09:15:26 [APP] id=1083 seq=83 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:26 [LOG] seq=305 event=1083 not stored: flash error=-9 read=-5 match=0 write_us=390; occupancy and sampling unaffected
+09:15:26 [BENCH] application_event 590 us
+09:15:26 proto=gpio src=T100 len=3 ts=716659 : 01 49 6B
+09:15:26 proto=gpio src=T100 len=3 ts=716759 : 01 AD 6B
+09:15:26 proto=gpio src=T100 len=3 ts=716859 : 01 11 6C
+> APP EVENT 1084 84 exit
+09:15:26 [APP] request=1 synthetic=1 queued=1
+09:15:26 [APP] id=1084 seq=84 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:26 [LOG] seq=306 event=1084 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:26 [BENCH] application_event 584 us
+09:15:26 proto=gpio src=T100 len=3 ts=716960 : 01 76 6C
+09:15:26 proto=gpio src=T100 len=3 ts=717059 : 01 D9 6C
+09:15:26 proto=gpio src=DISTANCE len=3 ts=717065 : 93 0F 01
+09:15:26 {"sensor":"DISTANCE","timestamp_ms":717066,"distance_cm":68.4,"echo_us":3987,"status":"OK","error":0}
+09:15:26 proto=gpio src=T100 len=3 ts=717160 : 01 3E 6D
+> APP EVENT 1085 85 entry
+09:15:26 [APP] request=1 synthetic=1 queued=1
+09:15:26 [APP] id=1085 seq=85 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:26 [LOG] seq=307 event=1085 not stored: flash error=-9 read=-5 match=0 write_us=390; occupancy and sampling unaffected
+09:15:26 [BENCH] application_event 581 us
+09:15:26 proto=gpio src=T100 len=3 ts=717259 : 01 A1 6D
+09:15:26 proto=gpio src=T100 len=3 ts=717359 : 01 05 6E
+> APP EVENT 1086 86 exit
+09:15:26 [APP] request=1 synthetic=1 queued=1
+09:15:26 [APP] id=1086 seq=86 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:26 [LOG] seq=308 event=1086 not stored: flash error=-9 read=-5 match=0 write_us=384; occupancy and sampling unaffected
+09:15:26 [BENCH] application_event 561 us
+09:15:26 proto=gpio src=T100 len=3 ts=717459 : 01 69 6E
+09:15:27 proto=gpio src=T100 len=3 ts=717559 : 01 CD 6E
+09:15:27 {"type":"ml","timestamp_ms":717560,"generation":28,"model":"sine-int8","raw_features":[68.37705],"input_source":"sensors","inputs":[1.047888],"outputs":[0.8622595],"invoke_us":512,"status":"OK"}
+09:15:27 proto=gpio src=DISTANCE len=3 ts=717563 : 49 0D 01
+09:15:27 {"sensor":"DISTANCE","timestamp_ms":717564,"distance_cm":58.3,"echo_us":3401,"status":"OK","error":0}
+09:15:27 proto=gpio src=T100 len=3 ts=717659 : 01 31 6F
+> APP EVENT 1087 87 entry
+09:15:27 [APP] request=1 synthetic=1 queued=1
+09:15:27 [APP] id=1087 seq=87 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:27 [LOG] seq=309 event=1087 not stored: flash error=-9 read=-5 match=0 write_us=384; occupancy and sampling unaffected
+09:15:27 [BENCH] application_event 569 us
+09:15:27 proto=gpio src=T100 len=3 ts=717759 : 01 95 6F
+09:15:27 proto=gpio src=T100 len=3 ts=717859 : 01 F9 6F
+09:15:27 proto=gpio src=T100 len=3 ts=717959 : 01 5D 70
+> APP EVENT 1088 88 exit
+09:15:27 [APP] request=1 synthetic=1 queued=1
+09:15:27 [APP] id=1088 seq=88 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:27 [LOG] seq=310 event=1088 not stored: flash error=-9 read=-5 match=0 write_us=388; occupancy and sampling unaffected
+09:15:27 [BENCH] application_event 588 us
+09:15:27 proto=gpio src=T100 len=3 ts=718059 : 01 C1 70
+09:15:27 proto=gpio src=DISTANCE len=3 ts=718063 : 69 0C 01
+09:15:27 {"sensor":"DISTANCE","timestamp_ms":718064,"distance_cm":54.5,"echo_us":3177,"status":"OK","error":0}
+09:15:27 proto=gpio src=T100 len=3 ts=718160 : 01 26 71
+09:15:27 proto=gpio src=T100 len=3 ts=718259 : 01 89 71
+> APP EVENT 1089 89 entry
+09:15:27 [APP] request=1 synthetic=1 queued=1
+09:15:27 [APP] id=1089 seq=89 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:27 [LOG] seq=311 event=1089 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:27 [BENCH] application_event 589 us
+09:15:27 proto=gpio src=T100 len=3 ts=718359 : 01 ED 71
+09:15:27 proto=gpio src=T100 len=3 ts=718459 : 01 51 72
+09:15:27 proto=gpio src=T100 len=3 ts=718559 : 01 B5 72
+> APP EVENT 1090 90 exit
+09:15:28 [APP] request=1 synthetic=1 queued=1
+09:15:28 [APP] id=1090 seq=90 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:28 [LOG] seq=312 event=1090 not stored: flash error=-9 read=-5 match=0 write_us=534; occupancy and sampling unaffected
+09:15:28 proto=gpio src=DISTANCE len=3 ts=718565 : 95 11 01
+09:15:28 {"sensor":"DISTANCE","timestamp_ms":718566,"distance_cm":77.2,"echo_us":4501,"status":"OK","error":0}
+09:15:28 [BENCH] application_event 625 us
+09:15:28 proto=gpio src=T100 len=3 ts=718659 : 01 19 73
+09:15:28 proto=gpio src=T100 len=3 ts=718759 : 01 7D 73
+> APP EVENT 1091 91 entry
+09:15:28 [APP] request=1 synthetic=1 queued=1
+09:15:28 [APP] id=1091 seq=91 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:28 [LOG] seq=313 event=1091 not stored: flash error=-9 read=-5 match=0 write_us=388; occupancy and sampling unaffected
+09:15:28 [BENCH] application_event 599 us
+09:15:28 proto=gpio src=T100 len=3 ts=718859 : 01 E1 73
+09:15:28 proto=gpio src=T100 len=3 ts=718959 : 01 45 74
+09:15:28 proto=gpio src=T100 len=3 ts=719059 : 01 A9 74
+09:15:28 proto=gpio src=DISTANCE len=3 ts=719067 : 93 1A 01
+09:15:28 {"sensor":"DISTANCE","timestamp_ms":719068,"distance_cm":116.7,"echo_us":6803,"status":"OK","error":0}
+> APP EVENT 1092 92 exit
+09:15:28 [APP] request=1 synthetic=1 queued=1
+09:15:28 [APP] id=1092 seq=92 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:28 [LOG] seq=314 event=1092 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected
+09:15:28 [BENCH] application_event 583 us
+09:15:28 proto=gpio src=T100 len=3 ts=719160 : 01 0E 75
+09:15:28 proto=gpio src=T100 len=3 ts=719259 : 01 71 75
+09:15:28 proto=gpio src=T100 len=3 ts=719359 : 01 D5 75
+> APP EVENT 1093 93 entry
+09:15:28 [APP] request=1 synthetic=1 queued=1
+09:15:28 [APP] id=1093 seq=93 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:28 [LOG] seq=315 event=1093 not stored: flash error=-9 read=-5 match=0 write_us=392; occupancy and sampling unaffected
+09:15:28 [BENCH] application_event 567 us
+09:15:28 proto=gpio src=T100 len=3 ts=719459 : 01 39 76
+09:15:28 proto=gpio src=T100 len=3 ts=719559 : 01 9D 76
+09:15:28 {"type":"ml","timestamp_ms":719560,"generation":28,"model":"sine-int8","raw_features":[116.6714],"input_source":"sensors","inputs":[1.810307],"outputs":[0.95346],"invoke_us":502,"status":"OK"}
+09:15:28 proto=gpio src=DISTANCE len=3 ts=719563 : 33 0E 01
+09:15:29 {"sensor":"DISTANCE","timestamp_ms":719564,"distance_cm":62.3,"echo_us":3635,"status":"OK","error":0}
+09:15:29 proto=gpio src=T100 len=3 ts=719659 : 01 01 77
+> APP EVENT 1094 94 exit
+09:15:29 [APP] request=1 synthetic=1 queued=1
+09:15:29 [APP] id=1094 seq=94 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:29 [LOG] seq=316 event=1094 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected
+09:15:29 [BENCH] application_event 586 us
+09:15:29 proto=gpio src=T100 len=3 ts=719759 : 01 65 77
+09:15:29 proto=gpio src=T100 len=3 ts=719859 : 01 C9 77
+> APP EVENT 1095 95 entry
+09:15:29 [APP] request=1 synthetic=1 queued=1
+09:15:29 [APP] id=1095 seq=95 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:29 [LOG] seq=317 event=1095 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected
+09:15:29 [BENCH] application_event 578 us
+09:15:29 proto=gpio src=T100 len=3 ts=719959 : 01 2D 78
+09:15:29 proto=gpio src=T100 len=3 ts=720059 : 01 91 78
+09:15:29 proto=gpio src=DISTANCE len=3 ts=720069 : F0 22 01
+09:15:29 {"sensor":"DISTANCE","timestamp_ms":720070,"distance_cm":153.4,"echo_us":8944,"status":"OK","error":0}
+09:15:29 proto=gpio src=T100 len=3 ts=720159 : 01 F5 78
+> APP EVENT 1096 96 exit
+09:15:29 [APP] request=1 synthetic=1 queued=1
+09:15:29 [APP] id=1096 seq=96 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:29 [LOG] seq=318 event=1096 not stored: flash error=-9 read=-5 match=0 write_us=381; occupancy and sampling unaffected
+09:15:29 [BENCH] application_event 560 us
+09:15:29 proto=gpio src=T100 len=3 ts=720259 : 01 59 79
+09:15:29 proto=gpio src=T100 len=3 ts=720359 : 01 BD 79
+09:15:29 proto=gpio src=T100 len=3 ts=720459 : 01 21 7A
+> APP EVENT 1097 97 entry
+09:15:29 [APP] request=1 synthetic=1 queued=1
+09:15:29 [APP] id=1097 seq=97 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:29 [LOG] seq=319 event=1097 not stored: flash error=-9 read=-5 match=0 write_us=382; occupancy and sampling unaffected
+09:15:29 [BENCH] application_event 568 us
+09:15:30 proto=gpio src=T100 len=3 ts=720559 : 01 85 7A
+09:15:30 proto=gpio src=DISTANCE len=3 ts=720563 : EF 0C 01
+09:15:30 {"sensor":"DISTANCE","timestamp_ms":720564,"distance_cm":56.8,"echo_us":3311,"status":"OK","error":0}
+09:15:30 proto=gpio src=T100 len=3 ts=720659 : 01 E9 7A
+09:15:30 proto=gpio src=T100 len=3 ts=720759 : 01 4D 7B
+> APP EVENT 1098 98 exit
+09:15:30 [APP] request=1 synthetic=1 queued=1
+09:15:30 [APP] id=1098 seq=98 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:30 [LOG] seq=320 event=1098 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected
+09:15:30 [BENCH] application_event 577 us
+09:15:30 proto=gpio src=T100 len=3 ts=720859 : 01 B1 7B
+09:15:30 [MQTT] Status: Connected, Broker: 192.168.1.49
+09:15:30 proto=gpio src=T100 len=3 ts=720959 : 01 15 7C
+09:15:30 proto=gpio src=T100 len=3 ts=721059 : 01 79 7C
+> APP EVENT 1099 99 entry
+09:15:30 [APP] request=1 synthetic=1 queued=1
+09:15:30 [APP] id=1099 seq=99 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:30 [LOG] seq=321 event=1099 not stored: flash error=-7 read=-5 match=0 write_us=681; occupancy and sampling unaffected
+09:15:30 [BENCH] application_event 551 us
+09:15:30 proto=gpio src=DISTANCE len=3 ts=721069 : 22 21 01
+09:15:30 {"sensor":"DISTANCE","timestamp_ms":721070,"distance_cm":145.5,"echo_us":8482,"status":"OK","error":0}
+09:15:30 proto=gpio src=T100 len=3 ts=721160 : 01 DE 7C
+09:15:30 proto=gpio src=T100 len=3 ts=721259 : 01 41 7D
+> APP EVENT 1100 100 exit
+09:15:30 [APP] request=1 synthetic=1 queued=1
+09:15:30 [APP] id=1100 seq=100 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:30 [LOG] seq=322 event=1100 not stored: flash error=-9 read=-5 match=0 write_us=392; occupancy and sampling unaffected
+09:15:30 [BENCH] application_event 570 us
+09:15:30 proto=gpio src=T100 len=3 ts=721359 : 01 A5 7D
+09:15:30 proto=gpio src=T100 len=3 ts=721459 : 01 09 7E
+09:15:30 proto=gpio src=T100 len=3 ts=721559 : 01 6D 7E
+09:15:31 {"type":"ml","timestamp_ms":721560,"generation":28,"model":"sine-int8","raw_features":[145.4663],"input_source":"sensors","inputs":[2.264888],"outputs":[0.7378951],"invoke_us":514,"status":"OK"}
+09:15:31 proto=gpio src=DISTANCE len=3 ts=721563 : 21 0C 01
+09:15:31 {"sensor":"DISTANCE","timestamp_ms":721564,"distance_cm":53.3,"echo_us":3105,"status":"OK","error":0}
+> APP EVENT 1101 101 entry
+09:15:31 [APP] request=1 synthetic=1 queued=1
+09:15:31 [APP] id=1101 seq=101 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:31 [LOG] seq=323 event=1101 not stored: flash error=-9 read=-5 match=0 write_us=392; occupancy and sampling unaffected
+09:15:31 [BENCH] application_event 572 us
+09:15:31 proto=gpio src=T100 len=3 ts=721659 : 01 D1 7E
+09:15:31 proto=gpio src=T100 len=3 ts=721759 : 01 35 7F
+09:15:31 proto=gpio src=T100 len=3 ts=721859 : 01 99 7F
+> APP EVENT 1102 102 exit
+09:15:31 [APP] request=1 synthetic=1 queued=1
+09:15:31 [APP] id=1102 seq=102 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:31 [LOG] seq=324 event=1102 not stored: flash error=-9 read=-5 match=0 write_us=390; occupancy and sampling unaffected
+09:15:31 [BENCH] application_event 578 us
+09:15:31 proto=gpio src=T100 len=3 ts=721959 : 01 FD 7F
+09:15:31 proto=gpio src=T100 len=3 ts=722059 : 01 61 80
+09:15:31 proto=gpio src=DISTANCE len=3 ts=722063 : 4F 0D 01
+09:15:31 {"sensor":"DISTANCE","timestamp_ms":722064,"distance_cm":58.4,"echo_us":3407,"status":"OK","error":0}
+09:15:31 proto=gpio src=T100 len=3 ts=722159 : 01 C5 80
+> APP EVENT 1103 103 entry
+09:15:31 [APP] request=1 synthetic=1 queued=1
+09:15:31 [APP] id=1103 seq=103 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:31 [LOG] seq=325 event=1103 not stored: flash error=-9 read=-5 match=0 write_us=384; occupancy and sampling unaffected
+09:15:31 [BENCH] application_event 599 us
+09:15:31 proto=gpio src=T100 len=3 ts=722259 : 01 29 81
+09:15:31 proto=gpio src=T100 len=3 ts=722359 : 01 8D 81
+> APP EVENT 1104 104 exit
+09:15:31 [APP] request=1 synthetic=1 queued=1
+09:15:31 [APP] id=1104 seq=104 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:31 [LOG] seq=326 event=1104 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected
+09:15:31 [BENCH] application_event 574 us
+09:15:31 proto=gpio src=T100 len=3 ts=722459 : 01 F1 81
+09:15:32 proto=gpio src=T100 len=3 ts=722559 : 01 55 82
+09:15:32 proto=gpio src=DISTANCE len=3 ts=722569 : 1D 21 01
+09:15:32 {"sensor":"DISTANCE","timestamp_ms":722570,"distance_cm":145.4,"echo_us":8477,"status":"OK","error":0}
+09:15:32 proto=gpio src=T100 len=3 ts=722660 : 01 BA 82
+> APP EVENT 1105 105 entry
+09:15:32 [APP] request=1 synthetic=1 queued=1
+09:15:32 [APP] id=1105 seq=105 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:32 [LOG] seq=327 event=1105 not stored: flash error=-9 read=-5 match=0 write_us=390; occupancy and sampling unaffected
+09:15:32 [BENCH] application_event 576 us
+09:15:32 proto=gpio src=T100 len=3 ts=722759 : 01 1D 83
+09:15:32 proto=gpio src=T100 len=3 ts=722859 : 01 81 83
+09:15:32 proto=gpio src=T100 len=3 ts=722959 : 01 E5 83
+> APP EVENT 1106 106 exit
+09:15:32 [APP] request=1 synthetic=1 queued=1
+09:15:32 [APP] id=1106 seq=106 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:32 [LOG] seq=328 event=1106 not stored: flash error=-9 read=-5 match=0 write_us=402; occupancy and sampling unaffected
+09:15:32 [BENCH] application_event 582 us
+09:15:32 proto=gpio src=T100 len=3 ts=723059 : 01 49 84
+09:15:32 proto=gpio src=DISTANCE len=3 ts=723069 : 2D 24 01
+09:15:32 {"sensor":"DISTANCE","timestamp_ms":723070,"distance_cm":158.8,"echo_us":9261,"status":"OK","error":0}
+09:15:32 proto=gpio src=T100 len=3 ts=723160 : 01 AE 84
+09:15:32 proto=gpio src=T100 len=3 ts=723259 : 01 11 85
+> APP EVENT 1107 107 entry
+09:15:32 [APP] request=1 synthetic=1 queued=1
+09:15:32 [APP] id=1107 seq=107 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:32 [LOG] seq=329 event=1107 not stored: flash error=-9 read=-5 match=0 write_us=383; occupancy and sampling unaffected
+09:15:32 [BENCH] application_event 566 us
+09:15:32 proto=gpio src=T100 len=3 ts=723359 : 01 75 85
+09:15:32 proto=gpio src=T100 len=3 ts=723459 : 01 D9 85
+> APP EVENT 1108 108 exit
+09:15:33 proto=gpio src=T100 len=3 ts=723559 : 01 3D 86
+09:15:33 [APP] request=1 synthetic=1 queued=1
+09:15:33 {"type":"ml","timestamp_ms":723560,"generation":28,"model":"sine-int8","raw_features":[158.8261],"input_source":"sensors","inputs":[2.475798],"outputs":[0.6218218],"invoke_us":932,"status":"OK"}
+09:15:33 [APP] id=1108 seq=108 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:33 [LOG] seq=330 event=1108 not stored: flash error=-9 read=-5 match=0 write_us=578; occupancy and sampling unaffected
+09:15:33 [BENCH] application_event 856 us
+09:15:33 proto=gpio src=DISTANCE len=3 ts=723569 : F1 1E 01
+09:15:33 {"sensor":"DISTANCE","timestamp_ms":723570,"distance_cm":135.8,"echo_us":7921,"status":"OK","error":0}
+09:15:33 proto=gpio src=T100 len=3 ts=723660 : 01 A2 86
+09:15:33 proto=gpio src=T100 len=3 ts=723759 : 01 05 87
+> APP EVENT 1109 109 entry
+09:15:33 [APP] request=1 synthetic=1 queued=1
+09:15:33 [APP] id=1109 seq=109 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:33 [LOG] seq=331 event=1109 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:33 [BENCH] application_event 587 us
+09:15:33 proto=gpio src=T100 len=3 ts=723859 : 01 69 87
+09:15:33 proto=gpio src=T100 len=3 ts=723959 : 01 CD 87
+09:15:33 proto=gpio src=T100 len=3 ts=724059 : 01 31 88
+09:15:33 proto=gpio src=DISTANCE len=3 ts=724065 : 88 0E 01
+09:15:33 {"sensor":"DISTANCE","timestamp_ms":724066,"distance_cm":63.8,"echo_us":3720,"status":"OK","error":0}
+> APP EVENT 1110 110 exit
+09:15:33 [APP] request=1 synthetic=1 queued=1
+09:15:33 [APP] id=1110 seq=110 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:33 [LOG] seq=332 event=1110 not stored: flash error=-9 read=-5 match=0 write_us=394; occupancy and sampling unaffected
+09:15:33 [BENCH] application_event 578 us
+09:15:33 proto=gpio src=T100 len=3 ts=724160 : 01 96 88
+09:15:33 proto=gpio src=T100 len=3 ts=724259 : 01 F9 88
+09:15:33 proto=gpio src=T100 len=3 ts=724359 : 01 5D 89
+> APP EVENT 1111 111 entry
+09:15:33 [APP] request=1 synthetic=1 queued=1
+09:15:33 [APP] id=1111 seq=111 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:33 [LOG] seq=333 event=1111 not stored: flash error=-9 read=-5 match=0 write_us=393; occupancy and sampling unaffected
+09:15:33 [BENCH] application_event 593 us
+09:15:33 proto=gpio src=T100 len=3 ts=724459 : 01 C1 89
+09:15:34 proto=gpio src=T100 len=3 ts=724559 : 01 25 8A
+09:15:34 proto=gpio src=DISTANCE len=3 ts=724567 : CA 1A 01
+09:15:34 {"sensor":"DISTANCE","timestamp_ms":724568,"distance_cm":117.6,"echo_us":6858,"status":"OK","error":0}
+09:15:34 proto=gpio src=T100 len=3 ts=724659 : 01 89 8A
+> APP EVENT 1112 112 exit
+09:15:34 [APP] request=1 synthetic=1 queued=1
+09:15:34 [APP] id=1112 seq=112 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:34 [LOG] seq=334 event=1112 not stored: flash error=-9 read=-5 match=0 write_us=390; occupancy and sampling unaffected
+09:15:34 [BENCH] application_event 589 us
+09:15:34 proto=gpio src=T100 len=3 ts=724759 : 01 ED 8A
+09:15:34 proto=gpio src=T100 len=3 ts=724859 : 01 51 8B
+> APP EVENT 1113 113 entry
+09:15:34 [APP] request=1 synthetic=1 queued=1
+09:15:34 [APP] id=1113 seq=113 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:34 [LOG] seq=335 event=1113 not stored: flash error=-9 read=-5 match=0 write_us=391; occupancy and sampling unaffected
+09:15:34 [BENCH] application_event 590 us
+09:15:34 proto=gpio src=T100 len=3 ts=724959 : 01 B5 8B
+09:15:34 proto=gpio src=T100 len=3 ts=725059 : 01 19 8C
+09:15:34 proto=gpio src=DISTANCE len=3 ts=725063 : 2C 0C 01
+09:15:34 {"sensor":"DISTANCE","timestamp_ms":725064,"distance_cm":53.4,"echo_us":3116,"status":"OK","error":0}
+09:15:34 proto=gpio src=T100 len=3 ts=725159 : 01 7D 8C
+> APP EVENT 1114 114 exit
+09:15:34 [APP] request=1 synthetic=1 queued=1
+09:15:34 [APP] id=1114 seq=114 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:34 [LOG] seq=336 event=1114 not stored: flash error=-9 read=-5 match=0 write_us=383; occupancy and sampling unaffected
+09:15:34 [BENCH] application_event 566 us
+09:15:34 proto=gpio src=T100 len=3 ts=725259 : 01 E1 8C
+09:15:34 proto=gpio src=T100 len=3 ts=725359 : 01 45 8D
+09:15:34 proto=gpio src=T100 len=3 ts=725459 : 01 A9 8D
+> APP EVENT 1115 115 entry
+09:15:34 [APP] request=1 synthetic=1 queued=1
+09:15:34 [APP] id=1115 seq=115 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:34 [LOG] seq=337 event=1115 not stored: flash error=-9 read=-5 match=0 write_us=384; occupancy and sampling unaffected
+09:15:34 [BENCH] application_event 564 us
+09:15:35 proto=gpio src=T100 len=3 ts=725559 : 01 0D 8E
+09:15:35 {"type":"ml","timestamp_ms":725560,"generation":28,"model":"sine-int8","raw_features":[53.4394],"input_source":"sensors","inputs":[0.8120686],"outputs":[0.7296042],"invoke_us":495,"status":"OK"}
+09:15:35 proto=gpio src=DISTANCE len=3 ts=725563 : 8D 0D 01
+09:15:35 {"sensor":"DISTANCE","timestamp_ms":725564,"distance_cm":59.5,"echo_us":3469,"status":"OK","error":0}
+09:15:35 proto=gpio src=T100 len=3 ts=725659 : 01 71 8E
+> APP EVENT 1116 116 exit
+09:15:35 proto=gpio src=T100 len=3 ts=725759 : 01 D5 8E
+09:15:35 [APP] request=1 synthetic=1 queued=1
+09:15:35 [APP] id=1116 seq=116 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:35 [LOG] seq=338 event=1116 not stored: flash error=-9 read=-5 match=0 write_us=591; occupancy and sampling unaffected
+09:15:35 [BENCH] application_event 557 us
+09:15:35 proto=gpio src=T100 len=3 ts=725859 : 01 39 8F
+09:15:35 [MQTT] Status: Connected, Broker: 192.168.1.49
+09:15:35 proto=gpio src=T100 len=3 ts=725959 : 01 9D 8F
+> APP EVENT 1117 117 entry
+09:15:35 [APP] request=1 synthetic=1 queued=1
+09:15:35 [APP] id=1117 seq=117 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:35 [LOG] seq=339 event=1117 not stored: flash error=-9 read=-5 match=0 write_us=384; occupancy and sampling unaffected
+09:15:35 [BENCH] application_event 576 us
+09:15:35 proto=gpio src=T100 len=3 ts=726059 : 01 01 90
+09:15:35 proto=gpio src=DISTANCE len=3 ts=726065 : A9 11 01
+09:15:35 {"sensor":"DISTANCE","timestamp_ms":726066,"distance_cm":77.5,"echo_us":4521,"status":"OK","error":0}
+09:15:35 proto=gpio src=T100 len=3 ts=726159 : 01 65 90
+09:15:35 proto=gpio src=T100 len=3 ts=726259 : 01 C9 90
+> APP EVENT 1118 118 exit
+09:15:35 [APP] request=1 synthetic=1 queued=1
+09:15:35 [APP] id=1118 seq=118 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:35 [LOG] seq=340 event=1118 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:35 [BENCH] application_event 573 us
+09:15:35 proto=gpio src=T100 len=3 ts=726359 : 01 2D 91
+09:15:35 proto=gpio src=T100 len=3 ts=726459 : 01 91 91
+09:15:36 proto=gpio src=T100 len=3 ts=726559 : 01 F5 91
+09:15:36 proto=gpio src=DISTANCE len=3 ts=726563 : DB 0C 01
+09:15:36 {"sensor":"DISTANCE","timestamp_ms":726564,"distance_cm":56.4,"echo_us":3291,"status":"OK","error":0}
+> APP EVENT 1119 119 entry
+09:15:36 [APP] request=1 synthetic=1 queued=1
+09:15:36 [APP] id=1119 seq=119 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:36 [LOG] seq=341 event=1119 not stored: flash error=-9 read=-5 match=0 write_us=392; occupancy and sampling unaffected
+09:15:36 [BENCH] application_event 567 us
+09:15:36 proto=gpio src=T100 len=3 ts=726659 : 01 59 92
+09:15:36 proto=gpio src=T100 len=3 ts=726759 : 01 BD 92
+09:15:36 proto=gpio src=T100 len=3 ts=726859 : 01 21 93
+> APP EVENT 1120 120 exit
+09:15:36 [APP] request=1 synthetic=1 queued=1
+09:15:36 [APP] id=1120 seq=120 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:36 [LOG] seq=342 event=1120 not stored: flash error=-9 read=-5 match=0 write_us=441; occupancy and sampling unaffected
+09:15:36 [BENCH] application_event 595 us
+09:15:36 proto=gpio src=T100 len=3 ts=726959 : 01 85 93
+09:15:36 proto=gpio src=T100 len=3 ts=727059 : 01 E9 93
+09:15:36 proto=gpio src=DISTANCE len=3 ts=727065 : E8 0E 01
+09:15:36 {"sensor":"DISTANCE","timestamp_ms":727066,"distance_cm":65.4,"echo_us":3816,"status":"OK","error":0}
+09:15:36 proto=gpio src=T100 len=3 ts=727160 : 01 4E 94
+> APP EVENT 1121 121 entry
+09:15:36 [APP] request=1 synthetic=1 queued=1
+09:15:36 [APP] id=1121 seq=121 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:36 [LOG] seq=343 event=1121 not stored: flash error=-9 read=-5 match=0 write_us=614; occupancy and sampling unaffected
+09:15:36 [BENCH] application_event 534 us
+09:15:36 proto=gpio src=T100 len=3 ts=727259 : 01 B1 94
+09:15:36 proto=gpio src=T100 len=3 ts=727359 : 01 15 95
+> APP EVENT 1122 122 exit
+09:15:36 [APP] request=1 synthetic=1 queued=1
+09:15:36 [APP] id=1122 seq=122 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:36 [LOG] seq=344 event=1122 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected
+09:15:36 [BENCH] application_event 570 us
+09:15:36 proto=gpio src=T100 len=3 ts=727459 : 01 79 95
+09:15:37 proto=gpio src=T100 len=3 ts=727559 : 01 DD 95
+09:15:37 {"type":"ml","timestamp_ms":727560,"generation":28,"model":"sine-int8","raw_features":[65.4444],"input_source":"sensors","inputs":[1.00159],"outputs":[0.8208047],"invoke_us":513,"status":"OK"}
+09:15:37 proto=gpio src=DISTANCE len=3 ts=727563 : B3 0D 01
+09:15:37 {"sensor":"DISTANCE","timestamp_ms":727564,"distance_cm":60.1,"echo_us":3507,"status":"OK","error":0}
+09:15:37 proto=gpio src=T100 len=3 ts=727659 : 01 41 96
+> APP EVENT 1123 123 entry
+09:15:37 [APP] request=1 synthetic=1 queued=1
+09:15:37 [APP] id=1123 seq=123 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:37 [LOG] seq=345 event=1123 not stored: flash error=-9 read=-5 match=0 write_us=383; occupancy and sampling unaffected
+09:15:37 [BENCH] application_event 590 us
+09:15:37 proto=gpio src=T100 len=3 ts=727759 : 01 A5 96
+09:15:37 proto=gpio src=T100 len=3 ts=727859 : 01 09 97
+09:15:37 proto=gpio src=T100 len=3 ts=727959 : 01 6D 97
+> APP EVENT 1124 124 exit
+09:15:37 [APP] request=1 synthetic=1 queued=1
+09:15:37 [APP] id=1124 seq=124 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:37 [LOG] seq=346 event=1124 not stored: flash error=-9 read=-5 match=0 write_us=405; occupancy and sampling unaffected
+09:15:37 [BENCH] application_event 573 us
+09:15:37 proto=gpio src=T100 len=3 ts=728059 : 01 D1 97
+09:15:37 proto=gpio src=DISTANCE len=3 ts=728068 : 24 21 01
+09:15:37 {"sensor":"DISTANCE","timestamp_ms":728069,"distance_cm":145.5,"echo_us":8484,"status":"OK","error":0}
+09:15:37 proto=gpio src=T100 len=3 ts=728160 : 01 36 98
+09:15:37 proto=gpio src=T100 len=3 ts=728259 : 01 99 98
+> APP EVENT 1125 125 entry
+09:15:37 [APP] request=1 synthetic=1 queued=1
+09:15:37 [APP] id=1125 seq=125 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:37 [LOG] seq=347 event=1125 not stored: flash error=-9 read=-5 match=0 write_us=387; occupancy and sampling unaffected
+09:15:37 [BENCH] application_event 571 us
+09:15:37 proto=gpio src=T100 len=3 ts=728359 : 01 FD 98
+09:15:37 proto=gpio src=T100 len=3 ts=728459 : 01 61 99
+09:15:38 proto=gpio src=T100 len=3 ts=728559 : 01 C5 99
+09:15:38 proto=gpio src=DISTANCE len=3 ts=728564 : 36 0D 01
+09:15:38 {"sensor":"DISTANCE","timestamp_ms":728565,"distance_cm":58.0,"echo_us":3382,"status":"OK","error":0}
+> APP EVENT 1126 126 exit
+09:15:38 [APP] request=1 synthetic=1 queued=1
+09:15:38 [APP] id=1126 seq=126 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:38 [LOG] seq=348 event=1126 not stored: flash error=-9 read=-5 match=0 write_us=510; occupancy and sampling unaffected
+09:15:38 [BENCH] application_event 586 us
+09:15:38 proto=gpio src=T100 len=3 ts=728659 : 01 29 9A
+09:15:38 proto=gpio src=T100 len=3 ts=728760 : 01 8E 9A
+09:15:38 proto=gpio src=T100 len=3 ts=728859 : 01 F1 9A
+> APP EVENT 1127 127 entry
+09:15:38 [APP] request=1 synthetic=1 queued=1
+09:15:38 [APP] id=1127 seq=127 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:38 [LOG] seq=349 event=1127 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:38 [BENCH] application_event 584 us
+09:15:38 proto=gpio src=T100 len=3 ts=728959 : 01 55 9B
+09:15:38 proto=gpio src=T100 len=3 ts=729059 : 01 B9 9B
+09:15:38 proto=gpio src=DISTANCE len=3 ts=729063 : 5B 0C 01
+09:15:38 {"sensor":"DISTANCE","timestamp_ms":729064,"distance_cm":54.2,"echo_us":3163,"status":"OK","error":0}
+> APP EVENT 1128 128 exit
+09:15:38 [APP] request=1 synthetic=1 queued=1
+09:15:38 [APP] id=1128 seq=128 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:38 [LOG] seq=350 event=1128 not stored: flash error=-9 read=-5 match=0 write_us=401; occupancy and sampling unaffected
+09:15:38 [BENCH] application_event 569 us
+09:15:38 proto=gpio src=T100 len=3 ts=729159 : 01 1D 9C
+09:15:38 proto=gpio src=T100 len=3 ts=729259 : 01 81 9C
+09:15:38 proto=gpio src=T100 len=3 ts=729359 : 01 E5 9C
+> APP EVENT 1129 129 entry
+09:15:38 [APP] request=1 synthetic=1 queued=1
+09:15:38 [APP] id=1129 seq=129 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:38 [LOG] seq=351 event=1129 not stored: flash error=-9 read=-5 match=0 write_us=390; occupancy and sampling unaffected
+09:15:38 [BENCH] application_event 596 us
+09:15:38 proto=gpio src=T100 len=3 ts=729459 : 01 49 9D
+09:15:39 proto=gpio src=T100 len=3 ts=729560 : 01 AE 9D
+09:15:39 {"type":"ml","timestamp_ms":729561,"generation":28,"model":"sine-int8","raw_features":[54.24545],"input_source":"sensors","inputs":[0.8247936],"outputs":[0.7213132],"invoke_us":508,"status":"OK"}
+09:15:39 proto=gpio src=DISTANCE len=3 ts=729566 : 7A 12 01
+09:15:39 {"sensor":"DISTANCE","timestamp_ms":729567,"distance_cm":81.1,"echo_us":4730,"status":"OK","error":0}
+09:15:39 proto=gpio src=T100 len=3 ts=729660 : 01 12 9E
+> APP EVENT 1130 130 exit
+09:15:39 [APP] request=1 synthetic=1 queued=1
+09:15:39 [APP] id=1130 seq=130 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:39 [LOG] seq=352 event=1130 not stored: flash error=-9 read=-5 match=0 write_us=387; occupancy and sampling unaffected
+09:15:39 [BENCH] application_event 570 us
+09:15:39 proto=gpio src=T100 len=3 ts=729759 : 01 75 9E
+09:15:39 proto=gpio src=T100 len=3 ts=729859 : 01 D9 9E
+09:15:39 proto=gpio src=T100 len=3 ts=729959 : 01 3D 9F
+> APP EVENT 1131 131 entry
+09:15:39 [APP] request=1 synthetic=1 queued=1
+09:15:39 [APP] id=1131 seq=131 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:39 [LOG] seq=353 event=1131 not stored: flash error=-7 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:39 [BENCH] application_event 605 us
+09:15:39 proto=gpio src=T100 len=3 ts=730059 : 01 A1 9F
+09:15:39 proto=gpio src=DISTANCE len=3 ts=730068 : 0F 21 01
+09:15:39 {"sensor":"DISTANCE","timestamp_ms":730069,"distance_cm":145.1,"echo_us":8463,"status":"OK","error":0}
+09:15:39 proto=gpio src=T100 len=3 ts=730159 : 01 05 A0
+09:15:39 proto=gpio src=T100 len=3 ts=730259 : 01 69 A0
+> APP EVENT 1132 132 exit
+09:15:39 [APP] request=1 synthetic=1 queued=1
+09:15:39 [APP] id=1132 seq=132 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:39 [LOG] seq=354 event=1132 not stored: flash error=-9 read=-5 match=0 write_us=680; occupancy and sampling unaffected
+09:15:39 [BENCH] application_event 653 us
+09:15:39 proto=gpio src=T100 len=3 ts=730359 : 01 CD A0
+09:15:39 proto=gpio src=T100 len=3 ts=730459 : 01 31 A1
+> APP EVENT 1133 133 entry
+09:15:40 [APP] request=1 synthetic=1 queued=1
+09:15:40 [APP] id=1133 seq=133 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:40 [LOG] seq=355 event=1133 not stored: flash error=-9 read=-5 match=0 write_us=387; occupancy and sampling unaffected
+09:15:40 [BENCH] application_event 570 us
+09:15:40 proto=gpio src=T100 len=3 ts=730559 : 01 95 A1
+09:15:40 proto=gpio src=DISTANCE len=3 ts=730568 : 0F 21 01
+09:15:40 {"sensor":"DISTANCE","timestamp_ms":730569,"distance_cm":145.1,"echo_us":8463,"status":"OK","error":0}
+09:15:40 proto=gpio src=T100 len=3 ts=730660 : 01 FA A1
+09:15:40 proto=gpio src=T100 len=3 ts=730759 : 01 5D A2
+> APP EVENT 1134 134 exit
+09:15:40 [APP] request=1 synthetic=1 queued=1
+09:15:40 [APP] id=1134 seq=134 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:40 [LOG] seq=356 event=1134 not stored: flash error=-9 read=-5 match=0 write_us=384; occupancy and sampling unaffected
+09:15:40 [BENCH] application_event 574 us
+09:15:40 proto=gpio src=T100 len=3 ts=730859 : 01 C1 A2
+09:15:40 [MQTT] Status: Connected, Broker: 192.168.1.49
+09:15:40 proto=gpio src=T100 len=3 ts=730959 : 01 25 A3
+09:15:40 proto=gpio src=T100 len=3 ts=731059 : 01 89 A3
+09:15:40 proto=gpio src=DISTANCE len=3 ts=731067 : 18 1A 01
+09:15:40 {"sensor":"DISTANCE","timestamp_ms":731068,"distance_cm":114.6,"echo_us":6680,"status":"OK","error":0}
+> APP EVENT 1135 135 entry
+09:15:40 [APP] request=1 synthetic=1 queued=1
+09:15:40 [APP] id=1135 seq=135 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:40 [LOG] seq=357 event=1135 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:40 [BENCH] application_event 592 us
+09:15:40 proto=gpio src=T100 len=3 ts=731159 : 01 ED A3
+09:15:40 proto=gpio src=T100 len=3 ts=731259 : 01 51 A4
+09:15:40 proto=gpio src=T100 len=3 ts=731359 : 01 B5 A4
+> APP EVENT 1136 136 exit
+09:15:40 [APP] request=1 synthetic=1 queued=1
+09:15:40 [APP] id=1136 seq=136 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:40 [LOG] seq=358 event=1136 not stored: flash error=-9 read=-5 match=0 write_us=393; occupancy and sampling unaffected
+09:15:40 [BENCH] application_event 575 us
+09:15:40 proto=gpio src=T100 len=3 ts=731459 : 01 19 A5
+09:15:41 proto=gpio src=T100 len=3 ts=731559 : 01 7D A5
+09:15:41 {"type":"ml","timestamp_ms":731561,"generation":28,"model":"sine-int8","raw_features":[114.562],"input_source":"sensors","inputs":[1.777005],"outputs":[0.9700419],"invoke_us":734,"status":"OK"}
+09:15:41 proto=gpio src=DISTANCE len=3 ts=731565 : 18 0D 01
+09:15:41 {"sensor":"DISTANCE","timestamp_ms":731566,"distance_cm":57.5,"echo_us":3352,"status":"OK","error":0}
+09:15:41 proto=gpio src=T100 len=3 ts=731660 : 01 E2 A5
+> APP EVENT 1137 137 entry
+09:15:41 [APP] request=1 synthetic=1 queued=1
+09:15:41 [APP] id=1137 seq=137 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:41 [LOG] seq=359 event=1137 not stored: flash error=-9 read=-5 match=0 write_us=385; occupancy and sampling unaffected
+09:15:41 [BENCH] application_event 588 us
+09:15:41 proto=gpio src=T100 len=3 ts=731759 : 01 45 A6
+09:15:41 proto=gpio src=T100 len=3 ts=731859 : 01 A9 A6
+> APP EVENT 1138 138 exit
+09:15:41 [APP] request=1 synthetic=1 queued=1
+09:15:41 [APP] id=1138 seq=138 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:41 [LOG] seq=360 event=1138 not stored: flash error=-7 read=-5 match=0 write_us=479; occupancy and sampling unaffected
+09:15:41 [BENCH] application_event 548 us
+09:15:41 proto=gpio src=T100 len=3 ts=731959 : 01 0D A7
+09:15:41 proto=gpio src=T100 len=3 ts=732059 : 01 71 A7
+09:15:41 proto=gpio src=DISTANCE len=3 ts=732065 : 4E 10 01
+09:15:41 {"sensor":"DISTANCE","timestamp_ms":732066,"distance_cm":71.6,"echo_us":4174,"status":"OK","error":0}
+09:15:41 proto=gpio src=T100 len=3 ts=732160 : 01 D6 A7
+> APP EVENT 1139 139 entry
+09:15:41 [APP] request=1 synthetic=1 queued=1
+09:15:41 [APP] id=1139 seq=139 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:41 [LOG] seq=361 event=1139 not stored: flash error=-9 read=-5 match=0 write_us=387; occupancy and sampling unaffected
+09:15:41 [BENCH] application_event 576 us
+09:15:41 proto=gpio src=T100 len=3 ts=732259 : 01 39 A8
+09:15:41 proto=gpio src=T100 len=3 ts=732359 : 01 9D A8
+09:15:41 proto=gpio src=T100 len=3 ts=732459 : 01 01 A9
+> APP EVENT 1140 140 exit
+09:15:42 [APP] request=1 synthetic=1 queued=1
+09:15:42 [APP] id=1140 seq=140 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:42 [LOG] seq=362 event=1140 not stored: flash error=-9 read=-5 match=0 write_us=384; occupancy and sampling unaffected
+09:15:42 [BENCH] application_event 688 us
+09:15:42 proto=gpio src=T100 len=3 ts=732559 : 01 65 A9
+09:15:42 proto=gpio src=DISTANCE len=3 ts=732563 : C9 0C 01
+09:15:42 {"sensor":"DISTANCE","timestamp_ms":732564,"distance_cm":56.1,"echo_us":3273,"status":"OK","error":0}
+09:15:42 proto=gpio src=T100 len=3 ts=732659 : 01 C9 A9
+09:15:42 proto=gpio src=T100 len=3 ts=732759 : 01 2D AA
+> APP EVENT 1141 141 entry
+09:15:42 [APP] request=1 synthetic=1 queued=1
+09:15:42 [APP] id=1141 seq=141 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:42 [LOG] seq=363 event=1141 not stored: flash error=-9 read=-5 match=0 write_us=383; occupancy and sampling unaffected
+09:15:42 [BENCH] application_event 575 us
+09:15:42 proto=gpio src=T100 len=3 ts=732859 : 01 91 AA
+09:15:42 proto=gpio src=T100 len=3 ts=732959 : 01 F5 AA
+09:15:42 proto=gpio src=T100 len=3 ts=733059 : 01 59 AB
+> APP EVENT 1142 142 exit
+09:15:42 [APP] request=1 synthetic=1 queued=1
+09:15:42 [APP] id=1142 seq=142 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:42 [LOG] seq=364 event=1142 not stored: flash error=-9 read=-5 match=0 write_us=384; occupancy and sampling unaffected
+09:15:42 [BENCH] application_event 585 us
+09:15:42 proto=gpio src=DISTANCE len=3 ts=733071 : D8 29 01
+09:15:42 {"sensor":"DISTANCE","timestamp_ms":733072,"distance_cm":183.7,"echo_us":10712,"status":"OK","error":0}
+09:15:42 proto=gpio src=T100 len=3 ts=733159 : 01 BD AB
+09:15:42 proto=gpio src=T100 len=3 ts=733259 : 01 21 AC
+> APP EVENT 1143 143 entry
+09:15:42 [APP] request=1 synthetic=1 queued=1
+09:15:42 [APP] id=1143 seq=143 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:42 [LOG] seq=365 event=1143 not stored: flash error=-9 read=-5 match=0 write_us=387; occupancy and sampling unaffected
+09:15:42 [BENCH] application_event 587 us
+09:15:42 proto=gpio src=T100 len=3 ts=733359 : 01 85 AC
+09:15:42 proto=gpio src=T100 len=3 ts=733459 : 01 E9 AC
+09:15:42 proto=gpio src=T100 len=3 ts=733559 : 01 4D AD
+09:15:43 {"type":"ml","timestamp_ms":733561,"generation":28,"model":"sine-int8","raw_features":[183.7108],"input_source":"sensors","inputs":[2.86865],"outputs":[0.2653106],"invoke_us":731,"status":"OK"}
+09:15:43 proto=gpio src=DISTANCE len=3 ts=733565 : C3 0D 01
+09:15:43 {"sensor":"DISTANCE","timestamp_ms":733566,"distance_cm":60.4,"echo_us":3523,"status":"OK","error":0}
+> APP EVENT 1144 144 exit
+09:15:43 [APP] request=1 synthetic=1 queued=1
+09:15:43 [APP] id=1144 seq=144 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:43 [LOG] seq=366 event=1144 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected
+09:15:43 [BENCH] application_event 567 us
+09:15:43 proto=gpio src=T100 len=3 ts=733660 : 01 B2 AD
+09:15:43 proto=gpio src=T100 len=3 ts=733759 : 01 15 AE
+09:15:43 proto=gpio src=T100 len=3 ts=733859 : 01 79 AE
+> APP EVENT 1145 145 entry
+09:15:43 [APP] request=1 synthetic=1 queued=1
+09:15:43 [APP] id=1145 seq=145 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:43 [LOG] seq=367 event=1145 not stored: flash error=-9 read=-5 match=0 write_us=384; occupancy and sampling unaffected
+09:15:43 [BENCH] application_event 566 us
+09:15:43 proto=gpio src=T100 len=3 ts=733959 : 01 DD AE
+09:15:43 proto=gpio src=T100 len=3 ts=734059 : 01 41 AF
+09:15:43 proto=gpio src=DISTANCE len=3 ts=734065 : 98 13 01
+09:15:43 {"sensor":"DISTANCE","timestamp_ms":734066,"distance_cm":86.0,"echo_us":5016,"status":"OK","error":0}
+09:15:43 proto=gpio src=T100 len=3 ts=734160 : 01 A6 AF
+> APP EVENT 1146 146 exit
+09:15:43 [APP] request=1 synthetic=1 queued=1
+09:15:43 [APP] id=1146 seq=146 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:43 [LOG] seq=368 event=1146 not stored: flash error=-9 read=-5 match=0 write_us=403; occupancy and sampling unaffected
+09:15:43 [BENCH] application_event 577 us
+09:15:43 proto=gpio src=T100 len=3 ts=734259 : 01 09 B0
+09:15:43 proto=gpio src=T100 len=3 ts=734359 : 01 6D B0
+09:15:43 proto=gpio src=T100 len=3 ts=734459 : 01 D1 B0
+> APP EVENT 1147 147 entry
+09:15:43 [APP] request=1 synthetic=1 queued=1
+09:15:43 [APP] id=1147 seq=147 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:43 [LOG] seq=369 event=1147 not stored: flash error=-9 read=-5 match=0 write_us=640; occupancy and sampling unaffected
+09:15:43 [BENCH] application_event 608 us
+09:15:44 proto=gpio src=T100 len=3 ts=734559 : 01 35 B1
+09:15:44 proto=gpio src=DISTANCE len=3 ts=734563 : E5 0C 01
+09:15:44 {"sensor":"DISTANCE","timestamp_ms":734564,"distance_cm":56.6,"echo_us":3301,"status":"OK","error":0}
+09:15:44 proto=gpio src=T100 len=3 ts=734659 : 01 99 B1
+> APP EVENT 1148 148 exit
+09:15:44 [APP] request=1 synthetic=1 queued=1
+09:15:44 [APP] id=1148 seq=148 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:44 [LOG] seq=370 event=1148 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected
+09:15:44 [BENCH] application_event 586 us
+09:15:44 proto=gpio src=T100 len=3 ts=734759 : 01 FD B1
+09:15:44 proto=gpio src=T100 len=3 ts=734859 : 01 61 B2
+09:15:44 proto=gpio src=T100 len=3 ts=734959 : 01 C5 B2
+> APP EVENT 1149 149 entry
+09:15:44 [APP] request=1 synthetic=1 queued=1
+09:15:44 [APP] id=1149 seq=149 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:44 [LOG] seq=371 event=1149 not stored: flash error=-9 read=-5 match=0 write_us=385; occupancy and sampling unaffected
+09:15:44 [BENCH] application_event 649 us
+09:15:44 proto=gpio src=T100 len=3 ts=735059 : 01 29 B3
+09:15:44 proto=gpio src=DISTANCE len=3 ts=735069 : FE 23 01
+09:15:44 {"sensor":"DISTANCE","timestamp_ms":735070,"distance_cm":158.0,"echo_us":9214,"status":"OK","error":0}
+09:15:44 proto=gpio src=T100 len=3 ts=735160 : 01 8E B3
+09:15:44 proto=gpio src=T100 len=3 ts=735259 : 01 F1 B3
+> APP EVENT 1150 150 exit
+09:15:44 [APP] request=1 synthetic=1 queued=1
+09:15:44 [APP] id=1150 seq=150 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:44 [LOG] seq=372 event=1150 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:44 [BENCH] application_event 654 us
+09:15:44 proto=gpio src=T100 len=3 ts=735359 : 01 55 B4
+09:15:44 proto=gpio src=T100 len=3 ts=735459 : 01 B9 B4
+09:15:44 proto=gpio src=T100 len=3 ts=735559 : 01 1D B5
+09:15:44 {"type":"ml","timestamp_ms":735561,"generation":28,"model":"sine-int8","raw_features":[158.0201],"input_source":"sensors","inputs":[2.463073],"outputs":[0.6218218],"invoke_us":747,"status":"OK"}
+09:15:44 proto=gpio src=DISTANCE len=3 ts=735565 : B8 0C 01
+09:15:44 {"sensor":"DISTANCE","timestamp_ms":735566,"distance_cm":55.8,"echo_us":3256,"status":"OK","error":0}
+> APP EVENT 1151 151 entry
+09:15:45 [APP] request=1 synthetic=1 queued=1
+09:15:45 [APP] id=1151 seq=151 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:45 [LOG] seq=373 event=1151 not stored: flash error=-9 read=-5 match=0 write_us=585; occupancy and sampling unaffected
+09:15:45 [BENCH] application_event 580 us
+09:15:45 proto=gpio src=T100 len=3 ts=735660 : 01 82 B5
+09:15:45 proto=gpio src=T100 len=3 ts=735759 : 01 E5 B5
+> APP EVENT 1152 152 exit
+09:15:45 [APP] request=1 synthetic=1 queued=1
+09:15:45 [APP] id=1152 seq=152 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:45 [LOG] seq=374 event=1152 not stored: flash error=-9 read=-5 match=0 write_us=383; occupancy and sampling unaffected
+09:15:45 [BENCH] application_event 569 us
+09:15:45 proto=gpio src=T100 len=3 ts=735859 : 01 49 B6
+09:15:45 [MQTT] Status: Connected, Broker: 192.168.1.49
+09:15:45 proto=gpio src=T100 len=3 ts=735959 : 01 AD B6
+09:15:45 proto=gpio src=T100 len=3 ts=736059 : 01 11 B7
+09:15:45 proto=gpio src=DISTANCE len=3 ts=736069 : C6 20 01
+09:15:45 {"sensor":"DISTANCE","timestamp_ms":736070,"distance_cm":143.9,"echo_us":8390,"status":"OK","error":0}
+> APP EVENT 1153 153 entry
+09:15:45 [APP] request=1 synthetic=1 queued=1
+09:15:45 [APP] id=1153 seq=153 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:45 [LOG] seq=375 event=1153 not stored: flash error=-9 read=-5 match=0 write_us=388; occupancy and sampling unaffected
+09:15:45 [BENCH] application_event 616 us
+09:15:45 proto=gpio src=T100 len=3 ts=736160 : 01 76 B7
+09:15:45 proto=gpio src=T100 len=3 ts=736259 : 01 D9 B7
+09:15:45 proto=gpio src=T100 len=3 ts=736359 : 01 3D B8
+> APP EVENT 1154 154 exit
+09:15:45 [APP] request=1 synthetic=1 queued=1
+09:15:45 [APP] id=1154 seq=154 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:45 [LOG] seq=376 event=1154 not stored: flash error=-9 read=-5 match=0 write_us=471; occupancy and sampling unaffected
+09:15:45 [BENCH] application_event 567 us
+09:15:45 proto=gpio src=T100 len=3 ts=736459 : 01 A1 B8
+09:15:45 proto=gpio src=T100 len=3 ts=736559 : 01 05 B9
+09:15:45 proto=gpio src=DISTANCE len=3 ts=736563 : 76 0C 01
+09:15:45 {"sensor":"DISTANCE","timestamp_ms":736564,"distance_cm":54.7,"echo_us":3190,"status":"OK","error":0}
+09:15:46 proto=gpio src=T100 len=3 ts=736659 : 01 69 B9
+> APP EVENT 1155 155 entry
+09:15:46 [APP] request=1 synthetic=1 queued=1
+09:15:46 [APP] id=1155 seq=155 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:46 [LOG] seq=377 event=1155 not stored: flash error=-9 read=-5 match=0 write_us=392; occupancy and sampling unaffected
+09:15:46 [BENCH] application_event 573 us
+09:15:46 proto=gpio src=T100 len=3 ts=736759 : 01 CD B9
+09:15:46 proto=gpio src=T100 len=3 ts=736859 : 01 31 BA
+09:15:46 proto=gpio src=T100 len=3 ts=736959 : 01 95 BA
+> APP EVENT 1156 156 exit
+09:15:46 [APP] request=1 synthetic=1 queued=1
+09:15:46 [APP] id=1156 seq=156 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:46 [LOG] seq=378 event=1156 not stored: flash error=-9 read=-5 match=0 write_us=385; occupancy and sampling unaffected
+09:15:46 [BENCH] application_event 585 us
+09:15:46 proto=gpio src=T100 len=3 ts=737059 : 01 F9 BA
+09:15:46 proto=gpio src=DISTANCE len=3 ts=737069 : 95 20 01
+09:15:46 {"sensor":"DISTANCE","timestamp_ms":737070,"distance_cm":143.0,"echo_us":8341,"status":"OK","error":0}
+09:15:46 proto=gpio src=T100 len=3 ts=737159 : 01 5D BB
+> APP EVENT 1157 157 entry
+09:15:46 [APP] request=1 synthetic=1 queued=1
+09:15:46 [APP] id=1157 seq=157 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:46 [LOG] seq=379 event=1157 not stored: flash error=-9 read=-5 match=0 write_us=391; occupancy and sampling unaffected
+09:15:46 [BENCH] application_event 570 us
+09:15:46 proto=gpio src=T100 len=3 ts=737259 : 01 C1 BB
+09:15:46 proto=gpio src=T100 len=3 ts=737359 : 01 25 BC
+09:15:46 proto=gpio src=T100 len=3 ts=737460 : 01 8A BC
+> APP EVENT 1158 158 exit
+09:15:47 [APP] request=1 synthetic=1 queued=1
+09:15:47 [APP] id=1158 seq=158 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:47 [LOG] seq=380 event=1158 not stored: flash error=-9 read=-5 match=0 write_us=388; occupancy and sampling unaffected
+09:15:47 [BENCH] application_event 570 us
+09:15:47 proto=gpio src=T100 len=3 ts=737559 : 01 ED BC
+09:15:47 {"type":"ml","timestamp_ms":737562,"generation":28,"model":"sine-int8","raw_features":[143.0481],"input_source":"sensors","inputs":[2.226713],"outputs":[0.7544771],"invoke_us":663,"status":"OK"}
+09:15:47 proto=gpio src=DISTANCE len=3 ts=737566 : 7C 11 01
+09:15:47 {"sensor":"DISTANCE","timestamp_ms":737567,"distance_cm":76.8,"echo_us":4476,"status":"OK","error":0}
+09:15:47 proto=gpio src=T100 len=3 ts=737659 : 01 51 BD
+09:15:47 proto=gpio src=T100 len=3 ts=737759 : 01 B5 BD
+> APP EVENT 1159 159 entry
+09:15:47 [APP] request=1 synthetic=1 queued=1
+09:15:47 [APP] id=1159 seq=159 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:47 [LOG] seq=381 event=1159 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:47 [BENCH] application_event 591 us
+09:15:47 proto=gpio src=T100 len=3 ts=737859 : 01 19 BE
+09:15:47 proto=gpio src=T100 len=3 ts=737959 : 01 7D BE
+09:15:47 proto=gpio src=T100 len=3 ts=738059 : 01 E1 BE
+09:15:47 proto=gpio src=DISTANCE len=3 ts=738063 : ED 0B 01
+09:15:47 {"sensor":"DISTANCE","timestamp_ms":738064,"distance_cm":52.4,"echo_us":3053,"status":"OK","error":0}
+> APP EVENT 1160 160 exit
+09:15:47 [APP] request=1 synthetic=1 queued=1
+09:15:47 [APP] id=1160 seq=160 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:47 [LOG] seq=382 event=1160 not stored: flash error=-9 read=-5 match=0 write_us=533; occupancy and sampling unaffected
+09:15:47 [BENCH] application_event 728 us
+09:15:47 proto=gpio src=T100 len=3 ts=738159 : 01 45 BF
+09:15:47 proto=gpio src=T100 len=3 ts=738259 : 01 A9 BF
+09:15:47 proto=gpio src=T100 len=3 ts=738359 : 01 0D C0
+> APP EVENT 1161 161 entry
+09:15:47 [APP] request=1 synthetic=1 queued=1
+09:15:47 [APP] id=1161 seq=161 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:47 [LOG] seq=383 event=1161 not stored: flash error=-9 read=-5 match=0 write_us=630; occupancy and sampling unaffected
+09:15:47 [BENCH] application_event 552 us
+09:15:47 proto=gpio src=T100 len=3 ts=738459 : 01 71 C0
+09:15:48 proto=gpio src=T100 len=3 ts=738559 : 01 D5 C0
+09:15:48 proto=gpio src=DISTANCE len=3 ts=738563 : F2 0D 01
+09:15:48 {"sensor":"DISTANCE","timestamp_ms":738564,"distance_cm":61.2,"echo_us":3570,"status":"OK","error":0}
+> APP EVENT 1162 162 exit
+09:15:48 [APP] request=1 synthetic=1 queued=1
+09:15:48 [APP] id=1162 seq=162 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:48 [LOG] seq=384 event=1162 not stored: flash error=-9 read=-5 match=0 write_us=384; occupancy and sampling unaffected
+09:15:48 [BENCH] application_event 569 us
+09:15:48 proto=gpio src=T100 len=3 ts=738659 : 01 39 C1
+09:15:48 proto=gpio src=T100 len=3 ts=738759 : 01 9D C1
+09:15:48 proto=gpio src=T100 len=3 ts=738859 : 01 01 C2
+> APP EVENT 1163 163 entry
+09:15:48 [APP] request=1 synthetic=1 queued=1
+09:15:48 [APP] id=1163 seq=163 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:48 [LOG] seq=385 event=1163 not stored: flash error=-9 read=-5 match=0 write_us=388; occupancy and sampling unaffected
+09:15:48 [BENCH] application_event 597 us
+09:15:48 proto=gpio src=T100 len=3 ts=738959 : 01 65 C2
+09:15:48 proto=gpio src=T100 len=3 ts=739059 : 01 C9 C2
+09:15:48 proto=gpio src=DISTANCE len=3 ts=739066 : 3C 13 01
+09:15:48 {"sensor":"DISTANCE","timestamp_ms":739067,"distance_cm":84.4,"echo_us":4924,"status":"OK","error":0}
+09:15:48 proto=gpio src=T100 len=3 ts=739159 : 01 2D C3
+> APP EVENT 1164 164 exit
+09:15:48 [APP] request=1 synthetic=1 queued=1
+09:15:48 [APP] id=1164 seq=164 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:48 [LOG] seq=386 event=1164 not stored: flash error=-9 read=-5 match=0 write_us=388; occupancy and sampling unaffected
+09:15:48 [BENCH] application_event 577 us
+09:15:48 proto=gpio src=T100 len=3 ts=739259 : 01 91 C3
+09:15:48 proto=gpio src=T100 len=3 ts=739359 : 01 F5 C3
+09:15:48 proto=gpio src=T100 len=3 ts=739459 : 01 59 C4
+> APP EVENT 1165 165 entry
+09:15:48 [APP] request=1 synthetic=1 queued=1
+09:15:48 [APP] id=1165 seq=165 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:48 [LOG] seq=387 event=1165 not stored: flash error=-9 read=-5 match=0 write_us=382; occupancy and sampling unaffected
+09:15:48 [BENCH] application_event 602 us
+09:15:49 proto=gpio src=T100 len=3 ts=739559 : 01 BD C4
+09:15:49 proto=gpio src=DISTANCE len=3 ts=739563 : 2B 0D 01
+09:15:49 {"sensor":"DISTANCE","timestamp_ms":739564,"distance_cm":57.8,"echo_us":3371,"status":"OK","error":0}
+09:15:49 {"type":"ml","timestamp_ms":739564,"generation":28,"model":"sine-int8","raw_features":[57.81265],"input_source":"sensors","inputs":[0.8811086],"outputs":[0.7378951],"invoke_us":572,"status":"OK"}
+09:15:49 proto=gpio src=T100 len=3 ts=739659 : 01 21 C5
+09:15:49 proto=gpio src=T100 len=3 ts=739759 : 01 85 C5
+> APP EVENT 1166 166 exit
+09:15:49 [APP] request=1 synthetic=1 queued=1
+09:15:49 [APP] id=1166 seq=166 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:49 [LOG] seq=388 event=1166 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:49 [BENCH] application_event 634 us
+09:15:49 proto=gpio src=T100 len=3 ts=739859 : 01 E9 C5
+09:15:49 proto=gpio src=T100 len=3 ts=739959 : 01 4D C6
+09:15:49 proto=gpio src=T100 len=3 ts=740059 : 01 B1 C6
+09:15:49 proto=gpio src=DISTANCE len=3 ts=740063 : 3F 0C 01
+09:15:49 {"sensor":"DISTANCE","timestamp_ms":740064,"distance_cm":53.8,"echo_us":3135,"status":"OK","error":0}
+> APP EVENT 1167 167 entry
+09:15:49 [APP] request=1 synthetic=1 queued=1
+09:15:49 [APP] id=1167 seq=167 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:49 [LOG] seq=389 event=1167 not stored: flash error=-9 read=-5 match=0 write_us=656; occupancy and sampling unaffected
+09:15:49 [BENCH] application_event 674 us
+09:15:49 proto=gpio src=T100 len=3 ts=740159 : 01 15 C7
+09:15:49 proto=gpio src=T100 len=3 ts=740259 : 01 79 C7
+> APP EVENT 1168 168 exit
+09:15:49 [APP] request=1 synthetic=1 queued=1
+09:15:49 [APP] id=1168 seq=168 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:49 [LOG] seq=390 event=1168 not stored: flash error=-9 read=-5 match=0 write_us=387; occupancy and sampling unaffected
+09:15:49 [BENCH] application_event 581 us
+09:15:49 proto=gpio src=T100 len=3 ts=740359 : 01 DD C7
+09:15:49 proto=gpio src=T100 len=3 ts=740459 : 01 41 C8
+09:15:50 proto=gpio src=T100 len=3 ts=740559 : 01 A5 C8
+09:15:50 proto=gpio src=DISTANCE len=3 ts=740565 : C6 0E 01
+09:15:50 {"sensor":"DISTANCE","timestamp_ms":740566,"distance_cm":64.9,"echo_us":3782,"status":"OK","error":0}
+> APP EVENT 1169 169 entry
+09:15:50 [APP] request=1 synthetic=1 queued=1
+09:15:50 [APP] id=1169 seq=169 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:50 [LOG] seq=391 event=1169 not stored: flash error=-9 read=-5 match=0 write_us=409; occupancy and sampling unaffected
+09:15:50 [BENCH] application_event 590 us
+09:15:50 proto=gpio src=T100 len=3 ts=740659 : 01 09 C9
+09:15:50 proto=gpio src=T100 len=3 ts=740759 : 01 6D C9
+09:15:50 proto=gpio src=T100 len=3 ts=740859 : 01 D1 C9
+> APP EVENT 1170 170 exit
+09:15:50 [APP] request=1 synthetic=1 queued=1
+09:15:50 [APP] id=1170 seq=170 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:50 [LOG] seq=392 event=1170 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected
+09:15:50 [BENCH] application_event 582 us
+09:15:50 [MQTT] Status: Connected, Broker: 192.168.1.49
+09:15:50 proto=gpio src=T100 len=3 ts=740959 : 01 35 CA
+09:15:50 proto=gpio src=T100 len=3 ts=741059 : 01 99 CA
+09:15:50 proto=gpio src=DISTANCE len=3 ts=741063 : 70 0E 01
+09:15:50 {"sensor":"DISTANCE","timestamp_ms":741064,"distance_cm":63.4,"echo_us":3696,"status":"OK","error":0}
+09:15:50 proto=gpio src=T100 len=3 ts=741159 : 01 FD CA
+> APP EVENT 1171 171 entry
+09:15:50 [APP] request=1 synthetic=1 queued=1
+09:15:50 [APP] id=1171 seq=171 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:50 [LOG] seq=393 event=1171 not stored: flash error=-9 read=-5 match=0 write_us=416; occupancy and sampling unaffected
+09:15:50 [BENCH] application_event 609 us
+09:15:50 proto=gpio src=T100 len=3 ts=741259 : 01 61 CB
+09:15:50 proto=gpio src=T100 len=3 ts=741359 : 01 C5 CB
+> APP EVENT 1172 172 exit
+09:15:50 [APP] request=1 synthetic=1 queued=1
+09:15:50 [APP] id=1172 seq=172 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:50 [LOG] seq=394 event=1172 not stored: flash error=-9 read=-5 match=0 write_us=390; occupancy and sampling unaffected
+09:15:50 [BENCH] application_event 626 us
+09:15:50 proto=gpio src=T100 len=3 ts=741459 : 01 29 CC
+09:15:51 proto=gpio src=T100 len=3 ts=741559 : 01 8D CC
+09:15:51 proto=gpio src=DISTANCE len=3 ts=741563 : 57 0C 01
+09:15:51 {"sensor":"DISTANCE","timestamp_ms":741564,"distance_cm":54.2,"echo_us":3159,"status":"OK","error":0}
+09:15:51 {"type":"ml","timestamp_ms":741564,"generation":28,"model":"sine-int8","raw_features":[54.17685],"input_source":"sensors","inputs":[0.8237106],"outputs":[0.7213132],"invoke_us":500,"status":"OK"}
+09:15:51 proto=gpio src=T100 len=3 ts=741659 : 01 F1 CC
+> APP EVENT 1173 173 entry
+09:15:51 [APP] request=1 synthetic=1 queued=1
+09:15:51 [APP] id=1173 seq=173 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:51 [LOG] seq=395 event=1173 not stored: flash error=-9 read=-5 match=0 write_us=463; occupancy and sampling unaffected
+09:15:51 [BENCH] application_event 583 us
+09:15:51 proto=gpio src=T100 len=3 ts=741759 : 01 55 CD
+09:15:51 proto=gpio src=T100 len=3 ts=741859 : 01 B9 CD
+09:15:51 proto=gpio src=T100 len=3 ts=741959 : 01 1D CE
+> APP EVENT 1174 174 exit
+09:15:51 [APP] request=1 synthetic=1 queued=1
+09:15:51 [APP] id=1174 seq=174 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:51 [LOG] seq=396 event=1174 not stored: flash error=-9 read=-5 match=0 write_us=383; occupancy and sampling unaffected
+09:15:51 [BENCH] application_event 567 us
+09:15:51 proto=gpio src=T100 len=3 ts=742059 : 01 81 CE
+09:15:51 proto=gpio src=DISTANCE len=3 ts=742063 : 50 0C 01
+09:15:51 {"sensor":"DISTANCE","timestamp_ms":742064,"distance_cm":54.1,"echo_us":3152,"status":"OK","error":0}
+09:15:51 proto=gpio src=T100 len=3 ts=742159 : 01 E5 CE
+09:15:51 proto=gpio src=T100 len=3 ts=742259 : 01 49 CF
+> APP EVENT 1175 175 entry
+09:15:51 [APP] request=1 synthetic=1 queued=1
+09:15:51 [APP] id=1175 seq=175 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:51 [LOG] seq=397 event=1175 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected
+09:15:51 [BENCH] application_event 582 us
+09:15:51 proto=gpio src=T100 len=3 ts=742359 : 01 AD CF
+09:15:51 proto=gpio src=T100 len=3 ts=742459 : 01 11 D0
+09:15:51 proto=gpio src=T100 len=3 ts=742560 : 01 76 D0
+> APP EVENT 1176 176 exit
+09:15:52 [APP] request=1 synthetic=1 queued=1
+09:15:52 [APP] id=1176 seq=176 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:52 [LOG] seq=398 event=1176 not stored: flash error=-9 read=-5 match=0 write_us=622; occupancy and sampling unaffected
+09:15:52 [BENCH] application_event 516 us
+09:15:52 proto=gpio src=DISTANCE len=3 ts=742564 : E4 0D 01
+09:15:52 {"sensor":"DISTANCE","timestamp_ms":742565,"distance_cm":61.0,"echo_us":3556,"status":"OK","error":0}
+09:15:52 proto=gpio src=T100 len=3 ts=742659 : 01 D9 D0
+09:15:52 proto=gpio src=T100 len=3 ts=742759 : 01 3D D1
+> APP EVENT 1177 177 entry
+09:15:52 [APP] request=1 synthetic=1 queued=1
+09:15:52 [APP] id=1177 seq=177 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:52 [LOG] seq=399 event=1177 not stored: flash error=-9 read=-5 match=0 write_us=390; occupancy and sampling unaffected
+09:15:52 [BENCH] application_event 590 us
+09:15:52 proto=gpio src=T100 len=3 ts=742859 : 01 A1 D1
+09:15:52 proto=gpio src=T100 len=3 ts=742959 : 01 05 D2
+09:15:52 proto=gpio src=T100 len=3 ts=743059 : 01 69 D2
+09:15:52 proto=gpio src=DISTANCE len=3 ts=743063 : B3 0B 01
+09:15:52 {"sensor":"DISTANCE","timestamp_ms":743064,"distance_cm":51.4,"echo_us":2995,"status":"OK","error":0}
+> APP EVENT 1178 178 exit
+09:15:52 [APP] request=1 synthetic=1 queued=1
+09:15:52 [APP] id=1178 seq=178 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:52 [LOG] seq=400 event=1178 not stored: flash error=-9 read=-5 match=0 write_us=390; occupancy and sampling unaffected
+09:15:52 [BENCH] application_event 576 us
+09:15:52 proto=gpio src=T100 len=3 ts=743159 : 01 CD D2
+09:15:52 proto=gpio src=T100 len=3 ts=743259 : 01 31 D3
+09:15:52 proto=gpio src=T100 len=3 ts=743359 : 01 95 D3
+> APP EVENT 1179 179 entry
+09:15:52 [APP] request=1 synthetic=1 queued=1
+09:15:52 [APP] id=1179 seq=179 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:52 [LOG] seq=401 event=1179 not stored: flash error=-9 read=-5 match=0 write_us=384; occupancy and sampling unaffected
+09:15:52 [BENCH] application_event 569 us
+09:15:52 proto=gpio src=T100 len=3 ts=743459 : 01 F9 D3
+09:15:53 proto=gpio src=T100 len=3 ts=743559 : 01 5D D4
+09:15:53 proto=gpio src=DISTANCE len=3 ts=743563 : D6 0C 01
+09:15:53 {"sensor":"DISTANCE","timestamp_ms":743564,"distance_cm":56.4,"echo_us":3286,"status":"OK","error":0}
+09:15:53 {"type":"ml","timestamp_ms":743564,"generation":28,"model":"sine-int8","raw_features":[56.3549],"input_source":"sensors","inputs":[0.8580952],"outputs":[0.7461861],"invoke_us":492,"status":"OK"}
+09:15:53 proto=gpio src=T100 len=3 ts=743659 : 01 C1 D4
+> APP EVENT 1180 180 exit
+09:15:53 [APP] request=1 synthetic=1 queued=1
+09:15:53 [APP] id=1180 seq=180 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:53 [LOG] seq=402 event=1180 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:53 [BENCH] application_event 592 us
+09:15:53 proto=gpio src=T100 len=3 ts=743759 : 01 25 D5
+09:15:53 proto=gpio src=T100 len=3 ts=743859 : 01 89 D5
+> APP EVENT 1181 181 entry
+09:15:53 [APP] request=1 synthetic=1 queued=1
+09:15:53 [APP] id=1181 seq=181 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:53 [LOG] seq=403 event=1181 not stored: flash error=-9 read=-5 match=0 write_us=390; occupancy and sampling unaffected
+09:15:53 [BENCH] application_event 606 us
+09:15:53 proto=gpio src=T100 len=3 ts=743959 : 01 ED D5
+09:15:53 proto=gpio src=T100 len=3 ts=744059 : 01 51 D6
+09:15:53 proto=gpio src=DISTANCE len=3 ts=744065 : 89 11 01
+09:15:53 {"sensor":"DISTANCE","timestamp_ms":744066,"distance_cm":77.0,"echo_us":4489,"status":"OK","error":0}
+09:15:53 proto=gpio src=T100 len=3 ts=744160 : 01 B6 D6
+> APP EVENT 1182 182 exit
+09:15:53 [APP] request=1 synthetic=1 queued=1
+09:15:53 [APP] id=1182 seq=182 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:53 [LOG] seq=404 event=1182 not stored: flash error=-9 read=-5 match=0 write_us=417; occupancy and sampling unaffected
+09:15:53 [BENCH] application_event 637 us
+09:15:53 proto=gpio src=T100 len=3 ts=744259 : 01 19 D7
+09:15:53 proto=gpio src=T100 len=3 ts=744359 : 01 7D D7
+09:15:53 proto=gpio src=T100 len=3 ts=744459 : 01 E1 D7
+> APP EVENT 1183 183 entry
+09:15:53 [APP] request=1 synthetic=1 queued=1
+09:15:53 [APP] id=1183 seq=183 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:53 [LOG] seq=405 event=1183 not stored: flash error=-9 read=-5 match=0 write_us=383; occupancy and sampling unaffected
+09:15:53 [BENCH] application_event 578 us
+09:15:53 proto=gpio src=T100 len=3 ts=744559 : 01 45 D8
+09:15:53 proto=gpio src=DISTANCE len=3 ts=744563 : DD 0C 01
+09:15:53 {"sensor":"DISTANCE","timestamp_ms":744564,"distance_cm":56.5,"echo_us":3293,"status":"OK","error":0}
+09:15:54 proto=gpio src=T100 len=3 ts=744659 : 01 A9 D8
+09:15:54 proto=gpio src=T100 len=3 ts=744759 : 01 0D D9
+> APP EVENT 1184 184 exit
+09:15:54 [APP] request=1 synthetic=1 queued=1
+09:15:54 [APP] id=1184 seq=184 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:54 [LOG] seq=406 event=1184 not stored: flash error=-9 read=-5 match=0 write_us=396; occupancy and sampling unaffected
+09:15:54 [BENCH] application_event 633 us
+09:15:54 proto=gpio src=T100 len=3 ts=744859 : 01 71 D9
+09:15:54 proto=gpio src=T100 len=3 ts=744959 : 01 D5 D9
+09:15:54 proto=gpio src=T100 len=3 ts=745059 : 01 39 DA
+09:15:54 proto=gpio src=DISTANCE len=3 ts=745063 : D5 0B 01
+09:15:54 {"sensor":"DISTANCE","timestamp_ms":745064,"distance_cm":51.9,"echo_us":3029,"status":"OK","error":0}
+> APP EVENT 1185 185 entry
+09:15:54 [APP] request=1 synthetic=1 queued=1
+09:15:54 [APP] id=1185 seq=185 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:54 [LOG] seq=407 event=1185 not stored: flash error=-9 read=-5 match=0 write_us=527; occupancy and sampling unaffected
+09:15:54 [BENCH] application_event 801 us
+09:15:54 proto=gpio src=T100 len=3 ts=745159 : 01 9D DA
+09:15:54 proto=gpio src=T100 len=3 ts=745259 : 01 01 DB
+> APP EVENT 1186 186 exit
+09:15:54 [APP] request=1 synthetic=1 queued=1
+09:15:54 [APP] id=1186 seq=186 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:54 [LOG] seq=408 event=1186 not stored: flash error=-9 read=-5 match=0 write_us=385; occupancy and sampling unaffected
+09:15:54 [BENCH] application_event 618 us
+09:15:54 proto=gpio src=T100 len=3 ts=745359 : 01 65 DB
+09:15:54 proto=gpio src=T100 len=3 ts=745459 : 01 C9 DB
+09:15:54 proto=gpio src=T100 len=3 ts=745559 : 01 2D DC
+09:15:55 {"type":"ml","timestamp_ms":745565,"generation":28,"model":"sine-int8","raw_features":[51.94735],"input_source":"sensors","inputs":[0.7885137],"outputs":[0.6964403],"invoke_us":426,"status":"OK"}
+09:15:55 proto=gpio src=DISTANCE len=3 ts=745568 : 0C 21 01
+09:15:55 {"sensor":"DISTANCE","timestamp_ms":745569,"distance_cm":145.1,"echo_us":8460,"status":"OK","error":0}
+> APP EVENT 1187 187 entry
+09:15:55 [APP] request=1 synthetic=1 queued=1
+09:15:55 [APP] id=1187 seq=187 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:55 [LOG] seq=409 event=1187 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected
+09:15:55 [BENCH] application_event 586 us
+09:15:55 proto=gpio src=T100 len=3 ts=745659 : 01 91 DC
+09:15:55 proto=gpio src=T100 len=3 ts=745759 : 01 F5 DC
+09:15:55 proto=gpio src=T100 len=3 ts=745859 : 01 59 DD
+> APP EVENT 1188 188 exit
+09:15:55 [APP] request=1 synthetic=1 queued=1
+09:15:55 [APP] id=1188 seq=188 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:55 [LOG] seq=410 event=1188 not stored: flash error=-9 read=-5 match=0 write_us=394; occupancy and sampling unaffected
+09:15:55 [BENCH] application_event 574 us
+09:15:55 [MQTT] Status: Connected, Broker: 192.168.1.49
+09:15:55 proto=gpio src=T100 len=3 ts=745959 : 01 BD DD
+09:15:55 proto=gpio src=T100 len=3 ts=746059 : 01 21 DE
+09:15:55 proto=gpio src=DISTANCE len=3 ts=746063 : 6E 0C 01
+09:15:55 {"sensor":"DISTANCE","timestamp_ms":746064,"distance_cm":54.6,"echo_us":3182,"status":"OK","error":0}
+09:15:55 proto=gpio src=T100 len=3 ts=746159 : 01 85 DE
+> APP EVENT 1189 189 entry
+09:15:55 [APP] request=1 synthetic=1 queued=1
+09:15:55 [APP] id=1189 seq=189 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:55 [LOG] seq=411 event=1189 not stored: flash error=-9 read=-5 match=0 write_us=450; occupancy and sampling unaffected
+09:15:55 [BENCH] application_event 731 us
+09:15:55 proto=gpio src=T100 len=3 ts=746259 : 01 E9 DE
+09:15:55 proto=gpio src=T100 len=3 ts=746359 : 01 4D DF
+> APP EVENT 1190 190 exit
+09:15:55 [APP] request=1 synthetic=1 queued=1
+09:15:55 [APP] id=1190 seq=190 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:55 [LOG] seq=412 event=1190 not stored: flash error=-9 read=-5 match=0 write_us=384; occupancy and sampling unaffected
+09:15:55 [BENCH] application_event 567 us
+09:15:55 proto=gpio src=T100 len=3 ts=746459 : 01 B1 DF
+09:15:56 proto=gpio src=T100 len=3 ts=746559 : 01 15 E0
+09:15:56 proto=gpio src=DISTANCE len=3 ts=746565 : C3 13 01
+09:15:56 {"sensor":"DISTANCE","timestamp_ms":746566,"distance_cm":86.8,"echo_us":5059,"status":"OK","error":0}
+09:15:56 proto=gpio src=T100 len=3 ts=746660 : 01 7A E0
+> APP EVENT 1191 191 entry
+09:15:56 [APP] request=1 synthetic=1 queued=1
+09:15:56 [APP] id=1191 seq=191 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:56 [LOG] seq=413 event=1191 not stored: flash error=-9 read=-5 match=0 write_us=382; occupancy and sampling unaffected
+09:15:56 [BENCH] application_event 555 us
+09:15:56 proto=gpio src=T100 len=3 ts=746759 : 01 DD E0
+09:15:56 proto=gpio src=T100 len=3 ts=746859 : 01 41 E1
+09:15:56 proto=gpio src=T100 len=3 ts=746959 : 01 A5 E1
+> APP EVENT 1192 192 exit
+09:15:56 [APP] request=1 synthetic=1 queued=1
+09:15:56 [APP] id=1192 seq=192 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:56 [LOG] seq=414 event=1192 not stored: flash error=-9 read=-5 match=0 write_us=385; occupancy and sampling unaffected
+09:15:56 [BENCH] application_event 588 us
+09:15:56 proto=gpio src=T100 len=3 ts=747059 : 01 09 E2
+09:15:56 proto=gpio src=DISTANCE len=3 ts=747063 : F7 0D 01
+09:15:56 {"sensor":"DISTANCE","timestamp_ms":747064,"distance_cm":61.3,"echo_us":3575,"status":"OK","error":0}
+09:15:56 proto=gpio src=T100 len=3 ts=747159 : 01 6D E2
+09:15:56 proto=gpio src=T100 len=3 ts=747259 : 01 D1 E2
+> APP EVENT 1193 193 entry
+09:15:56 [APP] request=1 synthetic=1 queued=1
+09:15:56 [APP] id=1193 seq=193 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:56 [LOG] seq=415 event=1193 not stored: flash error=-9 read=-5 match=0 write_us=404; occupancy and sampling unaffected
+09:15:56 [BENCH] application_event 578 us
+09:15:56 proto=gpio src=T100 len=3 ts=747359 : 01 35 E3
+09:15:56 proto=gpio src=T100 len=3 ts=747459 : 01 99 E3
+> APP EVENT 1194 194 exit
+09:15:57 [APP] request=1 synthetic=1 queued=1
+09:15:57 [APP] id=1194 seq=194 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:57 [LOG] seq=416 event=1194 not stored: flash error=-9 read=-5 match=0 write_us=388; occupancy and sampling unaffected
+09:15:57 [BENCH] application_event 587 us
+09:15:57 proto=gpio src=T100 len=3 ts=747559 : 01 FD E3
+09:15:57 proto=gpio src=DISTANCE len=3 ts=747564 : D3 11 01
+09:15:57 {"sensor":"DISTANCE","timestamp_ms":747565,"distance_cm":78.3,"echo_us":4563,"status":"OK","error":0}
+09:15:57 {"type":"ml","timestamp_ms":747566,"generation":28,"model":"sine-int8","raw_features":[78.25545],"input_source":"sensors","inputs":[1.203837],"outputs":[0.9037143],"invoke_us":662,"status":"OK"}
+09:15:57 proto=gpio src=T100 len=3 ts=747659 : 01 61 E4
+09:15:57 proto=gpio src=T100 len=3 ts=747759 : 01 C5 E4
+> APP EVENT 1195 195 entry
+09:15:57 [APP] request=1 synthetic=1 queued=1
+09:15:57 [APP] id=1195 seq=195 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:57 [LOG] seq=417 event=1195 not stored: flash error=-9 read=-5 match=0 write_us=384; occupancy and sampling unaffected
+09:15:57 [BENCH] application_event 608 us
+09:15:57 proto=gpio src=T100 len=3 ts=747859 : 01 29 E5
+09:15:57 proto=gpio src=T100 len=3 ts=747959 : 01 8D E5
+09:15:57 proto=gpio src=T100 len=3 ts=748059 : 01 F1 E5
+09:15:57 proto=gpio src=DISTANCE len=3 ts=748069 : 63 24 01
+09:15:57 {"sensor":"DISTANCE","timestamp_ms":748070,"distance_cm":159.8,"echo_us":9315,"status":"OK","error":0}
+> APP EVENT 1196 196 exit
+09:15:57 [APP] request=1 synthetic=1 queued=1
+09:15:57 [APP] id=1196 seq=196 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:57 [LOG] seq=418 event=1196 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:57 [BENCH] application_event 627 us
+09:15:57 proto=gpio src=T100 len=3 ts=748160 : 01 56 E6
+09:15:57 proto=gpio src=T100 len=3 ts=748259 : 01 B9 E6
+09:15:57 proto=gpio src=T100 len=3 ts=748359 : 01 1D E7
+> APP EVENT 1197 197 entry
+09:15:57 [APP] request=1 synthetic=1 queued=1
+09:15:57 [APP] id=1197 seq=197 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:57 [LOG] seq=419 event=1197 not stored: flash error=-9 read=-5 match=0 write_us=392; occupancy and sampling unaffected
+09:15:57 [BENCH] application_event 587 us
+09:15:57 proto=gpio src=T100 len=3 ts=748459 : 01 81 E7
+09:15:58 proto=gpio src=T100 len=3 ts=748559 : 01 E5 E7
+09:15:58 proto=gpio src=DISTANCE len=3 ts=748563 : 5D 0C 01
+09:15:58 {"sensor":"DISTANCE","timestamp_ms":748564,"distance_cm":54.3,"echo_us":3165,"status":"OK","error":0}
+09:15:58 proto=gpio src=T100 len=3 ts=748660 : 01 4A E8
+> APP EVENT 1198 198 exit
+09:15:58 [APP] request=1 synthetic=1 queued=1
+09:15:58 [APP] id=1198 seq=198 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:58 [LOG] seq=420 event=1198 not stored: flash error=-9 read=-5 match=0 write_us=593; occupancy and sampling unaffected
+09:15:58 [BENCH] application_event 535 us
+09:15:58 proto=gpio src=T100 len=3 ts=748759 : 01 AD E8
+09:15:58 proto=gpio src=T100 len=3 ts=748859 : 01 11 E9
+> APP EVENT 1199 199 entry
+09:15:58 [APP] request=1 synthetic=1 queued=1
+09:15:58 [APP] id=1199 seq=199 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:58 [LOG] seq=421 event=1199 not stored: flash error=-9 read=-5 match=0 write_us=384; occupancy and sampling unaffected
+09:15:58 [BENCH] application_event 591 us
+09:15:58 proto=gpio src=T100 len=3 ts=748959 : 01 75 E9
+09:15:58 proto=gpio src=T100 len=3 ts=749059 : 01 D9 E9
+09:15:58 proto=gpio src=DISTANCE len=3 ts=749063 : A3 0C 01
+09:15:58 {"sensor":"DISTANCE","timestamp_ms":749064,"distance_cm":55.5,"echo_us":3235,"status":"OK","error":0}
+09:15:58 proto=gpio src=T100 len=3 ts=749160 : 01 3E EA
+> APP EVENT 1200 200 exit
+09:15:58 [APP] request=1 synthetic=1 queued=1
+09:15:58 [APP] id=1200 seq=200 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:58 [LOG] seq=422 event=1200 not stored: flash error=-9 read=-5 match=0 write_us=436; occupancy and sampling unaffected
+09:15:58 [BENCH] application_event 579 us
+09:15:58 proto=gpio src=T100 len=3 ts=749259 : 01 A1 EA
+09:15:58 proto=gpio src=T100 len=3 ts=749359 : 01 05 EB
+09:15:58 proto=gpio src=T100 len=3 ts=749459 : 01 69 EB
+> APP EVENT 1201 201 entry
+09:15:58 [APP] request=1 synthetic=1 queued=1
+09:15:58 [APP] id=1201 seq=201 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:58 [LOG] seq=423 event=1201 not stored: flash error=-9 read=-5 match=0 write_us=391; occupancy and sampling unaffected
+09:15:58 [BENCH] application_event 590 us
+09:15:58 proto=gpio src=T100 len=3 ts=749559 : 01 CD EB
+09:15:59 proto=gpio src=DISTANCE len=3 ts=749567 : F1 1A 01
+09:15:59 {"sensor":"DISTANCE","timestamp_ms":749568,"distance_cm":118.3,"echo_us":6897,"status":"OK","error":0}
+09:15:59 {"type":"ml","timestamp_ms":749568,"generation":28,"model":"sine-int8","raw_features":[118.2835],"input_source":"sensors","inputs":[1.835757],"outputs":[0.95346],"invoke_us":494,"status":"OK"}
+09:15:59 proto=gpio src=T100 len=3 ts=749659 : 01 31 EC
+09:15:59 proto=gpio src=T100 len=3 ts=749759 : 01 95 EC
+> APP EVENT 1202 202 exit
+09:15:59 [APP] request=1 synthetic=1 queued=1
+09:15:59 [APP] id=1202 seq=202 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:59 [LOG] seq=424 event=1202 not stored: flash error=-9 read=-5 match=0 write_us=383; occupancy and sampling unaffected
+09:15:59 [BENCH] application_event 570 us
+09:15:59 proto=gpio src=T100 len=3 ts=749859 : 01 F9 EC
+09:15:59 proto=gpio src=T100 len=3 ts=749959 : 01 5D ED
+09:15:59 proto=gpio src=T100 len=3 ts=750059 : 01 C1 ED
+09:15:59 proto=gpio src=DISTANCE len=3 ts=750063 : 45 0D 01
+09:15:59 {"sensor":"DISTANCE","timestamp_ms":750064,"distance_cm":58.3,"echo_us":3397,"status":"OK","error":0}
+> APP EVENT 1203 203 entry
+09:15:59 [APP] request=1 synthetic=1 queued=1
+09:15:59 [APP] id=1203 seq=203 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:15:59 [LOG] seq=425 event=1203 not stored: flash error=-9 read=-5 match=0 write_us=606; occupancy and sampling unaffected
+09:15:59 [BENCH] application_event 806 us
+09:15:59 proto=gpio src=T100 len=3 ts=750159 : 01 25 EE
+09:15:59 proto=gpio src=T100 len=3 ts=750259 : 01 89 EE
+> APP EVENT 1204 204 exit
+09:15:59 [APP] request=1 synthetic=1 queued=1
+09:15:59 [APP] id=1204 seq=204 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:15:59 [LOG] seq=426 event=1204 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:15:59 [BENCH] application_event 587 us
+09:15:59 proto=gpio src=T100 len=3 ts=750359 : 01 ED EE
+09:15:59 proto=gpio src=T100 len=3 ts=750460 : 01 52 EF
+09:15:59 proto=gpio src=T100 len=3 ts=750559 : 01 B5 EF
+09:15:59 proto=gpio src=DISTANCE len=3 ts=750567 : 60 1B 01
+09:16:00 {"sensor":"DISTANCE","timestamp_ms":750568,"distance_cm":120.2,"echo_us":7008,"status":"OK","error":0}
+> APP EVENT 1205 205 entry
+09:16:00 [APP] request=1 synthetic=1 queued=1
+09:16:00 [APP] id=1205 seq=205 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:16:00 [LOG] seq=427 event=1205 not stored: flash error=-9 read=-5 match=0 write_us=391; occupancy and sampling unaffected
+09:16:00 [BENCH] application_event 599 us
+09:16:00 proto=gpio src=T100 len=3 ts=750659 : 01 19 F0
+09:16:00 proto=gpio src=T100 len=3 ts=750759 : 01 7D F0
+09:16:00 proto=gpio src=T100 len=3 ts=750859 : 01 E1 F0
+> APP EVENT 1206 206 exit
+09:16:00 [APP] request=1 synthetic=1 queued=1
+09:16:00 [APP] id=1206 seq=206 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:16:00 [LOG] seq=428 event=1206 not stored: flash error=-9 read=-5 match=0 write_us=392; occupancy and sampling unaffected
+09:16:00 [BENCH] application_event 584 us
+09:16:00 [MQTT] Status: Connected, Broker: 192.168.1.49
+09:16:00 proto=gpio src=T100 len=3 ts=750959 : 01 45 F1
+09:16:00 proto=gpio src=T100 len=3 ts=751059 : 01 A9 F1
+09:16:00 proto=gpio src=DISTANCE len=3 ts=751063 : E1 0C 01
+09:16:00 {"sensor":"DISTANCE","timestamp_ms":751064,"distance_cm":56.5,"echo_us":3297,"status":"OK","error":0}
+09:16:00 proto=gpio src=T100 len=3 ts=751159 : 01 0D F2
+> APP EVENT 1207 207 entry
+09:16:00 [APP] request=1 synthetic=1 queued=1
+09:16:00 [APP] id=1207 seq=207 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:16:00 [LOG] seq=429 event=1207 not stored: flash error=-9 read=-5 match=0 write_us=387; occupancy and sampling unaffected
+09:16:00 [BENCH] application_event 570 us
+09:16:00 proto=gpio src=T100 len=3 ts=751259 : 01 71 F2
+09:16:00 proto=gpio src=T100 len=3 ts=751359 : 01 D5 F2
+> APP EVENT 1208 208 exit
+09:16:00 [APP] request=1 synthetic=1 queued=1
+09:16:00 proto=gpio src=T100 len=3 ts=751459 : 01 39 F3
+09:16:00 [APP] id=1208 seq=208 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:16:00 [LOG] seq=430 event=1208 not stored: flash error=-9 read=-5 match=0 write_us=381; occupancy and sampling unaffected
+09:16:00 [BENCH] application_event 1274 us
+09:16:00 proto=gpio src=T100 len=3 ts=751559 : 01 9D F3
+09:16:01 proto=gpio src=DISTANCE len=3 ts=751563 : 2B 0C 01
+09:16:01 {"sensor":"DISTANCE","timestamp_ms":751564,"distance_cm":53.4,"echo_us":3115,"status":"OK","error":0}
+09:16:01 proto=gpio src=T100 len=3 ts=751659 : 01 01 F4
+09:16:01 {"type":"ml","timestamp_ms":751660,"generation":28,"model":"sine-int8","raw_features":[53.42225],"input_source":"sensors","inputs":[0.8117979],"outputs":[0.7296042],"invoke_us":500,"status":"OK"}
+> APP EVENT 1209 209 entry
+09:16:01 [APP] request=1 synthetic=1 queued=1
+09:16:01 [APP] id=1209 seq=209 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:16:01 [LOG] seq=431 event=1209 not stored: flash error=-9 read=-5 match=0 write_us=382; occupancy and sampling unaffected
+09:16:01 [BENCH] application_event 573 us
+09:16:01 proto=gpio src=T100 len=3 ts=751760 : 01 66 F4
+09:16:01 proto=gpio src=T100 len=3 ts=751859 : 01 C9 F4
+09:16:01 proto=gpio src=T100 len=3 ts=751959 : 01 2D F5
+> APP EVENT 1210 210 exit
+09:16:01 [APP] request=1 synthetic=1 queued=1
+09:16:01 [APP] id=1210 seq=210 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:16:01 [LOG] seq=432 event=1210 not stored: flash error=-9 read=-5 match=0 write_us=411; occupancy and sampling unaffected
+09:16:01 [BENCH] application_event 611 us
+09:16:01 proto=gpio src=T100 len=3 ts=752059 : 01 91 F5
+09:16:01 proto=gpio src=DISTANCE len=3 ts=752063 : 64 0C 01
+09:16:01 {"sensor":"DISTANCE","timestamp_ms":752064,"distance_cm":54.4,"echo_us":3172,"status":"OK","error":0}
+09:16:01 proto=gpio src=T100 len=3 ts=752159 : 01 F5 F5
+09:16:01 proto=gpio src=T100 len=3 ts=752259 : 01 59 F6
+> APP EVENT 1211 211 entry
+09:16:01 [APP] request=1 synthetic=1 queued=1
+09:16:01 [APP] id=1211 seq=211 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:16:01 [LOG] seq=433 event=1211 not stored: flash error=-9 read=-5 match=0 write_us=387; occupancy and sampling unaffected
+09:16:01 [BENCH] application_event 584 us
+09:16:01 proto=gpio src=T100 len=3 ts=752359 : 01 BD F6
+09:16:01 proto=gpio src=T100 len=3 ts=752459 : 01 21 F7
+09:16:02 proto=gpio src=T100 len=3 ts=752559 : 01 85 F7
+09:16:02 proto=gpio src=DISTANCE len=3 ts=752565 : 08 10 01
+09:16:02 {"sensor":"DISTANCE","timestamp_ms":752566,"distance_cm":70.4,"echo_us":4104,"status":"OK","error":0}
+> APP EVENT 1212 212 exit
+09:16:02 [APP] request=1 synthetic=1 queued=1
+09:16:02 [APP] id=1212 seq=212 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:16:02 [LOG] seq=434 event=1212 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected
+09:16:02 [BENCH] application_event 571 us
+09:16:02 proto=gpio src=T100 len=3 ts=752660 : 01 EA F7
+09:16:02 proto=gpio src=T100 len=3 ts=752759 : 01 4D F8
+09:16:02 proto=gpio src=T100 len=3 ts=752859 : 01 B1 F8
+> APP EVENT 1213 213 entry
+09:16:02 [APP] request=1 synthetic=1 queued=1
+09:16:02 [APP] id=1213 seq=213 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:16:02 [LOG] seq=435 event=1213 not stored: flash error=-9 read=-5 match=0 write_us=629; occupancy and sampling unaffected
+09:16:02 [BENCH] application_event 550 us
+09:16:02 proto=gpio src=T100 len=3 ts=752959 : 01 15 F9
+09:16:02 proto=gpio src=T100 len=3 ts=753059 : 01 79 F9
+09:16:02 proto=gpio src=DISTANCE len=3 ts=753063 : 3B 0D 01
+09:16:02 {"sensor":"DISTANCE","timestamp_ms":753064,"distance_cm":58.1,"echo_us":3387,"status":"OK","error":0}
+> APP EVENT 1214 214 exit
+09:16:02 [APP] request=1 synthetic=1 queued=1
+09:16:02 [APP] id=1214 seq=214 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:16:02 [LOG] seq=436 event=1214 not stored: flash error=-9 read=-5 match=0 write_us=406; occupancy and sampling unaffected
+09:16:02 [BENCH] application_event 577 us
+09:16:02 proto=gpio src=T100 len=3 ts=753159 : 01 DD F9
+09:16:02 proto=gpio src=T100 len=3 ts=753259 : 01 41 FA
+09:16:02 proto=gpio src=T100 len=3 ts=753359 : 01 A5 FA
+> APP EVENT 1215 215 entry
+09:16:02 [APP] request=1 synthetic=1 queued=1
+09:16:02 [APP] id=1215 seq=215 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:16:02 [LOG] seq=437 event=1215 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:16:02 [BENCH] application_event 589 us
+09:16:02 proto=gpio src=T100 len=3 ts=753459 : 01 09 FB
+09:16:03 proto=gpio src=T100 len=3 ts=753559 : 01 6D FB
+09:16:03 proto=gpio src=DISTANCE len=3 ts=753563 : 01 0B 01
+09:16:03 {"sensor":"DISTANCE","timestamp_ms":753564,"distance_cm":48.3,"echo_us":2817,"status":"OK","error":0}
+09:16:03 proto=gpio src=T100 len=3 ts=753659 : 01 D1 FB
+09:16:03 {"type":"ml","timestamp_ms":753660,"generation":28,"model":"sine-int8","raw_features":[48.31155],"input_source":"sensors","inputs":[0.7311158],"outputs":[0.6466946],"invoke_us":501,"status":"OK"}
+> APP EVENT 1216 216 exit
+09:16:03 [APP] request=1 synthetic=1 queued=1
+09:16:03 [APP] id=1216 seq=216 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:16:03 [LOG] seq=438 event=1216 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:16:03 [BENCH] application_event 566 us
+09:16:03 proto=gpio src=T100 len=3 ts=753760 : 01 36 FC
+09:16:03 proto=gpio src=T100 len=3 ts=753859 : 01 99 FC
+09:16:03 proto=gpio src=T100 len=3 ts=753959 : 01 FD FC
+> STOP
+09:16:03 STOP
+09:16:05 [MQTT] Status: Connected, Broker: 192.168.1.49
+> LOG STATUS
+09:16:07 [LOG] enabled=1 offered=438 dropped=0 written=0 failed=438 full=0 last_error=-9 max_write_us=2330 area=3FF100-3FFFFF slots=30
+> APP STATUS
+09:16:08 [APP] request=3 synthetic=0 queued=1
+09:16:08 [APP] status occupancy=0 processed=439 resets=3 malformed=0 publish_enqueued=439 publish_failed=0
+> TASKS
+09:16:08 [TASK] app_message=104 B app_buffer=864 B
+09:16:08 [TASK] SchedulerTask    id=8  core=1 pri=21 stack_free=11884 B ran_on_core0=0 ran_on_core1=4155
+09:16:08 [TASK] MQTTTask         id=9  core=0 pri=22 stack_free=14332 B ran_on_core0=68858 ran_on_core1=0
+09:16:08 [TASK] ControlTask      id=10 core=1 pri=23 stack_free=2988 B ran_on_core0=0 ran_on_core1=19437
+09:16:08 [TASK] InferenceTask    id=11 core=1 pri=23 stack_free=6396 B ran_on_core0=0 ran_on_core1=34
+09:16:08 [TASK] ApplicationTask  id=12 core=1 pri=23 stack_free=2268 B ran_on_core0=0 ran_on_core1=445
+09:16:08 [TASK] BenchmarkTask    id=13 core=1 pri=24 stack_free=1596 B ran_on_core0=0 ran_on_core1=878
+09:16:08 [TASK] MonitorTask      id=14 core=1 pri=24 stack_free=3292 B ran_on_core0=0 ran_on_core1=759
+09:16:08 [TASK] sched_mbf  free=12912 B dropped=0
+09:16:08 [TASK] pub_mbf    free=10944 B dropped=0
+09:16:08 [TASK] infer_mbf  free=592 B dropped=0
+09:16:08 [TASK] app_mbf    free=864 B dropped=0
+09:16:08 [TASK] bench_mbf  free=512 B dropped=0
+09:16:08 [TASK] ctrl_mbf   free=528 B dropped=0
+09:16:08 [TASK] log_mbf    free=672 B dropped=0
+09:16:08 [TASK] heap_free=28808 B min_free=20048 B largest=20480 B console_rx_irqs=500 console_rx_dropped=0
+09:16:08 [TASK] SchedulerTask cycles=1552 mean_us=460 p95_us=<2500 max_us=5712
+09:16:10 [MQTT] Status: Connected, Broker: 192.168.1.49
+> LOG OFF
+09:16:10 [LOG] off
+> ML STOP
+09:16:11 ML: OK STOP
+> CLEAR
+09:16:12 [RULE] reset
+09:16:12 CLEARED
+# summary {"seconds": 60, "sampling_T100": {"intervals": 604, "mean_ms": 100, "p95_ms": 101, "max_ms": 101, "skipped": 0}, "distance_readings": 121, "distance_ok": 121, "ml_results": 31, "ml_ok": 30, "invoke_us_median": 510.0, "invoke_us_max": 932, "events_sent": 216, "events_processed": 216, "occupancy_status": "[APP] status occupancy=0 processed=439 resets=3 malformed=0 publish_enqueued=439 publish_failed=0", "log_stored": 0, "log_not_stored": 216, "log_full": 0, "log_queue_dropped": 0, "log_write_us_max": 2330, "log_status": "[LOG] enabled=1 offered=438 dropped=0 written=0 failed=438 full=0 last_error=-9 max_write_us=2330 area=3FF100-3FFFFF slots=30", "mbf_dropped": {"sched_mbf": 0, "pub_mbf": 0, "infer_mbf": 0, "app_mbf": 0, "bench_mbf": 0, "ctrl_mbf": 0, "log_mbf": 0}, "min_stack_free": 1596, "heap_free": 28808, "heap_min_free": 20048, "resets": 0}
+# PASS no reset
+# PASS every event processed
+# PASS every event offered to the log, none dropped
+# PASS sampling mean within 5% of 100 ms
+# PASS model ran on live readings
+# PASS no message buffer dropped a message

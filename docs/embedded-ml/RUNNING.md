@@ -9,7 +9,7 @@ The first ML implementation came from `dev-jy-ml` and was integrated into `main`
 3. Press **Ctrl+Shift+B**, select **MTK: build**, and wait for success.
 4. Choose **Terminal → Run Task → MTK: flash**, select `COM5`, and wait for completion.
 5. Choose **Terminal → Run Task → MTK: load sensors and ML**, select `COM5`. Wait for `ML: OK PRESET sine-float`, `ML: OK RUN` and the final `RUN` acknowledgement.
-6. Choose **Terminal → Run Task → MTK: monitor**, select `COM5`. Do not press RESET. Sensor JSON and additional JSON with `"type":"ml"` should appear about every two seconds.
+6. Choose **Terminal → Run Task → MTK: monitor**, select `COM5`. Do not press RESET. Look for timestamped sensor and ML rows with readings, units and status. The formatted monitor skips sensor rows for missing readings and timeouts. Use **MTK: monitor raw** for those diagnostics, full JSON and hex frames.
 
 Equivalent PowerShell commands, from the workspace's `esp32s3_mtk` folder, **one at a time**:
 
@@ -20,7 +20,7 @@ powershell.exe -NoProfile -File .\tools\build.ps1 ml -Port COM5
 powershell.exe -NoProfile -File .\tools\build.ps1 monitor -Port COM5
 ```
 
-The ML loader uses STOP/CLEAR and replaces volatile sensors/rules with the three-sensor preset. A reset loses this configuration; run the `ml` action again. Close the monitor with **Ctrl+C** before running a loader. A loader acknowledgement confirms configuration, not a successful inference. Look for actual ML JSON with `status: OK` and numeric outputs.
+The ML loader uses STOP/CLEAR and replaces volatile sensors/rules with the three-sensor preset. A reset loses this configuration; run the `ml` action again. Close the monitor with **Ctrl+C** before running a loader. A loader acknowledgement confirms configuration, not a successful inference. Look for `ML OK` with numeric outputs. In the raw monitor, the equivalent JSON has `status: OK`.
 
 There are no additional Arduino libraries to install. Desktop model-validation packages are separate from ESP-IDF; they are not required to flash or use the board.
 
@@ -55,6 +55,12 @@ ML output includes model ID, configuration generation, physical `raw_features`, 
 
 Missing or failed sensor readings invalidate the affected feature. Missing/stale inputs emit `outputs:null` with `MISSING_OR_STALE`; inconsistent timestamps emit `SAMPLE_SKEW`. Zero lux is valid. Default freshness limit is 5000 ms, maximum timestamp skew 2500 ms, output period 2000 ms. An initial null line before all sensors have produced a sample is normal.
 
+## Set a scalar output threshold
+
+After starting **MTK: monitor**, enter `ML THRESHOLD 0.5` and wait for `ML: OK THRESHOLD 0.5`. You can change the cutoff during sampling. `ML SHOW` displays the setting, and `ML THRESHOLD OFF` clears it. A board reset clears the cutoff. To apply it each time you load a demo configuration, add `ML THRESHOLD 0.5` before the final `RUN` line in that file.
+
+The monitor displays `PASS (> 0.5)` for a successful scalar result above the cutoff and `AT OR BELOW (0.5)` for results equal to or below it. Raw JSON includes `threshold` and the Boolean `threshold_exceeded` alongside the inference status. Skipped inferences and the 16-output autoencoder omit the decision. The sine model cutoff tests a unitless demo score. Physical quantities such as distance in cm have separate thresholds.
+
 ## Switch models without rebuilding
 
 Use the monitor to send these commands **one line at a time**:
@@ -84,6 +90,81 @@ RUN
 The autoencoder preset is explicitly a shape/execution demonstration. Its repeated features do not reproduce its training distribution. No meaningful anomaly decision is made. All outputs are exposed as a numeric vector, with no forced MSE scoring or probability interpretation.
 
 `ML MODEL <id>` changes the model while retaining bindings, but disables ML until `ML RUN` validates them. `ML PRESET <id>` supplies the appropriate demonstration bindings. Models are immutable bundled assets selected at runtime; installing arbitrary new `.tflite` files over serial is not implemented in this first version. The existing MQTT transfer subsystem is retained, but model uploads or other model-loading flows change the model revision and cause this ML pipeline to stop with `MODEL_CHANGED` until reconfigured.
+
+## Switch between the classroom demo models
+
+Build and flash once with the models you want available. For live readings, run **MTK: load sensors and ML** before opening **MTK: monitor**. Click in the same monitor terminal where the readings are scrolling. It accepts serial commands while displaying output. Enter each command on its own line and press Enter. Use `ML LIST` to see which model weights are available.
+
+```text
+STOP
+ML PRESET comfort-summer
+ML RUN
+RUN
+```
+
+`STOP` pauses the readings. Look for `ML: OK PRESET comfort-summer` and `ML: OK RUN`. The final `RUN` resumes sampling. Repeat with `ML PRESET sine-int8` to switch back.
+
+| Model | How to supply inputs | Result |
+|---|---|---|
+| `sine-int8` | Load the three-sensor profile and start live inference, or replay a phase with `ML REPLAY 1.57` | Unitless sine output. The board capture shows its ESP-NN vector calls. |
+| `comfort-summer` | Bind the AHT and run live, or enter `ML REPLAY 26.3 67` after selecting the model | Estimated comfort score on the source model's scale of 0–99. The monitor shows it as a score out of 100. |
+| `people-counter` | Select the bundled INT8 model, then enter `ML REPLAY` followed by a complete 31-value model-ready window | `IN`, `OUT`, or `NONE` with the winning class score. Replay produces a classification only. |
+
+To replay without connected sensors, open **MTK: monitor raw** and enter these commands on the flashed ESP32-S3:
+
+```text
+STOP
+ML MODEL comfort-summer
+ML REPLAY 26.3 67
+ML MODEL sine-int8
+ML REPLAY 1.57
+```
+
+The comfort replay uses °C and % RH. Its desktop reference is **92/100**. The sine output should be near 1. On the first successful sine inference after loading, look for `[ML-ACCEL]` and a positive `vector_calls` count. Replay reports its input source in JSON and in the formatted monitor. The scalar threshold command applies to the sine outputs.
+
+The comfort checkpoint estimates current comfort under the original summer training assumptions. It used thermal-comfort simulations, and its class score indicates the model's preferred class. It takes temperature and humidity. For the classroom panel, show that score alongside occupancy, temperature and lux. Use occupancy to distinguish occupied and empty settings, lux for brighten/hold/dim, and temperature for increase/hold/reduce cooling. A low comfort score alone gives no direction for cooling. The published comfort checkpoint is FP32.
+
+### Doorway model replay and hardware follow-up
+
+- Select `ML MODEL people-counter` after `STOP`. For a quick model-loading check, send `ML REPLAY` with exactly 31 zeroes. This exercises the model on a synthetic input. Use a labelled sensor trace to judge whether the direction is correct. [Model file and provenance](../../models/classroom/README.md)
+
+```text
+ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+```
+
+- Use the source project's preprocessing and labelled 31-value windows for replay. The pretrained classifier came from a single Grove ultrasonic sensor. Keep live occupancy counting based on the confirmed two-zone crossing sequence while testing how the classroom traces differ.
+- **When Brendan returns the hardware**, confirm both HC-SR04+ modules, the final TRIG/ECHO pins, and the physical zones before updating the wiring table or adding a live doorway profile. The supplied modules have 3.3 V-compatible Echo and use no resistor in this setup. Name the hallway zone A and classroom zone B. Confirm A → B entry, B → A exit, and turn-backs or ambiguous crossings leaving occupancy unchanged. Alternate pings and validate the separation with both sensors fitted.
+
+## Run the sensor configuration demos
+
+Close the serial monitor. For a physical wiring change, disconnect USB before moving leads, then reconnect USB. In VS Code choose **Terminal → Run Task → MTK: load demo configuration**, select the file and serial port, then reopen **MTK: monitor**. The loader sends the sensor registrations, model selection and ML bindings from the selected file. The same firmware image handles all profiles. Apply the selected profile again after a reset.
+
+| Profile | Configured sensor outputs | Features used by `sine-float` |
+|---|---|---|
+| [no-light.cfg](../../config/demos/no-light.cfg) | AHT and DISTANCE | Temperature, humidity, distance |
+| [no-aht.cfg](../../config/demos/no-aht.cfg) | LIGHT and DISTANCE | Light, distance |
+| [dual-ultrasonic.cfg](../../config/demos/dual-ultrasonic.cfg) | LIGHT, DISTANCE and DISTANCE2 | Light, first distance, second distance |
+
+Each file sets sensor names, drivers, pins and timing. The three files use the same scalar model and set consecutive ML binding indices from zero. Each bound value is scaled, and the model input is `2π × mean(scaled values)`. A sensor that is outside the selected profile has no polling slot or ML binding. Use **MTK: load sensors and ML** to restore the original three-sensor setup.
+
+For the two-ultrasonic profile, keep the original HC-SR04+ on GPIO4/5 and the TSL2561 on GPIO1/2. Remove the AHT. The table assumes the second module supports 3.3 V operation and a 3.3 V-compatible Echo signal. A module with a 5 V Echo needs level shifting before it connects to the ESP32. [3.3–5 V ultrasonic module datasheet](https://cdn.sparkfun.com/assets/a/8/9/c/a/HC-SR04-33_Datasheet.pdf)
+
+| Second ultrasonic | Connection on the current breadboard |
+|---|---|
+| VCC | 3V3, E4 |
+| GND | Common GND, E7 |
+| TRIG | GPIO11 to A15, then E15 to TRIG |
+| ECHO | GPIO12 to A16, then E16 to ECHO |
+
+Use free rows and adjust `gpio.trig` and `gpio.echo` in the file if GPIO11/12 are occupied by another fixture. Keep the two TRIG/ECHO pairs separate. The first ultrasonic runs periodically. A fresh LIGHT measurement triggers DISTANCE2 after the light driver's integration wait of at least 120 ms, leaving time for the first 30 ms echo capture. This profile requires a working light sensor to trigger the second sonar. Point the modules at separate targets and confirm both values before the demo.
+
+On 10 November, `no-light.cfg` and `no-aht.cfg` each returned numeric inference output on the board. `dual-ultrasonic.cfg` registered three sources and continued reporting light and the original ultrasonic while the unconnected DISTANCE2 reported a timeout. Verification with two physically connected modules is pending.
+
+For a custom file, run the following from `esp32s3_mtk`.
+
+```powershell
+powershell.exe -NoProfile -File .\tools\build.ps1 ml -Port COM5 -ConfigFile ..\config\demos\no-light.cfg
+```
 
 ## Change the sensor-to-model mapping
 
@@ -136,13 +217,13 @@ ML RUN
 RUN
 ```
 
-Watch the board's serial console for `ML: OK PRESET sine-int8`, `ML: OK RUN`, and subsequent ML JSON with numeric outputs. `ML SHOW` can be sent on the same topic without clearing cached samples. Other command payloads continue through the existing MQTT command handler. This checkpoint has a native routing test; MQTT delivery and ML inference on the board are not yet verified.
+Watch the board's serial console for `ML: OK PRESET sine-int8`, `ML: OK RUN`, and subsequent ML JSON with numeric outputs. `ML SHOW` can be sent on the same topic without clearing cached samples. Other command payloads continue through the existing MQTT command handler. MQTT delivery was verified on the board on 10 Nov 2026: `ML SHOW` sent on the command topic, and sent by another board with `cmd.to` (D1 task 1.4, [parity/logs/mtk/d1-mqtt/](../../parity/logs/mtk/d1-mqtt/)).
 
-This is **not yet live switching**: `STOP` pauses sensor sampling, and the commands are separate MQTT messages. The one-command format for model, local/remote input and local/published output still needs team agreement. Remote ML input and MQTT publishing of ML results are not implemented here. Tasks 1.4 and 2.1 in the [README task lists](../../README.md#5-d4-task-checklist) come first.
+This is **not yet live switching**: `STOP` pauses sensor sampling, and the commands are separate MQTT messages. The one-command format for model, local/remote input and local/published output still needs team agreement. Remote ML input and MQTT publishing of ML results are not implemented here. Tasks 1.4 and 2.1, which this needed first, are done; the rest is D4 part 2 in the [README task lists](../../README.md#5-d4-task-checklist).
 
 ## Validation and remaining work
 
-See [VALIDATION.md](VALIDATION.md) for actual completed checks. The code builds and desktop inference and host lifecycle tests pass. **This new ML firmware has not yet been flashed or demonstrated on the board.** The previous board evidence establishes sensor acquisition only.
+The [10 November board capture](BOARD_VALIDATION.md) verifies three sensors, swaps between all three bundled models, and two completed S3 vector-kernel calls during `sine-int8` inference on `dev-jy-ml`. Use the same checks on the combined MQTT firmware before recording an integration-board result. [Host and build validation](VALIDATION.md)
 
 Keep the board running at least ten minutes, observe changing outputs as sensor inputs change, then test the model and binding swaps above. Check missing-data status by disabling a configured source or unplugging a sensor with USB disconnected. Capture TASKS before/after and verify stack headroom, watchdog stability and sensor/rule operation. Compare recorded actual model inputs with the desktop reference tool before claiming target numerical agreement.
 

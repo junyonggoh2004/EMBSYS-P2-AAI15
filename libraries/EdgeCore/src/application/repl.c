@@ -167,6 +167,78 @@ bool repl_line_feed(int ch, char *line, size_t cap, size_t *len) {
     return false;
 }
 
+// --- one console command ------------------------------------------------------
+// Every console command that is not part of a BEGINCFG or BEGINRULE block. The
+// console REPL below and the MQTT command topic of the µT-Kernel build both call
+// it, so a command does the same thing whichever way it arrives (D1 task 1.4).
+// Returns false when `line` is not one of these commands.
+bool repl_command(const char *line, bool *running, bool *cfg_ready) {
+    (void)cfg_ready;
+    size_t line_len = strlen(line);
+    char cmd[32]; strncpy(cmd, line, sizeof(cmd)-1); cmd[sizeof(cmd)-1]=0; lower_str(cmd);
+
+    if (strcmp(cmd, "run") == 0) { scheduler_pair_cancel(); *running = true; printf("RUN\n"); }
+    else if (strcmp(cmd, "stop") == 0) { scheduler_window_stop(); scheduler_pair_cancel(); *running = false; printf("STOP\n"); }
+    else if (!strncasecmp(line, "WINDOW STATUS", 13) &&
+             (!line[13] || isspace((unsigned char)line[13]))) {
+        const char *p = line + 13;
+        while (isspace((unsigned char)*p)) ++p;
+        const char *end = p;
+        while (isxdigit((unsigned char)*end)) ++end;
+        const char *tail = end;
+        while (isspace((unsigned char)*tail)) ++tail;
+        if (*tail || (*p && end - p != 8)) puts("[WINDOW] usage: WINDOW STATUS [8-hex nonce]");
+        else {
+            uint32_t token = *p ? (uint32_t)strtoul(p, NULL, 16) : 0;
+            int rc = *running ? HAL_ERR_BUSY : scheduler_window_report(token);
+            if (rc != HAL_OK) {
+                printf("[WINDOW_REPORT] token=%08x kind=error code=%d\n", (unsigned)token, rc);
+                printf("[WINDOW_REPORT] token=%08x kind=end\n", (unsigned)token);
+            }
+        }
+    }
+    else if (!strncasecmp(line, "WINDOW ", 7) || !strcasecmp(line, "WINDOW")) {
+        int rc = *running ? HAL_ERR_BUSY : scheduler_window_command(line_len > 6 ? line + 7 : "");
+        printf("[WINDOW] request=%d\n", rc);
+    }
+    else if (strncasecmp(line, "PAIR ", 5) == 0 || !strcasecmp(line, "PAIR")) {
+        int rc = *running ? HAL_ERR_BUSY : scheduler_pair_command(line_len > 4 ? line + 5 : "");
+        printf("[PAIR] request=%d\n", rc);
+        if (rc != HAL_OK)
+            puts("[PAIR] STOP first; usage: PAIR <pulse_sensor_A> <pulse_sensor_B> <A|B> <guard_us>; timeouts + guard <= 50000 us");
+    }
+    else if (strncasecmp(line, "TRIGGER ", 8) == 0) {
+        const char *source = line + 8;
+        while (*source == ' ' || *source == '\t') source++;
+        int armed = scheduler_trigger(source, hal_time_us());
+        printf("[TIMING] trigger=%s armed=%d\n", source, armed);
+    }
+    else if (strcmp(cmd, "clear") == 0) {
+        scheduler_reset();
+        rules_reset();
+        printf("CLEARED\n");
+    }
+    else if (strcmp(cmd, "clearrules") == 0) {
+        rules_reset();
+    }
+    else if (strcmp(cmd, "show") == 0) {
+        printf("[SHOW] sampling=%u\n", *running?1u:0u);
+        extern void scheduler_dump(void);
+        scheduler_dump();
+        rules_dump();
+    }
+    else if (strcmp(cmd, "showrules") == 0) {
+        rules_dump();
+    }
+    else if (strcmp(cmd, "help") == 0) {
+        repl_show_help();
+    }
+    else {
+        return false;
+    }
+    return true;
+}
+
 // --- one complete console line -------------------------------------------------
 void repl_handle_line(char *line, bool *running, bool *cfg_ready) {
     size_t line_len = strlen(line);
@@ -251,63 +323,7 @@ void repl_handle_line(char *line, bool *running, bool *cfg_ready) {
             s_state = RS_RULE;
             printf("RULE: begin\n");
         }
-        else if (strcmp(cmd, "run") == 0) { scheduler_pair_cancel(); *running = true; printf("RUN\n"); }
-        else if (strcmp(cmd, "stop") == 0) { scheduler_window_stop(); scheduler_pair_cancel(); *running = false; printf("STOP\n"); }
-        else if (!strncasecmp(line, "WINDOW STATUS", 13) &&
-                 (!line[13] || isspace((unsigned char)line[13]))) {
-            const char *p = line + 13;
-            while (isspace((unsigned char)*p)) ++p;
-            const char *end = p;
-            while (isxdigit((unsigned char)*end)) ++end;
-            const char *tail = end;
-            while (isspace((unsigned char)*tail)) ++tail;
-            if (*tail || (*p && end - p != 8)) puts("[WINDOW] usage: WINDOW STATUS [8-hex nonce]");
-            else {
-                uint32_t token = *p ? (uint32_t)strtoul(p, NULL, 16) : 0;
-                int rc = *running ? HAL_ERR_BUSY : scheduler_window_report(token);
-                if (rc != HAL_OK) {
-                    printf("[WINDOW_REPORT] token=%08x kind=error code=%d\n", (unsigned)token, rc);
-                    printf("[WINDOW_REPORT] token=%08x kind=end\n", (unsigned)token);
-                }
-            }
-        }
-        else if (!strncasecmp(line, "WINDOW ", 7) || !strcasecmp(line, "WINDOW")) {
-            int rc = *running ? HAL_ERR_BUSY : scheduler_window_command(line_len > 6 ? line + 7 : "");
-            printf("[WINDOW] request=%d\n", rc);
-        }
-        else if (strncasecmp(line, "PAIR ", 5) == 0 || !strcasecmp(line, "PAIR")) {
-            int rc = *running ? HAL_ERR_BUSY : scheduler_pair_command(line_len > 4 ? line + 5 : "");
-            printf("[PAIR] request=%d\n", rc);
-            if (rc != HAL_OK)
-                puts("[PAIR] STOP first; usage: PAIR <pulse_sensor_A> <pulse_sensor_B> <A|B> <guard_us>; timeouts + guard <= 50000 us");
-        }
-        else if (strncasecmp(line, "TRIGGER ", 8) == 0) {
-            const char *source = line + 8;
-            while (*source == ' ' || *source == '\t') source++;
-            int armed = scheduler_trigger(source, hal_time_us());
-            printf("[TIMING] trigger=%s armed=%d\n", source, armed);
-        }
-        else if (strcmp(cmd, "clear") == 0) {
-            scheduler_reset();
-            rules_reset();
-            printf("CLEARED\n");
-        }
-        else if (strcmp(cmd, "clearrules") == 0) {
-            rules_reset();
-        }
-        else if (strcmp(cmd, "show") == 0) {
-            printf("[SHOW] sampling=%u\n", *running?1u:0u);
-            extern void scheduler_dump(void);
-            scheduler_dump();
-            rules_dump();
-        }
-        else if (strcmp(cmd, "showrules") == 0) {
-            rules_dump();
-        }
-        else if (strcmp(cmd, "help") == 0) {
-            repl_show_help();
-        }
-        else if (line_len) {
+        else if (!repl_command(line, running, cfg_ready) && line_len) {
             printf("Unknown: %s\n", line);
         }
     }

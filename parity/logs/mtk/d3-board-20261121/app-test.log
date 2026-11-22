@@ -1,0 +1,86 @@
+# 2026-11-21T23:24:21.200738+08:00 host_commit=506de52f06633396250fcc6b624e5507c83fbe82 dirty=True port=/dev/cu.usbmodem2101
+# sent: STOP
+STOP
+# sent: CLEAR
+[RULE] reset
+CLEARED
+# sent: APP RESET
+[APP] request=2 synthetic=0 queued=1
+[APP] reset occupancy=0 processed=0 resets=1 malformed=0 publish_enqueued=0 publish_failed=0
+# sent: APP EVENT 101 1 entry
+[APP] request=1 synthetic=1 queued=1
+[APP] id=101 seq=1 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+[BENCH] application_event 502 us
+# sent: APP EVENT 101 1 entry
+[APP] request=1 synthetic=1 queued=1
+[APP] id=101 seq=1 result=2 class=unknown via=none occupancy=1->1 degraded=0 reason=duplicate publish=1
+[BENCH] application_event 421 us
+# sent: APP EVENT 102 2 exit
+[APP] request=1 synthetic=1 queued=1
+[APP] id=102 seq=2 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+[BENCH] application_event 435 us
+# sent: APP EVENT 103 3 exit
+[APP] request=1 synthetic=1 queued=1
+[APP] id=103 seq=3 result=1 class=exit via=rule occupancy=0->0 degraded=0 reason=occupancy floor publish=1
+[BENCH] application_event 495 us
+# sent: APP EVENT 104 4 incomplete
+[APP] request=1 synthetic=1 queued=1
+[APP] id=104 seq=4 result=1 class=incomplete via=rule occupancy=0->0 degraded=0 reason=accepted publish=1
+[BENCH] application_event 446 us
+# sent: APP EVENT 105 5 false
+[APP] request=1 synthetic=1 queued=1
+[APP] id=105 seq=5 result=1 class=false via=rule occupancy=0->0 degraded=0 reason=accepted publish=1
+[BENCH] application_event 531 us
+# sent: APP EVENT 106 4 entry
+[APP] request=1 synthetic=1 queued=1
+[APP] id=106 seq=4 result=3 class=unknown via=none occupancy=0->0 degraded=1 reason=reordered publish=1
+[BENCH] application_event 429 us
+# sent: APP EVENT 0 1 entry
+[APP] usage: APP RESET | APP STATUS | APP EVENT <id> <seq> <entry|exit|incomplete|false>
+# sent: BEGINCFG|name=D3_PROBE|proto=gpio|gpio.mode=digital|gpio.pin=8|gpio.pull=down|mode=poll|timing.mode=one_shot|ENDCFG
+OK: Config applied (inline, delim='|')
+[SCHED] added: D3_PROBE on gpio
+CFG: ok (added #0: D3_PROBE)
+# sent: BEGINRULE|name=D3_UNVERIFIED|source=D3_PROBE|calc=s=u8(0)|when=1|action=event:entry|ENDRULE
+[RULE] added name=D3_UNVERIFIED src=D3_PROBE vars=1 action=event:entry
+RULE: ok
+# sent: RUN
+RUN
+proto=gpio src=D3_PROBE len=3 ts=183384 : 00 D3 00
+[RULE] D3_UNVERIFIED: event=entry id=1 observation=unverified queued=1
+[TRACE] Total Rule Eval (D3_PROBE): 289us
+[APP] id=1 seq=1 result=4 class=entry via=rule occupancy=0->0 degraded=1 reason=quality publish=1
+[BENCH] application_event 541 us
+# sent: STOP
+STOP
+# sent: APP STATUS
+[APP] request=3 synthetic=0 queued=1
+[APP] status occupancy=0 processed=8 resets=1 malformed=0 publish_enqueued=8 publish_failed=0
+# sent: TASKS
+[TASK] app_message=104 B app_buffer=864 B
+[TASK] SchedulerTask    id=8  core=1 pri=21 stack_free=11036 B ran_on_core0=0 ran_on_core1=2554
+[TASK] MQTTTask         id=9  core=0 pri=22 stack_free=8636 B ran_on_core0=15923 ran_on_core1=0
+[TASK] ControlTask      id=10 core=1 pri=23 stack_free=2988 B ran_on_core0=0 ran_on_core1=2400
+[TASK] InferenceTask    id=11 core=1 pri=23 stack_free=6460 B ran_on_core0=0 ran_on_core1=3
+[TASK] ApplicationTask  id=12 core=1 pri=23 stack_free=2268 B ran_on_core0=0 ran_on_core1=10
+[TASK] BenchmarkTask    id=13 core=1 pri=24 stack_free=2252 B ran_on_core0=0 ran_on_core1=8
+[TASK] MonitorTask      id=14 core=1 pri=24 stack_free=3308 B ran_on_core0=0 ran_on_core1=183
+[TASK] sched_mbf  free=12912 B dropped=0
+[TASK] pub_mbf    free=10944 B dropped=0
+[TASK] infer_mbf  free=592 B dropped=0
+[TASK] app_mbf    free=864 B dropped=0
+[TASK] bench_mbf  free=512 B dropped=0
+[TASK] ctrl_mbf   free=528 B dropped=0
+[TASK] heap_free=30128 B min_free=21204 B largest=21504 B console_rx_irqs=29 console_rx_dropped=0
+[TASK] SchedulerTask cycles=2446 mean_us=374 p95_us=<1000 max_us=54000
+# application smoke: 18 checks passed
+# sent: STOP
+STOP
+# sent: CLEAR
+[RULE] reset
+CLEARED
+# sent: APP RESET
+[APP] request=2 synthetic=0 queued=1
+[APP] reset occupancy=0 processed=8 resets=2 malformed=0 publish_enqueued=8 publish_failed=0
+# Scope: synthetic application plumbing only; physical entrance, overflow, timing and D2 T-23 not certified
+# Final outcome: PASS

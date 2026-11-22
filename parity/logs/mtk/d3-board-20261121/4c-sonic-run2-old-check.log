@@ -1,0 +1,213 @@
+# board=s3 fixture=v2-sonar stage=4c-sonic
+00:05:29 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:05:30 --- fixture-stop: STOP
+00:05:30 STOP
+00:05:32 --- fixture-clear: CLEAR
+00:05:32 [RULE] reset
+00:05:32 CLEARED
+00:05:34 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:05:35 --- cfg-sonic: BEGINCFG|name=HCSR04|proto=gpio|gpio.mode=pulse|mode=poll|freq_hz=2|gpio.trig=4|gpio.echo=5|gpio.trig_us=10|gpio.pulse_timeout_us=25000|ENDCFG
+00:05:35 OK: Config applied (inline, delim='|')
+00:05:35 [SCHED] added: HCSR04 on gpio
+00:05:35 CFG: ok (added #0: HCSR04)
+00:05:39 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:05:44 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:05:45 --- sonic-read: RUN
+00:05:45 RUN
+00:05:45 proto=gpio src=HCSR04 len=3 ts=2666409 : BC 02 01
+00:05:45 {"sensor":"HCSR04","timestamp_ms":2666410,"distance_cm":12.0,"echo_us":700,"status":"OK","error":0}
+00:05:46 proto=gpio src=HCSR04 len=3 ts=2666910 : BC 02 01
+00:05:46 {"sensor":"HCSR04","timestamp_ms":2666911,"distance_cm":12.0,"echo_us":700,"status":"OK","error":0}
+00:05:46 proto=gpio src=HCSR04 len=3 ts=2667411 : BC 02 01
+00:05:46 {"sensor":"HCSR04","timestamp_ms":2667412,"distance_cm":12.0,"echo_us":700,"status":"OK","error":0}
+00:05:47 proto=gpio src=HCSR04 len=3 ts=2667911 : BD 02 01
+00:05:47 {"sensor":"HCSR04","timestamp_ms":2667912,"distance_cm":12.0,"echo_us":701,"status":"OK","error":0}
+00:05:47 proto=gpio src=HCSR04 len=3 ts=2668411 : BC 02 01
+00:05:47 {"sensor":"HCSR04","timestamp_ms":2668412,"distance_cm":12.0,"echo_us":700,"status":"OK","error":0}
+00:05:48 proto=gpio src=HCSR04 len=3 ts=2668911 : BC 02 01
+00:05:48 {"sensor":"HCSR04","timestamp_ms":2668912,"distance_cm":12.0,"echo_us":700,"status":"OK","error":0}
+00:05:48 proto=gpio src=HCSR04 len=3 ts=2669411 : BD 02 01
+00:05:48 {"sensor":"HCSR04","timestamp_ms":2669412,"distance_cm":12.0,"echo_us":701,"status":"OK","error":0}
+00:05:49 proto=gpio src=HCSR04 len=3 ts=2669911 : BC 02 01
+00:05:49 {"sensor":"HCSR04","timestamp_ms":2669912,"distance_cm":12.0,"echo_us":700,"status":"OK","error":0}
+00:05:49 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:05:49 proto=gpio src=HCSR04 len=3 ts=2670411 : BC 02 01
+00:05:49 {"sensor":"HCSR04","timestamp_ms":2670412,"distance_cm":12.0,"echo_us":700,"status":"OK","error":0}
+00:05:50 proto=gpio src=HCSR04 len=3 ts=2670910 : BC 02 01
+00:05:50 {"sensor":"HCSR04","timestamp_ms":2670911,"distance_cm":12.0,"echo_us":700,"status":"OK","error":0}
+00:05:50 proto=gpio src=HCSR04 len=3 ts=2671411 : BC 02 01
+00:05:50 {"sensor":"HCSR04","timestamp_ms":2671412,"distance_cm":12.0,"echo_us":700,"status":"OK","error":0}
+00:05:51 proto=gpio src=HCSR04 len=3 ts=2671911 : BD 02 01
+00:05:51 {"sensor":"HCSR04","timestamp_ms":2671912,"distance_cm":12.0,"echo_us":701,"status":"OK","error":0}
+00:05:51 proto=gpio src=HCSR04 len=3 ts=2672411 : BC 02 01
+00:05:51 {"sensor":"HCSR04","timestamp_ms":2672412,"distance_cm":12.0,"echo_us":700,"status":"OK","error":0}
+00:05:52 proto=gpio src=HCSR04 len=3 ts=2672911 : BC 02 01
+00:05:52 {"sensor":"HCSR04","timestamp_ms":2672912,"distance_cm":12.0,"echo_us":700,"status":"OK","error":0}
+00:05:52 proto=gpio src=HCSR04 len=3 ts=2673411 : BC 02 01
+00:05:52 {"sensor":"HCSR04","timestamp_ms":2673412,"distance_cm":12.0,"echo_us":700,"status":"OK","error":0}
+00:05:53 proto=gpio src=HCSR04 len=3 ts=2673911 : BC 02 01
+00:05:53 {"sensor":"HCSR04","timestamp_ms":2673912,"distance_cm":12.0,"echo_us":700,"status":"OK","error":0}
+00:05:53 proto=gpio src=HCSR04 len=3 ts=2674411 : BC 02 01
+00:05:53 {"sensor":"HCSR04","timestamp_ms":2674412,"distance_cm":12.0,"echo_us":700,"status":"OK","error":0}
+00:05:54 proto=gpio src=HCSR04 len=3 ts=2674911 : BC 02 01
+00:05:54 {"sensor":"HCSR04","timestamp_ms":2674912,"distance_cm":12.0,"echo_us":700,"status":"OK","error":0}
+00:05:54 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:05:54 proto=gpio src=HCSR04 len=3 ts=2675411 : BC 02 01
+00:05:54 {"sensor":"HCSR04","timestamp_ms":2675412,"distance_cm":12.0,"echo_us":700,"status":"OK","error":0}
+00:05:55 proto=gpio src=HCSR04 len=3 ts=2675910 : BD 02 01
+00:05:55 {"sensor":"HCSR04","timestamp_ms":2675911,"distance_cm":12.0,"echo_us":701,"status":"OK","error":0}
+00:05:55 proto=gpio src=HCSR04 len=3 ts=2676411 : BC 02 01
+00:05:55 {"sensor":"HCSR04","timestamp_ms":2676412,"distance_cm":12.0,"echo_us":700,"status":"OK","error":0}
+00:05:56 proto=gpio src=HCSR04 len=3 ts=2676911 : BC 02 01
+00:05:56 {"sensor":"HCSR04","timestamp_ms":2676912,"distance_cm":12.0,"echo_us":700,"status":"OK","error":0}
+00:05:56 proto=gpio src=HCSR04 len=3 ts=2677411 : BC 02 01
+00:05:56 {"sensor":"HCSR04","timestamp_ms":2677412,"distance_cm":12.0,"echo_us":700,"status":"OK","error":0}
+00:05:57 proto=gpio src=HCSR04 len=3 ts=2677911 : BD 02 01
+00:05:57 {"sensor":"HCSR04","timestamp_ms":2677912,"distance_cm":12.0,"echo_us":701,"status":"OK","error":0}
+00:05:57 proto=gpio src=HCSR04 len=3 ts=2678411 : BC 02 01
+00:05:57 {"sensor":"HCSR04","timestamp_ms":2678412,"distance_cm":12.0,"echo_us":700,"status":"OK","error":0}
+00:05:58 proto=gpio src=HCSR04 len=3 ts=2678911 : BC 02 01
+00:05:58 {"sensor":"HCSR04","timestamp_ms":2678912,"distance_cm":12.0,"echo_us":700,"status":"OK","error":0}
+00:05:58 proto=gpio src=HCSR04 len=3 ts=2679411 : EE 02 01
+00:05:58 {"sensor":"HCSR04","timestamp_ms":2679412,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:05:59 proto=gpio src=HCSR04 len=3 ts=2679911 : EF 02 01
+00:05:59 {"sensor":"HCSR04","timestamp_ms":2679912,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:05:59 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:05:59 proto=gpio src=HCSR04 len=3 ts=2680411 : EE 02 01
+00:05:59 {"sensor":"HCSR04","timestamp_ms":2680412,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:00 proto=gpio src=HCSR04 len=3 ts=2680910 : EF 02 01
+00:06:00 {"sensor":"HCSR04","timestamp_ms":2680911,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:00 proto=gpio src=HCSR04 len=3 ts=2681411 : EE 02 01
+00:06:00 {"sensor":"HCSR04","timestamp_ms":2681412,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:01 proto=gpio src=HCSR04 len=3 ts=2681911 : EF 02 01
+00:06:01 {"sensor":"HCSR04","timestamp_ms":2681912,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:01 proto=gpio src=HCSR04 len=3 ts=2682411 : EE 02 01
+00:06:01 {"sensor":"HCSR04","timestamp_ms":2682412,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:02 proto=gpio src=HCSR04 len=3 ts=2682911 : EF 02 01
+00:06:02 {"sensor":"HCSR04","timestamp_ms":2682912,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:02 proto=gpio src=HCSR04 len=3 ts=2683411 : EF 02 01
+00:06:02 {"sensor":"HCSR04","timestamp_ms":2683412,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:03 proto=gpio src=HCSR04 len=3 ts=2683911 : EF 02 01
+00:06:03 {"sensor":"HCSR04","timestamp_ms":2683912,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:03 proto=gpio src=HCSR04 len=3 ts=2684411 : EF 02 01
+00:06:03 {"sensor":"HCSR04","timestamp_ms":2684412,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:04 proto=gpio src=HCSR04 len=3 ts=2684911 : EE 02 01
+00:06:04 {"sensor":"HCSR04","timestamp_ms":2684912,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:04 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:06:04 proto=gpio src=HCSR04 len=3 ts=2685411 : EE 02 01
+00:06:04 {"sensor":"HCSR04","timestamp_ms":2685412,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:05 proto=gpio src=HCSR04 len=3 ts=2685910 : EF 02 01
+00:06:05 {"sensor":"HCSR04","timestamp_ms":2685911,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:05 proto=gpio src=HCSR04 len=3 ts=2686411 : EE 02 01
+00:06:05 {"sensor":"HCSR04","timestamp_ms":2686412,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:06 proto=gpio src=HCSR04 len=3 ts=2686911 : EE 02 01
+00:06:06 {"sensor":"HCSR04","timestamp_ms":2686912,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:06 proto=gpio src=HCSR04 len=3 ts=2687411 : EE 02 01
+00:06:06 {"sensor":"HCSR04","timestamp_ms":2687412,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:07 proto=gpio src=HCSR04 len=3 ts=2687911 : EE 02 01
+00:06:07 {"sensor":"HCSR04","timestamp_ms":2687912,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:07 proto=gpio src=HCSR04 len=3 ts=2688411 : EF 02 01
+00:06:07 {"sensor":"HCSR04","timestamp_ms":2688412,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:08 proto=gpio src=HCSR04 len=3 ts=2688911 : EF 02 01
+00:06:08 {"sensor":"HCSR04","timestamp_ms":2688912,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:08 proto=gpio src=HCSR04 len=3 ts=2689411 : EF 02 01
+00:06:08 {"sensor":"HCSR04","timestamp_ms":2689412,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:09 proto=gpio src=HCSR04 len=3 ts=2689911 : EF 02 01
+00:06:09 {"sensor":"HCSR04","timestamp_ms":2689912,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:09 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:06:09 proto=gpio src=HCSR04 len=3 ts=2690411 : EE 02 01
+00:06:09 {"sensor":"HCSR04","timestamp_ms":2690412,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:10 proto=gpio src=HCSR04 len=3 ts=2690911 : EF 02 01
+00:06:10 {"sensor":"HCSR04","timestamp_ms":2690912,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:10 proto=gpio src=HCSR04 len=3 ts=2691411 : EE 02 01
+00:06:10 {"sensor":"HCSR04","timestamp_ms":2691412,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:11 proto=gpio src=HCSR04 len=3 ts=2691911 : EF 02 01
+00:06:11 {"sensor":"HCSR04","timestamp_ms":2691912,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:11 proto=gpio src=HCSR04 len=3 ts=2692411 : EE 02 01
+00:06:11 {"sensor":"HCSR04","timestamp_ms":2692412,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:12 proto=gpio src=HCSR04 len=3 ts=2692911 : EE 02 01
+00:06:12 {"sensor":"HCSR04","timestamp_ms":2692912,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:12 proto=gpio src=HCSR04 len=3 ts=2693411 : EF 02 01
+00:06:12 {"sensor":"HCSR04","timestamp_ms":2693412,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:13 proto=gpio src=HCSR04 len=3 ts=2693911 : EF 02 01
+00:06:13 {"sensor":"HCSR04","timestamp_ms":2693912,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:13 proto=gpio src=HCSR04 len=3 ts=2694411 : EF 02 01
+00:06:13 {"sensor":"HCSR04","timestamp_ms":2694412,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:14 proto=gpio src=HCSR04 len=3 ts=2694911 : EF 02 01
+00:06:14 {"sensor":"HCSR04","timestamp_ms":2694912,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:14 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:06:14 proto=gpio src=HCSR04 len=3 ts=2695411 : EF 02 01
+00:06:14 {"sensor":"HCSR04","timestamp_ms":2695412,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:15 proto=gpio src=HCSR04 len=3 ts=2695910 : EE 02 01
+00:06:15 {"sensor":"HCSR04","timestamp_ms":2695911,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:15 proto=gpio src=HCSR04 len=3 ts=2696411 : EF 02 01
+00:06:15 {"sensor":"HCSR04","timestamp_ms":2696412,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:16 proto=gpio src=HCSR04 len=3 ts=2696911 : EF 02 01
+00:06:16 {"sensor":"HCSR04","timestamp_ms":2696912,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:16 proto=gpio src=HCSR04 len=3 ts=2697411 : EE 02 01
+00:06:16 {"sensor":"HCSR04","timestamp_ms":2697412,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:17 proto=gpio src=HCSR04 len=3 ts=2697911 : EE 02 01
+00:06:17 {"sensor":"HCSR04","timestamp_ms":2697912,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:17 proto=gpio src=HCSR04 len=3 ts=2698411 : EF 02 01
+00:06:17 {"sensor":"HCSR04","timestamp_ms":2698412,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:18 proto=gpio src=HCSR04 len=3 ts=2698911 : EE 02 01
+00:06:18 {"sensor":"HCSR04","timestamp_ms":2698912,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:18 proto=gpio src=HCSR04 len=3 ts=2699411 : EF 02 01
+00:06:18 {"sensor":"HCSR04","timestamp_ms":2699412,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:19 proto=gpio src=HCSR04 len=3 ts=2699911 : EF 02 01
+00:06:19 {"sensor":"HCSR04","timestamp_ms":2699912,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:19 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:06:19 proto=gpio src=HCSR04 len=3 ts=2700411 : EF 02 01
+00:06:19 {"sensor":"HCSR04","timestamp_ms":2700412,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:20 proto=gpio src=HCSR04 len=3 ts=2700910 : EF 02 01
+00:06:20 {"sensor":"HCSR04","timestamp_ms":2700911,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:20 proto=gpio src=HCSR04 len=3 ts=2701411 : EE 02 01
+00:06:20 {"sensor":"HCSR04","timestamp_ms":2701412,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:21 proto=gpio src=HCSR04 len=3 ts=2701911 : EF 02 01
+00:06:21 {"sensor":"HCSR04","timestamp_ms":2701912,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:21 proto=gpio src=HCSR04 len=3 ts=2702411 : EE 02 01
+00:06:21 {"sensor":"HCSR04","timestamp_ms":2702412,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:22 proto=gpio src=HCSR04 len=3 ts=2702911 : EF 02 01
+00:06:22 {"sensor":"HCSR04","timestamp_ms":2702912,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:22 proto=gpio src=HCSR04 len=3 ts=2703411 : EF 02 01
+00:06:22 {"sensor":"HCSR04","timestamp_ms":2703412,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:23 proto=gpio src=HCSR04 len=3 ts=2703911 : EE 02 01
+00:06:23 {"sensor":"HCSR04","timestamp_ms":2703912,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:23 proto=gpio src=HCSR04 len=3 ts=2704411 : EE 02 01
+00:06:23 {"sensor":"HCSR04","timestamp_ms":2704412,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:24 proto=gpio src=HCSR04 len=3 ts=2704911 : EF 02 01
+00:06:24 {"sensor":"HCSR04","timestamp_ms":2704912,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:24 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:06:24 proto=gpio src=HCSR04 len=3 ts=2705411 : EF 02 01
+00:06:24 {"sensor":"HCSR04","timestamp_ms":2705412,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:25 proto=gpio src=HCSR04 len=3 ts=2705910 : EF 02 01
+00:06:25 {"sensor":"HCSR04","timestamp_ms":2705911,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:25 proto=gpio src=HCSR04 len=3 ts=2706411 : EF 02 01
+00:06:25 {"sensor":"HCSR04","timestamp_ms":2706412,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:26 proto=gpio src=HCSR04 len=3 ts=2706911 : EF 02 01
+00:06:26 {"sensor":"HCSR04","timestamp_ms":2706912,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:26 proto=gpio src=HCSR04 len=3 ts=2707411 : EE 02 01
+00:06:26 {"sensor":"HCSR04","timestamp_ms":2707412,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:27 proto=gpio src=HCSR04 len=3 ts=2707911 : EE 02 01
+00:06:27 {"sensor":"HCSR04","timestamp_ms":2707912,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:27 proto=gpio src=HCSR04 len=3 ts=2708411 : EE 02 01
+00:06:27 {"sensor":"HCSR04","timestamp_ms":2708412,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:28 proto=gpio src=HCSR04 len=3 ts=2708911 : EE 02 01
+00:06:28 {"sensor":"HCSR04","timestamp_ms":2708912,"distance_cm":12.9,"echo_us":750,"status":"OK","error":0}
+00:06:28 proto=gpio src=HCSR04 len=3 ts=2709411 : EF 02 01
+00:06:28 {"sensor":"HCSR04","timestamp_ms":2709412,"distance_cm":12.9,"echo_us":751,"status":"OK","error":0}
+00:06:29 proto=gpio src=HCSR04 len=3 ts=2709911 : 03 03 01
+00:06:29 {"sensor":"HCSR04","timestamp_ms":2709912,"distance_cm":13.2,"echo_us":771,"status":"OK","error":0}
+00:06:29 [MQTT] Status: Connected, Broker: 192.168.1.49
+00:06:29 proto=gpio src=HCSR04 len=3 ts=2710411 : DF 02 01
+00:06:29 {"sensor":"HCSR04","timestamp_ms":2710412,"distance_cm":12.6,"echo_us":735,"status":"OK","error":0}
+00:06:30 proto=gpio src=HCSR04 len=3 ts=2710911 : E0 02 01
+00:06:30 {"sensor":"HCSR04","timestamp_ms":2710912,"distance_cm":12.6,"echo_us":736,"status":"OK","error":0}
+00:06:30 proto=gpio src=HCSR04 len=3 ts=2711411 : DF 02 01
+00:06:30 {"sensor":"HCSR04","timestamp_ms":2711412,"distance_cm":12.6,"echo_us":735,"status":"OK","error":0}
+00:06:30 --- stop-sonic: STOP
+00:06:31 STOP
+00:06:33 --- clear-sonic: CLEAR
+00:06:33 [RULE] reset
+00:06:33 CLEARED
+00:06:34 [MQTT] Status: Connected, Broker: 192.168.1.49
