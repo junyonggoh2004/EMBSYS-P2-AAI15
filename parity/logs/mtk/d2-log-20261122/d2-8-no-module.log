@@ -1,0 +1,318 @@
+09:03:28 ESP-ROM:esp32s3-20210327
+09:03:28 Build:Mar 27 2021
+09:03:28 rst:0x15 (USB_UART_CHIP_RESET),boot:0x8 (SPI_FAST_FLASH_BOOT)
+09:03:28 Saved PC:0x420e4b96
+09:03:28 SPIWP:0xee
+09:03:28 mode:DIO, clock div:1
+09:03:28 load:0x3fce2820,len:0x1524
+09:03:28 load:0x403c8700,len:0xd48
+09:03:28 load:0x403cb700,len:0x2f60
+09:03:28 entry 0x403c8900
+09:03:28 I (24) boot: ESP-IDF v6.1-dev-2300-g17a74c925c 2nd stage bootloader
+09:03:28 I (24) boot: Multicore bootloader
+09:03:28 I (25) boot: chip revision: v0.2
+09:03:28 I (25) boot: efuse block revision: v1.4
+09:03:28 I (25) boot.esp32s3: Boot SPI Speed : 80MHz
+09:03:28 I (25) boot.esp32s3: SPI Mode       : DIO
+09:03:28 I (25) boot.esp32s3: SPI Flash Size : 4MB
+09:03:28 I (26) boot: Enabling RNG early entropy source...
+09:03:28 I (26) boot: Partition Table:
+09:03:28 I (26) boot: ## Label            Usage          Type ST Offset   Length
+09:03:28 I (26) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+09:03:28 I (27) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+09:03:28 I (27) boot:  2 factory          factory app      00 00 00010000 002f0000
+09:03:28 I (27) boot:  3 model            Unknown data     01 40 00300000 00082000
+09:03:28 I (28) boot: End of partition table
+09:03:28 I (28) esp_image: segment 0: paddr=00010020 vaddr=3c100020 size=34808h (215048) map
+09:03:28 I (67) esp_image: segment 1: paddr=00044830 vaddr=3fc9fe00 size=05c68h ( 23656) load
+09:03:28 I (72) esp_image: segment 2: paddr=0004a4a0 vaddr=40374000 size=05b78h ( 23416) load
+09:03:28 I (78) esp_image: segment 3: paddr=00050020 vaddr=42000020 size=f0050h (983120) map
+09:03:28 I (255) esp_image: segment 4: paddr=00140078 vaddr=40379b78 size=161a0h ( 90528) load
+09:03:28 I (275) esp_image: segment 5: paddr=00156220 vaddr=50000000 size=00024h (    36) load
+09:03:29 I (287) boot: Loaded app from partition at offset 0x10000
+09:03:29 I (287) boot: Disabling RNG early entropy source...
+09:03:29 I (289) octal_psram: vendor id    : 0x0d (AP)
+09:03:29 I (289) octal_psram: dev id       : 0x02 (generation 3)
+09:03:29 I (289) octal_psram: density      : 0x03 (64 Mbit)
+09:03:29 I (289) octal_psram: good-die     : 0x01 (Pass)
+09:03:29 I (290) octal_psram: Latency      : 0x01 (Fixed)
+09:03:29 I (290) octal_psram: VCC          : 0x01 (3V)
+09:03:29 I (290) octal_psram: SRF          : 0x01 (Fast Refresh)
+09:03:29 I (290) octal_psram: BurstType    : 0x01 (Hybrid Wrap)
+09:03:29 I (290) octal_psram: BurstLen     : 0x01 (32 Byte)
+09:03:29 I (291) octal_psram: Readlatency  : 0x02 (10 cycles@Fixed)
+09:03:29 I (291) octal_psram: DriveStrength: 0x00 (1/1)
+09:03:29 I (291) MSPI Timing: Enter psram timing tuning
+09:03:29 I (292) esp_psram: Found 8MB PSRAM device
+09:03:29 I (292) esp_psram: Speed: 80MHz
+09:03:29 I (292) cpu_start: Multicore app
+09:03:29 I (725) esp_psram: SPI SRAM memory test OK
+09:03:29 I (739) cpu_start: Pro cpu start user code
+09:03:29 I (739) cpu_start: cpu freq: 240000000 Hz
+09:03:29 I (739) app_init: Application information:
+09:03:29 I (740) app_init: Project name:     esp32s3_mtk
+09:03:29 I (740) app_init: ELF file SHA256:  07bb155b5...
+09:03:29 I (740) app_init: ESP-IDF:          v6.1-dev-2300-g17a74c925c
+09:03:29 I (740) efuse_init: Min chip rev:     v0.0
+09:03:29 I (740) efuse_init: Max chip rev:     v0.99 
+09:03:29 I (740) efuse_init: Chip rev:         v0.2
+09:03:29 I (741) heap_init: Initializing. RAM available for dynamic allocation:
+09:03:29 I (741) heap_init: At 3FCDABD0 len 0000EB40 (58 KiB): RAM
+09:03:29 I (741) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+09:03:29 I (741) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+09:03:29 I (741) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+09:03:29 I (742) esp_psram: Adding pool of 8050K of PSRAM memory to heap allocator
+09:03:29 I (742) spi_flash: detected chip: boya
+09:03:29 I (742) spi_flash: flash io: dio
+09:03:29 W (743) spi_flash: Detected size(16384k) larger than the size in the binary image header(4096k). Using the size in the binary image header.
+09:03:29 [shim] xTaskCreate enter: 'ipc0' prio=24 core=0 stack=1280
+09:03:29 [shim] xTaskCreate: 'ipc0' tk_id=1 pri=1
+09:03:29 [shim] xTaskCreate enter: 'ipc1' prio=24 core=1 stack=1280
+09:03:29 [shim] xTaskCreate: 'ipc1' tk_id=2 pri=1
+09:03:29 [shim] xTaskCreate enter: 'esp_timer' prio=22 core=0 stack=4096
+09:03:29 [shim] xTaskCreate: 'esp_timer' tk_id=3 pri=3
+09:03:29 I (744) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+09:03:29 I (745) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+09:03:29 
+09:03:29 
+09:03:29 [mtkernel] __wrap_esp_startup_start_app: bypassing FreeRTOS
+09:03:29 [crumb][ mctokreern0e lp]r ec-orrees1e:t  bLyApSaTs siinntg  eFnrtereyR T(OpSr,e -esnatveer)i:n gc oSuMnPt =park
+09:03:29 14592 [espmcp1]= core1 entr4y2,0 ep4rbi9d6= ep1c2
+09:03:29 =[0s0m0p0]0 0c0o0r ee1p cw3a=it0i0n0g0 0f0o0r0  csopr=e0 IPI alloc3aftcocr7e
+09:03:29 0 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[00] count=14561 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[01] count=14562 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[02] count=14563 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[03] count=14564 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[04] count=14565 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[05] count=14566 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[06] count=14567 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[07] count=14568 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[08] count=14569 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[09] count=14570 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[10] count=14571 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[11] count=14572 epc1=403882ed epc2=00000000 epc3=00000000 sp=3fcd1bf0 INT=000180c0 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[12] count=14573 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[13] count=14574 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[14] count=14575 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[15] count=14576 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[16] count=14577 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[17] count=14578 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[18] count=14579 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[19] count=14580 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[20] count=14581 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[21] count=14582 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[22] count=14583 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[23] count=14584 epc1=403882ed epc2=00000000 epc3=00000000 sp=3fcd1bf0 INT=000180c0 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[24] count=14585 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[25] count=14586 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[26] count=14587 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[27] count=14588 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[28] count=14589 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[29] count=14590 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[30] count=14591 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core0 ring[31] count=14592 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc7e70 INT=00018440 WB=2 WS=0004
+09:03:29 [crumb] core1 pre-reset LAST int entry (pre-save): count=870 epc1=40386f79 epc2=00000000 epc3=00000000 sp=3fccdcc0 INT=000180c0 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[00] count=839 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc8270 INT=00018041 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[01] count=840 epc1=40386f79 epc2=00000000 epc3=00000000 sp=3fccdcc0 INT=000180c0 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[02] count=841 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc8270 INT=00018041 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[03] count=842 epc1=4038854d epc2=00000000 epc3=00000000 sp=3fcc9100 INT=00018041 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[04] count=843 epc1=4038854d epc2=00000000 epc3=00000000 sp=3fcc9100 INT=000180c0 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[05] count=844 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc8270 INT=00018041 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[06] count=845 epc1=40386f79 epc2=00000000 epc3=00000000 sp=3fccdcc0 INT=000180c0 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[07] count=846 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc8270 INT=00018041 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[08] count=847 epc1=403882ed epc2=00000000 epc3=00000000 sp=3fcd5ad0 INT=000180c0 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[09] count=848 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc8270 INT=00018041 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[10] count=849 epc1=40386f79 epc2=00000000 epc3=00000000 sp=3fccdcc0 INT=000180c0 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[11] count=850 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc8270 INT=00018041 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[12] count=851 epc1=40386f79 epc2=00000000 epc3=00000000 sp=3fccdcc0 INT=000180c0 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[13] count=852 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc8270 INT=00018041 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[14] count=853 epc1=40386f79 epc2=00000000 epc3=00000000 sp=3fccdcc0 INT=000180c0 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[15] count=854 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc8270 INT=00018041 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[16] count=855 epc1=40386f79 epc2=00000000 epc3=00000000 sp=3fccdcc0 INT=000180c0 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[17] count=856 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc8270 INT=00018041 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[18] count=857 epc1=40386f79 epc2=00000000 epc3=00000000 sp=3fccdcc0 INT=000180c0 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[19] count=858 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc8270 INT=00018041 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[20] count=859 epc1=40386f79 epc2=00000000 epc3=00000000 sp=3fccdcc0 INT=000180c0 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[21] count=860 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc8270 INT=00018041 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[22] count=861 epc1=40386f79 epc2=00000000 epc3=00000000 sp=3fccdcc0 INT=000180c0 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[23] count=862 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc8270 INT=00018041 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[24] count=863 epc1=40386f79 epc2=00000000 epc3=00000000 sp=3fccdcc0 INT=000180c0 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[25] count=864 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc8270 INT=00018041 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[26] count=865 epc1=40386f79 epc2=00000000 epc3=00000000 sp=3fccdcc0 INT=000180c0 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[27] count=866 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc8270 INT=00018041 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[28] count=867 epc1=4038854d epc2=00000000 epc3=00000000 sp=3fcc9100 INT=00018041 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[29] count=868 epc1=4038854d epc2=00000000 epc3=00000000 sp=3fcc9100 INT=000180c0 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[30] count=869 epc1=420e4b96 epc2=00000000 epc3=00000000 sp=3fcc8270 INT=00018041 WB=14 WS=4000
+09:03:29 [crumb] core1 ring[31] count=870 epc1=40386f79 epc2=00000000 epc3=00000000 sp=3fccdcc0 INT=000180c0 WB=14 WS=4000
+09:03:29 [smp] core0 IPI alloc begin source=79
+09:03:29 [smp] core0 IPI alloc done err=0
+09:03:29 [smp] core0 w[asimtpi]n gc ofroer1  cdoirree1c ti nItPeIr riunpstt aslelt ubpeg
+09:03:29 in source=80
+09:03:29 [smp] core1 direct IPI install done int=0 level=1
+09:03:29 [smp] core1 [IsPmIp ]r eccoeriev0e ro buspe r(vFeRdO Mc_oCrPeU1_ IiNnTtRe1r)r,u ppta rskeitnugp 
+09:03:29 complete
+09:03:29 [mtkernel] heap 0x3fcabf18..0x3fcb6f18 (45056 bytes)
+09:03:29 [mtkernel] calling knl_main()
+09:03:29 SYSTIMER started!
+09:03:29 
+09:03:29 
+09:03:29 microT-Kernel Version 3.00
+09:03:29 
+09:03:29 [BOOT] esp32s3_mtk node s3-001: micro T-Kernel 3 SMP, 2 processors, reset reason: USB
+09:03:29 [BOOT] application startup stack: 16384 bytes, kernel processor 1
+09:03:29 [BOOT] micro T-Kernel 3 SMP runtime: 7 tasks, 8 message buffers, 1 event flag, 1 cyclic handler
+09:03:29 [WIFI] Connecting to <ssid>
+09:03:29 [MODEL] Model transfer subsystem initialised.
+09:03:29 [shim] qcreate(st) h=0x3fcdde4c len=32 sz=4 ne=7 nf=8
+09:03:29 [shim] xTaskCreate enter: 'tcpip' prio=18 core=2147483647 stack=3584
+09:03:29 [shim]   tskNO_AFFINITY -> pinning 'tcpip' to core 0 (coprocessor tasks must be pinned)
+09:03:29 [shim] xTaskCreate: 'tcpip' tk_id=15 pri=7
+09:03:29 [shim] qcreate h=0x3c1641e4 len=32 sz=16 ne=12 nf=13
+09:03:29 [shim] xTaskCreate enter: 'sys_evt' prio=20 core=0 stack=2816
+09:03:29 [shim] xTaskCreate: 'sys_evt' tk_id=16 pri=5
+09:03:29 I (3355770657) pp: pp rom version: e7ae62f
+09:03:29 I (3355770658) net80211: net80211 rom version: e7ae62f
+09:03:29 [shim] qcreate(st) h=0x3fce0720 len=200 sz=8 ne=15 nf=16
+09:03:29 [shim] xTaskCreate enter: 'wifi' prio=23 core=0 stack=3584
+09:03:29 [shim] xTaskCreate: 'wifi' tk_id=17 pri=2
+09:03:29 [MODEL] Loaded saved model: 16440 bytes from flash slot 1
+09:03:29 [INFER] Inference manager initialised.
+09:03:29 [TFLITE] Unloading previous model state...
+09:03:29 [TFLITE] Unload complete.
+09:03:29 [TFLITE] Verifying FlatBuffer at 0x3c1206f8...
+09:03:29 [TFLITE] Schema version 3 verified.
+09:03:29 I (3355770669) wifi_init: rx ba win: 6
+09:03:29 [TFLITE] Creating OpResolver...
+09:03:29 I (3355770669) wifi_init: accept mbox: 6
+09:03:29 I (3355770670) wifi_init: tcpip mbox: 32
+09:03:29 I (3355770670) wifi_init: udp mbox: 6
+09:03:29 I (3355770670) wifi_init: tcp mbox: 6
+09:03:29 I (3355770670) wifi_init: tcp tx win: 5760
+09:03:29 [TFLITE] Ops registered.
+09:03:29 I (3355770670) wifi_init: tcp rx win: 5760
+09:03:29 [TFLITE] Creating Interpreter (Arena size 65536)...
+09:03:29 I (3355770670) wifi_init: tcp mss: 1440
+09:03:29 I (3355770670) wifi_init: WiFi IRAM OP enabled
+09:03:29 [TFLITE] Allocating tensors...
+09:03:29 I (3355770670) wifi_init: WiFi RX IRAM OP enabled
+09:03:29 W (-939196625) wifi:Password length matches WPA2 standards, authmode threshold changes from OPEN to WPA2
+09:03:29 I (3355770672) phy_init: phy_version 711,97bcf0a2,Aug 25 2025,19:04:10
+09:03:29 [TFLITE] Tensors allocated.
+09:03:29 [TFLITE] Model loaded OK!
+09:03:29 [TFLITE]   Inputs:  1 tensor(s), 16 total element(s)
+09:03:29 [TFLITE]   Outputs: 1 tensor(s), 16 total element(s)
+09:03:29 [TFLITE]   Arena:   2908 / 65536 bytes used
+09:03:29 [INFER] Base model loaded: 16 inputs, 16 outputs
+09:03:29 [INFER] Loaded 16 base normalization params and 16 threshold masks
+09:03:29 [MON] hardware watchdog armed: 10 s, fed while SchedulerTask, ControlTask and MQTTTask are alive
+09:03:29 [MQTT] Status: Disconnected, Broker: 192.168.1.49
+09:03:30 [INFER] MODEL_READY detected — starting auto-load...
+09:03:30 [TFLITE] Unloading previous model state...
+09:03:30 [TFLITE] Unload complete.
+09:03:30 [TFLITE] Verifying FlatBuffer at 0x3c942000...
+09:03:30 [TFLITE] Schema version 3 verified.
+09:03:30 [TFLITE] Creating OpResolver...
+09:03:30 [TFLITE] Ops registered.
+09:03:30 [TFLITE] Creating Interpreter (Arena size 65536)...
+09:03:30 [TFLITE] Allocating tensors...
+09:03:30 [TFLITE] Tensors allocated.
+09:03:30 [TFLITE] Model loaded OK!
+09:03:30 [TFLITE]   Inputs:  1 tensor(s), 16 total element(s)
+09:03:30 [TFLITE]   Outputs: 1 tensor(s), 16 total element(s)
+09:03:30 [TFLITE]   Arena:   2908 / 65536 bytes used
+09:03:30 [INFER] Model loaded: 16 inputs, 16 outputs
+09:03:30 [INFER] Auto-load successful.
+09:03:31 I (3355772588) esp_netif_handlers: sta ip: 192.168.1.55, mask: 255.255.255.0, gw: 192.168.1.1
+09:03:31 WiFi connected
+09:03:31 [WIFI] ip=192.168.1.55
+09:03:31 [shim] qcreate h=0x3c175484 len=1 sz=16 ne=22 nf=23
+09:03:31 [MQTT] Connecting to <ssid>
+09:03:31 [shim] xTaskCreate enter: 'mqtt_task' prio=5 core=2147483647 stack=6144
+09:03:31 [shim]   tskNO_AFFINITY -> pinning 'mqtt_task' to core 0 (coprocessor tasks must be pinned)
+09:03:31 [shim] xTaskCreate: 'mqtt_task' tk_id=18 pri=20
+09:03:31 [shim] qcreate(st) h=0x3fcf0920 len=6 sz=4 ne=26 nf=27
+09:03:32 [MQTT] connected to broker
+09:03:32 [MQTT] Subscribing to node wildcard: pico/s3-001/#
+09:03:32 [MQTT] Subscribed OK to: node-wildcard
+09:03:32 [MQTT] Subscribing to broadcast: pico/broadcast/config
+09:03:32 [MQTT] Subscribed OK to: broadcast
+09:03:34 [MQTT] Status: Connected, Broker: 192.168.1.49
+09:03:39 [MQTT] Status: Connected, Broker: 192.168.1.49
+# D2-8 on the board with no W25Q32 attached: logging off at boot, then LOG ON and four APP events
+> STOP
+09:03:40 STOP
+> CLEAR
+09:03:42 [RULE] reset
+09:03:42 CLEARED
+> LOG STATUS
+09:03:44 [LOG] enabled=0 offered=0 dropped=0 written=0 failed=0 full=0 last_error=0 max_write_us=0 area=3FF100-3FFFFF slots=30
+09:03:44 [MQTT] Status: Connected, Broker: 192.168.1.49
+> LOG ON
+09:03:45 [LOG] on: every processed event is written to the W25Q32 at 3FF100-3FFFFF
+> APP RESET
+09:03:47 [APP] request=2 synthetic=0 queued=1
+09:03:47 [APP] reset occupancy=0 processed=0 resets=1 malformed=0 publish_enqueued=0 publish_failed=0
+> APP EVENT 201 1 entry
+09:03:48 [APP] request=1 synthetic=1 queued=1
+09:03:48 [APP] id=201 seq=1 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+09:03:48 [LOG] seq=1 event=201 not stored: flash error=-9 read=-5 match=0 write_us=392; occupancy and sampling unaffected
+09:03:48 [BENCH] application_event 664 us
+09:03:49 [MQTT] Status: Connected, Broker: 192.168.1.49
+> APP EVENT 202 2 entry
+09:03:49 [APP] request=1 synthetic=1 queued=1
+09:03:49 [APP] id=202 seq=2 result=0 class=entry via=rule occupancy=1->2 degraded=0 reason=accepted publish=1
+09:03:49 [LOG] seq=2 event=202 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected
+09:03:49 [BENCH] application_event 572 us
+> APP EVENT 203 3 exit
+09:03:50 [APP] request=1 synthetic=1 queued=1
+09:03:50 [APP] id=203 seq=3 result=0 class=exit via=rule occupancy=2->1 degraded=0 reason=accepted publish=1
+09:03:50 [LOG] seq=3 event=203 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected
+09:03:50 [BENCH] application_event 567 us
+> APP EVENT 204 4 false
+09:03:51 [APP] request=1 synthetic=1 queued=1
+09:03:51 [APP] id=204 seq=4 result=1 class=false via=rule occupancy=1->1 degraded=0 reason=accepted publish=1
+09:03:51 [LOG] seq=4 event=204 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected
+09:03:51 [BENCH] application_event 564 us
+> APP EVENT 201 1 entry
+09:03:52 [APP] request=1 synthetic=1 queued=1
+09:03:52 [APP] id=201 seq=1 result=2 class=unknown via=none occupancy=1->1 degraded=0 reason=duplicate publish=1
+09:03:52 [LOG] seq=5 event=201 not stored: flash error=-9 read=-5 match=0 write_us=391; occupancy and sampling unaffected
+09:03:52 [BENCH] application_event 547 us
+> APP STATUS
+09:03:53 [APP] request=3 synthetic=0 queued=1
+09:03:53 [APP] status occupancy=1 processed=5 resets=1 malformed=0 publish_enqueued=5 publish_failed=0
+09:03:54 [MQTT] Status: Connected, Broker: 192.168.1.49
+> LOG STATUS
+09:03:55 [LOG] enabled=1 offered=5 dropped=0 written=0 failed=5 full=0 last_error=-9 max_write_us=392 area=3FF100-3FFFFF slots=30
+> LOG READ 0
+09:03:56 [LOG] slot=0 read error=-9
+> LOG OFF
+09:03:58 [LOG] off
+09:03:59 [MQTT] Status: Connected, Broker: 192.168.1.49
+> APP EVENT 210 10 exit
+09:04:00 [APP] request=1 synthetic=1 queued=1
+09:04:00 [APP] id=210 seq=10 result=0 class=exit via=rule occupancy=1->0 degraded=0 reason=accepted publish=1
+09:04:00 [BENCH] application_event 504 us
+> LOG STATUS
+09:04:01 [LOG] enabled=0 offered=5 dropped=0 written=0 failed=5 full=0 last_error=-9 max_write_us=392 area=3FF100-3FFFFF slots=30
+> TASKS
+09:04:02 [TASK] app_message=104 B app_buffer=864 B
+09:04:02 [TASK] SchedulerTask    id=8  core=1 pri=21 stack_free=14428 B ran_on_core0=0 ran_on_core1=34
+09:04:02 [TASK] MQTTTask         id=9  core=0 pri=22 stack_free=14332 B ran_on_core0=3019 ran_on_core1=0
+09:04:02 [TASK] ControlTask      id=10 core=1 pri=23 stack_free=3036 B ran_on_core0=0 ran_on_core1=570
+09:04:02 [TASK] InferenceTask    id=11 core=1 pri=23 stack_free=6796 B ran_on_core0=0 ran_on_core1=2
+09:04:02 [TASK] ApplicationTask  id=12 core=1 pri=23 stack_free=2268 B ran_on_core0=0 ran_on_core1=8
+09:04:02 [TASK] BenchmarkTask    id=13 core=1 pri=24 stack_free=1708 B ran_on_core0=0 ran_on_core1=12
+09:04:02 [TASK] MonitorTask      id=14 core=1 pri=24 stack_free=3292 B ran_on_core0=0 ran_on_core1=33
+09:04:02 [TASK] sched_mbf  free=12912 B dropped=0
+09:04:02 [TASK] pub_mbf    free=10944 B dropped=0
+09:04:02 [TASK] infer_mbf  free=592 B dropped=0
+09:04:02 [TASK] app_mbf    free=864 B dropped=0
+09:04:02 [TASK] bench_mbf  free=512 B dropped=0
+09:04:02 [TASK] ctrl_mbf   free=528 B dropped=0
+09:04:02 [TASK] log_mbf    free=672 B dropped=0
+09:04:02 [TASK] heap_free=29948 B min_free=23204 B largest=21504 B console_rx_irqs=17 console_rx_dropped=0
+09:04:02 [TASK] SchedulerTask cycles=34 mean_us=915 p95_us=<2500 max_us=26780
+09:04:04 [MQTT] Status: Connected, Broker: 192.168.1.49
+# summary {"boot_mbfs": ["[BOOT] micro T-Kernel 3 SMP runtime: 7 tasks, 8 message buffers, 1 event flag, 1 cyclic handler"], "status_at_boot": ["[LOG] enabled=0 offered=0 dropped=0 written=0 failed=0 full=0 last_error=0 max_write_us=0 area=3FF100-3FFFFF slots=30"], "app_lines": 5, "log_lines": ["[LOG] seq=1 event=201 not stored: flash error=-9 read=-5 match=0 write_us=392; occupancy and sampling unaffected", "[LOG] seq=2 event=202 not stored: flash error=-9 read=-5 match=0 write_us=386; occupancy and sampling unaffected", "[LOG] seq=3 event=203 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected", "[LOG] seq=4 event=204 not stored: flash error=-9 read=-5 match=0 write_us=389; occupancy and sampling unaffected", "[LOG] seq=5 event=201 not stored: flash error=-9 read=-5 match=0 write_us=391; occupancy and sampling unaffected"], "app_status": ["[APP] status occupancy=1 processed=5 resets=1 malformed=0 publish_enqueued=5 publish_failed=0"], "log_status": ["[LOG] enabled=1 offered=5 dropped=0 written=0 failed=5 full=0 last_error=-9 max_write_us=392 area=3FF100-3FFFFF slots=30"], "read0": ["[LOG] slot=0 read error=-9"], "after_off_log_lines": 0, "after_off_status": ["[LOG] enabled=0 offered=5 dropped=0 written=0 failed=5 full=0 last_error=-9 max_write_us=392 area=3FF100-3FFFFF slots=30"], "log_mbf": ["[TASK] log_mbf    free=672 B dropped=0"], "bench": ["[TASK] ApplicationTask  id=12 core=1 pri=23 stack_free=2268 B ran_on_core0=0 ran_on_core1=8", "[TASK] BenchmarkTask    id=13 core=1 pri=24 stack_free=1708 B ran_on_core0=0 ran_on_core1=12"]}

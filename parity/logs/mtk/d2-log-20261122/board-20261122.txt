@@ -1,0 +1,7 @@
+D2-8 and D2-9 board runs, 22 November 2026 (Hasif)
+
+Board: ESP32-S3 N16R8, native USB port, firmware from branch fix-n16r8-ram with the event log (event_log_mtk.c), built with BOARD=n16r8. No W25Q32 module was attached, so every flash write reports the missing chip (error -9); the store and read-back path is covered by the laptop test tests/test_event_log.c (sh tools/d2_host_test.sh). Wiring: one HC-SR04 with Trig on GPIO4 and Echo on GPIO5, pointed at the ceiling. SSIDs and MAC addresses are removed from these logs.
+
+d2-8-no-module.log: boot with 8 message buffers, logging off at boot (LOG STATUS enabled=0), then LOG ON and five APP events (entry, entry, exit, false and a duplicate). Each event was processed and published, each was offered to the log and reported as not stored with error -9, the occupancy ended at 1 as expected, LOG OFF stopped further offers, and TASKS showed log_mbf with no drops.
+
+t23-no-module.log: parity/t23_test.py for 60 s, 6/6 checks passed. The script prints its summary to the terminal and appends it to the log. t23-run1-sonar-unplugged.log is the first run with the Echo wire unplugged: every sonar reading timed out, so the model never had a fresh input (5/6); the rerun with the sonar connected is t23-no-module.log.
