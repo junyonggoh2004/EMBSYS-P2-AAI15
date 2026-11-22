@@ -33,13 +33,36 @@ const uint8_t _binary_people_counter_raw_int8_tflite_end[] = {0};
 #endif
 const unsigned char g_autoencoder_model_data[]={1};
 const int g_autoencoder_model_size=1;
-static app_cfg_t configs[3];
+static app_cfg_t configs[4];
 uint32_t hal_time_ms(void) { return now; }
 uint64_t hal_time_us(void) { return (uint64_t)now*1000; }
 const app_cfg_t *scheduler_config_by_name(const char *name) {
-    for(int i=0;i<3;i++) if(!strcmp(name,configs[i].name)) return &configs[i];
+    for(int i=0;i<4;i++) if(!strcmp(name,configs[i].name)) return &configs[i];
     return NULL;
 }
+const app_cfg_t *scheduler_config_following(const char *node, const char *source) {
+    for(int i=0;i<4;i++)
+        if(configs[i].proto==proto_mqtt && !strcmp(node,configs[i].remote_node) &&
+           !strcmp(source,configs[i].remote_source)) return &configs[i];
+    return NULL;
+}
+/* The ML sensor frame handed to this board's rules (output "local"). */
+static uint8_t local_frame[32];
+static int local_len, local_frames;
+void output_emit_hex(const app_cfg_t *cfg, const char *proto, const char *src, const uint8_t *buf, int n) {
+    assert(cfg && !strcmp(cfg->name, "ML") && !strcmp(proto, "ml") && !strcmp(src, "ML"));
+    assert(n > 0 && n <= (int)sizeof local_frame && n % 2 == 0);
+    memcpy(local_frame, buf, (size_t)n);
+    local_len = n;
+    local_frames++;
+}
+static int16_t local_s16(int i) { return (int16_t)(local_frame[2*i] | (local_frame[2*i+1] << 8)); }
+/* The model last sent over MQTT into flash. */
+static const uint8_t uploaded_model[] = {7, 7};
+static uint32_t uploaded_size;
+static int uploaded_dim = 3, uploaded_out = 3;
+const uint8_t *model_transfer_get_model_ptr(void) { return uploaded_size ? uploaded_model : NULL; }
+uint32_t model_transfer_model_size(void) { return uploaded_size; }
 bool inference_mgr_load_bytes(const uint8_t *bytes,uint32_t size) {
     (void)bytes; loads++; rev++;
     if(fail_loads) { fail_loads--; ready=false; return false; }
@@ -56,6 +79,10 @@ bool inference_mgr_load_bytes(const uint8_t *bytes,uint32_t size) {
         output_dim = 3;
     }
 #endif
+    if (bytes == uploaded_model) {
+        dim = uploaded_dim;
+        output_dim = uploaded_out;
+    }
     return true;
 }
 uint32_t inference_mgr_revision(void) { return rev; }
@@ -93,6 +120,9 @@ int main(void) {
     strcpy(configs[0].name,"AHT"); configs[0].proto=proto_i2c; configs[0].i2c_sensor=I2C_SENSOR_AHT;
     strcpy(configs[1].name,"LIGHT"); configs[1].proto=proto_i2c; configs[1].i2c_sensor=I2C_SENSOR_TSL2561;
     strcpy(configs[2].name,"DISTANCE"); configs[2].proto=proto_gpio; configs[2].gpio_mode="pulse";
+    /* Board A's AHT, followed over MQTT and decoded by its remote_profile. */
+    strcpy(configs[3].name,"IN_AHT"); configs[3].proto=proto_mqtt; configs[3].remote_profile=SENSOR_PROFILE_AHT;
+    strcpy(configs[3].remote_node,"board-a"); strcpy(configs[3].remote_source,"AHT");
     assert(!sensor_ml_command("HELP",false));
     cmd("ML PRESET"); assert(active==0 && bound_count()==4 && !enabled);
     cmd("ML RUN"); assert(enabled); tick(); assert(runs==0);
@@ -191,5 +221,91 @@ int main(void) {
     fail_loads=1;
     assert(sensor_ml_setup_json(live, true));
     assert(generation == before_fail && active == 1 && enabled && !status_ok);
+
+    /* D4 3.3: a remote input names the other board and its sensor. Only the
+       followed sensor's frames feed it, a stopped feed goes stale, and
+       unfollowed, undecoded or disguised remote inputs are refused. */
+    const char *remote = "{\"ml_setup\":{\"version\":1,\"model\":\"sine-float\",\"inputs\":[{\"index\":0,\"source\":{\"kind\":\"remote\",\"node\":\"board-a\",\"name\":\"AHT\"},\"field\":\"temperature_c\",\"min\":-10,\"max\":50}],\"output\":{\"kind\":\"publish\"}}}";
+    uint32_t g_remote = generation;
+    assert(sensor_ml_setup_json(remote, true));
+    assert(status_ok && generation == g_remote + 1 && active == 0 && !strcmp(bindings[0].source, "IN_AHT"));
+    int r_remote = runs, p_remote = published_results;
+    samples(); tick();
+    assert(runs == r_remote);                       /* this board's AHT is not board A's */
+    sensor_measurement_emit(&configs[3], aht, 6); tick();
+    assert(runs == r_remote + 1 && published_results == p_remote + 1);
+    assert(fabsf(seen[0] - (35.0f/60)*6.28318530718f) < 0.0001f);
+    assert(strstr(last_published, "\"input_source\":\"remote:board-a\""));
+    now += 6000; sensor_ml_poll(true); assert(runs == r_remote + 1);   /* feed stopped: stale */
+    char bad[600];
+    uint32_t g_kept = generation;
+    snprintf(bad, sizeof bad, "%s", remote);
+    memcpy(strstr(bad, "board-a"), "board-z", 7);
+    assert(sensor_ml_setup_json(bad, true) && !status_ok && generation == g_kept);
+    snprintf(bad, sizeof bad, "%s", remote);
+    char *field = strstr(bad, "temperature_c");
+    memmove(field + 9, field + 13, strlen(field + 13) + 1);
+    memcpy(field, "light_lux", 9);
+    assert(sensor_ml_setup_json(bad, true) && !status_ok && generation == g_kept);
+    assert(sensor_ml_setup_json("{\"ml_setup\":{\"version\":1,\"model\":\"sine-float\",\"inputs\":[{\"index\":0,\"source\":{\"kind\":\"local\",\"name\":\"IN_AHT\"},\"field\":\"temperature_c\",\"min\":-10,\"max\":50}],\"output\":{\"kind\":\"publish\"}}}", true));
+    assert(!status_ok && generation == g_kept);
+    assert(sensor_ml_setup_json("{\"ml_setup\":{\"version\":1,\"model\":\"sine-float\",\"inputs\":[{\"index\":0,\"source\":{\"kind\":\"remote\",\"name\":\"AHT\"},\"field\":\"temperature_c\",\"min\":-10,\"max\":50}],\"output\":{\"kind\":\"publish\"}}}", true));
+    assert(!status_ok && generation == g_kept && !strcmp(bindings[0].source, "IN_AHT"));
+    assert(sensor_ml_setup_json(live, true) && status_ok && generation == g_kept + 1);   /* back to local */
+    samples(); tick();
+    assert(strstr(last_published, "\"input_source\":\"sensors\""));
+
+    /* D4 3.4: output "local" hands each result to this board's rules as the
+       sensor ML: outputs times 1000 as s16le, a class model's index as u16le. */
+    char local_setup[600];
+    snprintf(local_setup, sizeof local_setup, "%s", live);
+    memcpy(strstr(local_setup, "\"publish\""), "\"local\"  ", 9);
+    char *pad = strstr(local_setup, "\"local\"  ");
+    memmove(pad + 7, pad + 9, strlen(pad + 9) + 1);
+    assert(sensor_ml_setup_json(local_setup, true) && status_ok && local_output && !publish_output);
+    int p_local = published_results, f_local = local_frames;
+    samples(); tick();
+    assert(published_results == p_local && local_frames == f_local + 1 && local_len == 2);
+    assert(local_s16(0) == (int16_t)lroundf(seen[0] * 1000.0f));
+    assert(sensor_ml_command("ML OUTPUT console", true) && !local_output && !publish_output);
+    samples(); tick(); assert(local_frames == f_local + 1);
+    assert(sensor_ml_command("ML OUTPUT somewhere", true) && !local_output);
+    assert(sensor_ml_command("ML OUTPUT local", true) && local_output);
+    cmd("ML PRESET comfort-summer"); assert(!local_output);
+    cmd("ML OUTPUT local"); cmd("ML REPLAY 26.3 67");
+    assert(local_len == 2 && local_frame[0] == 78 && local_frame[1] == 0);   /* comfort score */
+
+    /* D4 3.2: the model sent over MQTT is chosen by name; its shape is read
+       on loading, and a setup that does not fit keeps the previous model. */
+    const int uploaded = (int)(sizeof models / sizeof models[0]) - 1;
+    cmd("ML MODEL uploaded"); assert(active != uploaded);                 /* nothing uploaded yet */
+    assert(sensor_ml_setup_json("{\"ml_setup\":{\"version\":1,\"model\":\"uploaded\",\"inputs\":[],\"output\":{\"kind\":\"console\"}}}", true));
+    assert(!status_ok);
+    uploaded_size = sizeof uploaded_model;
+    cmd("ML MODEL uploaded"); assert(active == uploaded && dim == 3 && output_dim == 3);
+    cmd("ML RESET");
+    cmd("ML BIND 0 AHT temperature_c -10 50"); cmd("ML BIND 1 LIGHT light_lux 0 1000");
+    cmd("ML BIND 2 DISTANCE distance_cm 2 400"); cmd("ML RUN"); assert(enabled);
+    int r_up = runs;
+    samples(); tick();
+    assert(runs == r_up + 1 && fabsf(seen[0] - 35.0f/60) < 0.0001f && seen[1] == 0);
+    assert(strstr(last_line, "\"model\":\"uploaded\""));
+    cmd("ML UNBIND 2"); cmd("ML RUN"); assert(!enabled);                  /* 2 inputs for 3 */
+    cmd("ML REPLAY 1 2 3"); assert(seen[0] == 1 && seen[2] == 3);
+    assert(sensor_ml_setup_json(live, true) && status_ok && active == 0);
+    uint32_t g_up = generation;
+    char up_setup[600];
+    snprintf(up_setup, sizeof up_setup, "%s", live);
+    char *name = strstr(up_setup, "sine-float");
+    memmove(name + 8, name + 10, strlen(name + 10) + 1);
+    memcpy(name, "uploaded", 8);
+    assert(sensor_ml_setup_json(up_setup, true));
+    assert(!status_ok && active == 0 && enabled && generation == g_up);  /* 1 input for 3: restored */
+    r_up = runs; samples(); tick(); assert(runs == r_up + 1 && dim == 1);
+    uploaded_dim = 1; uploaded_out = 1;
+    assert(sensor_ml_setup_json(up_setup, true));
+    assert(status_ok && active == uploaded && generation == g_up + 1);
+    r_up = runs; samples(); tick();
+    assert(runs == r_up + 1 && fabsf(seen[0] - 35.0f/60) < 0.0001f);      /* no sine scaling */
     puts("sensor ML integration tests PASS (interpreter boundary simulated)");
 }

@@ -30,10 +30,10 @@ typedef enum {
 } model_status_t;
 
 /* Initialise the model transfer subsystem.
- * Call once after mqtt_init(). Subscribes to model/* topics. */
+ * Call once after mqtt_init(). Subscribes to the model/ topics. */
 void model_transfer_init(void);
 
-/* Call from mqtt_incoming_data_cb when a model/* topic is detected. */
+/* Call from mqtt_incoming_data_cb when a model/ topic is detected. */
 void model_transfer_on_data(const char *topic,
                             const uint8_t *data, size_t len);
 

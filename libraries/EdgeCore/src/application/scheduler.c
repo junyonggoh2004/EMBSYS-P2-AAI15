@@ -179,6 +179,17 @@ const app_cfg_t *scheduler_config_by_name(const char *name) {
     for(int i=0;i<MAX_ACTIVE;i++) if(g_sensors[i].in_use && !strcmp(g_sensors[i].cfg_copy.name,name)) return &g_sensors[i].cfg_copy;
     return NULL;
 }
+/* The proto=mqtt config that follows <node>/<source>, so ML can name a remote
+   sensor by where it lives instead of by the local alias it arrives under. */
+const app_cfg_t *scheduler_config_following(const char *node, const char *source) {
+    if (!node || !source) return NULL;
+    for (int i = 0; i < MAX_ACTIVE; i++) {
+        const app_cfg_t *c = &g_sensors[i].cfg_copy;
+        if (g_sensors[i].in_use && c->proto == proto_mqtt &&
+            !strcmp(c->remote_node, node) && !strcmp(c->remote_source, source)) return c;
+    }
+    return NULL;
+}
 void scheduler_dump(void) {
     printf("[WINDOW] enabled=%u state=%u events=%u dropped=%u radar_frames=%u malformed=%u rx_dropped=%u identity=%u\n",
            s_window.enabled ? 1u : 0u, (unsigned)s_window.state,

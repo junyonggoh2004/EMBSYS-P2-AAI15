@@ -59,6 +59,7 @@ void scheduler_run_step(const app_cfg_t *cfg, bool running);
 
 
 const app_cfg_t *scheduler_config_by_name(const char *name);
+const app_cfg_t *scheduler_config_following(const char *node, const char *source);
 int  scheduler_count(void);
 void scheduler_dump(void);
 
