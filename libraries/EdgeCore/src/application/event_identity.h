@@ -8,4 +8,6 @@
 bool event_identity_install(uint64_t node_id, uint32_t boot_id);
 bool event_identity_ready(void);
 bool event_identity_next(uint64_t *node_id, uint32_t *boot_id, uint32_t *sequence);
+/* Reads this node's identity without taking a sequence number (D2-8 log records). */
+bool event_identity_get(uint64_t *node_id, uint32_t *boot_id);
 #endif

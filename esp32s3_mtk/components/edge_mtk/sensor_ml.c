@@ -12,6 +12,12 @@
 #include <ctype.h>
 #include <errno.h>
 #include "sine_models.h"
+#ifdef ESP_PLATFORM
+#include "esp_attr.h"
+#endif
+#ifndef EXT_RAM_BSS_ATTR
+#define EXT_RAM_BSS_ATTR
+#endif
 
 /* These immutable bytes already belong to inference_manager.c. */
 extern const unsigned char g_autoencoder_model_data[];
@@ -115,7 +121,9 @@ static bool select_model(int index) {
 /* D4 Part 2: parse a complete candidate before changing the running pipeline.
    jsmn's parent links let us reject duplicate and unknown direct keys. */
 static const char *setup_json;
-static jsmntok_t setup_tokens[320];
+/* 6.4 KB of tokens, used only by SchedulerTask while parsing a setup, so they
+   live in PSRAM: in internal RAM they overflowed the N16R8 build by 2,816 B. */
+EXT_RAM_BSS_ATTR static jsmntok_t setup_tokens[320];
 static int setup_ntokens;
 
 static bool token_eq(int t, const char *s) {

@@ -88,7 +88,7 @@ typedef struct {
 #define NET_MQTT_UP (1u << 1)
 
 // Kernel object IDs, valid after runtime_start().
-extern ID sched_mbf, pub_mbf, infer_mbf, app_mbf, bench_mbf, ctrl_mbf;
+extern ID sched_mbf, pub_mbf, infer_mbf, app_mbf, bench_mbf, ctrl_mbf, log_mbf;
 extern ID net_flg;
 
 // Sends to a message buffer without waiting (TMO_POL). When the buffer is
