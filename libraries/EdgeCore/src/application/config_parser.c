@@ -140,6 +140,12 @@ void cfg_parse_line(const char *line_in, app_cfg_t *cfg) {
         if (L >= sizeof(cfg->remote_source)) L = sizeof(cfg->remote_source) - 1;
         memcpy(cfg->remote_source, val, L);
         cfg->remote_source[L] = 0;
+    } else if (!strcmp(key, "remote_profile")) {
+        if (!strcmp(val, "raw")) cfg->remote_profile = SENSOR_PROFILE_RAW;
+        else if (!strcmp(val, "aht")) cfg->remote_profile = SENSOR_PROFILE_AHT;
+        else if (!strcmp(val, "tsl2561")) cfg->remote_profile = SENSOR_PROFILE_TSL2561;
+        else if (!strcmp(val, "pulse")) cfg->remote_profile = SENSOR_PROFILE_PULSE;
+        else config_error(cfg, "unsupported remote_profile");
     }
 
     /* i2c.* */
@@ -344,6 +350,10 @@ void cfg_parse_end(app_cfg_t *cfg) {
         strcmp(cfg->gpio_mode, "pulse") == 0 && cfg->gpio_trig >= 0 &&
         cfg->gpio_trig == cfg->gpio_echo) {
         config_error(cfg, "gpio.trig and gpio.echo must differ");
+        return;
+    }
+    if (cfg->remote_profile != SENSOR_PROFILE_RAW && cfg->proto != proto_mqtt) {
+        config_error(cfg, "remote_profile requires proto=mqtt");
         return;
     }
     if (cfg->proto == proto_i2c && cfg->i2c_sensor != I2C_SENSOR_RAW) {

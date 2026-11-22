@@ -15,6 +15,7 @@
 #include "bus/bus_common.h"
 #include "bus/bus_if.h"
 #include "mqtt/mqtt_telemetry.h"
+#include "mqtt/sensor_bridge.h"
 #define MAX_ACTIVE 8
 
 /* ===================== Debug logging ===================== */
@@ -178,6 +179,17 @@ const app_cfg_t *scheduler_config_by_name(const char *name) {
     for(int i=0;i<MAX_ACTIVE;i++) if(g_sensors[i].in_use && !strcmp(g_sensors[i].cfg_copy.name,name)) return &g_sensors[i].cfg_copy;
     return NULL;
 }
+/* The proto=mqtt config that follows <node>/<source>, so ML can name a remote
+   sensor by where it lives instead of by the local alias it arrives under. */
+const app_cfg_t *scheduler_config_following(const char *node, const char *source) {
+    if (!node || !source) return NULL;
+    for (int i = 0; i < MAX_ACTIVE; i++) {
+        const app_cfg_t *c = &g_sensors[i].cfg_copy;
+        if (g_sensors[i].in_use && c->proto == proto_mqtt &&
+            !strcmp(c->remote_node, node) && !strcmp(c->remote_source, source)) return c;
+    }
+    return NULL;
+}
 void scheduler_dump(void) {
     printf("[WINDOW] enabled=%u state=%u events=%u dropped=%u radar_frames=%u malformed=%u rx_dropped=%u identity=%u\n",
            s_window.enabled ? 1u : 0u, (unsigned)s_window.state,
@@ -206,6 +218,11 @@ void scheduler_dump(void) {
                 printf("[SCHED] #%d I2C sensor=%s sda=%d scl=%d addr=0x%02X\n",i,
                        c->i2c_sensor==I2C_SENSOR_AHT ? "aht" : c->i2c_sensor==I2C_SENSOR_TSL2561 ? "tsl2561" : "raw",
                        c->i2c_sda,c->i2c_scl,c->i2c_addr);
+            }
+            if (c->proto == proto_mqtt) {
+                static const char *profiles[] = {"raw", "aht", "tsl2561", "pulse"};
+                printf("[SCHED] #%d MQTT remote=%s/%s profile=%s\n", i, c->remote_node, c->remote_source,
+                       (unsigned)c->remote_profile < 4u ? profiles[c->remote_profile] : "?");
             }
             printf("[SENSOR] name=%s pending=%u timeouts=%u errors=%u overruns=%u\n",
                    c->name, g_sensors[i].pending ? 1u : 0u,
@@ -513,6 +530,10 @@ int scheduler_add_config(const app_cfg_t *cfg_in) {
                     S->in_use = false;
                     return -4;
                 }
+
+                if (cfg_in->remote_profile != SENSOR_PROFILE_RAW &&
+                    !sensor_bridge_set_profile(cfg_in->name, cfg_in->remote_profile))
+                    printf("[SCHED] add[%d]: no bridge mapping for %s; frames stay untyped\n", i, cfg_in->name);
 
                 S->bus = NULL;
                 S->ctx = NULL;

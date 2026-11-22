@@ -16,21 +16,34 @@ static bool json_name(const char *name,char *out,size_t cap) {
 static uint32_t le32(const uint8_t *data) {
     return (uint32_t)data[0]|((uint32_t)data[1]<<8)|((uint32_t)data[2]<<16)|((uint32_t)data[3]<<24);
 }
+/* A local sensor's profile follows from its bus settings; an MQTT-relayed
+ * sensor's from its configured remote_profile. Both decode identically. */
+sensor_profile_t sensor_measurement_profile(const app_cfg_t *c) {
+    if(!c) return SENSOR_PROFILE_RAW;
+    if(c->proto==proto_mqtt) return c->remote_profile;
+    if(c->proto==proto_i2c && c->i2c_sensor==I2C_SENSOR_AHT) return SENSOR_PROFILE_AHT;
+    if(c->proto==proto_i2c && c->i2c_sensor==I2C_SENSOR_TSL2561) return SENSOR_PROFILE_TSL2561;
+    if(c->proto==proto_gpio && c->gpio_mode && !strcmp(c->gpio_mode,"pulse")) return SENSOR_PROFILE_PULSE;
+    return SENSOR_PROFILE_RAW;
+}
 bool sensor_measurement_field_supported(const app_cfg_t *c,const char *f) {
     if(!c || !f) return false;
-    if(c->proto==proto_i2c && c->i2c_sensor==I2C_SENSOR_AHT)
-        return !strcmp(f,"temperature_c") || !strcmp(f,"humidity_pct");
-    if(c->proto==proto_i2c && c->i2c_sensor==I2C_SENSOR_TSL2561) return !strcmp(f,"light_lux");
-    return c->proto==proto_gpio && c->gpio_mode && !strcmp(c->gpio_mode,"pulse") && !strcmp(f,"distance_cm");
+    switch(sensor_measurement_profile(c)) {
+    case SENSOR_PROFILE_AHT: return !strcmp(f,"temperature_c") || !strcmp(f,"humidity_pct");
+    case SENSOR_PROFILE_TSL2561: return !strcmp(f,"light_lux");
+    case SENSOR_PROFILE_PULSE: return !strcmp(f,"distance_cm");
+    default: return false;
+    }
 }
 bool sensor_measurement_value(const app_cfg_t *c,const uint8_t *d,int n,const char *f,float *v) {
     if(!v || !d || !sensor_measurement_field_supported(c,f)) return false;
-    if(c->proto==proto_i2c && c->i2c_sensor==I2C_SENSOR_AHT) {
+    sensor_profile_t profile=sensor_measurement_profile(c);
+    if(profile==SENSOR_PROFILE_AHT) {
         if(n!=6 || (d[0]&0x80) || !(d[0]&8)) return false;
         uint32_t rh=((uint32_t)d[1]<<12)|((uint32_t)d[2]<<4)|(d[3]>>4);
         uint32_t t=((uint32_t)(d[3]&15)<<16)|((uint32_t)d[4]<<8)|d[5];
         *v=!strcmp(f,"temperature_c") ? t*200.0f/1048576.0f-50.0f : rh*100.0f/1048576.0f;
-    } else if(c->proto==proto_i2c) {
+    } else if(profile==SENSOR_PROFILE_TSL2561) {
         if(n!=8) return false;
         *v=(float)le32(d+4);
     } else {
@@ -46,9 +59,8 @@ __attribute__((weak)) void sensor_measurement_notify(const app_cfg_t *c,const ui
 }
 int sensor_measurement_json(const app_cfg_t *cfg,const uint8_t *data,int length,char *out,size_t cap) {
     if (!cfg || !out || !cap) return 0;
-    bool aht=cfg->proto==proto_i2c && cfg->i2c_sensor==I2C_SENSOR_AHT;
-    bool tsl=cfg->proto==proto_i2c && cfg->i2c_sensor==I2C_SENSOR_TSL2561;
-    bool pulse=cfg->proto==proto_gpio && cfg->gpio_mode && !strcmp(cfg->gpio_mode,"pulse");
+    sensor_profile_t profile=sensor_measurement_profile(cfg);
+    bool aht=profile==SENSOR_PROFILE_AHT, tsl=profile==SENSOR_PROFILE_TSL2561, pulse=profile==SENSOR_PROFILE_PULSE;
     if (!aht && !tsl && !pulse) return 0;
     char name[65];
     if (!json_name(cfg->name,name,sizeof name)) return 0;

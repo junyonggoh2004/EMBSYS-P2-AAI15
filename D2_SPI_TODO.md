@@ -1,5 +1,8 @@
 # D2 — ESP32-S3 SPI Support To-Do List
 
+**Final status (22 Nov 2026).** D2 is done and signed off by the team. Event logging from ApplicationTask (D2-8) and the concurrent T-23 run (D2-9) were done on 22 Nov 2026 ([logs](parity/logs/mtk/d2-log-20261122/)), and the items still open below (lock contention, a corrupted reply, the clock range, polled transfers without DMA, the record format and the wiring) were signed off by the team the same day. The dated notes below are kept as written; [README section 3](README.md#3-d2-task-checklist) has the final task list.
+
+
 - Branch: D2 checkpoint merged into `main`; `s3-port-d2` remains the D2 work branch.
 - Updated baseline: D1 `s3-port` at `ba81f18`, merged into D2 by `9a421ef`; D1 µT-Kernel redesign `main` at `1f41dac` fast-forwarded into D2 on 25 October 2026. The D2 checkpoints through `f535a45` were pushed to `origin/s3-port-d2` on 26 October 2026.
 - Team: Brendan and Jy
@@ -36,7 +39,7 @@
 
 ### 26 October D2-only implementation update
 
-- [x] Add an 80-byte provisional event codec, CRC-32 golden vector, 128-byte non-erasing slots, reboot scan, torn-slot skip, readback verification and explicit full-area result in D2-owned flash files. The host mock passes applied/no-change/duplicate/reordered/rejected records and program-failure recovery. Pico and µT-Kernel builds pass. See [the format and limits](D2_EVENT_RECORD_DESIGN.md#on-flash-format-awaiting-d3d6-agreement).
+- [x] Add an 80-byte provisional event codec, CRC-32 golden vector, 128-byte non-erasing slots, reboot scan, torn-slot skip, readback verification and explicit full-area result in D2-owned flash files. The host mock passes applied/no-change/duplicate/reordered/rejected records and program-failure recovery. Pico and µT-Kernel builds pass. See [the format and limits](D2_EVENT_RECORD_DESIGN.md#on-flash-format).
 - [x] Push the D2-only implementation and the previous hardware/benchmark checkpoint to `origin/s3-port-d2` at `f535a45`; the push was fast-forward and did not include unrelated local Task 7 deletions or Tribunal draft artifacts.
 - [ ] Obtain D3/D6 approval of node/boot identity, result and reason mappings, then integrate a bounded log handoff into their µT-Kernel `ApplicationTask`. The fetched `d3` branch now has a µT-Kernel `ApplicationTask`, but is unmerged into `main` and has no D2 event-log call site. The earlier flash-only fixture added console dispatch in `runtime_mtk.c`; it did not modify D3/D6 event processing or add an application log call site.
 - [x] With a new explicit hardware-write plan and approval, test one synthetic, rejected D2 log record in a fresh slot at `0x3FF100`. The 80-byte write, immediate readback, cold power-cycle recovery and preservation of the earlier 16-byte pattern passed on 26 October. This proves the physical codec/log allocator path, not real D3/D6 event integration. Do not repeat either program command.

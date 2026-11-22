@@ -1,10 +1,10 @@
-# D4 Part 2: live ML setup working v1 contract
+# D4 part 2: live ML setup
 
-**Status:** Sitt has adopted this working v1 contract for implementation. The JSON command, local sensor bindings, and console/MQTT result routes are implemented. A one-board MQTT control and sensorless replay check passed on 19 November 2026. Team review can refine a later version. Physical sensor continuity, remote input, uploaded-model selection, on-board rule/LCD output, and receiver-board delivery remain open. The D4 tasks are in [README section 5](../../README.md#5-d4-task-checklist).
+Sitt wrote the `ml_setup` command with local sensor inputs and console and MQTT results, and checked it on one board on 19 November 2026. Hasif added the uploaded model (task 3.2), another board's sensor as input (task 3.3) and a local output that feeds this board's rules (task 3.4) on 22 November 2026. Those three are covered by the laptop tests in `tests/test_sensor_ml.c` (`sh tools/ml_test.sh`) and have not been run on a board. The task list is in [README section 5](../../README.md#5-d4-task-checklist).
 
-## Working v1 command
+## The command
 
-Send one JSON payload to `pico/<node>/cmd`. It names the bundled model, ordered input bindings, and one result destination. The board applies a valid setup without stopping sensor sampling. This command is separate from `BEGINCFG` and the combined sensor `configs`/`rules` JSON.
+Send one JSON message to `pico/<node>/cmd`. It names the model, the inputs in order, and where the result goes. The board applies a valid setup while the sensors keep sampling, with no `STOP`.
 
 ```json
 {
@@ -25,48 +25,50 @@ Send one JSON payload to `pico/<node>/cmd`. It names the bundled model, ordered 
 }
 ```
 
-`inputs` must have contiguous indices from zero. The sine models can combine one or more normalized bindings into one input, as the existing `ML BIND` path does. The live path accepts `sine-float`, `sine-int8`, `autoencoder` (exactly 16 bindings), and `comfort-summer` (temperature then humidity). `people-counter` is available for replay but its 31 inputs exceed the current 16-binding live path. MQTT-uploaded models can run through the D1 rule-driven path; selecting one with `ml_setup` or the `ML` commands is still task 3.2 work.
+Each input is scaled to 0 to 1 between `min` and `max`. Indices run from zero with no gaps. The live path takes `sine-float` and `sine-int8` (one or more inputs, averaged into one), `autoencoder` (exactly 16 inputs), `comfort-summer` (temperature, then humidity) and `uploaded`. `people-counter` needs 31 inputs, more than the 16 a setup can bind, so it runs through `ML REPLAY` only.
 
-For output, `{"kind":"publish"}` sends a non-retained QoS 1 result on `pico/<node>/ml/result`. `{"kind":"console"}` sends results to serial only. Console diagnostics also print when publishing is selected. The result includes model, generation, timestamp, input source, outputs, invoke time, and status; vector results use a compact payload to stay below the 512-byte MQTT payload limit. A local rule or LCD destination is rejected until a consumer is implemented; changing v1 to accept one must include a local-consumer test. A disconnected broker or full queue can prevent delivery, so a successful inference does not by itself prove receipt on another board.
+**Uploaded model (task 3.2).** `"model":"uploaded"` picks the model last sent over MQTT into flash (D1 task 31); `ML MODEL uploaded` does the same from the console after `STOP`. Its input and output counts are read when it loads. It needs one input per model input, or any number averaged into a one-input model, and at most 16 outputs. If the inputs do not fit, the previous model is loaded again and the reply is `input_shape_mismatch`; with nothing uploaded it is `no_uploaded_model`. `ML LIST` shows whether a model has been uploaded. A new upload replaces the running model, so the ML stops with `MODEL_CHANGED` until `ml_setup` picks it again.
 
-The board sends a non-retained QoS 1 acknowledgement to `pico/<node>/ml/status`: `{"ok":true,"reason":"applied","generation":N}` or `ok:false` with a reason and unchanged generation. A successful setup enables ML, resets the ML sample cache, clears any prior scalar threshold, and waits for fresh input. Sensor sampling continues without `STOP`. The command must be shorter than 2048 bytes. The serial line buffer is 512 bytes, so a 16-binding setup belongs on MQTT.
+**Another board's sensor (task 3.3).** An input can name a sensor on another board: `"source":{"kind":"remote","node":"s3-001","name":"DISTANCE"}`, with the same `field`, `min` and `max`. This board must already follow that sensor with a `proto=mqtt` config that names its decoder:
 
-The working v1 wire format and topics above are the implementation baseline. If team review changes them, update the contract, tests, and version together; final team agreement is not a gate for Sitt's current work.
+```text
+BEGINCFG|name=IN_DIST|proto=mqtt|mode=poll|freq_hz=2|remote_node=s3-001|remote_source=DISTANCE|remote_profile=pulse|ENDCFG
+```
+
+`remote_profile` is `aht`, `tsl2561` or `pulse`. It is Cody's decoder from the D6 branch, so a relayed reading decodes exactly as a local one. A sensor this board does not follow is refused with `remote_source_not_followed`, and a field its decoder does not give with `remote_field_not_decoded`. A local input may not name a followed sensor, so a remote reading never passes as a local one. Results say where their input came from: `"input_source":"sensors"`, `"remote:<node>"` or `"mixed"`. When the other board stops sending, its readings pass `max_age_ms` (`ML TIMING`) and the result is `MISSING_OR_STALE` instead of a value from old data. Switching between local and remote is one `ml_setup` each way.
+
+**Where the result goes (task 3.4).** `{"kind":"publish"}` sends each result on `pico/<node>/ml/result` (QoS 1, not retained) and also prints it. `{"kind":"console"}` prints it only. `{"kind":"local"}` turns each result into a reading of a sensor called `ML` on this board, handled like any other reading: rules with `source=ML` act on it, an event-driven sensor can use `timing.trigger_source=ML`, and it is published on `pico/<node>/sensor/ML/line`, so another board can follow it with `remote_source=ML`. A class model (comfort-summer) gives its class, the comfort score, as `u16le(0)`; every other model gives output *i* times 1000 as `s16le(2*i)`. For example, this rule sets GPIO8 when a sine output is above 0.5:
+
+```text
+BEGINRULE|name=ML_HIGH|source=ML|calc=y=s16le(0)|when=y>500|action=gpio:8=HIGH|ENDRULE
+```
+
+`ML OUTPUT console`, `ML OUTPUT publish` and `ML OUTPUT local` change the destination while sampling, from the console or `pico/<node>/cmd`. Showing the result on the LCD is D6 task 5.5; the LCD board can follow `ML` or read `ml/result`.
+
+**The reply.** The board answers on `pico/<node>/ml/status` (QoS 1, not retained) and on the console: `{"ok":true,"reason":"applied","generation":N}`, or `ok:false` with a reason and the generation unchanged. Each result carries the generation, so old and new results can be told apart. A successful setup clears the ML input cache, clears any `ML THRESHOLD` and waits for fresh readings. The command must be under 2,048 bytes. The console line is 512 bytes, so a 16-input setup goes over MQTT. Result payloads stay under MQTT's 512-byte limit. A published result is not proof that another board received it: a broker drop or a full queue can lose it.
 
 ## Apply and failure rules
 
-1. Parse the bounded JSON. Reject unknown or duplicate keys, wrong types, non-finite numbers, duplicate/missing indices, unsupported model/field pairs, `max <= min`, unavailable destinations, and unavailable sources without changing the active setup.
-2. Validate the model shape and every sensor binding before committing a new setup.
-3. On success, swap the model, bindings, and output selection; increment the generation, clear the ML sample cache, and wait for fresh input. Sensor acquisition and unrelated rules continue.
-4. On a rejected setup, keep the previous active model and bindings. Return `ok:false`, a reason, and the previous generation. A model-load failure is reported; preserving the old model depends on a successful reload.
-5. Send the status acknowledgement on MQTT and log it on serial. The receiver should use the generation to distinguish old and new results.
+The board parses the JSON and refuses unknown or repeated keys, wrong types, non-finite numbers, missing or repeated indices, a model and field that do not go together, `max` not above `min`, and an unknown output or source. It checks the model's shape and every input before changing anything. On success it switches the model, inputs and output together, increases the generation and waits for fresh readings; sensors and other rules carry on. On a refusal the previous model and inputs stay, and the reply has `ok:false`, the reason and the previous generation. If loading the new model fails, the previous one is loaded again and the reply says whether that worked.
 
-The older `ML PRESET`/`ML MODEL` path still requires `STOP`. The JSON path currently switches bundled models and local bindings while sampling is active.
+The older `ML PRESET` and `ML MODEL` commands still need `STOP`. `ml_setup` and `ML OUTPUT` do not.
 
-## Remote source and local destination work still open
+## Board check, 19 November 2026
 
-The intended remote binding is `"source":{"kind":"remote","node":"pico-002","name":"AHT"}` with the same `field`, `min`, and `max` keys. The current ML pipeline rejects it; it never silently falls back to a local sensor. The unmerged D6 branch has a strict sensor-frame parser and remote profile decoder. Integrate those interfaces before adding subscriptions, typed remote fields, freshness checks, and old-follow removal to the ML path, avoiding a second raw-frame decoder. On two boards, verify local → remote → local switching, source identity, fresh values, and no inference from a stopped or stale source.
+Sitt ran this on one ESP32-S3 (node `sitt-s3-01`) with Mosquitto 2.1.4 on the laptop and no sensor attached; the AHT config was accepted only so the control path could run. Over MQTT, `ml_setup` accepted `sine-int8` at generation 2 and a live switch to `sine-float` at generation 3, and an unknown model was refused with the generation still 3. With `output: publish` at generation 7, `ML REPLAY 1.5707963` after `STOP` published a result with `input_source:"replay"`, `outputs:[0.9956719]`, `invoke_us:806` and `status:"OK"`. With `output: console` at generation 9 the same replay printed on the console and nothing arrived over MQTT in seven seconds. An unsupported output (at the time, `local`) and malformed JSON were each refused at generation 13, after which the previous `sine-float` model still published the same result and heartbeats continued. This showed MQTT control, model switching, refusal of bad setups and both result routes; it did not show a real sensor feeding the model.
 
-A future local output can trigger a rule or LCD action. The current `console` route is diagnostic output, not a local rule/LCD consumer. Demonstrate a real local consumer and published result using the same model/input before marking task 3.4 fully done. The receiving-board check must show actual delivery, not merely a successful local MQTT publish call.
+## Laptop tests, 22 November 2026
 
-## 19 November 2026 one-board MQTT and replay check
+`tests/test_sensor_ml.c` builds `sensor_ml.c` with the real measurement decoder and JSON parser; the scheduler, the output path and the model interpreter are stand-ins. For the uploaded model it checks that nothing can be picked before an upload, that the model's input and output counts are read on loading, that three inputs feed a three-input model without the sine scaling, and that a setup with the wrong number of inputs is refused with the previous model still running. For remote input it checks that only frames from the followed board feed the model, that this board's own sensor of the same name does not, that a stopped feed goes stale, that an unfollowed board, an undecoded field, a remote input without a node and a local input naming a followed sensor are all refused with the generation unchanged, and that switching back to local works. For local output it checks that a result becomes one `ML` frame with output times 1000 as `s16le`, that comfort-summer gives its score as the first byte, and that `ML OUTPUT` switches between local and console while sampling and refuses an unknown destination. `sh tools/ml_test.sh` runs these with the ML manager and REPL tests; all pass.
 
-The ESP32-S3 on `COM6` (node `sitt-s3-01`) was built with the kernel audit and flashed with verified hashes. The pinned ESP-IDF build reported `v6.1-dev-2300-g17a74c925c`. The board and laptop used the same 2.4 GHz Wi-Fi; Mosquitto 2.1.4 ran on the laptop. Credentials stayed in the ignored `wifi_credentials.h` and are not recorded here. The tested firmware source was copied unchanged into this main worktree and built there too.
+## Running it on boards
 
-- The broker received `pico/sitt-s3-01/heartbeat` with `{"uptime_s":12}`; serial reported MQTT connected.
-- With no physical sensor attached, the AHT profile from `config/three_sensors.cfg` was temporarily accepted as `OK:AHT`; `RUN` exercised the control path, not sensor sampling.
-- MQTT `ml_setup` accepted `sine-int8` at generation 2 and a live switch to `sine-float` at generation 3. An unknown model returned `ok:false` with generation still 3.
-- In a later check, a valid `sine-float` setup with `output: publish` was accepted at generation 7. After `STOP`, `ML REPLAY 1.5707963` produced a QoS 1 `ml/result` with `input_source:"replay"`, `outputs:[0.9956719]`, `invoke_us:806`, and `status:"OK"`.
-- Changing the same setup to `output: console` was accepted at generation 9. After `STOP` and the same replay command, serial showed the result; no MQTT result arrived during a seven-second observation.
-- In another check, a valid publish setup reached generation 13. An unsupported `output: local` and malformed JSON each returned `ok:false` with generation still 13. After `STOP`, the same replay command still published the previous `sine-float` result (`outputs:[0.9956719]`, status `OK`). A heartbeat arrived afterward.
-- Native host tests cover validation, failed load, and the previous model continuing to publish after rejected setup. The ESP-IDF firmware build and post-build kernel audit passed on main.
+These steps have not been run yet. Use two boards on the same broker with different node IDs (`NODE=s3-002 sh tools/mtk.sh flash` for the second), and subscribe to `pico/#` on the laptop.
 
-These checks establish MQTT control, bundled-model switching, invalid-setup rejection, one-board result routing, and replay inference without a sensor. They do not establish physical sensor continuity, an uploaded-model switch, remote input, a local rule/LCD action, or another board receiving a result. No synthetic value is treated as a sensor reading.
-
-## Repeatable checks and sensor-equipped handoff
-
-1. On the broker, subscribe to `pico/<node>/ml/status` and `pico/<node>/ml/result`; keep a serial log at the board's configured rate. Use distinct node IDs for each board. Record the board, firmware commit, broker, model, and command timestamps; omit passwords.
-2. For a sensorless repeat, configure the AHT profile only as a temporary binding, send `RUN`, then send the working v1 JSON above. Switch `model` to `sine-float` and check an increased generation. Send an unknown model, unsupported output, and malformed JSON; verify `ok:false` and unchanged generation. Then `STOP` and send `ML REPLAY 1.5707963`; verify a result from the previously accepted model. Run the publish and console routes separately. `STOP`/`CLEAR` when finished. This is a control/replay check only.
-3. A teammate with a connected, working AHT sensor should use the approved pinout and normal sensor configuration, confirm real sensor messages first, then run the same model switch **without `STOP`**. Record continuous sensor messages, new-generation ML results, and a rejected setup followed by more real readings and results. This closes the physical-sensor regression for 3.2 and 3.5.
-4. After remote-source support is integrated, use two ESP32-S3 boards on the same broker with unique IDs. Publish real readings from board A; switch board B's `ml_setup` from local to remote and back. Check source identity, result generation, stale-feed refusal, and no mixed-generation output. Have the receiving board confirm it got the published result.
-5. After a local rule/LCD consumer exists, run the same model/input to a local action and to MQTT; save the local action, received payload, and numeric outputs. Update README rows 3.3, 3.4, 3.6, and 3.7 with logs and observed results only after those checks pass.
+1. Board A (`s3-001`) gets the ultrasonic: `BEGINCFG|name=DISTANCE|proto=gpio|gpio.mode=pulse|mode=poll|freq_hz=2|gpio.trig=4|gpio.echo=5|gpio.trig_us=10|gpio.pulse_timeout_us=25000|ENDCFG`, then `RUN`.
+2. Board B (`s3-002`) follows it with the `IN_DIST` config above, has a sensor of its own, and gets `RUN`.
+3. Send board B an `ml_setup` with `sine-int8` on its own sensor, then a switch to `sine-float`, without `STOP`. Expect a higher generation and readings that never stop.
+4. Send board B an `ml_setup` whose input is `{"kind":"remote","node":"s3-001","name":"DISTANCE"}`, field `distance_cm`, 2 to 400. Expect results with `"input_source":"remote:s3-001"` that follow your hand. Send `STOP` to board A and expect `MISSING_OR_STALE`. Switch back to the local input.
+5. Add the `ML_HIGH` rule to board B and send `ML OUTPUT local`. Expect GPIO8 to follow the result, and board A to see it if it follows `ML` from board B.
+6. Send an unknown model, a remote input from a board B does not follow, and malformed JSON. Expect `ok:false`, the same generation, and readings that carry on.
+7. Upload a model with `project_v3/models/send_model.py`, then `ml_setup` with `"model":"uploaded"`. Expect `ML LIST` to show it and results with `"model":"uploaded"`.

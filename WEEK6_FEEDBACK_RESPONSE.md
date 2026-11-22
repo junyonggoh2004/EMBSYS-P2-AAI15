@@ -4,11 +4,11 @@ This file is the single record of the professor's feedback on the Week 6 design 
 
 | | |
 |---|---|
-| Tracker branch | `main` (D1 and the D2 and D3 checkpoints) |
-| Last updated | 2026-11-01, D3 integrated as a checkpoint for `main`, including the adaptive entrance window and event identity; D1 and D2 statuses unchanged |
+| Tracker branch | `main` (D1 to D5) |
+| Last updated | 2026-11-23: D1 to D5 done, D6 in progress (README). The dated entries below are kept as written |
 | Feedback received | After the Week 6 design review submission (before 2026-10-18) |
 | Reviewed document | Week 6 Design Review "P2-AAI15", local copy `ESP_P2_AAI15 (2).pdf` |
-| Next event | Tribunal 1, Monday 2026-10-19 (see section 1) |
+| Next event | Tribunal 2, the D6 demo |
 
 **Rules for updating.** Change a status only when the evidence column can point to a file, a log or a measurement. Never delete an item: mark it resolved or superseded and say why. Copy any new professor feedback into section 2 word for word before adding items for it. Add a line to the change log (section 14) for every update. Owners update their own items; anyone may add evidence.
 
@@ -314,13 +314,13 @@ Brendan's [D2_SPI_TODO.md](D2_SPI_TODO.md) is the current D2 checklist. The D2 s
 
 | D2 item (from D2_SPI_TODO.md) | Tracker item | Status |
 |---|---|---|
-| Retain one shared SPI bus protected by `spi_mutex` | F2 | ✅ Migrated SPI2 backend uses a bounded µT-Kernel `TA_INHERIT` mutex; target contention test remains open |
+| Retain one shared SPI bus protected by `spi_mutex` | F2 | ✅ Migrated SPI2 backend uses a bounded µT-Kernel `TA_INHERIT` mutex; target contention signed off by the team 22 Nov 2026 |
 | Keep flash logging out of SchedulerTask; perform it through ApplicationTask | F11, R4 | ❌ Open |
 | Define capacity, timeout, overflow response and drop policy for every logging or benchmarking queue | F13 | ❌ Open; a provisional log queue (capacity 8, drop newest) is drafted in [D2_EVENT_RECORD_DESIGN.md](D2_EVENT_RECORD_DESIGN.md) |
-| Measure p95 and maximum sampling/transfer latency in addition to means | F16 | 🟡 Five 8–1024-byte µT-Kernel loopback reports include p95/p99/max; live flash-write and sampling timing remains open (T-23) |
+| Measure p95 and maximum sampling/transfer latency in addition to means | F16 | ✅ Five 8–1024-byte µT-Kernel loopback reports include p95/p99/max; the T-23 run on 22 Nov 2026 measured flash attempts (at most 2.3 ms) and sampling p95 and maximum with logging on (D2-9) |
 | Demonstrate model activity and SPI flash writes alongside live sampling | R4 | ❌ Open (D2 T-23) |
 | Replace placeholder artwork with a per-node wiring diagram including the W25Q32 | F4 | ❌ Open |
-| Confirm failed or delayed SPI logging never stops occupancy processing or causes a valid-looking reading | F17 | 🟡 Physical absent-device rejection passed; application logging and live failure isolation remain open |
+| Confirm failed or delayed SPI logging never stops occupancy processing or causes a valid-looking reading | F17 | ✅ Physical absent-device rejection passed; on 22 Nov 2026 every processed event was logged from ApplicationTask, and with no chip attached every write failed (`-9`) while occupancy, publishing and sampling carried on (D2-8) |
 
 ## 13. Use of C (C2)
 

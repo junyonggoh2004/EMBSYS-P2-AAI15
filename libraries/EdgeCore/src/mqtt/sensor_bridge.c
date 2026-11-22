@@ -16,6 +16,7 @@ typedef struct {
     char remote_node[32];
     char remote_source[32];
     char local_name[16];   // matches app_cfg_t.name size
+    sensor_profile_t profile;   // decoder named by the local config; raw by default
 } bridge_map_t;
 
 static bridge_map_t s_maps[MAX_BRIDGE_MAP];
@@ -104,10 +105,24 @@ bool sensor_bridge_add_mapping(const char *remote_node,
     trim_copy(m->remote_node,   sizeof m->remote_node,   remote_node);
     trim_copy(m->remote_source, sizeof m->remote_source, remote_source);
     trim_copy(m->local_name,    sizeof m->local_name,    local_name);
+    m->profile = SENSOR_PROFILE_RAW;   // set again by sensor_bridge_set_profile()
 
     printf("[BRIDGE] updated mapping: %s/%s -> %s\n",
            m->remote_node, m->remote_source, m->local_name);
     return true;
+}
+
+bool sensor_bridge_set_profile(const char *local_name, sensor_profile_t profile)
+{
+    if (!local_name || !*local_name) return false;
+    bool found = false;
+    for (int i = 0; i < MAX_BRIDGE_MAP; i++) {
+        if (s_maps[i].used && !strcmp(s_maps[i].local_name, local_name)) {
+            s_maps[i].profile = profile;
+            found = true;
+        }
+    }
+    return found;
 }
 
 /*
@@ -161,6 +176,7 @@ void sensor_bridge_on_remote_line(const char *remote_node,
     fake_cfg.proto   = proto_mqtt;
     fake_cfg.mode    = sample_mode_stream;
     fake_cfg.freq_hz = 1;
+    fake_cfg.remote_profile = m->profile;   // lets typed consumers decode the bytes
 
     // This will:
     //  - print hex line

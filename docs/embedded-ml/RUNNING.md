@@ -219,7 +219,7 @@ RUN
 
 Watch the board's serial console for `ML: OK PRESET sine-int8`, `ML: OK RUN`, and subsequent ML JSON with numeric outputs. `ML SHOW` can be sent on the same topic without clearing cached samples. Other command payloads continue through the existing MQTT command handler. MQTT delivery was verified on the board on 10 Nov 2026: `ML SHOW` sent on the command topic, and sent by another board with `cmd.to` (D1 task 1.4, [parity/logs/mtk/d1-mqtt/](../../parity/logs/mtk/d1-mqtt/)).
 
-This is **not yet live switching**: `STOP` pauses sensor sampling, and the commands are separate MQTT messages. The one-command format for model, local/remote input and local/published output still needs team agreement. Remote ML input and MQTT publishing of ML results are not implemented here. Tasks 1.4 and 2.1, which this needed first, are done; the rest is D4 part 2 in the [README task lists](../../README.md#5-d4-task-checklist).
+These commands need `STOP`. To switch the model, its inputs or where results go while the sensors keep running, including another board's sensor as input or the result fed to rules, send one `ml_setup` message instead ([LIVE_SETUP_PROPOSAL.md](LIVE_SETUP_PROPOSAL.md), D4 part 2).
 
 ## Validation and remaining work
 
@@ -227,4 +227,4 @@ The [10 November board capture](BOARD_VALIDATION.md) verifies three sensors, swa
 
 Keep the board running at least ten minutes, observe changing outputs as sensor inputs change, then test the model and binding swaps above. Check missing-data status by disabling a configured source or unplugging a sensor with USB disconnected. Capture TASKS before/after and verify stack headroom, watchdog stability and sensor/rule operation. Compare recorded actual model inputs with the desktop reference tool before claiming target numerical agreement.
 
-Later work from the [deliverables plan](README.md): arbitrary model-package installation and manifest persistence, more driver adapters, model rollback fault tests on hardware, and MQTT ML-result publishing. Existing raw sensor MQTT behavior is preserved; ML result JSON is currently local console output.
+ML results are printed on the console and, when `ml_setup` selects it, published on `pico/<node>/ml/result`. Raw sensor MQTT output is unchanged.

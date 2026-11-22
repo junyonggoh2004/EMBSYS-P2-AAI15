@@ -34,6 +34,12 @@ typedef enum {
     I2C_SENSOR_RAW = 0, I2C_SENSOR_AHT, I2C_SENSOR_TSL2561
 } i2c_sensor_t;
 
+// Decoder for bytes relayed over MQTT (proto=mqtt). A relayed frame carries
+// no device type, so the receiving config names it; raw is the default.
+typedef enum {
+    SENSOR_PROFILE_RAW = 0, SENSOR_PROFILE_AHT, SENSOR_PROFILE_TSL2561, SENSOR_PROFILE_PULSE
+} sensor_profile_t;
+
 // ---------- global parsed config ----------
 typedef struct {
     // common
@@ -103,6 +109,7 @@ typedef struct {
     // -------- MQTT --------
     char      remote_node[32];   // node to follow
     char      remote_source[32]; // sensor name on that node
+    sensor_profile_t remote_profile; // remote_profile=aht|tsl2561|pulse|raw
 
     // Set by the parser when a value is invalid; the scheduler then refuses
     // the config instead of guessing (D-01).

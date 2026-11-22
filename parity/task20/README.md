@@ -1,8 +1,6 @@
 # Task 20: ESP32-S3 ML compatibility and hardware check
 
-Status: in progress (Sitt). The built-in model now compiles, uploads, and runs
-on the ESP32-S3 with the Pico reference score. Persistent model upload and
-selection remain open.
+Status: done (task 20, Sitt and Hasif). The built-in model compiles, uploads and runs on the ESP32-S3 with the Pico reference score. Persistent model upload was added in task 20 on the Arduino build and task 31 on µT-Kernel, and choosing an uploaded model with the `ML` commands in D4 task 3.2.
 
 ## Runtime and model
 
