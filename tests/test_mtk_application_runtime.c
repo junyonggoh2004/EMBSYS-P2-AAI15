@@ -16,7 +16,7 @@ typedef struct {
     unsigned count;
     message_t *head, *tail;
 } queue_t;
-static queue_t queues[8];
+static queue_t queues[9];
 static T_CTSK tasks[16];
 static unsigned queue_count, task_count, started_count, fail_create;
 static UINT network_flags;
@@ -31,7 +31,7 @@ ID tk_cre_mbf(const T_CMBF *config)
 {
     ++queue_count;
     if (queue_count == fail_create) return E_NOMEM;
-    assert(queue_count < 8 && config->bufptr && config->maxmsz > 0);
+    assert(queue_count < 9 && config->bufptr && config->maxmsz > 0);
     assert((config->mbfatr & (TA_USERBUF | TA_TFIFO)) == (TA_USERBUF | TA_TFIFO));
     queues[queue_count].config = *config;
     return (ID)queue_count;
@@ -117,6 +117,17 @@ UNUSED_VOID(mtk_spi_flash_log_plan)
 UNUSED_VOID(mtk_spi_flash_log_write)
 UNUSED_VOID(mtk_spi_flash_log_verify)
 UNUSED_VOID(model_transfer_init)
+/* D2-8: the flash log has its own tests (tools/d2_host_test.sh); here only the
+ * ApplicationTask offer is counted, and LOG lines are not this fixture's. */
+static unsigned log_offers;
+void event_log_offer(const event_record_t *event, const application_dispatch_report_t *report)
+{
+    assert(event && report);
+    ++log_offers;
+}
+UNUSED_VOID(event_log_flush)
+void event_log_read_slot(uint32_t slot) { (void)slot; abort(); }
+bool event_log_command(const char *line) { (void)line; return false; }
 UNUSED_VOID(model_transfer_poll)
 static unsigned ml_commands, ml_invalidations, ordinary_commands;
 static bool ml_sampling;
@@ -345,8 +356,11 @@ int main(void)
     /* Real ControlTask queues reset, event and status in order. */
     control("APP RESET\nAPP EVENT 91 1 entry\nAPP STATUS\n");
     assert(queue(app_mbf)->count == 3 && status().occupancy == 0);
+    unsigned offers_before = log_offers;
     consume_app();
     assert(status().occupancy == 1 && queue(app_mbf)->count == 0);
+    /* D2-8: the processed event is offered to the flash log; RESET/STATUS are not. */
+    assert(log_offers == offers_before + 1);
     reset_application();
 
     network_flags = NET_MQTT_UP;

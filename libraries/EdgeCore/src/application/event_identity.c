@@ -14,3 +14,9 @@ bool event_identity_next(uint64_t *node, uint32_t *boot, uint32_t *sequence)
     *node = s_node; *boot = s_boot; *sequence = ++s_sequence;
     return true;
 }
+bool event_identity_get(uint64_t *node, uint32_t *boot)
+{
+    if (!node || !boot || !s_node || !s_boot) return false;
+    *node = s_node; *boot = s_boot;
+    return true;
+}

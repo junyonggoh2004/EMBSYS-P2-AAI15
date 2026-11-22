@@ -10,7 +10,7 @@
 //   ControlTask        1    23   2             USB console receive flag; polls ctrl_mbf
 //   InferenceTask      1    23   2             infer_mbf
 //   ApplicationTask    1    23   2             app_mbf (D6 application logic)
-//   BenchmarkTask      1    24   1             bench_mbf
+//   BenchmarkTask      1    24   1             bench_mbf (also writes log_mbf to the W25Q32, D2-8)
 //   MonitorTask        1    24   1 (loop())    wake-up from a 1 s cyclic handler
 //   idle (x2)        0, 1   32                 never blocks
 //
@@ -53,6 +53,7 @@
 #include "sensor_ml.h"
 #include "ml_bench.h"
 #include "runtime_mtk.h"
+#include "event_log_mtk.h"
 
 // Defined in the shared code (mqtt/mqtt_config_parser.c) and by the MQTT layer.
 void control_bind_flags(bool *running, bool *cfg_ready);
@@ -71,7 +72,7 @@ void mtk_spi_flash_log_plan(void);
 void mtk_spi_flash_log_write(void);
 void mtk_spi_flash_log_verify(void);
 
-ID sched_mbf, pub_mbf, infer_mbf, app_mbf, bench_mbf, ctrl_mbf;
+ID sched_mbf, pub_mbf, infer_mbf, app_mbf, bench_mbf, ctrl_mbf, log_mbf;
 ID net_flg;
 
 // ---------- network settings ----------
@@ -164,11 +165,13 @@ static uint32_t s_mbf_infer[MBF_BYTES(INFER_MBF_MSGS, INFER_MSG_MAX) / 4];
 static uint32_t s_mbf_app[MBF_BYTES(APP_MBF_MSGS, APP_MSG_MAX) / 4];
 static uint32_t s_mbf_bench[MBF_BYTES(BENCH_MBF_MSGS, sizeof(bench_msg_t)) / 4];
 static uint32_t s_mbf_ctrl[MBF_BYTES(CTRL_MBF_MSGS, sizeof(ctrl_msg_t)) / 4];
+// D2-8: processed events waiting to be written to the W25Q32 (672 bytes).
+static uint32_t s_mbf_log[MBF_BYTES(LOG_MBF_MSGS, sizeof(d2_log_record_t)) / 4];
 
 static struct { const char *name; ID *id; volatile uint32_t dropped; } s_mbfs[] = {
     { "sched_mbf", &sched_mbf, 0 }, { "pub_mbf", &pub_mbf, 0 }, { "infer_mbf", &infer_mbf, 0 },
     { "app_mbf", &app_mbf, 0 },     { "bench_mbf", &bench_mbf, 0 },
-    { "ctrl_mbf", &ctrl_mbf, 0 },
+    { "ctrl_mbf", &ctrl_mbf, 0 },   { "log_mbf", &log_mbf, 0 },
 };
 
 bool runtime_send(ID mbf, const void *msg, INT size)
@@ -225,7 +228,7 @@ static bool is_platform_command(const char *line)
 {
     static const char *const k_words[] = {
         "TASKS", "APP", "WIFISCAN", "WIFIDROP", "SPIID", "SPILOGPLAN", "SPILOGVERIFY", "SPILOGWRITE",
-        "SPICHECK", "SPISCAN", "SPIPROGRAM", "SPIVERIFY", "SPIBENCH", "STALL",
+        "SPICHECK", "SPISCAN", "SPIPROGRAM", "SPIVERIFY", "SPIBENCH", "STALL", "LOG",
     };
     size_t n = strcspn(line, " \t");
     for (size_t i = 0; i < sizeof k_words / sizeof k_words[0]; i++)
@@ -443,6 +446,8 @@ static bool platform_command(const char *line)
             if (!runtime_send(bench_mbf, &b, sizeof b))
                 puts("[SPIBENCH] ERROR benchmark queue full");
         }
+    } else if (event_log_command(line)) {
+        // LOG commands (D2-8): handled in event_log_mtk.c
     } else if (strncasecmp(line, "STALL ", 6) == 0) {
         // Watchdog test: this task stops reporting for the given time, as
         // if it were stuck. MonitorTask stops feeding the hardware watchdog
@@ -552,8 +557,9 @@ static void application_task(INT stacd, void *exinf)
                    (long)r->occupancy_before, (long)r->occupancy_after,
                    r->degraded ? 1u : 0u, r->reason ? r->reason : "-",
                    (unsigned)report.publish_status);
-            /* D2 can add its agreed log handoff here, after publication enqueue.
-             * No flash write or provisional field mapping is introduced here. */
+            // D2-8: offered to the flash log after the result is published;
+            // never waits, and nothing above depends on the write.
+            event_log_offer(&message.event, &report);
             runtime_bench("application_event", (uint32_t)(hal_time_us() - started));
         } else {
             printf("[APP] %s occupancy=%ld processed=%u resets=%u malformed=%u publish_enqueued=%u publish_failed=%u\n",
@@ -592,6 +598,10 @@ static void benchmark_task(INT stacd, void *exinf)
                 mtk_spi_flash_log_write();
             else if (strcmp(b.name, "SPILOGVERIFY") == 0)
                 mtk_spi_flash_log_verify();
+            else if (strcmp(b.name, "LOGFLUSH") == 0)
+                event_log_flush();
+            else if (strcmp(b.name, "LOGREAD") == 0)
+                event_log_read_slot(b.value_us);
             else
                 printf("[BENCH] %s %lu us\n", b.name, (unsigned long)b.value_us);
         }
@@ -787,6 +797,7 @@ ER runtime_start(void)
     CHECK("app_mbf",   make_mbf(&app_mbf,   s_mbf_app,   sizeof s_mbf_app,   APP_MSG_MAX,         "app_mbf"));
     CHECK("bench_mbf", make_mbf(&bench_mbf, s_mbf_bench, sizeof s_mbf_bench, sizeof(bench_msg_t), "bench_mbf"));
     CHECK("ctrl_mbf",  make_mbf(&ctrl_mbf,  s_mbf_ctrl,  sizeof s_mbf_ctrl,  sizeof(ctrl_msg_t),  "ctrl_mbf"));
+    CHECK("log_mbf",   make_mbf(&log_mbf,   s_mbf_log,   sizeof s_mbf_log,   sizeof(d2_log_record_t), "log_mbf"));
 
     T_CFLG cflg = { .exinf = NULL, .flgatr = TA_TFIFO | TA_WMUL, .iflgptn = 0 };
     ID flg = tk_cre_flg(&cflg);
@@ -819,7 +830,7 @@ ER runtime_start(void)
 
     for (int t = 0; t < RT_NTASKS; t++) CHECK(s_tasks[t].name, tk_sta_tsk(s_tasks[t].id, 0));
 
-    printf("[BOOT] micro T-Kernel 3 SMP runtime: %d tasks, 7 message buffers, 1 event flag, 1 cyclic handler\n",
+    printf("[BOOT] micro T-Kernel 3 SMP runtime: %d tasks, 8 message buffers, 1 event flag, 1 cyclic handler\n",
            RT_NTASKS);
     return E_OK;
 }
