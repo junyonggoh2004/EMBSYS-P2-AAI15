@@ -148,7 +148,8 @@ STAGES = {
         ("cfg-sonic", "HC-SR04 pulse config is accepted",
          "BEGINCFG|name=HCSR04|proto=gpio|gpio.mode=pulse|mode=poll|freq_hz=2|gpio.trig=16"
          "|gpio.echo=17|gpio.trig_us=10|gpio.pulse_timeout_us=25000|ENDCFG",
-         2.5, [r"method=pulse", r"^CFG: ok \(added #\d+: HCSR04\)"]),
+         # method=pulse comes from the scheduler's debug output (SCHED_DEBUG=0 on µT-Kernel since 3 Nov).
+         2.5, [r"(?:method=pulse|^\[SCHED\] added: HCSR04 on gpio)", r"^CFG: ok \(added #\d+: HCSR04\)"]),
         # Width must be under the 25 000 us timeout (0x61A8), so a reading only counts
         # when an object is actually in range; a clipped A9 61 means nothing was seen.
         ("sonic-read", "A real distance is measured while an object is held in front of the sensor", "RUN", 45.0,
@@ -417,7 +418,9 @@ STAGES = {
         ("neg-i2c-nodev", "An I2C device that does not answer is rejected",
          "BEGINCFG|name=NODEV|proto=i2c|mode=poll|freq_hz=1|i2c.sda=16|i2c.scl=17|i2c.addr=0x29"
          "|i2c.pre=0x80 0x03|i2c.reg=0x8A|i2c.reg_size=1|i2c.read_len=1|i2c.restart=1|ENDCFG",
-         2.5, [r"init_cfg FAILED for NODEV", r"^CFG: add failed \(-2\)"]),
+         # The scheduler's init_cfg line is debug output, off in the µT-Kernel build since 3 Nov
+         # (SCHED_DEBUG=0); the I2C driver's own failure line shows the same refusal.
+         2.5, [r"(?:init_cfg FAILED for NODEV|\[I2C\] init pre-writes failed)", r"^CFG: add failed \(-2\)"]),
         ("neg-nopin", "A digital config without gpio.pin is refused (D-02 fixed)",
          "BEGINCFG|name=NOPIN|proto=gpio|gpio.mode=digital|mode=poll|freq_hz=1|ENDCFG",
          2.5, [r"NOPIN: gpio.pin is required", r"^CFG: add failed \(-2\)"]),

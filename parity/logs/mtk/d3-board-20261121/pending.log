@@ -1,0 +1,71 @@
+> STOP
+23:29:02 STOP
+> CLEAR
+23:29:04 [RULE] reset
+23:29:04 CLEARED
+# D3-2 STOP during a pending echo: LONG pulse sensor, trig GPIO4, echo GPIO7 (nothing wired), 1 s echo timeout
+> BEGINCFG|name=LONG|proto=gpio|gpio.mode=pulse|gpio.trig=4|gpio.echo=7|gpio.pull=down|gpio.trig_us=10|gpio.pulse_timeout_us=1000000|mode=poll|freq_hz=0.5|ENDCFG
+23:29:05 OK: Config applied (inline, delim='|')
+23:29:05 [SCHED] added: LONG on gpio
+23:29:05 CFG: ok (added #0: LONG)
+23:29:06 [MQTT] Status: Connected, Broker: 192.168.1.49
+> RUN
+23:29:07 RUN
+> STOP
+23:29:07 STOP
+> SHOW
+23:29:08 [SHOW] sampling=0
+23:29:08 [WINDOW] enabled=0 state=0 events=0 dropped=0 radar_frames=0 malformed=0 rx_dropped=0 identity=1
+23:29:08 [SCHED] #0 name=LONG proto=gpio mode=poll freq=0.500Hz timing=periodic interval=2000ms timeout=0ms window=0ms trigger=- status=2
+23:29:08 [SENSOR] name=LONG pending=0 timeouts=0 errors=0 overruns=0
+23:29:08 [RULE] count=0
+23:29:11 [MQTT] Status: Connected, Broker: 192.168.1.49
+# STOP during pending echo: ack=True, LONG lines in 4 s after STOP=2
+> RUN
+23:29:12 RUN
+> CLEAR
+23:29:12 [RULE] reset
+23:29:12 CLEARED
+> SHOW
+23:29:12 [SHOW] sampling=1
+23:29:12 [WINDOW] enabled=0 state=0 events=0 dropped=0 radar_frames=0 malformed=0 rx_dropped=0 identity=1
+23:29:12 [RULE] count=0
+# CLEAR during pending echo: cleared=True, LONG lines in 4 s after CLEAR=0
+# D3-2/D3-9 busy capture: two pulse sensors with 1 s echo waits; only one capture at a time
+> BEGINCFG|name=PA|proto=gpio|gpio.mode=pulse|gpio.trig=4|gpio.echo=7|gpio.pull=down|gpio.trig_us=10|gpio.pulse_timeout_us=1000000|mode=poll|freq_hz=0.5|ENDCFG
+23:29:16 OK: Config applied (inline, delim='|')
+23:29:16 [SCHED] added: PA on gpio
+23:29:16 CFG: ok (added #0: PA)
+23:29:16 [MQTT] Status: Connected, Broker: 192.168.1.49
+> BEGINCFG|name=PB|proto=gpio|gpio.mode=pulse|gpio.trig=15|gpio.echo=16|gpio.pull=down|gpio.trig_us=10|gpio.pulse_timeout_us=1000000|mode=poll|freq_hz=0.5|ENDCFG
+23:29:18 OK: Config applied (inline, delim='|')
+23:29:18 [SCHED] added: PB on gpio
+23:29:18 CFG: ok (added #1: PB)
+23:29:19 {"sensor":"PA","timestamp_ms":480602,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:29:19 [SENSOR] name=PA error=-1 total=1
+> RUN
+23:29:19 RUN
+23:29:20 {"sensor":"PA","timestamp_ms":481600,"distance_cm":null,"echo_us":null,"status":"SENSOR_ERROR_OR_MISSING","error":-6}
+23:29:21 {"sensor":"PB","timestamp_ms":482156,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:29:21 [SENSOR] name=PB error=-1 total=1
+23:29:21 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:29:22 {"sensor":"PA","timestamp_ms":483600,"distance_cm":null,"echo_us":null,"status":"SENSOR_ERROR_OR_MISSING","error":-6}
+23:29:22 [SENSOR] name=PA error=-6 total=3
+23:29:23 {"sensor":"PB","timestamp_ms":484156,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:29:23 [SENSOR] name=PB error=-1 total=2
+23:29:24 {"sensor":"PA","timestamp_ms":485600,"distance_cm":null,"echo_us":null,"status":"SENSOR_ERROR_OR_MISSING","error":-6}
+23:29:24 [SENSOR] name=PA error=-6 total=4
+23:29:25 {"sensor":"PB","timestamp_ms":486156,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:29:25 [SENSOR] name=PB error=-1 total=3
+23:29:26 {"sensor":"PA","timestamp_ms":487600,"distance_cm":null,"echo_us":null,"status":"SENSOR_ERROR_OR_MISSING","error":-6}
+23:29:26 [SENSOR] name=PA error=-6 total=5
+23:29:26 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:29:27 {"sensor":"PB","timestamp_ms":488156,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:29:27 [SENSOR] name=PB error=-1 total=4
+> STOP
+23:29:27 STOP
+# busy: 7 explicit error lines, codes ['-1', '-6'], valid-looking readings 0
+> CLEAR
+23:29:29 [RULE] reset
+23:29:29 CLEARED
+# summary {"stop_pending": {"stop_ack": true, "readings_after_stop_4s": 2, "sampling_0": true}, "clear_pending": {"cleared": true, "readings_after_clear_4s": 0}, "busy": {"error_lines": 7, "error_codes": ["-1", "-6"], "valid_looking_readings": 0}}

@@ -1,0 +1,165 @@
+# board=s3 fixture=v2-sonar stage=4c-sonic
+23:30:35 --- fixture-stop: STOP
+23:30:35 STOP
+23:30:36 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:30:38 --- fixture-clear: CLEAR
+23:30:38 [RULE] reset
+23:30:38 CLEARED
+23:30:41 --- cfg-sonic: BEGINCFG|name=HCSR04|proto=gpio|gpio.mode=pulse|mode=poll|freq_hz=2|gpio.trig=4|gpio.echo=5|gpio.trig_us=10|gpio.pulse_timeout_us=25000|ENDCFG
+23:30:41 OK: Config applied (inline, delim='|')
+23:30:41 [SCHED] added: HCSR04 on gpio
+23:30:41 CFG: ok (added #0: HCSR04)
+23:30:41 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:30:47 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:30:51 --- sonic-read: RUN
+23:30:51 RUN
+23:30:51 {"sensor":"HCSR04","timestamp_ms":572026,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:30:51 [SENSOR] name=HCSR04 error=-1 total=1
+23:30:51 {"sensor":"HCSR04","timestamp_ms":572527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:30:51 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:30:52 {"sensor":"HCSR04","timestamp_ms":573027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:30:52 [SENSOR] name=HCSR04 error=-1 total=3
+23:30:52 {"sensor":"HCSR04","timestamp_ms":573527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:30:53 {"sensor":"HCSR04","timestamp_ms":574027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:30:53 {"sensor":"HCSR04","timestamp_ms":574527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:30:53 [SENSOR] name=HCSR04 error=-1 total=6
+23:30:54 {"sensor":"HCSR04","timestamp_ms":575027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:30:54 {"sensor":"HCSR04","timestamp_ms":575527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:30:54 [SENSOR] name=HCSR04 error=-1 total=8
+23:30:55 {"sensor":"HCSR04","timestamp_ms":576027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:30:55 {"sensor":"HCSR04","timestamp_ms":576527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:30:55 [SENSOR] name=HCSR04 error=-1 total=10
+23:30:56 {"sensor":"HCSR04","timestamp_ms":577027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:30:56 {"sensor":"HCSR04","timestamp_ms":577527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:30:56 [SENSOR] name=HCSR04 error=-1 total=12
+23:30:56 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:30:57 {"sensor":"HCSR04","timestamp_ms":578027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:30:57 {"sensor":"HCSR04","timestamp_ms":578527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:30:57 [SENSOR] name=HCSR04 error=-1 total=14
+23:30:58 {"sensor":"HCSR04","timestamp_ms":579027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:30:58 {"sensor":"HCSR04","timestamp_ms":579527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:30:58 [SENSOR] name=HCSR04 error=-1 total=16
+23:30:59 {"sensor":"HCSR04","timestamp_ms":580027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:30:59 {"sensor":"HCSR04","timestamp_ms":580527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:30:59 [SENSOR] name=HCSR04 error=-1 total=18
+23:31:00 {"sensor":"HCSR04","timestamp_ms":581027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:00 {"sensor":"HCSR04","timestamp_ms":581527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:00 [SENSOR] name=HCSR04 error=-1 total=20
+23:31:01 {"sensor":"HCSR04","timestamp_ms":582027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:01 {"sensor":"HCSR04","timestamp_ms":582527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:01 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:31:02 {"sensor":"HCSR04","timestamp_ms":583027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:02 [SENSOR] name=HCSR04 error=-1 total=23
+23:31:02 {"sensor":"HCSR04","timestamp_ms":583527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:03 {"sensor":"HCSR04","timestamp_ms":584027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:03 [SENSOR] name=HCSR04 error=-1 total=25
+23:31:03 {"sensor":"HCSR04","timestamp_ms":584527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:04 {"sensor":"HCSR04","timestamp_ms":585027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:04 [SENSOR] name=HCSR04 error=-1 total=27
+23:31:04 {"sensor":"HCSR04","timestamp_ms":585527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:05 {"sensor":"HCSR04","timestamp_ms":586027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:05 [SENSOR] name=HCSR04 error=-1 total=29
+23:31:05 {"sensor":"HCSR04","timestamp_ms":586527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:06 {"sensor":"HCSR04","timestamp_ms":587027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:06 [SENSOR] name=HCSR04 error=-1 total=31
+23:31:06 {"sensor":"HCSR04","timestamp_ms":587527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:06 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:31:07 {"sensor":"HCSR04","timestamp_ms":588027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:07 [SENSOR] name=HCSR04 error=-1 total=33
+23:31:07 {"sensor":"HCSR04","timestamp_ms":588527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:08 {"sensor":"HCSR04","timestamp_ms":589027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:08 {"sensor":"HCSR04","timestamp_ms":589527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:08 [SENSOR] name=HCSR04 error=-1 total=36
+23:31:09 {"sensor":"HCSR04","timestamp_ms":590027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:09 {"sensor":"HCSR04","timestamp_ms":590527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:09 [SENSOR] name=HCSR04 error=-1 total=38
+23:31:10 {"sensor":"HCSR04","timestamp_ms":591027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:10 {"sensor":"HCSR04","timestamp_ms":591527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:10 [SENSOR] name=HCSR04 error=-1 total=40
+23:31:11 {"sensor":"HCSR04","timestamp_ms":592027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:11 {"sensor":"HCSR04","timestamp_ms":592527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:11 [SENSOR] name=HCSR04 error=-1 total=42
+23:31:11 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:31:12 {"sensor":"HCSR04","timestamp_ms":593027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:12 {"sensor":"HCSR04","timestamp_ms":593527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:12 [SENSOR] name=HCSR04 error=-1 total=44
+23:31:13 {"sensor":"HCSR04","timestamp_ms":594027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:13 {"sensor":"HCSR04","timestamp_ms":594527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:13 [SENSOR] name=HCSR04 error=-1 total=46
+23:31:14 {"sensor":"HCSR04","timestamp_ms":595027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:14 {"sensor":"HCSR04","timestamp_ms":595527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:14 [SENSOR] name=HCSR04 error=-1 total=48
+23:31:15 {"sensor":"HCSR04","timestamp_ms":596027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:15 {"sensor":"HCSR04","timestamp_ms":596527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:16 {"sensor":"HCSR04","timestamp_ms":597027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:16 [SENSOR] name=HCSR04 error=-1 total=51
+23:31:16 {"sensor":"HCSR04","timestamp_ms":597527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:17 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:31:17 {"sensor":"HCSR04","timestamp_ms":598027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:17 [SENSOR] name=HCSR04 error=-1 total=53
+23:31:17 {"sensor":"HCSR04","timestamp_ms":598527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:18 {"sensor":"HCSR04","timestamp_ms":599027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:18 [SENSOR] name=HCSR04 error=-1 total=55
+23:31:18 {"sensor":"HCSR04","timestamp_ms":599527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:19 {"sensor":"HCSR04","timestamp_ms":600027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:19 [SENSOR] name=HCSR04 error=-1 total=57
+23:31:19 {"sensor":"HCSR04","timestamp_ms":600527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:20 {"sensor":"HCSR04","timestamp_ms":601027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:20 {"sensor":"HCSR04","timestamp_ms":601527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:20 [SENSOR] name=HCSR04 error=-1 total=60
+23:31:21 {"sensor":"HCSR04","timestamp_ms":602027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:21 {"sensor":"HCSR04","timestamp_ms":602527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:21 [SENSOR] name=HCSR04 error=-1 total=62
+23:31:22 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:31:22 {"sensor":"HCSR04","timestamp_ms":603027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:22 {"sensor":"HCSR04","timestamp_ms":603527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:22 [SENSOR] name=HCSR04 error=-1 total=64
+23:31:23 {"sensor":"HCSR04","timestamp_ms":604027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:23 {"sensor":"HCSR04","timestamp_ms":604527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:23 [SENSOR] name=HCSR04 error=-1 total=66
+23:31:24 {"sensor":"HCSR04","timestamp_ms":605027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:24 {"sensor":"HCSR04","timestamp_ms":605527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:24 [SENSOR] name=HCSR04 error=-1 total=68
+23:31:25 {"sensor":"HCSR04","timestamp_ms":606027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:25 {"sensor":"HCSR04","timestamp_ms":606527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:25 [SENSOR] name=HCSR04 error=-1 total=70
+23:31:26 {"sensor":"HCSR04","timestamp_ms":607027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:26 {"sensor":"HCSR04","timestamp_ms":607527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:26 [SENSOR] name=HCSR04 error=-1 total=72
+23:31:27 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:31:27 {"sensor":"HCSR04","timestamp_ms":608027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:27 {"sensor":"HCSR04","timestamp_ms":608527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:27 [SENSOR] name=HCSR04 error=-1 total=74
+23:31:28 {"sensor":"HCSR04","timestamp_ms":609027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:28 {"sensor":"HCSR04","timestamp_ms":609527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:28 [SENSOR] name=HCSR04 error=-1 total=76
+23:31:29 {"sensor":"HCSR04","timestamp_ms":610027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:29 {"sensor":"HCSR04","timestamp_ms":610527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:29 [SENSOR] name=HCSR04 error=-1 total=78
+23:31:30 {"sensor":"HCSR04","timestamp_ms":611027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:30 {"sensor":"HCSR04","timestamp_ms":611527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:30 [SENSOR] name=HCSR04 error=-1 total=80
+23:31:31 {"sensor":"HCSR04","timestamp_ms":612027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:31 {"sensor":"HCSR04","timestamp_ms":612527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:31 [SENSOR] name=HCSR04 error=-1 total=82
+23:31:32 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:31:32 {"sensor":"HCSR04","timestamp_ms":613027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:32 {"sensor":"HCSR04","timestamp_ms":613527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:32 [SENSOR] name=HCSR04 error=-1 total=84
+23:31:33 {"sensor":"HCSR04","timestamp_ms":614027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:33 {"sensor":"HCSR04","timestamp_ms":614527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:33 [SENSOR] name=HCSR04 error=-1 total=86
+23:31:34 {"sensor":"HCSR04","timestamp_ms":615027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:34 {"sensor":"HCSR04","timestamp_ms":615527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:34 [SENSOR] name=HCSR04 error=-1 total=88
+23:31:35 proto=gpio src=HCSR04 len=3 ts=616023 : CE 4E 01
+23:31:35 {"sensor":"HCSR04","timestamp_ms":616024,"distance_cm":346.0,"echo_us":20174,"status":"OK","error":0}
+23:31:35 {"sensor":"HCSR04","timestamp_ms":616527,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:36 {"sensor":"HCSR04","timestamp_ms":617027,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:31:36 [SENSOR] name=HCSR04 error=-1 total=90
+23:31:36 --- stop-sonic: STOP
+23:31:36 STOP
+23:31:37 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:31:39 --- clear-sonic: CLEAR
+23:31:39 [RULE] reset
+23:31:39 CLEARED

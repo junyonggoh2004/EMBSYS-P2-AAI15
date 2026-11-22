@@ -1,0 +1,23 @@
+# board=s3 fixture=upstream stage=t03
+23:16:15 --- clear-t03: CLEAR
+23:16:15 [RULE] reset
+23:16:15 CLEARED
+23:16:15 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:16:17 --- cfg-t03: BEGINCFG|name=BADPIN|proto=gpio|gpio.mode=digital|gpio.pin=99|mode=poll|freq_hz=1|ENDCFG
+23:16:17 OK: Config applied (inline, delim='|')
+23:16:17 [GPIO] BADPIN: pin 99 not available on this board
+23:16:17 CFG: add failed (-2)
+23:16:20 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:16:20 --- run-t03: RUN
+23:16:20 RUN
+23:16:24 --- stop-t03: STOP
+23:16:24 STOP
+23:16:25 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:16:27 --- alive-t03: SHOW
+23:16:27 [SHOW] sampling=0
+23:16:27 [WINDOW] enabled=0 state=0 events=0 dropped=0 radar_frames=0 malformed=0 rx_dropped=0 identity=1
+23:16:27 [RULE] count=0
+23:16:30 --- clear-t03-end: CLEAR
+23:16:30 [RULE] reset
+23:16:30 CLEARED
+23:16:30 [MQTT] Status: Connected, Broker: 192.168.1.49

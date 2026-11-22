@@ -1,0 +1,46 @@
+# board=s3 fixture=upstream stage=t06
+23:17:20 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:17:22 --- clear-t06: CLEAR
+23:17:22 [RULE] reset
+23:17:22 CLEARED
+23:17:24 --- cfg-ow: BEGINCFG|name=OW|proto=gpio|gpio.mode=onewire|gpio.pin=6|mode=poll|freq_hz=2|ENDCFG
+23:17:24 OK: Config applied (inline, delim='|')
+23:17:24 [SCHED] added: OW on gpio
+23:17:24 CFG: ok (added #0: OW)
+23:17:25 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:17:27 --- cfg-son: BEGINCFG|name=SON|proto=gpio|gpio.mode=pulse|gpio.trig=4|gpio.echo=7|gpio.pull=down|gpio.pulse_timeout_us=25000|mode=poll|freq_hz=2|ENDCFG
+23:17:27 OK: Config applied (inline, delim='|')
+23:17:27 [SCHED] added: SON on gpio
+23:17:27 CFG: ok (added #1: SON)
+23:17:29 --- run-t06: RUN
+23:17:30 RUN
+23:17:30 {"sensor":"SON","timestamp_ms":259654,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:17:30 [SENSOR] name=SON error=-1 total=1
+23:17:30 {"sensor":"SON","timestamp_ms":260155,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:17:30 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:17:30 {"sensor":"SON","timestamp_ms":260655,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:17:30 [SENSOR] name=SON error=-1 total=3
+23:17:31 {"sensor":"SON","timestamp_ms":261155,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:17:32 {"sensor":"SON","timestamp_ms":261655,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:17:32 [SENSOR] name=SON error=-1 total=5
+23:17:32 {"sensor":"SON","timestamp_ms":262155,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:17:32 {"sensor":"SON","timestamp_ms":262655,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:17:32 [SENSOR] name=SON error=-1 total=7
+23:17:33 {"sensor":"SON","timestamp_ms":263155,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:17:33 {"sensor":"SON","timestamp_ms":263655,"distance_cm":null,"echo_us":null,"status":"TIMEOUT","error":-1}
+23:17:33 [SENSOR] name=SON error=-1 total=9
+23:17:34 --- stop-t06: STOP
+23:17:34 STOP
+23:17:35 [MQTT] Status: Connected, Broker: 192.168.1.49
+23:17:36 --- alive-t06: SHOW
+23:17:36 [SHOW] sampling=0
+23:17:36 [WINDOW] enabled=0 state=0 events=0 dropped=0 radar_frames=0 malformed=0 rx_dropped=0 identity=1
+23:17:36 [SCHED] #0 name=OW proto=gpio mode=poll freq=2.000Hz timing=periodic interval=500ms timeout=0ms window=0ms trigger=- status=1
+23:17:36 [SENSOR] name=OW pending=0 timeouts=0 errors=0 overruns=0
+23:17:36 [SCHED] #1 name=SON proto=gpio mode=poll freq=2.000Hz timing=periodic interval=500ms timeout=0ms window=0ms trigger=- status=1
+23:17:36 [SENSOR] name=SON pending=0 timeouts=0 errors=9 overruns=0
+23:17:36 [RULE] count=0
+23:17:39 --- clear-t06-end: CLEAR
+23:17:39 [RULE] reset
+23:17:39 CLEARED
+23:17:40 [MQTT] Status: Connected, Broker: 192.168.1.49
