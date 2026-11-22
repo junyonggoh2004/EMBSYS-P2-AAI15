@@ -39,7 +39,7 @@ The generic SPI transport is device-independent. The implemented `flash/w25q32.[
 
 ## Application and queue policy proposal
 
-The current µT-Kernel `ApplicationTask` only drains `app_mbf`; it does not yet implement occupancy or flash logging. `app_mbf` currently has capacity 8 with 64-byte items, while `bench_mbf` has capacity 16 and `runtime_send()` counts full-buffer drops. D2 must not claim a concurrent logging pass from these placeholders.
+On 25 October the µT-Kernel `ApplicationTask` only drained `app_mbf`. It now keeps the occupancy count (D3-8) and offers every processed event to the flash log through `log_mbf` (D2-8), and the concurrent run passed on 22 Nov 2026 (D2-9, [logs](parity/logs/mtk/d2-log-20261122/)).
 
 - Keep sensor acquisition and inference out of flash write calls. For every processed event, attempt MQTT publication enqueue first, then offer a log request to `ApplicationTask`, including rejected, duplicate and degraded outcomes. The publish queueing order is observable; broker acknowledgement is a separate matter. Exact mappings await D3/D6 agreement.
 - Preferred design: a dedicated, typed `log_mbf` carrying the agreed record; provisional capacity 8 and enqueue timeout 0 ms. If full, drop the **newest log request**, increment a RAM diagnostic counter, and report the lost sequence. Do not block the scheduler or overwrite an earlier accepted record silently. `ApplicationTask` consumes the buffer; the existing D6-shared `app_mbf` is not repurposed. This requires teammate review before implementation.

@@ -1,7 +1,9 @@
 # D3 GPIO interrupt and resistor review
 
 Review date: 5 November 2026. Source checkpoint: `aaf48da`.
-Status: documentation/source review and native validation; physical acceptance pending.
+Status at review time: documentation/source review and native validation; physical acceptance was still pending.
+
+**Final status (22 Nov 2026).** D3 is done. The HC-SR04 capture, `STOP` and `CLEAR` cancellation and the fault cases were run on the board on 21 Nov 2026, and the two-sonar sequence on the D6 setup; see [README section 4](README.md#4-d3-task-checklist). This review is kept as written on 5 November.
 No firmware, wiring or resistor removal has been performed or approved by this review.
 
 ## Change control

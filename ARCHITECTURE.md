@@ -1,5 +1,8 @@
 # D1 Architecture Freeze (Task 10)
 
+**Status (23 Nov 2026).** This is the Week 6 architecture freeze for the Arduino/FreeRTOS build, now the measured baseline; the µT-Kernel design that replaced it is in [MTK_REDESIGN.md](MTK_REDESIGN.md). The dated D3 notes below describe D3 as it was merged; D3 was finished on the board on 21 Nov 2026 ([README section 4](README.md#4-d3-task-checklist)).
+
+
 **1 November D3 update (target unverified).** The shared `entrance_window`
 controller now owns a configured A/B pair plus a dedicated LD2450 source while
 RUN is active. Radar is drained without waiting; valid in-zone frames enable a
@@ -111,7 +114,7 @@ The D1 design currently has three documented ESP-IDF exceptions, as the README r
 
 Source layout: the shared code, including the bus drivers, is the Arduino library [libraries/EdgeCore/](libraries/EdgeCore/), which the Pico CMake build also compiles, so both targets use the identical files with no copy (task 12). Pico platform code stays in `project_v3/`; the ESP32-S3 platform code is the library [libraries/EdgeS3/](libraries/EdgeS3/) (HAL backend and the FreeRTOS runtime), used by the firmware sketch `esp32s3_edge/` and the HAL test sketch `esp32s3_haltest/`. Task 9 keeps the `esp32s3/` bring-up sketch free of framework code. Build steps for both targets are in SETUP.md.
 
-## 5. Hardware layout (waits on task 8)
+## 5. Hardware layout
 
 The pin and power table is the output of task 8 in SETUP.md and is copied here at the review. The layout must follow these rules, which come from the Pico baseline and the ESP32-S3 datasheet. No GPIO tolerates 5 V, so the HC-SR04 Echo line passes through a 1:2 divider (for example 1 kΩ over 2 kΩ) while Trig connects directly; on the Pico the same sensor ran from 5 V with one series resistor (P-12). Strapping pins GPIO0, GPIO3, GPIO45 and GPIO46 are not used for sensors. GPIO19 and GPIO20 carry native USB, which is the console. GPIO26 to GPIO32 belong to the SPI flash, and GPIO33 to GPIO37 to octal PSRAM on modules that have it. Every device has one driver, and the engine task is its only caller.
 

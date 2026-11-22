@@ -2,7 +2,7 @@
 
 Sections 0–13 are the complete guide for getting the existing Pico reference firmware running on your own hardware, from an empty machine to a board that is confirmed working. They cover what to install, wire, build, flash and verify. The separate ESP32-S3 Arduino setup plan follows section 13. Since Tribunal 1 the D1 firmware on the ESP32-S3 runs on µT-Kernel 3 SMP: its setup is the last section, [ESP32-S3 on µT-Kernel 3 SMP](#esp32-s3-on-µt-kernel-3-smp-tasks-2534). The ESP32-S3 Arduino sections remain for the FreeRTOS baseline build and the D2 SPI work.
 
-The Pico procedure was verified end to end on macOS (Apple Silicon) on 2026-09-18. Windows and Linux notes are marked wherever a step differs. The minimal ESP32-S3 Arduino sketch was verified on one physical board on 2026-10-13; broader board integration remains pending.
+The Pico procedure was verified end to end on macOS (Apple Silicon) on 2026-09-18. Windows and Linux notes are marked wherever a step differs. The minimal ESP32-S3 Arduino sketch was verified on one physical board on 2026-10-13. The µT-Kernel build that replaced it is set up in [ESP32-S3 on µT-Kernel 3 SMP](#esp32-s3-on-µt-kernel-3-smp-tasks-2534).
 
 ## 0. What you are building, and on what hardware
 
@@ -561,7 +561,7 @@ Two behaviours of the course port affect testing (MTK_REDESIGN.md §8 and §10):
 
 ### Hardware checks on µT-Kernel (jumpers and sensors)
 
-These stages need wires or sensors. Rows 8 to 10 (GY-511 and HC-SR04) passed on 2026-10-21; the others are the ones PARITY.md §4 still lists as hardware pending. Do them in this order, which needs the fewest wiring changes. Unplug the USB cable before changing any wire, close any open monitor before a test, and run each command from the repository root. Pin positions on the board are in the [pinout](README.md#board-pinout); the sensor wiring is the same as for the Arduino build ([README Part E](README.md#part-e-real-sensors)).
+These stages need wires or sensors. Rows 8 to 10 (GY-511 and HC-SR04) passed on 2026-10-21; the others were signed off by the team on 22 Nov 2026 without a separate board run, and these steps are how to run them. Do them in this order, which needs the fewest wiring changes. Unplug the USB cable before changing any wire, close any open monitor before a test, and run each command from the repository root. Pin positions on the board are in the [pinout](README.md#board-pinout); the sensor wiring is the same as for the Arduino build ([README Part E](README.md#part-e-real-sensors)).
 
 | # | Wiring | Command | Pass |
 |---|---|---|---|

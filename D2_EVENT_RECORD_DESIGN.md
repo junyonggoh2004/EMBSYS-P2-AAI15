@@ -1,5 +1,8 @@
 # D2 event-record design template
 
+**Final status (22 Nov 2026).** The team signed off the record format as implemented in [d2_event_log.h](libraries/EdgeCore/src/flash/d2_event_log.h) and [event_log_map.c](libraries/EdgeCore/src/application/event_log_map.c), so the open decisions and TBD entries below are settled by that code. Every processed event is now logged from ApplicationTask (D2-8). The rest of this file is the design history.
+
+
 Status (26 October 2026): the W25Q32 device layer and a **provisional D2-only event-log codec and non-erasing recovery allocator** pass host mocks and build for Pico and µT-Kernel. With Brendan's specific approval, one synthetic, rejected, test-only 80-byte record was programmed at `0x3FF100` on the physical W25Q32. Immediate readback, read-only CRC verification, cold USB power-cycle recovery, and preservation of the previous pattern at `0x3FF000` passed. [Write log](parity/logs/mtk/d2-spi/flash-log-write-once-20261026.log) and [cold recovery log](parity/logs/mtk/d2-spi/flash-log-cold-verify-20261026.log) retain the evidence. This fixture is not wired into `ApplicationTask` and is not a real processed occupancy event. Brendan chose to log every processed event; D3/D6 must still approve the identity/result mapping before the format is frozen.
 
 ## 25 October integration review — decision needed from D3/D6
@@ -24,7 +27,7 @@ Record every processed event in external SPI flash after the application has att
 
 “Publish first” means **attempt to enqueue** the occupancy result to the existing publisher before offering the log request. It does not assert MQTT broker delivery. A publisher-queue failure and a flash-log failure are independent, observable outcomes; neither may turn a failed reading into a valid one or stop live monitoring.
 
-## On-flash format awaiting D3/D6 agreement
+## On-flash format
 
 The earlier 32-byte draft cannot represent the current D3 event identity and processing result. It has been retired as an implementation target. The D2-owned [provisional codec](libraries/EdgeCore/src/flash/d2_event_log.h) serializes exactly 80 little-endian bytes rather than a compiler-dependent C struct. Its CRC-32/ISO-HDLC covers bytes 0–75 and occupies bytes 76–79; an independent `zlib.crc32` golden vector and host round-trip test are in `tests/test_w25q32.c`. This byte format remains subject to D3/D6 approval.
 

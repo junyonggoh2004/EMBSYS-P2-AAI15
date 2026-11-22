@@ -32,9 +32,9 @@ Branch: `dev-jy-ml`. Base: `b496a8d`. This records the ML implementation; it is 
 
 | Real desktop LiteRT inference | PASS; both upstream sine models and existing 16-input autoencoder allocate and return finite outputs |
 
-| Target model numerical agreement, resource use and stability | NOT YET TESTED |
+| Target model numerical agreement, resource use and stability | PASS on the board, 10 to 22 Nov: outputs checked against the model weights ([BOARD_VALIDATION.md](BOARD_VALIDATION.md)), arena and memory measured in D5 ([results](../d5/README.md#6-results)), and a 60 s run with ML and flash logging (D2-9) |
 
-| Physical sensor swaps/failure/recovery with ML enabled | NOT YET TESTED |
+| Physical sensor swaps/failure/recovery with ML enabled | Partly run on the board on 10 Nov: configurations with a sensor missing still gave ML output, and an unconnected sonar reported a timeout ([RUNNING.md](RUNNING.md#run-the-sensor-configuration-demos)) |
 
 
 

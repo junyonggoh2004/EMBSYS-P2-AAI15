@@ -42,7 +42,7 @@ Protocol checks also used the primary [Adafruit AHT implementation](https://gith
 
 ## Preservation and source import
 
-Before importing main, 160 source/document/settings/image files and the original working-tree diff were backed up under the local `Documents/ChatGPT/ES/main_integration_20261103/backup_before_import` folder. Earlier firmware sources and prior images are also preserved in `legacy/esp32s3_sensor_bringup/` and `legacy/esp32s3_idf_initial/`, with file hashes verified. Windows held the old folder open, so preservation used verified copies and removed only obsolete archived source/config files; the original generated `build_mtk/` remains ignored and unused.
+Before importing main, 160 source/document/settings/image files and the original working-tree diff were backed up in a local folder before the import. Earlier firmware sources and prior images are also preserved in `legacy/esp32s3_sensor_bringup/` and `legacy/esp32s3_idf_initial/`, with file hashes verified. Windows held the old folder open, so preservation used verified copies and removed only obsolete archived source/config files; the original generated `build_mtk/` remains ignored and unused.
 
 The main source snapshot and submodule reference were imported into the existing branch's index/worktree; HEAD remains unchanged. Local adaptations are additional working-tree changes. No commit, push, flash, model upload or hardware-test command was performed. Historical evidence from main remains historical; it is not this board's new test result.
 

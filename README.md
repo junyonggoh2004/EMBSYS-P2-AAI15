@@ -28,7 +28,7 @@ Owners follow the team split of 28 Sep 2026, with D4 to D6 re-split on 10 Nov an
 | [5. D4 task checklist](#5-d4-task-checklist) | How to use the ML, the ML itself (2.1–2.6) and switching it live (3.1–3.7) |
 | [6. D5 task checklist (Hasif)](#6-d5-task-checklist-hasif) | Benchmarking the D4 models on the S3, tasks 4.1–4.6 |
 | [7. D6 task checklist](#7-d6-task-checklist) | Use case and demo, tasks 5.1–5.8 |
-| [8. Set up and test from scratch](#8-set-up-and-test-from-scratch-d1-to-d3) | Step by step on a new Mac for the µT-Kernel build |
+| [8. Set up and test from scratch](#8-set-up-and-test-from-scratch) | Step by step on a new Mac for the µT-Kernel build, D1 to D5 |
 | &nbsp;&nbsp;[Part A: Install](#part-a-install) | Steps 1–4: tools, project, ESP-IDF and the course port, version check |
 | &nbsp;&nbsp;[Part B: Wi-Fi and broker](#part-b-wi-fi-and-broker) | Steps 5–7: laptop IP, Wi-Fi file, MQTT broker |
 | &nbsp;&nbsp;[Board pinout](#board-pinout) | Super Mini pin diagram |
@@ -37,6 +37,9 @@ Owners follow the team split of 28 Sep 2026, with D4 to D6 re-split on 10 Nov an
 | &nbsp;&nbsp;[Part E: Real sensors](#part-e-real-sensors) | GY-511, HC-SR04, the light sensor and jumper tests |
 | &nbsp;&nbsp;[Part F: D2 SPI](#part-f-d2-spi) | Host test, loopback, benchmark, read-only W25Q32 checks |
 | &nbsp;&nbsp;[Part G: D3 timing and application](#part-g-d3-timing-and-application) | Laptop tests, the application smoke test, `PAIR`, a timing-mode example |
+| &nbsp;&nbsp;[Part H: D4 ML](#part-h-d4-ml) | Laptop tests, the bundled models, ML on a real sensor, switching live over MQTT |
+| &nbsp;&nbsp;[Part I: D5 benchmark](#part-i-d5-benchmark) | Laptop tests and `MLBENCH` |
+| &nbsp;&nbsp;[Part J: D6 demo](#part-j-d6-demo-to-be-finalised) | Placeholder for the three-board demo |
 | [9. Using any sensor](#9-using-any-sensor-config-cheat-sheet) | Wiring and the config line for every sensor type, rules, and [MQTT](#over-mqtt-how-it-works-and-what-to-send) |
 | [10. Completion rule](#10-completion-rule) | When a task counts as done |
 | [11. Arduino/FreeRTOS baseline](#11-arduinofreertos-baseline-set-up-and-test-reference) | Where the baseline's setup guide is |
@@ -337,13 +340,13 @@ Cody and Brendan own D6, with Cody leading (split of 16 Nov 2026); the whole tea
 
 ---
 
-# 8. Set up and test from scratch (D1 to D3)
+# 8. Set up and test from scratch
 
-Follow these steps in order on a Mac (Linux works the same way). They build, flash and test the firmware on `main`: D1 on µT-Kernel 3 SMP with D2's SPI and D3's timing. Each step says what you should see. On Windows, install ESP-IDF at commit `17a74c925c`, load it with its PowerShell `export.ps1` and give `IDF_PATH` forward slashes, as Brendan did ([D2_SPI_TODO.md](D2_SPI_TODO.md)); the Arduino baseline in [section 11](#11-arduinofreertos-baseline-set-up-and-test-reference) has full Windows steps.
+Follow these steps in order on a Mac (Linux works the same way). They build, flash and test the firmware on `main`: D1 on µT-Kernel 3 SMP, D2's SPI, D3's timing, D4's ML and D5's benchmark. Part J is kept for the D6 demo. Each step says what you should see. On Windows, install ESP-IDF at commit `17a74c925c`, load it with its PowerShell `export.ps1` and give `IDF_PATH` forward slashes, as Brendan did ([D2_SPI_TODO.md](D2_SPI_TODO.md)); the Arduino baseline in [section 11](#11-arduinofreertos-baseline-set-up-and-test-reference) has full Windows steps.
 
-## What D1 and D2 are
+## What the deliverables are
 
-Our edge firmware (configpico2wedge) ran on the Raspberry Pi Pico 2 W. D1 ports it to the ESP32-S3. You send the board text lines such as `BEGINCFG|...|ENDCFG`; it reads sensors, runs rules and an ML model, and sends data over Wi-Fi/MQTT. Both boards compile the same shared code, and the tests below prove the S3 behaves like the Pico. D2 adds SPI as a fourth bus (`proto=spi`) and a driver for a W25Q32 flash chip that will keep a log of processed events.
+Our edge firmware (configpico2wedge) ran on the Raspberry Pi Pico 2 W. D1 ports it to the ESP32-S3. You send the board text lines such as `BEGINCFG|...|ENDCFG`; it reads sensors, runs rules and an ML model, and sends data over Wi-Fi/MQTT. Both boards compile the same shared code, and the tests below prove the S3 behaves like the Pico. D2 adds SPI as a fourth bus (`proto=spi`) and a W25Q32 flash chip that keeps a log of processed events. D3 lets each sensor keep its own timing. D4 runs small ML models on the readings and lets the model, its inputs and where its result goes be switched live. D5 measures what the S3's acceleration adds to those models. D6 joins three boards into one demo.
 
 
 ---
@@ -491,7 +494,47 @@ BEGINCFG|name=FOLLOW|proto=gpio|gpio.mode=digital|gpio.pin=9|gpio.pull=up|mode=p
 RUN
 ```
 
-If every step matched, this laptop has built, flashed and tested the µT-Kernel firmware with D2's SPI and D3's timing.
+## Part H: D4 ML
+
+| Wiring | Command | You should see |
+|---|---|---|
+| None (runs on the laptop) | `sh tools/ml_test.sh` | `sensor ML integration tests PASS`, `ML manager lifecycle tests PASS` and `Actual REPL input editing tests PASS` |
+| None | in `sh tools/mtk.sh monitor`: `STOP`, then `ML LIST` | one `ML:` line per model with its inputs and outputs, and whether a model has been uploaded |
+| None | `ML MODEL comfort-summer`, then `ML REPLAY 26.3 67` | `ML: OK MODEL comfort-summer`, then a result line with `"comfort_score":92` |
+| None | `ML MODEL sine-int8`, then `ML REPLAY 1.57` | `[ML-ACCEL] esp_nn_fc_s16_esp32s3 vector_calls=2` (the S3 vector kernel ran) and an output close to 1.0 |
+| One HC-SR04 (Part E wiring) | `STOP`, then `BEGINCFG\|name=DISTANCE\|proto=gpio\|gpio.mode=pulse\|mode=poll\|freq_hz=2\|gpio.trig=1\|gpio.echo=2\|gpio.trig_us=10\|gpio.pulse_timeout_us=25000\|ENDCFG`, `ML MODEL sine-int8`, `ML RESET`, `ML BIND 0 DISTANCE distance_cm 2 400`, `ML RUN`, `RUN` | a `{"type":"ml",…,"model":"sine-int8",…,"status":"OK"}` line after each reading, changing as your hand moves |
+| Laptop running the broker | `sh tools/mtk.sh model <laptop-ip>` | `8/9 passed`: a model sent over MQTT is checked, stored and loaded (the miss is explained in Part D, step 17) |
+
+To switch the model live, keep the HC-SR04 running, watch the ML topics in one window and send one `ml_setup` message from another:
+
+```sh
+mosquitto_sub -h <laptop-ip> -t 'pico/s3-001/ml/#' -v
+mosquitto_pub -h <laptop-ip> -t pico/s3-001/cmd -m '{"ml_setup":{"version":1,"model":"sine-float","inputs":[{"index":0,"source":{"kind":"local","name":"DISTANCE"},"field":"distance_cm","min":2,"max":400}],"output":{"kind":"publish"}}}'
+```
+
+You should see `{"ok":true,"reason":"applied","generation":…}` on `pico/s3-001/ml/status`, then results with `"model":"sine-float"` on `pico/s3-001/ml/result` while the readings carry on, without a `STOP`. Another board's sensor as input, the result fed to rules and the uploaded model are in [LIVE_SETUP_PROPOSAL.md](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#running-it-on-boards).
+
+## Part I: D5 benchmark
+
+| Wiring | Command | You should see |
+|---|---|---|
+| None (runs on the laptop) | `sh tools/d5_test.sh` | `OK` at the end |
+| None | in `sh tools/mtk.sh monitor`: `STOP`, `ML MODEL sine-int8`, then `MLBENCH 200` | `[MLBENCH] runs=200 …`, then the `request_us`, `invoke_us` and `overhead_us` medians and a `memory` line |
+| None, then the HC-SR04 | the comparison of the S3 assembly against plain C, and the live run | the steps and results in the [Run it table of section 6](#6-d5-task-checklist-hasif) |
+
+## Part J: D6 demo (to be finalised)
+
+The three-board demo is being finalised by the team (D6 task 5.7). This part will hold, for each board, its wiring, how to flash it and the commands that set it up, then the demo sequence in order. Until then the draft material is on `D6-Integration`.
+
+| Board | Role | Wiring | Flash | Set-up commands |
+|---|---|---|---|---|
+| A | Senses | To be added | To be added | To be added |
+| B | Runs the ML and handles the data | To be added | To be added | To be added |
+| C | Shows the results on the LCD | To be added | To be added | To be added |
+
+**Demo sequence.** To be added.
+
+If every step up to Part I matched, this laptop has built, flashed and tested the µT-Kernel firmware for D1 to D5.
 
 
 ---
