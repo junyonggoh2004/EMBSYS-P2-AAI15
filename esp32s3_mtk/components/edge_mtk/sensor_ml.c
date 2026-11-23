@@ -32,6 +32,13 @@ extern const uint8_t _binary_people_counter_raw_int8_tflite_start[], _binary_peo
 /* UPLOADED is the model last sent over MQTT into flash (D1 task 31); its
    shape is read from the model itself when it is loaded. */
 typedef enum { SINE, RECONSTRUCTION, COMFORT, DIRECTION, UPLOADED } model_kind_t;
+enum {
+    DIRECTION_SAMPLES = 31,
+    DIRECTION_MIN_PERIOD_MS = 50,
+    DIRECTION_MAX_PERIOD_MS = 75,
+    DIRECTION_JITTER_MS = 25,
+    DIRECTION_RANGE_CM = 200
+};
 typedef struct {
     const char *id;
     const uint8_t *bytes;
@@ -46,9 +53,9 @@ static const model_t models[] = {
     {"autoencoder", g_autoencoder_model_data, NULL, 16440, 16, 16, RECONSTRUCTION},
     {"comfort-summer", _binary_comfort_summer_tflite_start, _binary_comfort_summer_tflite_end, 0, 2, 100, COMFORT},
 #ifdef HAVE_PEOPLE_COUNTER_MODEL
-    {"people-counter", _binary_people_counter_raw_int8_tflite_start, _binary_people_counter_raw_int8_tflite_end, 0, 31, 3, DIRECTION},
+    {"people-counter", _binary_people_counter_raw_int8_tflite_start, _binary_people_counter_raw_int8_tflite_end, 0, DIRECTION_SAMPLES, 3, DIRECTION},
 #else
-    {"people-counter", NULL, NULL, 0, 31, 3, DIRECTION},
+    {"people-counter", NULL, NULL, 0, DIRECTION_SAMPLES, 3, DIRECTION},
 #endif
     {"uploaded", NULL, NULL, 0, 0, 0, UPLOADED},
 };
@@ -68,13 +75,63 @@ static uint32_t interval_ms=2000,max_age_ms=5000,max_skew_ms=2500;
 /* Where results go besides the console: MQTT ml/result, or this board's own
    rules as the sensor ML (D4 task 3.4). */
 static bool publish_output, local_output;
+static struct {
+    float samples[DIRECTION_SAMPLES];
+    unsigned next, count;
+    uint32_t at;
+    bool updated, faulted, report_fault;
+} direction_window;
 
 void sensor_ml_invalidate(void) {
     for(int i=0;i<16;i++) bindings[i].valid=false;
+    memset(&direction_window, 0, sizeof direction_window);
     generation++;
     last_ms=hal_time_ms()-interval_ms;
 }
+
+static bool direction_sensor(const app_cfg_t *cfg) {
+    return cfg && cfg->proto == proto_gpio && cfg->mode == sample_mode_poll &&
+        sensor_measurement_profile(cfg) == SENSOR_PROFILE_PULSE &&
+        cfg->timing.mode == TIMING_MODE_PERIODIC && cfg->timing.enabled &&
+        cfg->timing.interval_ms >= DIRECTION_MIN_PERIOD_MS &&
+        cfg->timing.interval_ms <= DIRECTION_MAX_PERIOD_MS;
+}
+
+static void direction_gap(void) {
+    direction_window.next = direction_window.count = 0;
+    direction_window.updated = false;
+    if (!direction_window.faulted) direction_window.report_fault = true;
+    direction_window.faulted = true;
+}
+
+static void direction_sample(const app_cfg_t *cfg, const uint8_t *data, int length) {
+    if (!enabled || !bindings[0].bound || strcmp(bindings[0].source, cfg->name) ||
+        cfg != scheduler_config_by_name(bindings[0].source)) return;
+    float cm;
+    if (!direction_sensor(cfg) || !sensor_measurement_value(cfg, data, length, "distance_cm", &cm)) {
+        direction_gap();
+        return;
+    }
+    uint32_t now = hal_time_ms();
+    uint32_t elapsed = now - direction_window.at;
+    uint32_t period = cfg->timing.interval_ms;
+    if (direction_window.count &&
+        (elapsed < period - DIRECTION_JITTER_MS || elapsed > period + DIRECTION_JITTER_MS))
+        direction_gap();
+    /* Source project records distances >=200 cm as -1 and scales the raw
+       values by 0.001. A failed acquisition invalidates the live window. */
+    direction_window.samples[direction_window.next] = (cm < DIRECTION_RANGE_CM ? cm : -1.0f) * 0.001f;
+    direction_window.next = (direction_window.next + 1u) % DIRECTION_SAMPLES;
+    if (direction_window.count < DIRECTION_SAMPLES) ++direction_window.count;
+    direction_window.at = now;
+    direction_window.updated = true;
+}
+
 void sensor_measurement_notify(const app_cfg_t *cfg,const uint8_t *data,int length) {
+    if (active >= 0 && models[active].kind == DIRECTION) {
+        direction_sample(cfg, data, length);
+        return;
+    }
     for(int i=0;i<16;i++) {
         binding_t *b=&bindings[i];
         if(!b->bound || strcmp(b->source,cfg->name)) continue;
@@ -129,7 +186,11 @@ static bool load_model(const model_t *model) {
 /* n contiguous bindings fit the model: the sine models and a one-input
    uploaded model average any number into their single input. */
 static bool shape_ok(const model_t *model, int n, const binding_t *b) {
-    if (n <= 0 || n > 16 || model->kind == DIRECTION) return false;
+    if (n <= 0 || n > 16) return false;
+    if (model->kind == DIRECTION)
+        return n == 1 && !strcmp(b[0].field, "distance_cm") &&
+            b[0].lo == 0 && b[0].hi == DIRECTION_RANGE_CM &&
+            direction_sensor(scheduler_config_by_name(b[0].source));
     if (model->kind == SINE) return true;
     int need = model_inputs(model);
     if (model->kind == UPLOADED) return need == 1 || n == need;
@@ -353,7 +414,7 @@ bool sensor_ml_setup_json(const char *line, bool sampling) {
     int model_index = -1;
     for (size_t m = 0; m < sizeof models / sizeof models[0]; m++)
         if (!strcmp(id, models[m].id)) { model_index = (int)m; break; }
-    if (model_index < 0 || models[model_index].kind == DIRECTION) {
+    if (model_index < 0) {
         return setup_error("unsupported_live_model");
     }
     if (!model_available(&models[model_index])) {
@@ -390,7 +451,9 @@ bool sensor_ml_setup_json(const char *line, bool sampling) {
     /* A bundled model's shape is known before loading; an uploaded one's is
        checked once loaded, and the previous model is restored if it does not fit. */
     if (model->kind != UPLOADED && !shape_ok(model, n, candidate)) {
-        return setup_error("input_shape_mismatch");
+        return setup_error(model->kind == DIRECTION
+            ? "people_counter_requires_one_local_periodic_distance_input_50_to_75ms_range_0_200"
+            : "input_shape_mismatch");
     }
     int old = active;
     bool was_enabled = enabled;
@@ -444,6 +507,9 @@ static void show(void) {
         (unsigned long)interval_ms,(unsigned long)max_age_ms,(unsigned long)max_skew_ms);
     if (threshold_enabled) printf("ML: threshold=%.9g (scalar output)\n", (double)output_threshold);
     else puts("ML: threshold=off");
+    if (active >= 0 && models[active].kind == DIRECTION)
+        printf("ML: people-counter window=%u/%u; predicts on each new sample when full\n",
+               direction_window.count, (unsigned)DIRECTION_SAMPLES);
     for(int i=0;i<16;i++) if(bindings[i].bound) {
         const app_cfg_t *c = scheduler_config_by_name(bindings[i].source);
         bool remote = c && c->proto == proto_mqtt;
@@ -559,9 +625,9 @@ static bool scalar_or_vector_result(const float *inputs, int count, int raw_coun
 static bool replay(const char *values) {
     if (active < 0 || revision != inference_mgr_revision() || !inference_mgr_is_ready()) return false;
     const model_t *model = &models[active];
-    float inputs[31];
+    float inputs[DIRECTION_SAMPLES];
     int count = model_inputs(model);
-    if (count < 1 || count > 31) return false;
+    if (count < 1 || count > DIRECTION_SAMPLES) return false;
     for (int i = 0; i < count; i++) {
         char *end;
         if (!isspace((unsigned char)*values)) return false;
@@ -676,6 +742,10 @@ bool sensor_ml_command(const char *line,bool sampling) {
         interval_ms=period; max_age_ms=age; max_skew_ms=skew; enabled=false; sensor_ml_invalidate();
     } else if(!strcmp(line,"ML RUN")) {
         int n=bound_count();
+        if (active >= 0 && models[active].kind == DIRECTION && !shape_ok(&models[active], n, bindings)) {
+            puts("ML: ERROR people-counter needs ML BIND 0 <local ultrasonic> distance_cm 0 200 and 50-75 ms periodic polling");
+            return true;
+        }
         if (active < 0 || !shape_ok(&models[active], n, bindings) ||
             revision != inference_mgr_revision() || !inference_mgr_is_ready()) goto invalid;
         for(int k=0;k<n;k++) if(!field_supported(bindings[k].source,bindings[k].field)) goto invalid;
@@ -691,9 +761,37 @@ static void skip(const char *reason,uint32_t now) {
     printf("{\"type\":\"ml\",\"timestamp_ms\":%lu,\"generation\":%lu,\"model\":\"%s\",\"outputs\":null,\"status\":\"%s\"}\n",
         (unsigned long)now,(unsigned long)generation,models[active].id,reason);
 }
+
+static void poll_direction(const model_t *model, uint32_t now) {
+    const app_cfg_t *cfg = scheduler_config_by_name(bindings[0].source);
+    if (direction_window.count && (!direction_sensor(cfg) ||
+        now - direction_window.at > cfg->timing.interval_ms + DIRECTION_JITTER_MS)) direction_gap();
+    if (direction_window.report_fault) {
+        direction_window.report_fault = false;
+        skip("MISSING_OR_STALE", now);
+    }
+    if (!direction_window.updated || direction_window.count < DIRECTION_SAMPLES) return;
+    float inputs[DIRECTION_SAMPLES];
+    unsigned pos = direction_window.next;
+    for (unsigned i = 0; i < DIRECTION_SAMPLES; ++i) {
+        inputs[i] = direction_window.samples[pos];
+        pos = (pos + 1u) % DIRECTION_SAMPLES;
+    }
+    direction_window.updated = false;
+    direction_window.faulted = false;
+    class_result(model, inputs, "sensors", now);
+}
+
 void sensor_ml_poll(bool sampling) {
     uint32_t now=hal_time_ms();
-    if(!sampling || !enabled || active<0 || now-last_ms<interval_ms) return;
+    if(!sampling || !enabled || active<0) return;
+    const model_t *model = &models[active];
+    if (model->kind == DIRECTION) {
+        if (revision != inference_mgr_revision()) { skip("MODEL_CHANGED",now); enabled=false; return; }
+        poll_direction(model, now);
+        return;
+    }
+    if (now-last_ms<interval_ms) return;
     last_ms=now;
     if(revision!=inference_mgr_revision()) { skip("MODEL_CHANGED",now); enabled=false; return; }
     int n=bound_count();
@@ -708,7 +806,6 @@ void sensor_ml_poll(bool sampling) {
         inputs[i] = models[active].kind == COMFORT ? bindings[i].raw : bindings[i].value;
     }
     if(oldest-newest>max_skew_ms) { skip("SAMPLE_SKEW",now); return; }
-    const model_t *model = &models[active];
     char label[48];
     const char *source = input_label(n, label, sizeof label);
     if (model->kind == COMFORT) {
