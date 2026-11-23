@@ -1,12 +1,14 @@
 // scheduler.c — multi-sensor (I2C0 + I2C1 + UART + GPIO) with <pico/time.h>
 #include <stdio.h>
 #include <string.h>
+#include <strings.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <ctype.h>
 #include "hal/hal.h"
 #include "application/scheduler.h"
 #include "application/pulse_sequence.h"
+#include "application/doorway.h"
 #include "application/entrance_window.h"
 #include "application/event_identity.h"
 #include "application/ld2450.h"
@@ -59,6 +61,31 @@ static uint32_t s_radar_dropped;
 static uint32_t s_radar_dropped_start;
 static uint64_t s_radar_service_us;
 static uint64_t s_window_warmup_until;
+static struct {
+    doorway_t crossing;
+    unsigned slots[2], sensor;
+    uint32_t ping_us, entries, exits;
+    uint64_t next_us;
+    bool enabled, pending;
+} s_doorway;
+
+static bool doorway_owns_slot(int slot)
+{
+    return s_doorway.enabled &&
+        (slot == (int)s_doorway.slots[0] || slot == (int)s_doorway.slots[1]);
+}
+
+static void doorway_pause(void)
+{
+    if (s_doorway.pending) {
+        active_sensor_t *sensor = &g_sensors[s_doorway.slots[s_doorway.sensor]];
+        if (sensor->bus->cancel) sensor->bus->cancel(sensor->ctx);
+    }
+    s_doorway.pending = false;
+    s_doorway.next_us = 0;
+    s_doorway.sensor = 0;
+    doorway_rearm(&s_doorway.crossing);
+}
 
 void scheduler_window_stop(void) { entrance_window_stop(&s_window, hal_time_us()); }
 
@@ -152,6 +179,8 @@ int scheduler_count(void) {
 
 /* Initialize scheduler */
 void scheduler_reset(void) {
+    doorway_pause();
+    memset(&s_doorway, 0, sizeof s_doorway);
     scheduler_window_stop();
     memset(&s_window, 0, sizeof s_window);
     memset(&s_radar, 0, sizeof s_radar);
@@ -238,6 +267,136 @@ static bool pulse_config(const app_cfg_t *c)
     return c->proto == proto_gpio && c->gpio_mode && !strcmp(c->gpio_mode, "pulse");
 }
 
+int scheduler_doorway_command(const char *args, bool running)
+{
+    if (!strcasecmp(args, "STATUS")) {
+        printf("[DOORWAY] %s entries=%lu exits=%lu\n",
+               !s_doorway.enabled ? "OFF" : !running ? "PAUSED" :
+               s_doorway.crossing.degraded ? "ECHO_INVALID" :
+               s_doorway.crossing.phase == DOORWAY_WAIT_CLEAR ? "WAIT_CLEAR" : "ACTIVE",
+               (unsigned long)s_doorway.entries, (unsigned long)s_doorway.exits);
+        return HAL_OK;
+    }
+    if (running || s_prev_running) return HAL_ERR_BUSY;
+    if (!strcasecmp(args, "OFF")) {
+        doorway_pause();
+        s_doorway.enabled = false;
+        return HAL_OK;
+    }
+    if (s_window.enabled || pulse_sequence_active(&s_pair)) return HAL_ERR_BUSY;
+
+    char name[2][32], number[6][16], extra;
+    if (sscanf(args, "%31s %31s %15s %15s %15s %15s %15s %15s %c",
+               name[0], name[1], number[0], number[1], number[2], number[3],
+               number[4], number[5], &extra) != 8 || !strcmp(name[0], name[1]))
+        return HAL_ERR_INVALID;
+    unsigned long values[6];
+    for (unsigned i = 0; i < 6; ++i) {
+        for (const char *p = number[i]; *p; ++p)
+            if (*p < '0' || *p > '9') return HAL_ERR_INVALID;
+        errno = 0;
+        values[i] = strtoul(number[i], NULL, 10);
+        if (errno == ERANGE || values[i] > 10000u) return HAL_ERR_INVALID;
+    }
+    if (values[4] < 65 || values[4] > 250 || values[5] < 8 * values[4])
+        return HAL_ERR_INVALID;
+
+    unsigned slots[2] = { MAX_ACTIVE, MAX_ACTIVE };
+    for (unsigned i = 0; i < MAX_ACTIVE; ++i) {
+        if (!g_sensors[i].in_use) continue;
+        const app_cfg_t *cfg = &g_sensors[i].cfg_copy;
+        for (unsigned n = 0; n < 2; ++n) {
+            if (strcmp(cfg->name, name[n])) continue;
+            if (slots[n] != MAX_ACTIVE) return HAL_ERR_INVALID;
+            slots[n] = i;
+        }
+        if (pulse_config(cfg) && strcmp(cfg->name, name[0]) && strcmp(cfg->name, name[1]))
+            return HAL_ERR_BUSY;
+    }
+    uint32_t ping_us = (uint32_t)values[4] * 1000u;
+    for (unsigned n = 0; n < 2; ++n) {
+        if (slots[n] == MAX_ACTIVE || values[2*n] < 2 ||
+            values[2*n] >= values[2*n+1] || values[2*n+1] > 400)
+            return HAL_ERR_INVALID;
+        const app_cfg_t *cfg = &g_sensors[slots[n]].cfg_copy;
+        if (!pulse_config(cfg) || cfg->mode != sample_mode_poll || !cfg->timing.enabled ||
+            cfg->timing.mode != TIMING_MODE_PERIODIC) return HAL_ERR_INVALID;
+        uint32_t timeout_us = cfg->gpio_pulse_timeout_us > 0 ?
+                              (uint32_t)cfg->gpio_pulse_timeout_us : 30000u;
+        if (timeout_us >= ping_us || values[2*n+1] * 100000ull >= timeout_us * 1715ull)
+            return HAL_ERR_INVALID;
+    }
+    doorway_pause();
+    memcpy(s_doorway.slots, slots, sizeof slots);
+    for (unsigned n = 0; n < 2; ++n) {
+        s_doorway.crossing.near_cm[n] = (float)values[2*n];
+        s_doorway.crossing.clear_cm[n] = (float)values[2*n+1];
+    }
+    s_doorway.crossing.crossing_us = (uint64_t)values[5] * 1000u;
+    s_doorway.ping_us = ping_us;
+    s_doorway.entries = s_doorway.exits = 0;
+    s_doorway.enabled = true;
+    printf("[DOORWAY] configured A=%s B=%s ping_ms=%lu crossing_ms=%lu. Enter RUN.\n",
+           name[0], name[1], values[4], values[5]);
+    return HAL_OK;
+}
+
+static void doorway_service(void)
+{
+    uint64_t now = hal_time_us();
+    if (!s_doorway.next_us) {
+        s_doorway.next_us = now + s_doorway.ping_us;
+        return;
+    }
+    unsigned index = s_doorway.sensor;
+    active_sensor_t *sensor = &g_sensors[s_doorway.slots[index]];
+    const app_cfg_t *cfg = &sensor->cfg_copy;
+    bool starting = !s_doorway.pending;
+    if (starting && now < s_doorway.next_us) return;
+    bool missed_sample = starting && now - s_doorway.next_us >= s_doorway.ping_us;
+    uint8_t data[3] = {0};
+    int length = HAL_ERR_TIMEOUT;
+    if (s_doorway.pending && now >= s_doorway.next_us) {
+        if (sensor->bus->cancel) sensor->bus->cancel(sensor->ctx);
+    } else if (!missed_sample) {
+        length = sensor->bus->poll_once(sensor->ctx, data, sizeof data);
+    }
+    now = hal_time_us();
+    if (starting) s_doorway.next_us = now + s_doorway.ping_us;
+    s_doorway.pending = length == BUS_POLL_PENDING;
+    if (s_doorway.pending) return;
+
+    s_doorway.sensor = 1u - index;
+    float cm = 0;
+    bool valid = sensor_measurement_value(cfg, data, length, "distance_cm", &cm);
+    doorway_phase_t before = s_doorway.crossing.phase;
+    doorway_result_t result = doorway_sample(&s_doorway.crossing, index, now, valid, cm);
+    switch (result) {
+    case DOORWAY_ENTRY:
+    case DOORWAY_EXIT:
+        if (result == DOORWAY_ENTRY) ++s_doorway.entries;
+        else ++s_doorway.exits;
+        printf("[DOORWAY] %s entries=%lu exits=%lu\n", result == DOORWAY_ENTRY ? "ENTRY" : "EXIT",
+               (unsigned long)s_doorway.entries, (unsigned long)s_doorway.exits);
+        break;
+    case DOORWAY_INVALID:
+        printf("[DOORWAY] ECHO_INVALID sensor=%s. Counting paused until both zones are clear.\n", cfg->name);
+        break;
+    case DOORWAY_EXPIRED:
+        puts("[DOORWAY] CROSSING_EXPIRED. Waiting for both zones to clear.");
+        break;
+    case DOORWAY_AMBIGUOUS:
+        puts("[DOORWAY] AMBIGUOUS_ORDER. Waiting for both zones to clear.");
+        break;
+    case DOORWAY_NONE:
+        if (before == DOORWAY_WAIT_CLEAR && s_doorway.crossing.phase == DOORWAY_ARMED)
+            puts("[DOORWAY] READY");
+        break;
+    }
+    if (length > 0) publisher_emit_hex(cfg, "gpio", cfg->name, data, length);
+    else sensor_measurement_emit(cfg, NULL, length);
+}
+
 static int pair_start(void *context, unsigned sensor, uint32_t timeout_us)
 {
     const unsigned *slots = context ? context : s_pair_slots;
@@ -260,7 +419,8 @@ static void pair_cancel(void *context, unsigned sensor)
 int scheduler_pair_command(const char *args)
 {
     if (!args) return HAL_ERR_INVALID;
-    if (s_prev_running || pulse_sequence_active(&s_pair) || s_window.enabled) return HAL_ERR_BUSY;
+    if (s_prev_running || pulse_sequence_active(&s_pair) || s_window.enabled || s_doorway.enabled)
+        return HAL_ERR_BUSY;
     char names[2][32], order[2], guard[32], extra;
     if (sscanf(args, "%31s %31s %1s %31s %c", names[0], names[1], order, guard, &extra) != 4 ||
         (order[0] != 'A' && order[0] != 'B')) return HAL_ERR_INVALID;
@@ -333,7 +493,8 @@ static size_t config_pins(const app_cfg_t *, int pins[4]);
 int scheduler_window_command(const char *args)
 {
     if (!args || strlen(args) >= 256) return HAL_ERR_INVALID;
-    if (s_prev_running || s_window.enabled || pulse_sequence_active(&s_pair)) return HAL_ERR_BUSY;
+    if (s_prev_running || s_window.enabled || pulse_sequence_active(&s_pair) || s_doorway.enabled)
+        return HAL_ERR_BUSY;
     if (!event_identity_ready()) return HAL_ERR_IO;
     char text[256], *tokens[10], *save;
     strcpy(text, args);
@@ -482,6 +643,12 @@ int scheduler_add_config(const app_cfg_t *cfg_in) {
     if (cfg_in->cfg_error[0]) {
         printf("[SCHED] config %s refused: %s\n", cfg_in->name, cfg_in->cfg_error);
         return -5;
+    }
+    if (s_doorway.enabled && (pulse_config(cfg_in) ||
+        !strcmp(cfg_in->name, g_sensors[s_doorway.slots[0]].cfg_copy.name) ||
+        !strcmp(cfg_in->name, g_sensors[s_doorway.slots[1]].cfg_copy.name))) {
+        puts("[DOORWAY] Use STOP and DOORWAY OFF before changing the sonar profiles.");
+        return HAL_ERR_BUSY;
     }
     // A new configuration must not repurpose an armed pulse pin. Shared I2C
     // and SPI bus pins remain allowed where neither sensor is a pulse device.
@@ -657,8 +824,12 @@ int scheduler_on_sample(const char *source, uint64_t timestamp_us) {
 
 /* Tick all sensors */
 void scheduler_run_all(bool running) {
-    if (!running && s_prev_running) scheduler_window_stop();
+    if (!running && s_prev_running) {
+        scheduler_window_stop();
+        if (s_doorway.enabled) doorway_pause();
+    }
     if (running && s_window.enabled) window_service();
+    if (running && s_doorway.enabled) doorway_service();
     if (pulse_sequence_active(&s_pair)) {
         if (running) scheduler_pair_cancel();
         else {
@@ -695,6 +866,7 @@ void scheduler_run_all(bool running) {
     for (int i = 0; i < MAX_ACTIVE; i++) {
         active_sensor_t *S = &g_sensors[i];
         if (!S->in_use || !S->bus) continue;
+        if (doorway_owns_slot(i)) continue;
         if (s_window.enabled && (i == (int)s_window_slots[0] || i == (int)s_window_slots[1] ||
                                  i == (int)s_window_slots[2])) continue;
 
@@ -816,6 +988,11 @@ uint32_t scheduler_next_due_ms(bool running, uint32_t max_ms) {
         if (pair_wait < wait) wait = pair_wait;
     }
     if (!running) return wait;
+    if (s_doorway.enabled) {
+        uint32_t next = s_doorway.pending ? 1 : now >= s_doorway.next_us ? 0 :
+                        (uint32_t)((s_doorway.next_us - now + 999) / 1000);
+        if (next < wait) wait = next;
+    }
     if (s_window.enabled) {
         uint32_t window_wait = (entrance_window_wait_us(&s_window, now, 10000u) + 999u) / 1000u;
         if (window_wait < wait) wait = window_wait;
@@ -823,6 +1000,7 @@ uint32_t scheduler_next_due_ms(bool running, uint32_t max_ms) {
     for (int i = 0; i < MAX_ACTIVE; i++) {
         const active_sensor_t *S = &g_sensors[i];
         if (!S->in_use || !S->bus || !S->cfg_copy.timing.enabled) continue;
+        if (doorway_owns_slot(i)) continue;
         if (s_window.enabled && (i == (int)s_window_slots[0] || i == (int)s_window_slots[1] ||
                                  i == (int)s_window_slots[2])) continue;
         if (S->pending) {

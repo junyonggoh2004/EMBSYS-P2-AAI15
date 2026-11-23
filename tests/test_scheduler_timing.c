@@ -245,6 +245,45 @@ static void test_pending_acquisition(void)
     assert(fixtures[0]->cancels == 2);
 }
 
+static void test_doorway_acquisition(void)
+{
+    reset();
+    app_cfg_t a = config("A", TIMING_MODE_PERIODIC);
+    app_cfg_t b = config("B", TIMING_MODE_PERIODIC);
+    a.gpio_mode = b.gpio_mode = "pulse";
+    a.gpio_trig = 10; a.gpio_echo = 11;
+    b.gpio_trig = 6; b.gpio_echo = 7;
+    a.gpio_pulse_timeout_us = b.gpio_pulse_timeout_us = 20000;
+    assert(scheduler_add_config(&a) == 0 && scheduler_add_config(&b) == 1);
+    assert(scheduler_doorway_command("A B 70 85 70 85 50 2000", false) == HAL_ERR_INVALID);
+    assert(scheduler_doorway_command("A B 70 85 70 85 70 2000", false) == HAL_OK);
+    assert(scheduler_pair_command("A B A 5000") == HAL_ERR_BUSY);
+    scheduler_run_all(true);
+    assert(scheduler_next_due_ms(true, 1000) == 70);
+    now_us += 70000;
+    fixtures[0]->pending_polls = 1;
+    scheduler_run_all(true);
+    assert(fixtures[0]->polls == 1 && fixtures[1]->polls == 0);
+    assert(scheduler_next_due_ms(true, 1000) == 1);
+    now_us += 1000;
+    scheduler_run_all(true);
+    assert(fixtures[0]->polls == 2 && fixtures[1]->polls == 0);
+    assert(scheduler_next_due_ms(true, 1000) == 69);
+    now_us += 68999;
+    scheduler_run_all(true);
+    assert(fixtures[1]->polls == 0);
+    ++now_us;
+    fixtures[1]->pending_polls = 1;
+    scheduler_run_all(true);
+    assert(fixtures[1]->polls == 1);
+    scheduler_run_all(false);
+    assert(fixtures[1]->cancels == 1);
+    scheduler_run_all(true);
+    assert(scheduler_next_due_ms(true, 1000) == 70);
+    scheduler_run_all(false);
+    assert(scheduler_doorway_command("OFF", false) == HAL_OK);
+}
+
 int main(void)
 {
     test_one_shot();
@@ -255,6 +294,7 @@ int main(void)
     test_clear_while_running();
     test_periodic_skip_and_invalid_config();
     test_pending_acquisition();
+    test_doorway_acquisition();
     reset();
     puts("scheduler timing: PASS (one-shot, timeout recovery, disabled stream, deadline, source handoff)");
     return 0;

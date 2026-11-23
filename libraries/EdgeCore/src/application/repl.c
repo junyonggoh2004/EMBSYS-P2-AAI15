@@ -129,6 +129,8 @@ void repl_show_help(void) {
     printf("  RUN / STOP                 - control sampling\n");
     printf("  TRIGGER <sensor|source>     - arm one-shot/event-driven sensor(s)\n");
     printf("  PAIR <A> <B> <A|B> <guard_us> - one stopped-mode sonar pair diagnostic (50 ms)\n");
+    puts("  DOORWAY <A> <B> <A_near_cm> <A_clear_cm> <B_near_cm> <B_clear_cm> <ping_ms> <cross_ms>");
+    puts("  DOORWAY STATUS / OFF - inspect the session or disable the doorway counter");
     puts("  WINDOW <A> <B> <radar> <guard_us> <A_mm> <B_mm> <xmin> <xmax> <ymin> <ymax>");
     puts("  WINDOW STATUS [8-hex nonce] - read-only metrics after STOP (no reset)");
     printf("  CLEAR                      - clear sensors + rules\n");
@@ -207,6 +209,14 @@ bool repl_command(const char *line, bool *running, bool *cfg_ready) {
         printf("[PAIR] request=%d\n", rc);
         if (rc != HAL_OK)
             puts("[PAIR] STOP first; usage: PAIR <pulse_sensor_A> <pulse_sensor_B> <A|B> <guard_us>; timeouts + guard <= 50000 us");
+    }
+    else if (!strncasecmp(line, "DOORWAY", 7) &&
+             (!line[7] || isspace((unsigned char)line[7]))) {
+        const char *args = line + 7;
+        while (isspace((unsigned char)*args)) ++args;
+        int rc = scheduler_doorway_command(args, *running);
+        printf("[DOORWAY] request=%d\n", rc);
+        if (rc != HAL_OK) puts("[DOORWAY] STOP first. See HELP for setup and status commands.");
     }
     else if (strncasecmp(line, "TRIGGER ", 8) == 0) {
         const char *source = line + 8;

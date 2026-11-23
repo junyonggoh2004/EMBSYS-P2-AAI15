@@ -16,21 +16,60 @@ contains exactly these four sensor profiles, with no radar profile. Use the
 [current wiring guide](BOARD_A_SONAR_ONLY_WIRING.md); the earlier GPIO4/5 and
 breadboard signal-row diagrams describe older fixtures.
 
-Board A samples the two sonars **sequentially** to avoid acoustic overlap and
-the single pulse-capture resource conflict. For the proposed crossing logic,
-the first qualifying sonar detection starts a bounded crossing interval. The
-other sonar must then detect the target in the expected spatial sequence.
-With Sonar A on the outside and B on the inside, A then B is an entry candidate
-and B then A is an exit candidate; reverse those labels if the physical
-placement is reversed. Clear -> A -> both -> B -> clear and its reverse are
-the target sequences. A single detection, a turnaround, no Echo, ambiguous
-overlap or an expired interval must not become a confirmed count. Thresholds,
-hysteresis, crossing interval, clear/rearm time and multi-person policy require
-measured doorway trials and team review; no arbitrary numeric defaults are
-accepted as the final use-case contract.
+Board A can run an opt-in doorway counter with alternating pings. With A on
+the outside and B on the inside, a confirmed clear → A → both → B → clear
+sequence counts one entry. The reverse sequence counts one exit. Aim the two
+sensors across the doorway at a stable wall or flat backboard. Adjust the zones
+so a single person can briefly block both while crossing. Standing still,
+turning back, ambiguous order, and a crossing that times out leave the totals
+unchanged.
 
-A publishes identified environmental frames and, once implemented, one bounded
-crossing candidate per completed sequence with node/boot identity, sequence
+### Run the doorway counter on Board A
+
+Build and flash Board A with its [N16R8 board setup](N16R8_BOARD_SETUP.md),
+then open **MTK: monitor** in VS Code. Enter
+`STOP` and `CLEAR`, paste the four lines from
+[`config/board_a.cfg`](../../config/board_a.cfg), and enter these commands:
+
+```text
+DOORWAY SONAR_A SONAR_B 70 85 70 85 70 2000
+RUN
+DOORWAY STATUS
+```
+
+The four distance arguments are A near, A clear, B near, and B clear, in
+centimetres. The last two arguments are the time between alternating pings
+and the maximum time from first confirmed blockage to confirmed clear, in
+milliseconds. The example assumes stable empty echoes beyond 85 cm and
+occupied echoes of 70 cm or closer on both sensors. Measure both conditions
+in your doorway and adjust each threshold separately if needed.
+
+| Reading with the example settings | Counter behavior |
+| --- | --- |
+| Valid echo from 2 to 70 cm | Two consecutive readings mark that zone occupied. |
+| Valid echo of 85 cm or more | Two consecutive readings mark that zone clear. |
+| Valid echo between 70 and 85 cm | The previous zone state holds. |
+| `distance_cm: null` or invalid echo | The crossing is dropped. Wait for both zones to confirm clear before counting again. |
+
+The 20 ms echo timeout in the board configuration limits the theoretical range
+to about 343 cm at room temperature. Set up a reliable empty echo well within
+that distance. At the example cadence A pings, B pings at least 70 ms later, and
+A pings again at least 70 ms after B. Each sensor is sampled about every
+140 ms under normal load. Consecutive confirmations on both channels that
+land on adjacent pings are rejected as ambiguous. Walk at different speeds in
+both directions to check zone spacing and overlap. Two people in the doorway
+at once can be indistinguishable from one crossing or an ambiguous sequence.
+
+Wait for `[DOORWAY] READY`, then check for one `ENTRY` or `EXIT` per full
+crossing. Try standing in one zone, turning back after blocking both, and
+blocking the background echo. `DOORWAY STATUS` displays Board A's session
+totals. `STOP` pauses and `RUN` resumes after both zones clear again.
+Use `STOP` then `DOORWAY OFF` to return to ordinary polling or run the
+`PAIR` diagnostic. A new doorway setup, `CLEAR`, or reboot starts a new
+session.
+
+A publishes identified environmental frames. The cross-board design calls for
+one bounded crossing candidate per completed sequence with node/boot identity, sequence
 number, direction candidate, local timing and quality/fault flags. B validates
 and deduplicates candidates, owns the final occupancy count and agreed SPI
 flash record, and publishes readings/count/status to C over MQTT. C displays
@@ -48,12 +87,11 @@ command is a **one-shot diagnostic** while stopped: it captures both sonars
 in sequence within a 50 ms pair budget. Its guard is the delay between
 measurements, not the seconds-long interval for a person to cross a doorway.
 
-The existing D3 `WINDOW` command still **requires a radar UART source** and
-must not be presented as the sonar-only trigger. An automatic first-sonar
-crossing state machine, A-to-B candidate transport, B-only occupancy handling,
-final flash writes and a live B-to-C display are separate integration work.
-The existing B-to-C synthetic MQTT screen is a mock test, not evidence that
-real Board A doorway events reach the LCD. A raw distance is not occupancy.
+The existing D3 `WINDOW` command still requires a radar UART source. For
+the sonar-only demo, use `DOORWAY`. The new counter reports local entries and
+exits. A-to-B candidate transport, B-owned occupancy and flash writes, and the
+live count on Board C still need integration. The `people-counter` ML replay
+uses recorded samples and runs independently of the live doorway counter.
 
 ## Current evidence and next gates
 
@@ -74,8 +112,7 @@ hardware success from a config ACK or from a `PAIR` request alone.
    target distances from each sonar separately, then verify a sequential pair
    and its 50 ms ceiling. Include
    no Echo and stuck/loose-contact trials.
-3. Implement the sonar-first crossing state machine with bounded timing and
-   a single event per completed sequence; test entry, exit, lone approach,
+3. Validate the doorway counter on hardware. Test entry, exit, lone approach,
    turnaround, loitering, close followers, ambiguous order and recovery.
 4. Implement/verify A candidate -> broker -> B final decision/storage ->
    broker -> C live status. Record one B occupancy change per accepted unique
