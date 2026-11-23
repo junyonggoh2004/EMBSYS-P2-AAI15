@@ -1,0 +1,3 @@
+ok    88 files: no FreeRTOS, Arduino, task-watchdog or esp_driver_* use
+ok    shared code: no SDK calls (check_hal_boundary.sh)
+ok    esp32s3_mtk/build/esp32s3_mtk.elf: no FreeRTOS scheduler, tick, task or start-up code linked; µT-Kernel start-up and dispatcher present; 47 FreeRTOS API functions served by the course shim on µT-Kernel

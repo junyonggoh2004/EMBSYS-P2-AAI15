@@ -161,11 +161,36 @@ static void test_async_lifecycle(void)
     memset(buf, 0xAA, sizeof buf);
     assert(bus_gpio.poll_once(ctx, buf, sizeof buf) == HAL_ERR_TIMEOUT);
     assert(buf[2] == 0xAA); // error never emits valid-distance bytes
+    // Another sonar holds the capture: wait for it (guard first), then measure.
     capture_start_rc = HAL_ERR_BUSY;
-    assert(bus_gpio.poll_once(ctx, buf, sizeof buf) == HAL_ERR_BUSY);
-    assert(legacy_calls == 0);
+    unsigned starts = capture_starts;
+    assert(bus_gpio.poll_once(ctx, buf, sizeof buf) == BUS_POLL_PENDING);
+    assert(capture_starts == starts + 1);
+    now_us += 29999;
+    assert(bus_gpio.poll_once(ctx, buf, sizeof buf) == BUS_POLL_PENDING);
+    assert(capture_starts == starts + 1); // no retry inside the guard
+    now_us += 1;
     capture_start_rc = HAL_OK;
     assert(bus_gpio.poll_once(ctx, buf, sizeof buf) == BUS_POLL_PENDING);
+    assert(capture_starts == starts + 2);
+    capture_poll_rc = HAL_OK;
+    assert(bus_gpio.poll_once(ctx, buf, sizeof buf) == 3 && buf[2] == 1);
+    // Held for longer than the wait limit: reported as busy, never a distance.
+    capture_start_rc = HAL_ERR_BUSY;
+    assert(bus_gpio.poll_once(ctx, buf, sizeof buf) == BUS_POLL_PENDING);
+    now_us += 99999;
+    assert(bus_gpio.poll_once(ctx, buf, sizeof buf) == BUS_POLL_PENDING);
+    now_us += 1;
+    assert(bus_gpio.poll_once(ctx, buf, sizeof buf) == HAL_ERR_BUSY);
+    assert(legacy_calls == 0);
+    // Cancelling (STOP/CLEAR) drops the wait; the next poll starts afresh.
+    assert(bus_gpio.poll_once(ctx, buf, sizeof buf) == BUS_POLL_PENDING);
+    bus_gpio.cancel(ctx);
+    capture_poll_rc = HAL_PULSE_PENDING;
+    capture_start_rc = HAL_OK;
+    starts = capture_starts;
+    assert(bus_gpio.poll_once(ctx, buf, sizeof buf) == BUS_POLL_PENDING);
+    assert(capture_starts == starts + 1);
     unsigned cancelled = capture_cancels;
     bus_gpio.cancel(ctx);
     bus_gpio.cancel(ctx);
@@ -349,6 +374,50 @@ static void test_radar_to_application(void)
     scheduler_reset(); event_record_set_sink(NULL);
 }
 
+static void test_window_config_change(void)
+{
+    scheduler_reset();
+    now_us = 3000000;
+    app_cfg_t a = config(8, 9), b = config(10, 11), r = {0};
+    snprintf(a.name, sizeof a.name, "A");
+    snprintf(b.name, sizeof b.name, "B");
+    a.gpio_pulse_timeout_us = b.gpio_pulse_timeout_us = 12000;
+    snprintf(r.name, sizeof r.name, "RADAR");
+    r.proto = proto_uart;
+    r.timing = (timing_config_t){TIMING_MODE_PERIODIC, 100, 0, 0, true};
+    r.uart_tx = 12; r.uart_rx = 13; r.uart_baud = 256000; r.uart_bits = 8;
+    r.uart_parity = 'N'; r.uart_stop = 1;
+    assert(scheduler_add_config(&a) == 0);
+    assert(scheduler_add_config(&b) == 1);
+    assert(scheduler_add_config(&r) == 2);
+    assert(scheduler_window_command("A B RADAR 1000 500 500 -500 500 0 2000") == HAL_OK);
+    event_record_set_sink(window_sink);
+    unsigned prior_events = window_events;
+    now_us = 3100000;
+    feed_radar(); scheduler_run_all(true);
+    assert(window_events == prior_events);
+
+    app_cfg_t extra = config(14, 15);
+    snprintf(extra.name, sizeof extra.name, "EXTRA");
+    extra.gpio_mode = "digital";
+    extra.gpio_pin = 49; // driver rejects this after the scheduler allocates a slot
+    assert(scheduler_add_config(&extra) < 0);
+    assert(window_events == prior_events && scheduler_count() == 3);
+
+    extra.gpio_pin = 14;
+    assert(scheduler_add_config(&extra) == 3);
+    assert(window_events == prior_events + 1);
+    assert(window_event.rule_class == EVENT_CLASS_INCOMPLETE);
+    assert((window_event.quality_flags & EVENT_QUALITY_AMBIGUOUS) != 0);
+    application_state_t app;
+    application_state_init(&app, NULL);
+    (void)application_process_event(&app, &window_event, now_us);
+    assert(app.occupancy == 0);
+    scheduler_run_all(true);
+    assert(window_events == prior_events + 1);
+    scheduler_reset(); event_record_set_sink(NULL);
+}
+
 int main(void)
 {
     test_parser();
@@ -357,6 +426,7 @@ int main(void)
     test_scheduler_with_real_gpio();
     test_scheduler_pair_diagnostic();
     test_radar_to_application();
+    test_window_config_change();
     puts("GPIO pulse configuration/lifecycle: PASS (real scheduler/driver, async service, timeout, STOP/CLEAR)");
     return 0;
 }

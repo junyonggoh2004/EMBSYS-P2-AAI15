@@ -14,6 +14,14 @@ static bool finite_features(const event_record_t *event) {
     return true;
 }
 
+static bool known_quality_flags(uint32_t flags) {
+    const uint32_t known = EVENT_QUALITY_SEQUENCE_COMPLETE | EVENT_QUALITY_TIMING_VALID |
+                           EVENT_QUALITY_SENSOR_TIMEOUT | EVENT_QUALITY_STALE |
+                           EVENT_QUALITY_AMBIGUOUS | EVENT_QUALITY_ML_VALID |
+                           EVENT_QUALITY_RULE_VALID | EVENT_QUALITY_SENSOR_FAULT;
+    return (flags & ~known) == 0u;
+}
+
 bool event_record_validate(const event_record_t *event, uint64_t now_us,
                            uint32_t freshness_ms, const char **reason) {
     const char *why = NULL;
@@ -22,6 +30,7 @@ bool event_record_validate(const event_record_t *event, uint64_t now_us,
     else if (!event->event_id || !event->source_id || !event->source_seq) why = "identity";
     else if (event->valid != 1u) why = "invalid";
     else if (event->reserved) why = "reserved";
+    else if (!known_quality_flags(event->quality_flags)) why = "quality flags";
     else if ((!event->node_id != !event->boot_id) ||
              (event->node_id && event->event_id != event->source_seq)) why = "canonical identity";
     else if (event->clock_domain) why = "unmapped clock";

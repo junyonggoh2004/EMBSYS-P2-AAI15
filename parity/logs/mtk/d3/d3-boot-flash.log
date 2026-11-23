@@ -1,0 +1,3 @@
+No ESP32-S3 found on USB. Plug it in (or set PORT=/dev/cu.usbmodemXXXX, or PORT=COM5 on Windows).
+
+Exit status: 1

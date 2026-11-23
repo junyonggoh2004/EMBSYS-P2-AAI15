@@ -58,7 +58,24 @@ PY=.venv/bin/python
 # installed. A failed optional discovery must not exit the set -e wrapper.
 PORT=${PORT:-$($PY -c "from serial.tools import list_ports; print(next((p.device for p in list_ports.comports() if p.vid == 0x303A), ''))" 2>/dev/null || true)}
 
-need_port() { [ -n "$PORT" ] || { echo "No ESP32-S3 found on USB. Plug it in (or set PORT=/dev/cu.usbmodemXXXX, or PORT=COM5 on Windows)."; exit 1; }; }
+# Boards with two USB-C ports (N16R8 DevKitC) also show a CH343 USB-to-UART
+# bridge (VID 0x1A86). The firmware console is on the chip's native USB
+# (VID 0x303A); on the bridge port typed commands get no answer.
+bridge_port() { $PY -c "import sys; from serial.tools import list_ports; print(next((p.device for p in list_ports.comports() if p.vid == 0x1A86 and (len(sys.argv) < 2 or p.device == sys.argv[1])), ''))" "$@" 2>/dev/null || true; }
+need_port() {
+  if [ -z "$PORT" ]; then
+    bridge=$(bridge_port)
+    if [ -n "$bridge" ]; then
+      echo "Only $bridge is plugged in: that is the board's USB-to-UART bridge port, which shows boot messages only. Move the cable to the board's other USB-C port (the chip's native USB) and run this again."
+    else
+      echo "No ESP32-S3 found on USB. Plug it in (or set PORT=/dev/cu.usbmodemXXXX, or PORT=COM5 on Windows)."
+    fi
+    exit 1
+  fi
+  if [ -n "$(bridge_port "$PORT")" ]; then
+    echo "Note: $PORT is the board's USB-to-UART bridge port. Flashing works on it, but the console is on the other USB-C port (native USB): commands typed here get no answer."
+  fi
+}
 idf_env() {
   [ -f "$IDF_DIR/export.sh" ] || { echo "ESP-IDF not found at $IDF_DIR. Run: sh tools/mtk.sh setup"; exit 1; }
   . "$IDF_DIR/export.sh" >/dev/null 2>&1
@@ -130,7 +147,16 @@ case "$1" in
     echo "compiler:    $have_gcc   (pinned $GCC_VERSION)"
     [ "$have_port" = "$PORT_COMMIT" ] && [ "$have_idf" = "$IDF_DESCRIBE" ] && [ "$have_gcc" = "$GCC_VERSION" ] || {
       echo "MISMATCH: run sh tools/mtk.sh setup (and git submodule update)"; exit 1; }
-    idf.py -C $PROJ build | grep -E "binary size|Project build complete" ;;
+    # POSIX sh has no pipefail: filtering a pipeline would hide an idf.py
+    # failure whenever the bootloader already printed a binary-size line.
+    CHECK_LOG=$(mktemp "${TMPDIR:-/tmp}/mtk-check.XXXXXX")
+    trap 'rm -f "$CHECK_LOG"' EXIT HUP INT TERM
+    if idf.py -C "$PROJ" build > "$CHECK_LOG" 2>&1; then
+      grep -E "binary size|Project build complete" "$CHECK_LOG" || cat "$CHECK_LOG"
+    else
+      cat "$CHECK_LOG" >&2
+      exit 1
+    fi ;;
   build)   idf $(node_build) build ;;
   flash)   need_port; idf_env; flash_proj $PROJ $(node_build) ;;
   # The console takes typed lines (HELP, TASKS, BEGINCFG...) through pyserial's

@@ -18,7 +18,16 @@ typedef struct {
     bool           irq_count;   // counter mode: edges counted by interrupt
     bool           inited;
     bool           pulse_pending;
+    bool           capture_waiting; // another sonar held the capture when this one fell due
+    uint64_t       waiting_since;   // hal_time_us() of that first refusal
 } gpio_ctx_t;
+
+/* The board measures one echo at a time (D3-2). When a second sonar falls due
+ * while another is measuring, it waits instead of losing its sample: it gives
+ * the other sonar's ping GPIO_SONAR_GUARD_US to die away, then retries, and
+ * reports busy only if the capture is still held after GPIO_SONAR_WAIT_US. */
+#define GPIO_SONAR_GUARD_US 30000u
+#define GPIO_SONAR_WAIT_US  100000u
 
 
 /* ----------------------------------------------------------------------------
@@ -320,7 +329,9 @@ static int gpio_probe(void *ctx_)
 static void gpio_cancel(void *ctx_)
 {
     gpio_ctx_t *ctx = ctx_;
-    if (!ctx || !ctx->pulse_pending) return;
+    if (!ctx) return;
+    ctx->capture_waiting = false;
+    if (!ctx->pulse_pending) return;
     hal_gpio_capture_cancel(ctx->g.gpio_echo);
     ctx->pulse_pending = false;
 }
@@ -398,13 +409,25 @@ static int gpio_poll_once(void *ctx_, uint8_t *buf, size_t cap)
     } else if (mode_is_pulse(ctx)) {
         if (cap < 3) return -2; // do not start hardware without output space
         if (!ctx->pulse_pending) {
+            uint64_t now = hal_time_us();
+            if (ctx->capture_waiting && now - ctx->waiting_since < GPIO_SONAR_GUARD_US)
+                return BUS_POLL_PENDING;   // let the other sonar's ping die away
             int rc = hal_gpio_capture_start(ctx->g.gpio_trig, ctx->g.gpio_echo,
                                            (uint32_t)ctx->g.gpio_trig_us,
                                            (uint32_t)ctx->g.gpio_pulse_timeout_us);
             if (rc == HAL_OK) {
+                ctx->capture_waiting = false;
                 ctx->pulse_pending = true;
                 return BUS_POLL_PENDING;
             }
+            if (rc == HAL_ERR_BUSY) {
+                if (!ctx->capture_waiting) {
+                    ctx->capture_waiting = true;
+                    ctx->waiting_since = now;
+                }
+                if (now - ctx->waiting_since < GPIO_SONAR_WAIT_US) return BUS_POLL_PENDING;
+            }
+            ctx->capture_waiting = false;
             if (rc != HAL_ERR_UNSUPPORTED) return rc;
         }
         int us;

@@ -54,6 +54,8 @@
 #include "ml_bench.h"
 #include "runtime_mtk.h"
 #include "event_log_mtk.h"
+#include "lcd_output.h"
+#include "mqtt/sensor_frame.h"
 
 // Defined in the shared code (mqtt/mqtt_config_parser.c) and by the MQTT layer.
 void control_bind_flags(bool *running, bool *cfg_ready);
@@ -205,21 +207,6 @@ void runtime_set_mqtt_handlers(void (*cfg)(const char *), void (*cmd)(const char
     s_node_cb = node;
 }
 
-// "pico/<node>/sensor/<source>/line" -> node, source
-static bool parse_line_topic(const char *topic, char *node, size_t nn, char *src, size_t sn)
-{
-    if (strncmp(topic, "pico/", 5) != 0) return false;
-    const char *n0 = topic + 5;
-    const char *n1 = strchr(n0, '/');
-    if (!n1 || strncmp(n1, "/sensor/", 8) != 0) return false;
-    const char *s0 = n1 + 8;
-    const char *s1 = strchr(s0, '/');
-    if (!s1 || strcmp(s1, "/line") != 0) return false;
-    snprintf(node, nn, "%.*s", (int)(n1 - n0), n0);
-    snprintf(src, sn, "%.*s", (int)(s1 - s0), s0);
-    return true;
-}
-
 // ---------- commands from pico/<node>/cmd (D1 task 1.4) ----------
 
 // The platform commands ControlTask runs itself rather than passing them to
@@ -229,6 +216,7 @@ static bool is_platform_command(const char *line)
     static const char *const k_words[] = {
         "TASKS", "APP", "WIFISCAN", "WIFIDROP", "SPIID", "SPILOGPLAN", "SPILOGVERIFY", "SPILOGWRITE",
         "SPICHECK", "SPISCAN", "SPIPROGRAM", "SPIVERIFY", "SPIBENCH", "STALL", "LOG",
+        "LCDTEST", "D6MOCKPUB", "D6VIEW",
     };
     size_t n = strcspn(line, " \t");
     for (size_t i = 0; i < sizeof k_words / sizeof k_words[0]; i++)
@@ -291,9 +279,14 @@ static void handle_sched_msg(sched_msg_t *m, bool *running, bool *cfg_ready)
     case SCHED_MQTT_NODE:    if (s_node_cb) s_node_cb("unknown", m->text); break;
     case SCHED_MODEL_PARAMS: inference_mgr_set_params((const uint8_t *)m->text, m->len); break;
     case SCHED_REMOTE_LINE: {
-        char node[32], src[32];
-        if (parse_line_topic(m->topic, node, sizeof node, src, sizeof src))
-            sensor_bridge_on_remote_line(node, src, m->text, hal_time_ms());
+        sensor_frame_topic_t topic;
+        const char *end = memchr(m->topic, 0, sizeof m->topic);
+        if (end && m->len < sizeof m->text && m->text[m->len] == 0 &&
+            !memchr(m->text, 0, m->len) &&
+            sensor_frame_parse_topic(m->topic, (size_t)(end - m->topic), &topic))
+            sensor_bridge_on_remote_line(topic.node, topic.source, m->text, hal_time_ms());
+        else
+            puts("[BRIDGE] rejected invalid topic or payload span");
         break;
     }
     default: break;
@@ -378,6 +371,31 @@ static void scheduler_task(INT stacd, void *exinf)
 
 // ---------- ControlTask ----------
 
+/* Bounded diagnostic numbers: reject signs, overflow and joined/trailing
+ * tokens before narrowing to the typed benchmark message. */
+static bool lcd_number(const char **next, unsigned base, unsigned limit, unsigned *out)
+{
+    const char *p = *next;
+    while (*p == ' ' || *p == '\t') ++p;
+    if (base == 16 && p[0] == '0' && (p[1] == 'x' || p[1] == 'X')) p += 2;
+    const char *start = p;
+    unsigned value = 0;
+    while (*p) {
+        unsigned digit;
+        if (*p >= '0' && *p <= '9') digit = (unsigned)(*p - '0');
+        else if (base == 16 && *p >= 'a' && *p <= 'f') digit = (unsigned)(*p - 'a' + 10);
+        else if (base == 16 && *p >= 'A' && *p <= 'F') digit = (unsigned)(*p - 'A' + 10);
+        else break;
+        if (digit >= base || digit > limit || value > (limit - digit) / base) return false;
+        value = value * base + digit;
+        ++p;
+    }
+    if (p == start || (*p && *p != ' ' && *p != '\t')) return false;
+    *next = p;
+    *out = value;
+    return true;
+}
+
 // The platform commands, which are not part of the shared REPL: typed on the
 // console or sent over MQTT (through ctrl_mbf), they run here in ControlTask.
 // Returns false when `line` is not one of them.
@@ -385,6 +403,71 @@ static bool platform_command(const char *line)
 {
     if (strcasecmp(line, "TASKS") == 0) {
         runtime_print_tasks();
+    } else if (strcasecmp(line, "D6VIEW") == 0) {
+        if (strcmp(runtime_node_id(), "s3-003")) {
+            puts("[D6MQTT] D6VIEW is for Board C (s3-003)");
+        } else {
+            bench_msg_t b = { .name = "D6VIEW" };
+            puts(runtime_send(bench_mbf, &b, sizeof b) ?
+                 "[D6MQTT] display queued" : "[D6MQTT] display queue full");
+        }
+    } else if (strncasecmp(line, "D6MOCKPUB", 9) == 0 &&
+               (line[9] == 0 || line[9] == ' ' || line[9] == '\t')) {
+        unsigned occupancy;
+        char extra;
+        if (strcmp(runtime_node_id(), "s3-002")) {
+            puts("[D6MQTT] D6MOCKPUB is for Board B (s3-002)");
+        } else if (sscanf(line + 9, " %u %c", &occupancy, &extra) != 1 || occupancy > 9999) {
+            puts("[D6MQTT] usage: D6MOCKPUB <occupancy_0_to_9999>");
+        } else {
+            T_RFLG flags;
+            if (tk_ref_flg(net_flg, &flags) != E_OK || !(flags.flgptn & NET_MQTT_UP)) {
+                puts("[D6MQTT] broker disconnected; nothing published");
+            } else {
+                static uint32_t seq;
+                pub_msg_t out = { .op = PUB_PUBLISH, .qos = 1 };
+                snprintf(out.topic, sizeof out.topic, "d6/board-b/snapshot");
+                int n = snprintf(out.payload, sizeof out.payload,
+                    "{\"v\":2,\"seq\":%lu,\"occupancy\":%u,\"distance_cm\":123.4,"
+                    "\"temperature_c\":27.5,\"humidity_pct\":65.2,\"light_lux\":420,"
+                    "\"ml_score\":0.953,\"ml_model\":\"sine-float\",\"source\":\"mock\"}",
+                    (unsigned long)(seq + 1), occupancy);
+                out.len = (uint16_t)n;
+                if (n < 0 || (size_t)n >= sizeof out.payload ||
+                    !runtime_send(pub_mbf, &out, sizeof out)) {
+                    puts("[D6MQTT] publish queue full");
+                } else {
+                    ++seq;
+                    printf("[D6MQTT] B mock snapshot queued seq=%lu occupancy=%u\n",
+                           (unsigned long)seq, occupancy);
+                }
+            }
+        }
+    } else if (strncasecmp(line, "LCDTEST", 7) == 0 &&
+               (line[7] == 0 || line[7] == ' ' || line[7] == '\t')) {
+        unsigned width, height, x_offset, y_offset, madctl, invert;
+        const char *next = line + 7;
+        bool valid = lcd_number(&next, 10, 320, &width) &&
+                     lcd_number(&next, 10, 320, &height) &&
+                     lcd_number(&next, 10, 320, &x_offset) &&
+                     lcd_number(&next, 10, 320, &y_offset) &&
+                     lcd_number(&next, 16, 255, &madctl) &&
+                     lcd_number(&next, 10, 1, &invert);
+        while (*next == ' ' || *next == '\t') ++next;
+        if (!valid || *next || width == 0 || height == 0 ||
+            x_offset + width > 320 || y_offset + height > 320 ||
+            madctl > 0xff || invert > 1) {
+            puts("[LCD] usage: LCDTEST <width> <height> <x_offset> <y_offset> <madctl_hex> <invert_0_or_1>");
+        } else {
+            bench_msg_t b = { .name = "LCDTEST",
+                              .lcd_width = (uint16_t)width, .lcd_height = (uint16_t)height,
+                              .lcd_x_offset = (uint16_t)x_offset, .lcd_y_offset = (uint16_t)y_offset,
+                              .lcd_madctl = (uint8_t)madctl, .lcd_invert = (uint8_t)invert };
+            if (!runtime_send(bench_mbf, &b, sizeof b))
+                puts("[LCD] ERROR benchmark queue full");
+            else
+                puts("[LCD] test queued");
+        }
     } else if (strncasecmp(line, "APP ", 4) == 0 || strcasecmp(line, "APP") == 0) {
         application_message_t request;
         if (!application_command_parse(line, hal_time_us(), &request)) {
@@ -573,14 +656,171 @@ static void application_task(INT stacd, void *exinf)
 
 // ---------- BenchmarkTask ----------
 
+void runtime_d6_snapshot_receive(const char *payload, int length)
+{
+    /* The temporary contract uses the documented key order. Reject partial,
+     * oversized and malformed messages before handing them to the LCD owner. */
+    if (!payload || length < 2 || length >= 192 || memchr(payload, 0, (size_t)length)) {
+        puts("[D6MQTT] rejected snapshot length");
+        return;
+    }
+    char json[192];
+    memcpy(json, payload, (size_t)length);
+    json[length] = 0;
+    unsigned version = 0, seq = 0, occupancy = 0, light = 0;
+    float temperature = 0, humidity = 0, distance = 0, ml_score = 0;
+    char ml_model[16] = {0}, source[8] = {0};
+    int consumed = 0;
+    int fields = sscanf(json,
+        "{\"v\":%u,\"seq\":%u,\"occupancy\":%u,\"distance_cm\":%f,"
+        "\"temperature_c\":%f,\"humidity_pct\":%f,\"light_lux\":%u,"
+        "\"ml_score\":%f,\"ml_model\":\"%15[^\"]\",\"source\":\"%7[a-z]\"}%n",
+        &version, &seq, &occupancy, &distance, &temperature, &humidity,
+        &light, &ml_score, ml_model, source, &consumed);
+    bool full = fields == 10 && consumed == length && version == 2 &&
+                strspn(ml_model, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-") == strlen(ml_model) &&
+                (strcmp(source, "mock") == 0 || strcmp(source, "live") == 0) &&
+                distance >= 2.0f && distance <= 400.0f &&
+                ml_score >= 0.0f && ml_score <= 1.0f;
+    if (!full) {
+        consumed = 0;
+        fields = sscanf(json,
+            "{\"v\":%u,\"seq\":%u,\"occupancy\":%u,\"temperature_c\":%f,"
+            "\"humidity_pct\":%f,\"light_lux\":%u}%n",
+            &version, &seq, &occupancy, &temperature, &humidity, &light, &consumed);
+    }
+    if ((!full && (fields != 6 || consumed != length || version != 1)) || seq == 0 ||
+        occupancy > 9999 || !(temperature >= -40.0f && temperature <= 85.0f) ||
+        !(humidity >= 0.0f && humidity <= 100.0f) || light > 65535) {
+        printf("[D6MQTT] rejected snapshot schema/range len=%d fields=%d consumed=%d v=%u seq=%u occ=%u dist=%.1f temp=%.1f hum=%.1f light=%u ml=%.3f model=%s source=%s\n",
+               length, fields, consumed, version, seq, occupancy, (double)distance,
+               (double)temperature, (double)humidity, light, (double)ml_score,
+               ml_model, source);
+        return;
+    }
+    bench_msg_t b = { .name = "D6SNAP", .d6_seq = seq,
+                      .d6_occupancy = (uint16_t)occupancy,
+                      .d6_light = (uint16_t)light,
+                      .d6_temperature = temperature, .d6_humidity = humidity,
+                      .d6_mock = !full || strcmp(source, "mock") == 0 };
+    if (full) {
+        b.d6_distance = distance;
+        b.d6_ml_score = ml_score;
+        b.d6_has_distance = true;
+        b.d6_has_ml = true;
+        snprintf(b.d6_ml_model, sizeof b.d6_ml_model, "%s", ml_model);
+    }
+    if (!runtime_send(bench_mbf, &b, sizeof b)) puts("[D6MQTT] display queue full");
+}
+
+static int d6_card(uint16_t x, uint16_t y, uint16_t accent,
+                   const char *label, const char *value)
+{
+    const uint16_t panel = 0x10a2u, border = 0x4a69u;
+    int r = lcd_output_fill_rect(x, y, 90, 28, panel);
+    if (r) return r;
+    if ((r = lcd_output_fill_rect(x, y, 3, 28, accent))) return r;
+    if ((r = lcd_output_fill_rect(x + 3, y, 87, 1, border))) return r;
+    if ((r = lcd_output_fill_rect(x + 3, y + 27, 87, 1, border))) return r;
+    if ((r = lcd_output_draw_text(x + 7, y + 2, label, 0xbdd7u, panel, 1))) return r;
+    return lcd_output_draw_text(x + 8, y + 10, value, 0xffffu, panel, 2);
+}
+
+static int d6_draw_snapshot(const bench_msg_t *b)
+{
+    const uint16_t bg = 0x080fu, fg = 0xffffu, panel = 0x10a2u;
+    char text[32];
+    int r = lcd_output_fill(bg);
+    if (r) return r;
+    if ((r = lcd_output_draw_text(4, 2, "ROOM MONITOR", fg, bg, 1))) return r;
+    if ((r = lcd_output_fill_rect(82, 9, 112, 1, 0x5c9fu))) return r;
+    if ((r = lcd_output_draw_text(201, 2, b->d6_mock ? "MOCK" : "LIVE",
+                                  0x37dbu, bg, 1))) return r;
+    snprintf(text, sizeof text, "OCC %u", (unsigned)b->d6_occupancy);
+    if ((r = lcd_output_draw_text(234, 2, text, 0x07e0u, bg, 1))) return r;
+
+    if (b->d6_has_distance) snprintf(text, sizeof text, "%.1f", (double)b->d6_distance);
+    else snprintf(text, sizeof text, "--");
+    if ((r = d6_card(2, 14, 0x35dcu, "DISTANCE cm", text))) return r;
+    snprintf(text, sizeof text, "%.1f", (double)b->d6_temperature);
+    if ((r = d6_card(96, 14, 0xf3aeu, "TEMP C", text))) return r;
+    snprintf(text, sizeof text, "%.1f", (double)b->d6_humidity);
+    if ((r = d6_card(2, 45, 0x37dcu, "HUMIDITY %", text))) return r;
+    snprintf(text, sizeof text, "%u", (unsigned)b->d6_light);
+    if ((r = d6_card(96, 45, 0xff2eu, "LIGHT lux", text))) return r;
+
+    if ((r = lcd_output_fill_rect(190, 14, 92, 59, panel))) return r;
+    if ((r = lcd_output_fill_rect(190, 14, 3, 59, 0xb49fu))) return r;
+    if ((r = lcd_output_fill_rect(193, 14, 89, 1, 0xb49fu))) return r;
+    if ((r = lcd_output_fill_rect(193, 72, 89, 1, 0xb49fu))) return r;
+    if ((r = lcd_output_draw_text(196, 17, "ML OUTPUT", 0xbdd7u, panel, 1))) return r;
+    if (b->d6_has_ml) snprintf(text, sizeof text, "%.3f", (double)b->d6_ml_score);
+    else snprintf(text, sizeof text, "--");
+    if ((r = lcd_output_draw_text(200, 34, text, fg, panel, 2))) return r;
+    if ((r = lcd_output_draw_text(196, 58,
+                                  b->d6_has_ml ? b->d6_ml_model : "NO MODEL",
+                                  0xb49fu, panel, 1))) return r;
+    return lcd_output_draw_text(265, 58, b->d6_has_ml ? "OK" : "--",
+                                0x07e0u, panel, 1);
+}
+
 static void benchmark_task(INT stacd, void *exinf)
 {
     (void)stacd; (void)exinf;
     bench_msg_t b;
+    bench_msg_t latest = { 0 };
+    bool d6_view = false;
     for (;;) {
         if (tk_rcv_mbf(bench_mbf, &b, TMO_FEVR) > 0) {
             runtime_alive(RT_BENCHMARK);
-            if (strcmp(b.name, "SPIBENCH") == 0)
+            if (strcmp(b.name, "LCDTEST") == 0) {
+                d6_view = false;
+                lcd_output_config_t config = {
+                    .width = b.lcd_width, .height = b.lcd_height,
+                    .x_offset = b.lcd_x_offset, .y_offset = b.lcd_y_offset,
+                    .madctl = b.lcd_madctl, .invert_colors = b.lcd_invert != 0
+                };
+                printf("[LCD] starting test %ux%u offset=%u,%u madctl=%02x invert=%u\n",
+                       (unsigned)config.width, (unsigned)config.height,
+                       (unsigned)config.x_offset, (unsigned)config.y_offset,
+                       (unsigned)config.madctl, (unsigned)config.invert_colors);
+                lcd_output_deinit();
+                int result = lcd_output_init(&config);
+                if (result == HAL_OK) result = lcd_output_test_pattern();
+                printf("[LCD] test %s result=%d\n",
+                       result == HAL_OK ? "complete" : "failed", result);
+                lcd_output_deinit();
+            }
+            else if (strcmp(b.name, "D6VIEW") == 0) {
+                const lcd_output_config_t config = {
+                    .width = 284, .height = 76, .x_offset = 18, .y_offset = 82,
+                    .madctl = 0x60, .invert_colors = false
+                };
+                lcd_output_deinit();
+                int result = lcd_output_init(&config);
+                d6_view = result == HAL_OK;
+                if (d6_view && latest.d6_seq) result = d6_draw_snapshot(&latest);
+                else if (d6_view) {
+                    result = lcd_output_fill(0x080f);
+                    if (result == HAL_OK)
+                        result = lcd_output_draw_text(4, 2, "ROOM MONITOR", 0xffff, 0x080f, 1);
+                    if (result == HAL_OK)
+                        result = lcd_output_draw_text(94, 35, "WAIT B MQTT", 0x37db, 0x080f, 1);
+                }
+                printf("[D6MQTT] C view result=%d\n", result);
+            }
+            else if (strcmp(b.name, "D6SNAP") == 0) {
+                if (b.d6_seq <= latest.d6_seq) {
+                    printf("[D6MQTT] stale/duplicate seq=%lu\n", (unsigned long)b.d6_seq);
+                } else {
+                    latest = b;
+                    int result = d6_view ? d6_draw_snapshot(&latest) : HAL_OK;
+                    printf("[D6MQTT] C snapshot seq=%lu occupancy=%u display=%d active=%u\n",
+                           (unsigned long)b.d6_seq, (unsigned)b.d6_occupancy,
+                           result, d6_view ? 1u : 0u);
+                }
+            }
+            else if (strcmp(b.name, "SPIBENCH") == 0)
                 mtk_spi_benchmark(b.value_us >> 30, b.value_us & 0x3fffffffu);
             else if (strcmp(b.name, "SPIID") == 0)
                 mtk_spi_flash_id();
@@ -610,7 +850,7 @@ static void benchmark_task(INT stacd, void *exinf)
 
 void runtime_bench(const char *name, uint32_t value_us)
 {
-    bench_msg_t b;
+    bench_msg_t b = {0};
     snprintf(b.name, sizeof b.name, "%s", name);
     b.value_us = value_us;
     runtime_send(bench_mbf, &b, sizeof b);

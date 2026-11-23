@@ -225,6 +225,10 @@ bool mqtt_follow_remote_source(const char *other_node_id, const char *remote_sou
 static void route_message(const char *topic, const char *bytes, int length)
 {
     static sched_msg_t msg;                 // only the esp-mqtt task uses it
+    if (!strcmp(s_node, "s3-003") && !strcmp(topic, "d6/board-b/snapshot")) {
+        runtime_d6_snapshot_receive(bytes, length);
+        return;
+    }
     char own[80];
     int own_len = snprintf(own, sizeof own, "pico/%s/", s_node);
 
@@ -433,6 +437,10 @@ static void on_connected(void)
                                                                                : "[MQTT] FAILED to subscribe to: broadcast\n");
     int nf = __atomic_load_n(&s_nfollows, __ATOMIC_ACQUIRE);
     for (int i = 0; i < nf; i++) esp_mqtt_client_subscribe(s_client, s_follows[i], 1);
+    if (!strcmp(s_node, "s3-003")) {
+        int sub = esp_mqtt_client_subscribe(s_client, "d6/board-b/snapshot", 1);
+        printf("[D6MQTT] C snapshot subscribe %s\n", sub >= 0 ? "OK" : "FAILED");
+    }
 
     char payload[128];
     snprintf(topic, sizeof topic, "pico/%s/presence", s_node);
