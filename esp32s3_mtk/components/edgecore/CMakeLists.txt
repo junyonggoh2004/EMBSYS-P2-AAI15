@@ -1,7 +1,8 @@
 # The shared framework code (libraries/EdgeCore), compiled unchanged: the same
 # sources the Pico and Arduino builds use. Nothing is copied.
 set(EDGECORE ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/EdgeCore/src)
-file(GLOB_RECURSE EDGECORE_SRCS ${EDGECORE}/*.c)
+# Keep the shared doorway counter in the same component as the scheduler.
+file(GLOB_RECURSE EDGECORE_SRCS "${EDGECORE}/*.c")
 idf_component_register(SRCS ${EDGECORE_SRCS}
                        INCLUDE_DIRS ${EDGECORE}
                        PRIV_REQUIRES edge_mtk

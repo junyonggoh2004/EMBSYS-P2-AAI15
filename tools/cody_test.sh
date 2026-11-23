@@ -18,6 +18,7 @@ cc -std=c11 -Wall -Wextra -Werror \
   tests/test_gpio_pulse_config.c \
   libraries/EdgeCore/src/bus/gpio.c \
   libraries/EdgeCore/src/hal/pulse_capture.c \
+  libraries/EdgeCore/src/application/doorway.c \
   libraries/EdgeCore/src/application/scheduler.c \
   libraries/EdgeCore/src/application/entrance_window.c \
   libraries/EdgeCore/src/application/event_identity.c \
@@ -91,6 +92,7 @@ SCHEDULER_OUT=${TMPDIR:-/tmp}/cody_scheduler_tests
 cc -std=c11 -Wall -Wextra -Werror -DSCHED_DEBUG=0 \
   -I libraries/EdgeCore/src \
   tests/test_scheduler_timing.c \
+  libraries/EdgeCore/src/application/doorway.c \
   libraries/EdgeCore/src/application/scheduler.c \
   libraries/EdgeCore/src/application/entrance_window.c \
   libraries/EdgeCore/src/application/event_identity.c \
@@ -103,6 +105,11 @@ cc -std=c11 -Wall -Wextra -Werror -DSCHED_DEBUG=0 \
   libraries/EdgeCore/src/application/sensor_measurement.c \
   -o "$SCHEDULER_OUT"
 "$SCHEDULER_OUT"
+
+DOORWAY_OUT=${TMPDIR:-/tmp}/cody_doorway_tests
+cc -std=c11 -Wall -Wextra -Werror -I libraries/EdgeCore/src \
+  tests/test_doorway.c libraries/EdgeCore/src/application/doorway.c -o "$DOORWAY_OUT"
+"$DOORWAY_OUT"
 
 PROVENANCE_OUT=${TMPDIR:-/tmp}/cody_rule_provenance_tests
 cc -std=c11 -Wall -Wextra -Werror \

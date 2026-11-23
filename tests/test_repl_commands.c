@@ -19,6 +19,11 @@ void scheduler_pair_cancel(void) { ++pair_cancels; }
 int scheduler_window_report(uint32_t token) { ++window_reports; report_token = token; return HAL_OK; }
 int scheduler_window_command(const char *args) { snprintf(last_args, sizeof last_args, "W:%s", args); return HAL_OK; }
 int scheduler_pair_command(const char *args) { snprintf(last_args, sizeof last_args, "P:%s", args); return HAL_OK; }
+int scheduler_doorway_command(const char *args, bool running)
+{
+    snprintf(last_args, sizeof last_args, "%c:%s", running ? 'R' : 'D', args);
+    return HAL_OK;
+}
 int scheduler_trigger(const char *source, uint64_t t) { (void)t; snprintf(last_args, sizeof last_args, "T:%s", source); return 1; }
 void scheduler_reset(void) { ++scheduler_resets; }
 void scheduler_dump(void) { ++scheduler_dumps; }
@@ -53,6 +58,8 @@ int main(void)
     assert(repl_command("WINDOW STATUS 0000abcd", &running, &ready) && window_reports == 1 && report_token == 0xabcd);
     assert(repl_command("WINDOW arm 3", &running, &ready) && !strcmp(last_args, "W:arm 3"));
     assert(repl_command("PAIR A B A 100", &running, &ready) && !strcmp(last_args, "P:A B A 100"));
+    assert(repl_command("DOORWAY A B 70 85 70 85 70 2000", &running, &ready) &&
+           !strcmp(last_args, "D:A B 70 85 70 85 70 2000"));
     assert(repl_command("TRIGGER  SRC", &running, &ready) && !strcmp(last_args, "T:SRC"));
 
     /* WINDOW and PAIR are refused while sampling, as on the console. */
@@ -60,6 +67,7 @@ int main(void)
     last_args[0] = 0;
     assert(repl_command("WINDOW STATUS", &running, &ready) && window_reports == 1);
     assert(repl_command("PAIR A B A 100", &running, &ready) && !last_args[0]);
+    assert(repl_command("DOORWAY STATUS", &running, &ready) && !strcmp(last_args, "R:STATUS"));
     running = false;
 
     assert(repl_command("SHOWRULES", &running, &ready) && rule_dumps == 1);

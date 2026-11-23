@@ -69,6 +69,8 @@ void scheduler_dump(void);
  * Prints timestamped [PAIR] results only; no rules/MQTT/occupancy handoff. */
 int scheduler_pair_command(const char *args);
 void scheduler_pair_cancel(void);
+/* Configure, disable or report the alternating two-sonar doorway service. */
+int scheduler_doorway_command(const char *args, bool running);
 /* Configure after STOP. args: A B radar guard_us A_mm B_mm xmin xmax ymin ymax.
  * All physical values are explicit; RUN starts service, STOP/CLEAR disable it. */
 int scheduler_window_command(const char *args);

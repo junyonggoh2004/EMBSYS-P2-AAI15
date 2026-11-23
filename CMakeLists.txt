@@ -51,6 +51,7 @@ add_executable(project_v3
     ${EDGECORE}/application/sensor_measurement.c
     ${EDGECORE}/application/timing_contract.c
     ${EDGECORE}/application/pulse_sequence.c
+    ${EDGECORE}/application/doorway.c
     ${EDGECORE}/application/entrance_window.c
     ${EDGECORE}/application/event_identity.c
     ${EDGECORE}/application/ld2450.c
