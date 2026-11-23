@@ -1,0 +1,177 @@
+In file included from tests/test_mtk_application_runtime.c:6:
+In file included from tests/../esp32s3_mtk/components/edge_mtk/runtime_mtk.c:51:
+libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:33:52: warning: '/*' within block comment [-Wcomment]
+   33 |  * Call once after mqtt_init(). Subscribes to model/* topics. */
+      |                                                    ^
+libraries/EdgeCore/src/mqtt/mqtt_model_transfer.h:36:48: warning: '/*' within block comment [-Wcomment]
+   36 | /* Call from mqtt_incoming_data_cb when a model/* topic is detected. */
+      |                                                ^
+2 warnings generated.
+NATIVE TEST: modeled kernel/SDK boundaries; no target ABI or scheduling evidence
+[BOOT] app_mbf failed: er=-33
+[BOOT] app_mbf failed: er=-33
+[BOOT] micro T-Kernel 3 SMP runtime: 7 tasks, 7 message buffers, 1 event flag, 1 cyclic handler
+Native bench_msg_t=40, bench_mbf=704 bytes (target layout still needs image audit)
+[BRIDGE] rejected invalid topic or payload span
+[BRIDGE] rejected invalid topic or payload span
+[BRIDGE] rejected invalid topic or payload span
+[BRIDGE] rejected invalid topic or payload span
+[CMD] configuration goes to pico/s3-001/config
+[APP] request=3 synthetic=0 queued=1
+[APP] request=2 synthetic=0 queued=1
+[APP] status occupancy=0 processed=0 resets=0 malformed=0 publish_enqueued=0 publish_failed=0
+[APP] reset occupancy=0 processed=0 resets=1 malformed=0 publish_enqueued=0 publish_failed=0
+[CMD] Unknown: SPICHECK
+[CMD] ControlTask busy, dropped: APP STATUS
+[APP] request=3 synthetic=0 queued=1
+[APP] request=3 synthetic=0 queued=1
+[APP] request=3 synthetic=0 queued=1
+[APP] request=3 synthetic=0 queued=1
+[APP] status occupancy=0 processed=0 resets=1 malformed=0 publish_enqueued=0 publish_failed=0
+[APP] status occupancy=0 processed=0 resets=1 malformed=0 publish_enqueued=0 publish_failed=0
+[APP] status occupancy=0 processed=0 resets=1 malformed=0 publish_enqueued=0 publish_failed=0
+[APP] status occupancy=0 processed=0 resets=1 malformed=0 publish_enqueued=0 publish_failed=0
+[LCD] test queued
+[LCD] usage: LCDTEST <width> <height> <x_offset> <y_offset> <madctl_hex> <invert_0_or_1>
+[LCD] usage: LCDTEST <width> <height> <x_offset> <y_offset> <madctl_hex> <invert_0_or_1>
+[LCD] usage: LCDTEST <width> <height> <x_offset> <y_offset> <madctl_hex> <invert_0_or_1>
+[LCD] usage: LCDTEST <width> <height> <x_offset> <y_offset> <madctl_hex> <invert_0_or_1>
+[LCD] usage: LCDTEST <width> <height> <x_offset> <y_offset> <madctl_hex> <invert_0_or_1>
+[LCD] usage: LCDTEST <width> <height> <x_offset> <y_offset> <madctl_hex> <invert_0_or_1>
+[LCD] usage: LCDTEST <width> <height> <x_offset> <y_offset> <madctl_hex> <invert_0_or_1>
+[LCD] usage: LCDTEST <width> <height> <x_offset> <y_offset> <madctl_hex> <invert_0_or_1>
+[LCD] usage: LCDTEST <width> <height> <x_offset> <y_offset> <madctl_hex> <invert_0_or_1>
+[LCD] usage: LCDTEST <width> <height> <x_offset> <y_offset> <madctl_hex> <invert_0_or_1>
+[LCD] usage: LCDTEST <width> <height> <x_offset> <y_offset> <madctl_hex> <invert_0_or_1>
+[LCD] test queued
+[LCD] starting test 76x284 offset=82,18 madctl=00 invert=0
+[LCD] test complete result=0
+[LCD] test queued
+[LCD] starting test 76x284 offset=82,18 madctl=00 invert=0
+[LCD] test failed result=-4
+[LCD] test queued
+[LCD] test queued
+[LCD] test queued
+[LCD] test queued
+[LCD] test queued
+[LCD] test queued
+[LCD] test queued
+[LCD] test queued
+[LCD] test queued
+[LCD] test queued
+[LCD] test queued
+[LCD] test queued
+[LCD] test queued
+[LCD] test queued
+[LCD] test queued
+[LCD] test queued
+[LCD] ERROR benchmark queue full
+[APP] request=2 synthetic=0 queued=1
+[APP] request=1 synthetic=1 queued=1
+[APP] request=3 synthetic=0 queued=1
+[APP] reset occupancy=0 processed=0 resets=2 malformed=0 publish_enqueued=0 publish_failed=0
+[APP] id=91 seq=1 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=2
+[APP] status occupancy=1 processed=1 resets=2 malformed=0 publish_enqueued=0 publish_failed=1
+[APP] request=2 synthetic=0 queued=1
+[APP] reset occupancy=0 processed=1 resets=3 malformed=0 publish_enqueued=0 publish_failed=1
+[APP] request=2 synthetic=0 queued=0
+[APP] id=200 seq=1 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=1
+[APP] id=201 seq=2 result=0 class=entry via=rule occupancy=1->2 degraded=0 reason=accepted publish=1
+[APP] id=202 seq=3 result=0 class=entry via=rule occupancy=2->3 degraded=0 reason=accepted publish=1
+[APP] id=203 seq=4 result=0 class=entry via=rule occupancy=3->4 degraded=0 reason=accepted publish=1
+[APP] id=204 seq=5 result=0 class=entry via=rule occupancy=4->5 degraded=0 reason=accepted publish=1
+[APP] id=205 seq=6 result=0 class=entry via=rule occupancy=5->6 degraded=0 reason=accepted publish=1
+[APP] id=206 seq=7 result=0 class=entry via=rule occupancy=6->7 degraded=0 reason=accepted publish=1
+[APP] id=207 seq=8 result=0 class=entry via=rule occupancy=7->8 degraded=0 reason=accepted publish=1
+[APP] request=2 synthetic=0 queued=1
+[APP] reset occupancy=0 processed=9 resets=4 malformed=0 publish_enqueued=8 publish_failed=1
+[APP] id=300 seq=1 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=2
+[APP] id=301 seq=2 result=0 class=entry via=rule occupancy=1->2 degraded=0 reason=accepted publish=2
+[APP] id=302 seq=3 result=0 class=entry via=rule occupancy=2->3 degraded=0 reason=accepted publish=2
+[APP] id=303 seq=4 result=0 class=entry via=rule occupancy=3->4 degraded=0 reason=accepted publish=2
+[APP] id=304 seq=5 result=0 class=entry via=rule occupancy=4->5 degraded=0 reason=accepted publish=2
+[APP] id=305 seq=6 result=0 class=entry via=rule occupancy=5->6 degraded=0 reason=accepted publish=2
+[APP] id=306 seq=7 result=0 class=entry via=rule occupancy=6->7 degraded=0 reason=accepted publish=2
+[APP] id=307 seq=8 result=0 class=entry via=rule occupancy=7->8 degraded=0 reason=accepted publish=2
+[APP] id=300 seq=1 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=301 seq=2 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=302 seq=3 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=303 seq=4 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=304 seq=5 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=305 seq=6 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=306 seq=7 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=307 seq=8 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] id=300 seq=1 result=2 class=unknown via=none occupancy=8->8 degraded=0 reason=duplicate publish=2
+[APP] request=2 synthetic=0 queued=1
+[APP] reset occupancy=0 processed=26 resets=5 malformed=0 publish_enqueued=8 publish_failed=18
+[APP] id=400 seq=1 result=0 class=entry via=rule occupancy=0->1 degraded=0 reason=accepted publish=2
+[APP] malformed message bytes=4 total=1
+micro T-Kernel application glue: PASS (modeled kernel, actual runtime task bodies)
+RUN
+STOP
+[WINDOW] request=0
+[PAIR] request=0
+[TIMING] trigger=SRC armed=1
+[WINDOW_REPORT] token=00000000 kind=error code=-6
+[WINDOW_REPORT] token=00000000 kind=end
+[PAIR] request=-6
+[PAIR] STOP first; usage: PAIR <pulse_sensor_A> <pulse_sensor_B> <A|B> <guard_us>; timeouts + guard <= 50000 us
+CLEARED
+[SHOW] sampling=0
+Commands:
+  BEGINCFG ... ENDCFG        - add sensor config (multi-line)
+  BEGINCFG|k=v|...|ENDCFG    - add sensor config (inline with '|', supports \|)
+  BEGINRULE ... ENDRULE      - add rule (multi-line)
+  BEGINRULE|k=v|...|ENDRULE  - add rule (inline with '|', supports \|)
+  RUN / STOP                 - control sampling
+  TRIGGER <sensor|source>     - arm one-shot/event-driven sensor(s)
+  PAIR <A> <B> <A|B> <guard_us> - one stopped-mode sonar pair diagnostic (50 ms)
+  WINDOW <A> <B> <radar> <guard_us> <A_mm> <B_mm> <xmin> <xmax> <ymin> <ymax>
+  WINDOW STATUS [8-hex nonce] - read-only metrics after STOP (no reset)
+  CLEAR                      - clear sensors + rules
+  SHOW / SHOWRULES           - show sensors / rules
+  CLEARRULES                 - clear only rules
+  HELP                       - this text
+
+Example inline rule (HMC5883L big-endian X,Z,Y at 0x03):
+BEGINRULE|name=GY511_MAG|source=GY511_ACC|calc=mx=s16be(0)|calc=mz=s16be(2)|calc=my=s16be(4)|calc=mag=sqrt(mx*mx+my*my+mz*mz)|when=mag>350|action=log:MAG change detected|ENDRULE
+CFG: begin
+CFG: ok (added #0: SENSOR)
+RULE: begin
+STOP
+RULE: ok
+Unknown: FOO
+REPL command table: PASS (console and MQTT share repl_command; config blocks unaffected)
+libraries/EdgeCore/src/rule_engine/rule_expr.c:409:17: warning: enumeration value 'FN_mse' not handled in switch [-Wswitch]
+  409 |         switch ((fkind_t)t.op) {
+      |                 ^~~~~~~~~~~~~
+libraries/EdgeCore/src/rule_engine/rule_expr.c:409:17: note: add missing switch cases
+  409 |         switch ((fkind_t)t.op) {
+      |                 ^
+1 warning generated.
+[RULE] added name=R src=S vars=1 action=gpio:8=HIGH
+[RULE] reset
+[RULE] bad pin in action 'gpio:99=HIGH'
+[RULE] reset
+[RULE] bad pin in action 'pwm:60=50%'
+[RULE] reset
+[RULE] added name=R src=S vars=1 action=batch: gpio:8=HIGH | pwm:9=50%
+[RULE] reset
+[RULE] bad pin in action 'batch: gpio:8=HIGH | gpio:77=LOW'
+[RULE] reset
+[RULE] added name=R src=S vars=1 action=cfg.to:s3-002:{"configs":[{"name":"LEDJ","proto":"gpio","gpio":{"pin":8}}]}
+[RULE] reset
+[RULE] added name=R src=S vars=1 action=cfg.to:s3-002:{configs:[{name:LEDJ,proto:gpio,mode:poll,freq_hz:1,gpio:{pin:8,mode:digital}}]}
+[RULE] reset
+[RULE] added name=R src=S vars=1 action=cfg.to:s3-002:BEGINRULE\|name=X\|source=Y\|when=1\|action=gpio:99=HIGH\|ENDRULE
+[RULE] reset
+[RULE] added name=R src=S vars=1 action=cfg.to:s3-002:BEGINCFG\|name=LED\|proto=gpio\|gpio.pin=8\|ENDCFG
+[RULE] reset
+[RULE] added name=R src=S vars=1 action=cmd.to:s3-002:BEGINRULE gpio:99=HIGH
+[RULE] reset
+[RULE] bad pin in action 'batch: gpio:99=HIGH | cmd.to:s3-002:RUN'
+[RULE] reset
+[RULE] added name=R src=S vars=1 action=batch: gpio:8=HIGH | cmd.to:s3-002:RUN
+[RULE] reset
+Rule action pins: PASS (local gpio/pwm pins checked; cfg.to/cmd.to payloads left to the receiving node)
+Relaxed JSON: PASS (bare-word JSON converts exactly like strict JSON; D-11 example accepted)

@@ -1,0 +1,10 @@
+Revision: 7e8f6cf526b8a184e069bda3d907cb34dab64d90
+Command: sh tools/mtk.sh check
+course port: e92874d50d3a2968566f9628018f4c096c01f3d9   (pinned e92874d50d3a2968566f9628018f4c096c01f3d9)
+ESP-IDF:     v6.1-dev-2300-g17a74c925c   (pinned v6.1-dev-2300-g17a74c925c)
+compiler:    esp-15.2.0_20251204   (pinned esp-15.2.0_20251204)
+Bootloader binary size 0x5220 bytes. 0x2de0 bytes (36%) free.
+esp32s3_mtk.bin binary size 0x1395d0 bytes. Smallest app partition is 0x2f0000 bytes. 0x1b6a30 bytes (58%) free.
+Project build complete. To flash, run:
+
+Exit status: 0

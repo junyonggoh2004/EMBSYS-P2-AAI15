@@ -1,0 +1,21 @@
+Sensor frame parser: PASS (bounds, rejection atomicity, topic identity and typed AHT decoding)
+[BRIDGE] reset
+[BRIDGE] updated mapping: nodeB/AHT -> REMOTE_AHT
+[BRIDGE] rejected malformed frame from nodeB/AHT
+[BRIDGE] rejected malformed frame from nodeB/AHT
+[BRIDGE] rejected malformed frame from nodeB/AHT
+[BRIDGE] rejected malformed frame from nodeB/AHT
+[BRIDGE] rejected malformed frame from nodeB/AHT
+[BRIDGE] rejected malformed frame from nodeB/AHT
+[BRIDGE] rejected malformed frame from nodeB/AHT
+[BRIDGE] rejected malformed frame from nodeB/AHT
+[BRIDGE] on_remote_line: no mapping for wrong-node/AHT (line='proto=i2c src=AHT len=1 ts=12 : 08')
+[BRIDGE] reset
+[BRIDGE] on_remote_line: no mapping for nodeB/AHT (line='proto=i2c src=AHT len=1 ts=12 : 08')
+Sensor bridge strict-frame regression: PASS
+lcd output host test: PASS
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.538s
+
+OK

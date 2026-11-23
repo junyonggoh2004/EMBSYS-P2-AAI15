@@ -1,0 +1,20 @@
+Host source base: 035d7fc6517312f2843701df53c9c6554b971476
+Source state: dirty working change; no board flashed or interrogated.
+LCD import reference: b1c167546259148a34d8a3b6a38f8804857363f5
+d8992a7f406e4149f90d4aa9818f22c7a0c34b5384026ed2b9d7effc4768705b  esp32s3_mtk/build/esp32s3_mtk.elf
+2d7b52ca230f37db0cdbbc747ed4058b92806af2c6adb924c8c84d5d51a1b47a  esp32s3_mtk/build/esp32s3_mtk.bin
+Target object newer than source: libraries/EdgeCore/src/mqtt/sensor_bridge.c
+Target object newer than source: libraries/EdgeCore/src/mqtt/sensor_frame.c
+Target object newer than source: esp32s3_mtk/components/lcd_output/lcd_output.c
+Target object newer than source: esp32s3_mtk/components/lcd_output/lcd_st7789.c
+Target object newer than source: esp32s3_mtk/components/lcd_output/lcd_transport_mtk.c
+Target object newer than source: esp32s3_mtk/components/lcd_output/lcd_font_5x7.c
+Target object newer than source: esp32s3_mtk/components/edge_mtk/runtime_mtk.c
+ .bss.s_mbf_bench
+                0x3fcc049c      0x2c0 esp-idf/edge_mtk/libedge_mtk.a(runtime_mtk.c.obj)
+ .bss.s_stk_bench
+                0x3fcc8190      0xc00 esp-idf/edge_mtk/libedge_mtk.a(runtime_mtk.c.obj)
+ .bss.s_stk_app
+                0x3fcc8d90     0x1000 esp-idf/edge_mtk/libedge_mtk.a(runtime_mtk.c.obj)
+ .bss.cell$0    0x3fcd9090      0x360 esp-idf/lcd_output/liblcd_output.a(lcd_output.c.obj)
+ .bss.s_ready   0x3fcd93f0        0x1 esp-idf/lcd_output/liblcd_output.a(lcd_output.c.obj)

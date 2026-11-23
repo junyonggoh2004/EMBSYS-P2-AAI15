@@ -1,8 +1,10 @@
 # Configurable Edge Platform on the ESP32-S3 (D1 to D6)
 
-The Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) ported to the ESP32-S3 Super Mini. Since Tribunal 1 it runs on µT-Kernel 3 SMP through the course port ([MTK_REDESIGN.md](MTK_REDESIGN.md)); the earlier Arduino-ESP32/FreeRTOS port is kept as the measured baseline. Both builds compile the same shared code, so the configuration lines, console commands, MQTT topics, output format and ML models are the same on both. `main` holds D1 to D5; D6 is in progress on `D6-Integration`.
+The Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) ported to the ESP32-S3 Super Mini. Since Tribunal 1 it runs on µT-Kernel 3 SMP through the course port ([MTK_REDESIGN.md](MTK_REDESIGN.md)); the earlier Arduino-ESP32/FreeRTOS port is kept as the measured baseline. Both builds compile the same shared code, so the configuration lines, console commands, MQTT topics, output format and ML models are the same on both. `main` contains D1 to D5 and the merged D6 integration work; the three-board use case remains in progress.
 
-**Current breadboard.** The three-sensor breadboard (AHT temperature and humidity, HC-SR04+ distance and TSL2561 light, with the LCD wiring kept) and its Windows and VS Code build workflow are in [SENSOR_BREADBOARD_README.md](SENSOR_BREADBOARD_README.md). The single-sonar, loopback, radar and SPI fixtures in this guide use other pins; do not apply them to that breadboard.
+**D6 N16R8 integration.** Board A uses AHT, TSL2561 and two sonars without radar; Board B owns the flash, ML and occupancy decision; Board C owns the landscape LCD. Use the [current Board A wiring](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md), [use case](docs/d6/SONAR_ONLY_USECASE.md) and [PowerShell MQTT commands](MQTT_commands.md). Earlier radar fixtures and the Super Mini breadboard remain historical references.
+
+**Earlier three-sensor breadboard.** The three-sensor breadboard (AHT temperature and humidity, HC-SR04+ distance and TSL2561 light, with the LCD wiring kept) and its Windows and VS Code build workflow are in [SENSOR_BREADBOARD_README.md](SENSOR_BREADBOARD_README.md). The single-sonar, loopback, radar and SPI fixtures in this guide use other pins; do not apply them to that breadboard.
 
 ## Deliverables at a glance
 
@@ -13,7 +15,7 @@ The Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) porte
 | D3 | Configurable timing: periodic, one-shot, event-driven, logical sequence | Cody | Done 22 Nov: timing modes, non-blocking sonar reads and ApplicationTask run on the board on 21 Nov; the two-sonar sequence ran on the D6 setup; the radar workload closed when the radar was dropped | [Section 4](#4-d3-task-checklist) |
 | D4 | Embedded ML | Part 1: Jun Yong. Part 2: Sitt | Done 23 Nov. Five bundled models run on the board with the S3's acceleration, and the model, its inputs and where its result goes can be switched live over MQTT. The uploaded model, remote input and local output added on 22 Nov have laptop tests only | [Section 5](#5-d4-task-checklist) |
 | D5 | Benchmarking the D4 models on the S3 | Hasif | Done 20 Nov: ESP-NN's S3 assembly makes INT8 inference 1.36 to 3.35 times faster with the same outputs, and people-counter keeps a 2.55 times gain in the running firmware | [Section 6](#6-d5-task-checklist-hasif) |
-| D6 | End-to-end use case and demo | Cody (lead), Brendan | In progress on `D6-Integration`, not merged. Board A's sensors and board C's LCD showing MQTT data were tested separately on 21 Nov; no three-board run yet | [Section 7](#7-d6-task-checklist) |
+| D6 | End-to-end use case and demo | Cody (lead), Brendan | D6 code and guides merged 23 Nov; A→B sensor MQTT and B→C landscape mock snapshots were tested separately on 21 Nov. The timed crossing, live B→C result and full three-board run remain open | [Section 7](#7-d6-task-checklist) |
 
 Owners follow the team split of 28 Sep 2026, with D4 to D6 re-split on 10 Nov and confirmed on 16 Nov. The D1 MQTT tasks (1.1–1.5) and the D4 to D6 tasks (2.1–5.8) are the outline the team agreed on 10 Nov. Each owner updates their row when their work merges.
 
@@ -322,21 +324,20 @@ On the console, `STOP`, `ML MODEL <id>` and `MLBENCH <runs> [RAW]` run one model
 
 # 7. D6 task checklist
 
-Cody and Brendan own D6, with Cody leading (split of 16 Nov 2026); the whole team joins the rehearsal and Tribunal 2 preparation. The professor's suggested use case is three S3 boards: one whose motion and light sensors drive an output, one with temperature and humidity, and an LCD board that shows both over MQTT. He also wants a live multi-bus demo: GPIO, I2C and SPI on one board, writing one byte over SPI and reading it back, then swapping the SPI device and reconfiguring. The rows are the agreed outline; the technical steps come later.
+D6 uses three ESP32-S3 N16R8 boards. [Board A](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md) reads AHT temperature/humidity, TSL2561 light and two sonars; the LD2450 radar is no longer part of the selected use case. Board A must assemble a timed crossing candidate. Board B is the only occupancy writer and owns ML, event logging and the W25Q32 flash. Board C displays Board B's validated snapshot on a landscape ST7789 LCD. The [sonar-only use case](docs/d6/SONAR_ONLY_USECASE.md), [integration status](docs/d6/INTEGRATION_STATUS.md), [Board A test commands](docs/d6/BOARD_A_SENSOR_TEST.md) and [MQTT commands](MQTT_commands.md) hold the current details. The earlier radar plans are preserved under [reference](docs/d6/reference/).
 
-| # | Task | What it means | Owner | Status |
-|---|---|---|---|---|
-| 5.1 | Confirm the use case | Adopt the three-board setup and decide whether the doorway counter becomes the motion board's input or is dropped | Team | Pending |
-| 5.2 | Define each board | Its sensors, what it publishes, what it reacts to and what the LCD shows; parts and wiring per board | Cody | In progress on `D6-Integration` |
-| 5.3 | Multi-bus demo script | Step-by-step live demo of GPIO, I2C and SPI on one board, configured live, with the whole setup sent at once and then piece by piece | Cody | Pending |
-| 5.4 | SPI write and read by config | Write one byte, read it back, swap the device and reconfigure; config cannot do this yet | Brendan | Pending |
-| 5.5 | LCD board shows live data | Merge the LCD work and make it display what the other boards publish | Brendan | In progress on `D6-Integration` |
-| 5.6 | ML inside the use case | One board runs a model on its own or another board's data; the result shows on the LCD or is published | Cody, Brendan, with Sitt | Pending; D4 part 2 gives it remote input and local output |
-| 5.7 | Full rehearsal on three boards | Run the whole thing end to end, record it and fill this section | Team | Pending |
-| 5.8 | Tribunal 2 preparation | Each person can explain which of their functions would change under a new requirement (theory only) | Everyone | Pending |
+| # | Current status after merge |
+|---|---|
+| 5.1 | Two-sonar, no-radar direction selected; timed crossing trials and team sign-off remain open. |
+| 5.2 | A/B/C roles, N16R8 wiring and diagrams recorded; verify the assembled fixture against the current guides. |
+| 5.3 | Multi-bus live demonstration and its evidence remain open. |
+| 5.4 | SPI config byte write/read and device swap remain open; D2 event logging is separate. |
+| 5.5 | Board C LCD test and landscape MQTT mock snapshots passed, including an occupancy change from 2 to 3; live B result display remains open. |
+| 5.6 | D4 remote ML inputs and output routing are now in the same codebase; Board B inference from Board A's real AHT and delivery to C need a three-board test. The 31-input people-counter remains replay-only until a model-ready window exists. |
+| 5.7 | Full three-board rehearsal and recorded acceptance trials remain open. |
+| 5.8 | Tribunal 2 preparation remains open. |
 
-**Where the work is.** Cody and Brendan's work is on `D6-Integration` and `d6`, not merged. On 21 Nov Brendan documented board A's sonar wiring and MQTT sensor commands, an MQTT test from board A to board B, and board C's LCD showing MQTT data in landscape. The LD2450 radar was dropped on 19 Nov after it gave no output on two boards. The first draft use case, a doorway occupancy counter, has a [validation plan](docs/D6_USECASE_VALIDATION_PLAN.md) and a [trial worksheet](docs/D6_TRIAL_WORKSHEET.md). ApplicationTask and the occupancy logic are on `main` with D3.
-
+Board A to B MQTT frames were observed for AHT, light and both sonars. Board B to C mock snapshots were visible on the LCD, but those separate tests do not yet establish a complete A→B→C doorway decision. See the [LCD reference](docs/d6/ROOM_MONITOR_REFERENCE.md) and [next steps](docs/d6/NEXT_STEPS.md). The new main merge combines D4/D5 with D6 code; it does not itself count as new board validation.
 
 ---
 

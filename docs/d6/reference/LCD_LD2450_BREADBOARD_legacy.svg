@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1050" viewBox="0 0 1500 1050" role="img" aria-label="Breadboard wiring for ESP32-S3 Super Mini, ST7789 LCD and HLK-LD2450 radar">
+  <rect width="1500" height="1050" fill="#f4f7fb"/>
+  <text x="50" y="56" font-family="Arial,sans-serif" font-size="31" font-weight="bold" fill="#142b48">LCD + HLK-LD2450 radar: breadboard wiring</text>
+  <text x="50" y="89" font-family="Arial,sans-serif" font-size="18" fill="#344963">Keep the working LCD wires. Add radar GND, 5V and TX. ESP32, LCD and radar sit outside the breadboard.</text>
+
+  <rect x="458" y="135" width="590" height="750" rx="18" fill="#eee7d2" stroke="#a99d7a" stroke-width="3"/>
+  <rect x="485" y="163" width="46" height="682" rx="6" fill="#dcebf3"/>
+  <line x1="508" y1="173" x2="508" y2="836" stroke="#147bb4" stroke-width="5"/>
+  <rect x="958" y="163" width="46" height="682" rx="6" fill="#f9dfe0"/>
+  <line x1="981" y1="173" x2="981" y2="836" stroke="#c74141" stroke-width="5"/>
+  <text x="508" y="860" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" fill="#126995">GND rail</text>
+  <text x="981" y="860" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" fill="#a72a2a">5V rail</text>
+  <text x="732" y="176" text-anchor="middle" font-family="Arial,sans-serif" font-size="19" font-weight="bold" fill="#24364c">A       B       C       D       E</text>
+  <text x="1049" y="190" font-family="Arial,sans-serif" font-size="16" fill="#536473">F–J not used</text>
+
+  <g font-family="Arial,sans-serif" font-size="16" font-weight="bold" fill="#174f76">
+    <text x="50" y="233">ESP32 GND → GND rail N1</text>
+    <text x="50" y="272">LCD GND → GND rail N2</text>
+    <text x="50" y="311">LCD BL → GND rail N3</text>
+    <text x="50" y="350">Radar GND → GND rail N4</text>
+    <text x="50" y="389">5V supply GND → GND rail N5</text>
+  </g>
+  <g font-family="Arial,sans-serif" font-size="15" fill="#174f76">
+    <text x="525" y="215">N1</text><text x="525" y="254">N2</text><text x="525" y="293">N3</text><text x="525" y="332">N4</text><text x="525" y="371">N5</text>
+  </g>
+  <g fill="#147bb4"><circle cx="508" cy="208" r="7"/><circle cx="508" cy="247" r="7"/><circle cx="508" cy="286" r="7"/><circle cx="508" cy="325" r="7"/><circle cx="508" cy="364" r="7"/></g>
+  <g stroke="#147bb4" stroke-width="2"><line x1="330" y1="227" x2="493" y2="208"/><line x1="321" y1="266" x2="493" y2="247"/><line x1="307" y1="305" x2="493" y2="286"/><line x1="322" y1="344" x2="493" y2="325"/><line x1="390" y1="383" x2="493" y2="364"/></g>
+
+  <g font-family="Arial,sans-serif" font-size="19" font-weight="bold">
+    <text x="50" y="461" fill="#26783a">ESP32 3V3 → A4</text><text x="1090" y="461" fill="#713e92">E4 ← LCD VCC</text>
+    <text x="50" y="515" fill="#26783a">ESP32 GPIO12 → A10</text><text x="1090" y="515" fill="#713e92">E10 ← LCD SCL / SCK</text>
+    <text x="50" y="569" fill="#26783a">ESP32 GPIO11 → A11</text><text x="1090" y="569" fill="#713e92">E11 ← LCD SDA / MOSI</text>
+    <text x="50" y="623" fill="#26783a">ESP32 GPIO8 → A12</text><text x="1090" y="623" fill="#713e92">E12 ← LCD RST</text>
+    <text x="50" y="677" fill="#26783a">ESP32 GPIO9 → A13</text><text x="1090" y="677" fill="#713e92">E13 ← LCD DC</text>
+    <text x="50" y="731" fill="#26783a">ESP32 GPIO10 → A14</text><text x="1090" y="731" fill="#713e92">E14 ← LCD CS</text>
+    <text x="50" y="803" fill="#26783a">ESP32 GPIO7 (RX) → A20</text><text x="1090" y="803" fill="#b45d17">E20 ← Radar TX</text>
+  </g>
+  <g font-family="Arial,sans-serif" font-size="17" font-weight="bold" fill="#4e5c6b">
+    <text x="566" y="461">row 4</text><text x="566" y="515">row 10</text><text x="566" y="569">row 11</text><text x="566" y="623">row 12</text><text x="566" y="677">row 13</text><text x="566" y="731">row 14</text><text x="566" y="803">row 20</text>
+  </g>
+  <g fill="#263b50">
+    <circle cx="647" cy="454" r="6"/><circle cx="694" cy="454" r="6"/><circle cx="741" cy="454" r="6"/><circle cx="788" cy="454" r="6"/><circle cx="835" cy="454" r="6"/>
+    <circle cx="647" cy="508" r="6"/><circle cx="694" cy="508" r="6"/><circle cx="741" cy="508" r="6"/><circle cx="788" cy="508" r="6"/><circle cx="835" cy="508" r="6"/>
+    <circle cx="647" cy="562" r="6"/><circle cx="694" cy="562" r="6"/><circle cx="741" cy="562" r="6"/><circle cx="788" cy="562" r="6"/><circle cx="835" cy="562" r="6"/>
+    <circle cx="647" cy="616" r="6"/><circle cx="694" cy="616" r="6"/><circle cx="741" cy="616" r="6"/><circle cx="788" cy="616" r="6"/><circle cx="835" cy="616" r="6"/>
+    <circle cx="647" cy="670" r="6"/><circle cx="694" cy="670" r="6"/><circle cx="741" cy="670" r="6"/><circle cx="788" cy="670" r="6"/><circle cx="835" cy="670" r="6"/>
+    <circle cx="647" cy="724" r="6"/><circle cx="694" cy="724" r="6"/><circle cx="741" cy="724" r="6"/><circle cx="788" cy="724" r="6"/><circle cx="835" cy="724" r="6"/>
+    <circle cx="647" cy="796" r="6"/><circle cx="694" cy="796" r="6"/><circle cx="741" cy="796" r="6"/><circle cx="788" cy="796" r="6"/><circle cx="835" cy="796" r="6"/>
+  </g>
+  <g fill="none" stroke-width="4">
+    <circle cx="647" cy="454" r="13" stroke="#24933d"/><circle cx="835" cy="454" r="13" stroke="#8843ac"/>
+    <circle cx="647" cy="508" r="13" stroke="#24933d"/><circle cx="835" cy="508" r="13" stroke="#8843ac"/>
+    <circle cx="647" cy="562" r="13" stroke="#24933d"/><circle cx="835" cy="562" r="13" stroke="#8843ac"/>
+    <circle cx="647" cy="616" r="13" stroke="#24933d"/><circle cx="835" cy="616" r="13" stroke="#8843ac"/>
+    <circle cx="647" cy="670" r="13" stroke="#24933d"/><circle cx="835" cy="670" r="13" stroke="#8843ac"/>
+    <circle cx="647" cy="724" r="13" stroke="#24933d"/><circle cx="835" cy="724" r="13" stroke="#8843ac"/>
+    <circle cx="647" cy="796" r="13" stroke="#24933d"/><circle cx="835" cy="796" r="13" stroke="#d77c27"/>
+  </g>
+
+  <circle cx="981" cy="266" r="8" fill="#c74141"/><circle cx="981" cy="312" r="8" fill="#c74141"/>
+  <text x="1070" y="271" font-family="Arial,sans-serif" font-size="18" font-weight="bold" fill="#ae302d">Radar 5V ← red rail</text>
+  <text x="1070" y="317" font-family="Arial,sans-serif" font-size="18" font-weight="bold" fill="#ae302d">5V supply + → red rail</text>
+  <line x1="990" y1="266" x2="1050" y2="266" stroke="#c74141" stroke-width="2"/><line x1="990" y1="312" x2="1050" y2="312" stroke="#c74141" stroke-width="2"/>
+  <text x="50" y="925" font-family="Arial,sans-serif" font-size="19" fill="#263a51">Same-numbered A–E holes connect across each row. Rail holes connect vertically only within one continuous section.</text>
+  <text x="50" y="958" font-family="Arial,sans-serif" font-size="19" font-weight="bold" fill="#a4312a">Use regulated 5V capable of &gt;200mA. Never join the red 5V rail to ESP32 3V3 or LCD VCC.</text>
+  <text x="50" y="990" font-family="Arial,sans-serif" font-size="18" fill="#344963">Radar RX is left unconnected for receive-only test. Verify connector labels; wire colours are not a pinout.</text>
+  <text x="50" y="1020" font-family="Arial,sans-serif" font-size="18" fill="#344963">N1–N5 are example names, not printed hole labels. Check whether either power rail is split in the middle.</text>
+</svg>
