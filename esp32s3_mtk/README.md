@@ -2,13 +2,19 @@
 
 **Current D6 Board A (21 November 2026):** ESP32-S3 N16R8 with AHT, TSL2561 and two sonars, without radar. Use the [current pinout and diagram](../docs/d6/BOARD_A_SONAR_ONLY_WIRING.md), [`board_a.cfg`](../config/board_a.cfg), and [PowerShell sensor-test commands](../docs/d6/BOARD_A_SENSOR_TEST.md). GPIO1/2 are I2C; GPIO10/11 are Sonar A; GPIO6/7 are Sonar B. The generic three-sensor preset and older radar diagrams below document different fixtures.
 
-**Current D6 Board C (21 November 2026):** the isolated `LCDTEST` is still
+With the broker and Board A running, `python tools/show_live_values.py --board A` from the repository root shows live temperature, humidity, light and valid sonar distances in PowerShell. `--board B` shows the same readings after MQTT relay to B. The viewer decodes the existing raw MQTT frames and needs no firmware change; see the [use case commands](../usecase_commands.md). Board B's default `sine-float` setup and optional model switches, including replay-only `people-counter`, are in [ML_commands.md](../ML_commands.md).
+
+**Current D6 Board C (23 November 2026):** the isolated `LCDTEST` is still
 available. `D6VIEW` draws accepted Board B MQTT snapshots in the physically
 verified 284 x 76 landscape orientation. The user confirmed all mock fields
-and an occupancy update from 2 to 3. Reissue `D6VIEW` after a reboot or an
+and an occupancy update from 2 to 3. The current v3 snapshot layout has
+separate Sonar A and B distance lines; a missing echo displays `--`. Its
+firmware builds and host tests pass, but it needs a fresh visual check after
+flashing. Reissue `D6VIEW` after a reboot or an
 isolated LCD pattern test. See [MQTT commands](../MQTT_commands.md) and the
-[display reference](../docs/d6/ROOM_MONITOR_REFERENCE.md). Live values from
-Board A and B's processing remain to be integrated.
+[live LCD guide](../docs/d6/LIVE_LCD_TWO_SONARS.md). Real AHT, light and sonar
+values use a temporary laptop snapshot relay; B's real comfort score reaches
+C directly. B-owned occupancy and native full-snapshot publication remain open.
 
 For the earlier proposed D6 three-board N16R8 fixture, see the
 [board identification](../docs/d6/N16R8_BOARD_SETUP.md),

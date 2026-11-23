@@ -71,10 +71,10 @@ typedef struct {
     uint32_t d6_seq;
     uint16_t d6_occupancy, d6_light;
     float d6_temperature, d6_humidity;
-    float d6_distance, d6_ml_score;
+    float d6_distance_a, d6_distance_b, d6_ml_score;
     char d6_ml_model[16];
     uint8_t d6_comfort_score;
-    bool d6_has_distance, d6_has_ml, d6_mock;
+    bool d6_has_distance_a, d6_has_distance_b, d6_has_ml, d6_mock;
 } bench_msg_t;
 
 // ---------- ctrl_mbf: platform commands that arrived over MQTT ----------

@@ -8,7 +8,11 @@ The user supplied this landscape mockup as the visual reference on
 landscape pattern, confirmed visually by the user. The D6 MQTT view now uses
 that orientation and a compact version of the reference layout: four reading
 cards on the left and ML output on the right. It labels synthetic values
-`MOCK` and reserves `LIVE` for a future application snapshot.
+`MOCK` and labels the interim real-sensor relay `LIVE`. The distance card has
+separate A and B lines in the current local implementation. See
+[LIVE_LCD_TWO_SONARS.md](LIVE_LCD_TWO_SONARS.md) for the v3 payload and its
+limitations; its updated layout requires a Board C firmware flash and fresh
+visual confirmation.
 
 ## Temporary USB relay trial
 

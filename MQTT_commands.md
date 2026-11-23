@@ -3,6 +3,11 @@
 This is the **tested Board A → laptop Mosquitto** procedure for the ESP32-S3
 N16R8 node `s3-001`. Board A uses the four radar-free profiles in
 [`config/board_a.cfg`](config/board_a.cfg): AHT, light, Sonar A and Sonar B.
+Run these commands from the merged `main` checkout. For a shorter three-board
+sequence, use [`usecase_commands.md`](usecase_commands.md). For Board B's live `sine-float` default, optional model switches and replay-only `people-counter`, use [`ML_commands.md`](ML_commands.md). To see decoded
+readings continuously, use [`tools/show_live_values.py`](tools/show_live_values.py)
+as described below; the raw MQTT line subscriber remains useful for checking
+topics and transport.
 It proves sensor frames reach the broker and a laptop subscriber. It does not
 prove accurate sonar distance, doorway occupancy, Board B processing, SPI
 flash writes or a live Board C display. The combined A → B commands below
@@ -20,13 +25,12 @@ workflow remain separate tests.
 - Use a **normal PowerShell** to check the laptop's current Wi-Fi address:
 
   ```powershell
-  cd 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
+  cd 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
   $brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
   $brokerIp
   ```
 
-  The observed address on 21 November 2026 was `192.168.1.126`; it may change.
-  If it differs from the address compiled into Board A, update the ignored
+  If the address differs from the address compiled into Board A, update the ignored
   credentials file and rebuild/flash Board A before proceeding. See
   [When Wi-Fi or the broker address changes](#when-wi-fi-or-the-broker-address-changes).
 
@@ -37,7 +41,7 @@ on port 1883. The normal Windows Mosquitto service may listen on localhost
 only; the temporary D6 listener must accept the ESP32 on the Wi-Fi network.
 
 ```powershell
-cd 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
+cd 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
 Get-Service mosquitto
 netstat -ano -p tcp | Select-String ':1883'
 ```
@@ -66,16 +70,29 @@ $brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddre
 
 Keep this window open. Once Board A connects, expect
 `pico/s3-001/presence`, `pico/s3-001/heartbeat`, then sensor topics after
-`RUN`. The `.../sensor/<name>/line` payload contains **hex bytes**, not
-human-readable measurements. Use the optional serial console below for
-decoded temperature, humidity, lux and distance.
+`RUN`. The `.../sensor/<name>/line` payload contains **hex bytes**. Open a
+separate **normal PowerShell** window for actual live values:
+
+```powershell
+cd 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
+$py = "$env:USERPROFILE\.espressif\python_env\idf6.1_py3.14_env\Scripts\python.exe"
+& $py .\tools\show_live_values.py --board A
+```
+
+This prints AHT temperature in C and humidity in %RH, light in lux, and valid
+sonar distances in cm. It reports errors and invalid echoes rather than
+displaying them as valid distances. Use `--board B` in another window for B's
+received copies. The viewer connects to the broker on laptop localhost by
+default, while the boards continue using the Wi-Fi address in their firmware.
+Press **Ctrl+C** to stop the viewer. The optional serial console below also
+prints decoded JSON.
 
 ## Run: Window 3 — normal PowerShell (send Board A commands)
 
 Wait until Board A is connected. Then run these lines in order:
 
 ```powershell
-cd 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
+cd 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
 $brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
 $pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
 
@@ -102,7 +119,7 @@ until you press `Ctrl+C`. Run **one sensor block at a time**. Each block sends
 only that sensor. It does not change wiring or flash firmware. Board B can
 forward the frames if its four MQTT bridge profiles are already configured.
 
-To watch only the selected source, use a separate normal PowerShell window:
+To watch only the selected source's raw frame, use a separate normal PowerShell window. For numeric values, use the live viewer above:
 
 ```powershell
 $brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
@@ -181,7 +198,7 @@ After isolated checks, restore all four Board A profiles before continuing
 the combined A → B test:
 
 ```powershell
-cd 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
+cd 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
 $brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
 $pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
 & $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'STOP'
@@ -246,7 +263,7 @@ If the temporary broker is already running, keep its window open and skip
 this block. Do not start a second listener on port 1883. Otherwise:
 
 ```powershell
-cd 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
+cd 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
 Stop-Service -Name mosquitto -ErrorAction SilentlyContinue
 & "$env:ProgramFiles\mosquitto\mosquitto.exe" -c '.\tools\mqtt-test.conf' -v
 ```
@@ -283,7 +300,7 @@ also removes the earlier one-source AHT bridge, so all four B mappings are
 sent again here.
 
 ```powershell
-cd 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
+cd 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
 $brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
 $pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
 
@@ -297,10 +314,7 @@ Start-Sleep -Seconds 2
 # Board B: bridge each of A's four sensor-frame topics to a local alias.
 & $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -m 'STOP'
 & $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -m 'CLEAR'
-& $pub -h $brokerIp -q 1 -t 'pico/s3-002/config' -m 'BEGINCFG|name=A_AHT|proto=mqtt|mode=poll|freq_hz=0.5|remote_node=s3-001|remote_source=AHT|ENDCFG'
-& $pub -h $brokerIp -q 1 -t 'pico/s3-002/config' -m 'BEGINCFG|name=A_LIGHT|proto=mqtt|mode=poll|freq_hz=0.5|remote_node=s3-001|remote_source=LIGHT|ENDCFG'
-& $pub -h $brokerIp -q 1 -t 'pico/s3-002/config' -m 'BEGINCFG|name=A_SONAR_A|proto=mqtt|mode=poll|freq_hz=2|remote_node=s3-001|remote_source=SONAR_A|ENDCFG'
-& $pub -h $brokerIp -q 1 -t 'pico/s3-002/config' -m 'BEGINCFG|name=A_SONAR_B|proto=mqtt|mode=poll|freq_hz=2|remote_node=s3-001|remote_source=SONAR_B|ENDCFG'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-002/config' -f '.\config\board_b_ml.cfg'
 Start-Sleep -Seconds 2
 & $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -m 'RUN'
 ```
@@ -338,6 +352,11 @@ The optional original Windows Mosquitto service can be restarted from an
 localhost-only service is separate from the temporary network listener.
 
 ## Board C LCD and Board B → C mock MQTT test
+
+For real AHT, light, and **separate Sonar A/B distances** on the horizontal
+LCD, use the [interim live relay procedure](docs/d6/LIVE_LCD_TWO_SONARS.md)
+after flashing Board C's updated firmware. This section retains the synthetic
+Board B fixture and its earlier test record.
 
 This is a **separate display/transport test**. Board B's `D6MOCKPUB` command
 publishes a synthetic snapshot; it does not use Board A's sensor readings,
@@ -444,7 +463,7 @@ The broker IP is compiled into each ESP32 firmware image; `mosquitto_pub`
 cannot change it. Update the ignored local file in a **normal PowerShell**:
 
 ```powershell
-cd 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
+cd 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
 notepad .\esp32s3_mtk\main\wifi_credentials.h
 ```
 
@@ -465,10 +484,10 @@ was used successfully on 21 November 2026 with the existing N16R8 build
 directory. Replace `COMx` only after identifying Board A:
 
 ```powershell
-cd 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
+cd 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
 $boardPort = 'COMx'
-$buildDir = 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration\esp32s3_mtk\build-n16r8'
-$env:MTKERNEL_PATH = 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration\esp32s3_mtk\third_party\mtk3smp-esp32s3'
+$buildDir = 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23\esp32s3_mtk\build-n16r8'
+$env:MTKERNEL_PATH = 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23\esp32s3_mtk\third_party\mtk3smp-esp32s3'
 $env:IDF_PATH = "$env:USERPROFILE\esp\esp-idf-v6.1"
 $env:IDF_TOOLS_PATH = "$env:USERPROFILE\.espressif"
 $env:IDF_PYTHON_ENV_PATH = "$env:USERPROFILE\.espressif\python_env\idf6.1_py3.14_env"

@@ -351,7 +351,7 @@ int main(void)
     assert((app->tskatr & (TA_ASSPRC | TA_FPU)) == (TA_ASSPRC | TA_FPU));
     assert(queue(app_mbf)->config.maxmsz == sizeof(application_message_t));
     assert(queue(app_mbf)->config.bufsz == 8 * cost(sizeof(application_message_t)));
-    assert(sizeof(bench_msg_t) == 84); /* D6 snapshots are included in the queue budget. */
+    assert(sizeof(bench_msg_t) <= 96); /* Both sonar values stay within the queue budget. */
     assert(queue(bench_mbf)->config.maxmsz == sizeof(bench_msg_t));
     assert(queue(bench_mbf)->config.bufsz == BENCH_MBF_MSGS * cost(sizeof(bench_msg_t)));
     printf("Native bench_msg_t=%zu, bench_mbf=%zu bytes (target layout still needs image audit)\n",
@@ -562,6 +562,13 @@ int main(void)
     consume_app();
     assert(status().occupancy == 1 && status().stats.malformed == malformed + 1);
     for (ID id = 1; id <= (ID)queue_count; ++id) clear_queue(id);
+    const char dual_snapshot[] = "{\"v\":3,\"seq\":7,\"occupancy\":0,\"distance_a_cm\":42.5,\"distance_b_cm\":-1,\"temperature_c\":25.1,\"humidity_pct\":63.2,\"light_lux\":410,\"source\":\"live\"}";
+    runtime_d6_snapshot_receive(dual_snapshot, sizeof dual_snapshot - 1);
+    assert(queue(bench_mbf)->count == 1);
+    const bench_msg_t *dual = (const bench_msg_t *)queue(bench_mbf)->head->data;
+    assert(dual->d6_has_distance_a && !dual->d6_has_distance_b && !dual->d6_mock);
+    assert(dual->d6_distance_a == 42.5f && dual->d6_seq == 7);
+    clear_queue(bench_mbf);
     bench_msg_t view = { .name = "D6VIEW" };
     assert(runtime_send(bench_mbf, &view, sizeof view));
     runtime_d6_comfort_receive("9x", 2);

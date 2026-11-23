@@ -689,28 +689,41 @@ void runtime_d6_snapshot_receive(const char *payload, int length)
     memcpy(json, payload, (size_t)length);
     json[length] = 0;
     unsigned version = 0, seq = 0, occupancy = 0, light = 0;
-    float temperature = 0, humidity = 0, distance = 0, ml_score = 0;
+    float temperature = 0, humidity = 0, distance = 0, distance_a = -1, distance_b = -1, ml_score = 0;
     char ml_model[16] = {0}, source[8] = {0};
     int consumed = 0;
     int fields = sscanf(json,
+        "{\"v\":%u,\"seq\":%u,\"occupancy\":%u,\"distance_a_cm\":%f,"
+        "\"distance_b_cm\":%f,\"temperature_c\":%f,\"humidity_pct\":%f,"
+        "\"light_lux\":%u,\"source\":\"%7[a-z]\"}%n",
+        &version, &seq, &occupancy, &distance_a, &distance_b, &temperature,
+        &humidity, &light, source, &consumed);
+    bool dual = fields == 9 && consumed == length && version == 3 &&
+                (strcmp(source, "live") == 0 || strcmp(source, "mock") == 0) &&
+                (distance_a == -1.0f || (distance_a >= 2.0f && distance_a <= 400.0f)) &&
+                (distance_b == -1.0f || (distance_b >= 2.0f && distance_b <= 400.0f));
+    if (!dual) {
+        consumed = 0;
+        fields = sscanf(json,
         "{\"v\":%u,\"seq\":%u,\"occupancy\":%u,\"distance_cm\":%f,"
         "\"temperature_c\":%f,\"humidity_pct\":%f,\"light_lux\":%u,"
         "\"ml_score\":%f,\"ml_model\":\"%15[^\"]\",\"source\":\"%7[a-z]\"}%n",
         &version, &seq, &occupancy, &distance, &temperature, &humidity,
         &light, &ml_score, ml_model, source, &consumed);
-    bool full = fields == 10 && consumed == length && version == 2 &&
+    }
+    bool full = !dual && fields == 10 && consumed == length && version == 2 &&
                 strspn(ml_model, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-") == strlen(ml_model) &&
                 (strcmp(source, "mock") == 0 || strcmp(source, "live") == 0) &&
                 distance >= 2.0f && distance <= 400.0f &&
                 ml_score >= 0.0f && ml_score <= 1.0f;
-    if (!full) {
+    if (!dual && !full) {
         consumed = 0;
         fields = sscanf(json,
             "{\"v\":%u,\"seq\":%u,\"occupancy\":%u,\"temperature_c\":%f,"
             "\"humidity_pct\":%f,\"light_lux\":%u}%n",
             &version, &seq, &occupancy, &temperature, &humidity, &light, &consumed);
     }
-    if ((!full && (fields != 6 || consumed != length || version != 1)) || seq == 0 ||
+    if ((!dual && !full && (fields != 6 || consumed != length || version != 1)) || seq == 0 ||
         occupancy > 9999 || !(temperature >= -40.0f && temperature <= 85.0f) ||
         !(humidity >= 0.0f && humidity <= 100.0f) || light > 65535) {
         printf("[D6MQTT] rejected snapshot schema/range len=%d fields=%d consumed=%d v=%u seq=%u occ=%u dist=%.1f temp=%.1f hum=%.1f light=%u ml=%.3f model=%s source=%s\n",
@@ -723,11 +736,17 @@ void runtime_d6_snapshot_receive(const char *payload, int length)
                       .d6_occupancy = (uint16_t)occupancy,
                       .d6_light = (uint16_t)light,
                       .d6_temperature = temperature, .d6_humidity = humidity,
-                      .d6_mock = !full || strcmp(source, "mock") == 0 };
+                      .d6_mock = (!dual && !full) || strcmp(source, "mock") == 0 };
+    if (dual) {
+        b.d6_distance_a = distance_a;
+        b.d6_distance_b = distance_b;
+        b.d6_has_distance_a = distance_a >= 2.0f;
+        b.d6_has_distance_b = distance_b >= 2.0f;
+    }
     if (full) {
-        b.d6_distance = distance;
+        b.d6_distance_a = distance;
         b.d6_ml_score = ml_score;
-        b.d6_has_distance = true;
+        b.d6_has_distance_a = true;
         b.d6_has_ml = true;
         snprintf(b.d6_ml_model, sizeof b.d6_ml_model, "%s", ml_model);
     }
@@ -791,9 +810,15 @@ static int d6_draw_snapshot(const bench_msg_t *b, const d6_comfort_t *comfort)
     snprintf(text, sizeof text, "OCC %u", (unsigned)b->d6_occupancy);
     if ((r = lcd_output_draw_text(234, 2, text, 0x07e0u, bg, 1))) return r;
 
-    if (b->d6_has_distance) snprintf(text, sizeof text, "%.1f", (double)b->d6_distance);
-    else snprintf(text, sizeof text, "--");
-    if ((r = d6_card(2, 14, 0x35dcu, "DISTANCE cm", text))) return r;
+    if ((r = lcd_output_fill_rect(2, 14, 90, 28, 0x10a2u))) return r;
+    if ((r = lcd_output_fill_rect(2, 14, 3, 28, 0x35dcu))) return r;
+    if ((r = lcd_output_draw_text(8, 16, "DISTANCE CM", 0xbdd7u, 0x10a2u, 1))) return r;
+    if (b->d6_has_distance_a) snprintf(text, sizeof text, "A %.1f", (double)b->d6_distance_a);
+    else snprintf(text, sizeof text, "A --");
+    if ((r = lcd_output_draw_text(8, 25, text, fg, 0x10a2u, 1))) return r;
+    if (b->d6_has_distance_b) snprintf(text, sizeof text, "B %.1f", (double)b->d6_distance_b);
+    else snprintf(text, sizeof text, "B --");
+    if ((r = lcd_output_draw_text(8, 33, text, fg, 0x10a2u, 1))) return r;
     snprintf(text, sizeof text, "%.1f", (double)b->d6_temperature);
     if ((r = d6_card(96, 14, 0xf3aeu, "TEMP C", text))) return r;
     snprintf(text, sizeof text, "%.1f", (double)b->d6_humidity);

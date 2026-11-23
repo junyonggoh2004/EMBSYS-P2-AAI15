@@ -2,12 +2,14 @@
 
 **Current D6 fixture, 21 November 2026.** Use the [current wiring map](BOARD_A_SONAR_ONLY_WIRING.md) and [`config/board_a.cfg`](../../config/board_a.cfg). There is no radar profile or radar wire. This tests sensor readings, not automatic doorway counting. AHT, light and both sonars have produced valid individual readings; the sonars also have intermittent timeout/invalid readings or apparent background returns. A stable fixed-target result and complete four-sensor pass remain unverified.
 
+For the combined MQTT run, the easiest PowerShell view of **actual live values** is `python tools/show_live_values.py --board A` from the repository root while the broker and Board A are running. It prints C, %RH, lux and valid cm readings continuously, and labels invalid sonar echoes. Use `--board B` to check the same frames after Board B receives them. See [usecase_commands.md](../../usecase_commands.md) for broker and board startup. The serial-console procedure below remains useful for isolated tests.
+
 ## 1. Start the Board A console
 
 Connect **only Board A** to the laptop at the ESP32 socket printed `USB` (native USB). Start a fresh PowerShell:
 
 ```powershell
-cd 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
+cd 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
 $py = "$env:USERPROFILE\.espressif\python_env\idf6.1_py3.14_env\Scripts\python.exe"
 & $py -m serial.tools.list_ports -v
 ```
