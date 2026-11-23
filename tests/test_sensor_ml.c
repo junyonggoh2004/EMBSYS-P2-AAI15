@@ -12,11 +12,17 @@ static bool ready=true,fail_invoke;
 static float seen[31];
 static int output_dim=1;
 static int published_results, published_status;
+static unsigned comfort_updates, last_comfort_score;
 static bool status_ok;
 static char last_published[512];
 bool mqtt_pub_ml_result(const char *json) {
     published_results++;
     snprintf(last_published, sizeof last_published, "%s", json);
+    return true;
+}
+bool mqtt_pub_d6_comfort(unsigned score) {
+    comfort_updates++;
+    last_comfort_score = score;
     return true;
 }
 bool mqtt_pub_ml_status(bool ok, const char *reason, unsigned long generation) {
@@ -274,6 +280,16 @@ int main(void) {
     cmd("ML PRESET comfort-summer"); assert(!local_output);
     cmd("ML OUTPUT local"); cmd("ML REPLAY 26.3 67");
     assert(local_len == 2 && local_frame[0] == 78 && local_frame[1] == 0);   /* comfort score */
+
+    cmd("ML OUTPUT publish");
+    cmd("ML REPLAY 26.3 67");
+    assert(comfort_updates == 0); /* Replays stay off the live dashboard channel. */
+    cmd("ML RUN");
+    samples(); tick();
+    assert(comfort_updates == 1 && last_comfort_score == 78);
+    now += 5001;
+    sensor_ml_poll(true);
+    assert(comfort_updates == 1); /* Stale inference cannot refresh C's deadline. */
 
     /* D4 3.2: the model sent over MQTT is chosen by name; its shape is read
        on loading, and a setup that does not fit keeps the previous model. */

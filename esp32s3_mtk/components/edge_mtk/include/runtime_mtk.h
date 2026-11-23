@@ -59,7 +59,10 @@ typedef struct {
 
 typedef struct {
     char     name[24];
-    uint32_t value_us;
+    union {
+        uint32_t value_us;
+        uint32_t d6_received_ms;
+    };
     /* Opt-in LCDTEST only; regular benchmark producers zero these fields. */
     uint16_t lcd_width, lcd_height;
     uint16_t lcd_x_offset, lcd_y_offset;
@@ -70,6 +73,7 @@ typedef struct {
     float d6_temperature, d6_humidity;
     float d6_distance, d6_ml_score;
     char d6_ml_model[16];
+    uint8_t d6_comfort_score;
     bool d6_has_distance, d6_has_ml, d6_mock;
 } bench_msg_t;
 
@@ -138,6 +142,7 @@ void runtime_bench(const char *name, uint32_t value_us);
 
 /* Fixed-schema, opt-in Board B -> C MQTT display fixture. */
 void runtime_d6_snapshot_receive(const char *payload, int length);
+void runtime_d6_comfort_receive(const char *payload, int length);
 
 // Registered by the MQTT layer (task 30); SchedulerTask calls them so that
 // configuration is only ever applied in that task.

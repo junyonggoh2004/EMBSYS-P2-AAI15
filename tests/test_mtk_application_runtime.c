@@ -10,10 +10,24 @@
 static unsigned lcd_inits, lcd_patterns, lcd_closes;
 static int lcd_init_result = HAL_OK;
 static lcd_output_config_t last_lcd;
+static char lcd_ml_value[24];
+static uint32_t test_now = 1000;
+static unsigned comfort_test_step;
 int lcd_output_init(const lcd_output_config_t *config)
 { ++lcd_inits; last_lcd = *config; return lcd_init_result; }
 void lcd_output_deinit(void) { ++lcd_closes; }
 int lcd_output_test_pattern(void) { ++lcd_patterns; return HAL_OK; }
+int lcd_output_fill(uint16_t color) { (void)color; return HAL_OK; }
+int lcd_output_fill_rect(uint16_t x, uint16_t y, uint16_t width,
+                         uint16_t height, uint16_t color)
+{ (void)x; (void)y; (void)width; (void)height; (void)color; return HAL_OK; }
+int lcd_output_draw_text(uint16_t x, uint16_t y, const char *text,
+                         uint16_t foreground, uint16_t background, uint8_t scale)
+{
+    (void)foreground; (void)background; (void)scale;
+    if (x == 200 && y == 34) snprintf(lcd_ml_value, sizeof lcd_ml_value, "%s", text);
+    return HAL_OK;
+}
 
 typedef struct message {
     struct message *next;
@@ -67,6 +81,33 @@ ER tk_snd_mbf(ID id, void *data, INT bytes, TMO timeout)
 INT tk_rcv_mbf(ID id, void *out, TMO timeout)
 {
     queue_t *q = queue(id);
+    if (!q->head && id == bench_mbf && comfort_test_step) {
+        assert(active_task == BENCH_TASK);
+        switch (comfort_test_step++) {
+        case 1: {
+            assert(timeout == 6000 && !strcmp(lcd_ml_value, "92"));
+            test_now += 3000;
+            runtime_d6_comfort_receive("100", 3);
+            const char snapshot[] = "{\"v\":1,\"seq\":1,\"occupancy\":2,\"temperature_c\":27.5,\"humidity_pct\":65.2,\"light_lux\":420}";
+            runtime_d6_snapshot_receive(snapshot, sizeof snapshot - 1);
+            assert(q->count == 1);
+            break;
+        }
+        case 2:
+            assert(timeout == 3000 && !strcmp(lcd_ml_value, "92"));
+            test_now += 3000;
+            return E_TMOUT;
+        case 3:
+            assert(timeout == TMO_FEVR && !strcmp(lcd_ml_value, "STALE"));
+            runtime_d6_comfort_receive("81", 2);
+            break;
+        case 4:
+            assert(timeout == 6000 && !strcmp(lcd_ml_value, "81"));
+            longjmp(waiting, 1);
+        default:
+            assert(false);
+        }
+    }
     if (!q->head) {
         if (timeout == TMO_POL) return E_TMOUT; /* ControlTask polls ctrl_mbf */
         assert(((active_task == APP_TASK && id == app_mbf) ||
@@ -99,7 +140,7 @@ ER tk_slp_tsk(TMO timeout) { (void)timeout; abort(); }
 ER tk_wup_tsk(ID id) { (void)id; abort(); }
 
 uint64_t hal_time_us(void) { return 1000000; }
-uint32_t hal_time_ms(void) { return 1000; }
+uint32_t hal_time_ms(void) { return test_now; }
 int hal_console_getc(uint32_t timeout)
 {
     assert(timeout == 100000 && active_task == CONTROL_TASK);
@@ -310,7 +351,7 @@ int main(void)
     assert((app->tskatr & (TA_ASSPRC | TA_FPU)) == (TA_ASSPRC | TA_FPU));
     assert(queue(app_mbf)->config.maxmsz == sizeof(application_message_t));
     assert(queue(app_mbf)->config.bufsz == 8 * cost(sizeof(application_message_t)));
-    assert(sizeof(bench_msg_t) == 40);
+    assert(sizeof(bench_msg_t) == 84); /* D6 snapshots are included in the queue budget. */
     assert(queue(bench_mbf)->config.maxmsz == sizeof(bench_msg_t));
     assert(queue(bench_mbf)->config.bufsz == BENCH_MBF_MSGS * cost(sizeof(bench_msg_t)));
     printf("Native bench_msg_t=%zu, bench_mbf=%zu bytes (target layout still needs image audit)\n",
@@ -521,6 +562,14 @@ int main(void)
     consume_app();
     assert(status().occupancy == 1 && status().stats.malformed == malformed + 1);
     for (ID id = 1; id <= (ID)queue_count; ++id) clear_queue(id);
+    bench_msg_t view = { .name = "D6VIEW" };
+    assert(runtime_send(bench_mbf, &view, sizeof view));
+    runtime_d6_comfort_receive("9x", 2);
+    runtime_d6_comfort_receive("92", 2);
+    assert(queue(bench_mbf)->count == 2);
+    comfort_test_step = 1;
+    consume_bench();
+    assert(comfort_test_step == 5 && queue(bench_mbf)->count == 0);
     puts("micro T-Kernel application glue: PASS (modeled kernel, actual runtime task bodies)");
     return 0;
 }

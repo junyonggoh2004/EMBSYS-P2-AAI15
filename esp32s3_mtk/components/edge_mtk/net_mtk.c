@@ -40,6 +40,7 @@
 
 #define MQTT_BUF_SIZE   (SCHED_TEXT_MAX + 512)
 #define MAX_FOLLOWS     8
+#define D6_COMFORT_TOPIC "d6/board-b/comfort"
 
 static char s_host[64];
 static uint16_t s_port = 1883;
@@ -129,6 +130,16 @@ bool mqtt_pub_ml_result(const char *json)
     int n = snprintf(topic, sizeof topic, "pico/%s/ml/result", s_node);
     return n > 0 && n < (int)sizeof topic &&
         enqueue(PUB_PUBLISH, topic, json, strlen(json), 1, false);
+}
+
+bool mqtt_pub_d6_comfort(unsigned score)
+{
+    if (strcmp(s_node, "s3-002") != 0) return true;
+    if (score > 99) return false;
+    char payload[3];
+    int length = snprintf(payload, sizeof payload, "%u", score);
+    /* An old display score is expendable. Use no retain or QoS retries. */
+    return enqueue(PUB_PUBLISH, D6_COMFORT_TOPIC, payload, (size_t)length, 0, false);
 }
 
 bool mqtt_pub_ml_status(bool ok, const char *reason, unsigned long generation)
@@ -222,12 +233,18 @@ bool mqtt_follow_remote_source(const char *other_node_id, const char *remote_sou
 
 // ---------- inbound routing (runs in the esp-mqtt task) ----------
 
-static void route_message(const char *topic, const char *bytes, int length)
+static void route_message(const char *topic, const char *bytes, int length, bool retained)
 {
     static sched_msg_t msg;                 // only the esp-mqtt task uses it
-    if (!strcmp(s_node, "s3-003") && !strcmp(topic, "d6/board-b/snapshot")) {
-        runtime_d6_snapshot_receive(bytes, length);
-        return;
+    if (!strcmp(s_node, "s3-003")) {
+        if (!strcmp(topic, "d6/board-b/snapshot")) {
+            runtime_d6_snapshot_receive(bytes, length);
+            return;
+        }
+        if (!strcmp(topic, D6_COMFORT_TOPIC)) {
+            if (!retained) runtime_d6_comfort_receive(bytes, length);
+            return;
+        }
     }
     char own[80];
     int own_len = snprintf(own, sizeof own, "pico/%s/", s_node);
@@ -299,7 +316,8 @@ static void mqtt_event(void *arg, esp_event_base_t base, int32_t id, void *data)
         } else {
             s_rx_have = (int)sizeof s_rx_buf;   // keep the head; route_message truncates
         }
-        if (e->current_data_offset + e->data_len >= s_rx_total) route_message(s_rx_topic, s_rx_buf, s_rx_have);
+        if (e->current_data_offset + e->data_len >= s_rx_total)
+            route_message(s_rx_topic, s_rx_buf, s_rx_have, e->retain);
         break;
     default:
         break;
@@ -440,6 +458,8 @@ static void on_connected(void)
     if (!strcmp(s_node, "s3-003")) {
         int sub = esp_mqtt_client_subscribe(s_client, "d6/board-b/snapshot", 1);
         printf("[D6MQTT] C snapshot subscribe %s\n", sub >= 0 ? "OK" : "FAILED");
+        sub = esp_mqtt_client_subscribe(s_client, D6_COMFORT_TOPIC, 0);
+        printf("[D6MQTT] C comfort subscribe %s\n", sub >= 0 ? "OK" : "FAILED");
     }
 
     char payload[128];

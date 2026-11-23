@@ -1,6 +1,6 @@
 # Run the classroom embedded ML demo
 
-The first ML implementation came from `dev-jy-ml` and was integrated into `main` through `d4-live-ml-sitt`. It uses the existing ESP-IDF / µT-Kernel firmware and unchanged [breadboard wiring](../../esp32s3_mtk/WIRING.md). The LCD remains disabled and non-functional.
+The first ML implementation came from `dev-jy-ml` and was integrated into `main` through `d4-live-ml-sitt`. It uses ESP-IDF and µT-Kernel. The standalone ML presets use the [original breadboard wiring](../../esp32s3_mtk/WIRING.md). The three-board D6 check uses the [D6 hardware setup](../d6/N16R8_BOARD_SETUP.md).
 
 ## Run one of the three classroom models
 
@@ -25,6 +25,29 @@ powershell.exe -NoProfile -File .\tools\build.ps1 ml-demo -Port COM5 -Model sine
 powershell.exe -NoProfile -File .\tools\build.ps1 ml-demo -Port COM5 -Model comfort-summer
 powershell.exe -NoProfile -File .\tools\build.ps1 ml-demo -Port COM5 -Model people-counter
 ```
+
+## Test live comfort and expiry on Board C
+
+Use the [D6 board and MQTT setup](../../MQTT_commands.md) to connect A (`s3-001`), B (`s3-002`), and C (`s3-003`) to the same broker. Build and flash B and C from the branch with this change. Board A can use the existing D6 firmware and AHT configuration. The classroom VS Code task replaces sensor settings, so use the D6 configs for this test.
+
+1. Start A's AHT feed. On B, configure its remote AHT input if it does not already follow that source with `remote_profile=aht`. On a clean B, enter these lines in its serial monitor:
+
+   ```text
+   BEGINCFG|name=IN_AHT|proto=mqtt|mode=poll|freq_hz=0.5|remote_node=s3-001|remote_source=AHT|remote_profile=aht|ENDCFG
+   RUN
+   ```
+
+2. On C, enter `D6VIEW`. From a PowerShell terminal, send the following MQTT command to B. Replace the broker IP with the test broker's actual address.
+
+   ```powershell
+   $brokerIp = 'BROKER_IP'
+   $pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
+   '{"ml_setup":{"version":1,"model":"comfort-summer","inputs":[{"index":0,"source":{"kind":"remote","node":"s3-001","name":"AHT"},"field":"temperature_c","min":0,"max":60},{"index":1,"source":{"kind":"remote","node":"s3-001","name":"AHT"},"field":"humidity_pct","min":0,"max":100}],"output":{"kind":"publish"}}}' |
+     & $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -s
+   ```
+
+3. Check that B reports a valid comfort result for `remote:s3-001`, and C shows that score under **LIVE COMFORT**. The live score uses `d6/board-b/comfort` (QoS 0, not retained). The existing snapshot path, including the labelled mock dashboard, continues to handle the other cards. A mock snapshot cannot replace an expired live score.
+4. Send `STOP` on A and wait. B skips inference once its last required input exceeds five seconds of age. C displays **STALE** six seconds after the last valid comfort result it received from B. These deadlines begin at different times. Send `RUN` on A and confirm that a fresh comfort result restores the number.
 
 ## Start in VS Code
 

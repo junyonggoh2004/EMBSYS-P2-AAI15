@@ -495,7 +495,12 @@ static bool class_result(const model_t *model, const float *inputs, const char *
            class_fields(model, winner, confidence, fields, sizeof fields), (unsigned long)elapsed);
     if (length <= 0 || length >= (int)sizeof line) return false;
     puts(line);
-    if (publish_output && !mqtt_pub_ml_result(line)) puts("ML: WARN result publish failed");
+    if (publish_output) {
+        if (!mqtt_pub_ml_result(line)) puts("ML: WARN result publish failed");
+        if (model->kind == COMFORT && strcmp(source, "replay") != 0 &&
+            !mqtt_pub_d6_comfort((unsigned)winner))
+            puts("ML: WARN D6 comfort publish failed");
+    }
     if (local_output) {
         float index = (float)winner;
         emit_local(&index, 1, true);

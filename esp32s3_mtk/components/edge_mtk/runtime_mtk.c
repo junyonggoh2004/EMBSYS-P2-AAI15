@@ -656,6 +656,27 @@ static void application_task(INT stacd, void *exinf)
 
 // ---------- BenchmarkTask ----------
 
+#define D6_COMFORT_TIMEOUT_MS 6000u
+
+typedef struct {
+    uint32_t received_ms;
+    unsigned score;
+    bool seen, stale;
+} d6_comfort_t;
+
+void runtime_d6_comfort_receive(const char *payload, int length)
+{
+    if (!payload || length < 1 || length > 2) return;
+    unsigned score = 0;
+    for (int i = 0; i < length; ++i) {
+        if (payload[i] < '0' || payload[i] > '9') return;
+        score = score * 10 + (unsigned)(payload[i] - '0');
+    }
+    bench_msg_t b = { .name = "D6COMFORT", .d6_comfort_score = (uint8_t)score,
+                      .d6_received_ms = hal_time_ms() };
+    if (!runtime_send(bench_mbf, &b, sizeof b)) puts("[D6MQTT] comfort queue full");
+}
+
 void runtime_d6_snapshot_receive(const char *payload, int length)
 {
     /* The temporary contract uses the documented key order. Reject partial,
@@ -726,9 +747,40 @@ static int d6_card(uint16_t x, uint16_t y, uint16_t accent,
     return lcd_output_draw_text(x + 8, y + 10, value, 0xffffu, panel, 2);
 }
 
-static int d6_draw_snapshot(const bench_msg_t *b)
+static int d6_draw_ml(const bench_msg_t *snapshot, const d6_comfort_t *comfort)
 {
-    const uint16_t bg = 0x080fu, fg = 0xffffu, panel = 0x10a2u;
+    const uint16_t panel = 0x10a2u, fg = 0xffffu;
+    bool live = comfort->seen;
+    bool snapshot_ml = snapshot && snapshot->d6_has_ml;
+    const char *title = "ML OUTPUT", *detail = "NO MODEL", *status = "--";
+    char value[24] = "--";
+    if (live) {
+        title = "LIVE COMFORT";
+        detail = "SCORE 0-99";
+        status = "OK";
+        if (comfort->stale) snprintf(value, sizeof value, "STALE");
+        else snprintf(value, sizeof value, "%u", comfort->score);
+    } else if (snapshot_ml) {
+        detail = snapshot->d6_ml_model;
+        status = "OK";
+        snprintf(value, sizeof value, "%.3f", (double)snapshot->d6_ml_score);
+    }
+
+    int r = lcd_output_fill_rect(190, 14, 92, 59, panel);
+    if (r) return r;
+    if ((r = lcd_output_fill_rect(190, 14, 3, 59, 0xb49fu))) return r;
+    if ((r = lcd_output_fill_rect(193, 14, 89, 1, 0xb49fu))) return r;
+    if ((r = lcd_output_fill_rect(193, 72, 89, 1, 0xb49fu))) return r;
+    if ((r = lcd_output_draw_text(196, 17, title, 0xbdd7u, panel, 1))) return r;
+    bool stale = live && comfort->stale;
+    if ((r = lcd_output_draw_text(200, 34, value, stale ? 0xfd20u : fg, panel, 2))) return r;
+    if ((r = lcd_output_draw_text(196, 58, detail, 0xb49fu, panel, 1))) return r;
+    return stale ? HAL_OK : lcd_output_draw_text(265, 58, status, 0x07e0u, panel, 1);
+}
+
+static int d6_draw_snapshot(const bench_msg_t *b, const d6_comfort_t *comfort)
+{
+    const uint16_t bg = 0x080fu, fg = 0xffffu;
     char text[32];
     int r = lcd_output_fill(bg);
     if (r) return r;
@@ -749,19 +801,7 @@ static int d6_draw_snapshot(const bench_msg_t *b)
     snprintf(text, sizeof text, "%u", (unsigned)b->d6_light);
     if ((r = d6_card(96, 45, 0xff2eu, "LIGHT lux", text))) return r;
 
-    if ((r = lcd_output_fill_rect(190, 14, 92, 59, panel))) return r;
-    if ((r = lcd_output_fill_rect(190, 14, 3, 59, 0xb49fu))) return r;
-    if ((r = lcd_output_fill_rect(193, 14, 89, 1, 0xb49fu))) return r;
-    if ((r = lcd_output_fill_rect(193, 72, 89, 1, 0xb49fu))) return r;
-    if ((r = lcd_output_draw_text(196, 17, "ML OUTPUT", 0xbdd7u, panel, 1))) return r;
-    if (b->d6_has_ml) snprintf(text, sizeof text, "%.3f", (double)b->d6_ml_score);
-    else snprintf(text, sizeof text, "--");
-    if ((r = lcd_output_draw_text(200, 34, text, fg, panel, 2))) return r;
-    if ((r = lcd_output_draw_text(196, 58,
-                                  b->d6_has_ml ? b->d6_ml_model : "NO MODEL",
-                                  0xb49fu, panel, 1))) return r;
-    return lcd_output_draw_text(265, 58, b->d6_has_ml ? "OK" : "--",
-                                0x07e0u, panel, 1);
+    return d6_draw_ml(b, comfort);
 }
 
 static void benchmark_task(INT stacd, void *exinf)
@@ -769,9 +809,33 @@ static void benchmark_task(INT stacd, void *exinf)
     (void)stacd; (void)exinf;
     bench_msg_t b;
     bench_msg_t latest = { 0 };
+    d6_comfort_t comfort = { 0 };
     bool d6_view = false;
     for (;;) {
-        if (tk_rcv_mbf(bench_mbf, &b, TMO_FEVR) > 0) {
+        TMO wait = TMO_FEVR;
+        if (comfort.seen && !comfort.stale) {
+            uint32_t age = hal_time_ms() - comfort.received_ms;
+            wait = age < D6_COMFORT_TIMEOUT_MS ? (TMO)(D6_COMFORT_TIMEOUT_MS - age) : TMO_POL;
+        }
+        INT received = tk_rcv_mbf(bench_mbf, &b, wait);
+        uint32_t now = hal_time_ms();
+        if (received > 0 && !strcmp(b.name, "D6COMFORT") &&
+            now - b.d6_received_ms < D6_COMFORT_TIMEOUT_MS) {
+            runtime_alive(RT_BENCHMARK);
+            comfort = (d6_comfort_t){
+                .received_ms = b.d6_received_ms, .score = b.d6_comfort_score, .seen = true
+            };
+            int result = d6_view ? d6_draw_ml(NULL, &comfort) : HAL_OK;
+            printf("[D6MQTT] C comfort score=%u display=%d active=%u\n",
+                   comfort.score, result, d6_view ? 1u : 0u);
+            continue;
+        }
+        if (comfort.seen && !comfort.stale && now - comfort.received_ms >= D6_COMFORT_TIMEOUT_MS) {
+            comfort.stale = true;
+            int result = d6_view ? d6_draw_ml(NULL, &comfort) : HAL_OK;
+            printf("[D6MQTT] C comfort stale display=%d\n", result);
+        }
+        if (received > 0) {
             runtime_alive(RT_BENCHMARK);
             if (strcmp(b.name, "LCDTEST") == 0) {
                 d6_view = false;
@@ -799,14 +863,16 @@ static void benchmark_task(INT stacd, void *exinf)
                 lcd_output_deinit();
                 int result = lcd_output_init(&config);
                 d6_view = result == HAL_OK;
-                if (d6_view && latest.d6_seq) result = d6_draw_snapshot(&latest);
+                if (d6_view && latest.d6_seq) result = d6_draw_snapshot(&latest, &comfort);
                 else if (d6_view) {
                     result = lcd_output_fill(0x080f);
                     if (result == HAL_OK)
                         result = lcd_output_draw_text(4, 2, "ROOM MONITOR", 0xffff, 0x080f, 1);
                     if (result == HAL_OK)
-                        result = lcd_output_draw_text(94, 35, "WAIT B MQTT", 0x37db, 0x080f, 1);
+                        result = lcd_output_draw_text(94, 35, "WAIT SNAPSHOT", 0x37db, 0x080f, 1);
                 }
+                if (result == HAL_OK && comfort.seen && !latest.d6_seq)
+                    result = d6_draw_ml(NULL, &comfort);
                 printf("[D6MQTT] C view result=%d\n", result);
             }
             else if (strcmp(b.name, "D6SNAP") == 0) {
@@ -814,12 +880,14 @@ static void benchmark_task(INT stacd, void *exinf)
                     printf("[D6MQTT] stale/duplicate seq=%lu\n", (unsigned long)b.d6_seq);
                 } else {
                     latest = b;
-                    int result = d6_view ? d6_draw_snapshot(&latest) : HAL_OK;
+                    int result = d6_view ? d6_draw_snapshot(&latest, &comfort) : HAL_OK;
                     printf("[D6MQTT] C snapshot seq=%lu occupancy=%u display=%d active=%u\n",
                            (unsigned long)b.d6_seq, (unsigned)b.d6_occupancy,
                            result, d6_view ? 1u : 0u);
                 }
             }
+            else if (strcmp(b.name, "D6COMFORT") == 0)
+                puts("[D6MQTT] dropped expired comfort update");
             else if (strcmp(b.name, "SPIBENCH") == 0)
                 mtk_spi_benchmark(b.value_us >> 30, b.value_us & 0x3fffffffu);
             else if (strcmp(b.name, "SPIID") == 0)
