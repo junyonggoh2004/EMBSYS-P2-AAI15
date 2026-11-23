@@ -28,4 +28,9 @@ Five models are built into the firmware and are chosen at runtime with `ML MODEL
 
 ## 7. Current limits
 
-people-counter needs a window of 31 distance readings. The live pipeline does not build that window yet, so `ML RUN` refuses people-counter and it runs through `ML REPLAY` with 31 typed values; using it on live sonar data in D6 needs that window. Results are published by the board that ran the model; sending them to another board's LCD or rules is D4 task 3.4 and D6.
+`people-counter` uses the latest 31 consecutive readings from one bound local
+ultrasonic. The live pipeline waits until the window is full, then predicts
+again on each new reading. An invalid echo or a timing gap clears the
+window. `ML REPLAY` still accepts one complete, preprocessed window.
+The model reports the direction of that window. Board A's two-sensor
+`DOORWAY` rule keeps the live entry and exit totals.

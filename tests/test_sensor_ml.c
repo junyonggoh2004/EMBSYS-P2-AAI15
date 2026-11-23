@@ -122,6 +122,74 @@ static void samples(void) {
 }
 static void cmd(const char *s) { assert(sensor_ml_command(s,false)); }
 static void tick(void) { now+=interval_ms; sensor_ml_poll(true); }
+
+#ifdef HAVE_PEOPLE_COUNTER_MODEL
+static void direction_echo(unsigned width, uint32_t elapsed_ms)
+{
+    const uint8_t frame[] = {(uint8_t)width, (uint8_t)(width >> 8), 1};
+    now += elapsed_ms;
+    sensor_measurement_notify(&configs[2], frame, sizeof frame);
+    sensor_ml_poll(true);
+}
+
+static void test_direction_window(void)
+{
+    const char *setup = "{\"ml_setup\":{\"version\":1,\"model\":\"people-counter\",\"inputs\":["
+        "{\"index\":0,\"source\":{\"kind\":\"local\",\"name\":\"DISTANCE\"},"
+        "\"field\":\"distance_cm\",\"min\":0,\"max\":200}],\"output\":{\"kind\":\"publish\"}}}";
+    configs[2].mode = sample_mode_poll;
+    configs[2].timing.mode = TIMING_MODE_PERIODIC;
+    configs[2].timing.enabled = true;
+    configs[2].timing.interval_ms = 140;
+    uint32_t before = generation;
+    assert(sensor_ml_setup_json(setup, true));
+    assert(!status_ok && generation == before);
+
+    configs[2].timing.interval_ms = 70;
+    cmd("ML BIND 0 DISTANCE distance_cm 0 200");
+    cmd("ML RUN");
+    assert(enabled);
+    now = UINT32_MAX - 700; // the first full window crosses timer wrap
+    int before_runs = runs;
+    for (unsigned i = 0; i < 30; ++i) direction_echo(2000 + i, 70);
+    sensor_measurement_notify(&configs[1], light, sizeof light);
+    sensor_ml_poll(true);
+    assert(runs == before_runs);
+    direction_echo(2030, 70);
+    assert(runs == before_runs + 1);
+    assert(fabsf(seen[0] - 2000 * 0.00001715f) < 1e-6f);
+    assert(fabsf(seen[30] - 2030 * 0.00001715f) < 1e-6f);
+    assert(strstr(last_line, "\"input_source\":\"sensors\"") && strstr(last_line, "\"direction\":\"out\""));
+    sensor_ml_poll(true);
+    assert(runs == before_runs + 1); // the same window cannot predict twice
+    direction_echo(12000, 70); // valid echo beyond 200 cm, source's far marker
+    assert(runs == before_runs + 2);
+    assert(fabsf(seen[0] - 2001 * 0.00001715f) < 1e-6f && seen[30] == -0.001f);
+
+    sensor_measurement_notify(&configs[2], NULL, HAL_ERR_TIMEOUT);
+    sensor_ml_poll(true);
+    assert(direction_window.count == 0 && runs == before_runs + 2);
+    for (unsigned i = 0; i < 30; ++i) direction_echo(2500, 70);
+    assert(runs == before_runs + 2);
+    direction_echo(2500, 70);
+    assert(runs == before_runs + 3);
+    direction_echo(2500, 140); // a missed poll starts a new window
+    assert(direction_window.count == 1 && runs == before_runs + 3);
+    now += 96;
+    sensor_ml_poll(true);
+    assert(direction_window.count == 0);
+
+    assert(sensor_ml_setup_json(setup, true));
+    assert(status_ok && publish_output && direction_window.count == 0);
+    int before_publish = published_results;
+    for (unsigned i = 0; i < 31; ++i) direction_echo(3000, 70);
+    assert(published_results == before_publish + 1 && strstr(last_published, "\"direction\":\"out\""));
+    sensor_ml_invalidate(); // scheduler STOP, CLEAR or source reconfiguration
+    direction_echo(3000, 70);
+    assert(direction_window.count == 1 && published_results == before_publish + 1);
+}
+#endif
+
 int main(void) {
     strcpy(configs[0].name,"AHT"); configs[0].proto=proto_i2c; configs[0].i2c_sensor=I2C_SENSOR_AHT;
     strcpy(configs[1].name,"LIGHT"); configs[1].proto=proto_i2c; configs[1].i2c_sensor=I2C_SENSOR_TSL2561;
@@ -190,6 +258,7 @@ int main(void) {
     cmd("ML RUN"); assert(!enabled);
     cmd("ML REPLAY 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31");
     assert(runs == after_replay + 2 && seen[0] == 1 && seen[30] == 31);
+    test_direction_window();
 #else
     assert(dim == 2 && output_dim == 100 && enabled);
 #endif

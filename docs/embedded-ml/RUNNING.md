@@ -14,7 +14,7 @@ On a flashed board, close the monitor with **Ctrl+C**. In VS Code use **Terminal
 
 For either live model, open **MTK: monitor** after the task finishes. The task replaces the volatile sensor and rule configuration of the connected board, so use a demo fixture. For `people-counter`, read the result in the task terminal. It pauses sampling without clearing the sensor configuration. Select a live model to resume the demo. A labelled, preprocessed trace can be supplied with `ML REPLAY` in the raw monitor.
 
-`people-counter` uses the ESP32-S3 INT8 vector kernels. `sine-float` and `comfort-summer` use Float32 CPU inference. The motion sonars and separate left/right counting ultrasonics require their own trigger and counting logic. The classroom task demonstrates ML and one-shot replay.
+`people-counter` uses the ESP32-S3 INT8 vector kernels. `sine-float` and `comfort-summer` use Float32 CPU inference. The classroom task uses a one-shot replay for `people-counter`. To use a live ultrasonic stream, follow the [rolling-window steps below](#live-people-counter-with-one-ultrasonic).
 
 See the [classroom failure-response analysis](FAILURE_RESPONSE.md) for how missing readings, ambiguous crossings and interrupted MQTT should affect the demo.
 
@@ -155,7 +155,7 @@ RUN
 |---|---|---|
 | `sine-int8` | Load the three-sensor profile and start live inference, or replay a phase with `ML REPLAY 1.57` | Unitless sine output. The board capture shows its ESP-NN vector calls. |
 | `comfort-summer` | Bind the AHT and run live, or enter `ML REPLAY 26.3 67` after selecting the model | Estimated comfort score on the source model's scale of 0–99. The monitor shows it as a score out of 100. |
-| `people-counter` | Select the bundled INT8 model, then enter `ML REPLAY` followed by a complete 31-value model-ready window | `IN`, `OUT`, or `NONE` with the winning class score. Replay produces a classification only. |
+| `people-counter` | Bind one local ultrasonic for a live rolling window, or use `ML REPLAY` with 31 model-ready values | `IN`, `OUT`, or `NONE` with the winning class score for each window. |
 
 To replay without connected sensors, open **MTK: monitor raw** and enter these commands on the flashed ESP32-S3:
 
@@ -171,7 +171,41 @@ The comfort replay uses °C and % RH. Its desktop reference is **92/100**. The s
 
 The comfort checkpoint estimates current comfort under the original summer training assumptions. It used thermal-comfort simulations, and its class score indicates the model's preferred class. It takes temperature and humidity. For the classroom panel, show that score alongside occupancy, temperature and lux. Use occupancy to distinguish occupied and empty settings, lux for brighten/hold/dim, and temperature for increase/hold/reduce cooling. A low comfort score alone gives no direction for cooling. The published comfort checkpoint is FP32.
 
-### Doorway model replay and hardware follow-up
+### Live people-counter with one ultrasonic
+
+Flash the updated firmware and open **MTK: monitor**. With Board A's Sonar A on
+TRIG GPIO10 and ECHO GPIO11, enter these lines one at a time. This is a
+single-sensor test and leaves the other sensors configured off until their profiles
+are loaded again.
+
+```text
+STOP
+CLEAR
+BEGINCFG|name=SONAR_A|proto=gpio|gpio.mode=pulse|gpio.trig=10|gpio.echo=11|gpio.pull=down|gpio.trig_us=10|gpio.pulse_timeout_us=20000|mode=poll|timing.interval_ms=70|timing.timeout_ms=30|ENDCFG
+ML PRESET people-counter
+ML BIND 0 SONAR_A distance_cm 0 200
+ML RUN
+RUN
+```
+
+The first prediction needs 31 valid readings, about 2.1 seconds from first to
+last at 70 ms. Each new reading replaces the oldest and triggers another
+prediction. `ML SHOW` reports the number of buffered readings. If an echo
+fails or the measured gap differs from the configured period by more than
+25 ms, the firmware discards the window and prints `MISSING_OR_STALE`.
+It resumes predictions after 31 consecutive valid readings.
+
+Use a stable background echo for the test. The model scales valid centimetre
+readings by 0.001 and encodes valid echoes at 200 cm and above as −0.001.
+The original Grove training setup used roughly 50 ms sampling. The 70 ms
+HC-SR04 test deliberately runs slower, so verify the prediction labels with
+real walks before relying on them. The live model accepts nominal intervals
+from 50 to 75 ms. Use the separate two-sensor [`DOORWAY` command](../d6/SONAR_ONLY_USECASE.md)
+for entry and exit totals. [Original training procedure](https://wiki.seeedstudio.com/Wio-Terminal-TinyML-EI-4/) ·
+[Raw input scaling](https://studio.edgeimpulse.com/public/18808/latest/impulse/1/dsp/raw/16) ·
+[HC-SR04 timing](https://cdn.sparkfun.com/datasheets/Sensors/Proximity/HCSR04.pdf)
+
+### Replay a doorway trace
 
 - Select `ML MODEL people-counter` after `STOP`. For a quick model-loading check, send `ML REPLAY` with exactly 31 zeroes. This exercises the model on a synthetic input. Use a labelled sensor trace to judge whether the direction is correct. [Model file and provenance](../../models/classroom/README.md)
 
@@ -179,8 +213,8 @@ The comfort checkpoint estimates current comfort under the original summer train
 ML REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 ```
 
-- Use the source project's preprocessing and labelled 31-value windows for replay. The pretrained classifier came from a single Grove ultrasonic sensor. Keep live occupancy counting based on the confirmed two-zone crossing sequence while testing how the classroom traces differ.
-- **When Brendan returns the hardware**, confirm both HC-SR04+ modules, the final TRIG/ECHO pins, and the physical zones before updating the wiring table or adding a live doorway profile. The supplied modules have 3.3 V-compatible Echo and use no resistor in this setup. Name the hallway zone A and classroom zone B. Confirm A → B entry, B → A exit, and turn-backs or ambiguous crossings leaving occupancy unchanged. Alternate pings and validate the separation with both sensors fitted.
+Use the source project's preprocessing and labelled 31-value windows for
+replay. `ML REPLAY` takes a complete window in one command.
 
 ## Run the sensor configuration demos
 
