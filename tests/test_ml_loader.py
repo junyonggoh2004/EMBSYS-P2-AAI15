@@ -52,4 +52,40 @@ class AhtLightTests(unittest.TestCase):
             with self.assertRaises(ValueError): load_ml.configure(None,['STOP','CLEAR','RUN'],'autoencoder','aht-light')
             send.assert_not_called()
 
+
+class ClassroomDemoTests(unittest.TestCase):
+    def test_live_models_only_configure_their_inputs(self):
+        base_config = TOOLS.parents[1] / "config/three_sensors.cfg"
+        commands = load_ml.read_configuration(base_config)
+        for model, sources, model_commands in [
+            ("sine-float", ["AHT", "LIGHT"], [
+                "ML MODEL sine-float", "ML RESET",
+                "ML BIND 0 AHT temperature_c -10 50", "ML BIND 1 AHT humidity_pct 0 100",
+                "ML BIND 2 LIGHT light_lux 0 1000",
+            ]),
+            ("comfort-summer", ["AHT"], ["ML PRESET comfort-summer"]),
+        ]:
+            with self.subTest(model=model):
+                sensor_configs = [next(line for line in commands if line.startswith(f"BEGINCFG|name={name}|"))
+                                  for name in sources]
+                connection = Connection([
+                    b"STOP\n", b"CLEARED\n", *([b"CFG: ok\n"] * len(sources)), b"[SHOW]\n",
+                    *(f"ML: OK {command[3:]}\n".encode() for command in model_commands),
+                    b"ML: OK RUN\n", b"RUN\n",
+                ])
+                load_ml.run_classroom_demo(connection, commands, model)
+                expected = ["STOP", "CLEAR", *sensor_configs, "SHOW", *model_commands, "ML RUN", "RUN"]
+                self.assertEqual(connection.writes, [f"{command}\r\n".encode() for command in expected])
+
+    def test_people_counter_replays_31_values_without_clearing_sensors(self):
+        replay = "REPLAY " + " ".join(["0"] * 31)
+        connection = Connection([
+            b"STOP\n", b"ML: OK MODEL people-counter\n",
+            b'{"type":"ml","model":"people-counter","direction":"none","status":"OK"}\n',
+            f"ML: OK {replay}\n".encode(),
+        ])
+        load_ml.run_classroom_demo(connection, [], "people-counter")
+        self.assertEqual(connection.writes, [b"STOP\r\n", b"ML MODEL people-counter\r\n", f"ML {replay}\r\n".encode()])
+
+
 if __name__=='__main__': unittest.main()

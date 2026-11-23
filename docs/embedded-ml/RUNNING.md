@@ -1,6 +1,30 @@
-# Run the first embedded ML version
+# Run the classroom embedded ML demo
 
 The first ML implementation came from `dev-jy-ml` and was integrated into `main` through `d4-live-ml-sitt`. It uses the existing ESP-IDF / µT-Kernel firmware and unchanged [breadboard wiring](../../esp32s3_mtk/WIRING.md). The LCD remains disabled and non-functional.
+
+## Run one of the three classroom models
+
+On a flashed board, close the monitor with **Ctrl+C**. In VS Code use **Terminal → Run Task → MTK: run classroom ML demo**, then choose the board's COM port and a model.
+
+| Model | Inputs used by this task | Expected output |
+|---|---|---|
+| `sine-float` | Live AHT temperature and humidity plus TSL2561 lux | A unitless sine estimate around −1 to +1. The firmware scales and combines the three readings into one phase. |
+| `comfort-summer` | Live AHT temperature and humidity | A comfort score from 0 to 99. Replay of 26.3 °C and 67% RH gave 92 on the board. |
+| `people-counter` | One replay of 31 zeroes in place of a preprocessed window from one counting ultrasonic sensor | IN, NONE or OUT and a class score. The reference board run gave NONE at 0.957 for this fixture. |
+
+For either live model, open **MTK: monitor** after the task finishes. The task replaces the volatile sensor and rule configuration of the connected board, so use a demo fixture. For `people-counter`, read the result in the task terminal. It pauses sampling without clearing the sensor configuration. Select a live model to resume the demo. A labelled, preprocessed trace can be supplied with `ML REPLAY` in the raw monitor.
+
+`people-counter` uses the ESP32-S3 INT8 vector kernels. `sine-float` and `comfort-summer` use Float32 CPU inference. The motion sonars and separate left/right counting ultrasonics require their own trigger and counting logic. The classroom task demonstrates ML and one-shot replay.
+
+See the [classroom failure-response analysis](FAILURE_RESPONSE.md) for how missing readings, ambiguous crossings and interrupted MQTT should affect the demo.
+
+The same task is available from PowerShell in the `esp32s3_mtk` folder. Replace `COM5` with the board's port.
+
+```powershell
+powershell.exe -NoProfile -File .\tools\build.ps1 ml-demo -Port COM5 -Model sine-float
+powershell.exe -NoProfile -File .\tools\build.ps1 ml-demo -Port COM5 -Model comfort-summer
+powershell.exe -NoProfile -File .\tools\build.ps1 ml-demo -Port COM5 -Model people-counter
+```
 
 ## Start in VS Code
 

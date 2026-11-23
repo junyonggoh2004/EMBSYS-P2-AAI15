@@ -1,7 +1,7 @@
 param(
-    [ValidateSet('build','configure','flash','monitor','audit','sensors','ml')][string]$Action='build',
+    [ValidateSet('build','configure','flash','monitor','audit','sensors','ml','ml-demo')][string]$Action='build',
     [string]$Port,
-    [ValidateSet('sine-float','sine-int8','autoencoder','comfort-summer')][string]$Model='sine-float',
+    [ValidateSet('sine-float','sine-int8','autoencoder','comfort-summer','people-counter')][string]$Model='sine-float',
     [ValidateSet('all','aht-light')][string]$Inputs='all',
     [string]$BuildDirectory,
     [switch]$RawMonitor,
@@ -44,9 +44,10 @@ if ($Action -eq 'audit') {
     if ($LASTEXITCODE -ne 0) { throw 'Build audit failed.' }
     exit 0
 }
-if (($Action -in @('flash','monitor','sensors','ml')) -and -not $Port) { throw 'Specify -Port COMx explicitly.' }
-if ($Action -eq 'ml') {
+if (($Action -in @('flash','monitor','sensors','ml','ml-demo')) -and -not $Port) { throw 'Specify -Port COMx explicitly.' }
+if ($Action -in @('ml','ml-demo')) {
     $MlArgs = @('--port', $Port, '--model', $Model, '--inputs', $Inputs)
+    if ($Action -eq 'ml-demo') { $MlArgs += '--classroom-demo' }
     if ($ConfigFile) { $MlArgs += @('--config', $ConfigFile) }
     & $MtkPython (Join-Path $PSScriptRoot 'load_ml.py') @MlArgs
     if ($LASTEXITCODE -ne 0) { throw 'ML configuration was not acknowledged. Check firmware and port.' }

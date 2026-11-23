@@ -5,6 +5,9 @@ import time
 import serial
 from load_sensors import wait_ready, load
 
+CLASSROOM_INPUTS = {"sine-float": "aht-light", "comfort-summer": "aht"}
+CLASSROOM_MODELS = (*CLASSROOM_INPUTS, "people-counter")
+
 def ml_command(connection, command):
     connection.write((command+'\r\n').encode('ascii'))
     connection.flush()
@@ -27,6 +30,9 @@ def configure(connection, commands, model, inputs="all"):
         if model=='autoencoder':
             raise ValueError('autoencoder needs the full sensor preset')
         commands=[c for c in commands if 'name=DISTANCE|' not in c]
+    if inputs == "aht":
+        commands = [command for command in commands
+                    if not command.startswith("BEGINCFG|") or command.startswith("BEGINCFG|name=AHT|")]
     load(connection,commands[:-1])
     if inputs == 'all' or model == 'comfort-summer':
         ml_command(connection,'ML PRESET '+model)
@@ -61,26 +67,50 @@ def apply_configuration(connection, commands):
             load(connection, [command])
 
 
+def run_classroom_demo(connection, commands, model):
+    if model == "people-counter":
+        load(connection, ["STOP"])
+        ml_command(connection, "ML MODEL people-counter")
+        ml_command(connection, "ML REPLAY " + " ".join(["0"] * 31))
+        return
+    configure(connection, commands, model, CLASSROOM_INPUTS[model])
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--port',required=True)
-    parser.add_argument('--model',choices=['sine-float','sine-int8','autoencoder','comfort-summer'],default='sine-float')
+    parser.add_argument('--model',choices=[*CLASSROOM_MODELS,'sine-int8','autoencoder'],default='sine-float')
     parser.add_argument('--inputs',choices=['all','aht-light'],default='all')
-    parser.add_argument("--config", type=Path, help="Apply sensor and ML commands from this file.")
+    source = parser.add_mutually_exclusive_group()
+    source.add_argument("--config", type=Path, help="Apply sensor and ML commands from this file.")
+    source.add_argument("--classroom-demo", action="store_true", help="Run one of the three classroom models.")
     args=parser.parse_args()
+    if args.classroom_demo and (args.model not in CLASSROOM_MODELS or args.inputs != "all"):
+        parser.error("--classroom-demo chooses a fixed input profile for sine-float, comfort-summer, or people-counter")
+    if args.model == "people-counter" and not args.classroom_demo:
+        parser.error("people-counter uses replay; specify --classroom-demo or enter ML REPLAY in the monitor")
+    replay = args.model == "people-counter"
     path = args.config or Path(__file__).resolve().parents[2] / "config/three_sensors.cfg"
-    commands = read_configuration(path)
+    commands = [] if replay else read_configuration(path)
     connection=serial.Serial(port=None,baudrate=115200,timeout=0.2,write_timeout=2)
     connection.dtr=False; connection.rts=False; connection.port=args.port
-    print('Loading sensors and ML; STOP/CLEAR replaces volatile sensor/rule settings.',flush=True)
+    if replay:
+        print("Pausing sampling for a 31-value people-counter replay.", flush=True)
+    else:
+        print('Loading sensors and ML; STOP/CLEAR replaces volatile sensor/rule settings.',flush=True)
     with connection:
         connection.reset_input_buffer()
         wait_ready(connection)
-        if args.config is None:
+        if args.classroom_demo:
+            run_classroom_demo(connection, commands, args.model)
+        elif args.config is None:
             configure(connection,commands,args.model,args.inputs)
         else:
             apply_configuration(connection, commands)
-    print('ML and sensor RUN acknowledged. Open MTK: monitor; do not press RESET.')
+    if replay:
+        print("Replay complete. The result is above. Select a live demo to resume sampling.")
+    else:
+        print('ML and sensor RUN acknowledged. Open MTK: monitor; do not press RESET.')
 
 if __name__=='__main__':
     main()

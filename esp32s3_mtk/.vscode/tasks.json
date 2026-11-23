@@ -162,6 +162,25 @@
       "problemMatcher": []
     },
     {
+      "label": "MTK: run classroom ML demo",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "${workspaceFolder}/tools/build.ps1",
+        "ml-demo",
+        "-Port",
+        "${input:serialPort}",
+        "-Model",
+        "${input:classroomModel}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "MTK: load demo configuration",
       "type": "process",
       "command": "powershell.exe",
@@ -187,6 +206,17 @@
       "type": "promptString",
       "description": "ESP32 serial port from Device Manager",
       "default": "COM5"
+    },
+    {
+      "id": "classroomModel",
+      "type": "pickString",
+      "description": "Classroom model. People-counter runs a one-shot replay.",
+      "options": [
+        "sine-float",
+        "comfort-summer",
+        "people-counter"
+      ],
+      "default": "sine-float"
     },
     {
       "id": "mlDemoConfig",
