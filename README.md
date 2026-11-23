@@ -13,7 +13,7 @@ The Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) porte
 | D5 | Benchmarking the D4 models on the S3 | Hasif | Done 20 Nov: ESP-NN's S3 assembly makes INT8 inference 1.36 to 3.35 times faster with the same outputs, and people-counter keeps a 2.55 times gain in the running firmware | [2.5](#25-d5-task-checklist-hasif) |
 | D6 | End-to-end use case and demo | Cody (lead), Brendan | In progress. Code merged 23 Nov. Tested separately on 21 Nov: A to B sensor MQTT, and B to C snapshots on the LCD with mock values. Live comfort score on C and Board A's doorway counter added 23 Nov (laptop tests). Sending the count to B and C, the live snapshot and the full three-board run remain open | [2.6](#26-d6-task-checklist), [5](#5-d6-use-case-demo) |
 
-Owners follow the team split of 28 Sep 2026, with D4 to D6 re-split on 10 Nov and confirmed on 16 Nov. The D1 MQTT tasks (1.1–1.5) and the D4 to D6 tasks (2.1–5.8) are the outline the team agreed on 10 Nov. Each owner updates their row when their work merges.
+Owners follow the team split of 28 Sep 2026, with D4 to D6 re-split on 10 Nov and confirmed on 16 Nov. The D1 MQTT tasks (1.1–1.5) and the D4 to D6 tasks (2.1–5.7) are the outline the team agreed on 10 Nov. Each owner updates their row when their work merges.
 
 ## Contents
 
@@ -28,7 +28,7 @@ Each numbered section below is collapsed. Click its title to open it.
 | &nbsp;&nbsp;[2.3 D3 task checklist](#23-d3-task-checklist) | The timing modes, tasks D3-1 to D3-12 and the measured timing |
 | &nbsp;&nbsp;[2.4 D4 task checklist](#24-d4-task-checklist) | How to use the ML, the ML itself (2.1–2.6) and switching it live (3.1–3.7) |
 | &nbsp;&nbsp;[2.5 D5 task checklist (Hasif)](#25-d5-task-checklist-hasif) | Benchmarking the D4 models on the S3, tasks 4.1–4.6 |
-| &nbsp;&nbsp;[2.6 D6 task checklist](#26-d6-task-checklist) | Use case and demo, tasks 5.1–5.8 |
+| &nbsp;&nbsp;[2.6 D6 task checklist](#26-d6-task-checklist) | Use case and demo, tasks 5.1–5.7 |
 | [3. Set up and test from scratch](#3-set-up-and-test-from-scratch) | Step by step on a new Mac for the µT-Kernel build, D1 to D5 |
 | &nbsp;&nbsp;[Part A: Install](#part-a-install) | Steps 1–4: tools, project, ESP-IDF and the course port, version check |
 | &nbsp;&nbsp;[Part B: Wi-Fi and broker](#part-b-wi-fi-and-broker) | Steps 5–7: laptop IP, Wi-Fi file, MQTT broker |
@@ -426,7 +426,6 @@ D6 joins three ESP32-S3 N16R8 boards into one use case: a doorway room monitor (
 | 5.5 | LCD board shows live data | Board C displays what the other boards publish | Brendan | **In progress:** B's snapshot drawn on the LCD with mock values, tested 21 Nov. The live comfort score, marked STALE 6 s after updates stop, added 23 Nov with laptop tests. Live readings and the count are not built |
 | 5.6 | ML inside the use case | One board runs a model on another board's data; the result shows on the LCD or is published | Cody, Brendan, with Sitt | **In progress:** B runs comfort-summer on A's AHT and C shows the score (Jun Yong, on `main` 23 Nov, laptop tests). Not yet run on the boards |
 | 5.7 | Full rehearsal on three boards | Run the whole thing end to end, record it and fill section 5 | Team | **Pending** |
-| 5.8 | Tribunal 2 preparation | Explain which functions change under a new requirement | Everyone | **Done 23 Nov:** the fault-handling change was analysed by the team. The proposed changes are not built or tested |
 
 **Where the details are.** [Board A wiring](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md), [Board A sensor tests](docs/d6/BOARD_A_SENSOR_TEST.md), the full [Windows MQTT commands](MQTT_commands.md), the [use case notes](docs/d6/SONAR_ONLY_USECASE.md), the [LCD reference](docs/d6/ROOM_MONITOR_REFERENCE.md) and the [classroom ML demo](docs/embedded-ml/RUNNING.md). The earlier radar plans are kept under [docs/d6/reference](docs/d6/reference/).
 
@@ -933,7 +932,7 @@ What the demo runs, what each step shows, and how far each step is on `main`. Th
 | 7 | Event log | Count a crossing | B writes each event to the W25Q32 and reads it back | FR8 | **Not built** (waits for crossings to reach B) |
 | 8 | Snapshot on C | `D6MOCKPUB 2`, then `D6MOCKPUB 3` on B's console | B to C over MQTT; C redraws the count from 2 to 3 | FR7 | **Tested** 21 Nov, with mock values only |
 | 9 | Live snapshot | B sends its real readings and count | C shows live data, marks it stale, and accepts B after a reboot | FR7, FR12 | **Not built** |
-| 10 | Fault handling | Unplug the AHT, drop the Wi-Fi, send a broken config | The Tribunal 2 change: a safe, predictable response to each failure | Tribunal 2 | **Not tested.** The Tribunal 2 changes are proposals only |
+| 10 | Fault handling | Unplug the AHT, drop the Wi-Fi, send a broken config | A safe, predictable response to each failure | NFR2, NFR4 | **Not tested.** The responses are proposals only |
 | 11 | Any sensor on the fly | Add, change and refuse sensors and rules live on one board | That the platform takes any supported sensor without reflashing (task 5.3) | FR1, FR2 | **Not set up** |
 
 Before step 1, the broker from setup item 4 must be running, and all three boards flashed and on USB power. Full Windows instructions with troubleshooting are in [MQTT_commands.md](MQTT_commands.md).
@@ -1063,9 +1062,9 @@ Before step 1, the broker from setup item 4 must be running, and all three board
 
 > **Step 10 · Fault handling** (placeholder: not tested)
 >
-> **Commands:** to be added once the Tribunal 2 responses are built.
+> **Commands:** to be added once the fault responses are built.
 >
-> **What it will do:** show a safe, predictable response to each failure: unplugging the AHT stops only the comfort score, dropping the Wi-Fi makes the screen go stale and then recover, and a broken config is refused while everything else keeps running. The responses are the ones the team agreed at Tribunal 2.
+> **What it will do:** show a safe, predictable response to each failure: unplugging the AHT stops only the comfort score, dropping the Wi-Fi makes the screen go stale and then recover, and a broken config is refused while everything else keeps running. The responses are the ones the team agreed in its fault-handling review.
 
 > **Step 11 · Any sensor on the fly** (placeholder: not set up)
 >

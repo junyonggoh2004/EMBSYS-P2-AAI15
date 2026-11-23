@@ -1,6 +1,6 @@
 # The ML flow: sensor, model, result (D4 task 2.6)
 
-This is the path one reading takes from a sensor to a published ML result on the ESP32-S3 µT-Kernel firmware, in plain words, for the report and Tribunal 2. Commands are in [RUNNING.md](RUNNING.md); the models are described in [docs/d5 section 3](../d5/README.md#3-the-models-task-43-static-part); the code is [sensor_ml.c](../../esp32s3_mtk/components/edge_mtk/sensor_ml.c) and [inference_mtk.cpp](../../esp32s3_mtk/components/edge_mtk/inference_mtk.cpp).
+This is the path one reading takes from a sensor to a published ML result on the ESP32-S3 µT-Kernel firmware, in plain words, for the report. Commands are in [RUNNING.md](RUNNING.md); the models are described in [docs/d5 section 3](../d5/README.md#3-the-models-task-43-static-part); the code is [sensor_ml.c](../../esp32s3_mtk/components/edge_mtk/sensor_ml.c) and [inference_mtk.cpp](../../esp32s3_mtk/components/edge_mtk/inference_mtk.cpp).
 
 ## 1. The sensor is read
 

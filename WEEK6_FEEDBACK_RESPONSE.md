@@ -8,7 +8,7 @@ This file is the single record of the professor's feedback on the Week 6 design 
 | Last updated | 2026-11-23: D1 to D5 done, D6 in progress (README). The dated entries below are kept as written |
 | Feedback received | After the Week 6 design review submission (before 2026-10-18) |
 | Reviewed document | Week 6 Design Review "P2-AAI15", local copy `ESP_P2_AAI15 (2).pdf` |
-| Next event | Tribunal 2, the D6 demo |
+| Next event | The D6 demo |
 
 **Rules for updating.** Change a status only when the evidence column can point to a file, a log or a measurement. Never delete an item: mark it resolved or superseded and say why. Copy any new professor feedback into section 2 word for word before adding items for it. Add a line to the change log (section 14) for every update. Owners update their own items; anyone may add evidence.
 
