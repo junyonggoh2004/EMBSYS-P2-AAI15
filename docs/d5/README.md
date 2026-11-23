@@ -1,6 +1,6 @@
 # D5: benchmarking the D4 models on the ESP32-S3
 
-Owner: Hasif. Checklist: [README section 6](../../README.md#6-d5-task-checklist-hasif). This file holds the scope, the method, the explanation and the results. Every number was measured on the board or with the build tools on the dates given; nothing here is estimated or copied in as a result.
+Owner: Hasif. Checklist: [README section 2.5](../../README.md#25-d5-task-checklist-hasif). This file holds the scope, the method, the explanation and the results. Every number was measured on the board or with the build tools on the dates given; nothing here is estimated or copied in as a result.
 
 ## 1. Scope (task 4.1)
 

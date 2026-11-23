@@ -12,7 +12,7 @@ coordination with Sitt/Hasif, scheduler and workload coordination with Brendan.
 Status: **plan for team review; nothing has been run on the board yet**. It
 changes no wiring or firmware. It defines one use case and the evidence needed
 to validate the existing implementation. The D3 tasks it relies on keep their
-own status in [README section 4](../../../README.md#4-d3-task-checklist).
+own status in [README section 2.3](../../../README.md#23-d3-task-checklist).
 
 ## 1. Intended result
 
@@ -33,7 +33,7 @@ Read these before preparing the fixture:
 
 - [Breadboard guide](../../../SENSOR_BREADBOARD_README.md) and
   [active wiring](../../../esp32s3_mtk/WIRING.md).
-- [README §4 and §8 Parts E/G](../../../README.md#4-d3-task-checklist).
+- [README §2.3 and §3 Parts E/G](../../../README.md#23-d3-task-checklist).
 - [Architecture](../../../ARCHITECTURE.md), [setup](../../../SETUP.md) and
   [interrupt/wiring review](../../../D3_INTERRUPT_WIRING_REVIEW.md).
 - [Single-sonar capture procedure](../../D3_CAPTURE_V2_TEST.md).

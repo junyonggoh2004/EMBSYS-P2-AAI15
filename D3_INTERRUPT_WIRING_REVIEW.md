@@ -3,7 +3,7 @@
 Review date: 5 November 2026. Source checkpoint: `aaf48da`.
 Status at review time: documentation/source review and native validation; physical acceptance was still pending.
 
-**Final status (22 Nov 2026).** D3 is done. The HC-SR04 capture, `STOP` and `CLEAR` cancellation and the fault cases were run on the board on 21 Nov 2026, and the two-sonar sequence on the D6 setup; see [README section 4](README.md#4-d3-task-checklist). This review is kept as written on 5 November.
+**Final status (22 Nov 2026).** D3 is done. The HC-SR04 capture, `STOP` and `CLEAR` cancellation and the fault cases were run on the board on 21 Nov 2026, and the two-sonar sequence on the D6 setup; see [README section 2.3](README.md#23-d3-task-checklist). This review is kept as written on 5 November.
 No firmware, wiring or resistor removal has been performed or approved by this review.
 
 ## Change control
@@ -18,7 +18,7 @@ the fixture tooling below are preparation, not physical acceptance.
 
 ## Alignment with README D3 task list
 
-Task IDs below follow [README section 4](README.md#4-d3-task-checklist).
+Task IDs below follow [README section 2.3](README.md#23-d3-task-checklist).
 
 | README task | Review contribution and current acceptance boundary |
 |---|---|
@@ -73,7 +73,7 @@ The incoming main branch (`b496a8d`) adds a recorded three-sensor breadboard:
 AHT/TSL2561 share GPIO1/2 I²C, and a documented 3.3 V-compatible HC-SR04+
 uses Trig GPIO4/Echo GPIO5. See the [breadboard guide](SENSOR_BREADBOARD_README.md),
 [active wiring](esp32s3_mtk/WIRING.md) and [preset](config/three_sensors.cfg).
-The [D3 checklist](README.md#4-d3-task-checklist) and the regression guide
+The [D3 checklist](README.md#23-d3-task-checklist) and the regression guide
 are in the root README.
 
 The review and D3-1 execution record below describe the pre-merge `aaf48da`
@@ -102,7 +102,7 @@ No ESP32-S3 is connected, so physical D3-2 acceptance and runtime resource
 measurements remain pending. Earlier missing-image statements below describe
 the preceding runs and do not override this newer preflight result.
 
-For the pre-merge standalone resistor-free tests, the recorded fixture is README section 8,
+For the pre-merge standalone resistor-free tests, the recorded fixture is README section 3,
 Part E's kit 3 V sonar: VCC at 3V3, common ground, Trig GPIO1, Echo GPIO2.
 This is a recorded baseline, not a measurement of the currently fitted hardware.
 The exact model/revision, circuit, supply and Echo voltage have not been supplied
@@ -124,7 +124,7 @@ At that checkpoint there was no application README directly under `esp32s3_mtk/`
 
 | Evidence | Recorded baseline / discrepancy |
 |---|---|
-| README Part E and section 9 sonar row | Kit 3 V module: GPIO1/2, direct wiring; explicitly distinguishes a 5 V module needing Echo division. |
+| README Part E and section 4 sonar row | Kit 3 V module: GPIO1/2, direct wiring; explicitly distinguishes a 5 V module needing Echo division. |
 | README Part E, “Why no resistor” | Starts with the 3 V kit but ends by saying HC-SR04 needs division because it is powered at 5 V. This must be qualified by module type. Powering a board at 3.3 V alone is not proof that every interface is compatible. |
 | SETUP pin/power diagram | Older 5 V sonar on Trig GPIO4/Echo GPIO7 with 10 kΩ upper and 20 kΩ lower divider. This is a different fixture from the current single-sonar acceptance fixture. |
 | SETUP hardware-test rows 9–10 | Agrees with README's kit 3 V direct GPIO1/2 fixture, with a separate 5 V alternative. |

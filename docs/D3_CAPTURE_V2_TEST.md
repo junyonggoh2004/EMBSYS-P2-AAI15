@@ -1,7 +1,7 @@
 # D3-2 asynchronous sonar validation: V2 fixture
 
 Baseline: [breadboard guide](../SENSOR_BREADBOARD_README.md), [active wiring](../esp32s3_mtk/WIRING.md),
-[D3 task list](../README.md#4-d3-task-checklist) and
+[D3 task list](../README.md#23-d3-task-checklist) and
 [interrupt review](../D3_INTERRUPT_WIRING_REVIEW.md). This procedure preserves
 the existing capture implementation; it changes host test configuration only.
 

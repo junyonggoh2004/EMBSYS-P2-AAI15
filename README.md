@@ -2,35 +2,34 @@
 
 The Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) ported to the ESP32-S3 Super Mini. Since Tribunal 1 it runs on µT-Kernel 3 SMP through the course port ([MTK_REDESIGN.md](MTK_REDESIGN.md)); the earlier Arduino-ESP32/FreeRTOS port is kept as the measured baseline. Both builds compile the same shared code, so the configuration lines, console commands, MQTT topics, output format and ML models are the same on both. `main` contains D1 to D5 and the merged D6 integration work; the three-board use case remains in progress.
 
-**D6 N16R8 integration.** Board A uses AHT, TSL2561 and two sonars without radar; Board B owns the flash, ML and occupancy decision; Board C owns the landscape LCD. Use the [current Board A wiring](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md), [use case](docs/d6/SONAR_ONLY_USECASE.md) and [PowerShell MQTT commands](MQTT_commands.md). Earlier radar fixtures and the Super Mini breadboard remain historical references.
-
-**Earlier three-sensor breadboard.** The three-sensor breadboard (AHT temperature and humidity, HC-SR04+ distance and TSL2561 light, with the LCD wiring kept) and its Windows and VS Code build workflow are in [SENSOR_BREADBOARD_README.md](SENSOR_BREADBOARD_README.md). The single-sonar, loopback, radar and SPI fixtures in this guide use other pins; do not apply them to that breadboard.
-
 ## Deliverables at a glance
 
 | Deliverable | What it is | Owners | State (23 Nov 2026) | Details |
 |---|---|---|---|---|
-| D1 | Port configpico2wedge to the ESP32-S3, on µT-Kernel 3 SMP since Tribunal 1 | Hasif, Cody, Sitt | Done (tag `d1-mtk-v1.0`). MQTT between two real boards passed 43/43 on 10 Nov. The jumper and light-sensor stages were signed off by the team on 22 Nov without a separate board run | [Section 2](#2-d1-task-checklist) |
-| D2 | SPI support on the ESP32-S3 | Brendan, Jun Yong | Done 22 Nov: SPI driver and tests, W25Q32 flash log, event logging from ApplicationTask (D2-8) and the concurrent run (D2-9) | [Section 3](#3-d2-task-checklist) |
-| D3 | Configurable timing: periodic, one-shot, event-driven, logical sequence | Cody | Done 22 Nov: timing modes, non-blocking sonar reads and ApplicationTask run on the board on 21 Nov; the two-sonar sequence ran on the D6 setup; the radar workload closed when the radar was dropped | [Section 4](#4-d3-task-checklist) |
-| D4 | Embedded ML | Part 1: Jun Yong. Part 2: Sitt | Done 23 Nov. Five bundled models run on the board with the S3's acceleration, and the model, its inputs and where its result goes can be switched live over MQTT. The uploaded model, remote input and local output added on 22 Nov have laptop tests only | [Section 5](#5-d4-task-checklist) |
-| D5 | Benchmarking the D4 models on the S3 | Hasif | Done 20 Nov: ESP-NN's S3 assembly makes INT8 inference 1.36 to 3.35 times faster with the same outputs, and people-counter keeps a 2.55 times gain in the running firmware | [Section 6](#6-d5-task-checklist-hasif) |
-| D6 | End-to-end use case and demo | Cody (lead), Brendan | D6 code and guides merged 23 Nov; A→B sensor MQTT and B→C landscape mock snapshots were tested separately on 21 Nov. The timed crossing, live B→C result and full three-board run remain open | [Section 7](#7-d6-task-checklist) |
+| D1 | Port configpico2wedge to the ESP32-S3, on µT-Kernel 3 SMP since Tribunal 1 | Hasif, Cody, Sitt | Done (tag `d1-mtk-v1.0`). MQTT between two real boards passed 43/43 on 10 Nov. The jumper and light-sensor stages were signed off by the team on 22 Nov without a separate board run | [2.1](#21-d1-task-checklist) |
+| D2 | SPI support on the ESP32-S3 | Brendan, Jun Yong | Done 22 Nov: SPI driver and tests, W25Q32 flash log, event logging from ApplicationTask (D2-8) and the concurrent run (D2-9) | [2.2](#22-d2-task-checklist) |
+| D3 | Configurable timing: periodic, one-shot, event-driven, logical sequence | Cody | Done 22 Nov: timing modes, non-blocking sonar reads and ApplicationTask run on the board on 21 Nov; the two-sonar sequence ran on the D6 setup; the radar workload closed when the radar was dropped | [2.3](#23-d3-task-checklist) |
+| D4 | Embedded ML | Part 1: Jun Yong. Part 2: Sitt | Done 23 Nov. Five bundled models run on the board with the S3's acceleration, and the model, its inputs and where its result goes can be switched live over MQTT. The uploaded model, remote input and local output added on 22 Nov have laptop tests only | [2.4](#24-d4-task-checklist) |
+| D5 | Benchmarking the D4 models on the S3 | Hasif | Done 20 Nov: ESP-NN's S3 assembly makes INT8 inference 1.36 to 3.35 times faster with the same outputs, and people-counter keeps a 2.55 times gain in the running firmware | [2.5](#25-d5-task-checklist-hasif) |
+| D6 | End-to-end use case and demo | Cody (lead), Brendan | In progress. Code merged 23 Nov. Tested separately on 21 Nov: A to B sensor MQTT, and B to C snapshots on the LCD with mock values. Live comfort score on C added 23 Nov (laptop tests). The doorway count, live snapshot and full three-board run remain open | [2.6](#26-d6-task-checklist), [5](#5-d6-use-case-demo) |
 
 Owners follow the team split of 28 Sep 2026, with D4 to D6 re-split on 10 Nov and confirmed on 16 Nov. The D1 MQTT tasks (1.1–1.5) and the D4 to D6 tasks (2.1–5.8) are the outline the team agreed on 10 Nov. Each owner updates their row when their work merges.
 
 ## Contents
 
+Each numbered section below is collapsed. Click its title to open it.
+
 | Section | What's in it |
 |---|---|
-| [1. Start here](#1-start-here) | What the firmware runs on, the commands to try, and every result next to the FreeRTOS baseline |
-| [2. D1 task checklist](#2-d1-task-checklist) | Tasks 1–34 and the MQTT tasks 1.1–1.5 |
-| [3. D2 task checklist](#3-d2-task-checklist) | SPI tasks D2-1 to D2-11 and how to run the SPI tests |
-| [4. D3 task checklist](#4-d3-task-checklist) | The timing modes, tasks D3-1 to D3-12 and the measured timing |
-| [5. D4 task checklist](#5-d4-task-checklist) | How to use the ML, the ML itself (2.1–2.6) and switching it live (3.1–3.7) |
-| [6. D5 task checklist (Hasif)](#6-d5-task-checklist-hasif) | Benchmarking the D4 models on the S3, tasks 4.1–4.6 |
-| [7. D6 task checklist](#7-d6-task-checklist) | Use case and demo, tasks 5.1–5.8 |
-| [8. Set up and test from scratch](#8-set-up-and-test-from-scratch) | Step by step on a new Mac for the µT-Kernel build, D1 to D5 |
+| [1. Start here](#1-start-here) | What this repo is, how the firmware works (with diagrams), the commands to try and every result next to the FreeRTOS baseline |
+| [2. Development checklists](#2-development-checklists) | The task lists for D1 to D6 |
+| &nbsp;&nbsp;[2.1 D1 task checklist](#21-d1-task-checklist) | Tasks 1–34 and the MQTT tasks 1.1–1.5 |
+| &nbsp;&nbsp;[2.2 D2 task checklist](#22-d2-task-checklist) | SPI tasks D2-1 to D2-11 and how to run the SPI tests |
+| &nbsp;&nbsp;[2.3 D3 task checklist](#23-d3-task-checklist) | The timing modes, tasks D3-1 to D3-12 and the measured timing |
+| &nbsp;&nbsp;[2.4 D4 task checklist](#24-d4-task-checklist) | How to use the ML, the ML itself (2.1–2.6) and switching it live (3.1–3.7) |
+| &nbsp;&nbsp;[2.5 D5 task checklist (Hasif)](#25-d5-task-checklist-hasif) | Benchmarking the D4 models on the S3, tasks 4.1–4.6 |
+| &nbsp;&nbsp;[2.6 D6 task checklist](#26-d6-task-checklist) | Use case and demo, tasks 5.1–5.8 |
+| [3. Set up and test from scratch](#3-set-up-and-test-from-scratch) | Step by step on a new Mac for the µT-Kernel build, D1 to D5 |
 | &nbsp;&nbsp;[Part A: Install](#part-a-install) | Steps 1–4: tools, project, ESP-IDF and the course port, version check |
 | &nbsp;&nbsp;[Part B: Wi-Fi and broker](#part-b-wi-fi-and-broker) | Steps 5–7: laptop IP, Wi-Fi file, MQTT broker |
 | &nbsp;&nbsp;[Board pinout](#board-pinout) | Super Mini pin diagram |
@@ -41,23 +40,101 @@ Owners follow the team split of 28 Sep 2026, with D4 to D6 re-split on 10 Nov an
 | &nbsp;&nbsp;[Part G: D3 timing and application](#part-g-d3-timing-and-application) | Laptop tests, the application smoke test, `PAIR`, a timing-mode example |
 | &nbsp;&nbsp;[Part H: D4 ML](#part-h-d4-ml) | Laptop tests, the bundled models, ML on a real sensor, switching live over MQTT |
 | &nbsp;&nbsp;[Part I: D5 benchmark](#part-i-d5-benchmark) | Laptop tests and `MLBENCH` |
-| &nbsp;&nbsp;[Part J: D6 demo](#part-j-d6-demo-to-be-finalised) | Placeholder for the three-board demo |
-| [9. Using any sensor](#9-using-any-sensor-config-cheat-sheet) | Wiring and the config line for every sensor type, rules, and [MQTT](#over-mqtt-how-it-works-and-what-to-send) |
-| [10. Completion rule](#10-completion-rule) | When a task counts as done |
-| [11. Arduino/FreeRTOS baseline](#11-arduinofreertos-baseline-set-up-and-test-reference) | Where the baseline's setup guide is |
+| [4. Using any sensor and ML](#4-using-any-sensor-and-ml) | Wiring and the config line for every sensor type, rules, ML and [MQTT](#over-mqtt-how-it-works-and-what-to-send) |
+| [5. D6 use case demo](#5-d6-use-case-demo) | The three-board room monitor |
+| &nbsp;&nbsp;[5.1 From D1 to D5 to the demo](#51-from-d1-to-d5-to-the-demo) | The use case and what each deliverable brings to it |
+| &nbsp;&nbsp;[5.2 Setup](#52-setup) | Each board's hardware, firmware and configuration |
+| &nbsp;&nbsp;[5.3 Demo](#53-demo) | Each demo step, what it shows and its status |
+| [6. Completion rule](#6-completion-rule) | When a task counts as done |
+| [7. Arduino/FreeRTOS baseline](#7-arduinofreertos-baseline) | Where the baseline's setup guide is |
 
 Other documents: [TASK_RECORD.md](TASK_RECORD.md) (full D1 to D3 task tables), [WEEK6_FEEDBACK_RESPONSE.md](WEEK6_FEEDBACK_RESPONSE.md) (professor feedback tracker), [MTK_REDESIGN.md](MTK_REDESIGN.md) (µT-Kernel design and compliance), [SETUP.md](SETUP.md) (board and environment details), [parity/PARITY.md](parity/PARITY.md) (requirements and evidence), [PORTABILITY.md](PORTABILITY.md) (Pico to S3 changes and defects), [ARCHITECTURE.md](ARCHITECTURE.md) (task design), [D2_SPI_TODO.md](D2_SPI_TODO.md) (D2 tasks), [SENSOR_BREADBOARD_README.md](SENSOR_BREADBOARD_README.md) (three-sensor breadboard and Windows workflow), [project_v3/README.md](project_v3/README.md) (full config syntax).
 
+<a name="1-start-here"></a>
+<details>
+<summary><h2>1. Start here</h2></summary>
 
----
+### 1.1 What this repo is
 
-# 1. Start here
+This is team AAI15's configurable edge platform for INF2004. One firmware turns an ESP32-S3 into a sensor node that is set up while it runs, never reprogrammed for a new job. You send it text lines or JSON, over the USB console or MQTT, and it:
+
+1. Reads any sensor on GPIO, I2C, UART or SPI, each at its own timing.
+2. Runs rules on the readings, which switch pins, send messages or reconfigure other boards.
+3. Runs small ML models on the readings, with the model, its inputs and its output chosen live.
+4. Sends everything over Wi-Fi and MQTT, so boards can use each other's sensors.
+
+It started as configpico2wedge (FlexiEdgePico `project_v3`) on the Raspberry Pi Pico 2 W. D1 ported it to the ESP32-S3, and after Tribunal 1 it moved onto µT-Kernel 3 SMP through the course port. D2 adds SPI and a W25Q32 flash log, D3 per-sensor timing, D4 the ML, D5 measures the S3's ML acceleration, and D6 joins three boards into one use case.
+
+### 1.2 What is where
+
+| Folder | What it holds |
+|---|---|
+| [`esp32s3_mtk/`](esp32s3_mtk/) | The firmware: an ESP-IDF project whose tasks are all µT-Kernel tasks. `components/edge_mtk/` is the S3 runtime (tasks, HAL, Wi-Fi and MQTT, ML, flash log); `components/lcd_output/` drives Board C's LCD |
+| [`libraries/EdgeCore/`](libraries/EdgeCore/) | The shared, portable code: config parser, scheduler, rule engine, bus drivers, ML manager and the application (events and occupancy). Compiled unchanged by every build |
+| [`project_v3/`](project_v3/) | The Pico 2 W reference the port is measured against |
+| [`esp32s3_edge/`](esp32s3_edge/), [`libraries/EdgeS3/`](libraries/EdgeS3/) | The earlier Arduino/FreeRTOS build, kept as the measured baseline |
+| [`config/`](config/) | Ready-made board configurations, such as D6's [`board_a.cfg`](config/board_a.cfg) |
+| [`tools/`](tools/) | `mtk.sh` (build, flash, monitor, board tests) and the laptop test scripts |
+| [`tests/`](tests/) | Laptop tests that compile the shared code on its own |
+| [`parity/`](parity/) | Requirements, the parity test scripts and every board log |
+| [`docs/`](docs/) | D5, D6 and ML write-ups |
+
+### 1.3 How the firmware works
+
+Everything above the HAL is the same code on the Pico, the Arduino build and µT-Kernel. Only the HAL and the platform services change per board.
+
+```mermaid
+flowchart TB
+    IN["Config lines, rules, commands, ml_setup<br/>(USB console or MQTT)"]
+    CORE["EdgeCore, shared by every build<br/>config parser · scheduler · rule engine · ML manager · application"]
+    HAL["HAL<br/>timing · GPIO · I2C · UART · SPI · pulse capture"]
+    RT["µT-Kernel 3 SMP runtime<br/>7 tasks · message buffers · watchdog"]
+    HW["ESP32-S3 hardware and sensors"]
+    IN --> CORE
+    CORE --> HAL
+    HAL --> HW
+    RT --- CORE
+    RT --- HAL
+```
+
+On the S3 the work is split into seven µT-Kernel tasks over the two cores. Core 0 runs the network, next to the Wi-Fi and MQTT stacks; core 1 runs everything that must keep time, so network bursts never delay a reading. Tasks never share data directly: each piece of state has one owner, and messages are copied between tasks through bounded buffers that drop and count the newest message when full, so no task ever blocks another.
+
+```mermaid
+flowchart LR
+    BROKER(("MQTT broker<br/>on the laptop"))
+    CON["USB console"]
+    subgraph C0["Core 0"]
+        MQTT["MQTTTask<br/>Wi-Fi and MQTT"]
+    end
+    subgraph C1["Core 1"]
+        SCHED["SchedulerTask<br/>config, sensors, rules"]
+        CTRL["ControlTask<br/>console commands"]
+        INF["InferenceTask<br/>TFLite Micro, ESP-NN"]
+        APP["ApplicationTask<br/>events, occupancy"]
+        BENCH["BenchmarkTask<br/>flash log, LCD"]
+        MON["MonitorTask<br/>watchdog"]
+    end
+    SENS["Sensors"]
+    BROKER <--> MQTT
+    CON --> CTRL
+    MQTT -- "sched_mbf" --> SCHED
+    CTRL --> SCHED
+    SCHED -- "pub_mbf" --> MQTT
+    SCHED -- "infer_mbf" --> INF
+    SCHED -- "app_mbf" --> APP
+    APP -- "log_mbf" --> BENCH
+    SCHED <--> SENS
+```
+
+**The life of one reading.** SchedulerTask starts each sensor when its timing says so, and sleeps in between. A bus driver reads the sensor through the HAL; a sonar's echo is timestamped by an interrupt, so nothing busy-waits. A good reading is published, checked against the rules (which can switch a pin straight away) and, if a model is bound to it, sent to InferenceTask. A failed reading is reported with its error and never becomes a number. MonitorTask checks every second that the key tasks are alive and feeds the hardware watchdog only while they are; a task stuck for too long resets the board. The design, the core assignment and the compliance matrix are in [MTK_REDESIGN.md](MTK_REDESIGN.md).
 
 **What it runs on.** [`esp32s3_mtk/`](esp32s3_mtk/) is an ESP-IDF project in which every application task is a µT-Kernel task pinned to a core, and the FreeRTOS scheduler never starts. The design, the FreeRTOS-to-µT-Kernel mapping, the core assignment and the compliance matrix are in [MTK_REDESIGN.md](MTK_REDESIGN.md). The Arduino-ESP32/FreeRTOS build (`esp32s3_edge/`, `tools/s3.sh`) stays as the measured baseline.
 
 **Why it is the same firmware.** All platform-independent code (config parser, scheduler, REPL, rule engine, GPIO/I2C/UART drivers, MQTT payload handling, inference manager) is one library, [`libraries/EdgeCore/`](libraries/EdgeCore/), compiled unchanged by the Pico build and both S3 builds; `tools/check_hal_boundary.sh` proves it uses no Pico, Arduino or ESP-IDF calls. Only the HAL ([Pico](project_v3/platform/pico/hal_pico.c), [S3 on µT-Kernel](esp32s3_mtk/components/edge_mtk/hal_mtk.c), [S3 on Arduino](libraries/EdgeS3/src/hal_esp32s3.cpp)) and the platform services differ. The same test scripts run against every build with the same expected output; only pin numbers are mapped.
 
-**Run it yourself** (µT-Kernel build; macOS or Linux, board on USB; details in [SETUP.md](SETUP.md#esp32-s3-on-µt-kernel-3-smp-tasks-2534)):
+### 1.4 Run it yourself
+
+On the µT-Kernel build (macOS or Linux, board on USB; details in [SETUP.md](SETUP.md#esp32-s3-on-µt-kernel-3-smp-tasks-2534)):
 
 | Step | Command | You should see |
 |---|---|---|
@@ -68,6 +145,8 @@ Other documents: [TASK_RECORD.md](TASK_RECORD.md) (full D1 to D3 task tables), [
 | 5. Run a parity stage | `sh tools/mtk.sh test 4a` | `14/14 passed` |
 | 6. Compare with the Pico | `sh tools/mtk.sh compare 4a` | Pico and µT-Kernel output, line for line the same |
 | 7. MQTT (laptop running Mosquitto) | `sh tools/mtk.sh mqtt <laptop-ip>` | `27/27 passed` |
+
+### 1.5 Results against the FreeRTOS baseline
 
 **Results on µT-Kernel 3 SMP** (2026-10-20, HW-747 Super Mini; raw logs in [`parity/logs/mtk/`](parity/logs/mtk/), FreeRTOS and µT-Kernel side by side in [PARITY.md §4](parity/PARITY.md#4-esp32-s3-on-µt-kernel-3-smp-tasks-24-to-34)):
 
@@ -91,10 +170,17 @@ Other documents: [TASK_RECORD.md](TASK_RECORD.md) (full D1 to D3 task tables), [
 
 The GPIO and UART loopback stages (4b, 4c-uart, t02, t08, t09), which need jumper wires, and 4d-ir, which needs the light sensor, were signed off by the team on 22 Nov 2026 without a separate board run; their wiring and commands are in [SETUP.md](SETUP.md#hardware-checks-on-µt-kernel-jumpers-and-sensors). Two findings about the course port itself are recorded with evidence in MTK_REDESIGN.md: its radio sometimes stops receiving for a minute or more (§10), and its kernel and FreeRTOS shim had to be moved into IRAM before flash writes were safe (§8).
 
+</details>
 
----
+<a name="2-development-checklists"></a>
+<details>
+<summary><h2>2. Development checklists</h2></summary>
 
-# 2. D1 task checklist
+Each deliverable's tasks, owners, status and evidence. Click a checklist to open it.
+
+<a name="21-d1-task-checklist"></a>
+<details>
+<summary><h3>2.1 D1 task checklist</h3></summary>
 
 D1 ports configpico2wedge to the ESP32-S3. Tasks 1–23 built the Arduino/FreeRTOS port, now the baseline; tasks 24–34 moved it onto µT-Kernel 3 SMP after Tribunal 1; tasks 1.1–1.5 added MQTT between real boards. The required work and acceptance evidence for every task are in [TASK_RECORD.md](TASK_RECORD.md). Check the [professor feedback tracker](WEEK6_FEEDBACK_RESPONSE.md) before changing the design.
 
@@ -124,7 +210,7 @@ D1 ports configpico2wedge to the ESP32-S3. Tasks 1–23 built the Arduino/FreeRT
 | 22 | Portability and design-review documentation | Done (Hasif) | [PORTABILITY.md](PORTABILITY.md) |
 | 23 | Release from a clean Arduino environment | Superseded by task 34 | [SETUP.md](SETUP.md#release-task-23) |
 
-### D1 redesign: port to µT-Kernel 3 SMP (tasks 24–34)
+#### D1 redesign: port to µT-Kernel 3 SMP (tasks 24–34)
 
 Tribunal 1 (19 Oct 2026) required the firmware to run on the course µT-Kernel 3 SMP port, with every task, queue, mutex, event group and timer a µT-Kernel object, a justified task-to-core assignment, and safe interaction between interrupts and tasks. The plan and the compliance matrix are in [MTK_REDESIGN.md](MTK_REDESIGN.md).
 
@@ -142,7 +228,7 @@ Tribunal 1 (19 Oct 2026) required the firmware to run on the course µT-Kernel 3
 | 33 | Close the redesign documentation | Done (Hasif): every compliance clause links to its evidence | [MTK_REDESIGN.md §9](MTK_REDESIGN.md#9-compliance-matrix) |
 | 34 | Release the µT-Kernel build | Done (Hasif, 21 Oct): a clean clone builds, merged to `main`, tag `d1-mtk-v1.0` | |
 
-### D1 MQTT between real boards (tasks 1.1–1.5)
+#### D1 MQTT between real boards (tasks 1.1–1.5)
 
 Added on 10 Nov 2026 because D4 to D6 need boards to talk to each other (Hasif). Two bare ESP32-S3 boards on the laptop's USB, Mosquitto on the laptop ([Part B](#part-b-wi-fi-and-broker)) and both boards on the same 2.4 GHz network; every configuration and command goes in over MQTT. With an iPhone hotspot, turn on Maximize Compatibility and keep the hotspot screen open while the boards join. The second board gets its own node ID and build directory at compile time:
 
@@ -163,10 +249,11 @@ On the N16R8, use the USB-C port wired to the chip's own USB; the other one only
 | 1.4 | Every console command over MQTT | Done 10 Nov: 18/18; the single-board `mqtt` test still 27/27 |
 | 1.5 | Record and update | Done 10 Nov: [logs](parity/logs/mtk/d1-mqtt/), FR-13 and D-11 in [PARITY.md](parity/PARITY.md) |
 
+</details>
 
----
-
-# 3. D2 task checklist
+<a name="22-d2-task-checklist"></a>
+<details>
+<summary><h3>2.2 D2 task checklist</h3></summary>
 
 D2 adds SPI as a fourth bus (`proto=spi`) behind the same interface as GPIO, I2C and UART, so an SPI device is configured the same way (Brendan and Jun Yong). On µT-Kernel it is a register-level SPI2 driver with polled 64-byte FIFO transfers, no DMA and one priority-inheritance mutex for the bus. A W25Q32 flash chip on the bus keeps a log of processed events. The full checklist is [D2_SPI_TODO.md](D2_SPI_TODO.md), the design is in [D2_SPI_DESIGN_NOTES.md](D2_SPI_DESIGN_NOTES.md) and [D2_EVENT_RECORD_DESIGN.md](D2_EVENT_RECORD_DESIGN.md), and the full rows are in [TASK_RECORD.md](TASK_RECORD.md#d2-spi).
 
@@ -186,10 +273,11 @@ D2 adds SPI as a fourth bus (`proto=spi`) behind the same interface as GPIO, I2C
 
 **Run it.** With a jumper wire from GPIO12 to GPIO13: `sh tools/mtk.sh spi` (22/22), `sh tools/mtk.sh spi-fault` (6/6) and `sh tools/mtk.sh spi-bench [mode] [hz]`. With the W25Q32 on 3V3, GND, CS GPIO10, CLK GPIO11, DI GPIO12 and DO GPIO13 (never together with the jumper): the read-only commands `SPIID`, `SPICHECK EF4016` and `SPISCAN EF4016`. For the event log, send `LOG ON`, then events (`APP EVENT` fixtures); each gives a `[LOG] ... readback=verified` line, and `LOG READ <slot>` prints a stored record, also after a reboot. The log area holds 30 records and is never erased. `.venv/bin/python parity/t23_test.py --port <port>` repeats the concurrent run. Wiring and the write commands not to repeat are in [SETUP.md](SETUP.md#d2-spi-checks-on-µt-kernel).
 
+</details>
 
----
-
-# 4. D3 task checklist
+<a name="23-d3-task-checklist"></a>
+<details>
+<summary><h3>2.3 D3 task checklist</h3></summary>
 
 D3 replaces the Pico's fixed one-second loop with timing set per sensor (Cody; integration and merge by Hasif). The professor's acceptance case was a doorway: radar presence opens a window, then two HC-SR04s are read in a fixed order, without crosstalk, within 50 ms. The radar gave no output on two boards and was dropped on 19 Nov, so the two-sonar sequence is the part that ran. The full task rows and the design detail (the entrance window, event identity and the window timing report) are in [TASK_RECORD.md](TASK_RECORD.md#d3-configurable-timing).
 
@@ -233,14 +321,15 @@ A pass is a mean within 5% of the request over at least 100 intervals. A skipped
 
 **Tests.** `sh tools/cody_test.sh` runs D3's twelve laptop suites. On the board, `sh tools/mtk.sh app-test` checks the application path without wiring and ends with `Application smoke PASS` ([Part G](#part-g-d3-timing-and-application)).
 
+</details>
 
----
-
-# 5. D4 task checklist
+<a name="24-d4-task-checklist"></a>
+<details>
+<summary><h3>2.4 D4 task checklist</h3></summary>
 
 D4 has two parts, split on 16 Nov 2026: the ML itself (part 1, Jun Yong) and configuring and switching it live (part 2, Sitt). The professor's guidance was that accuracy does not matter, that the models should use the S3's built-in acceleration, and that a JSON or MQTT command should choose the model, where its data comes from and where its result goes, all switchable live.
 
-### How to use it
+#### How to use it
 
 Five models are bundled. **sine-float** and **sine-int8** take the sine of a scaled reading; they demonstrate the pipeline and, for sine-int8, ESP-NN's S3 vector kernels. The **autoencoder** takes 16 inputs. **comfort-summer** gives a comfort score from AHT temperature and humidity (26.3 °C and 67% RH gives 92/100). **people-counter** is an INT8 doorway classifier with 31 inputs, run with `ML REPLAY`. A sixth choice, **uploaded**, is the model last sent over MQTT (D1 task 31). `ML LIST` shows which are available.
 
@@ -261,7 +350,7 @@ mosquitto_pub -h <laptop-ip> -t pico/s3-002/cmd -m '{"ml_setup":{"version":1,"mo
 
 More: [model specifications](docs/embedded-ml/README.md), [user guide](docs/embedded-ml/RUNNING.md), [the ML flow from sensor to result](docs/embedded-ml/ML_FLOW.md), [validation](docs/embedded-ml/VALIDATION.md) and [board results](docs/embedded-ml/BOARD_VALIDATION.md).
 
-### Part 1: the ML itself (Jun Yong)
+#### Part 1: the ML itself (Jun Yong)
 
 | # | Task | Status |
 |---|---|---|
@@ -272,7 +361,7 @@ More: [model specifications](docs/embedded-ml/README.md), [user guide](docs/embe
 | 2.5 | Load models without reflashing | Done 19 Nov: bundled models are chosen at runtime and new ones sent over MQTT into flash; `parity/model_test.py` 8/9 on the N16R8, the miss being the script reopening the port late ([logs](parity/logs/mtk/d4-2.5/)) |
 | 2.6 | Explain the ML flow | Done 21 Nov (written by Hasif): [ML_FLOW.md](docs/embedded-ml/ML_FLOW.md) |
 
-### Part 2: configuring and switching ML (Sitt)
+#### Part 2: configuring and switching ML (Sitt)
 
 Sitt wrote the `ml_setup` command with local inputs and console and MQTT results, and checked it on one board on 19 Nov. Hasif finished the rest on 22 Nov: the uploaded model, another board's sensor as input, and a local output for rules. Those three pass the laptop tests (`sh tools/ml_test.sh`) but have not been run on a board; the steps for that run are in [LIVE_SETUP_PROPOSAL.md](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#running-it-on-boards). D6 task 5.6 builds on them.
 
@@ -288,10 +377,11 @@ Sitt wrote the `ml_setup` command with local inputs and console and MQTT results
 
 Earlier research is in [D4_EMBEDDED_ML_RESEARCH.md](D4_EMBEDDED_ML_RESEARCH.md) and [D2_D4_RESEARCH_CONTEXT.md](D2_D4_RESEARCH_CONTEXT.md).
 
+</details>
 
----
-
-# 6. D5 task checklist (Hasif)
+<a name="25-d5-task-checklist-hasif"></a>
+<details>
+<summary><h3>2.5 D5 task checklist (Hasif)</h3></summary>
 
 D5 measures and explains how the D4 models run on the S3 and what its acceleration adds. The professor said a full benchmarking study is not for this module and accuracy does not matter, so D5 was cut down on 10 Nov and refocused on 17 Nov. Every comparison uses the same board, build and settings, and each reports the run count, median, 95th percentile and maximum.
 
@@ -319,40 +409,40 @@ D5 measures and explains how the D4 models run on the S3 and what its accelerati
 
 On the console, `STOP`, `ML MODEL <id>` and `MLBENCH <runs> [RAW]` run one model by hand; `MLBENCH` also works on `pico/<node>/cmd`.
 
+</details>
 
----
+<a name="26-d6-task-checklist"></a>
+<details>
+<summary><h3>2.6 D6 task checklist</h3></summary>
 
-# 7. D6 task checklist
+D6 joins three ESP32-S3 N16R8 boards into one use case: a doorway room monitor (Cody leads, with Brendan; the whole team joins the rehearsal). Board A senses, Board B processes and keeps the only occupancy count, and Board C displays. The professor's brief was three S3 boards sharing data over MQTT with an LCD board, plus a live multi-bus demo of GPIO, I2C and SPI on one board, configured live. The setup and demo steps, with their status, are in [section 5](#5-d6-use-case-demo).
 
-D6 uses three ESP32-S3 N16R8 boards. [Board A](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md) reads AHT temperature/humidity, TSL2561 light and two sonars; the LD2450 radar is no longer part of the selected use case. Board A must assemble a timed crossing candidate. Board B is the only occupancy writer and owns ML, event logging and the W25Q32 flash. Board C displays Board B's validated snapshot on a landscape ST7789 LCD. The [sonar-only use case](docs/d6/SONAR_ONLY_USECASE.md), [integration status](docs/d6/INTEGRATION_STATUS.md), [Board A test commands](docs/d6/BOARD_A_SENSOR_TEST.md) and [MQTT commands](MQTT_commands.md) hold the current details. The earlier radar plans are preserved under [reference](docs/d6/reference/).
+| # | Task | What it means | Owner | Status on `main` (23 Nov) |
+|---|---|---|---|---|
+| 5.1 | Confirm the use case | Adopt the three-board setup and decide the doorway counter's role | Team | **Done 21 Nov:** a doorway room monitor with two sonars; the radar was dropped. The crossing thresholds still need doorway trials |
+| 5.2 | Define each board | Its sensors, what it publishes, what it reacts to and what the LCD shows; parts and wiring | Cody | **Done:** roles, wiring and configs for every board ([5.2 Setup](#52-setup)) |
+| 5.3 | Multi-bus demo script | GPIO, I2C and SPI on one board, configured live, the whole setup at once and then piece by piece | Cody | **Pending** ([demo step 11](#53-demo)) |
+| 5.4 | SPI write and read by config | Write one byte, read it back, swap the device and reconfigure | Brendan | **Pending:** a config cannot write over SPI yet. The D2 event log writes are separate |
+| 5.5 | LCD board shows live data | Board C displays what the other boards publish | Brendan | **In progress:** B's snapshot drawn on the LCD with mock values, tested 21 Nov. The live comfort score, marked STALE 6 s after updates stop, added 23 Nov with laptop tests. Live readings and the count are not built |
+| 5.6 | ML inside the use case | One board runs a model on another board's data; the result shows on the LCD or is published | Cody, Brendan, with Sitt | **In progress:** B runs comfort-summer on A's AHT and C shows the score (Jun Yong, on `main` 23 Nov, laptop tests). Not yet run on the boards |
+| 5.7 | Full rehearsal on three boards | Run the whole thing end to end, record it and fill section 5 | Team | **Pending** |
+| 5.8 | Tribunal 2 preparation | Explain which functions change under a new requirement | Everyone | **Done 23 Nov:** the fault-handling change was analysed by the team. The proposed changes are not built or tested |
 
-| # | Current status after merge |
-|---|---|
-| 5.1 | Two-sonar, no-radar direction selected; timed crossing trials and team sign-off remain open. |
-| 5.2 | A/B/C roles, N16R8 wiring and diagrams recorded; verify the assembled fixture against the current guides. |
-| 5.3 | Multi-bus live demonstration and its evidence remain open. |
-| 5.4 | SPI config byte write/read and device swap remain open; D2 event logging is separate. |
-| 5.5 | Board C LCD test and landscape MQTT mock snapshots passed, including an occupancy change from 2 to 3; live B result display remains open. |
-| 5.6 | D4 remote ML inputs and output routing are now in the same codebase; Board B inference from Board A's real AHT and delivery to C need a three-board test. The 31-input people-counter remains replay-only until a model-ready window exists. |
-| 5.7 | Full three-board rehearsal and recorded acceptance trials remain open. |
-| 5.8 | Tribunal 2 preparation remains open. |
+**Where the details are.** [Board A wiring](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md), [Board A sensor tests](docs/d6/BOARD_A_SENSOR_TEST.md), the full [Windows MQTT commands](MQTT_commands.md), the [use case notes](docs/d6/SONAR_ONLY_USECASE.md), the [LCD reference](docs/d6/ROOM_MONITOR_REFERENCE.md) and the [classroom ML demo](docs/embedded-ml/RUNNING.md). The earlier radar plans are kept under [docs/d6/reference](docs/d6/reference/).
 
-Board A to B MQTT frames were observed for AHT, light and both sonars. Board B to C mock snapshots were visible on the LCD, but those separate tests do not yet establish a complete A→B→C doorway decision. See the [LCD reference](docs/d6/ROOM_MONITOR_REFERENCE.md) and [next steps](docs/d6/NEXT_STEPS.md). The new main merge combines D4/D5 with D6 code; it does not itself count as new board validation.
+</details>
 
----
+</details>
 
-# 8. Set up and test from scratch
+<a name="3-set-up-and-test-from-scratch"></a>
+<details>
+<summary><h2>3. Set up and test from scratch</h2></summary>
 
-Follow these steps in order on a Mac (Linux works the same way). They build, flash and test the firmware on `main`: D1 on µT-Kernel 3 SMP, D2's SPI, D3's timing, D4's ML and D5's benchmark. Part J is kept for the D6 demo. Each step says what you should see. On Windows, install ESP-IDF at commit `17a74c925c`, load it with its PowerShell `export.ps1` and give `IDF_PATH` forward slashes, as Brendan did ([D2_SPI_TODO.md](D2_SPI_TODO.md)); the Arduino baseline in [section 11](#11-arduinofreertos-baseline-set-up-and-test-reference) has full Windows steps.
+Follow these steps in order on a Mac (Linux works the same way). They build, flash and test the firmware on `main`: D1 on µT-Kernel 3 SMP, D2's SPI, D3's timing, D4's ML and D5's benchmark. The D6 demo is in [section 5](#5-d6-use-case-demo). Each step says what you should see. On Windows, install ESP-IDF at commit `17a74c925c`, load it with its PowerShell `export.ps1` and give `IDF_PATH` forward slashes, as Brendan did ([D2_SPI_TODO.md](D2_SPI_TODO.md)); the Arduino baseline in [section 7](#7-arduinofreertos-baseline) has full Windows steps.
 
-## What the deliverables are
+**Earlier three-sensor breadboard.** The three-sensor breadboard (AHT temperature and humidity, HC-SR04+ distance and TSL2561 light, with the LCD wiring kept) and its Windows and VS Code build workflow are in [SENSOR_BREADBOARD_README.md](SENSOR_BREADBOARD_README.md). The single-sonar, loopback, radar and SPI fixtures in this guide use other pins; do not apply them to that breadboard.
 
-Our edge firmware (configpico2wedge) ran on the Raspberry Pi Pico 2 W. D1 ports it to the ESP32-S3. You send the board text lines such as `BEGINCFG|...|ENDCFG`; it reads sensors, runs rules and an ML model, and sends data over Wi-Fi/MQTT. Both boards compile the same shared code, and the tests below prove the S3 behaves like the Pico. D2 adds SPI as a fourth bus (`proto=spi`) and a W25Q32 flash chip that keeps a log of processed events. D3 lets each sensor keep its own timing. D4 runs small ML models on the readings and lets the model, its inputs and where its result goes be switched live. D5 measures what the S3's acceleration adds to those models. D6 joins three boards into one demo.
-
-
----
-
-## Part A: Install
+### Part A: Install
 
 Once per laptop, about 20 minutes and 2 GB.
 
@@ -382,10 +472,7 @@ sh tools/mtk.sh check
 ```
 You should see: course port `e92874d`, ESP-IDF `v6.1-dev-2300-g17a74c925c`, compiler `esp-15.2.0_20251204`, then `Project build complete`.
 
-
----
-
-## Part B: Wi-Fi and broker
+### Part B: Wi-Fi and broker
 
 **Step 5. Find the laptop's IP:** `ipconfig getifaddr en0`.
 
@@ -398,19 +485,13 @@ printf "listener 1883 0.0.0.0\nallow_anonymous true\n" > ~/mosq.conf
 ```
 Use this exact path: the fault test stops and restarts the broker by it.
 
-
----
-
-## Board pinout
+### Board pinout
 
 ![ESP32-S3 Super Mini pinout](Pinout_Super_Mini_S3.png)
 
 Hold the board with USB-C at the top, chip facing you. Left pins, top to bottom: TX, RX, GP1–GP7. Right pins: 5V, GND, 3V3, GP13–GP8. All GPIO are 3.3 V only.
 
-
----
-
-## Part C: Flash
+### Part C: Flash
 
 **Step 8. Plug the S3 in** with a USB-C data cable. No wires are needed until Part E.
 
@@ -426,10 +507,7 @@ sh tools/mtk.sh monitor
 ```
 Within about 20 s: `[WIFI] ip=...` and `[MQTT] Subscribed OK to: broadcast`. Type `HELP` or `TASKS` and press Enter (`TASKS` lists every task with its core, priority and stack headroom); **Ctrl+C** leaves. Close the monitor before running a test.
 
-
----
-
-## Part D: Tests
+### Part D: Tests
 
 | Step | Command | You should see | What it shows |
 |---|---|---|---|
@@ -446,10 +524,7 @@ Within about 20 s: `[WIFI] ip=...` and `[MQTT] Subscribed OK to: broadcast`. Typ
 | 21 | `sh tools/mtk.sh compare 4a` | Pico and µT-Kernel text | The same test's output on both boards, line for line |
 | 22 | `sh tools/mtk.sh endurance <laptop-ip>` (optional) | `6/6 passed` (30 min, lid open) | Sensors, rules, ML and MQTT for 30 minutes with no reset or leak |
 
-
----
-
-## Part E: Real sensors
+### Part E: Real sensors
 
 One sensor at a time; unplug the USB cable before changing wires. No resistor is needed (see below).
 
@@ -459,14 +534,11 @@ One sensor at a time; unplug the USB cable before changing wires. No resistor is
 
 **Light sensor and jumper tests** (4d-ir, 4b, t02, 4c-uart, t08, t09): wiring, order and expected results are in [SETUP.md](SETUP.md#hardware-checks-on-µt-kernel-jumpers-and-sensors).
 
-### Why no resistor
+#### Why no resistor
 
 An S3 pin can take at most 3.3 V. The GY-511, the kit's 3 V HC-SR04, the MH board and the IR board are powered from the S3's **3V3** pin, so their signals can never be higher than 3.3 V, and the pull-up or pull-down a digital input needs is built into the chip (`gpio.pull=up` or `down`). The test wires join an S3 pin to another S3 pin, also 3.3 V. Only the **HC-SR04** needs a resistor divider: it is powered from **5V**, so its Echo signal is 5 V and must be divided down before it reaches an S3 pin (wiring in [SETUP.md](SETUP.md#pin-power-and-wiring-task-8)).
 
-
----
-
-## Part F: D2 SPI
+### Part F: D2 SPI
 
 | Wiring | Command | You should see |
 |---|---|---|
@@ -476,7 +548,7 @@ An S3 pin can take at most 3.3 V. The GY-511, the kit's 3 V HC-SR04, the MH boar
 
 These are read-only on the module. Never run `SPIPROGRAM` or `SPILOGWRITE` without agreeing a scratch address with Brendan ([SETUP.md](SETUP.md#d2-spi-checks-on-µt-kernel)).
 
-## Part G: D3 timing and application
+### Part G: D3 timing and application
 
 | Wiring | Command | You should see |
 |---|---|---|
@@ -495,7 +567,7 @@ BEGINCFG|name=FOLLOW|proto=gpio|gpio.mode=digital|gpio.pin=9|gpio.pull=up|mode=p
 RUN
 ```
 
-## Part H: D4 ML
+### Part H: D4 ML
 
 | Wiring | Command | You should see |
 |---|---|---|
@@ -515,32 +587,21 @@ mosquitto_pub -h <laptop-ip> -t pico/s3-001/cmd -m '{"ml_setup":{"version":1,"mo
 
 You should see `{"ok":true,"reason":"applied","generation":…}` on `pico/s3-001/ml/status`, then results with `"model":"sine-float"` on `pico/s3-001/ml/result` while the readings carry on, without a `STOP`. Another board's sensor as input, the result fed to rules and the uploaded model are in [LIVE_SETUP_PROPOSAL.md](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#running-it-on-boards).
 
-## Part I: D5 benchmark
+### Part I: D5 benchmark
 
 | Wiring | Command | You should see |
 |---|---|---|
 | None (runs on the laptop) | `sh tools/d5_test.sh` | `OK` at the end |
 | None | in `sh tools/mtk.sh monitor`: `STOP`, `ML MODEL sine-int8`, then `MLBENCH 200` | `[MLBENCH] runs=200 …`, then the `request_us`, `invoke_us` and `overhead_us` medians and a `memory` line |
-| None, then the HC-SR04 | the comparison of the S3 assembly against plain C, and the live run | the steps and results in the [Run it table of section 6](#6-d5-task-checklist-hasif) |
-
-## Part J: D6 demo (to be finalised)
-
-The three-board demo is being finalised by the team (D6 task 5.7). This part will hold, for each board, its wiring, how to flash it and the commands that set it up, then the demo sequence in order. Until then the draft material is on `D6-Integration`.
-
-| Board | Role | Wiring | Flash | Set-up commands |
-|---|---|---|---|---|
-| A | Senses | To be added | To be added | To be added |
-| B | Runs the ML and handles the data | To be added | To be added | To be added |
-| C | Shows the results on the LCD | To be added | To be added | To be added |
-
-**Demo sequence.** To be added.
+| None, then the HC-SR04 | the comparison of the S3 assembly against plain C, and the live run | the steps and results in the [Run it table in 2.5](#25-d5-task-checklist-hasif) |
 
 If every step up to Part I matched, this laptop has built, flashed and tested the µT-Kernel firmware for D1 to D5.
 
+</details>
 
----
-
-# 9. Using any sensor (config cheat sheet)
+<a name="4-using-any-sensor-and-ml"></a>
+<details>
+<summary><h2>4. Using any sensor and ML</h2></summary>
 
 The node is not plug-and-play: each sensor needs **one config line** that tells it the protocol, the pins and how to read it. No code change and no re-flash: wire the sensor, send the line, type `RUN`.
 
@@ -577,9 +638,9 @@ BEGINRULE|name=DARK|source=LIGHT|calc=s=u8(0)|when=s==1|action=log:it is dark|EN
 ```
 `calc` picks the value out of the bytes (`u8(0)` = byte 0), `when` is the condition, and `action` can also switch a pin (`gpio:5=HIGH`), set PWM, publish over MQTT or run the AI model. Every option and action is listed in [project_v3/README.md](project_v3/README.md#%EF%B8%8F-configuration-guide); its examples use Pico pin numbers, so swap in S3 GP numbers.
 
+**Adding ML to a reading.** Any decoded field (AHT temperature or humidity, TSL2561 lux, HC-SR04 distance) can feed a model. On the console: `STOP`, `ML MODEL <model>`, `ML BIND <index> <sensor> <field> <min> <max>`, `ML RUN`, `RUN`. Over MQTT, one `ml_setup` message does the same without a `STOP`, and can name another board's sensor. Each model and the full `ml_setup` format are in [2.4](#24-d4-task-checklist).
 
-
-## Over MQTT: how it works and what to send
+### Over MQTT: how it works and what to send
 
 **It is always on.** If `wifi_credentials.h` names a network, the board joins it at boot, connects to the broker in `MQTT_HOST` (Mosquitto on the laptop, [Part B](#part-b-wi-fi-and-broker)) and subscribes to its own topics; it reconnects by itself after a drop. No config line turns MQTT on: config lines only decide which sensors and rules exist. Boards never talk to each other directly; every message goes through the broker. A board's topics start with `pico/<node>/` (the prefix comes from the original Pico project and is kept on purpose, so S3 boards, the Pico reference and other groups' nodes built on the same base can exchange messages, and every MQTT test still applies), where `<node>` is its `NODE_ID` (`s3-001` unless changed; flash another board as `s3-002` with `NODE=s3-002 sh tools/mtk.sh flash`).
 
@@ -618,18 +679,179 @@ mosquitto_pub -h <laptop-ip> -t pico/s3-001/cmd -m RUN   # board B now prints "A
 
 `sh tools/mtk.sh boards <laptop-ip>` runs all of this and more as a test (D1 tasks 1.1 to 1.4).
 
-**Not there yet.** The LCD board does not yet show what other boards publish (D6 task 5.5). `ML PRESET` and `ML MODEL` still need `STOP`; `ml_setup` does not.
+**Not there yet.** The LCD board shows Board B's snapshot and live comfort score, but not any board's raw readings (D6 task 5.5). `ML PRESET` and `ML MODEL` still need `STOP`; `ml_setup` does not.
 
+</details>
 
----
+<a name="5-d6-use-case-demo"></a>
+<details>
+<summary><h2>5. D6 use case demo</h2></summary>
 
-# 10. Completion rule
+Everything in this section runs on the current `main`. The board tests recorded on 18–21 Nov used Brendan's D6 build, which is now merged, so the steps marked tested need one re-run on boards flashed from `main`.
+
+### 5.1 From D1 to D5 to the demo
+
+**The use case.** A doorway room monitor. Board A watches a doorway with two sonars, one outside and one inside, so the order they see a person in gives the walking direction. It also measures temperature, humidity and light. Board B takes A's readings over MQTT, runs the comfort-summer model on the temperature and humidity, keeps the only occupancy count and logs every event to its flash chip. Board C shows the count, the readings and the comfort score on its LCD. All three run the same firmware, given their roles only by configuration.
+
+```mermaid
+flowchart LR
+    subgraph A["Board A · s3-001 · senses"]
+        AHT["AHT temperature, humidity<br/>(I2C)"]
+        TSL["TSL2561 light<br/>(I2C)"]
+        SON["Sonar A outside, Sonar B inside<br/>(GPIO, read one after the other)"]
+    end
+    BROKER(("Laptop<br/>MQTT broker"))
+    subgraph B["Board B · s3-002 · processes"]
+        FOL["Follows A's four sensors"]
+        ML["comfort-summer model"]
+        CNT["Occupancy count<br/>(the only writer)"]
+        LOG["W25Q32 event log<br/>(SPI)"]
+    end
+    subgraph C["Board C · s3-003 · displays"]
+        LCD["ST7789 LCD<br/>room monitor"]
+    end
+    A -- "sensor readings" --> BROKER
+    BROKER --> FOL
+    FOL --> ML
+    FOL --> CNT
+    CNT --> LOG
+    ML -- "comfort score" --> BROKER
+    CNT -- "snapshot" --> BROKER
+    BROKER --> LCD
+```
+
+**What each deliverable brings to the demo.**
+
+| Deliverable | What it adds | Where it shows in the demo |
+|---|---|---|
+| D1 | One configurable firmware on µT-Kernel 3 SMP; configs, rules and commands over USB or MQTT; boards following each other's sensors | All three boards run the same image, and A and B are set up over MQTT |
+| D2 | SPI as a fourth bus and the W25Q32 event log | B's flash chip and C's LCD are both SPI devices; B logs each processed event and reads it back |
+| D3 | Timing per sensor, sonars read one after the other without blocking, ApplicationTask with duplicate rejection | A's two sonars; B's count |
+| D4 | ML models chosen and rewired live, with another board's sensor as input | comfort-summer on B using A's AHT, shown on C |
+| D5 | Measured S3 acceleration: people-counter runs in about 2 ms | Shows ML fits on B alongside sensing and MQTT |
+
+### 5.2 Setup
+
+The hardware each board needs, the firmware on it, and the configuration that gives it its role.
+
+| # | Item | Setting | Why | Status |
+|---|---|---|---|---|
+| 1 | Board A hardware (`s3-001`) | ESP32-S3 N16R8. AHT and TSL2561 share I2C: SDA GPIO1, SCL GPIO2. Sonar A: TRIG GPIO10, ECHO GPIO11. Sonar B: TRIG GPIO6, ECHO GPIO7, with direct power leads ([wiring](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md)) | All inputs on one board; two sensors share one bus; two sonars give the walking direction | **Wired**, each sensor checked 19–21 Nov |
+| 2 | Board B hardware (`s3-002`) | ESP32-S3 N16R8 with a W25Q32 flash on SPI: CS GPIO10, CLK GPIO11, DI GPIO12, DO GPIO13 | Event storage sits on the processing board | **Wired**, chip ID `EF4016` and read-only check passed 18 Nov |
+| 3 | Board C hardware (`s3-003`) | ESP32-S3 N16R8 with an ST7789 LCD on SPI: SCK GPIO12, MOSI GPIO11, CS GPIO10, DC GPIO9, RST GPIO8 | Display only, so output is separate from processing | **Wired**, landscape test pattern passed 21 Nov |
+| 4 | Laptop broker | Mosquitto listening on the laptop's Wi-Fi address with [`tools/mqtt-test.conf`](tools/mqtt-test.conf) | Every board-to-board message and command goes through one hub | **Tested** 18–21 Nov |
+| 5 | Firmware | The same µT-Kernel image on all three boards, built for the N16R8 | FR1: one firmware for every role. The N16R8 build turns on the 8 MB PSRAM | **Rebuild from `main`** (last flashed from the D6 build) |
+| 6 | Build settings per board | `wifi_credentials.h`: Wi-Fi name, password and the laptop's IP as `MQTT_HOST`. Node ID `s3-001`, `s3-002` or `s3-003` | The broker address is compiled in; each board needs its own ID for its topics and event identity | **Needed for each build** |
+| 7 | Board A sensors | [`config/board_a.cfg`](config/board_a.cfg), sent to `pico/s3-001/config`: AHT and light every 2 s, both sonars every 0.5 s with a 20 ms echo timeout | Sensors are defined while running, with no reflash (FR1, FR2) | **Tested** 21 Nov |
+| 8 | Board B follows A | Four `proto=mqtt` configs, `A_AHT`, `A_LIGHT`, `A_SONAR_A` and `A_SONAR_B`, each with the `remote_profile` that decodes it | B receives A's data through the broker (FR3) | **Tested** 21 Nov without `remote_profile`; with it, not yet run |
+| 9 | Board B ML | One `ml_setup` message: comfort-summer on A's temperature and humidity, output published | Live ML on another board's data (FR5, FR6) | **Built** 23 Nov, laptop tests only |
+| 10 | Board C display | `D6VIEW` on C's console: draws B's snapshot (`d6/board-b/snapshot`) and live comfort score (`d6/board-b/comfort`) in landscape | Board C only displays (FR7) | Snapshot **tested** 21 Nov with mock values; live comfort **built**, laptop tests only |
+
+**Flash the boards (rows 5 and 6).** One board on USB at a time, using the USB-C socket wired to the chip's own USB.
+
+```sh
+BOARD=n16r8 PORT=<A port> sh tools/mtk.sh flash                # s3-001, the NODE_ID in wifi_credentials.h
+BOARD=n16r8 NODE=s3-002 PORT=<B port> sh tools/mtk.sh flash
+BOARD=n16r8 NODE=s3-003 PORT=<C port> sh tools/mtk.sh flash
+```
+
+On Windows, use the PowerShell build in [MQTT_commands.md](MQTT_commands.md#when-wi-fi-or-the-broker-address-changes), one board at a time with its own node ID.
+
+**Configure Boards A and B (rows 7 and 8).** In PowerShell from the repo folder, with the broker running (demo step 1):
+
+```powershell
+$brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
+$pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
+
+# Board A: AHT, light, Sonar A and Sonar B
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'STOP'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'CLEAR'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/config' -f '.\config\board_a.cfg'
+Start-Sleep -Seconds 2
+& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'RUN'
+
+# Board B: follow each of A's sensors and decode it
+& $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -m 'STOP'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -m 'CLEAR'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-002/config' -m 'BEGINCFG|name=A_AHT|proto=mqtt|mode=poll|freq_hz=0.5|remote_node=s3-001|remote_source=AHT|remote_profile=aht|ENDCFG'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-002/config' -m 'BEGINCFG|name=A_LIGHT|proto=mqtt|mode=poll|freq_hz=0.5|remote_node=s3-001|remote_source=LIGHT|remote_profile=tsl2561|ENDCFG'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-002/config' -m 'BEGINCFG|name=A_SONAR_A|proto=mqtt|mode=poll|freq_hz=2|remote_node=s3-001|remote_source=SONAR_A|remote_profile=pulse|ENDCFG'
+& $pub -h $brokerIp -q 1 -t 'pico/s3-002/config' -m 'BEGINCFG|name=A_SONAR_B|proto=mqtt|mode=poll|freq_hz=2|remote_node=s3-001|remote_source=SONAR_B|remote_profile=pulse|ENDCFG'
+Start-Sleep -Seconds 2
+& $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -m 'RUN'
+```
+
+**Start Board B's ML (row 9).**
+
+```powershell
+'{"ml_setup":{"version":1,"model":"comfort-summer","inputs":[{"index":0,"source":{"kind":"remote","node":"s3-001","name":"AHT"},"field":"temperature_c","min":0,"max":60},{"index":1,"source":{"kind":"remote","node":"s3-001","name":"AHT"},"field":"humidity_pct","min":0,"max":100}],"output":{"kind":"publish"}}}' |
+  & $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -s
+```
+
+**Start Board C's display (row 10).** On C's console, type `D6VIEW`. It shows `WAIT B MQTT` until B sends something.
+
+### 5.3 Demo
+
+What the demo runs, what each step shows, and how far each step is on `main`.
+
+| # | Step | What you do | What it shows | Requirement | Status |
+|---|---|---|---|---|---|
+| 1 | Start the hub | Start the broker and a watch window | All board traffic goes through the laptop | — | **Tested** 21 Nov, re-run on `main` |
+| 2 | Configure A live | Send `board_a.cfg` over MQTT, then `RUN` | Sensors set up without reflashing; I2C and GPIO on one board; the sonars read one after the other | FR1, FR2, FR3 | **Tested** 21 Nov, re-run on `main`. The sonars still time out at times |
+| 3 | B follows A | Send B's four follow configs, then `RUN` | Data passing between boards, within the follow limit | FR3, FR11 | **Tested** 21 Nov (6, 6, 24 and 24 frames in 12 s), re-run on `main` |
+| 4 | Sonar pair | `PAIR SONAR_A SONAR_B A 5000`, then the same ending `B 5000` | Both sonars read in a fixed order within 50 ms | NFR2 | **Not passed:** needs valid readings from both sonars in both orders |
+| 5 | Comfort on C | Send the `ml_setup`, watch C, then stop A | ML on B from A's sensor, shown live on C; `STALE` 6 s after the updates stop | FR5, FR6, FR7 | **Built** 23 Nov, laptop tests only |
+| 6 | Doorway count | Walk in, then out | Each entry and exit changes B's count once | FR4 | **Not built** |
+| 7 | Event log | Count a crossing | B writes each event to the W25Q32 and reads it back | FR8 | **Not built** (waits for step 6) |
+| 8 | Snapshot on C | On B's console, `D6MOCKPUB 2`, then `D6MOCKPUB 3` | B to C over MQTT; C redraws the count from 2 to 3 | FR7 | **Tested** 21 Nov, with mock values only |
+| 9 | Live snapshot | B sends its real readings and count | C shows live data, marks it stale, and accepts B after a reboot | FR7, FR12 | **Not built** |
+| 10 | Fault handling | Unplug the AHT, drop the Wi-Fi, send a broken config | The Tribunal 2 change: a safe, predictable response to each failure | Tribunal 2 | **Not tested.** The Tribunal 2 changes are proposals only |
+| 11 | Any sensor on the fly | Add, change and refuse sensors and rules live on one board | That the platform takes any supported sensor without reflashing (task 5.3) | FR1, FR2 | **Not set up** |
+
+**Run the tested steps.** Full Windows instructions, including troubleshooting, are in [MQTT_commands.md](MQTT_commands.md).
+
+```powershell
+# Step 1, window 1 (Administrator PowerShell): the broker, left running
+Stop-Service -Name mosquitto -ErrorAction SilentlyContinue
+& "$env:ProgramFiles\mosquitto\mosquitto.exe" -c '.\tools\mqtt-test.conf' -v
+
+# Step 1, window 2: watch every board
+$brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
+& "$env:ProgramFiles\mosquitto\mosquitto_sub.exe" -h $brokerIp -t 'pico/#' -t 'd6/#' -v
+```
+
+Steps 2 and 3 are the two configuration blocks in [5.2](#52-setup). Window 2 should show A's `AHT`, `LIGHT`, `SONAR_A` and `SONAR_B` topics, then B's `A_AHT`, `A_LIGHT`, `A_SONAR_A` and `A_SONAR_B`.
+
+Step 4, on A's console: `STOP`, then `PAIR SONAR_A SONAR_B A 5000` and `PAIR SONAR_A SONAR_B B 5000`. Each should print `[PAIR] state=complete outcome=0` with a valid width for both sonars.
+
+Step 5: send the `ml_setup` in [5.2](#52-setup) with `D6VIEW` running on C. B should print a comfort result for `remote:s3-001`, and C should show the score under **LIVE COMFORT**. Send `STOP` to A: C should show `STALE` about 6 s later, and a fresh score after `RUN`.
+
+Step 8, with `D6VIEW` running on C: type `D6MOCKPUB 2` on B's console, then `D6MOCKPUB 3`. C should show `MOCK`, the mock readings and the count changing from 2 to 3.
+
+**Still to build.** What each open step needs before it can run:
+
+| Step | What it should do |
+|---|---|
+| 6. Doorway count | Let `WINDOW` start on the first sonar that sees someone, instead of the radar it waits for now. It already classifies each window as entry, exit, incomplete or fault within a time limit, and gives each event a node, boot and sequence identity. Each event then has to reach B's ApplicationTask, which rejects duplicates and keeps the only count |
+| 7. Event log | No new code expected: ApplicationTask already offers every processed event to the W25Q32 log (D2-8). It runs once step 6 delivers events to B |
+| 9. Live snapshot | Replace the fixed values in `D6MOCKPUB` with B's latest decoded readings, count, comfort score and boot number, sent about once a second. C marks each field stale after a set time on its own clock, and accepts a new boot number from B instead of rejecting its restarted sequence |
+| 10. Fault handling | Build and test the responses the team agreed at Tribunal 2: safe output levels when an input dies, published sensor errors, detecting a lost board, and keeping the setup across a reboot |
+| 11. Any sensor on the fly | One board with nothing configured. While it runs, add a button on GPIO, the AHT on I2C and the flash ID read on SPI over MQTT, add a rule, bind a model, then send a broken config and show it refused. This also covers task 5.3; task 5.4's SPI write by config needs new code |
+
+</details>
+
+<a name="6-completion-rule"></a>
+<details>
+<summary><h2>6. Completion rule</h2></summary>
 
 A task is not complete merely because code compiles or a single happy-path demonstration works. It is complete only when its acceptance evidence is recorded, relevant requirements and assumptions are updated, and any failure or limitation is either fixed or explicitly documented with an owner and disposition.
 
+</details>
 
----
-
-# 11. Arduino/FreeRTOS baseline: set up and test (reference)
+<a name="7-arduinofreertos-baseline"></a>
+<details>
+<summary><h2>7. Arduino/FreeRTOS baseline</h2></summary>
 
 The earlier Arduino-ESP32/FreeRTOS build (`esp32s3_edge/`, `tools/s3.sh`) is kept as the measured baseline (D1 task 21, [PARITY.md §3](parity/PARITY.md#3-esp32-s3-results-tasks-13-to-21)). Its step-by-step setup and tests for Mac and Windows are in [ARDUINO_BASELINE.md](ARDUINO_BASELINE.md). Going from the µT-Kernel build back to it, erase the flash first ([SETUP.md](SETUP.md#testing-on-µt-kernel-tasks-2732)).
+
+</details>

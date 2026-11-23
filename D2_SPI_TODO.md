@@ -1,6 +1,6 @@
 # D2 — ESP32-S3 SPI Support To-Do List
 
-**Final status (22 Nov 2026).** D2 is done and signed off by the team. Event logging from ApplicationTask (D2-8) and the concurrent T-23 run (D2-9) were done on 22 Nov 2026 ([logs](parity/logs/mtk/d2-log-20261122/)), and the items still open below (lock contention, a corrupted reply, the clock range, polled transfers without DMA, the record format and the wiring) were signed off by the team the same day. The dated notes below are kept as written; [README section 3](README.md#3-d2-task-checklist) has the final task list.
+**Final status (22 Nov 2026).** D2 is done and signed off by the team. Event logging from ApplicationTask (D2-8) and the concurrent T-23 run (D2-9) were done on 22 Nov 2026 ([logs](parity/logs/mtk/d2-log-20261122/)), and the items still open below (lock contention, a corrupted reply, the clock range, polled transfers without DMA, the record format and the wiring) were signed off by the team the same day. The dated notes below are kept as written; [README section 2.2](README.md#22-d2-task-checklist) has the final task list.
 
 
 - Branch: D2 checkpoint merged into `main`; `s3-port-d2` remains the D2 work branch.

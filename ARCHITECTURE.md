@@ -1,6 +1,6 @@
 # D1 Architecture Freeze (Task 10)
 
-**Status (23 Nov 2026).** This is the Week 6 architecture freeze for the Arduino/FreeRTOS build, now the measured baseline; the µT-Kernel design that replaced it is in [MTK_REDESIGN.md](MTK_REDESIGN.md). The dated D3 notes below describe D3 as it was merged; D3 was finished on the board on 21 Nov 2026 ([README section 4](README.md#4-d3-task-checklist)).
+**Status (23 Nov 2026).** This is the Week 6 architecture freeze for the Arduino/FreeRTOS build, now the measured baseline; the µT-Kernel design that replaced it is in [MTK_REDESIGN.md](MTK_REDESIGN.md). The dated D3 notes below describe D3 as it was merged; D3 was finished on the board on 21 Nov 2026 ([README section 2.3](README.md#23-d3-task-checklist)).
 
 
 **1 November D3 update (target unverified).** The shared `entrance_window`

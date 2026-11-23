@@ -65,7 +65,7 @@ These are illustrative formats, not captured board measurements. A failed or mis
 
 ## D3 task checklist and regression evidence
 
-The [D3 task checklist and timing contract](README.md#4-d3-task-checklist), [D3 test procedures](README.md#part-g-d3-timing-and-application) and [interrupt wiring review](D3_INTERRUPT_WIRING_REVIEW.md) are retained alongside this fixture guide. D3-1 native validation and window timing-report tooling are preserved; the two-sonar pair and crosstalk were run on the D6 setup and signed off on 22 Nov 2026, and the radar workload timing was closed with the radar. [D3-1 raw native evidence](parity/logs/d3/d3-1-native-20261105.log) predates this merge and is not a board result.
+The [D3 task checklist and timing contract](README.md#23-d3-task-checklist), [D3 test procedures](README.md#part-g-d3-timing-and-application) and [interrupt wiring review](D3_INTERRUPT_WIRING_REVIEW.md) are retained alongside this fixture guide. D3-1 native validation and window timing-report tooling are preserved; the two-sonar pair and crosstalk were run on the D6 setup and signed off on 22 Nov 2026, and the radar workload timing was closed with the radar. [D3-1 raw native evidence](parity/logs/d3/d3-1-native-20261105.log) predates this merge and is not a board result.
 
 For D3-2 on this breadboard, use the [V2 sonar test procedure](docs/D3_CAPTURE_V2_TEST.md). Its explicit `--fixture v2-sonar` option maps the real-sonar parity stages to Trig GPIO4/Echo GPIO5, stops/clears the volatile preset first and rejects unrelated stages. The default test commands retain their original fixture mappings. The [one-shot capture probe](config/d3_sonar_v2_once.cfg) supports manual timeout and cancellation trials; physical acceptance is still pending.
 
