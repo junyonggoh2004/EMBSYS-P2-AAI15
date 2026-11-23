@@ -687,7 +687,7 @@ mosquitto_pub -h <laptop-ip> -t pico/s3-001/cmd -m RUN   # board B now prints "A
 <details>
 <summary><h2>5. D6 use case demo</h2></summary>
 
-Everything in this section runs on the current `main`. The board tests recorded on 18–21 Nov used Brendan's D6 build, which is now merged, so the steps marked tested need one re-run on boards flashed from `main`.
+Everything in this section runs on the current `main`. The board tests recorded on 18–21 Nov used Brendan's D6 build, which is now merged, so the steps marked tested need one re-run on boards flashed from `main`. Every command below is for Brendan's Windows laptop, his repo folder `C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration` and his temporary broker config [`tools/mqtt-test.conf`](tools/mqtt-test.conf).
 
 ### 5.1 From D1 to D5 to the demo
 
@@ -760,7 +760,17 @@ The hardware each board needs, the firmware on it, and the settings that give it
 | 9 | Board B ML | One `ml_setup` message: comfort-summer on A's temperature and humidity, output published | Live ML on another board's data (FR5, FR6) | **Built** 23 Nov, laptop tests only |
 | 10 | Board C display | `D6VIEW`: draws B's snapshot (`d6/board-b/snapshot`) and live comfort score (`d6/board-b/comfort`) in landscape | Board C only displays (FR7) | Snapshot **tested** 21 Nov with mock values; live comfort **built**, laptop tests only |
 
-**Board consoles.** Some commands are typed on a board's console rather than sent over MQTT. On a Mac, open it with `sh tools/mtk.sh monitor`. On Windows, use `miniterm` on the board's native USB port, as in the [Board A sensor test](docs/d6/BOARD_A_SENSOR_TEST.md#1-start-the-board-a-console); type `HELP` first and wait for `Commands:`.
+> **Board consoles** (used by items 1, 2, 3 and 10, and demo steps 4, 6 and 8)
+>
+> ```powershell
+> $py = "$env:USERPROFILE\.espressif\python_env\idf6.1_py3.14_env\Scripts\python.exe"
+> & $py -m serial.tools.list_ports -v
+> & $py -m serial.tools.miniterm COMx 115200 --dtr 0 --rts 0 --eol CRLF
+> ```
+>
+> **What it does:** the second line lists the serial ports; the board's console is the one named **USB JTAG/serial debug unit** with VID `303A`, not the CH343 port. The third line opens that console; replace `COMx` with its port. Use one PowerShell window per board.
+>
+> **You should see:** nothing at first, because typing is not echoed. Type `HELP` and press Enter; the board answers `Commands:`. `Ctrl+T` then `Ctrl+E` shows what you type, and `Ctrl+]` closes the console.
 
 > **1 · Board A hardware** (wired, checked 19–21 Nov)
 >
@@ -800,36 +810,59 @@ The hardware each board needs, the firmware on it, and the settings that give it
 > **4 · Laptop broker** (tested 18–21 Nov)
 >
 > ```powershell
-> # Administrator PowerShell, in the repo folder. Leave this window running.
+> # Administrator PowerShell. Leave this window running.
+> cd 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
 > Stop-Service -Name mosquitto -ErrorAction SilentlyContinue
 > & "$env:ProgramFiles\mosquitto\mosquitto.exe" -c '.\tools\mqtt-test.conf' -v
 > ```
 >
 > **What it does:** stops the Windows Mosquitto service, which only listens to the laptop itself, and starts a broker the boards can reach over Wi-Fi. If Windows asks, allow port 1883 on private networks.
 >
-> **You should see:** `mosquitto version ... running`. On a Mac, use [Part B step 7](#part-b-wi-fi-and-broker) instead.
+> **You should see:** `mosquitto version ... running`. Do not start a second copy if one is already running on port 1883.
 
 > **5 · Build settings** (needed before each build)
 >
 > ```powershell
+> cd 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
 > (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
 > notepad .\esp32s3_mtk\main\wifi_credentials.h
 > ```
 >
-> **What it does:** the first line prints the laptop's Wi-Fi address; the second opens the private settings file, which is never committed. Set `WIFI_SSID` and `WIFI_PASS` to a 2.4 GHz network, and `MQTT_HOST` to that address. If the laptop's address changes later, edit the file and flash again. On a Mac: `ipconfig getifaddr en0` and `open -e esp32s3_mtk/main/wifi_credentials.h`.
+> **What it does:** the first line prints the laptop's Wi-Fi address; the second opens the private settings file, which is never committed. Set `WIFI_SSID` and `WIFI_PASS` to a 2.4 GHz network, and `MQTT_HOST` to that address. Leave `NODE_ID` as `s3-001`; B and C get their IDs from their build directories (item 6). The address was `192.168.1.126` on 21 Nov; if it changes, edit the file and flash all three boards again.
 
 > **6 · Firmware** (rebuild from `main`)
 >
-> ```sh
-> git checkout main && git pull
-> BOARD=n16r8 PORT=<A port> sh tools/mtk.sh flash
-> BOARD=n16r8 NODE=s3-002 PORT=<B port> sh tools/mtk.sh flash
-> BOARD=n16r8 NODE=s3-003 PORT=<C port> sh tools/mtk.sh flash
+> ```powershell
+> # Normal PowerShell. One board on USB at a time, on its native USB port.
+> $repo = 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
+> cd $repo
+> git branch --show-current     # must print main
+> git pull
+> $env:MTKERNEL_PATH = "$repo\esp32s3_mtk\third_party\mtk3smp-esp32s3"
+> $env:IDF_PATH = "$env:USERPROFILE\esp\esp-idf-v6.1"
+> $env:IDF_TOOLS_PATH = "$env:USERPROFILE\.espressif"
+> $env:IDF_PYTHON_ENV_PATH = "$env:USERPROFILE\.espressif\python_env\idf6.1_py3.14_env"
+> $MtkCmakeBin = "$env:USERPROFILE\.espressif\tools\cmake\4.0.3\bin"
+> $MtkNinjaBin = "$env:USERPROFILE\.espressif\tools\ninja\1.12.1"
+>
+> # Board A (s3-001): replace COMx with its port
+> & .\esp32s3_mtk\tools\build.ps1 -Action build -BuildDirectory "$repo\esp32s3_mtk\build-n16r8"
+> & .\esp32s3_mtk\tools\build.ps1 -Action flash -Port COMx -BuildDirectory "$repo\esp32s3_mtk\build-n16r8"
+>
+> # Board B (s3-002)
+> & .\esp32s3_mtk\tools\build.ps1 -Action build -BuildDirectory "$repo\esp32s3_mtk\build-s3-002-n16r8"
+> & .\esp32s3_mtk\tools\build.ps1 -Action flash -Port COMx -BuildDirectory "$repo\esp32s3_mtk\build-s3-002-n16r8"
+>
+> # Board C (s3-003)
+> & .\esp32s3_mtk\tools\build.ps1 -Action build -BuildDirectory "$repo\esp32s3_mtk\build-s3-003-n16r8"
+> & .\esp32s3_mtk\tools\build.ps1 -Action flash -Port COMx -BuildDirectory "$repo\esp32s3_mtk\build-s3-003-n16r8"
 > ```
 >
-> **What it does:** builds the firmware from `main` for the N16R8 and flashes it, one board on USB at a time, using the USB-C socket wired to the chip's own USB. Board A takes `s3-001` from the settings file; B and C get their IDs from `NODE`.
+> **What it does:** updates the folder to the latest `main`, loads ESP-IDF and the course port for this PowerShell window, then builds and flashes each board. Each board has its own build directory, which keeps the node ID and the N16R8 settings it was first set up with, so the three images differ only in their node ID. This is the route Brendan used on 21 Nov, after the Git Bash `mtk.sh` helper failed on this laptop.
 >
-> **You should see:** `Hash of data verified` for each board. On Windows, use the PowerShell build in [MQTT_commands.md](MQTT_commands.md#when-wi-fi-or-the-broker-address-changes), one board at a time with its own node ID.
+> **You should see:** a successful build and audit, then verified flash hashes. After a reset, the board's console prints `[BOOT] esp32s3_mtk node s3-001` (or `s3-002`, `s3-003`).
+>
+> **Placeholder:** if `build-s3-002-n16r8` or `build-s3-003-n16r8` is missing from this folder (Board C was first built in the `lcd-output` worktree), it has to be set up once with its node ID and the N16R8 settings. That one-time command is still to be added.
 
 > **7 · Board A sensors** (tested 21 Nov)
 >
@@ -914,7 +947,8 @@ Before step 1, the broker from setup item 4 must be running, and all three board
 > ```
 >
 > ```powershell
-> # Window 3: the command window for every step below. Start it in the repo folder.
+> # Window 3: the command window for every step below
+> cd 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
 > $brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
 > $pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
 > ```
