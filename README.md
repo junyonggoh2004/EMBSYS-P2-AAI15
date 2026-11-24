@@ -46,7 +46,7 @@ Each numbered section below is collapsed. Click its title to open it.
 | [5. D6 use case demo](#5-d6-use-case-demo) | The three-board room monitor |
 | &nbsp;&nbsp;[5.1 From D1 to D5 to the demo](#51-from-d1-to-d5-to-the-demo) | The use case and what each deliverable brings to it |
 | &nbsp;&nbsp;[5.2 Setup](#52-setup) | Each board's hardware, firmware and configuration |
-| &nbsp;&nbsp;[5.3 Demo](#53-demo) | Run the demo, then what each of D1 to D4 explains, with the live model switch |
+| &nbsp;&nbsp;[5.3 Demo](#53-demo) | Run the demo, then what each of D1 to D5 explains, with the live model switch |
 | &nbsp;&nbsp;[5.4 Any sensor on the fly](#54-any-sensor-on-the-fly-extra-if-asked) | Extra, if asked: sensors on GPIO, I2C and SPI, timing and ML set live over MQTT on spare boards, with how MQTT works |
 | &nbsp;&nbsp;[5.5 Other demo steps](#55-other-demo-steps-and-their-status) | Sonar pair, doorway count, event log, the C snapshots and fault handling, with their status |
 | [6. Completion rule](#6-completion-rule) | When a task counts as done |
@@ -1048,6 +1048,20 @@ The demo starts with one command block. After that the boards keep running by th
 | `sine-int8` against `sine-float` | Five models are bundled. The INT8 ones run on the S3's vector instructions through ESP-NN, which D5 measured |
 | **LIVE COMFORT** on C | comfort-summer turns temperature and humidity into a comfort score from 0 to 99. C marks it `STALE` if updates stop, rather than showing an old score as current |
 | people-counter (mention only) | It classifies a doorway window as in, out or none. It runs from recorded data, or live on one sonar from Board A's console, not as a switch on Board B |
+
+#### D5 · Hasif: why the ML fits on the board
+
+The intro gives the D5 numbers. Here they are tied to what is running.
+
+| Point to | What to say |
+|---|---|
+| `"invoke_us"` in Board B's ML results | Each model run takes well under a millisecond for the sine models and about 1 ms for comfort-summer, against a reading every 0.5 to 2 s. The ML uses under 0.1% of the time between readings |
+| The `sine-int8` switch at D4 | INT8 models run on the S3's vector instructions through ESP-NN, which made them 1.36 to 3.35 times faster with the same outputs (D5 task 4.2). For a model this small, passing the request between tasks (94 to 118 µs) costs more than the model itself, so the gain only shows on larger models |
+| people-counter (mention) | The largest INT8 model keeps a 2.55 times speed-up in the running firmware, about 2.1 against 5.3 ms per run (D5 task 4.5) |
+| Memory | Each model's working memory is 716 to 6,204 B of a 64 KB area in PSRAM, and about 30 KB of internal RAM stays free with Wi-Fi and MQTT running (D5 task 4.3) |
+| No lost data | With ML running on live readings, no reading or message was dropped (D5 task 4.5) |
+
+Details: [2.5 D5 task checklist](#25-d5-task-checklist-hasif) and [docs/d5/README.md](docs/d5/README.md#6-results).
 
 ### 5.4 Any sensor on the fly (extra, if asked)
 
