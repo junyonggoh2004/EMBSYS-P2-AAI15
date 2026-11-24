@@ -5,7 +5,7 @@ This file is the single record of the professor's feedback on the Week 6 design 
 | | |
 |---|---|
 | Tracker branch | `main` (D1 to D5) |
-| Last updated | 2026-11-23: D1 to D5 done, D6 in progress (README). The dated entries below are kept as written |
+| Last updated | 2026-11-24: D1 to D6 done (README). The dated entries below are kept as written |
 | Feedback received | After the Week 6 design review submission (before 2026-10-18) |
 | Reviewed document | Week 6 Design Review "P2-AAI15", local copy `ESP_P2_AAI15 (2).pdf` |
 | Next event | The D6 demo |

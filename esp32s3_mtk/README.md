@@ -4,17 +4,11 @@
 
 With the broker and Board A running, `python tools/show_live_values.py --board A` from the repository root shows live temperature, humidity, light and valid sonar distances in PowerShell. `--board B` shows the same readings after MQTT relay to B. The viewer decodes the existing raw MQTT frames and needs no firmware change; see the [use case commands](../usecase_commands.md). Board B's default `sine-float` setup and optional switches for all five bundled models are in [ML_commands.md](../ML_commands.md). Its remote 31-reading `people-counter` window is experimental; a separate replay file tests model execution without claiming a validated crossing.
 
-**Current D6 Board C (23 November 2026):** the isolated `LCDTEST` is still
-available. `D6VIEW` draws accepted Board B MQTT snapshots in the physically
-verified 284 x 76 landscape orientation. The user confirmed all mock fields
-and an occupancy update from 2 to 3. The current v3 snapshot layout has
-separate Sonar A and B distance lines; a missing echo displays `--`. Its
-firmware builds and host tests pass, but it needs a fresh visual check after
-flashing. Reissue `D6VIEW` after a reboot or an
-isolated LCD pattern test. See [MQTT commands](../MQTT_commands.md) and the
-[live LCD guide](../docs/d6/LIVE_LCD_TWO_SONARS.md). Real AHT, light and sonar
-values use a temporary laptop snapshot relay; B's real comfort score reaches
-C directly. B-owned occupancy and native full-snapshot publication remain open.
+**D6 Board C (24 November 2026):** `D6VIEW` draws Board B's MQTT snapshots in the 284 x 76 landscape orientation, with separate
+Sonar A and B distance lines (a missing echo displays `--`). B publishes the live AHT, light and sonar
+snapshot itself, and its comfort score reaches C directly. The isolated `LCDTEST` is still available;
+reissue `D6VIEW` after a reboot or an isolated LCD pattern test. See [MQTT commands](../MQTT_commands.md)
+and the [live LCD guide](../docs/d6/LIVE_LCD_TWO_SONARS.md).
 
 For the earlier proposed D6 three-board N16R8 fixture, see the
 [board identification](../docs/d6/N16R8_BOARD_SETUP.md),

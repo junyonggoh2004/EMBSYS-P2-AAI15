@@ -430,13 +430,14 @@ light `420` lux, and ML score `0.953` with model `SINE-FLOAT`. The word
 v1 snapshot and shows `--` / `NO MODEL` where distance or ML was absent.
 
 The original portrait test produced C's `view result=0` and
-`snapshot seq=1 occupancy=2 display=0 active=1`; the user's photo showed
-all portrait fields. After the landscape firmware update, C logged
-`snapshot seq=5 occupancy=2 display=0 active=1`, and the user confirmed all
-reference fields visible horizontally. A second `D6MOCKPUB 3` logged
-`snapshot seq=6 occupancy=3 display=0 active=1`; the user saw `OCC 3` without
-changing orientation. This verifies B → broker → C mock transport and
-dynamic LCD refresh. Live A → B → C occupancy and live ML are still pending.
+`snapshot seq=1 occupancy=2 display=0 active=1`, and a photo showed all
+portrait fields. After the landscape firmware update, C logged
+`snapshot seq=5 occupancy=2 display=0 active=1` with all reference fields
+visible horizontally. A second `D6MOCKPUB 3` logged
+`snapshot seq=6 occupancy=3 display=0 active=1`, and the screen showed `OCC 3`
+without changing orientation. This verifies B → broker → C mock transport and
+dynamic LCD refresh. The live snapshot and live ML on C are in the
+[live LCD guide](docs/d6/LIVE_LCD_TWO_SONARS.md).
 
 ### End the Board C test
 

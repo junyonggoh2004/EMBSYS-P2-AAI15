@@ -28,9 +28,8 @@ After the trial, Board B's synthetic occupancy was reset to 0. The
 temporary `LCDMOCK` firmware code was removed, Board C's normal `s3-003`
 D6 firmware was rebuilt and reflashed, and isolated
 `LCDTEST 76 284 82 18 00 0` again returned `result=0`. Board B's
-firmware was not changed. The PC relay is not the intended B-to-C
-MQTT transport; live sensor, occupancy, ML, and stale-state integration
-remains to be implemented.
+firmware was not changed. The PC relay was later replaced by B's own
+MQTT snapshots; see the [live LCD guide](LIVE_LCD_TWO_SONARS.md).
 
 ## Private MQTT mock follow-up
 
