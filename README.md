@@ -1067,10 +1067,12 @@ Details: [2.5 D5 task checklist](#25-d5-task-checklist-hasif) and [docs/d5/READM
 
 A separate demo on a Mac with two spare ESP32-S3 N16R8 boards, shown only if asked. One board carries four sensors on three buses; the firmware is the same as on A, B and C. Over MQTT, with nothing reflashed, it shows sensors being added one at a time, a sensor's timing being changed, and an ML model being added and switched. Every step below was run on 24 Nov 2026 in this order, and every output shown is the real one.
 
+**Every command in 5.4 is an MQTT message over Wi-Fi.** The laptop runs the MQTT broker, the CONFIG terminal publishes settings to the board's topics, and the LISTENER terminal subscribes to what the board sends back. The USB cable only powers the board, so it is configured without being touched. How this works, and how to explain it, is in [5.4.8](#548-how-it-works-for-questions).
+
 | Board | Node ID | Role |
 |---|---|---|
 | Sensor board | `s3-005` | Carries the four sensors; every step below configures it |
-| Second board | `s3-004` | No sensors. Used only in the optional step 8 to show one board using another's sensor |
+| Second board | `s3-004` | No sensors. Optional: used only in 5.4.7 to show one board using another's sensor over MQTT. It can stay unplugged otherwise |
 
 #### 5.4.1 Parts and wiring
 
