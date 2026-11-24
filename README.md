@@ -1290,7 +1290,7 @@ Each is one or two commands. Run them once before showing them.
 >
 > **You should see:** `pico/s3-004/sensor/REM_SONAR/line` with the same bytes as the sensor board's `SONAR`, with no wire between the boards.
 
-> **The same config over the USB console.** Open the sensor board's console with `PORT=/dev/cu.usbmodem<sensor board> sh tools/mtk.sh monitor` (opening it may restart the board; wait for it to come back), then paste the MH line from 5.4.4 and press Enter.
+> **The same config over the USB console.** From the `EMBSYS-P2-AAI15` folder, open the sensor board's console with `PORT=$SENSOR sh tools/mtk.sh monitor`, after setting `SENSOR` as in step 3 of 5.4.2 (opening it may restart the board; wait for it to come back), then paste the MH line from 5.4.4 and press Enter.
 >
 > **You should see:** `CFG: ok (added #0: MH)` on the console, then `MH` readings in LISTENER as before. Ctrl+C closes the console.
 
