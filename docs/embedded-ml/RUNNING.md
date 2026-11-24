@@ -1,6 +1,6 @@
 # Run the classroom embedded ML demo
 
-For the current D6 three-board setup, use the [model-by-model Board B commands](../../ML_commands.md). That guide includes live JSON configurations and separate replay command files for all five bundled models. The classroom steps below preserve the earlier one-board demo.
+For the current D6 three-board setup, use the [model-by-model Board B commands](../commands/ML_commands.md). That guide includes live JSON configurations and separate replay command files for all five bundled models. The classroom steps below preserve the earlier one-board demo.
 
 The first ML implementation came from `dev-jy-ml` and was integrated into `main` through `d4-live-ml-sitt`. It uses ESP-IDF and µT-Kernel. The standalone ML presets use the [original breadboard wiring](../../esp32s3_mtk/WIRING.md). The three-board D6 check uses the [D6 hardware setup](../d6/N16R8_BOARD_SETUP.md).
 
@@ -30,7 +30,7 @@ powershell.exe -NoProfile -File .\tools\build.ps1 ml-demo -Port COM5 -Model peop
 
 ## Test live comfort and expiry on Board C
 
-Use the [D6 board and MQTT setup](../../MQTT_commands.md) to connect A (`s3-001`), B (`s3-002`), and C (`s3-003`) to the same broker. Build and flash B and C from the branch with this change. Board A can use the existing D6 firmware and AHT configuration. The classroom VS Code task replaces sensor settings, so use the D6 configs for this test.
+Use the [D6 board and MQTT setup](../commands/MQTT_commands.md) to connect A (`s3-001`), B (`s3-002`), and C (`s3-003`) to the same broker. Build and flash B and C from the branch with this change. Board A can use the existing D6 firmware and AHT configuration. The classroom VS Code task replaces sensor settings, so use the D6 configs for this test.
 
 1. Start A's AHT feed. On B, configure its remote AHT input if it does not already follow that source with `remote_profile=aht`. On a clean B, enter these lines in its serial monitor:
 
@@ -177,7 +177,7 @@ The comfort checkpoint estimates current comfort under the original summer train
 
 This section runs the model locally on the same ESP32 as the sonar. For the
 D6 three-board test, Board A supplies Sonar A and Board B runs the model via
-the separate [70 ms A/B profiles and PowerShell commands](../../ML_commands.md#4-people-counter--experimental-live-31-reading-window).
+the separate [70 ms A/B profiles and PowerShell commands](../commands/ML_commands.md#4-people-counter--experimental-live-31-reading-window).
 
 Flash the updated firmware and open **MTK: monitor**. With Board A's Sonar A on
 TRIG GPIO10 and ECHO GPIO11, enter these lines one at a time. This is a

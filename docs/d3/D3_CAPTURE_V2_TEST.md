@@ -1,8 +1,8 @@
 # D3-2 asynchronous sonar validation: V2 fixture
 
-Baseline: [breadboard guide](../SENSOR_BREADBOARD_README.md), [active wiring](../esp32s3_mtk/WIRING.md),
-[D3 task list](../README.md#23-d3-task-checklist) and
-[interrupt review](../D3_INTERRUPT_WIRING_REVIEW.md). This procedure preserves
+Baseline: [breadboard guide](../hardware/SENSOR_BREADBOARD_README.md), [active wiring](../../esp32s3_mtk/WIRING.md),
+[D3 task list](../../README.md#23-d3-task-checklist) and
+[interrupt review](D3_INTERRUPT_WIRING_REVIEW.md). This procedure preserves
 the existing capture implementation; it changes host test configuration only.
 
 ## Required fixture
@@ -43,7 +43,7 @@ use the explicit Python commands above for V2.
 ## Single capture, missing Echo and cancellation
 
 Paste the non-comment lines of
-[config/d3_sonar_v2_once.cfg](../config/d3_sonar_v2_once.cfg) into the monitor
+[config/d3_sonar_v2_once.cfg](../../config/d3_sonar_v2_once.cfg) into the monitor
 one at a time and check CFG acknowledgement. It ends with SHOW, not RUN.
 Send RUN to take one observation, then `TRIGGER D3_SONAR` to take another.
 Expect exactly one valid width frame per successful arm. This is a manual
@@ -104,7 +104,7 @@ Existing D3 native suites, D2 host tests and five new fixture/probe tests pass.
 The fixture tests verify unchanged upstream mappings/assertions, GPIO4/5-only
 selection, STOP/CLEAR before configuration, rejection of unrelated stages/boards
 and a one-shot preset that does not auto-run. Raw output and image hashes:
-[preflight evidence](../parity/logs/d3/d3-2-preflight-20261105.log).
+[preflight evidence](../../parity/logs/d3/d3-2-preflight-20261105.log).
 
 No ESP32-S3 was detected on USB. No flash, actual capture, missing-Echo,
 STOP/CLEAR-in-flight, sonar rule or TASKS board run was performed. D3-2 remains

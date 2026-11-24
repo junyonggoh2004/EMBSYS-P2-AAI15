@@ -2,7 +2,7 @@
 
 **Pico-v3** is a modular, configuration-driven sensor node framework for the Raspberry Pi Pico W. It allows for dynamic runtime configuration of sensors (UART, I2C, GPIO), local data processing using a Reverse Polish Notation (RPN) rule engine, and real-time telemetry via MQTT.
 
-> **D2 branch note:** `s3-port-d2` plans SPI as a fourth hardware interface behind the same registry. SPI is not implemented until the acceptance checklist in [`../D2_SPI_TODO.md`](../D2_SPI_TODO.md) passes; the schema below documents the proposed contract for review.
+> **D2 branch note:** `s3-port-d2` plans SPI as a fourth hardware interface behind the same registry. SPI is not implemented until the acceptance checklist in [`../D2_SPI_TODO.md`](../docs/d2/D2_SPI_TODO.md) passes; the schema below documents the proposed contract for review.
 
 ---
 

@@ -14,4 +14,4 @@ B initially measured the arrival spacing of MQTT frames. Wi-Fi sometimes deliver
 
 After the test, the normal [`board_a.cfg`](../../config/board_a.cfg), [`board_b_ml.cfg`](../../config/board_b_ml.cfg), and default [`board_b_sine_float.json`](../../config/board_b_sine_float.json) were reloaded. B again published changing `d6/board-b/snapshot` messages with temperature, humidity, light, and separate Sonar A/B distances, plus live `sine-float` results with `status:OK`. Board C's horizontal LCD was visually confirmed updating. One snapshot reported Sonar B as `-1.0`, the documented missing-echo value; it is not a fabricated distance.
 
-Use [ML_commands.md](../../ML_commands.md) for the isolated model procedure and [usecase_commands.md](../../usecase_commands.md) to restore the normal four-sensor A→B→C setup. No Wi-Fi credentials are recorded here.
+Use [ML_commands.md](../commands/ML_commands.md) for the isolated model procedure and [usecase_commands.md](../commands/usecase_commands.md) to restore the normal four-sensor A→B→C setup. No Wi-Fi credentials are recorded here.

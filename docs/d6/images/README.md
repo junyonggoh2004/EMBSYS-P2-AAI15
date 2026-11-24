@@ -6,7 +6,7 @@
 landscape LCD pattern and a visible B → C mock MQTT dashboard with all fields.
 Occupancy changed from 2 to 3 on the next snapshot. The diagram below remains
 the same physical pin map; see the [display reference](../ROOM_MONITOR_REFERENCE.md)
-and [MQTT commands](../../../MQTT_commands.md#board-c-lcd-and-board-b--c-mock-mqtt-test).
+and [MQTT commands](../../commands/MQTT_commands.md#board-c-lcd-and-board-b--c-mock-mqtt-test).
 
 The current and historical images depict three bare ESP32-S3 N16R8 boards with accessible
 male headers, each outside its breadboard. See [board identification and source photos](../N16R8_BOARD_SETUP.md).

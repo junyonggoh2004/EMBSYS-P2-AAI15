@@ -34,7 +34,7 @@ A valid `ml_setup` publishes `{"ok":true,"reason":"applied",...}` on B's ML stat
 
 ## 1. `sine-float` — default live model
 
-Configuration file: [`config/board_b_sine_float.json`](config/board_b_sine_float.json). It binds AHT temperature, AHT humidity and light from A. Firmware normalizes and combines these readings into the model's **single** input. The result is a unitless demonstration value, not a room count.
+Configuration file: [`config/board_b_sine_float.json`](../../config/board_b_sine_float.json). It binds AHT temperature, AHT humidity and light from A. Firmware normalizes and combines these readings into the model's **single** input. The result is a unitless demonstration value, not a room count.
 
 ```powershell
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_sine_float.json'
@@ -48,7 +48,7 @@ Expect `"model":"sine-float"`, `"input_source":"remote:s3-001"`, and `"status":"
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'ML THRESHOLD OFF'
 ```
 
-Replay file: [`config/ml_replay_sine_float.txt`](config/ml_replay_sine_float.txt). It supplies one model-ready input (`1.5707963`), independent of the sensors. Use the [replay procedure](#replay-a-model-ready-vector) below.
+Replay file: [`config/ml_replay_sine_float.txt`](../../config/ml_replay_sine_float.txt). It supplies one model-ready input (`1.5707963`), independent of the sensors. Use the [replay procedure](#replay-a-model-ready-vector) below.
 
 ```powershell
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'STOP'
@@ -59,13 +59,13 @@ Replay file: [`config/ml_replay_sine_float.txt`](config/ml_replay_sine_float.txt
 
 ## 2. `sine-int8` — live quantized sine model
 
-Configuration file: [`config/board_b_sine_int8.json`](config/board_b_sine_int8.json). It uses the same three live fields and combines them into one model input. This version is INT8; its result is still a unitless sine demonstration.
+Configuration file: [`config/board_b_sine_int8.json`](../../config/board_b_sine_int8.json). It uses the same three live fields and combines them into one model input. This version is INT8; its result is still a unitless sine demonstration.
 
 ```powershell
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_sine_int8.json'
 ```
 
-Expect `"model":"sine-int8"`, `"input_source":"remote:s3-001"`, and `"status":"OK"`. Its optional `ML THRESHOLD 0.5` follows the same strict `> 0.5` rule as `sine-float`. Replay file: [`config/ml_replay_sine_int8.txt`](config/ml_replay_sine_int8.txt).
+Expect `"model":"sine-int8"`, `"input_source":"remote:s3-001"`, and `"status":"OK"`. Its optional `ML THRESHOLD 0.5` follows the same strict `> 0.5` rule as `sine-float`. Replay file: [`config/ml_replay_sine_int8.txt`](../../config/ml_replay_sine_int8.txt).
 
 ```powershell
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'STOP'
@@ -76,14 +76,14 @@ Expect `"model":"sine-int8"`, `"input_source":"remote:s3-001"`, and `"status":"O
 
 ## 3. `comfort-summer` — live AHT comfort score
 
-Configuration file: [`config/board_b_comfort_summer.json`](config/board_b_comfort_summer.json). It binds A's typed AHT temperature and humidity to the model's two inputs.
+Configuration file: [`config/board_b_comfort_summer.json`](../../config/board_b_comfort_summer.json). It binds A's typed AHT temperature and humidity to the model's two inputs.
 
 ```powershell
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_comfort_summer.json'
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-003/cmd' -m 'D6VIEW'
 ```
 
-Expect `"model":"comfort-summer"`, `"comfort_score":N`, `"class_score":...`, and `"status":"OK"` on B's result topic. B also sends a live, non-replay score on `d6/board-b/comfort`; C's landscape **LIVE COMFORT** card shows it and changes to **STALE** six seconds after updates stop. For the planned full LCD display, scores **80–99** will be labelled COMFORTABLE and scores below 80 UNCOMFORTABLE; those labels are **not yet implemented**. Replay file: [`config/ml_replay_comfort_summer.txt`](config/ml_replay_comfort_summer.txt), containing the synthetic `26.3 °C, 67% RH` example. Replay results do not refresh C's live comfort card.
+Expect `"model":"comfort-summer"`, `"comfort_score":N`, `"class_score":...`, and `"status":"OK"` on B's result topic. B also sends a live, non-replay score on `d6/board-b/comfort`; C's landscape **LIVE COMFORT** card shows it and changes to **STALE** six seconds after updates stop. For the planned full LCD display, scores **80–99** will be labelled COMFORTABLE and scores below 80 UNCOMFORTABLE; those labels are **not yet implemented**. Replay file: [`config/ml_replay_comfort_summer.txt`](../../config/ml_replay_comfort_summer.txt), containing the synthetic `26.3 °C, 67% RH` example. Replay results do not refresh C's live comfort card.
 
 ```powershell
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'STOP'
@@ -94,7 +94,7 @@ Expect `"model":"comfort-summer"`, `"comfort_score":N`, `"class_score":...`, and
 
 ## 4. `people-counter` — experimental live 31-reading window
 
-This is a separate live demo mode. [`config/board_a_people_counter.cfg`](config/board_a_people_counter.cfg) samples only Sonar A every 70 ms; [`config/board_b_people_counter.cfg`](config/board_b_people_counter.cfg) follows that source as `A_SONAR_A` with `remote_profile=pulse` and the same expected interval. [`config/board_b_people_counter.json`](config/board_b_people_counter.json) binds **one** typed distance source to the model's rolling 31-slot input. The normal four-sensor [`config/board_a.cfg`](config/board_a.cfg), four-alias [`config/board_b_ml.cfg`](config/board_b_ml.cfg), and all other model JSON files stay intact.
+This is a separate live demo mode. [`config/board_a_people_counter.cfg`](../../config/board_a_people_counter.cfg) samples only Sonar A every 70 ms; [`config/board_b_people_counter.cfg`](../../config/board_b_people_counter.cfg) follows that source as `A_SONAR_A` with `remote_profile=pulse` and the same expected interval. [`config/board_b_people_counter.json`](../../config/board_b_people_counter.json) binds **one** typed distance source to the model's rolling 31-slot input. The normal four-sensor [`config/board_a.cfg`](../../config/board_a.cfg), four-alias [`config/board_b_ml.cfg`](../../config/board_b_ml.cfg), and all other model JSON files stay intact.
 
 Use **normal PowerShell, command window 4** from the repository root after the broker is running and A/B heartbeats are visible in **normal PowerShell, watch window 2**. The broker runs in **Administrator PowerShell, window 1**; see [startup and window assignments](usecase_commands.md#windows). Keep Sonar A aimed at a broad, flat background that produces valid echoes. This profile replaces the volatile A/B sensor configurations until the normal startup block is run again:
 
@@ -121,7 +121,7 @@ To restore the **entire normal four-sensor A→B→C use case**, run `Start-D6Li
 
 The two-sonar `DOORWAY` rule is a separate Board A test. It uses an alternating pair at about 140 ms per sonar and remains the proposed occupancy authority; it is not enabled by the normal `Start-D6Live` block.
 
-Replay file: [`config/ml_replay_people_counter.txt`](config/ml_replay_people_counter.txt). It sends 31 zeroes as a synthetic model-ready window. To test model execution without waiting for sensor frames:
+Replay file: [`config/ml_replay_people_counter.txt`](../../config/ml_replay_people_counter.txt). It sends 31 zeroes as a synthetic model-ready window. To test model execution without waiting for sensor frames:
 
 ```powershell
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'STOP'
@@ -168,4 +168,4 @@ Watch `pico/s3-002/ml/result` in another terminal. Restore the normal A/B four-s
 
 ## End or reset the session
 
-The default live model is restored by sending [`config/board_b_sine_float.json`](config/board_b_sine_float.json). To stop A and B at the end, send `STOP` to each, then press **Ctrl+C** in the subscriber and broker windows. The [full shutdown sequence](usecase_commands.md#7-end-the-session-1) also covers unplugging the boards. A reboot clears the runtime sensor mappings and model selection; repeat the full startup commands before a new model test.
+The default live model is restored by sending [`config/board_b_sine_float.json`](../../config/board_b_sine_float.json). To stop A and B at the end, send `STOP` to each, then press **Ctrl+C** in the subscriber and broker windows. The [full shutdown sequence](usecase_commands.md#7-end-the-session-1) also covers unplugging the boards. A reboot clears the runtime sensor mappings and model selection; repeat the full startup commands before a new model test.

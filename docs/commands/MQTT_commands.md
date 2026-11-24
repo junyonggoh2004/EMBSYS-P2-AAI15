@@ -2,10 +2,10 @@
 
 This is the **tested Board A → laptop Mosquitto** procedure for the ESP32-S3
 N16R8 node `s3-001`. Board A uses the four radar-free profiles in
-[`config/board_a.cfg`](config/board_a.cfg): AHT, light, Sonar A and Sonar B.
+[`config/board_a.cfg`](../../config/board_a.cfg): AHT, light, Sonar A and Sonar B.
 Run these commands from the merged `main` checkout. For a shorter three-board
 sequence, use [`usecase_commands.md`](usecase_commands.md). For Board B's live `sine-float` default, optional model switches and replay-only `people-counter`, use [`ML_commands.md`](ML_commands.md). To see decoded
-readings continuously, use [`tools/show_live_values.py`](tools/show_live_values.py)
+readings continuously, use [`tools/show_live_values.py`](../../tools/show_live_values.py)
 as described below; the raw MQTT line subscriber remains useful for checking
 topics and transport.
 It proves sensor frames reach the broker and a laptop subscriber. It does not
@@ -51,7 +51,7 @@ to start or reuse the broker.
 
 Keep the window open at `mosquitto version ... running`. This command stays
 in the foreground, so enter later commands in other PowerShell windows. The
-temporary [`mqtt-test.conf`](tools/mqtt-test.conf) opens port 1883 to the
+temporary [`mqtt-test.conf`](../../tools/mqtt-test.conf) opens port 1883 to the
 private network and permits anonymous test clients. If Windows Firewall
 prompts, allow port 1883 on **Private** networks for this test.
 
@@ -342,7 +342,7 @@ localhost-only service is separate from the temporary network listener.
 ## Board C LCD and Board B → C mock MQTT test
 
 For real AHT, light, and **separate Sonar A/B distances** on the horizontal
-LCD, use the [interim live relay procedure](docs/d6/LIVE_LCD_TWO_SONARS.md)
+LCD, use the [interim live relay procedure](../d6/LIVE_LCD_TWO_SONARS.md)
 after flashing Board C's updated firmware. This section retains the synthetic
 Board B fixture and its earlier test record.
 
@@ -437,7 +437,7 @@ visible horizontally. A second `D6MOCKPUB 3` logged
 `snapshot seq=6 occupancy=3 display=0 active=1`, and the screen showed `OCC 3`
 without changing orientation. This verifies B → broker → C mock transport and
 dynamic LCD refresh. The live snapshot and live ML on C are in the
-[live LCD guide](docs/d6/LIVE_LCD_TWO_SONARS.md).
+[live LCD guide](../d6/LIVE_LCD_TWO_SONARS.md).
 
 ### End the Board C test
 
@@ -488,6 +488,6 @@ $MtkNinjaBin = "$env:USERPROFILE\.espressif\tools\ninja\1.12.1"
 
 Require a successful build/audit and flash hash verification before treating
 Board A as updated. Reconnect to the temporary broker and repeat the run
-block above. The current [Board A wiring](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md)
-and [serial sensor test](docs/d6/BOARD_A_SENSOR_TEST.md) are separate checks;
+block above. The current [Board A wiring](../d6/BOARD_A_SONAR_ONLY_WIRING.md)
+and [serial sensor test](../d6/BOARD_A_SENSOR_TEST.md) are separate checks;
 MQTT delivery does not establish sensor accuracy.

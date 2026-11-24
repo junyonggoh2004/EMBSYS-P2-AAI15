@@ -7,7 +7,7 @@
 full landscape pattern with `LCDTEST 284 76 18 82 60 0` and the Board B → C
 MQTT mock dashboard in that orientation. Every mock field was visible; a
 second snapshot changed occupancy from 2 to 3 on the LCD. See the
-[commands](../../MQTT_commands.md#board-c-lcd-and-board-b--c-mock-mqtt-test)
+[commands](../commands/MQTT_commands.md#board-c-lcd-and-board-b--c-mock-mqtt-test)
 and [display reference](ROOM_MONITOR_REFERENCE.md). Live sensor-derived
 snapshots are still pending.
 

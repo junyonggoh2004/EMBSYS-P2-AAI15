@@ -8,7 +8,7 @@ B sends `-1` for either sonar without a valid echo in the last six seconds. AHT 
 
 ## Run after flashing updated Board B and C firmware
 
-Configure A and B with [`config/board_a.cfg`](../../config/board_a.cfg) and [`config/board_b_ml.cfg`](../../config/board_b_ml.cfg) using [`ML_commands.md`](../../ML_commands.md). Keep all three boards and the laptop on the private 2.4 GHz Wi-Fi, with the Mosquitto broker running. Select `comfort-summer` on B if you want the live comfort card.
+Configure A and B with [`config/board_a.cfg`](../../config/board_a.cfg) and [`config/board_b_ml.cfg`](../../config/board_b_ml.cfg) using [`ML_commands.md`](../commands/ML_commands.md). Keep all three boards and the laptop on the private 2.4 GHz Wi-Fi, with the Mosquitto broker running. Select `comfort-summer` on B if you want the live comfort card.
 
 In one normal PowerShell window from the repository root:
 

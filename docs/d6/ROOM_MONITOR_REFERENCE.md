@@ -34,7 +34,7 @@ MQTT snapshots; see the [live LCD guide](LIVE_LCD_TWO_SONARS.md).
 ## Private MQTT mock follow-up
 
 The opt-in Board B to C mock snapshot path and local broker commands are in
-[MQTT_commands.md](../../MQTT_commands.md#board-c-lcd-and-board-b--c-mock-mqtt-test).
+[MQTT_commands.md](../commands/MQTT_commands.md#board-c-lcd-and-board-b--c-mock-mqtt-test).
 Board B's v2 fixture sends distance 123.4 cm, temperature 27.5 C, humidity
 65.2%, light 420 lux, and ML score 0.953 (`sine-float`). Board C accepted and
 drew the v2 snapshot in landscape; the team confirmed every field visible.

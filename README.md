@@ -2,7 +2,7 @@
 
 The Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) ported to the ESP32-S3 Super Mini. Since Tribunal 1 it runs on µT-Kernel 3 SMP through the course port ([MTK_REDESIGN.md](MTK_REDESIGN.md)); the earlier Arduino-ESP32/FreeRTOS port is kept as the measured baseline. Both builds compile the same shared code, so the configuration lines, console commands, MQTT topics, output format and ML models are the same on both. `main` contains D1 to D6, including the three-board use case shown at the demo on 24 Nov.
 
-**D6 use case (done 24 Nov):** three ESP32-S3 boards run a room monitor over MQTT. Board A reads AHT, light and two sonars. Board B follows A's readings and runs live ML on them (`sine-float`, `sine-int8`, `comfort-summer`, and `people-counter` on the real sonar). Board C shows B's live snapshot and comfort score on its LCD. See the [live LCD guide](docs/d6/LIVE_LCD_TWO_SONARS.md), [startup commands](usecase_commands.md) and [ML commands](ML_commands.md).
+**D6 use case (done 24 Nov):** three ESP32-S3 boards run a room monitor over MQTT. Board A reads AHT, light and two sonars. Board B follows A's readings and runs live ML on them (`sine-float`, `sine-int8`, `comfort-summer`, and `people-counter` on the real sonar). Board C shows B's live snapshot and comfort score on its LCD. See the [live LCD guide](docs/d6/LIVE_LCD_TWO_SONARS.md), [startup commands](docs/commands/usecase_commands.md) and [ML commands](docs/commands/ML_commands.md).
 
 ## Deliverables at a glance
 
@@ -52,7 +52,7 @@ Each numbered section below is collapsed. Click its title to open it.
 | [6. Completion rule](#6-completion-rule) | When a task counts as done |
 | [7. Arduino/FreeRTOS baseline](#7-arduinofreertos-baseline) | Where the baseline's setup guide is |
 
-Other documents: [TASK_RECORD.md](TASK_RECORD.md) (full D1 to D3 task tables), [MTK_REDESIGN.md](MTK_REDESIGN.md) (µT-Kernel design and compliance), [SETUP.md](SETUP.md) (board and environment details), [parity/PARITY.md](parity/PARITY.md) (requirements and evidence), [PORTABILITY.md](PORTABILITY.md) (Pico to S3 changes and defects), [ARCHITECTURE.md](ARCHITECTURE.md) (task design), [D2_SPI_TODO.md](D2_SPI_TODO.md) (D2 tasks), [SENSOR_BREADBOARD_README.md](SENSOR_BREADBOARD_README.md) (three-sensor breadboard and Windows workflow), [project_v3/README.md](project_v3/README.md) (full config syntax).
+Other documents: [TASK_RECORD.md](TASK_RECORD.md) (full D1 to D3 task tables), [MTK_REDESIGN.md](MTK_REDESIGN.md) (µT-Kernel design and compliance), [SETUP.md](SETUP.md) (board and environment details), [parity/PARITY.md](parity/PARITY.md) (requirements and evidence), [PORTABILITY.md](docs/design/PORTABILITY.md) (Pico to S3 changes and defects), [ARCHITECTURE.md](ARCHITECTURE.md) (task design), [D2_SPI_TODO.md](docs/d2/D2_SPI_TODO.md) (D2 tasks), [SENSOR_BREADBOARD_README.md](docs/hardware/SENSOR_BREADBOARD_README.md) (three-sensor breadboard and Windows workflow), [project_v3/README.md](project_v3/README.md) (full config syntax).
 
 <a name="1-start-here"></a>
 <details>
@@ -211,7 +211,7 @@ D1 ports configpico2wedge to the ESP32-S3. Tasks 1–23 built the Arduino/FreeRT
 | 19 | Wi-Fi, MQTT and sensor bridging | Done (Hasif) | [PARITY.md §3](parity/PARITY.md#3-esp32-s3-results-tasks-13-to-21) |
 | 20 | Model storage, transfer and inference | Done (Sitt: inference, MSE 0.4179 as on the Pico; Hasif: storage and uploads) | [Log](parity/logs/s3/model.log), [hardware check](parity/task20/README.md) |
 | 21 | End-to-end parity, fault, timing and endurance | Done (Hasif): 30-minute run, no resets | [PARITY.md §3](parity/PARITY.md#3-esp32-s3-results-tasks-13-to-21) |
-| 22 | Portability and design-review documentation | Done (Hasif) | [PORTABILITY.md](PORTABILITY.md) |
+| 22 | Portability and design-review documentation | Done (Hasif) | [PORTABILITY.md](docs/design/PORTABILITY.md) |
 | 23 | Release from a clean Arduino environment | Superseded by task 34 | [SETUP.md](SETUP.md#release-task-23) |
 
 #### D1 redesign: port to µT-Kernel 3 SMP (tasks 24–34)
@@ -259,17 +259,17 @@ On the N16R8, use the USB-C port wired to the chip's own USB; the other one only
 <details>
 <summary><h3>2.2 D2 task checklist</h3></summary>
 
-D2 adds SPI as a fourth bus (`proto=spi`) behind the same interface as GPIO, I2C and UART, so an SPI device is configured the same way (Brendan). On µT-Kernel it is a register-level SPI2 driver with polled 64-byte FIFO transfers, no DMA and one priority-inheritance mutex for the bus. A W25Q32 flash chip on the bus keeps a log of processed events. The full checklist is [D2_SPI_TODO.md](D2_SPI_TODO.md), the design is in [D2_SPI_DESIGN_NOTES.md](D2_SPI_DESIGN_NOTES.md) and [D2_EVENT_RECORD_DESIGN.md](D2_EVENT_RECORD_DESIGN.md), and the full rows are in [TASK_RECORD.md](TASK_RECORD.md#d2-spi).
+D2 adds SPI as a fourth bus (`proto=spi`) behind the same interface as GPIO, I2C and UART, so an SPI device is configured the same way (Brendan). On µT-Kernel it is a register-level SPI2 driver with polled 64-byte FIFO transfers, no DMA and one priority-inheritance mutex for the bus. A W25Q32 flash chip on the bus keeps a log of processed events. The full checklist is [D2_SPI_TODO.md](docs/d2/D2_SPI_TODO.md), the design is in [D2_SPI_DESIGN_NOTES.md](docs/d2/D2_SPI_DESIGN_NOTES.md) and [D2_EVENT_RECORD_DESIGN.md](docs/d2/D2_EVENT_RECORD_DESIGN.md), and the full rows are in [TASK_RECORD.md](TASK_RECORD.md#d2-spi).
 
 | # | Task | Status | Owner |
 |---:|---|---|---|
-| D2-1 | Freeze the SPI contract | Done; signed off by the team 22 Nov ([Phase 1](D2_SPI_TODO.md#phase-1--freeze-the-minimum-contract)) | Brendan |
+| D2-1 | Freeze the SPI contract | Done; signed off by the team 22 Nov ([Phase 1](docs/d2/D2_SPI_TODO.md#phase-1--freeze-the-minimum-contract)) | Brendan |
 | D2-2 | Add SPI to the shared code | Done ([spi.c](libraries/EdgeCore/src/bus/spi.c)) | Brendan |
 | D2-3 | ESP32-S3 SPI backend | Done: register-level SPI2 on µT-Kernel; the 78.1 kHz minimum clock and polled transfers without DMA signed off by the team 22 Nov ([hal_mtk.c](esp32s3_mtk/components/edge_mtk/hal_mtk.c)) | Brendan |
 | D2-4 | Functional, fault and lifecycle tests | Done 25 Oct: `spi` 22/22, `spi-fault` 6/6 ([logs](parity/logs/mtk/d2-spi/)) | Brendan |
 | D2-5 | Benchmark 8–1024-byte transfers | Done: 40,000 transfers on each runtime, no errors; 1024 bytes at 10 MHz take 1,045 µs on µT-Kernel against 2,281 µs on Arduino ([reports](parity/logs/mtk/d2-spi/)) | Brendan |
 | D2-6 | W25Q32 device layer on hardware | Done: JEDEC `EF4016`, read, one approved write, retention over a power cycle ([w25q32.c](libraries/EdgeCore/src/flash/w25q32.c)) | Brendan |
-| D2-7 | Event record and flash log | Done; format signed off by the team 22 Nov ([design](D2_EVENT_RECORD_DESIGN.md)) | Brendan |
+| D2-7 | Event record and flash log | Done; format signed off by the team 22 Nov ([design](docs/d2/D2_EVENT_RECORD_DESIGN.md)) | Brendan |
 | D2-8 | Log every event from ApplicationTask | Done 22 Nov: every processed event is offered to the log, and BenchmarkTask writes and reads it back; with no chip attached every write reported `-9` while sampling carried on ([logs](parity/logs/mtk/d2-log-20261122/)) | Brendan; code by Hasif |
 | D2-9 | Concurrent run (T-23) | Done 22 Nov (N16R8, no W25Q32): 60 s with the sonar feeding sine-int8, a 100 ms input and logging on; 216 events, none dropped, no sample skipped, no reset ([logs](parity/logs/mtk/d2-log-20261122/)) | Run by Hasif |
 | D2-10 | D1 regression on the D2 firmware | Done 27 Oct, rerun 21 Nov with D3 ([logs](parity/logs/mtk/d2-merge/)) | Hasif |
@@ -335,7 +335,7 @@ D4 has two parts, split on 16 Nov 2026: the ML itself (part 1, Jun Yong) and con
 
 #### How to use it
 
-Five models are bundled for D4, but the D6 three-board demo uses four: **sine-float**, **sine-int8**, **comfort-summer**, and **people-counter**. The sine models demonstrate float and INT8 inference on live readings. Comfort Summer uses AHT temperature and humidity (26.3 °C and 67% RH gives 92/100). People Counter is an INT8 doorway classifier with 31 inputs; on Board B it is fed from successive remote Sonar A readings. The 16-input **autoencoder** remains bundled for D4 work but is outside the D6 demo and use case. The [D6 ML command guide](ML_commands.md) covers live configuration and model switching. A sixth choice, **uploaded**, is the model last sent over MQTT (D1 task 31). `ML LIST` shows which are available.
+Five models are bundled for D4, but the D6 three-board demo uses four: **sine-float**, **sine-int8**, **comfort-summer**, and **people-counter**. The sine models demonstrate float and INT8 inference on live readings. Comfort Summer uses AHT temperature and humidity (26.3 °C and 67% RH gives 92/100). People Counter is an INT8 doorway classifier with 31 inputs; on Board B it is fed from successive remote Sonar A readings. The 16-input **autoencoder** remains bundled for D4 work but is outside the D6 demo and use case. The [D6 ML command guide](docs/commands/ML_commands.md) covers live configuration and model switching. A sixth choice, **uploaded**, is the model last sent over MQTT (D1 task 31). `ML LIST` shows which are available.
 
 From the console, stop sampling, pick a model and start again. In VS Code run **MTK: build → MTK: flash → MTK: load sensors and ML → MTK: monitor** first.
 
@@ -379,7 +379,7 @@ Sitt wrote the `ml_setup` command with local inputs and console and MQTT results
 | 3.6 | User how-to and demo steps | Done 23 Nov: [LIVE_SETUP_PROPOSAL.md](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md) has the command, every option and the two-board demo steps |
 | 3.7 | Board evidence and update | Done: Sitt's [19 Nov board check](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#board-check-19-november-2026), the [22 Nov laptop tests](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#laptop-tests-22-november-2026) and [24 Nov remote-input board record](docs/d6/PEOPLE_COUNTER_LIVE_TEST_20261124.md) are recorded; uploaded-model selection and local rule output were checked with laptop tests |
 
-Earlier research is in [D4_EMBEDDED_ML_RESEARCH.md](D4_EMBEDDED_ML_RESEARCH.md) and [D2_D4_RESEARCH_CONTEXT.md](D2_D4_RESEARCH_CONTEXT.md).
+Earlier research is in [D4_EMBEDDED_ML_RESEARCH.md](docs/d4/D4_EMBEDDED_ML_RESEARCH.md) and [D2_D4_RESEARCH_CONTEXT.md](docs/d4/D2_D4_RESEARCH_CONTEXT.md).
 
 </details>
 
@@ -435,7 +435,7 @@ D6 joins three ESP32-S3 N16R8 boards into one use case: a doorway room monitor (
 | 5.10 | Multi-bus demo | GPIO, I2C and SPI sensors on one board, configured live, with their timing and the ML changed live | Hasif | **Done 24 Nov** on spare boards ([5.4](#54-any-sensor-on-the-fly-extra-if-asked)) |
 | 5.11 | Full run on three boards | Run the whole thing end to end from one start-up block | Team | **Done 24 Nov:** run end to end at the demo from Brendan's laptop, with Jun Yong's Windows start-up commands |
 
-**Where the details are.** [Board A wiring](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md), [Board A sensor tests](docs/d6/BOARD_A_SENSOR_TEST.md), the full [Windows MQTT commands](MQTT_commands.md), the [use case notes](docs/d6/SONAR_ONLY_USECASE.md), the [LCD reference](docs/d6/ROOM_MONITOR_REFERENCE.md), the [ML commands](ML_commands.md), the [live people-counter record](docs/d6/PEOPLE_COUNTER_LIVE_TEST_20261124.md) and the [classroom ML demo](docs/embedded-ml/RUNNING.md). The earlier radar plans are kept under [docs/d6/reference](docs/d6/reference/).
+**Where the details are.** [Board A wiring](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md), [Board A sensor tests](docs/d6/BOARD_A_SENSOR_TEST.md), the full [Windows MQTT commands](docs/commands/MQTT_commands.md), the [use case notes](docs/d6/SONAR_ONLY_USECASE.md), the [LCD reference](docs/d6/ROOM_MONITOR_REFERENCE.md), the [ML commands](docs/commands/ML_commands.md), the [live people-counter record](docs/d6/PEOPLE_COUNTER_LIVE_TEST_20261124.md) and the [classroom ML demo](docs/embedded-ml/RUNNING.md). The earlier radar plans are kept under [docs/d6/reference](docs/d6/reference/).
 
 </details>
 
@@ -445,9 +445,9 @@ D6 joins three ESP32-S3 N16R8 boards into one use case: a doorway room monitor (
 <details>
 <summary><h2>3. Set up and test from scratch</h2></summary>
 
-Follow these steps in order on a Mac (Linux works the same way). They build, flash and test the firmware on `main`: D1 on µT-Kernel 3 SMP, D2's SPI, D3's timing, D4's ML and D5's benchmark. The D6 demo is in [section 5](#5-d6-use-case-demo). Each step says what you should see. On Windows, install ESP-IDF at commit `17a74c925c`, load it with its PowerShell `export.ps1` and give `IDF_PATH` forward slashes, as Brendan did ([D2_SPI_TODO.md](D2_SPI_TODO.md)); the Arduino baseline in [section 7](#7-arduinofreertos-baseline) has full Windows steps.
+Follow these steps in order on a Mac (Linux works the same way). They build, flash and test the firmware on `main`: D1 on µT-Kernel 3 SMP, D2's SPI, D3's timing, D4's ML and D5's benchmark. The D6 demo is in [section 5](#5-d6-use-case-demo). Each step says what you should see. On Windows, install ESP-IDF at commit `17a74c925c`, load it with its PowerShell `export.ps1` and give `IDF_PATH` forward slashes, as Brendan did ([D2_SPI_TODO.md](docs/d2/D2_SPI_TODO.md)); the Arduino baseline in [section 7](#7-arduinofreertos-baseline) has full Windows steps.
 
-**Earlier three-sensor breadboard.** The three-sensor breadboard (AHT temperature and humidity, HC-SR04+ distance and TSL2561 light, with the LCD wiring kept) and its Windows and VS Code build workflow are in [SENSOR_BREADBOARD_README.md](SENSOR_BREADBOARD_README.md). The single-sonar, loopback, radar and SPI fixtures in this guide use other pins; do not apply them to that breadboard.
+**Earlier three-sensor breadboard.** The three-sensor breadboard (AHT temperature and humidity, HC-SR04+ distance and TSL2561 light, with the LCD wiring kept) and its Windows and VS Code build workflow are in [SENSOR_BREADBOARD_README.md](docs/hardware/SENSOR_BREADBOARD_README.md). The single-sonar, loopback, radar and SPI fixtures in this guide use other pins; do not apply them to that breadboard.
 
 ### Part A: Install
 
@@ -494,7 +494,7 @@ Use this exact path: the fault test stops and restarts the broker by it.
 
 ### Board pinout
 
-![ESP32-S3 Super Mini pinout](Pinout_Super_Mini_S3.png)
+![ESP32-S3 Super Mini pinout](docs/hardware/Pinout_Super_Mini_S3.png)
 
 Hold the board with USB-C at the top, chip facing you. Left pins, top to bottom: TX, RX, GP1–GP7. Right pins: 5V, GND, 3V3, GP13–GP8. All GPIO are 3.3 V only.
 
@@ -751,7 +751,7 @@ flowchart LR
 
 ### 5.2 Setup
 
-The hardware each board needs, the firmware on it, and the settings that give it its role. Each item has its own row, followed by the command to run and what it does. The Windows commands below use `C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration`; change that one path if using another checkout. Full detail and the PowerShell window map are in [usecase_commands.md](usecase_commands.md#windows) and [ML_commands.md](ML_commands.md).
+The hardware each board needs, the firmware on it, and the settings that give it its role. Each item has its own row, followed by the command to run and what it does. The Windows commands below use `C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration`; change that one path if using another checkout. Full detail and the PowerShell window map are in [usecase_commands.md](docs/commands/usecase_commands.md#windows) and [ML_commands.md](docs/commands/ML_commands.md).
 
 **Board consoles.** A few checks are typed on a board's own console. Open one PowerShell window per board:
 
@@ -775,7 +775,7 @@ The hardware each board needs, the firmware on it, and the settings that give it
 >
 > **Where:** Board A's console.
 >
-> **What it does:** checks that Board A is running and answering. To check each sensor on its own, use Brendan's `Send-BoardASensor` commands in [usecase_commands.md](usecase_commands.md#4-test-board-a-sensors-one-at-a-time--normal-powershell-window-3).
+> **What it does:** checks that Board A is running and answering. To check each sensor on its own, use Brendan's `Send-BoardASensor` commands in [usecase_commands.md](docs/commands/usecase_commands.md#4-test-board-a-sensors-one-at-a-time--normal-powershell-window-3).
 >
 > **You should see:** `Commands:` followed by the command list.
 
@@ -812,7 +812,7 @@ The hardware each board needs, the firmware on it, and the settings that give it
 |---|---|---|---|---|
 | 4 | Laptop broker | Mosquitto listening on the laptop's Wi-Fi with [`tools/mqtt-test.conf`](tools/mqtt-test.conf) | Every board-to-board message and command goes through one hub | **Done:** tested 18–23 Nov, used at the demo on 24 Nov |
 
-> In PowerShell window 1, follow Windows step 2 in the [demo commands](usecase_commands.md#windows) to start or reuse the broker.
+> In PowerShell window 1, follow Windows step 2 in the [demo commands](docs/commands/usecase_commands.md#windows) to start or reuse the broker.
 >
 > **What it does:** stops the Windows Mosquitto service, which only listens to the laptop itself, and starts a broker the boards can reach over Wi-Fi. If Windows asks, allow port 1883 on private networks.
 >
@@ -927,7 +927,7 @@ The demo starts with one command block. After that the boards keep running by th
 |---|---|---|---|---|
 | 1 | Open the windows | Start the broker, a watch window, a live-values window and a command window | Everything the boards send, live | **Done:** tested 21–23 Nov, used at the demo on 24 Nov |
 
-> In PowerShell window 1, follow Windows step 2 in the [demo commands](usecase_commands.md#windows) to start or reuse the broker.
+> In PowerShell window 1, follow Windows step 2 in the [demo commands](docs/commands/usecase_commands.md#windows) to start or reuse the broker.
 >
 > ```powershell
 > # Window 2: watch every board. Leave it running.
@@ -1040,7 +1040,7 @@ The demo starts with one command block. After that the boards keep running by th
 | `"input_source":"remote:s3-001"` | The model on Board B reads Board A's sensors over MQTT |
 | `sine-int8` against `sine-float` | Five models are bundled. The INT8 ones run on the S3's vector instructions through ESP-NN, which D5 measured |
 | **LIVE COMFORT** on C | comfort-summer turns temperature and humidity into a comfort score from 0 to 99. C marks it `STALE` if updates stop, rather than showing an old score as current |
-| people-counter (separate live test) | B can switch to the bundled 31-input model while A sends a dedicated 70 ms single-sonar stream. Live MQTT results passed on 24 Nov. Follow the [isolated A/B profile commands](ML_commands.md#4-people-counter--experimental-live-31-reading-window), then reload the normal four-sensor profiles. Its prediction is separate from occupancy and awaits labelled doorway validation |
+| people-counter (separate live test) | B can switch to the bundled 31-input model while A sends a dedicated 70 ms single-sonar stream. Live MQTT results passed on 24 Nov. Follow the [isolated A/B profile commands](docs/commands/ML_commands.md#4-people-counter--experimental-live-31-reading-window), then reload the normal four-sensor profiles. Its prediction is separate from occupancy and awaits labelled doorway validation |
 
 #### D5 · Hasif: why the ML fits on the board
 
@@ -1502,7 +1502,7 @@ Commands for the rest of the use case that are not part of the main run in 5.3.
 |---|---|---|---|---|
 | 4 | Live snapshot | Show A's real readings on C through B | C shows continuing live data | FR7, FR12 |
 
-> **Commands:** start A's sensor profile and B's four MQTT bridges with [the D6 startup guide](usecase_commands.md), then send `D6VIEW` to C. Watch `d6/board-b/snapshot` for continuing `source:"live"` v3 messages; see [the LCD guide](docs/d6/LIVE_LCD_TWO_SONARS.md).
+> **Commands:** start A's sensor profile and B's four MQTT bridges with [the D6 startup guide](docs/commands/usecase_commands.md), then send `D6VIEW` to C. Watch `d6/board-b/snapshot` for continuing `source:"live"` v3 messages; see [the LCD guide](docs/d6/LIVE_LCD_TWO_SONARS.md).
 >
 > **What it does:** B sends recent AHT, light, and separate Sonar A/B distances about every two seconds. A missing sonar echo displays as `--`, and `OCC` shows `--`. If B's snapshots stop, C clears the old values after six seconds.
 >
@@ -1522,6 +1522,6 @@ A task is not complete merely because code compiles or a single happy-path demon
 <details>
 <summary><h2>7. Arduino/FreeRTOS baseline</h2></summary>
 
-The earlier Arduino-ESP32/FreeRTOS build (`esp32s3_edge/`, `tools/s3.sh`) is kept as the measured baseline (D1 task 21, [PARITY.md §3](parity/PARITY.md#3-esp32-s3-results-tasks-13-to-21)). Its step-by-step setup and tests for Mac and Windows are in [ARDUINO_BASELINE.md](ARDUINO_BASELINE.md). Going from the µT-Kernel build back to it, erase the flash first ([SETUP.md](SETUP.md#testing-on-µt-kernel-tasks-2732)).
+The earlier Arduino-ESP32/FreeRTOS build (`esp32s3_edge/`, `tools/s3.sh`) is kept as the measured baseline (D1 task 21, [PARITY.md §3](parity/PARITY.md#3-esp32-s3-results-tasks-13-to-21)). Its step-by-step setup and tests for Mac and Windows are in [ARDUINO_BASELINE.md](docs/arduino/ARDUINO_BASELINE.md). Going from the µT-Kernel build back to it, erase the flash first ([SETUP.md](SETUP.md#testing-on-µt-kernel-tasks-2732)).
 
 </details>

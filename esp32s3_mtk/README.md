@@ -2,12 +2,12 @@
 
 **Current D6 Board A (21 November 2026):** ESP32-S3 N16R8 with AHT, TSL2561 and two sonars, without radar. Use the [current pinout and diagram](../docs/d6/BOARD_A_SONAR_ONLY_WIRING.md), [`board_a.cfg`](../config/board_a.cfg), and [PowerShell sensor-test commands](../docs/d6/BOARD_A_SENSOR_TEST.md). GPIO1/2 are I2C; GPIO10/11 are Sonar A; GPIO6/7 are Sonar B. The generic three-sensor preset and older radar diagrams below document different fixtures.
 
-With the broker and Board A running, `python tools/show_live_values.py --board A` from the repository root shows live temperature, humidity, light and valid sonar distances in PowerShell. `--board B` shows the same readings after MQTT relay to B. The viewer decodes the existing raw MQTT frames and needs no firmware change; see the [use case commands](../usecase_commands.md). Board B's default `sine-float` setup and optional switches for all five bundled models are in [ML_commands.md](../ML_commands.md). Its remote 31-reading `people-counter` window is experimental; a separate replay file tests model execution without claiming a validated crossing.
+With the broker and Board A running, `python tools/show_live_values.py --board A` from the repository root shows live temperature, humidity, light and valid sonar distances in PowerShell. `--board B` shows the same readings after MQTT relay to B. The viewer decodes the existing raw MQTT frames and needs no firmware change; see the [use case commands](../docs/commands/usecase_commands.md). Board B's default `sine-float` setup and optional switches for all five bundled models are in [ML_commands.md](../docs/commands/ML_commands.md). Its remote 31-reading `people-counter` window is experimental; a separate replay file tests model execution without claiming a validated crossing.
 
 **D6 Board C (24 November 2026):** `D6VIEW` draws Board B's MQTT snapshots in the 284 x 76 landscape orientation, with separate
 Sonar A and B distance lines (a missing echo displays `--`). B publishes the live AHT, light and sonar
 snapshot itself, and its comfort score reaches C directly. The isolated `LCDTEST` is still available;
-reissue `D6VIEW` after a reboot or an isolated LCD pattern test. See [MQTT commands](../MQTT_commands.md)
+reissue `D6VIEW` after a reboot or an isolated LCD pattern test. See [MQTT commands](../docs/commands/MQTT_commands.md)
 and the [live LCD guide](../docs/d6/LIVE_LCD_TWO_SONARS.md).
 
 For the earlier proposed D6 three-board N16R8 fixture, see the
@@ -15,7 +15,7 @@ For the earlier proposed D6 three-board N16R8 fixture, see the
 [pin-to-hole guide](../docs/d6/PIN_TO_HOLE_WIRING.md) and the
 `BOARD=n16r8` preset. Earlier Super Mini evidence below remains historical.
 
-This target uses main's complete configurable framework at upstream commit `49677c62c8738493f4e66667d1fe79afc947600d`, with optional AHT and TSL2561 I²C profiles and the existing asynchronous GPIO pulse driver. See the [breadboard guide](../SENSOR_BREADBOARD_README.md) for the full wiring tables, Windows build/flash/monitor instructions, preset commands and JSON formats. [WIRING.md](WIRING.md) contains the same complete connection tables.
+This target uses main's complete configurable framework at upstream commit `49677c62c8738493f4e66667d1fe79afc947600d`, with optional AHT and TSL2561 I²C profiles and the existing asynchronous GPIO pulse driver. See the [breadboard guide](../docs/hardware/SENSOR_BREADBOARD_README.md) for the full wiring tables, Windows build/flash/monitor instructions, preset commands and JSON formats. [WIRING.md](WIRING.md) contains the same complete connection tables.
 
 The corrected firmware now has board evidence of all three sensors returning OK/error 0 together; see [VALIDATION.md](VALIDATION.md). The older shared-breadboard LCD observation was dim/white with no text. D6 now imports an opt-in LCD diagnostic from `lcd-output` at `b1c1675`; its separate fixture has historical visible-pattern evidence. Follow the [LCD-only map](WIRING.md#separate-lcd-only-breadboard-test-current-lcd_output-firmware) and [component guide](components/lcd_output/README.md), not the older shared LCD pins. Combined D6 panel testing is pending; startup leaves the display inactive. The three-sensor preset never configures LCD GPIO6–10. Upstream SPI flash diagnostics use another fixture and must not be run with the LCD attached.
 
@@ -27,4 +27,4 @@ The local `tools/local.env.ps1` points to the already installed, pinned ESP-IDF,
 
 Main's memory layout requires 2 MB quad PSRAM and 4 MB flash, including the fixed model partition. µT-Kernel owns the seven framework tasks, two idle tasks, message buffers, mutexes, alarms and supervision; the SDK compatibility shim does not run the FreeRTOS scheduler. SchedulerTask and its GPIO ISR are on physical CPU1, MQTTTask on CPU0. A captured TASKS/boot session is still required on this board.
 
-See [MAIN_COMPONENT_REVIEW.md](../MAIN_COMPONENT_REVIEW.md) for the analysis completed before updating the workspace, [MTK_REDESIGN.md](../MTK_REDESIGN.md) for main's runtime/memory design, and [VALIDATION.md](VALIDATION.md) for actual checks and remaining board validation.
+See [MAIN_COMPONENT_REVIEW.md](../docs/design/MAIN_COMPONENT_REVIEW.md) for the analysis completed before updating the workspace, [MTK_REDESIGN.md](../MTK_REDESIGN.md) for main's runtime/memory design, and [VALIDATION.md](VALIDATION.md) for actual checks and remaining board validation.

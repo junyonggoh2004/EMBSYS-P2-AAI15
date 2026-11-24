@@ -3,7 +3,7 @@
 Review date: 5 November 2026. Source checkpoint: `aaf48da`.
 Status at review time: documentation/source review and native validation; physical acceptance was still pending.
 
-**Final status (22 Nov 2026).** D3 is done. The HC-SR04 capture, `STOP` and `CLEAR` cancellation and the fault cases were run on the board on 21 Nov 2026, and the two-sonar sequence on the D6 setup; see [README section 2.3](README.md#23-d3-task-checklist). This review is kept as written on 5 November.
+**Final status (22 Nov 2026).** D3 is done. The HC-SR04 capture, `STOP` and `CLEAR` cancellation and the fault cases were run on the board on 21 Nov 2026, and the two-sonar sequence on the D6 setup; see [README section 2.3](../../README.md#23-d3-task-checklist). This review is kept as written on 5 November.
 No firmware, wiring or resistor removal has been performed or approved by this review.
 
 ## Change control
@@ -18,7 +18,7 @@ the fixture tooling below are preparation, not physical acceptance.
 
 ## Alignment with README D3 task list
 
-Task IDs below follow [README section 2.3](README.md#23-d3-task-checklist).
+Task IDs below follow [README section 2.3](../../README.md#23-d3-task-checklist).
 
 | README task | Review contribution and current acceptance boundary |
 |---|---|
@@ -54,7 +54,7 @@ behavior or new test cases.
 | Cross-sensor ownership before hardware mutation | `test_gpio_pulse_config.c::test_scheduler_with_real_gpio` | PASS: conflicting GPIO/pulse/SPI assignments refused without new mode calls; installed sensors preserved. |
 
 Full output, commands, source and exit results are retained in
-[D3-1 native evidence](parity/logs/d3/d3-1-native-20261105.log).
+[D3-1 native evidence](../../parity/logs/d3/d3-1-native-20261105.log).
 The same run also passes the other D3 suites (twelve native C suites and twelve
 Python tests in total). Additional commands `sh tools/d2_host_test.sh` and
 `sh tools/mtk.sh purity` both exit 0. Purity covers 71 platform files and the
@@ -71,9 +71,9 @@ No board commands, flash operations or wiring changes were performed.
 
 The incoming main branch (`b496a8d`) adds a recorded three-sensor breadboard:
 AHT/TSL2561 share GPIO1/2 I²C, and a documented 3.3 V-compatible HC-SR04+
-uses Trig GPIO4/Echo GPIO5. See the [breadboard guide](SENSOR_BREADBOARD_README.md),
-[active wiring](esp32s3_mtk/WIRING.md) and [preset](config/three_sensors.cfg).
-The [D3 checklist](README.md#23-d3-task-checklist) and the regression guide
+uses Trig GPIO4/Echo GPIO5. See the [breadboard guide](../hardware/SENSOR_BREADBOARD_README.md),
+[active wiring](../../esp32s3_mtk/WIRING.md) and [preset](../../config/three_sensors.cfg).
+The [D3 checklist](../../README.md#23-d3-task-checklist) and the regression guide
 are in the root README.
 
 The review and D3-1 execution record below describe the pre-merge `aaf48da`
@@ -87,7 +87,7 @@ physical 50 ms acceptance remain unverified.
 
 Post-merge native checks pass: D3 contracts/runtime, D2 host, sensor profiles/
 scheduler integration, startup lifecycle, six sensor-loader tests (repository
-venv) and source/HAL purity (75 platform files). [Merge test evidence](parity/logs/d3/merge-main-20261105.log)
+venv) and source/HAL purity (75 platform files). [Merge test evidence](../../parity/logs/d3/merge-main-20261105.log)
 records the parent commits and output. No target build, image or board acceptance
 was performed; linked-image validation was skipped without a built ELF.
 
@@ -97,7 +97,7 @@ was performed; linked-image validation was skipped without a built ELF.
 passes the pinned build, linked-image purity and configurable-image audit.
 GPIO4/5 parity fixture selection and a manual one-shot probe are prepared;
 existing D3/D2 native suites and five fixture tests pass. See the
-[V2 capture procedure and execution record](docs/D3_CAPTURE_V2_TEST.md).
+[V2 capture procedure and execution record](D3_CAPTURE_V2_TEST.md).
 No ESP32-S3 is connected, so physical D3-2 acceptance and runtime resource
 measurements remain pending. Earlier missing-image statements below describe
 the preceding runs and do not override this newer preflight result.
@@ -155,25 +155,25 @@ they are not instructions or approval to edit those files now.
 | File | Impact / proposed action | When |
 |---|---|---|
 | [D3_INTERRUPT_WIRING_REVIEW.md](D3_INTERRUPT_WIRING_REVIEW.md) | Review findings, electrical evidence, conditional wiring comparison, resistor decisions, pin map, test plan and file-impact register. | Created for this review; updated with this register. |
-| [parity/logs/d3/d3-1-native-20261105.log](parity/logs/d3/d3-1-native-20261105.log) | Full native D3-1 execution and companion D2/purity output with source/platform provenance. | Added for this validation; no board evidence implied. |
-| [README.md](README.md) | Added the D3-1 native recheck and links to this review/raw output. Still needs fixture reconciliation in Part E and section 9 once hardware is verified. | Evidence note added now; no baseline wiring change made here. |
-| [SETUP.md](SETUP.md) | Clearly label GPIO4/7 5 V divider fixture versus GPIO1/2 kit fixture; record actual A/B/radar harness, supply, resistor values and measured levels. | After actual hardware is verified and tested. |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | Align the current hardware diagram and active async interrupt description; retain dated baseline history. | After validated fixture and implementation evidence are available. |
-| [D2_D4_RESEARCH_CONTEXT.md](D2_D4_RESEARCH_CONTEXT.md) | Add a dated note that its Pico-only baseline and provisional sonar/TFT allocation are historical; link to current README and this review. Preserve its original research context. | Documentation reconciliation follow-up; currently unchanged. |
-| [project_v3/README.md](project_v3/README.md) | Check numeric-versus-string pull examples against parser behavior; clarify platform-specific async behavior if needed. | Documentation correction after source verification; no Pico wiring change implied. |
-| [tools/mtk_live.py](tools/mtk_live.py) | Qualify the introductory “through a divider” wiring comment by module type. Its executable GPIO1/2 configuration needs no change for the documented compatible fixture. | Comment/help update when fixture documentation is reconciled. |
-| [parity/PARITY.md](parity/PARITY.md) | Add exact-commit D3 capture, cancellation, PAIR and regression outcomes with links to raw logs; distinguish historical results. | After target tests, never from native results alone. |
-| [parity/logs/mtk/d3/](parity/logs/mtk/d3/) | Store new physical test logs, fixture metadata, scope traces and window reports; identify board, commit, image/tool versions, tester and date. | During future validated board runs; existing logs untouched. |
-| [hal_mtk.c](esp32s3_mtk/components/edge_mtk/hal_mtk.c) | ISR registration, edge selection, internal pull configuration and timestamp handling. No change required by the present review. | Only if measured electrical/timing faults justify an approved implementation change. |
-| [pulse_capture_mtk.h](esp32s3_mtk/components/edge_mtk/pulse_capture_mtk.h) | Core ownership, start/poll/cancel, timeout and shared timestamps. Preserve the same-core capture contract. | Conditional software impact only; currently unchanged. |
-| [gpio.c](libraries/EdgeCore/src/bus/gpio.c) | Echo input/pull configuration, async acquisition and cleanup. Preserve explicit errors and cancellation before free. | Only if validated input-bias/lifecycle requirements require code changes. |
-| [pulse_sequence.c](libraries/EdgeCore/src/application/pulse_sequence.c) | Pair ordering, explicit guard and complete 50 ms budget. External resistor omission alone does not affect these semantics. | Only if a measured sequencing defect is established. |
-| [entrance_window.c](libraries/EdgeCore/src/application/entrance_window.c) | Radar window, pair results, fault/ambiguity and timing counters. Preserve occupancy safety. | Only if a validated window defect is established. |
-| [scheduler.c](libraries/EdgeCore/src/application/scheduler.c) | Configuration ownership/conflicts, capture servicing, STOP/CLEAR and PAIR/WINDOW integration. | Conditional integration impact if a firmware change is needed. |
-| [runtime_mtk.c](esp32s3_mtk/components/edge_mtk/runtime_mtk.c) | SchedulerTask core ownership, HAL initialization and console delivery. No task/core/priority change is proposed. | Only if evidence requires runtime integration changes. |
-| [parity/parity_test.py](parity/parity_test.py) | Current board pin translation and `t06`, `4c-sonic`, `sonic-rule` assertions. Existing stages remain the baseline. | Change only if a verified fixture or newly required assertion needs it; retain existing coverage. |
-| [tests/test_mtk_pulse_capture.c](tests/test_mtk_pulse_capture.c), [tests/test_gpio_pulse_config.c](tests/test_gpio_pulse_config.c) | Native capture and driver lifecycle regression coverage. | Update only alongside a relevant behavior change; cannot validate voltages. |
-| [tests/test_pulse_sequence.c](tests/test_pulse_sequence.c), [tests/test_entrance_window.c](tests/test_entrance_window.c), [tests/test_scheduler_timing.c](tests/test_scheduler_timing.c) | Native order, guard, deadlines, faults and scheduler regression coverage. | Update only if related behavior changes. |
+| [parity/logs/d3/d3-1-native-20261105.log](../../parity/logs/d3/d3-1-native-20261105.log) | Full native D3-1 execution and companion D2/purity output with source/platform provenance. | Added for this validation; no board evidence implied. |
+| [README.md](../../README.md) | Added the D3-1 native recheck and links to this review/raw output. Still needs fixture reconciliation in Part E and section 9 once hardware is verified. | Evidence note added now; no baseline wiring change made here. |
+| [SETUP.md](../../SETUP.md) | Clearly label GPIO4/7 5 V divider fixture versus GPIO1/2 kit fixture; record actual A/B/radar harness, supply, resistor values and measured levels. | After actual hardware is verified and tested. |
+| [ARCHITECTURE.md](../../ARCHITECTURE.md) | Align the current hardware diagram and active async interrupt description; retain dated baseline history. | After validated fixture and implementation evidence are available. |
+| [D2_D4_RESEARCH_CONTEXT.md](../d4/D2_D4_RESEARCH_CONTEXT.md) | Add a dated note that its Pico-only baseline and provisional sonar/TFT allocation are historical; link to current README and this review. Preserve its original research context. | Documentation reconciliation follow-up; currently unchanged. |
+| [project_v3/README.md](../../project_v3/README.md) | Check numeric-versus-string pull examples against parser behavior; clarify platform-specific async behavior if needed. | Documentation correction after source verification; no Pico wiring change implied. |
+| [tools/mtk_live.py](../../tools/mtk_live.py) | Qualify the introductory “through a divider” wiring comment by module type. Its executable GPIO1/2 configuration needs no change for the documented compatible fixture. | Comment/help update when fixture documentation is reconciled. |
+| [parity/PARITY.md](../../parity/PARITY.md) | Add exact-commit D3 capture, cancellation, PAIR and regression outcomes with links to raw logs; distinguish historical results. | After target tests, never from native results alone. |
+| [parity/logs/mtk/d3/](../../parity/logs/mtk/d3/) | Store new physical test logs, fixture metadata, scope traces and window reports; identify board, commit, image/tool versions, tester and date. | During future validated board runs; existing logs untouched. |
+| [hal_mtk.c](../../esp32s3_mtk/components/edge_mtk/hal_mtk.c) | ISR registration, edge selection, internal pull configuration and timestamp handling. No change required by the present review. | Only if measured electrical/timing faults justify an approved implementation change. |
+| [pulse_capture_mtk.h](../../esp32s3_mtk/components/edge_mtk/pulse_capture_mtk.h) | Core ownership, start/poll/cancel, timeout and shared timestamps. Preserve the same-core capture contract. | Conditional software impact only; currently unchanged. |
+| [gpio.c](../../libraries/EdgeCore/src/bus/gpio.c) | Echo input/pull configuration, async acquisition and cleanup. Preserve explicit errors and cancellation before free. | Only if validated input-bias/lifecycle requirements require code changes. |
+| [pulse_sequence.c](../../libraries/EdgeCore/src/application/pulse_sequence.c) | Pair ordering, explicit guard and complete 50 ms budget. External resistor omission alone does not affect these semantics. | Only if a measured sequencing defect is established. |
+| [entrance_window.c](../../libraries/EdgeCore/src/application/entrance_window.c) | Radar window, pair results, fault/ambiguity and timing counters. Preserve occupancy safety. | Only if a validated window defect is established. |
+| [scheduler.c](../../libraries/EdgeCore/src/application/scheduler.c) | Configuration ownership/conflicts, capture servicing, STOP/CLEAR and PAIR/WINDOW integration. | Conditional integration impact if a firmware change is needed. |
+| [runtime_mtk.c](../../esp32s3_mtk/components/edge_mtk/runtime_mtk.c) | SchedulerTask core ownership, HAL initialization and console delivery. No task/core/priority change is proposed. | Only if evidence requires runtime integration changes. |
+| [parity/parity_test.py](../../parity/parity_test.py) | Current board pin translation and `t06`, `4c-sonic`, `sonic-rule` assertions. Existing stages remain the baseline. | Change only if a verified fixture or newly required assertion needs it; retain existing coverage. |
+| [tests/test_mtk_pulse_capture.c](../../tests/test_mtk_pulse_capture.c), [tests/test_gpio_pulse_config.c](../../tests/test_gpio_pulse_config.c) | Native capture and driver lifecycle regression coverage. | Update only alongside a relevant behavior change; cannot validate voltages. |
+| [tests/test_pulse_sequence.c](../../tests/test_pulse_sequence.c), [tests/test_entrance_window.c](../../tests/test_entrance_window.c), [tests/test_scheduler_timing.c](../../tests/test_scheduler_timing.c) | Native order, guard, deadlines, faults and scheduler regression coverage. | Update only if related behavior changes. |
 
 No D2 flash codec, D4 model, NVS identity, Pico/Arduino backend or course-kernel
 modification is proposed. D2 wiring is a conflict constraint and D4 activity is
@@ -298,7 +298,7 @@ suites plus twelve Python tests), `tools/d2_host_test.sh` PASS, and
 `tools/mtk.sh purity` PASS for 71 platform files and the shared HAL boundary.
 Image validation was skipped because no built ELF is present. Two existing
 nested-comment warnings in `mqtt_model_transfer.h` remain. The native output is
-kept in [the D3-1 evidence log](parity/logs/d3/d3-1-native-20261105.log).
+kept in [the D3-1 evidence log](../../parity/logs/d3/d3-1-native-20261105.log).
 Native capture tests execute the actual capture functions with mocked
 register/clock boundaries, not real pad voltages or ISR latency.
 

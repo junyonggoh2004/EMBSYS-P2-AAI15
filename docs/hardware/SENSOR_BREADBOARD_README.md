@@ -1,12 +1,12 @@
 # Three-sensor breadboard guide (AHT, HC-SR04+, TSL2561)
 
-This records Jun Yong's earlier Super Mini fixture. For the bare N16R8 D6 Board A with a second sonar and LD2450 radar, use the [active pin-to-hole guide](docs/d6/PIN_TO_HOLE_WIRING.md). It retains these three sensors' GPIOs and rows 4-9, but Board A no longer carries the old LCD wires. The earlier working result does not prove the current N16R8 setup passes.
+This records Jun Yong's earlier Super Mini fixture. For the bare N16R8 D6 Board A with a second sonar and LD2450 radar, use the [active pin-to-hole guide](../d6/PIN_TO_HOLE_WIRING.md). It retains these three sensors' GPIOs and rows 4-9, but Board A no longer carries the old LCD wires. The earlier working result does not prove the current N16R8 setup passes.
 
-For an additional spacious 65-row N16R8 Board A option, see the [new diagram and connection list](docs/d6/BOARD_A_SPACED_65_ROW_LAYOUT.md). This preserves Jun Yong's three-sensor rows 4-9 and places the added Sonar B and radar at rows 28-29 and 50-54. The historical tables below remain intact.
+For an additional spacious 65-row N16R8 Board A option, see the [new diagram and connection list](../d6/BOARD_A_SPACED_65_ROW_LAYOUT.md). This preserves Jun Yong's three-sensor rows 4-9 and places the added Sonar B and radar at rows 28-29 and 50-54. The historical tables below remain intact.
 
-The main project guide, with the D1 to D6 task checklists, setup and tests, is the [root README](README.md). This page covers the current breadboard and its Windows and VS Code workflow, written by Jun Yong when the sensors were integrated.
+The main project guide, with the D1 to D6 task checklists, setup and tests, is the [root README](../../README.md). This page covers the current breadboard and its Windows and VS Code workflow, written by Jun Yong when the sensors were integrated.
 
-This workspace now uses the configurable components from **main commit `49677c62c8738493f4e66667d1fe79afc947600d`**, adapted for the current breadboard. Firmware runs on **ESP-IDF with µT-Kernel 3 SMP**. The analysis completed before updating the workspace is in [MAIN_COMPONENT_REVIEW.md](MAIN_COMPONENT_REVIEW.md).
+This workspace now uses the configurable components from **main commit `49677c62c8738493f4e66667d1fe79afc947600d`**, adapted for the current breadboard. Firmware runs on **ESP-IDF with µT-Kernel 3 SMP**. The analysis completed before updating the workspace is in [MAIN_COMPONENT_REVIEW.md](../design/MAIN_COMPONENT_REVIEW.md).
 
 ## Current status
 
@@ -15,13 +15,13 @@ This workspace now uses the configurable components from **main commit `49677c62
 | AHT temperature/humidity, HC-SR04+ distance, Grove TSL2561 light | Confirmed reading together on the corrected ESP-IDF / µT-Kernel firmware in the 3 November runtime capture |
 | ST7789 LCD | **Not working for now**: dim/white screen, no text; keep existing wiring, display remains disabled |
 | Active firmware | Main's shared EdgeCore + complete µT-Kernel runtime, with optional I²C sensor profiles |
-| Current integrated firmware validation | See [VALIDATION.md](esp32s3_mtk/VALIDATION.md); historical sensor tests are separate from new firmware execution |
+| Current integrated firmware validation | See [VALIDATION.md](../../esp32s3_mtk/VALIDATION.md); historical sensor tests are separate from new firmware execution |
 
 **Use the wiring tables on this page for this fixture.** The upstream test guides use alternative pin layouts for one-sensor, SPI-flash, radar and loopback fixtures. Their commands are not this breadboard's configuration. In particular, GPIO1/2 are occupied by the two I²C sensors here, and GPIO10 is wired to LCD CS; do not run the upstream SPI/flash tests with the LCD attached.
 
 ## Open and run
 
-1. Open [AAI15-MTK.code-workspace](AAI15-MTK.code-workspace) in VS Code. It selects only `esp32s3_mtk/`.
+1. Open [AAI15-MTK.code-workspace](../../AAI15-MTK.code-workspace) in VS Code. It selects only `esp32s3_mtk/`.
 2. Connect the ESP32 by USB data cable and close Arduino Serial Monitor. Find its port in Device Manager → Ports (COM & LPT).
 3. Press **Ctrl+Shift+B → MTK: build**.
 4. In Terminal → New Terminal, run these commands **one at a time**. Replace `COM5` with the actual port.
@@ -34,7 +34,7 @@ powershell.exe -NoProfile -File .\tools\build.ps1 sensors -Port COM5
 powershell.exe -NoProfile -File .\tools\build.ps1 monitor -Port COM5
 ```
 
-The **sensors** command loads [config/three_sensors.cfg](config/three_sensors.cfg) through the normal REPL: it sends STOP, CLEAR, three configurations, SHOW and RUN. CLEAR replaces volatile sensors/rules. It checks acknowledgements and stops if a configuration is refused. Close the monitor before running it. The monitor accepts typed commands; **Ctrl+C** closes it.
+The **sensors** command loads [config/three_sensors.cfg](../../config/three_sensors.cfg) through the normal REPL: it sends STOP, CLEAR, three configurations, SHOW and RUN. CLEAR replaces volatile sensors/rules. It checks acknowledgements and stops if a configuration is refused. Close the monitor before running it. The monitor accepts typed commands; **Ctrl+C** closes it.
 
 The preset is volatile: load it again after resetting or reflashing. Nothing samples automatically on a fresh boot until configured and RUN is sent. You can instead paste the preset's non-comment lines into the serial monitor, one line at a time.
 
@@ -65,11 +65,11 @@ These are illustrative formats, not captured board measurements. A failed or mis
 
 ## D3 task checklist and regression evidence
 
-The [D3 task checklist and timing contract](README.md#23-d3-task-checklist), [D3 test procedures](README.md#part-g-d3-timing-and-application) and [interrupt wiring review](D3_INTERRUPT_WIRING_REVIEW.md) are retained alongside this fixture guide. D3-1 native validation and window timing-report tooling are preserved; the two-sonar pair and crosstalk were run on the D6 setup and signed off on 22 Nov 2026, and the radar workload timing was closed with the radar. [D3-1 raw native evidence](parity/logs/d3/d3-1-native-20261105.log) predates this merge and is not a board result.
+The [D3 task checklist and timing contract](../../README.md#23-d3-task-checklist), [D3 test procedures](../../README.md#part-g-d3-timing-and-application) and [interrupt wiring review](../d3/D3_INTERRUPT_WIRING_REVIEW.md) are retained alongside this fixture guide. D3-1 native validation and window timing-report tooling are preserved; the two-sonar pair and crosstalk were run on the D6 setup and signed off on 22 Nov 2026, and the radar workload timing was closed with the radar. [D3-1 raw native evidence](../../parity/logs/d3/d3-1-native-20261105.log) predates this merge and is not a board result.
 
-For D3-2 on this breadboard, use the [V2 sonar test procedure](docs/D3_CAPTURE_V2_TEST.md). Its explicit `--fixture v2-sonar` option maps the real-sonar parity stages to Trig GPIO4/Echo GPIO5, stops/clears the volatile preset first and rejects unrelated stages. The default test commands retain their original fixture mappings. The [one-shot capture probe](config/d3_sonar_v2_once.cfg) supports manual timeout and cancellation trials; physical acceptance is still pending.
+For D3-2 on this breadboard, use the [V2 sonar test procedure](../d3/D3_CAPTURE_V2_TEST.md). Its explicit `--fixture v2-sonar` option maps the real-sonar parity stages to Trig GPIO4/Echo GPIO5, stops/clears the volatile preset first and rejects unrelated stages. The default test commands retain their original fixture mappings. The [one-shot capture probe](../../config/d3_sonar_v2_once.cfg) supports manual timeout and cancellation trials; physical acceptance is still pending.
 
-Use this page and [WIRING.md](esp32s3_mtk/WIRING.md) for the current breadboard. The [root README](README.md)'s GPIO1/2 sonar, GPIO5/6 loopback and GPIO10–13 SPI layouts require their separate fixtures; they conflict with connections retained here. The three-sensor preset's 30 ms sonar timeout is for individual acquisition; two such timeouts cannot fit a 50 ms PAIR. No dual-sonar preset or acoustic guard is selected by this merge.
+Use this page and [WIRING.md](../../esp32s3_mtk/WIRING.md) for the current breadboard. The [root README](../../README.md)'s GPIO1/2 sonar, GPIO5/6 loopback and GPIO10–13 SPI layouts require their separate fixtures; they conflict with connections retained here. The three-sensor preset's 30 ms sonar timeout is for individual acquisition; two such timeouts cannot fit a 50 ms PAIR. No dual-sonar preset or acoustic guard is selected by this merge.
 
 ## Repository guide
 
@@ -78,14 +78,14 @@ Use this page and [WIRING.md](esp32s3_mtk/WIRING.md) for the current breadboard.
 | `esp32s3_mtk/` | Active configurable ESP-IDF/µT-Kernel target |
 | `libraries/EdgeCore/src/` | Main's shared scheduler, buses, rules, events and inference interfaces, plus optional sensor profiles |
 | `config/three_sensors.cfg` | Current hardware preset; pins can be changed without rebuilding |
-| [MAIN_COMPONENT_REVIEW.md](MAIN_COMPONENT_REVIEW.md) | Component-by-component review, decisions and scope |
-| [README.md](README.md) | Main project guide: D1 to D6 task checklists, setup from scratch and every test |
-| [docs/SENSOR_BRINGUP_README.md](docs/SENSOR_BRINGUP_README.md) | Previous branch guide, kept as historical documentation |
+| [MAIN_COMPONENT_REVIEW.md](../design/MAIN_COMPONENT_REVIEW.md) | Component-by-component review, decisions and scope |
+| [README.md](../../README.md) | Main project guide: D1 to D6 task checklists, setup from scratch and every test |
+| [docs/SENSOR_BRINGUP_README.md](SENSOR_BRINGUP_README.md) | Previous branch guide, kept as historical documentation |
 | `legacy/esp32s3_sensor_bringup/` | Previous small sensor-only firmware; excluded from the active workspace/build |
 | `legacy/esp32s3_idf_initial/` | Earlier untracked ESP32 experiment, preserved separately |
 | `tools/`, `tests/`, `parity/` | Upstream tooling, host tests and historical target evidence, plus sensor tests |
 
-Historical guides may describe different fixtures, output formats or build folders. Use this guide and [WIRING.md](esp32s3_mtk/WIRING.md) for the active configuration.
+Historical guides may describe different fixtures, output formats or build folders. Use this guide and [WIRING.md](../../esp32s3_mtk/WIRING.md) for the active configuration.
 
 ## Complete breadboard connections
 

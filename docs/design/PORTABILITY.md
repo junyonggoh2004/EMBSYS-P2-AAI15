@@ -1,6 +1,6 @@
 # D1 Portability and Design-Review Closure (Task 22)
 
-This document records how the Pico 2 W reference (`pico-reference`) maps onto the ESP32-S3 port, every exception to the Arduino-only rule, the behaviour that differs between the boards, and how the implementation compares with the submitted Week 6 design review. Sections 1 to 5 describe the Arduino/FreeRTOS build (tasks 11–22), which is now the measured baseline; test evidence is in `parity/logs/s3/` and PARITY.md §3. Since Tribunal 1 the D1 runtime is µT-Kernel 3 SMP on the course port; section 6 maps the same dependencies onto that build (tasks 24–34), and [MTK_REDESIGN.md](MTK_REDESIGN.md) holds its design and compliance matrix.
+This document records how the Pico 2 W reference (`pico-reference`) maps onto the ESP32-S3 port, every exception to the Arduino-only rule, the behaviour that differs between the boards, and how the implementation compares with the submitted Week 6 design review. Sections 1 to 5 describe the Arduino/FreeRTOS build (tasks 11–22), which is now the measured baseline; test evidence is in `parity/logs/s3/` and PARITY.md §3. Since Tribunal 1 the D1 runtime is µT-Kernel 3 SMP on the course port; section 6 maps the same dependencies onto that build (tasks 24–34), and [MTK_REDESIGN.md](../../MTK_REDESIGN.md) holds its design and compliance matrix.
 
 ## 1. Pico dependencies and their replacements
 

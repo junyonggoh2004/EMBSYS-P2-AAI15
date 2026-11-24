@@ -3,7 +3,7 @@
 ## Current result (21 November 2026)
 
 The complete Windows broker, Board B, and Board C commands are now maintained
-in [MQTT_commands.md](../../MQTT_commands.md#board-c-lcd-and-board-b--c-mock-mqtt-test).
+in [MQTT_commands.md](../commands/MQTT_commands.md#board-c-lcd-and-board-b--c-mock-mqtt-test).
 The steps and observations below preserve the earlier 18–19 November trial;
 its portrait v1 fixture and USB diagnosis are historical, not the current
 Board C status.
