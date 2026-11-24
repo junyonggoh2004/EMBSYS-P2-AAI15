@@ -3,10 +3,26 @@
 #include <string.h>
 #include "mqtt/sensor_bridge.h"
 #include "bus/bus_common.h"
+#include "application/sensor_measurement.h"
 
 static unsigned published;
 static uint8_t last_data[64];
 static int last_length;
+static unsigned ml_only_frames;
+static bool source_stamp_valid;
+static uint32_t source_stamp_ms;
+void sensor_measurement_remote_stamp(bool valid, uint32_t source_ms) {
+    source_stamp_valid = valid;
+    source_stamp_ms = source_ms;
+}
+bool sensor_measurement_remote_ml_only(const char *name) {
+    return !strcmp(name, "ML_ONLY");
+}
+void sensor_measurement_notify(const app_cfg_t *cfg, const uint8_t *data, int length) {
+    assert(!strcmp(cfg->name, "ML_ONLY") && source_stamp_valid && source_stamp_ms == 70);
+    assert(data && length == 3);
+    ++ml_only_frames;
+}
 void publisher_emit_hex(const app_cfg_t *cfg, const char *proto,
                         const char *source, const uint8_t *bytes, int length)
 {
@@ -47,6 +63,10 @@ int main(void)
     sensor_bridge_on_remote_line("nodeB", "AHT",
         "proto=i2c src=AHT len=1 ts=0 : 00", 104);
     assert(published == 2 && last_length == 1 && last_data[0] == 0);
+    assert(sensor_bridge_add_mapping("nodeB", "DISTANCE", "ML_ONLY"));
+    sensor_bridge_on_remote_line("nodeB", "DISTANCE",
+        "proto=gpio src=DISTANCE len=3 ts=70 : 00 01 01", 200);
+    assert(ml_only_frames == 1 && published == 2 && !source_stamp_valid);
     sensor_bridge_reset();
     sensor_bridge_on_remote_line("nodeB", "AHT",
         "proto=i2c src=AHT len=1 ts=12 : 08", 105);

@@ -2,7 +2,7 @@
 
 The Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) ported to the ESP32-S3 Super Mini. Since Tribunal 1 it runs on µT-Kernel 3 SMP through the course port ([MTK_REDESIGN.md](MTK_REDESIGN.md)); the earlier Arduino-ESP32/FreeRTOS port is kept as the measured baseline. Both builds compile the same shared code, so the configuration lines, console commands, MQTT topics, output format and ML models are the same on both. `main` contains D1 to D5 and the merged D6 integration work; the three-board use case remains in progress.
 
-**Current D6 setup:** Board A reads AHT, light, and two sonars without radar. Board B receives their MQTT frames and runs the two sine models or `comfort-summer` on live readings; `people-counter` is flashed but still needs 31 consecutive valid Sonar A readings and a doorway validation. The autoencoder is outside the D6 demo and use case. B publishes continuous environmental/two-sonar snapshots. On 24 Nov, Board C displayed those live values beyond ten seconds after `D6VIEW`; stale clearing on physical disconnection remains to be checked. Occupancy remains pending. See the [live LCD guide](docs/d6/LIVE_LCD_TWO_SONARS.md), [current D6 TO-DO list](docs/d6/D6_TODO.md), [startup commands](usecase_commands.md) and [ML commands](ML_commands.md).
+**Current D6 setup:** Board A reads AHT, light, and two sonars without radar. Board B receives their MQTT frames and runs the two sine models or `comfort-summer` on live readings. A separate 70 ms Sonar A/Board B profile produced live `people-counter` MQTT classifications from the real sonar on 24 Nov; direction still needs labelled doorway validation. The autoencoder is outside the D6 demo and use case. B publishes continuous environmental/two-sonar snapshots. After the model trial, the normal four-sensor `sine-float` profile was restored, B published changing live snapshots, and Board C visibly updated its horizontal LCD. Stale clearing on physical disconnection remains to be checked. Occupancy remains pending. See the [live LCD guide](docs/d6/LIVE_LCD_TWO_SONARS.md), [current D6 TO-DO list](docs/d6/D6_TODO.md), [startup commands](usecase_commands.md) and [ML commands](ML_commands.md).
 
 ## Deliverables at a glance
 
@@ -428,7 +428,7 @@ D6 joins three ESP32-S3 N16R8 boards into one use case: a doorway room monitor (
 | 5.3 | Multi-bus demo script | GPIO, I2C and SPI on one board, configured live, the whole setup at once and then piece by piece | Cody | **Pending** ([5.4](#54-any-sensor-on-the-fly-extra-if-asked)) |
 | 5.4 | SPI write and read by config | Write one byte, read it back, swap the device and reconfigure | Brendan | **Pending:** a config cannot write over SPI yet. The D2 event log writes are separate |
 | 5.5 | LCD board shows live data | Board C displays what the other boards publish | Brendan | **In progress:** B and C were flashed on 24 Nov; C displayed B's live AHT/light/two-sonar snapshots beyond ten seconds. Physical stale clearing and cold-start recovery remain untested. Occupancy is not live |
-| 5.6 | ML inside the use case | One board runs a model on another board's data; the result shows on the LCD or is published | Cody, Brendan, with Sitt | **In progress:** real AHT→B `comfort-summer` inference→C score 95 was observed on the boards. Live people-counter windows are in code; the complete doorway/occupancy trial remains open |
+| 5.6 | ML inside the use case | One board runs a model on another board's data; the result shows on the LCD or is published | Cody, Brendan, with Sitt | **In progress:** real AHT→B `comfort-summer` inference→C score 95 was observed on the boards. Live Sonar A→B `people-counter` results were published on 24 Nov; labelled doorway direction and occupancy remain open |
 | 5.7 | Full rehearsal on three boards | Run the whole thing end to end, record it and fill section 5 | Team | **Pending** |
 
 **Where the details are.** [Board A wiring](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md), [Board A sensor tests](docs/d6/BOARD_A_SENSOR_TEST.md), the full [Windows MQTT commands](MQTT_commands.md), the [use case notes](docs/d6/SONAR_ONLY_USECASE.md), the [LCD reference](docs/d6/ROOM_MONITOR_REFERENCE.md) and the [classroom ML demo](docs/embedded-ml/RUNNING.md). The earlier radar plans are kept under [docs/d6/reference](docs/d6/reference/).
@@ -748,7 +748,7 @@ flowchart LR
 
 ### 5.2 Setup
 
-The hardware each board needs, the firmware on it, and the settings that give it its role. Each item has its own row, followed by the command to run and what it does. Every command is for Brendan's Windows laptop, run from his checkout of `main` at `C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23`. Full detail is in [usecase_commands.md](usecase_commands.md) and [ML_commands.md](ML_commands.md).
+The hardware each board needs, the firmware on it, and the settings that give it its role. Each item has its own row, followed by the command to run and what it does. The Windows commands below use `C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration`; change that one path if using another checkout. Full detail and the PowerShell window map are in [usecase_commands.md](usecase_commands.md#windows) and [ML_commands.md](ML_commands.md).
 
 **Board consoles.** A few checks are typed on a board's own console. Open one PowerShell window per board:
 
@@ -821,7 +821,7 @@ The hardware each board needs, the firmware on it, and the settings that give it
 
 > ```powershell
 > # Normal PowerShell
-> Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
+> Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
 > (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
 > if (-not (Test-Path '.\esp32s3_mtk\main\wifi_credentials.h')) {
 >     Copy-Item '.\esp32s3_mtk\main\wifi_credentials.h.example' '.\esp32s3_mtk\main\wifi_credentials.h'
@@ -839,7 +839,7 @@ The hardware each board needs, the firmware on it, and the settings that give it
 
 > ```bash
 > # Git Bash, one board on USB at a time, on its native USB port
-> cd /c/Users/brend/EMBSYS-P2-AAI15-merge-work-2026-11-23
+> cd /c/Users/brend/EMBSYS-P2-AAI15-D6-Integration
 > git pull
 > BOARD=n16r8 NODE=s3-001 PORT=COMx sh tools/mtk.sh flash
 > BOARD=n16r8 NODE=s3-002 PORT=COMy sh tools/mtk.sh flash
@@ -916,7 +916,7 @@ The hardware each board needs, the firmware on it, and the settings that give it
 
 ### 5.3 Demo
 
-The demo starts with one command block. After that the boards keep running by themselves while each person explains their deliverable in order, D1 to D4. At D4, Jun Yong switches the ML model live and explains the ML. Everything is sent from Brendan's laptop, from his checkout of `main` at `C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23`.
+The demo starts with one command block. After that the boards keep running by themselves while each person explains their deliverable in order, D1 to D4. At D4, the ML model can be switched live. The commands below use `C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration`.
 
 #### Run the demo
 
@@ -934,14 +934,14 @@ The demo starts with one command block. After that the boards keep running by th
 >
 > ```powershell
 > # Window 3: readings in units. Leave it running.
-> Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
+> Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
 > $py = "$env:USERPROFILE\.espressif\python_env\idf6.1_py3.14_env\Scripts\python.exe"
 > & $py .\tools\show_live_values.py --board A
 > ```
 >
 > ```powershell
 > # Window 4: every command below is sent from here
-> Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
+> Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
 > $pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
 > ```
 >
@@ -1037,7 +1037,7 @@ The demo starts with one command block. After that the boards keep running by th
 | `"input_source":"remote:s3-001"` | The model on Board B reads Board A's sensors over MQTT |
 | `sine-int8` against `sine-float` | Five models are bundled. The INT8 ones run on the S3's vector instructions through ESP-NN, which D5 measured |
 | **LIVE COMFORT** on C | comfort-summer turns temperature and humidity into a comfort score from 0 to 99. C marks it `STALE` if updates stop, rather than showing an old score as current |
-| people-counter (mention only) | It classifies a doorway window as in, out or none. It runs from recorded data, or live on one sonar from Board A's console, not as a switch on Board B |
+| people-counter (separate live test) | B can switch to the bundled 31-input model while A sends a dedicated 70 ms single-sonar stream. Live MQTT results passed on 24 Nov. Follow the [isolated A/B profile commands](ML_commands.md#4-people-counter--experimental-live-31-reading-window), then reload the normal four-sensor profiles. Its prediction is separate from occupancy and awaits labelled doorway validation |
 
 ### 5.4 Any sensor on the fly (extra, if asked)
 
@@ -1058,7 +1058,7 @@ A separate ESP32-S3, shown only if asked: any supported sensor added, changed or
 
 > ```bash
 > # Git Bash, spare board on its native USB port
-> cd /c/Users/brend/EMBSYS-P2-AAI15-merge-work-2026-11-23
+> cd /c/Users/brend/EMBSYS-P2-AAI15-D6-Integration
 > BOARD=n16r8 NODE=s3-004 PORT=COMx sh tools/mtk.sh flash
 > ```
 >

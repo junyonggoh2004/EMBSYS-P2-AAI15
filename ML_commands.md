@@ -1,6 +1,6 @@
 # Board B ML model commands
 
-These commands use the D6 three-board ESP32-S3 N16R8 setup: Board A is `s3-001`, Board B is `s3-002`, and Board C is `s3-003`. Run them from the **D6-Integration** checkout after the broker and boards are online. The D6 live demo uses `sine-float`, `sine-int8`, `comfort-summer`, and `people-counter`. The firmware also bundles an autoencoder for separate D4 work; it is outside this demo and use case. Selecting another bundled model does not require another flash. Selections and sensor mappings are volatile and must be loaded after a reboot. [Start the broker, sensor bridges, and default model first](usecase_commands.md#5-run-all-four-ab-sensor-bridges--normal-powershell-window-3).
+These commands use the D6 three-board ESP32-S3 N16R8 setup: Board A is `s3-001`, Board B is `s3-002`, and Board C is `s3-003`. Run them from the **D6-Integration** checkout after the broker and boards are online. The D6 live demo uses `sine-float`, `sine-int8`, `comfort-summer`, and `people-counter`. The firmware also bundles an autoencoder for separate D4 work; it is outside this demo and use case. Selecting another bundled model does not require another flash. Selections and sensor mappings are volatile and must be loaded after a reboot. [Start the broker, sensor bridges, and default model first](usecase_commands.md#5-run-all-four-ab-sensor-bridges--normal-powershell-window-4).
 
 | Model | Actual model input shape | Board B use | Result |
 | --- | --- | --- | --- |
@@ -9,21 +9,21 @@ These commands use the D6 three-board ESP32-S3 N16R8 setup: Board A is `s3-001`,
 | `comfort-summer` | 2 floats | Live AHT temperature and humidity | Comfort score 0–99 plus class score |
 | `people-counter` | 31 INT8 values | One Sonar A binding fills a rolling 31-reading window on B | `in`, `none`, or `out` plus confidence |
 
-The `people-counter` window is a **model-specific exception**: it has one typed sonar binding that fills 31 time slots. The general live setup remains limited to 16 bindings, and the other demo models retain their original shapes. `people-counter` classifications do not update occupancy or the LCD. The current B remote window is an experimental transport check: Board A's normal 2 Hz sonar feed takes roughly 15.5 seconds to fill it, while the model's source training used roughly 50 ms per sample. Validate preprocessing, timing and labelled crossings before treating a class as an actual direction. The 24 Nov live test did not produce a classification because Sonar A repeatedly timed out; the three other demo models returned live `status:OK` results.
+The `people-counter` window is a **model-specific exception**: one typed sonar binding fills 31 time slots. The general live setup remains limited to 16 bindings, and the other demo models retain their original shapes. `people-counter` classifications do not update occupancy or the LCD. Its separate 70 ms A/B profiles produced live B `status:OK` MQTT results from A's real sonar on 24 Nov. B uses the source frame timestamp for window spacing because Wi-Fi can deliver several frames in a burst; B still uses its own clock to detect stale input. During this isolated mode B does not republish each redundant sonar alias frame, leaving capacity for ML results. The source training used roughly 50 ms per sample, so timing, preprocessing and direction still require labelled doorway trials. The other three demo models also returned live `status:OK` results.
 
 ## Common setup and result window — Windows
 
 Use **normal PowerShell** for these commands. Start the Mosquitto broker using the Administrator PowerShell instructions in [usecase_commands.md](usecase_commands.md), connect all boards to the saved private 2.4 GHz hotspot, and confirm fresh `s3-001` and `s3-002` heartbeats. The firmware broker address must match the laptop's Wi-Fi IPv4 address. The local Mosquitto commands below connect through `127.0.0.1`.
 
-**PowerShell window 1 — results.** Keep this command running; press **Ctrl+C** to return to its PowerShell prompt.
+**Administrator PowerShell, window 1 — broker.** Start it using the [Windows startup guide](usecase_commands.md#windows). **Normal PowerShell, window 2 — results.** Keep this command running; press **Ctrl+C** to return to its PowerShell prompt.
 
 ```powershell
 Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
 $sub = "$env:ProgramFiles\mosquitto\mosquitto_sub.exe"
-& $sub -h 127.0.0.1 -t 'pico/s3-002/ml/status' -t 'pico/s3-002/ml/result' -t 'd6/board-b/comfort' -v
+& $sub -h 127.0.0.1 -t 'pico/s3-001/status/config' -t 'pico/s3-002/status/config' -t 'pico/s3-002/ml/status' -t 'pico/s3-002/ml/result' -t 'd6/board-b/comfort' -v
 ```
 
-**PowerShell window 2 — commands.** If you have already run the full setup commands, keep its `$pub` variable and skip the first two lines. Otherwise load `config/board_a.cfg` on A and `config/board_b_ml.cfg` on B using the [startup guide](usecase_commands.md#5-run-all-four-ab-sensor-bridges--normal-powershell-window-3) before selecting a live model.
+**Normal PowerShell, window 4 — commands.** If you have already run the full setup commands, keep its `$pub` variable and skip the first two lines. Otherwise load `config/board_a.cfg` on A and `config/board_b_ml.cfg` on B using the [startup guide](usecase_commands.md#5-run-all-four-ab-sensor-bridges--normal-powershell-window-4) before selecting one of the sine or comfort models. People-counter uses its dedicated A/B profiles below. **Normal PowerShell, window 3** runs the decoded live-values viewer from the startup guide.
 
 ```powershell
 Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
@@ -94,27 +94,32 @@ Expect `"model":"comfort-summer"`, `"comfort_score":N`, `"class_score":...`, and
 
 ## 4. `people-counter` — experimental live 31-reading window
 
-Configuration file: [`config/board_b_people_counter.json`](config/board_b_people_counter.json). B follows A's `SONAR_A` through its `A_SONAR_A` alias with `remote_profile=pulse`; **one** binding supplies successive readings to the 31-slot window. The existing [`config/board_b_ml.cfg`](config/board_b_ml.cfg) gives that alias a 500 ms expected interval.
+This is a separate live demo mode. [`config/board_a_people_counter.cfg`](config/board_a_people_counter.cfg) samples only Sonar A every 70 ms; [`config/board_b_people_counter.cfg`](config/board_b_people_counter.cfg) follows that source as `A_SONAR_A` with `remote_profile=pulse` and the same expected interval. [`config/board_b_people_counter.json`](config/board_b_people_counter.json) binds **one** typed distance source to the model's rolling 31-slot input. The normal four-sensor [`config/board_a.cfg`](config/board_a.cfg), four-alias [`config/board_b_ml.cfg`](config/board_b_ml.cfg), and all other model JSON files stay intact.
 
-The full setup starts A's two-sonar `DOORWAY` service. That service samples each sonar about every **140 ms**, so its cadence does not match B's current 500 ms window setting. For this isolated ML transport test, pause A's doorway service and return to the ordinary 2 Hz sonar profile before selecting the model:
-
-```powershell
-& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/cmd' -m 'STOP'
-& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/cmd' -m 'DOORWAY OFF'
-& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/cmd' -m 'RUN'
-& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_people_counter.json'
-```
-
-Watch for accepted ML status, then `"model":"people-counter"`, `"input_source":"remote:s3-001"`, `"direction":"in"|"none"|"out"`, and `class_score` after 31 consecutive valid A Sonar A frames. The class indices are **0=IN, 1=NONE, 2=OUT**. An invalid echo or receive gap clears the window. B currently uses receive time, not A's source timestamp, and does not deduplicate an otherwise valid repeated MQTT frame. Its 2 Hz cadence differs from the model's roughly 50 ms training cadence. This test proves the remote frame and 31-value inference path; it does **not** validate direction, change occupancy, or put the class on C's LCD.
-
-Restore B's default model and A's doorway service after this isolated test:
+Use **normal PowerShell, command window 4** from the repository root after the broker is running and A/B heartbeats are visible in **normal PowerShell, watch window 2**. The broker runs in **Administrator PowerShell, window 1**; see [startup and window assignments](usecase_commands.md#windows). Keep Sonar A aimed at a broad, flat background that produces valid echoes. This profile replaces the volatile A/B sensor configurations until the normal startup block is run again:
 
 ```powershell
-& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_sine_float.json'
+$pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
+$aProfile = (Resolve-Path -LiteralPath '.\config\board_a_people_counter.cfg' -ErrorAction Stop).Path
+$bProfile = (Resolve-Path -LiteralPath '.\config\board_b_people_counter.cfg' -ErrorAction Stop).Path
+$modelProfile = (Resolve-Path -LiteralPath '.\config\board_b_people_counter.json' -ErrorAction Stop).Path
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/cmd' -m 'STOP'
-& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/cmd' -m 'DOORWAY SONAR_A SONAR_B 70 85 70 85 70 2000'
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'STOP'
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/cmd' -m 'CLEAR'
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'CLEAR'
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/config' -f $bProfile
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/config' -f $aProfile
+Start-Sleep -Seconds 2
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'RUN'
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f $modelProfile
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/cmd' -m 'RUN'
 ```
+
+Watch window 2 for `pico/s3-001/status/config`, `pico/s3-002/status/config`, `pico/s3-002/ml/status`, and `pico/s3-002/ml/result`; subscribe to those topics if the existing watch window omits them. Both configs must report `OK`, and ML status must say `"ok":true`. After 31 consecutive valid A Sonar A frames (about 2.1 s at 70 ms), expect `"model":"people-counter"`, `"input_source":"remote:s3-001"`, `"direction":"in"|"none"|"out"`, and `class_score`. The class indices are **0=IN, 1=NONE, 2=OUT**. A missing echo or source-timestamp gap clears the window; a repeated source timestamp is ignored. On 24 Nov B published a live `out` classification with `class_score:0.9960938` from the desk setup. This proves the A→B typed stream and inference path, **not** direction accuracy or a real exit. The result does not update occupancy or Board C's LCD.
+
+To restore the **entire normal four-sensor A→B→C use case**, run `Start-D6Live` from [the Windows startup block](usecase_commands.md#5-run-all-four-ab-sensor-bridges--normal-powershell-window-4). That reloads both original board profiles, selects `sine-float`, and sends `D6VIEW` to C. Do not restore only the model: the isolated test also replaced both sensor profiles.
+
+The two-sonar `DOORWAY` rule is a separate Board A test. It uses an alternating pair at about 140 ms per sonar and remains the proposed occupancy authority; it is not enabled by the normal `Start-D6Live` block.
 
 Replay file: [`config/ml_replay_people_counter.txt`](config/ml_replay_people_counter.txt). It sends 31 zeroes as a synthetic model-ready window. To test model execution without waiting for sensor frames:
 
@@ -144,7 +149,22 @@ mosquitto_pub -h "$BROKER_IP" -q 1 -t pico/s3-002/cmd -f config/board_b_sine_flo
 # Replace the filename with the selected model's board_b_*.json file.
 ```
 
-For replay, `STOP` B, choose `ML MODEL <name>` when needed, set `ML OUTPUT publish`, send the corresponding `config/ml_replay_*.txt` file with `-f`, then `RUN` and reapply the default live JSON. The people-counter live test also requires `STOP`, `DOORWAY OFF`, `RUN` on A as shown above, using `mosquitto_pub -m` for each command.
+For the isolated live `people-counter` test on Mac or Linux, use a separate command terminal after starting the broker and confirming A/B heartbeats:
+
+```sh
+mosquitto_pub -h "$BROKER_IP" -q 1 -t pico/s3-001/cmd -m STOP
+mosquitto_pub -h "$BROKER_IP" -q 1 -t pico/s3-002/cmd -m STOP
+mosquitto_pub -h "$BROKER_IP" -q 1 -t pico/s3-001/cmd -m CLEAR
+mosquitto_pub -h "$BROKER_IP" -q 1 -t pico/s3-002/cmd -m CLEAR
+mosquitto_pub -h "$BROKER_IP" -q 1 -t pico/s3-002/config -f config/board_b_people_counter.cfg
+mosquitto_pub -h "$BROKER_IP" -q 1 -t pico/s3-001/config -f config/board_a_people_counter.cfg
+sleep 2
+mosquitto_pub -h "$BROKER_IP" -q 1 -t pico/s3-002/cmd -m RUN
+mosquitto_pub -h "$BROKER_IP" -q 1 -t pico/s3-002/cmd -f config/board_b_people_counter.json
+mosquitto_pub -h "$BROKER_IP" -q 1 -t pico/s3-001/cmd -m RUN
+```
+
+Watch `pico/s3-002/ml/result` in another terminal. Restore the normal A/B four-sensor profiles and `sine-float` with the [Mac/Linux full-use-case commands](usecase_commands.md#mac--linux) afterward. For replay, stop B, choose `ML MODEL <name>` when needed, set `ML OUTPUT publish`, send the corresponding `config/ml_replay_*.txt` file with `-f`, then run B and reapply the default live JSON.
 
 ## End or reset the session
 

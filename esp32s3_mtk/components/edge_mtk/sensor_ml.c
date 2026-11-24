@@ -80,8 +80,22 @@ static struct {
     float samples[DIRECTION_SAMPLES];
     unsigned next, count;
     uint32_t at;
+    uint32_t source_at;
+    bool source_clock;
     bool updated, faulted, report_fault;
 } direction_window;
+static bool remote_stamp_valid;
+static uint32_t remote_stamp_ms;
+
+void sensor_measurement_remote_stamp(bool valid, uint32_t source_ms) {
+    remote_stamp_valid = valid;
+    remote_stamp_ms = source_ms;
+}
+
+bool sensor_measurement_remote_ml_only(const char *local_name) {
+    return local_name && enabled && active >= 0 && models[active].kind == DIRECTION &&
+        bindings[0].bound && !strcmp(bindings[0].source, local_name);
+}
 
 void sensor_ml_invalidate(void) {
     for(int i=0;i<16;i++) bindings[i].valid=false;
@@ -125,11 +139,15 @@ static void direction_sample(const app_cfg_t *cfg, const uint8_t *data, int leng
         return;
     }
     uint32_t now = hal_time_ms();
-    uint32_t elapsed = now - direction_window.at;
+    bool source_clock = configured->proto == proto_mqtt && remote_stamp_valid;
+    uint32_t sample_at = source_clock ? remote_stamp_ms : now;
+    uint32_t elapsed = sample_at - (source_clock ? direction_window.source_at : direction_window.at);
     uint32_t period = configured->timing.interval_ms;
     uint32_t jitter = direction_jitter_ms(configured);
+    if (direction_window.count && source_clock && direction_window.source_clock && elapsed == 0)
+        return; /* Duplicate MQTT delivery is not another sensor reading. */
     if (direction_window.count &&
-        (elapsed < period - jitter || elapsed > period + jitter))
+        (source_clock != direction_window.source_clock || elapsed < period - jitter || elapsed > period + jitter))
         direction_gap();
     /* Source project records distances >=200 cm as -1 and scales the raw
        values by 0.001. A failed acquisition invalidates the live window. */
@@ -137,6 +155,8 @@ static void direction_sample(const app_cfg_t *cfg, const uint8_t *data, int leng
     direction_window.next = (direction_window.next + 1u) % DIRECTION_SAMPLES;
     if (direction_window.count < DIRECTION_SAMPLES) ++direction_window.count;
     direction_window.at = now;
+    direction_window.source_at = sample_at;
+    direction_window.source_clock = source_clock;
     direction_window.updated = true;
 }
 

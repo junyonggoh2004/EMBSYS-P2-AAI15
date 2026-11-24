@@ -2,6 +2,7 @@
 #include "mqtt/sensor_bridge.h"
 #include "mqtt/sensor_frame.h"
 #include "application/output_format.h"  // publisher_emit_hex
+#include "application/sensor_measurement.h"
 #include "bus/bus_common.h"            // app_cfg_t, proto_t, sample_mode_*
 #include <string.h>
 #include <stdio.h>
@@ -143,7 +144,12 @@ void sensor_bridge_on_remote_line(const char *remote_node,
     // This will:
     //  - print hex line
     //  - feed bytes into rule engine as if it came from a local sensor
-    publisher_emit_hex(&fake_cfg, "mqtt", m->local_name, frame.data, (int)frame.length);
+    sensor_measurement_remote_stamp(true, frame.timestamp_ms);
+    if (sensor_measurement_remote_ml_only(m->local_name))
+        sensor_measurement_notify(&fake_cfg, frame.data, (int)frame.length);
+    else
+        publisher_emit_hex(&fake_cfg, "mqtt", m->local_name, frame.data, (int)frame.length);
+    sensor_measurement_remote_stamp(false, 0);
 }
 
 

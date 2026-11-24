@@ -90,10 +90,11 @@ measurements, not the seconds-long interval for a person to cross a doorway.
 The existing D3 `WINDOW` command still requires a radar UART source. For
 the sonar-only demo, use `DOORWAY`. The new counter reports local entries and
 exits. A-to-B candidate transport, B-owned occupancy and flash writes, and the
-live count on Board C still need integration. The [`people-counter` ML
-demo](../embedded-ml/RUNNING.md#live-people-counter-with-one-ultrasonic) runs
-on a rolling window from one ultrasonic or a replayed trace. The live doorway
-counter uses both sonars.
+live count on Board C still need integration. The separate [Board B
+`people-counter` live test](../../ML_commands.md#4-people-counter--experimental-live-31-reading-window)
+uses dedicated A/B 70 ms profiles for one sonar and a rolling 31-reading
+window. Its prediction does not change occupancy. Reload the normal four-sensor
+profiles after that test. The live doorway counter uses both sonars.
 
 ## Current evidence and next gates
 

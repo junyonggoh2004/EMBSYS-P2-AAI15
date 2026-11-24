@@ -175,6 +175,10 @@ The comfort checkpoint estimates current comfort under the original summer train
 
 ### Live people-counter with one ultrasonic
 
+This section runs the model locally on the same ESP32 as the sonar. For the
+D6 three-board test, Board A supplies Sonar A and Board B runs the model via
+the separate [70 ms A/B profiles and PowerShell commands](../../ML_commands.md#4-people-counter--experimental-live-31-reading-window).
+
 Flash the updated firmware and open **MTK: monitor**. With Board A's Sonar A on
 TRIG GPIO10 and ECHO GPIO11, enter these lines one at a time. This is a
 single-sensor test and leaves the other sensors configured off until their profiles

@@ -122,6 +122,8 @@ Press **Ctrl+C** in the subscriber terminal, then **Ctrl+C** in the broker termi
 
 ## Windows
 
+**Window map:** Administrator PowerShell **window 1** runs Mosquitto; normal PowerShell **window 2** watches MQTT/config/ML status; normal PowerShell **window 3** shows decoded live sensor values; normal PowerShell **window 4** sends configuration and model commands. Each PowerShell window has its own variables. Run commands from the repository root unless a block sets its location explicitly. The normal full-use-case profile and the isolated [people-counter profile](ML_commands.md#4-people-counter--experimental-live-31-reading-window) replace each other's volatile A/B sensor configurations; run `Start-D6Live` again after the isolated test.
+
 ### 1. Prepare the boards — normal PowerShell; Git Bash for flashing
 
 Open **normal PowerShell** in the repository root. Confirm the laptop's Wi-Fi IPv4 address and edit the ignored credentials file. Use that address as `MQTT_HOST` for all three board builds.
@@ -181,7 +183,7 @@ $sub = "$env:ProgramFiles\mosquitto\mosquitto_sub.exe"
 
 Wait for fresh heartbeats from `s3-001`, `s3-002`, and `s3-003`. Keep this window open.
 
-For **actual live measurements**, open another **normal PowerShell** window in the repository root. Keep this viewer running alongside the heartbeat/raw-frame window. It uses the laptop's local broker listener, so it does not need the laptop's Wi-Fi IP. Use `--board B` in a second viewer to see B's relayed copies. Press **Ctrl+C** to stop a viewer.
+For **actual live measurements**, open **normal PowerShell, window 3** in the repository root. Keep this viewer running alongside the heartbeat/raw-frame window. It uses the laptop's local broker listener, so it does not need the laptop's Wi-Fi IP. Use `--board B` in a fifth normal PowerShell window to see B's relayed copies. Press **Ctrl+C** to stop a viewer.
 
 ```powershell
 $py = "$env:USERPROFILE\.espressif\python_env\idf6.1_py3.14_env\Scripts\python.exe"
@@ -192,7 +194,7 @@ $py = "$env:USERPROFILE\.espressif\python_env\idf6.1_py3.14_env\Scripts\python.e
 
 The viewer prints temperature in C, humidity in %RH, light in lux, and valid sonar distance in cm. It reports sensor errors and invalid echoes instead of showing a made-up distance.
 
-### 4. Test Board A sensors one at a time — normal PowerShell, window 3
+### 4. Test Board A sensors one at a time — normal PowerShell, window 4
 
 Run the setup once, then any of the four `Send-BoardASensor` lines. Each call replaces A's current sensor profile with only the selected sensor. Check the live-values PowerShell window above; for a sonar, use a flat target about 30–50 cm ahead.
 
@@ -220,7 +222,7 @@ Send-BoardASensor 'BEGINCFG|name=SONAR_A|proto=gpio|gpio.mode=pulse|gpio.trig=10
 Send-BoardASensor 'BEGINCFG|name=SONAR_B|proto=gpio|gpio.mode=pulse|gpio.trig=6|gpio.echo=7|gpio.pull=down|gpio.trig_us=10|gpio.pulse_timeout_us=20000|mode=poll|freq_hz=2|timing.timeout_ms=100|ENDCFG'
 ```
 
-### 5. Run all four A→B sensor bridges — normal PowerShell, window 3
+### 5. Run all four A→B sensor bridges — normal PowerShell, window 4
 
 Run this whole block from the repository root on the laptop hosting Mosquitto. Close any old Python LCD relay first. Window 2 should show the four A source topics, B's typed aliases, and B's `sine-float` ML status and results.
 
@@ -256,7 +258,7 @@ function Start-D6Live {
 Start-D6Live
 ```
 
-This starts normal sensor polling. Use the separate [doorway test](docs/d6/SONAR_ONLY_USECASE.md) when testing entry and exit totals on A. With the updated B and C firmware, B publishes AHT, light and both sonar distances directly to C. Watch the snapshot topic in another PowerShell window:
+This starts normal sensor polling and the default live `sine-float` model. Use the separate [doorway test](docs/d6/SONAR_ONLY_USECASE.md) when testing entry and exit totals on A, or the [single-sonar people-counter commands](ML_commands.md#4-people-counter--experimental-live-31-reading-window) to test B's 31-reading model. Both modes require reloading the normal A/B profiles with `Start-D6Live` afterward. With the updated B and C firmware, B publishes AHT, light and both sonar distances directly to C. Watch the snapshot topic in another **normal PowerShell** window:
 
 ```powershell
 & "$env:ProgramFiles\mosquitto\mosquitto_sub.exe" -h 127.0.0.1 -t 'd6/board-b/snapshot' -v
@@ -264,7 +266,7 @@ This starts normal sensor polling. Use the separate [doorway test](docs/d6/SONAR
 
 Snapshots should continue arriving about every two seconds. If you see comfort scores but no snapshots, check for fresh `A_AHT` and `A_LIGHT` under Board B's sensor topics in window 2. B needs both to publish a snapshot. If snapshots arrive but the screen stays blank, check C's serial console for its view and snapshot acknowledgements. A successful `mosquitto_pub` call confirms delivery to the broker. Board acceptance appears separately in the config status topics and C's console.
 
-To switch from the default sine test to live comfort, run this from the repository root in window 3:
+To switch from the default sine test to live comfort, run this from the repository root in window 4:
 
 ```powershell
 & "$env:ProgramFiles\mosquitto\mosquitto_pub.exe" -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_comfort_summer.json'
@@ -272,7 +274,7 @@ To switch from the default sine test to live comfort, run this from the reposito
 
 Keep the snapshot subscriber open to observe the readings. See [ML_commands.md](ML_commands.md) for the other model switches.
 
-### 6. Test B→C landscape display with mock data — normal PowerShell, window 3
+### 6. Test B→C landscape display with mock data — normal PowerShell, window 4
 
 Run this as a separate test. Stop the live sensor stream first and wait for its last snapshot to expire. The mock and live snapshots use different sequence counters on the same topic, and C can reject a mock sequence that arrives while a newer live snapshot is fresh. Hold the LCD horizontally. Expect `MOCK` and occupancy 2, then occupancy 3. Run section 5 again to return to the live demo.
 

@@ -57,6 +57,13 @@ bool sensor_measurement_value(const app_cfg_t *c,const uint8_t *d,int n,const ch
 __attribute__((weak)) void sensor_measurement_notify(const app_cfg_t *c,const uint8_t *d,int n) {
     (void)c; (void)d; (void)n;
 }
+__attribute__((weak)) void sensor_measurement_remote_stamp(bool valid, uint32_t source_ms) {
+    (void)valid; (void)source_ms;
+}
+__attribute__((weak)) bool sensor_measurement_remote_ml_only(const char *local_name) {
+    (void)local_name;
+    return false;
+}
 int sensor_measurement_json(const app_cfg_t *cfg,const uint8_t *data,int length,char *out,size_t cap) {
     if (!cfg || !out || !cap) return 0;
     sensor_profile_t profile=sensor_measurement_profile(cfg);

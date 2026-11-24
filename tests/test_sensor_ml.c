@@ -205,6 +205,8 @@ static void test_direction_window(void)
         "{\"index\":0,\"source\":{\"kind\":\"remote\",\"node\":\"board-a\",\"name\":\"SONAR_A\"},"
         "\"field\":\"distance_cm\",\"min\":0,\"max\":200}],\"output\":{\"kind\":\"publish\"}}}";
     assert(sensor_ml_setup_json(remote, true) && status_ok && enabled);
+    assert(sensor_measurement_remote_ml_only("A_SONAR_A"));
+    assert(!sensor_measurement_remote_ml_only("AHT"));
     app_cfg_t bridge = configs[3];
     bridge.mode = sample_mode_stream; /* the bridge emits with a temporary config */
     before_runs = runs;
@@ -217,6 +219,35 @@ static void test_direction_window(void)
     assert(runs == before_runs + 1 && direction_window.count == 31);
     assert(strstr(last_published, "\"input_source\":\"remote:board-a\""));
     assert(fabsf(seen[0] - 3000 * 0.00001715f) < 1e-6f);
+    /* The dedicated B people-counter profile follows A's 70 ms single-sonar
+       stream. A normal 500 ms bridge must still work independently. */
+    configs[3].timing.interval_ms = 70;
+    sensor_ml_invalidate();
+    before_runs = runs;
+    for (unsigned i = 0; i < 31; ++i) {
+        const uint8_t frame[] = {(uint8_t)(3200 + i), (uint8_t)((3200 + i) >> 8), 1};
+        now += 70;
+        sensor_measurement_notify(&bridge, frame, sizeof frame);
+        sensor_ml_poll(true);
+    }
+    assert(runs == before_runs + 1 && direction_window.count == 31);
+    assert(strstr(last_published, "\"model\":\"people-counter\""));
+    assert(strstr(last_published, "\"input_source\":\"remote:board-a\""));
+    /* MQTT can deliver correctly spaced source frames in short bursts. Check
+       the source clock for window spacing while retaining local stale checks. */
+    sensor_ml_invalidate();
+    before_runs = runs;
+    uint32_t source_time = 1000;
+    for (unsigned i = 0; i < 31; ++i) {
+        const uint8_t frame[] = {(uint8_t)(3200 + i), (uint8_t)((3200 + i) >> 8), 1};
+        source_time += 70;
+        now += 5;
+        sensor_measurement_remote_stamp(true, source_time);
+        sensor_measurement_notify(&bridge, frame, sizeof frame);
+        sensor_measurement_remote_stamp(false, 0);
+        sensor_ml_poll(true);
+    }
+    assert(runs == before_runs + 1 && direction_window.count == 31);
     now += 1000; /* missing a remote frame invalidates the previous window */
     sensor_ml_poll(true);
     assert(direction_window.count == 0 && runs == before_runs + 1);
