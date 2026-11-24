@@ -83,7 +83,7 @@ Configuration file: [`config/board_b_comfort_summer.json`](../../config/board_b_
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-003/cmd' -m 'D6VIEW'
 ```
 
-Expect `"model":"comfort-summer"`, `"comfort_score":N`, `"class_score":...`, and `"status":"OK"` on B's result topic. B also sends a live, non-replay score on `d6/board-b/comfort`; C's landscape **LIVE COMFORT** card shows it and changes to **STALE** six seconds after updates stop. For the planned full LCD display, scores **80–99** will be labelled COMFORTABLE and scores below 80 UNCOMFORTABLE; those labels are **not yet implemented**. Replay file: [`config/ml_replay_comfort_summer.txt`](../../config/ml_replay_comfort_summer.txt), containing the synthetic `26.3 °C, 67% RH` example. Replay results do not refresh C's live comfort card.
+Expect `"model":"comfort-summer"`, `"comfort_score":N`, `"class_score":...`, and `"status":"OK"` on B's result topic. B also sends a live, non-replay score on `d6/board-b/comfort`; C's landscape **LIVE COMFORT** card shows it and changes to **STALE** six seconds after updates stop. Replay file: [`config/ml_replay_comfort_summer.txt`](../../config/ml_replay_comfort_summer.txt), containing the synthetic `26.3 °C, 67% RH` example. Replay results do not refresh C's live comfort card.
 
 ```powershell
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'STOP'

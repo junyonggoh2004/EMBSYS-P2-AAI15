@@ -54,7 +54,7 @@ An erased slot, unsupported version, invalid flags/field values, bad CRC, or tor
 
 **D6 schema dependency:** The team assigns sensor-node event formation and the canonical event ID (proposed node ID + boot ID + sequence), MQTT de-duplication, and occupancy-after-reset semantics to D6. Agree how the stored record carries or unambiguously references the D6 ID before programming an event record. D2 logs the agreed event but does not define D6's de-duplication or persistence policy.
 
-Physical slot packing, erase-sector allocation, retention, and wrap policy remain open until the agreed event size and required event rate/retention are known. Never erase an unknown sector or silently wrap and overwrite retained events. The one-time scratch-sector write proves the device layer, not the log allocator. Return a `LOG_FULL` outcome when approved slots are exhausted.
+The final log uses 30 fixed 80-byte slots and never erases. Never erase an unknown sector or silently wrap and overwrite retained events. The one-time scratch-sector write proves the device layer, not the log allocator. Return a `LOG_FULL` outcome when approved slots are exhausted.
 
 ## Queue and processing policy
 

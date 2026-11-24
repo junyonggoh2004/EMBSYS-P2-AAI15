@@ -32,8 +32,9 @@ Whole-acquisition timeout and late/missing edges are errors, never valid-distanc
 samples. The default 10 µs trigger remains synchronous (bounded to 1000 µs by
 the backend). Pico/Arduino retain their historical synchronous path. No
 A/guard/B sequencer or real observation-window producer is supplied by this
-change. Native lifecycle/integration tests pass; the pinned image, physical
-capture/crosstalk and WCET acceptance remain open.
+change. Native lifecycle/integration tests pass; the physical capture and the
+two-sonar sequence were later run on the board (D3-2, D3-3) and SchedulerTask
+timing was measured (D3-6).
 
 **D3 pair diagnostic, 30 October 2026.** `pulse_sequence.[ch]` now provides
 finite A/guard/B or B/guard/A sequencing with explicit timeouts and guard, a
@@ -316,7 +317,7 @@ Any later change to a decision in this document needs a recorded engineering jus
 
 ## 16. D3 timing and D6 application contract
 
-This section supersedes the fixed-delay assumption for the application-facing path. On the µT-Kernel build the HC-SR04 read is asynchronous: SchedulerTask starts an interrupt capture and collects the echo width on a later wake-up, and a missing or late echo is an error, never a distance. The Pico and Arduino builds keep the blocking read. README section 4 lists what is still open.
+This section supersedes the fixed-delay assumption for the application-facing path. On the µT-Kernel build the HC-SR04 read is asynchronous: SchedulerTask starts an interrupt capture and collects the echo width on a later wake-up, and a missing or late echo is an error, never a distance. The Pico and Arduino builds keep the blocking read.
 
 ```mermaid
 flowchart LR

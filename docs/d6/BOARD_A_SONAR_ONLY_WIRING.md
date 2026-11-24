@@ -26,8 +26,8 @@ the breadboard center gap are separate.
 Sonar B's VCC and GND connect directly to **B4** and **B7**. They share the
 same 3V3 and GND rows as the other modules. No power-rail jumpers are needed
 for these four modules. This direct route produced valid Sonar B echoes after
-the earlier rail-fed route timed out. It does not yet establish a stable
-fixed-target reading or a combined four-sensor pass. If other devices use a
+the earlier rail-fed route timed out. All four sensors then ran together in
+the D6 setup on 21 to 24 Nov. If other devices use a
 power rail later, plan and verify that rail separately.
 
 | Module | VCC | GND | Signal connections |
