@@ -52,7 +52,7 @@ The portable [device layer](libraries/EdgeCore/src/flash/w25q32.c) reads 128-byt
 
 An erased slot, unsupported version, invalid flags/field values, bad CRC, or torn write is **not** a stored event. A record is reported as stored only after program completion and byte-for-byte readback (including CRC) succeed. On reboot, scan the reserved log area, accept only valid records, and report invalid/torn slots without exposing them as occupancy data. Define how scanning skips or stops at a torn slot before coding the log allocator.
 
-**D6 schema dependency:** The Week 6 feedback tracker assigns sensor-node event formation and the canonical event ID (proposed node ID + boot ID + sequence), MQTT de-duplication, and occupancy-after-reset semantics to D6 (F9/F10). Agree how the stored record carries or unambiguously references the D6 ID before programming an event record. D2 logs the agreed event but does not define D6's de-duplication or persistence policy.
+**D6 schema dependency:** The team assigns sensor-node event formation and the canonical event ID (proposed node ID + boot ID + sequence), MQTT de-duplication, and occupancy-after-reset semantics to D6. Agree how the stored record carries or unambiguously references the D6 ID before programming an event record. D2 logs the agreed event but does not define D6's de-duplication or persistence policy.
 
 Physical slot packing, erase-sector allocation, retention, and wrap policy remain open until the agreed event size and required event rate/retention are known. Never erase an unknown sector or silently wrap and overwrite retained events. The one-time scratch-sector write proves the device layer, not the log allocator. Return a `LOG_FULL` outcome when approved slots are exhausted.
 

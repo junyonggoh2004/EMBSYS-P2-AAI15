@@ -52,7 +52,7 @@ Each numbered section below is collapsed. Click its title to open it.
 | [6. Completion rule](#6-completion-rule) | When a task counts as done |
 | [7. Arduino/FreeRTOS baseline](#7-arduinofreertos-baseline) | Where the baseline's setup guide is |
 
-Other documents: [TASK_RECORD.md](TASK_RECORD.md) (full D1 to D3 task tables), [WEEK6_FEEDBACK_RESPONSE.md](WEEK6_FEEDBACK_RESPONSE.md) (professor feedback tracker), [MTK_REDESIGN.md](MTK_REDESIGN.md) (µT-Kernel design and compliance), [SETUP.md](SETUP.md) (board and environment details), [parity/PARITY.md](parity/PARITY.md) (requirements and evidence), [PORTABILITY.md](PORTABILITY.md) (Pico to S3 changes and defects), [ARCHITECTURE.md](ARCHITECTURE.md) (task design), [D2_SPI_TODO.md](D2_SPI_TODO.md) (D2 tasks), [SENSOR_BREADBOARD_README.md](SENSOR_BREADBOARD_README.md) (three-sensor breadboard and Windows workflow), [project_v3/README.md](project_v3/README.md) (full config syntax).
+Other documents: [TASK_RECORD.md](TASK_RECORD.md) (full D1 to D3 task tables), [MTK_REDESIGN.md](MTK_REDESIGN.md) (µT-Kernel design and compliance), [SETUP.md](SETUP.md) (board and environment details), [parity/PARITY.md](parity/PARITY.md) (requirements and evidence), [PORTABILITY.md](PORTABILITY.md) (Pico to S3 changes and defects), [ARCHITECTURE.md](ARCHITECTURE.md) (task design), [D2_SPI_TODO.md](D2_SPI_TODO.md) (D2 tasks), [SENSOR_BREADBOARD_README.md](SENSOR_BREADBOARD_README.md) (three-sensor breadboard and Windows workflow), [project_v3/README.md](project_v3/README.md) (full config syntax).
 
 <a name="1-start-here"></a>
 <details>
@@ -186,7 +186,7 @@ Each deliverable's tasks, owners, status and evidence. Click a checklist to open
 <details>
 <summary><h3>2.1 D1 task checklist</h3></summary>
 
-D1 ports configpico2wedge to the ESP32-S3. Tasks 1–23 built the Arduino/FreeRTOS port, now the baseline; tasks 24–34 moved it onto µT-Kernel 3 SMP after Tribunal 1; tasks 1.1–1.5 added MQTT between real boards. The required work and acceptance evidence for every task are in [TASK_RECORD.md](TASK_RECORD.md). Check the [professor feedback tracker](WEEK6_FEEDBACK_RESPONSE.md) before changing the design.
+D1 ports configpico2wedge to the ESP32-S3. Tasks 1–23 built the Arduino/FreeRTOS port, now the baseline; tasks 24–34 moved it onto µT-Kernel 3 SMP after Tribunal 1; tasks 1.1–1.5 added MQTT between real boards. The required work and acceptance evidence for every task are in [TASK_RECORD.md](TASK_RECORD.md).
 
 | # | Task | Status | Evidence |
 |---:|---|---|---|
@@ -199,7 +199,7 @@ D1 ports configpico2wedge to the ESP32-S3. Tasks 1–23 built the Arduino/FreeRT
 | 7 | Standardise the Arduino environment | Superseded on 21 Nov by task 25 | [SETUP.md](SETUP.md#arduino-environment-baseline-task-7) |
 | 8 | Confirm the hardware and the pin layout | Done (Sitt, Hasif): ESP32-S3FH4R2, 4 MB flash, 2 MB PSRAM | [SETUP.md](SETUP.md#pin-power-and-wiring-task-8) |
 | 9 | Bring up the S3 with Arduino | Done (Sitt) | [Record](parity/logs/9-arduino-bringup.txt) |
-| 10 | Architecture freeze | Done: submitted as the Week 6 design review (team) | [ARCHITECTURE.md](ARCHITECTURE.md), [feedback](WEEK6_FEEDBACK_RESPONSE.md) |
+| 10 | Architecture freeze | Done: submitted as the Week 6 design review (team) | [ARCHITECTURE.md](ARCHITECTURE.md) |
 | 11 | Define the HAL and refactor the Pico backend | Done (Hasif) | [hal.h](libraries/EdgeCore/src/hal/hal.h), [logs](parity/logs/task11/) |
 | 12 | Arduino S3 HAL and shared build | Done (Hasif): HAL test 18/18 | [Logs](parity/logs/task12/) |
 | 13 | FreeRTOS runtime, main control and REPL | Done (Hasif) | [Logs](parity/logs/task13/) |

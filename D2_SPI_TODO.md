@@ -2,7 +2,6 @@
 
 **Final status (22 Nov 2026).** D2 is done and signed off by the team. Event logging from ApplicationTask (D2-8) and the concurrent T-23 run (D2-9) were done on 22 Nov 2026 ([logs](parity/logs/mtk/d2-log-20261122/)), and the items still open below (lock contention, a corrupted reply, the clock range, polled transfers without DMA, the record format and the wiring) were signed off by the team the same day. The dated notes below are kept as written; [README section 2.2](README.md#22-d2-task-checklist) has the final task list.
 
-
 - Branch: D2 checkpoint merged into `main`; `s3-port-d2` remains the D2 work branch.
 - Updated baseline: D1 `s3-port` at `ba81f18`, merged into D2 by `9a421ef`; D1 µT-Kernel redesign `main` at `1f41dac` fast-forwarded into D2 on 25 October 2026. The D2 checkpoints through `f535a45` were pushed to `origin/s3-port-d2` on 26 October 2026.
 - Owner: Brendan
@@ -130,8 +129,6 @@ Steps 1–2 below preserve the pre-change baseline. The 25 October µT-Kernel re
 - [ ] Team review, clean-clone reproduction, event-log/combined-workload proof, and merge remain open. Physical device and absent-device checks are linked above. Existing unrelated Task 7 deletions remain local and were not included in the D2 checkpoint; the optional TFT diagnostic sketch was removed because it was not D2 acceptance evidence.
 
 ## Professor feedback incorporated
-
-The team-wide [Week 6 feedback tracker](WEEK6_FEEDBACK_RESPONSE.md) is the source for feedback IDs and cross-deliverable ownership. Its D2 section was a snapshot at commit `548d2e3`; use the checks and evidence below for current D2 status. F9/F10 belong to D6, F11 to D4, and R4 is shared with D4; D2 must coordinate interfaces and concurrent testing without claiming those deliverables complete.
 
 - [x] Retain one shared SPI2 host protected by the bounded µT-Kernel mutex in `hal_mtk.c`; the earlier FreeRTOS mutex applies only to the historical Arduino backend.
 - [ ] Keep flash logging out of `SchedulerTask`; perform it through `ApplicationTask` so storage cannot directly block sensor acquisition.
