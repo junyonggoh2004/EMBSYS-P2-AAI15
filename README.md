@@ -1077,53 +1077,75 @@ Also needed: a Mac with Mosquitto (`brew install mosquitto`), an iPhone hotspot,
 
 Only needed when the network or the firmware changes. Skip to 5.4.3 if both boards already come online.
 
-> **Step 1. Hotspot.** On the iPhone: Settings → Personal Hotspot, turn on **Allow Others to Join** and **Maximize Compatibility**, and keep that screen open while the boards join. Connect the Mac to the hotspot.
->
-> **Why:** the boards only join a 2.4 GHz network with a plain password. Maximize Compatibility makes the hotspot 2.4 GHz, and the Mac must be on the same network as the boards.
+**Step 1. Hotspot.** On the iPhone: Settings → Personal Hotspot, turn on **Allow Others to Join** and **Maximize Compatibility**, and keep that screen open while the boards join. Connect the Mac to the hotspot.
 
-> **Step 2. Settings file.**
->
-> ```sh
-> cd ~/Y2S1/EMBSYS-P2-AAI15
-> ipconfig getifaddr en0
-> open -e esp32s3_mtk/main/wifi_credentials.h
-> ```
->
-> Set `WIFI_SSID` to the hotspot name **typed exactly as the iPhone shows it** (macOS hides Wi-Fi names from command-line tools, so it cannot be copied from them), `WIFI_PASS` to the hotspot password, and `MQTT_HOST` to the address the second line printed. Save. The file is never committed.
->
-> **Why:** the Wi-Fi name, password and broker address are built into the firmware when it is flashed.
+**Why:** the boards only join a 2.4 GHz network with a plain password. Maximize Compatibility makes the hotspot 2.4 GHz, and the Mac must be on the same network as the boards.
 
-> **Step 3. Flash both boards.** Plug both in with data cables. Find which port is which:
->
-> ```sh
-> cd ~/Y2S1/EMBSYS-P2-AAI15
-> ls /dev/cu.usbmodem*
-> ```
->
-> Unplug the sensor board and run `ls /dev/cu.usbmodem*` again: the port that disappeared is the sensor board's. Plug it back in. Then set the two port names (these are the ones on Hasif's Mac; use the names your `ls` printed) and flash:
->
-> ```sh
-> SENSOR=/dev/cu.usbmodem5CF80445551
-> SECOND=/dev/cu.usbmodem5CF80443971
-> BOARD=n16r8 NODE=s3-005 PORT=$SENSOR sh tools/mtk.sh flash
-> BOARD=n16r8 NODE=s3-004 PORT=$SECOND sh tools/mtk.sh flash
-> ```
->
-> **What it does:** builds the same firmware for the N16R8 and flashes it with each board's own node ID. Label the boards afterwards. Run it from the `EMBSYS-P2-AAI15` folder, where `tools/mtk.sh` is.
->
-> **You should see:** `Hash of data verified` three times per board.
+**Step 2. Settings file.**
+
+```sh
+cd ~/Y2S1/EMBSYS-P2-AAI15
+ipconfig getifaddr en0
+open -e esp32s3_mtk/main/wifi_credentials.h
+```
+
+Set `WIFI_SSID` to the hotspot name **typed exactly as the iPhone shows it** (macOS hides Wi-Fi names from command-line tools, so it cannot be copied from them), `WIFI_PASS` to the hotspot password, and `MQTT_HOST` to the address the second line printed. Save. The file is never committed.
+
+**Why:** the Wi-Fi name, password and broker address are built into the firmware when it is flashed.
+
+**Step 3. Flash both boards.** Plug both in with data cables. Find which port is which:
+
+```sh
+cd ~/Y2S1/EMBSYS-P2-AAI15
+ls /dev/cu.usbmodem*
+```
+
+Unplug the sensor board and run `ls /dev/cu.usbmodem*` again: the port that disappeared is the sensor board's. Plug it back in. Then set the two port names (these are the ones on Hasif's Mac; use the names your `ls` printed) and flash:
+
+```sh
+SENSOR=/dev/cu.usbmodem5CF80445551
+SECOND=/dev/cu.usbmodem5CF80443971
+BOARD=n16r8 NODE=s3-005 PORT=$SENSOR sh tools/mtk.sh flash
+BOARD=n16r8 NODE=s3-004 PORT=$SECOND sh tools/mtk.sh flash
+```
+
+**What it does:** builds the same firmware for the N16R8 and flashes it with each board's own node ID. Label the boards afterwards. Run it from the `EMBSYS-P2-AAI15` folder, where `tools/mtk.sh` is.
+
+**You should see:** `Hash of data verified` three times per board.
 
 #### 5.4.3 Open the three terminals
 
 Open three Terminal windows and name them with **Cmd+Shift+I**: BROKER, LISTENER and CONFIG. Leave all three open for the whole demo.
 
-| Terminal | Command | What it shows |
-|---|---|---|
-| **BROKER** | `/opt/homebrew/sbin/mosquitto -c ~/mosq.conf -v` | The message hub: boards connecting and every message passing through. If macOS asks, allow incoming connections |
-| **LISTENER** | `mosquitto_sub -h localhost -t 'pico/s3-004/#' -t 'pico/s3-005/#' -t 'pico/rule/#' -v` | Everything the boards send: readings, `OK`/`FAIL` replies, ML results |
-| **CONFIG** | (commands from the steps below) | Where every setting and command is sent |
+| Terminal | What it shows |
+|---|---|
+| **BROKER** | The message hub: boards connecting and every message passing through. If macOS asks, allow incoming connections |
+| **LISTENER** | Everything the boards send: readings, `OK`/`FAIL` replies, ML results |
+| **CONFIG** | Where every setting and command is sent |
 
-If `~/mosq.conf` does not exist yet, create it once: `printf "listener 1883 0.0.0.0\nallow_anonymous true\n" > ~/mosq.conf`.
+Each block below works pasted into a new terminal, from any folder.
+
+**BROKER** (stops any broker still running from earlier, creates its settings file if missing, then starts it):
+
+```sh
+pkill -x mosquitto; sleep 1
+[ -f ~/mosq.conf ] || printf "listener 1883 0.0.0.0\nallow_anonymous true\n" > ~/mosq.conf
+/opt/homebrew/sbin/mosquitto -c ~/mosq.conf -v
+```
+
+If it prints `Error: Address already in use`, another broker is still running: close its window, or paste the block again.
+
+**LISTENER:**
+
+```sh
+mosquitto_sub -h localhost -t 'pico/s3-004/#' -t 'pico/s3-005/#' -t 'pico/rule/#' -v
+```
+
+**CONFIG** (moves into the project folder; every command in 5.4.4 to 5.4.7 is then pasted here):
+
+```sh
+cd ~/Y2S1/EMBSYS-P2-AAI15
+```
 
 **You should see in LISTENER:** `pico/s3-004/heartbeat` and `pico/s3-005/heartbeat` every 10 s. A board that has just started also sends `presence`. If nothing appears within 30 s, the board has not joined the Wi-Fi or cannot reach the broker; recheck step 2.
 
@@ -1133,88 +1155,88 @@ Each block clears the sensor board and adds one sensor, so each sensor is shown 
 
 **1. MH sensor (GPIO, digital)**
 
-> ```sh
-> mosquitto_pub -h localhost -t pico/s3-005/cmd -m STOP
-> mosquitto_pub -h localhost -t pico/s3-005/cmd -m CLEAR
-> mosquitto_pub -h localhost -t pico/s3-005/config -m 'BEGINCFG|name=MH|proto=gpio|gpio.mode=digital|gpio.pin=40|gpio.pull=up|mode=poll|freq_hz=2|ENDCFG'
-> mosquitto_pub -h localhost -t pico/s3-005/cmd -m RUN
-> ```
->
-> **You should see:** `pico/s3-005/status/config OK:MH`, then a reading every 0.5 s:
->
-> ```text
-> pico/s3-005/sensor/MH/line proto=gpio src=MH len=3 ts=102335 : 00 5C 44
-> ```
->
-> **How to read it:** the first byte is the sensor's state. MH modules pull their output low when they detect, so `00` means detecting and `01` means not. The next two bytes are how long it has held that state in ms, low byte first: `5C 44` is 0x445C = 17,500 ms. Trigger the sensor and the first byte flips between `00` and `01` (turn the module's screw if it never flips). An unplugged DO wire reads a steady `01`, because a digital pin cannot tell an unplugged wire from a real signal.
+```sh
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m STOP
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m CLEAR
+mosquitto_pub -h localhost -t pico/s3-005/config -m 'BEGINCFG|name=MH|proto=gpio|gpio.mode=digital|gpio.pin=40|gpio.pull=up|mode=poll|freq_hz=2|ENDCFG'
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m RUN
+```
+
+**You should see:** `pico/s3-005/status/config OK:MH`, then a reading every 0.5 s:
+
+```text
+pico/s3-005/sensor/MH/line proto=gpio src=MH len=3 ts=102335 : 00 5C 44
+```
+
+**How to read it:** the first byte is the sensor's state. MH modules pull their output low when they detect, so `00` means detecting and `01` means not. The next two bytes are how long it has held that state in ms, low byte first: `5C 44` is 0x445C = 17,500 ms. Trigger the sensor and the first byte flips between `00` and `01` (turn the module's screw if it never flips). An unplugged DO wire reads a steady `01`, because a digital pin cannot tell an unplugged wire from a real signal.
 
 **2. GY-511 accelerometer (I2C)**
 
-> ```sh
-> mosquitto_pub -h localhost -t pico/s3-005/cmd -m STOP
-> mosquitto_pub -h localhost -t pico/s3-005/cmd -m CLEAR
-> mosquitto_pub -h localhost -t pico/s3-005/config -m 'BEGINCFG|name=ACC|proto=i2c|mode=poll|freq_hz=2|i2c.sda=1|i2c.scl=2|i2c.addr=0x19|i2c.pre=0x20 0x57|i2c.reg=0xA8|i2c.reg_size=1|i2c.read_len=6|i2c.restart=1|ENDCFG'
-> mosquitto_pub -h localhost -t pico/s3-005/cmd -m RUN
-> ```
->
-> **You should see:** `OK:ACC`, then:
->
-> ```text
-> pico/s3-005/sensor/ACC/line proto=i2c src=ACC len=6 ts=472422 : 40 23 80 36 00 00
-> ```
->
-> **How to read it:** three pairs, X, Y then Z, each low byte first. Divide by 16384 for g: X `40 23` = 0x2340 = 9024 = 0.55 g, Y `80 36` = 0x3680 = 13,952 = 0.85 g, Z `00 00` = 0 g. Together that is about 1 g, which is gravity, so the reading is right; the module was standing on its edge. Laid flat, Z is about 1 g (`00 40`). Tilt it and the numbers change. `i2c.pre` wakes the chip up before each read.
+```sh
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m STOP
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m CLEAR
+mosquitto_pub -h localhost -t pico/s3-005/config -m 'BEGINCFG|name=ACC|proto=i2c|mode=poll|freq_hz=2|i2c.sda=1|i2c.scl=2|i2c.addr=0x19|i2c.pre=0x20 0x57|i2c.reg=0xA8|i2c.reg_size=1|i2c.read_len=6|i2c.restart=1|ENDCFG'
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m RUN
+```
+
+**You should see:** `OK:ACC`, then:
+
+```text
+pico/s3-005/sensor/ACC/line proto=i2c src=ACC len=6 ts=472422 : 40 23 80 36 00 00
+```
+
+**How to read it:** three pairs, X, Y then Z, each low byte first. Divide by 16384 for g: X `40 23` = 0x2340 = 9024 = 0.55 g, Y `80 36` = 0x3680 = 13,952 = 0.85 g, Z `00 00` = 0 g. Together that is about 1 g, which is gravity, so the reading is right; the module was standing on its edge. Laid flat, Z is about 1 g (`00 40`). Tilt it and the numbers change. `i2c.pre` wakes the chip up before each read.
 
 **3. Sonar (GPIO, pulse)**
 
-> ```sh
-> mosquitto_pub -h localhost -t pico/s3-005/cmd -m STOP
-> mosquitto_pub -h localhost -t pico/s3-005/cmd -m CLEAR
-> mosquitto_pub -h localhost -t pico/s3-005/config -m 'BEGINCFG|name=SONAR|proto=gpio|gpio.mode=pulse|gpio.trig=42|gpio.echo=41|gpio.pull=down|gpio.trig_us=10|gpio.pulse_timeout_us=20000|mode=poll|freq_hz=2|timing.timeout_ms=100|ENDCFG'
-> mosquitto_pub -h localhost -t pico/s3-005/cmd -m RUN
-> ```
->
-> **You should see:** `OK:SONAR`, then:
->
-> ```text
-> pico/s3-005/sensor/SONAR/line proto=gpio src=SONAR len=3 ts=... : 41 32 01
-> ```
->
-> **How to read it:** the first two bytes are the echo time in µs, low byte first: `41 32` = 0x3241 = 12,865 µs. The last byte `01` means valid. Distance in cm = µs ÷ 58, so this is 221.8 cm; a hand in front gave `A2 17 01` = 6,050 µs = 104.3 cm. If no echo returns within 20 ms, no line is sent: the board reports an error, never a made-up distance.
+```sh
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m STOP
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m CLEAR
+mosquitto_pub -h localhost -t pico/s3-005/config -m 'BEGINCFG|name=SONAR|proto=gpio|gpio.mode=pulse|gpio.trig=42|gpio.echo=41|gpio.pull=down|gpio.trig_us=10|gpio.pulse_timeout_us=20000|mode=poll|freq_hz=2|timing.timeout_ms=100|ENDCFG'
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m RUN
+```
+
+**You should see:** `OK:SONAR`, then:
+
+```text
+pico/s3-005/sensor/SONAR/line proto=gpio src=SONAR len=3 ts=... : 41 32 01
+```
+
+**How to read it:** the first two bytes are the echo time in µs, low byte first: `41 32` = 0x3241 = 12,865 µs. The last byte `01` means valid. Distance in cm = µs ÷ 58, so this is 221.8 cm; a hand in front gave `A2 17 01` = 6,050 µs = 104.3 cm. If no echo returns within 20 ms, no line is sent: the board reports an error, never a made-up distance.
 
 **4. W25Q32 flash chip (SPI)**
 
-> ```sh
-> mosquitto_pub -h localhost -t pico/s3-005/cmd -m STOP
-> mosquitto_pub -h localhost -t pico/s3-005/cmd -m CLEAR
-> mosquitto_pub -h localhost -t pico/s3-005/config -m 'BEGINCFG|name=FLASH_ID|proto=spi|mode=poll|freq_hz=1|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=1000000|spi.mode=0|spi.tx=0x9F|spi.read_len=4|spi.timeout_ms=100|ENDCFG'
-> mosquitto_pub -h localhost -t pico/s3-005/cmd -m RUN
-> ```
->
-> **You should see:** `OK:FLASH_ID`, then once a second:
->
-> ```text
-> pico/s3-005/sensor/FLASH_ID/line proto=spi src=FLASH_ID len=4 ts=753422 : 00 EF 40 16
-> ```
->
-> **How to read it:** the board sends the chip's read-ID command, `0x9F`, and reads four bytes back. It only reads, never writes. Ignore the first byte, which arrives while the command is still going out. `EF 40 16` is the chip's ID: `EF` = Winbond, `40` = the W25Q family, `16` = 32 Mbit, so a W25Q32. `FF FF FF` or `00 00 00` would mean a wiring fault.
+```sh
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m STOP
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m CLEAR
+mosquitto_pub -h localhost -t pico/s3-005/config -m 'BEGINCFG|name=FLASH_ID|proto=spi|mode=poll|freq_hz=1|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=1000000|spi.mode=0|spi.tx=0x9F|spi.read_len=4|spi.timeout_ms=100|ENDCFG'
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m RUN
+```
+
+**You should see:** `OK:FLASH_ID`, then once a second:
+
+```text
+pico/s3-005/sensor/FLASH_ID/line proto=spi src=FLASH_ID len=4 ts=753422 : 00 EF 40 16
+```
+
+**How to read it:** the board sends the chip's read-ID command, `0x9F`, and reads four bytes back. It only reads, never writes. Ignore the first byte, which arrives while the command is still going out. `EF 40 16` is the chip's ID: `EF` = Winbond, `40` = the W25Q family, `16` = 32 Mbit, so a W25Q32. `FF FF FF` or `00 00 00` would mean a wiring fault.
 
 These four steps show GPIO, I2C and SPI sensors set up on one board while it runs. To show all four together, send `STOP` and `CLEAR` once, then the four config lines, then `RUN` (not yet run in this combination).
 
 #### 5.4.5 Change the timing live (D3)
 
-> ```sh
-> mosquitto_pub -h localhost -t pico/s3-005/cmd -m STOP
-> mosquitto_pub -h localhost -t pico/s3-005/cmd -m CLEAR
-> mosquitto_pub -h localhost -t pico/s3-005/config -m 'BEGINCFG|name=SONAR|proto=gpio|gpio.mode=pulse|gpio.trig=42|gpio.echo=41|gpio.pull=down|gpio.trig_us=10|gpio.pulse_timeout_us=20000|mode=poll|timing.mode=periodic|timing.interval_ms=500|timing.timeout_ms=100|ENDCFG'
-> mosquitto_pub -h localhost -t pico/s3-005/cmd -m RUN
-> ```
->
-> Then send the same four lines with `timing.interval_ms=2000` instead of `500`.
->
-> **You should see:** the `ts=` on each `SONAR` line rise by 500 ms, then by 2000 ms after the change. Measured on 24 Nov: 17 gaps of exactly 500 ms, then gaps of exactly 2000 ms.
->
-> **Why `STOP` and `CLEAR`:** sending a config line with a name that already exists adds a second copy, so the old one is cleared first.
+```sh
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m STOP
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m CLEAR
+mosquitto_pub -h localhost -t pico/s3-005/config -m 'BEGINCFG|name=SONAR|proto=gpio|gpio.mode=pulse|gpio.trig=42|gpio.echo=41|gpio.pull=down|gpio.trig_us=10|gpio.pulse_timeout_us=20000|mode=poll|timing.mode=periodic|timing.interval_ms=500|timing.timeout_ms=100|ENDCFG'
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m RUN
+```
+
+Then send the same four lines with `timing.interval_ms=2000` instead of `500`.
+
+**You should see:** the `ts=` on each `SONAR` line rise by 500 ms, then by 2000 ms after the change. Measured on 24 Nov: 17 gaps of exactly 500 ms, then gaps of exactly 2000 ms.
+
+**Why `STOP` and `CLEAR`:** sending a config line with a name that already exists adds a second copy, so the old one is cleared first.
 
 **Where the timing lives in a config line.** Only the `timing.` keys change; the rest of the line stays the same.
 
@@ -1230,24 +1252,24 @@ The older `freq_hz=2` means the same as `timing.mode=periodic|timing.interval_ms
 
 The sonar must be set up and running first (5.4.5), because the model reads it. If the sensor is missing, the board refuses the setup with `"ok":false,"reason":"invalid_or_unavailable_local_input"` and keeps its previous setup, which is itself a useful thing to show.
 
-> ```sh
-> mosquitto_pub -h localhost -t pico/s3-005/cmd -m '{"ml_setup":{"version":1,"model":"sine-int8","inputs":[{"index":0,"source":{"kind":"local","name":"SONAR"},"field":"distance_cm","min":2,"max":400}],"output":{"kind":"publish"}}}'
-> ```
->
-> About 10 s later, switch the model by changing only `sine-int8` to `sine-float`:
->
-> ```sh
-> mosquitto_pub -h localhost -t pico/s3-005/cmd -m '{"ml_setup":{"version":1,"model":"sine-float","inputs":[{"index":0,"source":{"kind":"local","name":"SONAR"},"field":"distance_cm","min":2,"max":400}],"output":{"kind":"publish"}}}'
-> ```
->
-> **You should see (real output, 24 Nov):**
->
-> ```text
-> pico/s3-005/ml/status {"ok":true,"reason":"applied","generation":9}
-> pico/s3-005/ml/result {"type":"ml","generation":9,"model":"sine-int8","input_source":"sensors","outputs":[-0.3399292],"invoke_us":457,"status":"OK"}
-> pico/s3-005/ml/status {"ok":true,"reason":"applied","generation":10}
-> pico/s3-005/ml/result {"type":"ml","generation":10,"model":"sine-float","input_source":"sensors","outputs":[-0.2849427],"invoke_us":373,"status":"OK"}
-> ```
+```sh
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m '{"ml_setup":{"version":1,"model":"sine-int8","inputs":[{"index":0,"source":{"kind":"local","name":"SONAR"},"field":"distance_cm","min":2,"max":400}],"output":{"kind":"publish"}}}'
+```
+
+About 10 s later, switch the model by changing only `sine-int8` to `sine-float`:
+
+```sh
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m '{"ml_setup":{"version":1,"model":"sine-float","inputs":[{"index":0,"source":{"kind":"local","name":"SONAR"},"field":"distance_cm","min":2,"max":400}],"output":{"kind":"publish"}}}'
+```
+
+**You should see (real output, 24 Nov):**
+
+```text
+pico/s3-005/ml/status {"ok":true,"reason":"applied","generation":9}
+pico/s3-005/ml/result {"type":"ml","generation":9,"model":"sine-int8","input_source":"sensors","outputs":[-0.3399292],"invoke_us":457,"status":"OK"}
+pico/s3-005/ml/status {"ok":true,"reason":"applied","generation":10}
+pico/s3-005/ml/result {"type":"ml","generation":10,"model":"sine-float","input_source":"sensors","outputs":[-0.2849427],"invoke_us":373,"status":"OK"}
+```
 
 **What it does.** One message tells the board which model to run, what to feed it and where to send the answer. From then on the board runs the model on every new reading by itself, about every 2 s. `sine` is a small demonstration model that outputs the sine of its input: the board scales the distance so 2 cm is 0 and 400 cm is 1, and the output number itself has no meaning. The point is the path from a live sensor through a model to a published result, set up and changed live. `sine-int8` is the same model compressed to 8-bit numbers, which run on the S3's vector instructions (measured in D5); `sine-float` uses normal decimal numbers.
 
@@ -1265,34 +1287,42 @@ The sonar must be set up and running first (5.4.5), because the model reads it. 
 
 Each is one or two commands. Run them once before showing them.
 
-> **A rule that acts on a reading.** Publishes an alert whenever the sonar sees something closer than 50 cm (an echo under 2,900 µs):
->
-> ```sh
-> mosquitto_pub -h localhost -t pico/s3-005/config -m 'BEGINRULE|name=CLOSE|source=SONAR|calc=us=u16le(0)|when=us<2900|action=log:object within 50 cm|ENDRULE'
-> ```
->
-> **You should see:** `pico/s3-005/status/rule OK:CLOSE`, then `pico/rule/CLOSE/event ... msg=object within 50 cm` while a hand is near the sonar. `calc` reads the echo time from the first two bytes, `when` is the condition, `action` is what happens.
+**A rule that acts on a reading.** Publishes an alert whenever the sonar sees something closer than 50 cm (an echo under 2,900 µs):
 
-> **A broken config is refused.** Asks for a pin the board does not have:
->
-> ```sh
-> mosquitto_pub -h localhost -t pico/s3-005/config -m 'BEGINCFG|name=BAD|proto=gpio|gpio.mode=digital|gpio.pin=99|gpio.pull=up|mode=poll|freq_hz=2|ENDCFG'
-> ```
->
-> **You should see:** `pico/s3-005/status/config FAIL:BAD`, while every other sensor and the ML keep running.
+```sh
+mosquitto_pub -h localhost -t pico/s3-005/config -m 'BEGINRULE|name=CLOSE|source=SONAR|calc=us=u16le(0)|when=us<2900|action=log:object within 50 cm|ENDRULE'
+```
 
-> **One board using another board's sensor.** The second board follows the sensor board's sonar through the broker:
->
-> ```sh
-> mosquitto_pub -h localhost -t pico/s3-004/config -m 'BEGINCFG|name=REM_SONAR|proto=mqtt|mode=poll|freq_hz=1|remote_node=s3-005|remote_source=SONAR|remote_profile=pulse|ENDCFG'
-> mosquitto_pub -h localhost -t pico/s3-004/cmd -m RUN
-> ```
->
-> **You should see:** `pico/s3-004/sensor/REM_SONAR/line` with the same bytes as the sensor board's `SONAR`, with no wire between the boards.
+**You should see:** `pico/s3-005/status/rule OK:CLOSE`, then `pico/rule/CLOSE/event ... msg=object within 50 cm` while a hand is near the sonar. `calc` reads the echo time from the first two bytes, `when` is the condition, `action` is what happens.
 
-> **The same config over the USB console.** From the `EMBSYS-P2-AAI15` folder, open the sensor board's console with `PORT=$SENSOR sh tools/mtk.sh monitor`, after setting `SENSOR` as in step 3 of 5.4.2 (opening it may restart the board; wait for it to come back), then paste the MH line from 5.4.4 and press Enter.
->
-> **You should see:** `CFG: ok (added #0: MH)` on the console, then `MH` readings in LISTENER as before. Ctrl+C closes the console.
+**A broken config is refused.** Asks for a pin the board does not have:
+
+```sh
+mosquitto_pub -h localhost -t pico/s3-005/config -m 'BEGINCFG|name=BAD|proto=gpio|gpio.mode=digital|gpio.pin=99|gpio.pull=up|mode=poll|freq_hz=2|ENDCFG'
+```
+
+**You should see:** `pico/s3-005/status/config FAIL:BAD`, while every other sensor and the ML keep running.
+
+**One board using another board's sensor.** The second board follows the sensor board's sonar through the broker:
+
+```sh
+mosquitto_pub -h localhost -t pico/s3-004/config -m 'BEGINCFG|name=REM_SONAR|proto=mqtt|mode=poll|freq_hz=1|remote_node=s3-005|remote_source=SONAR|remote_profile=pulse|ENDCFG'
+mosquitto_pub -h localhost -t pico/s3-004/cmd -m RUN
+```
+
+**You should see:** `pico/s3-004/sensor/REM_SONAR/line` with the same bytes as the sensor board's `SONAR`, with no wire between the boards.
+
+**The same config over the USB console.** Paste this into a fourth terminal, with the sensor board's port from step 3 of 5.4.2 (opening the console may restart the board; wait for it to come back):
+
+```sh
+cd ~/Y2S1/EMBSYS-P2-AAI15
+SENSOR=/dev/cu.usbmodem5CF80445551
+PORT=$SENSOR sh tools/mtk.sh monitor
+```
+
+Then paste the MH line from 5.4.4 (only the `BEGINCFG|...|ENDCFG` part) and press Enter.
+
+**You should see:** `CFG: ok (added #0: MH)` on the console, then `MH` readings in LISTENER as before. Ctrl+C closes the console.
 
 #### 5.4.8 How it works (for questions)
 
