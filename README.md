@@ -809,12 +809,7 @@ The hardware each board needs, the firmware on it, and the settings that give it
 |---|---|---|---|---|
 | 4 | Laptop broker | Mosquitto listening on the laptop's Wi-Fi with [`tools/mqtt-test.conf`](tools/mqtt-test.conf) | Every board-to-board message and command goes through one hub | **Tested** 18–23 Nov |
 
-> ```powershell
-> # Administrator PowerShell, window 1. Leave it running.
-> Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
-> Stop-Service -Name mosquitto -ErrorAction SilentlyContinue
-> & "$env:ProgramFiles\mosquitto\mosquitto.exe" -c (Join-Path (Get-Location) 'tools\mqtt-test.conf') -v
-> ```
+> In PowerShell window 1, follow Windows step 2 in the [demo commands](usecase_commands.md#windows) to start or reuse the broker.
 >
 > **What it does:** stops the Windows Mosquitto service, which only listens to the laptop itself, and starts a broker the boards can reach over Wi-Fi. If Windows asks, allow port 1883 on private networks.
 >
@@ -929,12 +924,7 @@ The demo starts with one command block. After that the boards keep running by th
 |---|---|---|---|---|
 | 1 | Open the windows | Start the broker, a watch window, a live-values window and a command window | Everything the boards send, live | **Tested** 21–23 Nov |
 
-> ```powershell
-> # Window 1, Administrator PowerShell: the broker. Leave it running.
-> Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
-> Stop-Service -Name mosquitto -ErrorAction SilentlyContinue
-> & "$env:ProgramFiles\mosquitto\mosquitto.exe" -c (Join-Path (Get-Location) 'tools\mqtt-test.conf') -v
-> ```
+> In PowerShell window 1, follow Windows step 2 in the [demo commands](usecase_commands.md#windows) to start or reuse the broker.
 >
 > ```powershell
 > # Window 2: watch every board. Leave it running.

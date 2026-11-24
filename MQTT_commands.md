@@ -46,14 +46,8 @@ Get-Service mosquitto
 netstat -ano -p tcp | Select-String ':1883'
 ```
 
-If the temporary broker is already listening on `0.0.0.0:1883`, keep its
-window open and skip the next block. Otherwise, stop the default service and
-start the temporary broker **in this Administrator window**:
-
-```powershell
-Stop-Service -Name mosquitto -ErrorAction SilentlyContinue
-& "$env:ProgramFiles\mosquitto\mosquitto.exe" -c '.\tools\mqtt-test.conf' -v
-```
+Follow Windows step 2 in the [demo commands](usecase_commands.md#windows)
+to start or reuse the broker.
 
 Keep the window open at `mosquitto version ... running`. This command stays
 in the foreground, so enter later commands in other PowerShell windows. The
@@ -257,16 +251,10 @@ Board B's `s3-002` image was rebuilt/flashed and its heartbeat observed on
 21 November 2026. Start all subscriber windows **before** sending the config
 block so their status messages are visible.
 
-### Window 1 — Administrator PowerShell: temporary broker
+### Window 1 — PowerShell: temporary broker
 
-If the temporary broker is already running, keep its window open and skip
-this block. Do not start a second listener on port 1883. Otherwise:
-
-```powershell
-cd 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
-Stop-Service -Name mosquitto -ErrorAction SilentlyContinue
-& "$env:ProgramFiles\mosquitto\mosquitto.exe" -c '.\tools\mqtt-test.conf' -v
-```
+Follow Windows step 2 in the [demo commands](usecase_commands.md#windows)
+to start or reuse the broker.
 
 Keep this window open. The broker command stays in the foreground.
 

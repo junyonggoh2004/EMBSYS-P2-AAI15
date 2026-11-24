@@ -147,23 +147,27 @@ After flashing, connect all three boards.
 
 ### 2. Start or reuse the temporary broker — PowerShell, window 1
 
-Run from the repository root. This checks who is listening on TCP port 1883 before trying to start Mosquitto. If the port is free, the broker stays in the foreground.
+Run from the repository root in normal PowerShell. The demo uses IPv4 for both the boards and the laptop. The broker config uses IPv4 only, so a separate IPv6-only listener on 1883 can stay running.
 
 ```powershell
-$listeners = @(Get-NetTCPConnection -State Listen -ErrorAction Stop | Where-Object LocalPort -eq 1883)
+$listeners = @(Get-NetTCPConnection -State Listen -ErrorAction Stop | Where-Object {
+    $_.LocalPort -eq 1883 -and $_.LocalAddress -notlike '*:*'
+})
 if ($listeners.Count -eq 0) {
     & "$env:ProgramFiles\mosquitto\mosquitto.exe" -c (Join-Path (Get-Location) 'tools\mqtt-test.conf') -v
 } else {
     $listeners | Select-Object LocalAddress, LocalPort, OwningProcess, @{Name = 'Process'; Expression = {
         (Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue).ProcessName
     }} | Format-Table -AutoSize
-    Write-Host 'Port 1883 already has a listener. Follow the matching case below.'
+    Write-Host 'IPv4 port 1883 already has a listener. Follow the matching case below.'
 }
 ```
 
 * **Mosquitto is already serving the demo.** If it is listening on `0.0.0.0`, or on both the laptop's Wi-Fi IPv4 address and `127.0.0.1`, go to step 3 and check for fresh heartbeats from all three boards. One broker is enough.
-* **An old demo Mosquitto instance needs replacing.** Press **Ctrl+C** in the terminal that started it. If it is a Windows service, run `Get-CimInstance Win32_Service -Filter "Name = 'mosquitto'" | Select-Object Name, State, ProcessId` and confirm `ProcessId` matches the listener's `OwningProcess`. Then run `Stop-Service -Name mosquitto -ErrorAction Stop` in Administrator PowerShell. Rerun the block above to load the demo configuration. Use this path if the old demo broker is listening only on loopback (`127.0.0.1` or `::1`).
+* **An old demo Mosquitto instance needs replacing.** Press **Ctrl+C** in the terminal that started it. If it is a Windows service, run `Get-CimInstance Win32_Service -Filter "Name = 'mosquitto'" | Select-Object Name, State, ProcessId` and confirm `ProcessId` matches the listener's `OwningProcess`. Then run `Stop-Service -Name mosquitto -ErrorAction Stop` in Administrator PowerShell. Rerun the block above to load the demo configuration. Use this path if the old demo broker only serves `127.0.0.1`.
 * **Another program owns the port.** Use the displayed process name and PID to identify it before freeing the port. Keep port 1883 for the demo so it matches the boards' MQTT settings.
+
+If the broker still reports an address conflict and the check showed no IPv4 listener, run `Get-NetTCPConnection -State Listen | Where-Object LocalPort -eq 1883 | Select-Object LocalAddress, OwningProcess`. An IPv6 listener can also reserve IPv4 if it is set up for both. Identify its owner with `Get-Process -Id <PID>`.
 
 ### 3. Watch board traffic — normal PowerShell, window 2
 
