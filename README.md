@@ -46,8 +46,8 @@ Each numbered section below is collapsed. Click its title to open it.
 | [5. D6 use case demo](#5-d6-use-case-demo) | The three-board room monitor |
 | &nbsp;&nbsp;[5.1 From D1 to D5 to the demo](#51-from-d1-to-d5-to-the-demo) | The use case and what each deliverable brings to it |
 | &nbsp;&nbsp;[5.2 Setup](#52-setup) | Each board's hardware, firmware and configuration |
-| &nbsp;&nbsp;[5.3 Demo](#53-demo) | Run the demo, then what each of D1 to D4 explains, with the live model switch |
-| &nbsp;&nbsp;[5.4 Any sensor on the fly](#54-any-sensor-on-the-fly-extra-if-asked) | Extra, if asked: scenarios that add, change and refuse sensors live on a spare board |
+| &nbsp;&nbsp;[5.3 Demo](#53-demo) | Run the demo, then what each of D1 to D5 explains, with the live model switch |
+| &nbsp;&nbsp;[5.4 Any sensor on the fly](#54-any-sensor-on-the-fly-extra-if-asked) | Extra, if asked: sensors on GPIO, I2C and SPI, timing and ML set live over MQTT on spare boards, with how MQTT works |
 | &nbsp;&nbsp;[5.5 Other demo steps](#55-other-demo-steps-and-their-status) | Sonar pair, doorway count, event log, the C snapshots and fault handling, with their status |
 | [6. Completion rule](#6-completion-rule) | When a task counts as done |
 | [7. Arduino/FreeRTOS baseline](#7-arduinofreertos-baseline) | Where the baseline's setup guide is |
@@ -425,7 +425,7 @@ D6 joins three ESP32-S3 N16R8 boards into one use case: a doorway room monitor (
 |---|---|---|---|---|
 | 5.1 | Confirm the use case | Adopt the three-board setup and decide the doorway counter's role | Team | **Done 21 Nov:** a doorway room monitor with two sonars; the radar was dropped. Board A's doorway counter added 23 Nov (Jun Yong, laptop tests); its distance thresholds still need doorway trials |
 | 5.2 | Define each board | Its sensors, what it publishes, what it reacts to and what the LCD shows; parts and wiring | Cody | **Done:** roles, wiring and configs for every board ([5.2 Setup](#52-setup)) |
-| 5.3 | Multi-bus demo script | GPIO, I2C and SPI on one board, configured live, the whole setup at once and then piece by piece | Cody | **Pending** ([5.4](#54-any-sensor-on-the-fly-extra-if-asked)) |
+| 5.3 | Multi-bus demo script | GPIO, I2C and SPI on one board, configured live, the whole setup at once and then piece by piece | Cody | **Done 24 Nov** on spare boards (run by Hasif): GPIO, I2C and SPI sensors added live over MQTT, timing and ML changed live ([5.4](#54-any-sensor-on-the-fly-extra-if-asked)) |
 | 5.4 | SPI write and read by config | Write one byte, read it back, swap the device and reconfigure | Brendan | **Pending:** a config cannot write over SPI yet. The D2 event log writes are separate |
 | 5.5 | LCD board shows live data | Board C displays what the other boards publish | Brendan | **In progress:** B and C were flashed on 24 Nov; C displayed B's live AHT/light/two-sonar snapshots beyond ten seconds. Physical stale clearing and cold-start recovery remain untested. Occupancy is not live |
 | 5.6 | ML inside the use case | One board runs a model on another board's data; the result shows on the LCD or is published | Cody, Brendan, with Sitt | **In progress:** real AHT→B `comfort-summer` inference→C score 95 was observed on the boards. Live Sonar A→B `people-counter` results were published on 24 Nov; labelled doorway direction and occupancy remain open |
@@ -1039,140 +1039,407 @@ The demo starts with one command block. After that the boards keep running by th
 | **LIVE COMFORT** on C | comfort-summer turns temperature and humidity into a comfort score from 0 to 99. C marks it `STALE` if updates stop, rather than showing an old score as current |
 | people-counter (separate live test) | B can switch to the bundled 31-input model while A sends a dedicated 70 ms single-sonar stream. Live MQTT results passed on 24 Nov. Follow the [isolated A/B profile commands](ML_commands.md#4-people-counter--experimental-live-31-reading-window), then reload the normal four-sensor profiles. Its prediction is separate from occupancy and awaits labelled doorway validation |
 
+#### D5 · Hasif: why the ML fits on the board
+
+The intro gives the D5 numbers. Here they are tied to what is running.
+
+| Point to | What to say |
+|---|---|
+| `"invoke_us"` in Board B's ML results | Each model run takes well under a millisecond for the sine models and about 1 ms for comfort-summer, against a reading every 0.5 to 2 s. The ML uses under 0.1% of the time between readings |
+| The `sine-int8` switch at D4 | INT8 models run on the S3's vector instructions through ESP-NN, which made them 1.36 to 3.35 times faster with the same outputs (D5 task 4.2). For a model this small, passing the request between tasks (94 to 118 µs) costs more than the model itself, so the gain only shows on larger models |
+| people-counter (mention) | The largest INT8 model keeps a 2.55 times speed-up in the running firmware, about 2.1 against 5.3 ms per run (D5 task 4.5) |
+| Memory | Each model's working memory is 716 to 6,204 B of a 64 KB area in PSRAM, and about 30 KB of internal RAM stays free with Wi-Fi and MQTT running (D5 task 4.3) |
+| No lost data | With ML running on live readings, no reading or message was dropped (D5 task 4.5) |
+
+Details: [2.5 D5 task checklist](#25-d5-task-checklist-hasif) and [docs/d5/README.md](docs/d5/README.md#6-results).
+
 ### 5.4 Any sensor on the fly (extra, if asked)
 
-A separate ESP32-S3, shown only if asked: any supported sensor added, changed or refused while the board runs, with no reflash. It shows the platform itself rather than the room monitor. Each scenario is one row followed by its commands. All of them are **drafts, not yet run**; run them once before the demo.
+A separate demo on a Mac with two spare ESP32-S3 N16R8 boards, shown only if asked. One board carries four sensors on three buses; the firmware is the same as on A, B and C. Over MQTT, with nothing reflashed, it shows sensors being added one at a time, a sensor's timing being changed, and an ML model being added and switched. Every step below was run on 24 Nov 2026 in this order, and every output shown is the real one.
 
-**Wiring on the spare board.** Unplug USB before changing wires; everything runs at 3.3 V.
+**Every command in 5.4 is an MQTT message over Wi-Fi.** The laptop runs the MQTT broker, the CONFIG terminal publishes settings to the board's topics, and the LISTENER terminal subscribes to what the board sends back. The USB cable only powers the board, so it is configured without being touched. How this works, and how to explain it, is in [5.4.8](#548-how-it-works-for-questions).
 
-| Part | Pins |
+| Board | Node ID | Role |
+|---|---|---|
+| Sensor board | `s3-005` | Carries the four sensors; every step below configures it |
+| Second board | `s3-004` | No sensors. Optional: used only in 5.4.7 to show one board using another's sensor over MQTT. It can stay unplugged otherwise |
+
+#### 5.4.1 Parts and wiring
+
+| Part | Bus | Module pin → sensor board pin |
+|---|---|---|
+| MH sensor module | GPIO (digital) | VCC → 3V3, GND → GND, **DO → GPIO40** (AO not connected) |
+| GY-511 | I2C | VIN → 3V3, GND → GND, **SDA → GPIO1, SCL → GPIO2** |
+| HC-SR04 sonar, 3 V type | GPIO (pulse) | VCC → 3V3, GND → GND, **TRIG → GPIO42, ECHO → GPIO41** |
+| W25Q32 flash module | SPI | VCC → 3V3, GND → GND, **CS → GPIO10, SCLK → GPIO11, DI → GPIO12, DO → GPIO13** (WP and HOLD, if present, → 3V3) |
+
+Wire with USB unplugged. All four can stay wired: a sensor that is not in the board's configuration is never read.
+
+**Never use these pins on an N16R8:** 35, 36 and 37 (they run the 8 MB PSRAM; the board crashes), 38 and 48 (the RGB LED on some versions), 0, 3, 45 and 46 (startup pins), 43 and 44 (TX and RX), 19 and 20 (the USB connection).
+
+Also needed: a Mac with Mosquitto (`brew install mosquitto`), an iPhone hotspot, and two USB-C **data** cables.
+
+#### 5.4.2 One-time setup: network and firmware
+
+Only needed when the network or the firmware changes. Skip to 5.4.3 if both boards already come online.
+
+**Step 1. Hotspot.** On the iPhone: Settings → Personal Hotspot, turn on **Allow Others to Join** and **Maximize Compatibility**, and keep that screen open while the boards join. Connect the Mac to the hotspot.
+
+**Why:** the boards only join a 2.4 GHz network with a plain password. Maximize Compatibility makes the hotspot 2.4 GHz, and the Mac must be on the same network as the boards.
+
+**Step 2. Settings file.**
+
+```sh
+cd ~/Y2S1/EMBSYS-P2-AAI15
+ipconfig getifaddr en0
+open -e esp32s3_mtk/main/wifi_credentials.h
+```
+
+Set `WIFI_SSID` to the hotspot name **typed exactly as the iPhone shows it** (macOS hides Wi-Fi names from command-line tools, so it cannot be copied from them), `WIFI_PASS` to the hotspot password, and `MQTT_HOST` to the address the second line printed. Save. The file is never committed.
+
+**Why:** the Wi-Fi name, password and broker address are built into the firmware when it is flashed.
+
+**Step 3. Flash both boards.** Plug both in with data cables. Find which port is which:
+
+```sh
+cd ~/Y2S1/EMBSYS-P2-AAI15
+ls /dev/cu.usbmodem*
+```
+
+Unplug the sensor board and run `ls /dev/cu.usbmodem*` again: the port that disappeared is the sensor board's. Plug it back in. Then set the two port names (these are the ones on Hasif's Mac; use the names your `ls` printed) and flash:
+
+```sh
+SENSOR=/dev/cu.usbmodem5CF80445551
+SECOND=/dev/cu.usbmodem5CF80443971
+BOARD=n16r8 NODE=s3-005 PORT=$SENSOR sh tools/mtk.sh flash
+BOARD=n16r8 NODE=s3-004 PORT=$SECOND sh tools/mtk.sh flash
+```
+
+**What it does:** builds the same firmware for the N16R8 and flashes it with each board's own node ID. Label the boards afterwards. Run it from the `EMBSYS-P2-AAI15` folder, where `tools/mtk.sh` is.
+
+**You should see:** `Hash of data verified` three times per board.
+
+#### 5.4.3 Open the three terminals
+
+Open three Terminal windows and name them with **Cmd+Shift+I**: BROKER, LISTENER and CONFIG. Leave all three open for the whole demo.
+
+| Terminal | What it shows |
 |---|---|
-| AHT temperature and humidity (I2C) | SDA GPIO1, SCL GPIO2, VCC 3V3, GND |
-| Push button | GPIO4 to GND (the board's internal pull-up holds it high) |
-| LED module with its own resistor | GPIO5, GND |
-| W25Q32 flash (SPI) | CS GPIO10, CLK GPIO11, DI GPIO12, DO GPIO13, VCC 3V3, GND |
+| **BROKER** | The message hub: boards connecting and every message passing through. If macOS asks, allow incoming connections |
+| **LISTENER** | Everything the boards send: readings, `OK`/`FAIL` replies, ML results |
+| **CONFIG** | Where every setting and command is sent |
 
-| # | Scenario | What you do | What it shows | Requirement | Status |
-|---|---|---|---|---|---|
-| 0 | Prepare the spare board | Flash it as `s3-004` and watch its topics | A fourth node on the same broker | FR1 | **Draft** |
+Each block below works pasted into a new terminal, from any folder.
 
-> ```bash
-> # Git Bash, spare board on its native USB port
-> cd /c/Users/brend/EMBSYS-P2-AAI15-D6-Integration
-> BOARD=n16r8 NODE=s3-004 PORT=COMx sh tools/mtk.sh flash
-> ```
->
-> ```powershell
-> # A new watch window for the spare board
-> $sub = "$env:ProgramFiles\mosquitto\mosquitto_sub.exe"
-> & $sub -h 127.0.0.1 -t 'pico/s3-004/#' -v
-> ```
->
-> **What it does:** flashes the same firmware with node ID `s3-004` (drop `BOARD=n16r8` for a Super Mini), then shows everything that board sends and receives. Send the scenarios from window 4 of the demo.
->
-> **You should see:** `pico/s3-004/presence`, then a `heartbeat` every 10 s.
+**BROKER** (stops any broker still running from earlier, creates its settings file if missing, then starts it):
 
-| # | Scenario | What you do | What it shows | Requirement | Status |
-|---|---|---|---|---|---|
-| 1 | Start empty | Clear the board and start it with nothing configured | A running node with no sensors, waiting for settings | FR1 | **Draft** |
+```sh
+pkill -x mosquitto; sleep 1
+[ -f ~/mosq.conf ] || printf "listener 1883 0.0.0.0\nallow_anonymous true\n" > ~/mosq.conf
+/opt/homebrew/sbin/mosquitto -c ~/mosq.conf -v
+```
 
-> ```powershell
-> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/cmd' -m 'STOP'
-> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/cmd' -m 'CLEAR'
-> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/cmd' -m 'RUN'
-> ```
->
-> **What it does:** removes every sensor and rule, then starts sampling. With nothing configured, only heartbeats appear.
->
-> **You should see:** heartbeats only, no `sensor` topics.
+If it prints `Error: Address already in use`, another broker is still running: close its window, or paste the block again.
 
-| # | Scenario | What you do | What it shows | Requirement | Status |
-|---|---|---|---|---|---|
-| 2 | Add a GPIO sensor | Send the button's config | A sensor added on GPIO while the board runs | FR1, FR2 | **Draft** |
+**LISTENER:**
 
-> ```powershell
-> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/config' -m 'BEGINCFG|name=BTN|proto=gpio|gpio.mode=digital|gpio.pin=4|gpio.pull=up|mode=poll|freq_hz=5|ENDCFG'
-> ```
->
-> **What it does:** adds a button on GPIO4, read five times a second.
->
-> **You should see:** `OK:BTN` on `pico/s3-004/status/config`, then `pico/s3-004/sensor/BTN/line`. Its first byte is `01` when released and `00` when pressed.
+```sh
+mosquitto_sub -h localhost -t 'pico/s3-004/#' -t 'pico/s3-005/#' -t 'pico/rule/#' -v
+```
 
-| # | Scenario | What you do | What it shows | Requirement | Status |
-|---|---|---|---|---|---|
-| 3 | Add an I2C sensor | Send the AHT's config | A second bus added live, beside the first | FR1, FR2 | **Draft** |
+**CONFIG** (moves into the project folder; every command in 5.4.4 to 5.4.7 is then pasted here):
 
-> ```powershell
-> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/config' -m 'BEGINCFG|name=AHT|proto=i2c|i2c.sensor=aht|mode=poll|freq_hz=0.5|timing.timeout_ms=600|i2c.sda=1|i2c.scl=2|i2c.addr=0x38|i2c.baud=100000|ENDCFG'
-> ```
->
-> **What it does:** adds the AHT on I2C, read every 2 s, while the button keeps being read.
->
-> **You should see:** `OK:AHT`, then `pico/s3-004/sensor/AHT/line` alongside `BTN`.
+```sh
+cd ~/Y2S1/EMBSYS-P2-AAI15
+```
 
-| # | Scenario | What you do | What it shows | Requirement | Status |
-|---|---|---|---|---|---|
-| 4 | Add an SPI device | Send a config that reads the flash chip's ID | A third bus added live: GPIO, I2C and SPI on one board | FR1, FR2 | **Draft** |
+**You should see in LISTENER:** `pico/s3-004/heartbeat` and `pico/s3-005/heartbeat` every 10 s. A board that has just started also sends `presence`. If nothing appears within 30 s, the board has not joined the Wi-Fi or cannot reach the broker; recheck step 2.
 
-> ```powershell
-> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/config' -m 'BEGINCFG|name=FLASH_ID|proto=spi|mode=poll|freq_hz=1|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=1000000|spi.mode=0|spi.tx=0x9F|spi.read_len=4|spi.timeout_ms=100|ENDCFG'
-> ```
->
-> **What it does:** once a second, sends the flash chip's read-ID command (`0x9F`) and reads back four bytes. It only reads, never writes.
->
-> **You should see:** `OK:FLASH_ID`, then `pico/s3-004/sensor/FLASH_ID/line` ending in `EF 40 16`, the W25Q32's ID. The first byte is clocked in while the command goes out, so ignore it.
+#### 5.4.4 Add each sensor live, one at a time (GPIO, I2C, SPI)
 
-| # | Scenario | What you do | What it shows | Requirement | Status |
-|---|---|---|---|---|---|
-| 5 | Add a rule | Send two rules that tie the button to the LED | The board acting on a reading, set up live | FR1 | **Draft** |
+Each block clears the sensor board and adds one sensor, so each sensor is shown on its own. `STOP` pauses sampling, `CLEAR` removes every sensor, the `BEGINCFG` line adds one, and `RUN` starts sampling again. Nothing is reflashed.
 
-> ```powershell
-> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/config' -m 'BEGINRULE|name=BTN_ON|source=BTN|calc=s=u8(0)|when=s==0|action=gpio:5=HIGH|ENDRULE'
-> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/config' -m 'BEGINRULE|name=BTN_OFF|source=BTN|calc=s=u8(0)|when=s==1|action=gpio:5=LOW|ENDRULE'
-> ```
->
-> **What it does:** the first rule switches the LED on while the button is pressed; the second switches it off when released.
->
-> **You should see:** `OK:BTN_ON` and `OK:BTN_OFF` on `pico/s3-004/status/rule`, the LED following the button, and events on `pico/rule/BTN_ON/event` while it is held.
+**1. MH sensor (GPIO, digital)**
 
-| # | Scenario | What you do | What it shows | Requirement | Status |
-|---|---|---|---|---|---|
-| 6 | Put ML on the new sensor | Send one `ml_setup` that reads the AHT just added | ML attached to a sensor that did not exist a minute ago | FR5 | **Draft** |
+```sh
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m STOP
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m CLEAR
+mosquitto_pub -h localhost -t pico/s3-005/config -m 'BEGINCFG|name=MH|proto=gpio|gpio.mode=digital|gpio.pin=40|gpio.pull=up|mode=poll|freq_hz=2|ENDCFG'
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m RUN
+```
 
-> ```powershell
-> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/cmd' -m '{"ml_setup":{"version":1,"model":"comfort-summer","inputs":[{"index":0,"source":{"kind":"local","name":"AHT"},"field":"temperature_c","min":0,"max":60},{"index":1,"source":{"kind":"local","name":"AHT"},"field":"humidity_pct","min":0,"max":100}],"output":{"kind":"publish"}}}'
-> ```
->
-> **What it does:** runs comfort-summer on this board's own AHT and publishes each result.
->
-> **You should see:** `"ok":true` on `pico/s3-004/ml/status`, then results with `"input_source":"sensors"` on `pico/s3-004/ml/result`. Board C's screen only shows Board B's score, so this one appears in the watch window only.
+**You should see:** `pico/s3-005/status/config OK:MH`, then a reading every 0.5 s:
 
-| # | Scenario | What you do | What it shows | Requirement | Status |
-|---|---|---|---|---|---|
-| 7 | Refuse a broken config | Send a config with a pin the board does not have | Bad input refused while everything else keeps running | FR10 | **Draft** |
+```text
+pico/s3-005/sensor/MH/line proto=gpio src=MH len=3 ts=102335 : 00 5C 44
+```
 
-> ```powershell
-> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/config' -m 'BEGINCFG|name=BAD|proto=gpio|gpio.mode=digital|gpio.pin=99|gpio.pull=up|mode=poll|freq_hz=2|ENDCFG'
-> ```
->
-> **What it does:** asks for a sensor on GPIO99, which does not exist.
->
-> **You should see:** `FAIL:BAD` on `pico/s3-004/status/config`, and the button, AHT, flash ID, rules and ML all carrying on.
+**How to read it:** the first byte is the sensor's state. MH modules pull their output low when they detect, so `00` means detecting and `01` means not. The next two bytes are how long it has held that state in ms, low byte first: `5C 44` is 0x445C = 17,500 ms. Trigger the sensor and the first byte flips between `00` and `01` (turn the module's screw if it never flips). An unplugged DO wire reads a steady `01`, because a digital pin cannot tell an unplugged wire from a real signal.
 
-| # | Scenario | What you do | What it shows | Requirement | Status |
-|---|---|---|---|---|---|
-| 8 | Replace the whole setup at once | Clear the board, then send a sensor and a rule in one JSON message | The whole setup in one message, against piece by piece above | FR1 | **Draft** |
+**2. GY-511 accelerometer (I2C)**
 
-> ```powershell
-> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/cmd' -m 'STOP'
-> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/cmd' -m 'CLEAR'
-> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/config' -m '{"configs":[{"type":"config","name":"BTN","proto":"gpio","mode":"poll","freq_hz":5,"gpio":{"pin":4,"pull":"up","mode":"digital"}}],"rules":[{"type":"rule","name":"BTN_ON","source":"BTN","calc":["s=u8(0)"],"when":"s==0","action":"gpio:5=HIGH"}]}'
-> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/cmd' -m 'RUN'
-> ```
->
-> **What it does:** removes everything, then sends the button and its rule together in one message instead of one line at a time.
->
-> **You should see:** `OK:BTN` and `OK:BTN_ON` together, then the button's readings and the LED lighting on a press.
+```sh
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m STOP
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m CLEAR
+mosquitto_pub -h localhost -t pico/s3-005/config -m 'BEGINCFG|name=ACC|proto=i2c|mode=poll|freq_hz=2|i2c.sda=1|i2c.scl=2|i2c.addr=0x19|i2c.pre=0x20 0x57|i2c.reg=0xA8|i2c.reg_size=1|i2c.read_len=6|i2c.restart=1|ENDCFG'
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m RUN
+```
+
+**You should see:** `OK:ACC`, then:
+
+```text
+pico/s3-005/sensor/ACC/line proto=i2c src=ACC len=6 ts=472422 : 40 23 80 36 00 00
+```
+
+**How to read it:** three pairs, X, Y then Z, each low byte first. Divide by 16384 for g: X `40 23` = 0x2340 = 9024 = 0.55 g, Y `80 36` = 0x3680 = 13,952 = 0.85 g, Z `00 00` = 0 g. Together that is about 1 g, which is gravity, so the reading is right; the module was standing on its edge. Laid flat, Z is about 1 g (`00 40`). Tilt it and the numbers change. `i2c.pre` (`0x20 0x57`) is written once, when the sensor is added, to turn the accelerometer on.
+
+**3. Sonar (GPIO, pulse)**
+
+```sh
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m STOP
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m CLEAR
+mosquitto_pub -h localhost -t pico/s3-005/config -m 'BEGINCFG|name=SONAR|proto=gpio|gpio.mode=pulse|gpio.trig=42|gpio.echo=41|gpio.pull=down|gpio.trig_us=10|gpio.pulse_timeout_us=20000|mode=poll|freq_hz=2|timing.timeout_ms=100|ENDCFG'
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m RUN
+```
+
+**You should see:** `OK:SONAR`, then:
+
+```text
+pico/s3-005/sensor/SONAR/line proto=gpio src=SONAR len=3 ts=... : 41 32 01
+```
+
+**How to read it:** the first two bytes are the echo time in µs, low byte first: `41 32` = 0x3241 = 12,865 µs. The last byte `01` means valid. Distance in cm = µs ÷ 58, so this is 221.8 cm; a hand in front gave `A2 17 01` = 6,050 µs = 104.3 cm. If no echo returns within 20 ms, no line is sent: the board reports an error, never a made-up distance.
+
+**4. W25Q32 flash chip (SPI)**
+
+```sh
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m STOP
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m CLEAR
+mosquitto_pub -h localhost -t pico/s3-005/config -m 'BEGINCFG|name=FLASH_ID|proto=spi|mode=poll|freq_hz=1|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=1000000|spi.mode=0|spi.tx=0x9F|spi.read_len=4|spi.timeout_ms=100|ENDCFG'
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m RUN
+```
+
+**You should see:** `OK:FLASH_ID`, then once a second:
+
+```text
+pico/s3-005/sensor/FLASH_ID/line proto=spi src=FLASH_ID len=4 ts=753422 : 00 EF 40 16
+```
+
+**How to read it:** the board sends the chip's read-ID command, `0x9F`, and reads four bytes back. It only reads, never writes. Ignore the first byte, which arrives while the command is still going out. `EF 40 16` is the chip's ID: `EF` = Winbond, `40` = the W25Q family, `16` = 32 Mbit, so a W25Q32. `FF FF FF` or `00 00 00` would mean a wiring fault.
+
+These four steps show GPIO, I2C and SPI sensors set up on one board while it runs. To show all four together, send `STOP` and `CLEAR` once, then the four config lines, then `RUN` (not yet run in this combination).
+
+#### 5.4.5 Change the timing live (D3)
+
+```sh
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m STOP
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m CLEAR
+mosquitto_pub -h localhost -t pico/s3-005/config -m 'BEGINCFG|name=SONAR|proto=gpio|gpio.mode=pulse|gpio.trig=42|gpio.echo=41|gpio.pull=down|gpio.trig_us=10|gpio.pulse_timeout_us=20000|mode=poll|timing.mode=periodic|timing.interval_ms=500|timing.timeout_ms=100|ENDCFG'
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m RUN
+```
+
+Then send the same four lines with `timing.interval_ms=2000` instead of `500`.
+
+**You should see:** the `ts=` on each `SONAR` line rise by 500 ms, then by 2000 ms after the change. Measured on 24 Nov: 17 gaps of exactly 500 ms, then gaps of exactly 2000 ms.
+
+**Why `STOP` and `CLEAR`:** sending a config line with a name that already exists adds a second copy, so the old one is cleared first.
+
+**Where the timing lives in a config line.** Only the `timing.` keys change; the rest of the line stays the same.
+
+| Timing mode | What it does | What to put in the line | How to see it |
+|---|---|---|---|
+| Periodic | Reads every N ms | `timing.mode=periodic\|timing.interval_ms=2000` | `ts=` rises by 2000 per reading (run 24 Nov) |
+| One-shot | Reads once, then waits until asked again | `timing.mode=one_shot` | One reading after `RUN`, then one each time `TRIGGER SONAR` is sent to `pico/s3-005/cmd` |
+| Event-driven | Reads only right after another sensor reads | `timing.mode=event_driven\|timing.trigger_source=SONAR\|timing.window_ms=50`, on the GY-511's line | One GY-511 reading right after each sonar reading |
+
+The older `freq_hz=2` means the same as `timing.mode=periodic|timing.interval_ms=500`. One-shot and event-driven have not yet been run on this board.
+
+#### 5.4.6 Add and switch ML live (D4)
+
+The sonar must be set up and running first (5.4.5), because the model reads it. If the sensor is missing, the board refuses the setup with `"ok":false,"reason":"invalid_or_unavailable_local_input"` and keeps its previous setup, which is itself a useful thing to show.
+
+```sh
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m '{"ml_setup":{"version":1,"model":"sine-int8","inputs":[{"index":0,"source":{"kind":"local","name":"SONAR"},"field":"distance_cm","min":2,"max":400}],"output":{"kind":"publish"}}}'
+```
+
+About 10 s later, switch the model by changing only `sine-int8` to `sine-float`:
+
+```sh
+mosquitto_pub -h localhost -t pico/s3-005/cmd -m '{"ml_setup":{"version":1,"model":"sine-float","inputs":[{"index":0,"source":{"kind":"local","name":"SONAR"},"field":"distance_cm","min":2,"max":400}],"output":{"kind":"publish"}}}'
+```
+
+**You should see (real output, 24 Nov):**
+
+```text
+pico/s3-005/ml/status {"ok":true,"reason":"applied","generation":9}
+pico/s3-005/ml/result {"type":"ml","generation":9,"model":"sine-int8","input_source":"sensors","outputs":[-0.3399292],"invoke_us":457,"status":"OK"}
+pico/s3-005/ml/status {"ok":true,"reason":"applied","generation":10}
+pico/s3-005/ml/result {"type":"ml","generation":10,"model":"sine-float","input_source":"sensors","outputs":[-0.2849427],"invoke_us":373,"status":"OK"}
+```
+
+**What it does.** One message tells the board which model to run, what to feed it and where to send the answer. From then on the board runs the model on every new reading by itself, about every 2 s. `sine` is a small demonstration model that outputs the sine of its input: the board scales the distance so 2 cm is 0 and 400 cm is 1, and the output number itself has no meaning. The point is the path from a live sensor through a model to a published result, set up and changed live. `sine-int8` is the same model compressed to 8-bit numbers, which run on the S3's vector instructions (measured in D5); `sine-float` uses normal decimal numbers.
+
+| In the output | Meaning |
+|---|---|
+| `ml/status ... "ok":true,"reason":"applied"` | The board accepted the setup |
+| `"generation":9`, then `10` | Goes up by one at every accepted change, which proves the switch happened |
+| `"model":"sine-int8"`, then `"sine-float"` | Which model produced this result |
+| `"input_source":"sensors"` | The input came from this board's own sensor (`remote:<node>` for another board's) |
+| `"outputs":[-0.3399292]` | The model's answer for the current distance |
+| `"invoke_us":457` | How long the model took, in microseconds |
+| `"status":"OK"` | The input was fresh and valid and the result is good |
+
+#### 5.4.7 Optional extras (not yet run)
+
+Each is one or two commands. Run them once before showing them.
+
+**A rule that acts on a reading.** Publishes an alert whenever the sonar sees something closer than 50 cm (an echo under 2,900 µs):
+
+```sh
+mosquitto_pub -h localhost -t pico/s3-005/config -m 'BEGINRULE|name=CLOSE|source=SONAR|calc=us=u16le(0)|when=us<2900|action=log:object within 50 cm|ENDRULE'
+```
+
+**You should see:** `pico/s3-005/status/rule OK:CLOSE`, then `pico/rule/CLOSE/event ... msg=object within 50 cm` while a hand is near the sonar. `calc` reads the echo time from the first two bytes, `when` is the condition, `action` is what happens.
+
+**A broken config is refused.** Asks for a pin the board does not have:
+
+```sh
+mosquitto_pub -h localhost -t pico/s3-005/config -m 'BEGINCFG|name=BAD|proto=gpio|gpio.mode=digital|gpio.pin=99|gpio.pull=up|mode=poll|freq_hz=2|ENDCFG'
+```
+
+**You should see:** `pico/s3-005/status/config FAIL:BAD`, while every other sensor and the ML keep running.
+
+**One board using another board's sensor.** The second board follows the sensor board's sonar through the broker:
+
+```sh
+mosquitto_pub -h localhost -t pico/s3-004/config -m 'BEGINCFG|name=REM_SONAR|proto=mqtt|mode=poll|freq_hz=1|remote_node=s3-005|remote_source=SONAR|remote_profile=pulse|ENDCFG'
+mosquitto_pub -h localhost -t pico/s3-004/cmd -m RUN
+```
+
+**You should see:** `pico/s3-004/sensor/REM_SONAR/line` with the same bytes as the sensor board's `SONAR`, with no wire between the boards.
+
+**The same config over the USB console.** Paste this into a fourth terminal, with the sensor board's port from step 3 of 5.4.2 (opening the console may restart the board; wait for it to come back):
+
+```sh
+cd ~/Y2S1/EMBSYS-P2-AAI15
+SENSOR=/dev/cu.usbmodem5CF80445551
+PORT=$SENSOR sh tools/mtk.sh monitor
+```
+
+Then paste the MH line from 5.4.4 (only the `BEGINCFG|...|ENDCFG` part) and press Enter.
+
+**You should see:** `CFG: ok (added #0: MH)` on the console, then `MH` readings in LISTENER as before. Ctrl+C closes the console.
+
+#### 5.4.8 How it works (for questions)
+
+**MQTT in one paragraph.** MQTT is publish and subscribe through a broker. The Mac runs the broker (BROKER). The boards, LISTENER and CONFIG are all clients of it. A client publishes a message on a topic, such as `pico/s3-005/config`, and the broker passes it to every client subscribed to that topic. Boards never talk to each other directly; everything goes through the broker. Each board subscribes to its own topics, which contain its node ID, so a message for `s3-005` only reaches `s3-005`.
+
+```mermaid
+flowchart LR
+    CONFIG["CONFIG terminal<br/>mosquitto_pub"] -- "pico/s3-005/config" --> BROKER(("Broker on the Mac<br/>mosquitto"))
+    BROKER --> MQTT["MQTTTask, core 0<br/>receives it"]
+    MQTT -- "sched_mbf" --> SCHED["SchedulerTask, core 1<br/>checks and installs the sensor,<br/>then reads it on its timing"]
+    SCHED -- "infer_mbf" --> INF["InferenceTask<br/>runs the model"]
+    SCHED -- "pub_mbf" --> MQTT
+    MQTT -- "status, sensor and ml topics" --> BROKER
+    BROKER --> LISTENER["LISTENER terminal<br/>mosquitto_sub"]
+```
+
+Inside the board, MQTTTask on core 0 owns the Wi-Fi and the broker connection. It copies each incoming message into a message buffer for SchedulerTask on core 1, which owns the sensors: it checks the config, sets the sensor up, reads it on its timing and hands each reading back to MQTTTask to publish. ML results come from InferenceTask the same way. Because each task owns its own data and messages are copied between them, a network delay never holds up a reading.
+
+**Who runs each bus.** SchedulerTask on core 1 runs every bus transaction; there is no separate task per bus. Each bus has its own driver in the shared library (`gpio.c`, `i2c.c`, `spi.c`, `uart.c`), all implementing the same interface (`bus_t`: `init_cfg`, `poll_once`, `cancel`). `proto=` in the config line picks the driver, and the other keys become its settings. When the sensor's timing is due, SchedulerTask calls that driver's `poll_once()`, which performs the bus's own transaction through the HAL (`hal_mtk.c`). The config gives the parameters; the behaviour is the driver's code.
+
+| Bus | What the driver does on each read | HAL calls |
+|---|---|---|
+| I2C (GY-511) | Once when added: writes `i2c.pre` (`0x20 0x57`, accelerometer on). Each read: writes register `0xA8`, repeated start, reads 6 bytes | `hal_i2c_write`, `hal_i2c_read` |
+| SPI (flash) | One full-duplex transfer with CS low: clocks out `spi.tx` (`0x9F`) and reads `spi.read_len` (4) bytes, under the SPI bus lock | `hal_spi_transfer` |
+| GPIO digital (MH) | Reads the pin level and how long it has held it | `hal_gpio_read` |
+| GPIO pulse (sonar) | Sends a 10 µs trigger and returns "pending"; an interrupt timestamps the echo and the scheduler collects the width about 1 ms later, so nothing waits | `hal_gpio_capture_start`, `hal_gpio_capture_poll` |
+| UART | Writes the setup bytes, then reads up to `uart.read_len` bytes with a timeout | `hal_uart_write`, `hal_uart_read_byte` |
+
+Sensors with several steps, such as the AHT (command, 80 ms wait, read), have a built-in profile: a small state machine that returns "pending" between steps instead of blocking.
+
+```mermaid
+flowchart TB
+    CFG["Config line over MQTT or USB<br/>proto=i2c, i2c.addr=0x19, i2c.reg=0xA8, i2c.read_len=6"]
+    TABLE["SchedulerTask, core 1<br/>driver chosen by proto=, settings from the other keys"]
+    DUE["The sensor's timing is due"]
+    POLL["driver.poll_once()"]
+    GPIO["gpio.c<br/>read pin, or trigger pulse plus echo interrupt"]
+    I2C["i2c.c<br/>write register, repeated start, read N bytes"]
+    SPI["spi.c<br/>CS low, send tx bytes, read N bytes"]
+    UART["uart.c<br/>write setup bytes, read with timeout"]
+    HAL["HAL, hal_mtk.c<br/>ESP32-S3 registers"]
+    HW["Sensor"]
+    OUT["Bytes to rules, ML and MQTTTask"]
+    CFG --> TABLE --> DUE --> POLL
+    POLL --> GPIO & I2C & SPI & UART
+    GPIO & I2C & SPI & UART --> HAL --> HW
+    HW --> HAL
+    POLL --> OUT
+```
+
+```mermaid
+sequenceDiagram
+    participant S as SchedulerTask (core 1)
+    participant D as I2C driver (i2c.c)
+    participant H as HAL (hal_mtk.c)
+    participant G as GY-511
+    Note over S,G: Once, when the sensor is added
+    S->>D: init_cfg(addr 0x19, pre 0x20 0x57, reg 0xA8, read 6)
+    D->>H: hal_i2c_write(0x19, 20 57)
+    H->>G: power on, 100 Hz, X Y Z enabled
+    Note over S,G: Every period (0.5 s)
+    S->>D: poll_once()
+    D->>H: hal_i2c_write(0x19, A8, repeated start)
+    H->>G: point at register 0xA8
+    D->>H: hal_i2c_read(0x19, 6 bytes)
+    G-->>H: X, Y, Z (6 bytes)
+    H-->>D: 6 bytes
+    D-->>S: 6 bytes to publish, rules and ML
+```
+
+**The topics.**
+
+| Topic | Direction | Carries |
+|---|---|---|
+| `pico/<node>/config` | To the board | `BEGINCFG` and `BEGINRULE` lines |
+| `pico/<node>/cmd` | To the board | Commands: `STOP`, `CLEAR`, `RUN`, `TRIGGER <name>`, `ml_setup` |
+| `pico/<node>/status/config`, `status/rule` | From the board | `OK:<name>` or `FAIL:<name>` for each config or rule |
+| `pico/<node>/sensor/<name>/line` | From the board | Every reading, as raw bytes |
+| `pico/<node>/ml/status`, `ml/result` | From the board | ML setup replies and results |
+| `pico/<node>/heartbeat`, `presence` | From the board | Uptime every 10 s; `presence` when it connects |
+| `pico/rule/<rule>/event` | From the board | Each time a rule fires |
+
+**Which part of a command changes what.**
+
+| Part | Example | What it decides |
+|---|---|---|
+| `mosquitto_pub -h localhost` | | Send to the broker on this Mac |
+| `-t pico/s3-005/config` | | Which board (`s3-005`) and what kind of message (`config`, or `cmd` for commands) |
+| `-m '...'` | | The message itself |
+| `BEGINCFG\|` ... `\|ENDCFG` | | Start and end of one sensor's settings |
+| `name=` | `name=SONAR` | The sensor's name, used in its topic and by rules and ML |
+| `proto=` | `proto=gpio`, `i2c`, `spi` | Which bus |
+| Bus settings | `gpio.trig=42`, `i2c.addr=0x19`, `spi.cs=10` | Pins, addresses and what to send to the device |
+| `mode=poll` and `timing.` keys | `timing.interval_ms=2000` | When it is read (5.4.5) |
+| `"model":` | `"sine-int8"` | Which ML model runs |
+| `"inputs":` | `"name":"SONAR","field":"distance_cm","min":2,"max":400` | Which sensor and value feed the model, and how it is scaled |
+| `"output":` | `{"kind":"publish"}` | Where the result goes: published, console only, or back into the board as a sensor called `ML` |
+
+**Likely questions.**
+
+| Question | Answer |
+|---|---|
+| How does a message reach the right board? | The topic contains the board's node ID, and each board subscribes only to its own topics. |
+| Is anything reflashed? | No. The firmware is identical on every board; sensors, timing, rules and ML are all settings sent while it runs. |
+| What happens if the board restarts? | Its settings are kept in memory only, so a restart clears them. It announces itself with `presence`, and the settings are sent again. |
+| What if the Wi-Fi or broker drops? | The board keeps sampling, retries the broker every 5 s and resubscribes when it is back. Measured: back within 2.1 s of the broker and 5.4 s of the Wi-Fi returning. |
+| Why are the readings hex bytes? | They are the raw bytes from the sensor, the same as on the console. 5.4.4 shows how each sensor's bytes become a value. |
+| What if a sensor fails? | I2C and SPI report an error and the sonar sends nothing rather than a false distance. A digital pin cannot tell an unplugged wire from a real signal. |
+| What stops a bad setting? | Every config, rule and `ml_setup` is checked first; a bad one is refused with `FAIL` or `"ok":false` and the board keeps running its current setup. |
+| Why does the board need the Mac's IP? | The broker address is built into the firmware, so the Mac must keep that IP on the hotspot. |
+| Is it secure? | This test broker accepts anyone on the private hotspot. It is for demonstrations only. |
 
 ### 5.5 Other demo steps and their status
 
