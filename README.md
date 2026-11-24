@@ -62,7 +62,7 @@ Other documents: [TASK_RECORD.md](TASK_RECORD.md) (full D1 to D3 task tables), [
 
 This is team AAI15's configurable edge platform for INF2004. One firmware turns an ESP32-S3 into a sensor node that is set up while it runs, never reprogrammed for a new job. You send it text lines or JSON, over the USB console or MQTT, and it:
 
-1. Reads any sensor on GPIO, I2C, UART or SPI, each at its own timing.
+1. Reads configured sensors supported by its GPIO, I2C, UART or SPI drivers, each at its own timing.
 2. Runs rules on the readings, which switch pins, send messages or reconfigure other boards.
 3. Runs small ML models on the readings, with the model, its inputs and its output chosen live.
 4. Sends everything over Wi-Fi and MQTT, so boards can use each other's sensors.
@@ -698,16 +698,16 @@ Everything in this section runs on the current `main`. The board tests recorded 
 
 **Why three boards.** Each board does one job, the way separate devices do in a real building: one senses, one decides, one shows. They never talk to each other directly, only through a message hub on the laptop (the MQTT broker). So any board can be moved, restarted or swapped without rewiring the others.
 
-**What the demo proves.** All three boards run exactly the same firmware. Nothing in it says "door sensor" or "screen". Each board is told its job by settings sent to it while it runs. The demo shows this by setting the boards up live, switching what the ML model reads without reprogramming anything, and showing what the system does when a part stops working.
+**What the current run shows.** All three boards use the same application code, built with a different node ID for each. Sensor and ML settings give A and B their roles while they run. The current demo shows A's readings reaching B and a live comfort score reaching C; the optional laptop relay can also put A's environmental and sonar readings on C. The complete doorway-to-occupancy path is still being integrated.
 
 **What you see, in order.**
 
 1. The three boards come online, and the laptop shows their messages.
 2. Board A is told which sensors it has, and its readings start to appear.
 3. Board B starts using Board A's readings, with no wire between them.
-4. Board B runs the comfort model on Board A's temperature and humidity, and the score appears on Board C's screen.
-5. Someone walks through the door, and Board A counts the entry or exit (showing the count on the screen is still to be built).
-6. A sensor is unplugged, and the screen marks the comfort score as stale instead of showing an old number as if it were current.
+4. Board B switches models live, then runs the comfort model on Board A's temperature and humidity; the score appears on Board C's screen.
+5. Optionally stop A's feed: C marks the comfort score `STALE` when fresh results stop, then recovers when A runs again.
+6. The doorway count, B's flash log of those crossings and a native B-to-C occupancy snapshot are follow-up steps, with their current status in [section 5.5](#55-other-demo-steps-and-their-status).
 
 ```mermaid
 flowchart LR
@@ -740,11 +740,11 @@ flowchart LR
 
 | Deliverable | What it adds | Where it shows in the demo |
 |---|---|---|
-| D1 | One configurable firmware on µT-Kernel 3 SMP; configs, rules and commands over USB or MQTT; boards following each other's sensors | All three boards run the same image, and A and B are set up over MQTT |
-| D2 | SPI as a fourth bus and the W25Q32 event log | B's flash chip and C's LCD are both SPI devices; B logs each processed event and reads it back |
-| D3 | Timing per sensor, sonars read one after the other without blocking, ApplicationTask with duplicate rejection | A's two sonars; B's count |
+| D1 | One configurable application on µT-Kernel 3 SMP; configs, rules and commands over USB or MQTT; boards following each other's sensors | All three boards use the same code with different node IDs, and A and B are set up over MQTT |
+| D2 | SPI as a fourth bus and the W25Q32 event log | B's flash chip and C's LCD are SPI devices; logging A's doorway crossings on B still needs the A-to-B event path |
+| D3 | Timing per sensor, sonars read one after the other without blocking, ApplicationTask with duplicate rejection | A's two sonars; a full doorway-to-B count remains to be tested |
 | D4 | ML models chosen and rewired live, with another board's sensor as input | comfort-summer on B using A's AHT, shown on C |
-| D5 | Measured S3 acceleration: people-counter runs in about 2 ms | Shows ML fits on B alongside sensing and MQTT |
+| D5 | Measured S3 acceleration: people-counter runs in about 2 ms | Benchmark evidence that the model fits the S3; a live D6 doorway run remains separate |
 
 ### 5.2 Setup
 
@@ -990,7 +990,7 @@ The demo starts with one command block. After that the boards keep running by th
 
 | Point to | What to say |
 |---|---|
-| The three boards | They run exactly the same firmware; only the node ID differs. Nothing was reflashed for this demo |
+| The three boards | They use the same application code with different node IDs. Their sensor and ML settings were changed at runtime, without reflashing |
 | Window 2, A's sensor topics | Board A was told its four sensors a moment ago by one config file sent over MQTT. The same lines work over USB |
 | Window 2, B's `A_` topics | Board B uses Board A's sensors through the broker, with no wire between them (`proto=mqtt`, D1 tasks 1.1–1.4) |
 | `TASKS` on any board's console (optional) | The firmware runs on µT-Kernel 3 SMP: seven tasks, the network on core 0, sensing on core 1, and a hardware watchdog |
