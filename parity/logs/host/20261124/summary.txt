@@ -1,4 +1,4 @@
-Laptop test run, 24 Nov 2026 23:31, commit a420a93
+Laptop test run, 24 Nov 2026 23:53, commit de84e75
 Compiler: Apple clang version 17.0.0 (clang-1700.6.4.2); Python: Python 3.14.0
 PASS  d1-hal-boundary
 PASS  d1-mtk-purity

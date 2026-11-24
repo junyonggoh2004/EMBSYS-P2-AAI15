@@ -17,6 +17,6 @@ Sensor bridge strict-frame regression: PASS
 lcd output host test: PASS
 .
 ----------------------------------------------------------------------
-Ran 1 test in 1.389s
+Ran 1 test in 3.079s
 
 OK
