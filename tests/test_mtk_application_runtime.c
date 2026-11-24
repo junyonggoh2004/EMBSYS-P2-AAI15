@@ -11,6 +11,7 @@ static unsigned lcd_inits, lcd_patterns, lcd_closes;
 static int lcd_init_result = HAL_OK;
 static lcd_output_config_t last_lcd;
 static char lcd_ml_value[24];
+static char lcd_source[24], lcd_temperature[24];
 static uint32_t test_now = 1000;
 static unsigned comfort_test_step;
 int lcd_output_init(const lcd_output_config_t *config)
@@ -26,6 +27,8 @@ int lcd_output_draw_text(uint16_t x, uint16_t y, const char *text,
 {
     (void)foreground; (void)background; (void)scale;
     if (x == 200 && y == 34) snprintf(lcd_ml_value, sizeof lcd_ml_value, "%s", text);
+    if (x == 201 && y == 2) snprintf(lcd_source, sizeof lcd_source, "%s", text);
+    if (x == 104 && y == 24) snprintf(lcd_temperature, sizeof lcd_temperature, "%s", text);
     return HAL_OK;
 }
 
@@ -98,11 +101,25 @@ INT tk_rcv_mbf(ID id, void *out, TMO timeout)
             test_now += 3000;
             return E_TMOUT;
         case 3:
-            assert(timeout == TMO_FEVR && !strcmp(lcd_ml_value, "STALE"));
+            assert(timeout == 3000 && !strcmp(lcd_ml_value, "STALE"));
+            test_now += 3000;
+            return E_TMOUT;
+        case 4:
+            assert(timeout == TMO_FEVR && !strcmp(lcd_source, "STALE") &&
+                   !strcmp(lcd_temperature, "--"));
             runtime_d6_comfort_receive("81", 2);
             break;
-        case 4:
+        case 5: {
             assert(timeout == 6000 && !strcmp(lcd_ml_value, "81"));
+            /* B rebooted and restarted its sequence. Accept a new live
+             * snapshot only after the previous source has gone stale. */
+            const char restart[] = "{\"v\":3,\"seq\":1,\"occupancy\":0,\"distance_a_cm\":42.5,\"distance_b_cm\":-1,\"temperature_c\":25.1,\"humidity_pct\":63.2,\"light_lux\":410,\"source\":\"live\"}";
+            runtime_d6_snapshot_receive(restart, sizeof restart - 1);
+            break;
+        }
+        case 6:
+            assert(timeout == 6000 && !strcmp(lcd_source, "LIVE") &&
+                   !strcmp(lcd_temperature, "25.1"));
             longjmp(waiting, 1);
         default:
             assert(false);
@@ -576,7 +593,7 @@ int main(void)
     assert(queue(bench_mbf)->count == 2);
     comfort_test_step = 1;
     consume_bench();
-    assert(comfort_test_step == 5 && queue(bench_mbf)->count == 0);
+    assert(comfort_test_step == 7 && queue(bench_mbf)->count == 0);
     puts("micro T-Kernel application glue: PASS (modeled kernel, actual runtime task bodies)");
     return 0;
 }

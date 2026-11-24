@@ -733,6 +733,7 @@ void runtime_d6_snapshot_receive(const char *payload, int length)
         return;
     }
     bench_msg_t b = { .name = "D6SNAP", .d6_seq = seq,
+                      .d6_received_ms = hal_time_ms(),
                       .d6_occupancy = (uint16_t)occupancy,
                       .d6_light = (uint16_t)light,
                       .d6_temperature = temperature, .d6_humidity = humidity,
@@ -797,7 +798,8 @@ static int d6_draw_ml(const bench_msg_t *snapshot, const d6_comfort_t *comfort)
     return stale ? HAL_OK : lcd_output_draw_text(265, 58, status, 0x07e0u, panel, 1);
 }
 
-static int d6_draw_snapshot(const bench_msg_t *b, const d6_comfort_t *comfort)
+static int d6_draw_snapshot(const bench_msg_t *b, const d6_comfort_t *comfort,
+                            bool stale)
 {
     const uint16_t bg = 0x080fu, fg = 0xffffu;
     char text[32];
@@ -805,25 +807,30 @@ static int d6_draw_snapshot(const bench_msg_t *b, const d6_comfort_t *comfort)
     if (r) return r;
     if ((r = lcd_output_draw_text(4, 2, "ROOM MONITOR", fg, bg, 1))) return r;
     if ((r = lcd_output_fill_rect(82, 9, 112, 1, 0x5c9fu))) return r;
-    if ((r = lcd_output_draw_text(201, 2, b->d6_mock ? "MOCK" : "LIVE",
+    if ((r = lcd_output_draw_text(201, 2, stale ? "STALE" : b->d6_mock ? "MOCK" : "LIVE",
                                   0x37dbu, bg, 1))) return r;
-    snprintf(text, sizeof text, "OCC %u", (unsigned)b->d6_occupancy);
+    if (stale || (!b->d6_mock && !b->d6_occupancy))
+        snprintf(text, sizeof text, "OCC --");
+    else snprintf(text, sizeof text, "OCC %u", (unsigned)b->d6_occupancy);
     if ((r = lcd_output_draw_text(234, 2, text, 0x07e0u, bg, 1))) return r;
 
     if ((r = lcd_output_fill_rect(2, 14, 90, 28, 0x10a2u))) return r;
     if ((r = lcd_output_fill_rect(2, 14, 3, 28, 0x35dcu))) return r;
     if ((r = lcd_output_draw_text(8, 16, "DISTANCE CM", 0xbdd7u, 0x10a2u, 1))) return r;
-    if (b->d6_has_distance_a) snprintf(text, sizeof text, "A %.1f", (double)b->d6_distance_a);
+    if (!stale && b->d6_has_distance_a) snprintf(text, sizeof text, "A %.1f", (double)b->d6_distance_a);
     else snprintf(text, sizeof text, "A --");
     if ((r = lcd_output_draw_text(8, 25, text, fg, 0x10a2u, 1))) return r;
-    if (b->d6_has_distance_b) snprintf(text, sizeof text, "B %.1f", (double)b->d6_distance_b);
+    if (!stale && b->d6_has_distance_b) snprintf(text, sizeof text, "B %.1f", (double)b->d6_distance_b);
     else snprintf(text, sizeof text, "B --");
     if ((r = lcd_output_draw_text(8, 33, text, fg, 0x10a2u, 1))) return r;
-    snprintf(text, sizeof text, "%.1f", (double)b->d6_temperature);
+    if (stale) snprintf(text, sizeof text, "--");
+    else snprintf(text, sizeof text, "%.1f", (double)b->d6_temperature);
     if ((r = d6_card(96, 14, 0xf3aeu, "TEMP C", text))) return r;
-    snprintf(text, sizeof text, "%.1f", (double)b->d6_humidity);
+    if (stale) snprintf(text, sizeof text, "--");
+    else snprintf(text, sizeof text, "%.1f", (double)b->d6_humidity);
     if ((r = d6_card(2, 45, 0x37dcu, "HUMIDITY %", text))) return r;
-    snprintf(text, sizeof text, "%u", (unsigned)b->d6_light);
+    if (stale) snprintf(text, sizeof text, "--");
+    else snprintf(text, sizeof text, "%u", (unsigned)b->d6_light);
     if ((r = d6_card(96, 45, 0xff2eu, "LIGHT lux", text))) return r;
 
     return d6_draw_ml(b, comfort);
@@ -836,14 +843,27 @@ static void benchmark_task(INT stacd, void *exinf)
     bench_msg_t latest = { 0 };
     d6_comfort_t comfort = { 0 };
     bool d6_view = false;
+    bool snapshot_stale = false;
     for (;;) {
         TMO wait = TMO_FEVR;
         if (comfort.seen && !comfort.stale) {
             uint32_t age = hal_time_ms() - comfort.received_ms;
             wait = age < D6_COMFORT_TIMEOUT_MS ? (TMO)(D6_COMFORT_TIMEOUT_MS - age) : TMO_POL;
         }
+        if (latest.d6_seq && !snapshot_stale) {
+            uint32_t age = hal_time_ms() - latest.d6_received_ms;
+            TMO snapshot_wait = age < D6_COMFORT_TIMEOUT_MS ?
+                                (TMO)(D6_COMFORT_TIMEOUT_MS - age) : TMO_POL;
+            if (wait == TMO_FEVR || snapshot_wait < wait) wait = snapshot_wait;
+        }
         INT received = tk_rcv_mbf(bench_mbf, &b, wait);
         uint32_t now = hal_time_ms();
+        if (latest.d6_seq && !snapshot_stale &&
+            now - latest.d6_received_ms >= D6_COMFORT_TIMEOUT_MS) {
+            snapshot_stale = true;
+            int result = d6_view ? d6_draw_snapshot(&latest, &comfort, true) : HAL_OK;
+            printf("[D6MQTT] C snapshot stale display=%d\n", result);
+        }
         if (received > 0 && !strcmp(b.name, "D6COMFORT") &&
             now - b.d6_received_ms < D6_COMFORT_TIMEOUT_MS) {
             runtime_alive(RT_BENCHMARK);
@@ -888,7 +908,8 @@ static void benchmark_task(INT stacd, void *exinf)
                 lcd_output_deinit();
                 int result = lcd_output_init(&config);
                 d6_view = result == HAL_OK;
-                if (d6_view && latest.d6_seq) result = d6_draw_snapshot(&latest, &comfort);
+                if (d6_view && latest.d6_seq)
+                    result = d6_draw_snapshot(&latest, &comfort, snapshot_stale);
                 else if (d6_view) {
                     result = lcd_output_fill(0x080f);
                     if (result == HAL_OK)
@@ -901,11 +922,12 @@ static void benchmark_task(INT stacd, void *exinf)
                 printf("[D6MQTT] C view result=%d\n", result);
             }
             else if (strcmp(b.name, "D6SNAP") == 0) {
-                if (b.d6_seq <= latest.d6_seq) {
+                if (b.d6_seq <= latest.d6_seq && !snapshot_stale) {
                     printf("[D6MQTT] stale/duplicate seq=%lu\n", (unsigned long)b.d6_seq);
                 } else {
                     latest = b;
-                    int result = d6_view ? d6_draw_snapshot(&latest, &comfort) : HAL_OK;
+                    snapshot_stale = false;
+                    int result = d6_view ? d6_draw_snapshot(&latest, &comfort, false) : HAL_OK;
                     printf("[D6MQTT] C snapshot seq=%lu occupancy=%u display=%d active=%u\n",
                            (unsigned long)b.d6_seq, (unsigned)b.d6_occupancy,
                            result, d6_view ? 1u : 0u);

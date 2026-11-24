@@ -2,7 +2,7 @@
 
 Use this guide from the repository root with the three ESP32-S3 N16R8 boards: A = `s3-001`, B = `s3-002`, C = `s3-003`. All boards and the laptop must use the same private 2.4 GHz Wi-Fi. Set `WIFI_SSID`, `WIFI_PASS`, and `MQTT_HOST` (the laptop's Wi-Fi IPv4 address) in the ignored `esp32s3_mtk/main/wifi_credentials.h` before building and flashing each node. `MQTT_HOST` is compiled into firmware; changing networks or laptop IP requires rebuilding and reflashing. Never commit the filled credentials file.
 
-The commands below exercise individual Board A sensors, A→B sensor-frame bridging, Board A's opt-in two-sonar doorway counter, Board B's live `sine-float` ML demonstration, and B→C **mock** LCD snapshots. A separate [live LCD procedure](docs/d6/LIVE_LCD_TWO_SONARS.md) displays A and B sonar distances together with real AHT/light readings through a temporary laptop relay; B's live `comfort-summer` result reaches C directly. B-owned occupancy, B's own full snapshot publisher, and the flash-log use case remain open. Optional model switches, including `comfort-summer` and experimental live remote `people-counter`, are in [ML_commands.md](ML_commands.md). Sensor MQTT `/line` payloads are encoded frames; [`tools/show_live_values.py`](tools/show_live_values.py) continuously decodes them into C, %RH, lux and cm in a terminal. The broker configuration `tools/mqtt-test.conf` is for a temporary private test.
+The commands below exercise individual Board A sensors, A→B sensor-frame bridging, Board A's opt-in two-sonar doorway counter, Board B's live `sine-float` default model, and B→C live LCD snapshots. B and C were flashed on 24 Nov 2026; C displayed live values after `D6VIEW` and accepted continued snapshots beyond ten seconds. The [live LCD procedure](docs/d6/LIVE_LCD_TWO_SONARS.md) covers the environmental/two-sonar snapshot publisher and C's expiry behavior. B's live `comfort-summer` result reaches C separately. B-owned occupancy and the flash-log use case remain open. The D6 demo uses the two sine models, `comfort-summer`, and experimental live remote `people-counter`; the autoencoder is outside the demo. Model switches are in [ML_commands.md](ML_commands.md). Sensor MQTT `/line` payloads are encoded frames; [`tools/show_live_values.py`](tools/show_live_values.py) continuously decodes them into C, %RH, lux and cm in a terminal. The broker configuration `tools/mqtt-test.conf` is for a temporary private test.
 
 ## Mac / Linux
 
@@ -224,15 +224,13 @@ Start-Sleep -Seconds 2
 & $pub -h $brokerIp -q 1 -t 'pico/s3-003/cmd' -m 'D6VIEW'
 ```
 
-`DOORWAY` makes A alternate sonar pings and report local `ENTRY`/`EXIT` events. The starting 70/85 cm thresholds require doorway calibration. B still does not own these counts; its occupancy display remains a placeholder. The `sine-float` model is the default live ML test. To see real AHT, light and both sonar distances on C, keep a fourth normal PowerShell window running:
+`DOORWAY` makes A alternate sonar pings and report local `ENTRY`/`EXIT` events. The starting 70/85 cm thresholds require doorway calibration. B still does not own these counts; C displays `OCC --`. The `sine-float` model is the default live ML test. With the updated B and C firmware flashed, B publishes real AHT, light and both sonar distances directly to C. Watch the snapshot topic in a fourth normal PowerShell window:
 
 ```powershell
-Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
-$py = "$env:USERPROFILE\.espressif\python_env\idf6.1_py3.14_env\Scripts\python.exe"
-& $py -B .\tools\d6_live_lcd_relay.py
+& "$env:ProgramFiles\mosquitto\mosquitto_sub.exe" -h $brokerIp -t 'd6/board-b/snapshot' -v
 ```
 
-This laptop relay is temporary; press **Ctrl+C** to stop it. Select `config/board_b_comfort_summer.json` in window 3 if you want the live comfort card instead of the default sine output. For the experimental 31-reading B window, follow [ML_commands.md](ML_commands.md); the current 2 Hz B alias is not matched to A's 140 ms per-sonar doorway cadence.
+Snapshots should continue arriving beyond ten seconds without the laptop relay. Press **Ctrl+C** to stop the subscriber. Select `config/board_b_comfort_summer.json` in window 3 if you want the live comfort card instead of the default sine output. For the experimental 31-reading B window, follow [ML_commands.md](ML_commands.md); the current 2 Hz B alias is not matched to A's 140 ms per-sonar doorway cadence.
 
 ### 6. Test B→C landscape display with mock data — normal PowerShell, window 3
 

@@ -2,7 +2,7 @@
 
 The Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) ported to the ESP32-S3 Super Mini. Since Tribunal 1 it runs on µT-Kernel 3 SMP through the course port ([MTK_REDESIGN.md](MTK_REDESIGN.md)); the earlier Arduino-ESP32/FreeRTOS port is kept as the measured baseline. Both builds compile the same shared code, so the configuration lines, console commands, MQTT topics, output format and ML models are the same on both. `main` contains D1 to D5 and the merged D6 integration work; the three-board use case remains in progress.
 
-**Current D6 setup:** Board A reads AHT, light, and two sonars without radar. Board B receives their MQTT frames and can run `comfort-summer` on A's real AHT values. Board C shows that live comfort score. The [interim live LCD guide](docs/d6/LIVE_LCD_TWO_SONARS.md) uses a laptop relay to display real AHT, light, and separate Sonar A/B distances on C; occupancy is a placeholder until B's counting path is complete. See the [current D6 TO-DO list](docs/d6/D6_TODO.md), [startup commands](usecase_commands.md) and [ML commands](ML_commands.md). The two-sonar LCD layout builds and passes host tests but still needs a visual check after flashing C.
+**Current D6 setup:** Board A reads AHT, light, and two sonars without radar. Board B receives their MQTT frames and runs the two sine models or `comfort-summer` on live readings; `people-counter` is flashed but still needs 31 consecutive valid Sonar A readings and a doorway validation. The autoencoder is outside the D6 demo and use case. B publishes continuous environmental/two-sonar snapshots. On 24 Nov, Board C displayed those live values beyond ten seconds after `D6VIEW`; stale clearing on physical disconnection remains to be checked. Occupancy remains pending. See the [live LCD guide](docs/d6/LIVE_LCD_TWO_SONARS.md), [current D6 TO-DO list](docs/d6/D6_TODO.md), [startup commands](usecase_commands.md) and [ML commands](ML_commands.md).
 
 ## Deliverables at a glance
 
@@ -13,7 +13,7 @@ The Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) porte
 | D3 | Configurable timing: periodic, one-shot, event-driven, logical sequence | Cody | Done 22 Nov: timing modes, non-blocking sonar reads and ApplicationTask run on the board on 21 Nov; the two-sonar sequence ran on the D6 setup; the radar workload closed when the radar was dropped | [2.3](#23-d3-task-checklist) |
 | D4 | Embedded ML | Part 1: Jun Yong. Part 2: Sitt | Done 23 Nov. Five bundled models run on the board with the S3's acceleration, and the model, its inputs and where its result goes can be switched live over MQTT. The uploaded model, remote input and local output added on 22 Nov have laptop tests only | [2.4](#24-d4-task-checklist) |
 | D5 | Benchmarking the D4 models on the S3 | Hasif | Done 20 Nov: ESP-NN's S3 assembly makes INT8 inference 1.36 to 3.35 times faster with the same outputs, and people-counter keeps a 2.55 times gain in the running firmware | [2.5](#25-d5-task-checklist-hasif) |
-| D6 | End-to-end use case and demo | Cody (lead), Brendan | In progress. A→B sensor MQTT and real AHT→B comfort inference→C score have been observed. An interim laptop relay displayed real environmental and sonar values on C; the separate A/B distance layout is built and host tested, pending a visual board check. B-owned occupancy, native B full snapshots, and the full three-board doorway trial remain open | [2.6](#26-d6-task-checklist), [5](#5-d6-use-case-demo) |
+| D6 | End-to-end use case and demo | Cody (lead), Brendan | In progress. A→B sensor MQTT and real AHT→B inference have been observed. B and C were flashed on 24 Nov; C displayed B's live AHT/light/two-sonar snapshot beyond ten seconds. Sonar A timeouts block a live `people-counter` result. B-owned occupancy, physical stale recovery and the doorway trial remain open | [2.6](#26-d6-task-checklist), [5](#5-d6-use-case-demo) |
 
 Owners follow the team split of 28 Sep 2026, with D4 to D6 re-split on 10 Nov and confirmed on 16 Nov. The D1 MQTT tasks (1.1–1.5) and the D4 to D6 tasks (2.1–5.7) are the outline the team agreed on 10 Nov. Each owner updates their row when their work merges.
 
@@ -333,7 +333,7 @@ D4 has two parts, split on 16 Nov 2026: the ML itself (part 1, Jun Yong) and con
 
 #### How to use it
 
-Five models are bundled. **sine-float** and **sine-int8** take the sine of a scaled reading; they demonstrate the pipeline and, for sine-int8, ESP-NN's S3 vector kernels. The **autoencoder** takes 16 inputs. **comfort-summer** gives a comfort score from AHT temperature and humidity (26.3 °C and 67% RH gives 92/100). **people-counter** is an INT8 doorway classifier with 31 inputs: replay demonstrates model execution, and an experimental Board B path fills the 31 slots from successive remote Sonar A readings. That remote path is not yet validated against labelled crossings or its source training cadence and does not change occupancy. The [D6 ML command guide](ML_commands.md) separates live configuration and replay commands for each model. A sixth choice, **uploaded**, is the model last sent over MQTT (D1 task 31). `ML LIST` shows which are available.
+Five models are bundled for D4, but the D6 three-board demo uses four: **sine-float**, **sine-int8**, **comfort-summer**, and **people-counter**. The sine models demonstrate float and INT8 inference on live readings. Comfort Summer uses AHT temperature and humidity (26.3 °C and 67% RH gives 92/100). People Counter is an INT8 doorway classifier with 31 inputs; an experimental Board B path fills those slots from successive remote Sonar A readings. That path is not yet validated against labelled crossings or its source training cadence and does not change occupancy. The 16-input **autoencoder** remains bundled for D4 work but is outside the D6 demo and use case. The [D6 ML command guide](ML_commands.md) covers live configuration and model switching. A sixth choice, **uploaded**, is the model last sent over MQTT (D1 task 31). `ML LIST` shows which are available.
 
 From the console, stop sampling, pick a model and start again. In VS Code run **MTK: build → MTK: flash → MTK: load sensors and ML → MTK: monitor** first.
 
@@ -425,7 +425,7 @@ D6 joins three ESP32-S3 N16R8 boards into one use case: a doorway room monitor (
 | 5.2 | Define each board | Its sensors, what it publishes, what it reacts to and what the LCD shows; parts and wiring | Cody | **Done:** roles, wiring and configs for every board ([5.2 Setup](#52-setup)) |
 | 5.3 | Multi-bus demo script | GPIO, I2C and SPI on one board, configured live, the whole setup at once and then piece by piece | Cody | **Pending** ([demo step 11](#53-demo)) |
 | 5.4 | SPI write and read by config | Write one byte, read it back, swap the device and reconfigure | Brendan | **Pending:** a config cannot write over SPI yet. The D2 event log writes are separate |
-| 5.5 | LCD board shows live data | Board C displays what the other boards publish | Brendan | **In progress:** mock snapshots and a live comfort score displayed on C. A temporary laptop relay displayed real AHT/light/sonar readings; separate A/B distance lines are built and host tested, pending C flash and visual check. B must publish the full snapshot itself; occupancy is not live |
+| 5.5 | LCD board shows live data | Board C displays what the other boards publish | Brendan | **In progress:** B and C were flashed on 24 Nov; C displayed B's live AHT/light/two-sonar snapshots beyond ten seconds. Physical stale clearing and cold-start recovery remain untested. Occupancy is not live |
 | 5.6 | ML inside the use case | One board runs a model on another board's data; the result shows on the LCD or is published | Cody, Brendan, with Sitt | **In progress:** real AHT→B `comfort-summer` inference→C score 95 was observed on the boards. Live people-counter windows are in code; the complete doorway/occupancy trial remains open |
 | 5.7 | Full rehearsal on three boards | Run the whole thing end to end, record it and fill section 5 | Team | **Pending** |
 
@@ -680,7 +680,7 @@ mosquitto_pub -h <laptop-ip> -t pico/s3-001/cmd -m RUN   # board B now prints "A
 
 `sh tools/mtk.sh boards <laptop-ip>` runs all of this and more as a test (D1 tasks 1.1 to 1.4).
 
-**Current D6 update:** the LCD also has an interim real-sensor path through the [laptop relay](docs/d6/LIVE_LCD_TWO_SONARS.md); B's native full snapshot and occupancy path remain open. `ML PRESET` and `ML MODEL` still need `STOP`; `ml_setup` does not.
+**Current D6 update:** the earlier [laptop relay](tools/d6_live_lcd_relay.py) proved a real-sensor display. B now publishes its own environmental/two-sonar snapshots. B and C were flashed on 24 Nov; C drew live values and continued accepting snapshots beyond ten seconds. C's stale clearing still needs a physical disconnect test. B-owned occupancy remains open. `ML PRESET` and `ML MODEL` still need `STOP`; `ml_setup` does not.
 
 </details>
 
@@ -933,7 +933,7 @@ What the demo runs, what each step shows, and how far each step is on `main`. Th
 | 6 | Doorway count | Start `DOORWAY` on A, then walk in and out | A counts each entry and exit once; standing still, turning back or a missed echo count nothing | FR4 | **Built on A** 23 Nov (Jun Yong), laptop tests only. Sending each crossing to B's count is not built |
 | 7 | Event log | Count a crossing | B writes each event to the W25Q32 and reads it back | FR8 | **Not built** (waits for crossings to reach B) |
 | 8 | Snapshot on C | `D6MOCKPUB 2`, then `D6MOCKPUB 3` on B's console | B to C over MQTT; C redraws the count from 2 to 3 | FR7 | **Tested** 21 Nov, with mock values only |
-| 9 | Live snapshot | B sends its real readings and count | C shows live data, marks it stale, and accepts B after a reboot | FR7, FR12 | **Not built** |
+| 9 | Live snapshot | B sends its real AHT, light and two-sonar readings; count is still a placeholder | C shows live data, marks it stale, and accepts B after a reboot | FR7, FR12 | **Partially tested** 24 Nov: B and C flashed; C displayed continuing live snapshots beyond ten seconds. Physical stale and reboot recovery, and B-owned count, remain open |
 | 10 | Fault handling | Unplug the AHT, drop the Wi-Fi, send a broken config | A safe, predictable response to each failure | NFR2, NFR4 | **Not tested.** The responses are proposals only |
 | 11 | Any sensor on the fly | Add, change and refuse sensors and rules live on one board | That the platform takes any supported sensor without reflashing (task 5.3) | FR1, FR2 | **Not set up** |
 
@@ -1056,11 +1056,11 @@ Before step 1, the broker from setup item 4 must be running, and all three board
 >
 > **You should see:** C showing `MOCK`, the mock readings, and the count changing from 2 to 3.
 
-> **Step 9 · Live snapshot** (placeholder: not built)
+> **Step 9 · Live snapshot** (displayed on 24 Nov; occupancy still pending)
 >
-> **Commands:** to be added once Board B sends its real data.
+> **Commands:** start A's sensor profile and B's four MQTT bridges with [the D6 startup guide](usecase_commands.md), then send `D6VIEW` to C. Watch `d6/board-b/snapshot` for continuing `source:"live"` v3 messages; see [the LCD guide](docs/d6/LIVE_LCD_TWO_SONARS.md).
 >
-> **What it will do:** Board B sends its latest real readings, its count, the comfort score and its boot number about once a second, replacing the mock in step 8. Board C marks each field stale after a set time without updates, and accepts Board B again after B restarts instead of rejecting its new message numbers.
+> **What it does:** Board B sends recent AHT, light, and separate Sonar A/B distances about every two seconds. A missing sonar echo displays as `--`. `OCC --` remains a placeholder until B owns the doorway count. C's six-second stale clearing is implemented but still needs a physical disconnect check.
 
 > **Step 10 · Fault handling** (placeholder: not tested)
 >

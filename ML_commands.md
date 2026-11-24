@@ -1,16 +1,15 @@
 # Board B ML model commands
 
-These commands use the D6 three-board ESP32-S3 N16R8 setup: Board A is `s3-001`, Board B is `s3-002`, and Board C is `s3-003`. Run them from the **D6-Integration** checkout after the broker and boards are online. The five bundled models are already in the firmware; selecting another model does not require another flash. Selections and sensor mappings are volatile and must be loaded after a reboot. [Start the broker, sensor bridges, and default model first](usecase_commands.md#5-run-all-four-ab-sensor-bridges--normal-powershell-window-3).
+These commands use the D6 three-board ESP32-S3 N16R8 setup: Board A is `s3-001`, Board B is `s3-002`, and Board C is `s3-003`. Run them from the **D6-Integration** checkout after the broker and boards are online. The D6 live demo uses `sine-float`, `sine-int8`, `comfort-summer`, and `people-counter`. The firmware also bundles an autoencoder for separate D4 work; it is outside this demo and use case. Selecting another bundled model does not require another flash. Selections and sensor mappings are volatile and must be loaded after a reboot. [Start the broker, sensor bridges, and default model first](usecase_commands.md#5-run-all-four-ab-sensor-bridges--normal-powershell-window-3).
 
 | Model | Actual model input shape | Board B use | Result |
 | --- | --- | --- | --- |
 | `sine-float` | 1 float | Live AHT temperature/humidity and light are combined into one input; default | One unitless sine number |
 | `sine-int8` | 1 INT8 value | Same live source fields, quantized model | One unitless sine number |
 | `comfort-summer` | 2 floats | Live AHT temperature and humidity | Comfort score 0–99 plus class score |
-| `autoencoder` | 16 INT8 values | Synthetic replay in this three-board guide | 16 reconstructed numbers |
-| `people-counter` | 31 INT8 values | One Sonar A binding fills a rolling 31-reading window on B, or synthetic replay | `in`, `none`, or `out` plus confidence |
+| `people-counter` | 31 INT8 values | One Sonar A binding fills a rolling 31-reading window on B | `in`, `none`, or `out` plus confidence |
 
-The `people-counter` window is a **model-specific exception**: it has one typed sonar binding that fills 31 time slots. The general live setup remains limited to 16 bindings, and the other four models retain their original shapes. `people-counter` classifications do not update occupancy or the LCD. The current B remote window is an experimental transport check: Board A's normal 2 Hz sonar feed takes roughly 15.5 seconds to fill it, while the model's source training used roughly 50 ms per sample. Validate preprocessing, timing and labelled crossings before treating a class as an actual direction.
+The `people-counter` window is a **model-specific exception**: it has one typed sonar binding that fills 31 time slots. The general live setup remains limited to 16 bindings, and the other demo models retain their original shapes. `people-counter` classifications do not update occupancy or the LCD. The current B remote window is an experimental transport check: Board A's normal 2 Hz sonar feed takes roughly 15.5 seconds to fill it, while the model's source training used roughly 50 ms per sample. Validate preprocessing, timing and labelled crossings before treating a class as an actual direction. The 24 Nov live test did not produce a classification because Sonar A repeatedly timed out; the three other demo models returned live `status:OK` results.
 
 ## Common setup and result window — Windows
 
@@ -93,24 +92,7 @@ Expect `"model":"comfort-summer"`, `"comfort_score":N`, `"class_score":...`, and
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_comfort_summer.json'
 ```
 
-## 4. `autoencoder` — 16-value replay
-
-This model expects **16 model-ready values** and returns **16 reconstructed values**. No three-board live configuration file is supplied: repeating the available sensors into 16 bindings would be a shape check, not the model's training input. Its current D6 test is a synthetic replay, and the 16 values are not yet rendered on C.
-
-Replay file: [`config/ml_replay_autoencoder.txt`](config/ml_replay_autoencoder.txt). Run this complete PowerShell sequence in window 2:
-
-```powershell
-& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'STOP'
-& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'ML MODEL autoencoder'
-& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'ML OUTPUT publish'
-& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\ml_replay_autoencoder.txt'
-& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'RUN'
-& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_sine_float.json'
-```
-
-Expect `"model":"autoencoder"`, `"input_source":"replay"`, `"outputs":[...]` with 16 numbers, and `"status":"OK"`. Zeroes verify execution only; they are not an anomaly assessment.
-
-## 5. `people-counter` — experimental live window or 31-value replay
+## 4. `people-counter` — experimental live 31-reading window
 
 Configuration file: [`config/board_b_people_counter.json`](config/board_b_people_counter.json). B follows A's `SONAR_A` through its `A_SONAR_A` alias with `remote_profile=pulse`; **one** binding supplies successive readings to the 31-slot window. The existing [`config/board_b_ml.cfg`](config/board_b_ml.cfg) gives that alias a 500 ms expected interval.
 
@@ -155,7 +137,7 @@ Each model section gives its complete replay commands and the matching live conf
 
 ## Mac / Linux command form
 
-Use the same configuration and replay files from the repository root. Start the broker and A/B sensor aliases with the [Mac / Linux setup](usecase_commands.md#mac--linux). For any live JSON file named in sections 1, 2, 3 or 5:
+Use the same live configuration files from the repository root. Start the broker and A/B sensor aliases with the [Mac / Linux setup](usecase_commands.md#mac--linux). For any live JSON file named in sections 1–4:
 
 ```sh
 mosquitto_pub -h "$BROKER_IP" -q 1 -t pico/s3-002/cmd -f config/board_b_sine_float.json

@@ -141,6 +141,10 @@ static void direction_sample(const app_cfg_t *cfg, const uint8_t *data, int leng
 }
 
 void sensor_measurement_notify(const app_cfg_t *cfg,const uint8_t *data,int length) {
+#ifdef ESP_PLATFORM
+    extern void d6_live_sensor_notify(const app_cfg_t *, const uint8_t *, int);
+    d6_live_sensor_notify(cfg, data, length);
+#endif
     if (active >= 0 && models[active].kind == DIRECTION) {
         direction_sample(cfg, data, length);
         return;
