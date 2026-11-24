@@ -156,10 +156,12 @@ Stop-Service -Name mosquitto -ErrorAction SilentlyContinue
 
 ### 3. Watch board traffic — normal PowerShell, window 2
 
+Run this on the laptop hosting Mosquitto. The boards still connect to the laptop's Wi-Fi address.
+
 ```powershell
-$brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
+$brokerIp = '127.0.0.1'
 $sub = "$env:ProgramFiles\mosquitto\mosquitto_sub.exe"
-& $sub -h $brokerIp -t 'pico/+/heartbeat' -t 'pico/+/sensor/+/line' -t 'pico/s3-002/ml/status' -t 'pico/s3-002/ml/result' -t 'd6/board-b/snapshot' -v
+& $sub -h $brokerIp -t 'pico/+/heartbeat' -t 'pico/+/status/config' -t 'pico/+/sensor/+/line' -t 'pico/s3-002/ml/status' -t 'pico/s3-002/ml/result' -t 'd6/board-b/snapshot' -v
 ```
 
 Wait for fresh heartbeats from `s3-001`, `s3-002`, and `s3-003`. Keep this window open.
@@ -205,48 +207,82 @@ Send-BoardASensor 'BEGINCFG|name=SONAR_B|proto=gpio|gpio.mode=pulse|gpio.trig=6|
 
 ### 5. Run all four A→B sensor bridges — normal PowerShell, window 3
 
-Run from the repository root. Window 2 should show the four A source topics, B's typed aliases, and B's `sine-float` ML status and results when fresh inputs arrive. See [ML_commands.md](ML_commands.md) for optional live model switches.
+Run this whole block from the repository root on the laptop hosting Mosquitto. Close any old Python LCD relay first. Window 2 should show the four A source topics, B's typed aliases, and B's `sine-float` ML status and results.
 
 ```powershell
-& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'STOP'
-& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'CLEAR'
-& $pub -h $brokerIp -q 1 -t 'pico/s3-001/config' -f '.\config\board_a.cfg'
-Start-Sleep -Seconds 2
-& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'DOORWAY SONAR_A SONAR_B 70 85 70 85 70 2000'
-& $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'RUN'
+$brokerIp = '127.0.0.1'
+$pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
+if (-not (Test-Path -LiteralPath $pub -PathType Leaf)) { throw "Mosquitto publisher missing at $pub" }
+$boardAConfig = (Resolve-Path -LiteralPath '.\config\board_a.cfg' -ErrorAction Stop).Path
+$boardBConfig = (Resolve-Path -LiteralPath '.\config\board_b_ml.cfg' -ErrorAction Stop).Path
+$sineConfig = (Resolve-Path -LiteralPath '.\config\board_b_sine_float.json' -ErrorAction Stop).Path
 
-& $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -m 'STOP'
-& $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -m 'CLEAR'
-& $pub -h $brokerIp -q 1 -t 'pico/s3-002/config' -f '.\config\board_b_ml.cfg'
-Start-Sleep -Seconds 2
-& $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -m 'RUN'
-& $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_sine_float.json'
-& $pub -h $brokerIp -q 1 -t 'pico/s3-003/cmd' -m 'D6VIEW'
+function Start-D6Live {
+    function Send-D6Message {
+        & $pub -h $brokerIp -q 1 @args
+        if ($LASTEXITCODE -ne 0) { throw "MQTT publish failed: $($args -join ' ')" }
+    }
+
+    Send-D6Message -t 'pico/s3-001/cmd' -m 'STOP'
+    Send-D6Message -t 'pico/s3-001/cmd' -m 'CLEAR'
+    Send-D6Message -t 'pico/s3-001/config' -f $boardAConfig
+
+    Send-D6Message -t 'pico/s3-002/cmd' -m 'STOP'
+    Send-D6Message -t 'pico/s3-002/cmd' -m 'CLEAR'
+    Send-D6Message -t 'pico/s3-002/config' -f $boardBConfig
+    Start-Sleep -Seconds 2
+
+    Send-D6Message -t 'pico/s3-003/cmd' -m 'D6VIEW'
+    Send-D6Message -t 'pico/s3-002/cmd' -m 'RUN'
+    Send-D6Message -t 'pico/s3-002/cmd' -f $sineConfig
+    Send-D6Message -t 'pico/s3-001/cmd' -m 'RUN'
+}
+
+Start-D6Live
 ```
 
-`DOORWAY` makes A alternate sonar pings and report local `ENTRY`/`EXIT` events. The starting 70/85 cm thresholds require doorway calibration. B still does not own these counts; C displays `OCC --`. The `sine-float` model is the default live ML test. With the updated B and C firmware flashed, B publishes real AHT, light and both sonar distances directly to C. Watch the snapshot topic in a fourth normal PowerShell window:
+This starts normal sensor polling. Use the separate [doorway test](docs/d6/SONAR_ONLY_USECASE.md) when testing entry and exit totals on A. With the updated B and C firmware, B publishes AHT, light and both sonar distances directly to C. Watch the snapshot topic in another PowerShell window:
 
 ```powershell
-& "$env:ProgramFiles\mosquitto\mosquitto_sub.exe" -h $brokerIp -t 'd6/board-b/snapshot' -v
+& "$env:ProgramFiles\mosquitto\mosquitto_sub.exe" -h 127.0.0.1 -t 'd6/board-b/snapshot' -v
 ```
 
-Snapshots should continue arriving beyond ten seconds without the laptop relay. Press **Ctrl+C** to stop the subscriber. Select `config/board_b_comfort_summer.json` in window 3 if you want the live comfort card instead of the default sine output. For the experimental 31-reading B window, follow [ML_commands.md](ML_commands.md); the current 2 Hz B alias is not matched to A's 140 ms per-sonar doorway cadence.
+Snapshots should continue arriving about every two seconds. If you see comfort scores but no snapshots, check for fresh `A_AHT` and `A_LIGHT` under Board B's sensor topics in window 2. B needs both to publish a snapshot. If snapshots arrive but the screen stays blank, check C's serial console for its view and snapshot acknowledgements. A successful `mosquitto_pub` call confirms delivery to the broker. Board acceptance appears separately in the config status topics and C's console.
+
+To switch from the default sine test to live comfort, run this from the repository root in window 3:
+
+```powershell
+& "$env:ProgramFiles\mosquitto\mosquitto_pub.exe" -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_comfort_summer.json'
+```
+
+Keep the snapshot subscriber open to observe the readings. See [ML_commands.md](ML_commands.md) for the other model switches.
 
 ### 6. Test B→C landscape display with mock data — normal PowerShell, window 3
 
-This checks B publishing and C drawing a changing **synthetic** snapshot. Hold the LCD horizontally. Expect `MOCK` and occupancy 2, then occupancy 3.
+Run this as a separate test. Stop the live sensor stream first and wait for its last snapshot to expire. The mock and live snapshots use different sequence counters on the same topic, and C can reject a mock sequence that arrives while a newer live snapshot is fresh. Hold the LCD horizontally. Expect `MOCK` and occupancy 2, then occupancy 3. Run section 5 again to return to the live demo.
 
 ```powershell
-& $pub -h $brokerIp -q 1 -t 'pico/s3-003/cmd' -m 'D6VIEW'
+$pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
+if (-not (Test-Path -LiteralPath $pub -PathType Leaf)) { throw "Mosquitto publisher missing at $pub" }
+function Send-D6MockMessage {
+    & $pub -h 127.0.0.1 -q 1 @args
+    if ($LASTEXITCODE -ne 0) { throw "MQTT publish failed: $($args -join ' ')" }
+}
+
+Send-D6MockMessage -t 'pico/s3-001/cmd' -m 'STOP'
+Send-D6MockMessage -t 'pico/s3-002/cmd' -m 'STOP'
+Send-D6MockMessage -t 'pico/s3-003/cmd' -m 'D6VIEW'
+Start-Sleep -Seconds 14
+Send-D6MockMessage -t 'pico/s3-002/cmd' -m 'D6MOCKPUB 2'
 Start-Sleep -Seconds 2
-& $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -m 'D6MOCKPUB 2'
-Start-Sleep -Seconds 2
-& $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -m 'D6MOCKPUB 3'
+Send-D6MockMessage -t 'pico/s3-002/cmd' -m 'D6MOCKPUB 3'
 ```
 
 ### 7. End the session
 
 ```powershell
+$brokerIp = '127.0.0.1'
+$pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
 & $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'STOP'
 & $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -m 'STOP'
 ```
