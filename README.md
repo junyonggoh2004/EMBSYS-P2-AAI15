@@ -1093,15 +1093,23 @@ Only needed when the network or the firmware changes. Skip to 5.4.3 if both boar
 >
 > **Why:** the Wi-Fi name, password and broker address are built into the firmware when it is flashed.
 
-> **Step 3. Flash both boards.** Plug both in with data cables, then:
+> **Step 3. Flash both boards.** Plug both in with data cables. Find which port is which:
 >
 > ```sh
+> cd ~/Y2S1/EMBSYS-P2-AAI15
 > ls /dev/cu.usbmodem*
-> BOARD=n16r8 NODE=s3-005 PORT=/dev/cu.usbmodem<first> sh tools/mtk.sh flash
-> BOARD=n16r8 NODE=s3-004 PORT=/dev/cu.usbmodem<second> sh tools/mtk.sh flash
 > ```
 >
-> **What it does:** builds the same firmware for the N16R8 and flashes it with each board's own node ID. Label the boards afterwards.
+> Unplug the sensor board and run `ls /dev/cu.usbmodem*` again: the port that disappeared is the sensor board's. Plug it back in. Then set the two port names (these are the ones on Hasif's Mac; use the names your `ls` printed) and flash:
+>
+> ```sh
+> SENSOR=/dev/cu.usbmodem5CF80445551
+> SECOND=/dev/cu.usbmodem5CF80443971
+> BOARD=n16r8 NODE=s3-005 PORT=$SENSOR sh tools/mtk.sh flash
+> BOARD=n16r8 NODE=s3-004 PORT=$SECOND sh tools/mtk.sh flash
+> ```
+>
+> **What it does:** builds the same firmware for the N16R8 and flashes it with each board's own node ID. Label the boards afterwards. Run it from the `EMBSYS-P2-AAI15` folder, where `tools/mtk.sh` is.
 >
 > **You should see:** `Hash of data verified` three times per board.
 
