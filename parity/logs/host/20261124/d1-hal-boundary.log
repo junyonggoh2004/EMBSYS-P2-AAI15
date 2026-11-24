@@ -1,0 +1,40 @@
+ok    application/application_dispatch.c
+ok    application/application_state.c
+ok    application/config_parser.c
+ok    application/doorway.c
+ok    application/entrance_window.c
+ok    application/event_identity.c
+ok    application/event_log_map.c
+ok    application/event_record.c
+ok    application/ld2450.c
+ok    application/output_format.c
+ok    application/pulse_sequence.c
+ok    application/repl.c
+ok    application/scheduler.c
+ok    application/sensor_measurement.c
+ok    application/timing_contract.c
+ok    bus/bus_if.c
+ok    bus/gpio.c
+ok    bus/i2c.c
+ok    bus/i2c_profiles.c
+ok    bus/spi.c
+ok    bus/uart.c
+ok    flash/w25q32.c
+ok    hal/pulse_capture.c
+ok    hal/uart_status.c
+ok    inference_engine/inference_manager.c
+ok    mqtt/mqtt_config_parser.c
+ok    mqtt/mqtt_json_parser.c
+ok    mqtt/sensor_bridge.c
+ok    mqtt/sensor_frame.c
+ok    rule_engine/rule_action.c
+libraries/EdgeCore/src/./rule_engine/rule_expr.c:409:17: warning: enumeration value 'FN_mse' not handled in switch [-Wswitch]
+  409 |         switch ((fkind_t)t.op) {
+      |                 ^~~~~~~~~~~~~
+libraries/EdgeCore/src/./rule_engine/rule_expr.c:409:17: note: add missing switch cases
+  409 |         switch ((fkind_t)t.op) {
+      |                 ^
+1 warning generated.
+ok    rule_engine/rule_expr.c
+ok    rule_engine/rules.c
+ok    third_party/jsmn/jsmn.c

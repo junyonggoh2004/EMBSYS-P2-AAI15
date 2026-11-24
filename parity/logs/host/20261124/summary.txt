@@ -1,0 +1,22 @@
+Laptop test run, 24 Nov 2026 23:31, commit a420a93
+Compiler: Apple clang version 17.0.0 (clang-1700.6.4.2); Python: Python 3.14.0
+PASS  d1-hal-boundary
+PASS  d1-mtk-purity
+PASS  d1-startup
+PASS  d1-runtime
+PASS  d1-config-files
+PASS  d1-sensors
+PASS  d2-flash-log
+PASS  d3-timing
+PASS  d4-ml
+PASS  d5-bench
+PASS  d6-display
+PASS  d6-live
+PASS  py-test_ml_loader
+PASS  py-test_mtk_monitor
+PASS  py-test_sensor_loader
+PASS  py-test_sonar_fixture
+PASS  py-test_docs
+PASS  firmware-build
+PASS  firmware-image
+19 passed, 0 failed

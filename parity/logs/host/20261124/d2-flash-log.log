@@ -1,0 +1,3 @@
+w25q32/log mock: PASS (device faults, codec, CRC, recovery, torn slot, full log)
+event log: PASS (ApplicationTask results mapped, stored, recovered after reboot and read back; missing module and full area reported)
+SPI driver: PASS (opened as configured, 9F read returns EF 40 16, errors passed up, TX-only, short buffer refused, closed on removal)

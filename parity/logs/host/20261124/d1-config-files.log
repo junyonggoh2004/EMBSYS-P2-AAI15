@@ -1,0 +1,155 @@
+libraries/EdgeCore/src/mqtt/mqtt_json_parser.c:188:90: warning: unused parameter 'count' [-Wunused-parameter]
+  188 | static int stringify_array_as_spaces(const char *json, const jsmntok_t *toks, int i, int count,
+      |                                                                                          ^
+libraries/EdgeCore/src/mqtt/mqtt_json_parser.c:381:40: warning: comparison of integers of different signs: 'int' and 'unsigned long' [-Wsign-compare]
+  381 |         for (int ri = 0; buf[ri] && wi < sizeof(escaped) - 2; ri++) {
+      |                                     ~~ ^ ~~~~~~~~~~~~~~~~~~~
+libraries/EdgeCore/src/mqtt/mqtt_json_parser.c:501:22: warning: variable 'n' set but not used [-Wunused-but-set-variable]
+  501 |             for (int n = 0; j < count && toks[j].start < arr_end; n++) {
+      |                      ^
+libraries/EdgeCore/src/mqtt/mqtt_json_parser.c:545:22: warning: variable 'n' set but not used [-Wunused-but-set-variable]
+  545 |             for (int n = 0; j < count && toks[j].start < arr_end; n++) {
+      |                      ^
+4 warnings generated.
+[CFG] cfg_cb payload (first 120): BEGINCFG|name=AHT|proto=i2c|i2c.sensor=aht|mode=poll|freq_hz=0.5|timing.timeout_ms=600|i2c.sda=1|i2c.scl=2|i2c.addr=0x38
+[JSON] not starting with '{' after trim, char=0x22
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] added #0: AHT
+[CFG] added #1: LIGHT
+[CFG] added #2: SONAR_A
+[CFG] added #3: SONAR_B
+board_a.cfg: OK:AHT OK:LIGHT OK:SONAR_A OK:SONAR_B (I2C 1/2, sonars 10/11 and 6/7)
+[CFG] cfg_cb payload (first 120): BEGINCFG|name=A_AHT|proto=mqtt|mode=poll|freq_hz=0.5|remote_node=s3-001|remote_source=AHT|remote_profile=aht|ENDCFG
+BEGI
+[JSON] not starting with '{' after trim, char=0x22
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] added #0: A_AHT
+[CFG] added #1: A_LIGHT
+[CFG] added #2: A_SONAR_A
+[CFG] added #3: A_SONAR_B
+board_b_ml.cfg: B follows s3-001 AHT, LIGHT, SONAR_A and SONAR_B with their decoders
+[CFG] cfg_cb payload (first 120): BEGINCFG|name=SONAR_A|proto=gpio|gpio.mode=pulse|gpio.trig=10|gpio.echo=11|gpio.pull=down|gpio.trig_us=10|gpio.pulse_tim
+[JSON] not starting with '{' after trim, char=0x22
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] added #0: SONAR_A
+[CFG] cfg_cb payload (first 120): BEGINCFG|name=A_SONAR_A|proto=mqtt|mode=poll|timing.interval_ms=70|remote_node=s3-001|remote_source=SONAR_A|remote_profi
+[JSON] not starting with '{' after trim, char=0x22
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] added #0: A_SONAR_A
+people-counter profiles: OK:SONAR_A on A every 70 ms, OK:A_SONAR_A on B every 70 ms
+[CFG] cfg_cb payload (first 120): # Breadboard hole numbers are physical only: the optional 65-row Board A layout keeps GPIO1/2/4/5 unchanged.
+# Current b
+[JSON] not starting with '{' after trim, char=0x23
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] added #0: AHT
+[CFG] added #1: LIGHT
+[CFG] added #2: DISTANCE
+config/three_sensors.cfg: 3 of 3 configs OK
+[CFG] cfg_cb payload (first 120): # D3-2 manual capture probe, current V2 sonar only: TRIG4/ECHO5.
+# Verify HC-SR04+ identity, safe 3.3 V Echo and common 
+[JSON] not starting with '{' after trim, char=0x23
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] added #0: D3_SONAR
+config/d3_sonar_v2_once.cfg: 1 of 1 configs OK
+[CFG] cfg_cb payload (first 120): # Use separate TRIG/ECHO pairs and 3.3 V-compatible ECHO signals.
+# The LIGHT profile integrates for at least 120 ms. Tr
+[JSON] not starting with '{' after trim, char=0x23
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] added #0: DISTANCE
+[CFG] added #1: LIGHT
+[CFG] added #2: DISTANCE2
+config/demos/dual-ultrasonic.cfg: 3 of 3 configs OK
+[CFG] cfg_cb payload (first 120): # TSL2561 and the existing ultrasonic.
+STOP
+CLEAR
+BEGINCFG|name=LIGHT|proto=i2c|i2c.sensor=tsl2561|mode=poll|freq_hz=0.5
+[JSON] not starting with '{' after trim, char=0x23
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] added #0: LIGHT
+[CFG] added #1: DISTANCE
+config/demos/no-aht.cfg: 2 of 2 configs OK
+[CFG] cfg_cb payload (first 120): # AHT and the existing ultrasonic. GPIO4/5 stay in their current positions.
+STOP
+CLEAR
+BEGINCFG|name=AHT|proto=i2c|i2c.s
+[JSON] not starting with '{' after trim, char=0x23
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] added #0: AHT
+[CFG] added #1: DISTANCE
+config/demos/no-light.cfg: 2 of 2 configs OK
+[CFG] cfg_cb payload (first 120): BEGINCFG|name=MH|proto=gpio|gpio.mode=digital|gpio.pin=40|gpio.pull=up|mode=poll|freq_hz=2|ENDCFG
+[JSON] not starting with '{' after trim, char=0x22
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] added #0: MH
+[CFG] cfg_cb payload (first 120): BEGINCFG|name=ACC|proto=i2c|mode=poll|freq_hz=2|i2c.sda=1|i2c.scl=2|i2c.addr=0x19|i2c.pre=0x20 0x57|i2c.reg=0xA8|i2c.reg
+[JSON] not starting with '{' after trim, char=0x22
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] added #0: ACC
+[CFG] cfg_cb payload (first 120): BEGINCFG|name=SONAR|proto=gpio|gpio.mode=pulse|gpio.trig=42|gpio.echo=41|gpio.pull=down|gpio.trig_us=10|gpio.pulse_timeo
+[JSON] not starting with '{' after trim, char=0x22
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] added #0: SONAR
+[CFG] cfg_cb payload (first 120): BEGINCFG|name=FLASH_ID|proto=spi|mode=poll|freq_hz=1|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=
+[JSON] not starting with '{' after trim, char=0x22
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] added #0: FLASH_ID
+[CFG] cfg_cb payload (first 120): BEGINCFG|name=SONAR|proto=gpio|gpio.mode=pulse|gpio.trig=42|gpio.echo=41|gpio.pull=down|gpio.trig_us=10|gpio.pulse_timeo
+[JSON] not starting with '{' after trim, char=0x22
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] added #0: SONAR
+[CFG] cfg_cb payload (first 120): BEGINCFG|name=SONAR|proto=gpio|gpio.mode=pulse|gpio.trig=42|gpio.echo=41|gpio.pull=down|gpio.trig_us=10|gpio.pulse_timeo
+[JSON] not starting with '{' after trim, char=0x22
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] added #0: SONAR
+[CFG] cfg_cb payload (first 120): BEGINCFG|name=ACC|proto=i2c|mode=poll|i2c.sda=1|i2c.scl=2|i2c.addr=0x19|i2c.pre=0x20 0x57|i2c.reg=0xA8|i2c.reg_size=1|i2
+[JSON] not starting with '{' after trim, char=0x22
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] added #0: ACC
+README 5.4: OK:MH (GPIO) OK:ACC (I2C) OK:SONAR (GPIO pulse) OK:FLASH_ID (SPI); periodic, one-shot and event-driven timing
+[CFG] cfg_cb payload (first 120): BEGINCFG|name=BAD|proto=nope|mode=poll|freq_hz=1|ENDCFG
+[JSON] not starting with '{' after trim, char=0x22
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] add failed (-5)
+[CFG] cfg_cb payload (first 120): BEGINCFG|name=SAME|proto=gpio|gpio.mode=pulse|gpio.trig=42|gpio.echo=42|mode=poll|freq_hz=2|ENDCFG
+[JSON] not starting with '{' after trim, char=0x22
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] add failed (-5)
+[CFG] cfg_cb payload (first 120): BEGINCFG|name=EVT|proto=gpio|gpio.mode=digital|gpio.pin=40|mode=poll|timing.mode=event_driven|timing.window_ms=50|ENDCFG
+[JSON] not starting with '{' after trim, char=0x22
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] add failed (-5)
+refusals: FAIL:BAD (unknown proto), FAIL:SAME (trig equals echo), FAIL:EVT (event timing without a source)
+[CFG] cfg_cb payload (first 120): BEGINCFG|name=HOST|proto=spi|mode=poll|freq_hz=1|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.tx=0x9F|spi.read_len=4|spi.time
+[JSON] not starting with '{' after trim, char=0x22
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] add failed (-5)
+[CFG] cfg_cb payload (first 120): BEGINCFG|name=SLOW|proto=spi|mode=poll|freq_hz=1|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.tx=0x9F|spi.read_len=4|spi.time
+[JSON] not starting with '{' after trim, char=0x22
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] add failed (-5)
+[CFG] cfg_cb payload (first 120): BEGINCFG|name=MODE|proto=spi|mode=poll|freq_hz=1|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.tx=0x9F|spi.read_len=4|spi.time
+[JSON] not starting with '{' after trim, char=0x22
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] add failed (-5)
+[CFG] cfg_cb payload (first 120): BEGINCFG|name=PIN|proto=spi|mode=poll|freq_hz=1|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.tx=0x9F|spi.read_len=4|spi.timeo
+[JSON] not starting with '{' after trim, char=0x22
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] add failed (-5)
+[CFG] cfg_cb payload (first 120): BEGINCFG|name=DUP|proto=spi|mode=poll|freq_hz=1|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.tx=0x9F|spi.read_len=4|spi.timeo
+[JSON] not starting with '{' after trim, char=0x22
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] add failed (-5)
+[CFG] cfg_cb payload (first 120): BEGINCFG|name=BIG|proto=spi|mode=poll|freq_hz=1|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=10000
+[JSON] not starting with '{' after trim, char=0x22
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] add failed (-5)
+[CFG] cfg_cb payload (first 120): BEGINCFG|name=STREAM|proto=spi|mode=stream|freq_hz=1|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=
+[JSON] not starting with '{' after trim, char=0x22
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] add failed (-5)
+[CFG] cfg_cb payload (first 120): BEGINCFG|name=LONG|proto=spi|mode=poll|freq_hz=1|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=1000
+[JSON] not starting with '{' after trim, char=0x22
+[CFG] mqtt_json_try_convert_to_inline -> 0
+[CFG] add failed (-5)
+SPI contract: refused hspi, 50 kHz, mode 4, reserved pin 27, shared pins, 129-byte read, stream mode, 65-byte write
+Config files and README 5.4 config lines: PASS

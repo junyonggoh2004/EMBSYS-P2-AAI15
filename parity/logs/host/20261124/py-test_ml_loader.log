@@ -1,0 +1,31 @@
+..STOP
+CLEARED
+CFG: ok
+CFG: ok
+[SHOW]
+ML: OK MODEL sine-float
+ML: OK RESET
+ML: OK BIND 0 AHT temperature_c -10 50
+ML: OK BIND 1 AHT humidity_pct 0 100
+ML: OK BIND 2 LIGHT light_lux 0 1000
+ML: OK RUN
+RUN
+STOP
+CLEARED
+CFG: ok
+[SHOW]
+ML: OK PRESET comfort-summer
+ML: OK RUN
+RUN
+.STOP
+ML: OK MODEL people-counter
+{"type":"ml","model":"people-counter","direction":"none","status":"OK"}
+ML: OK REPLAY 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+.ML: ERROR bad
+.ML: OK RUN WRONG
+ML: OK RUN
+....
+----------------------------------------------------------------------
+Ran 9 tests in 0.001s
+
+OK

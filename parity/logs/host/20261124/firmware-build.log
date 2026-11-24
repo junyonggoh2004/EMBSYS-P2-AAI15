@@ -1,0 +1,183 @@
+Executing action: all (aliases: build)
+Running ninja in directory ./esp32s3_mtk/build-n16r8
+Executing "ninja all"...
+[0/2] Re-checking globbed directories...
+[1/2] Re-running CMake...
+-- Component directory ~/esp/esp-idf-v6.1/components/idf_test does not contain a CMakeLists.txt file. No component will be added
+-- Component directory ~/esp/esp-idf-v6.1/components/mqtt does not contain a CMakeLists.txt file. No component will be added
+-- Component directory ./esp32s3_mtk/third_party/mtk3smp-esp32s3/components/net does not contain a CMakeLists.txt file. No component will be added
+-- Minimal build - OFF
+-- Building ESP-IDF components for target esp32s3
+NOTE: 
+Following dependencies have new versions available:
+Dependency "espressif/esp-nn": "1.4.1" -> "1.5.0"
+Consider running "idf.py update-dependencies" to update your lock file.
+NOTE: Processing 4 dependencies:
+NOTE: [1/4] espressif/esp-nn (1.4.1)
+NOTE: [2/4] espressif/esp-tflite-micro (1.4.0)
+NOTE: [3/4] espressif/mqtt (1.1.0)
+NOTE: [4/4] idf (6.1.0)
+-- ESP-TEE is currently supported only on the esp32c6;esp32h2;esp32c5;esp32c61 SoCs
+-- KCONFIG_REPORT_VERBOSITY not set, using default
+-- Project sdkconfig file ./esp32s3_mtk/build-n16r8/sdkconfig
+NOTE: ~/esp/esp-idf-v6.1/components/bootloader/Kconfig.projbuild:386: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: ~/esp/esp-idf-v6.1/components/bootloader/Kconfig.projbuild:426: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: ~/esp/esp-idf-v6.1/components/esp_hw_support/./lowpower/port/esp32p4/Kconfig.p4_rev3_mspi_workaround:6: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: ~/esp/esp-idf-v6.1/components/esp_mm/Kconfig:20: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: ~/esp/esp-idf-v6.1/components/esp_system/./port/soc/esp32s3/Kconfig.memory:21: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+Loading defaults file ./esp32s3_mtk/sdkconfig.defaults...
+NOTE: unknown kconfig symbol 'BT_ENABLED' assigned to 'n' in ./esp32s3_mtk/sdkconfig.defaults
+Loading defaults file ./esp32s3_mtk/sdkconfig.board.n16r8...
+NOTE: unknown kconfig symbol 'BT_ENABLED' assigned to 'n' in ./esp32s3_mtk/sdkconfig.board.n16r8
+NOTE: Kconfig parser version: 1
+NOTE: Kconfig defaults policy: use sdkconfig
+NOTE: Status: Finished with notifications
+NOTE: ~/esp/esp-idf-v6.1/components/esp_system/Kconfig:339: ESP_TASK_WDT_CHECK_IDLE_TASK_CPU0 has user-set value n from <tmp> but is not visible (disabled dependency)
+NOTE: ~/esp/esp-idf-v6.1/components/esp_system/Kconfig:350: ESP_TASK_WDT_CHECK_IDLE_TASK_CPU1 has user-set value n from <tmp> but is not visible (disabled dependency)
+-- Compiler supported targets: xtensa-esp-elf
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- App "esp32s3_mtk" version: d1-mtk-v1.0-178-ga420a93
+-- Setting up mbedtls configuration
+-- Linkage type is PUBLIC
+-- Adding linker script ~/esp/esp-idf-v6.1/components/esp_hal_wdt/esp32s3/rom.wdt.ld
+-- Adding linker script ~/esp/esp-idf-v6.1/components/esp_system/ld/esp32s3/memory.ld.in
+--   -> Preprocessing .in script: ~/esp/esp-idf-v6.1/components/esp_system/ld/esp32s3/memory.ld.in
+-- Adding linker script ~/esp/esp-idf-v6.1/components/esp_system/ld/esp32s3/sections.ld.in
+--   -> Preprocessing .in script: ~/esp/esp-idf-v6.1/components/esp_system/ld/esp32s3/sections.ld.in
+--   -> Applying ldgen processing: ./esp32s3_mtk/build-n16r8/esp-idf/esp_system/ld/sections.ld.in
+-- Adding linker script ~/esp/esp-idf-v6.1/components/soc/esp32s3/ld/esp32s3.peripherals.ld
+-- Adding linker script ~/esp/esp-idf-v6.1/components/esp_rom/esp32s3/ld/esp32s3.rom.ld
+-- Adding linker script ~/esp/esp-idf-v6.1/components/esp_rom/esp32s3/ld/esp32s3.rom.api.ld
+-- Adding linker script ~/esp/esp-idf-v6.1/components/esp_rom/esp32s3/ld/esp32s3.rom.bt_funcs.ld
+-- Adding linker script ~/esp/esp-idf-v6.1/components/esp_rom/esp32s3/ld/esp32s3.rom.libgcc.ld
+-- Adding linker script ~/esp/esp-idf-v6.1/components/esp_rom/esp32s3/ld/esp32s3.rom.version.ld
+-- Adding linker script ~/esp/esp-idf-v6.1/components/esp_rom/esp32s3/ld/esp32s3.rom.ble_master.ld
+-- Adding linker script ~/esp/esp-idf-v6.1/components/esp_rom/esp32s3/ld/esp32s3.rom.ble_50.ld
+-- Adding linker script ~/esp/esp-idf-v6.1/components/esp_rom/esp32s3/ld/esp32s3.rom.ble_smp.ld
+-- Adding linker script ~/esp/esp-idf-v6.1/components/esp_rom/esp32s3/ld/esp32s3.rom.ble_dtm.ld
+-- Adding linker script ~/esp/esp-idf-v6.1/components/esp_rom/esp32s3/ld/esp32s3.rom.ble_test.ld
+-- Adding linker script ~/esp/esp-idf-v6.1/components/esp_rom/esp32s3/ld/esp32s3.rom.ble_scan.ld
+-- Adding linker script ~/esp/esp-idf-v6.1/components/esp_rom/esp32s3/ld/esp32s3.rom.libc.ld
+CMake Warning (deprecated) at managed_components/espressif__esp-nn/CMakeLists.txt:1 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+This warning is for project developers.  Use -Wno-author or -Wno-deprecated
+to suppress it.
+
+CMake Warning (deprecated) at managed_components/espressif__esp-tflite-micro/CMakeLists.txt:3 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+This warning is for project developers.  Use -Wno-author or -Wno-deprecated
+to suppress it.
+
+CMake Warning at ~/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:106 (message):
+  Private include directory
+  '~/esp/esp-idf-v6.1/components/esp_wifi/wifi_apps/roaming_app/include'
+  belongs to component esp_wifi but is being used by component
+  wpa_supplicant.  It is recommended to define the component dependency for
+  wpa_supplicant on the component esp_wifi, i.e.  'idf_component_register(...
+  PRIV_REQUIRES esp_wifi)' in the CMakeLists.txt of wpa_supplicant, and
+  specify the included directory as idf_component_register(...
+  PRIV_INCLUDE_DIRS <dir relative to component>) in the CMakeLists.txt of
+  component esp_wifi.
+Call Stack (most recent call first):
+  ~/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:130 (__component_validation_check_include_dirs)
+  ~/esp/esp-idf-v6.1/CMakeLists.txt:353 (__component_validation_run_checks)
+
+
+CMake Warning at ~/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:106 (message):
+  Private include directory
+  '~/esp/esp-idf-v6.1/components/esp_wifi/wifi_apps/roaming_app/src'
+  belongs to component esp_wifi but is being used by component
+  wpa_supplicant.  It is recommended to define the component dependency for
+  wpa_supplicant on the component esp_wifi, i.e.  'idf_component_register(...
+  PRIV_REQUIRES esp_wifi)' in the CMakeLists.txt of wpa_supplicant, and
+  specify the included directory as idf_component_register(...
+  PRIV_INCLUDE_DIRS <dir relative to component>) in the CMakeLists.txt of
+  component esp_wifi.
+Call Stack (most recent call first):
+  ~/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:130 (__component_validation_check_include_dirs)
+  ~/esp/esp-idf-v6.1/CMakeLists.txt:353 (__component_validation_run_checks)
+
+
+CMake Warning at ~/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:106 (message):
+  Private include directory
+  '~/esp/esp-idf-v6.1/components/wpa_supplicant/src' belongs to
+  component wpa_supplicant but is being used by component esp_wifi.  It is
+  recommended to define the component dependency for esp_wifi on the
+  component wpa_supplicant, i.e.  'idf_component_register(...  PRIV_REQUIRES
+  wpa_supplicant)' in the CMakeLists.txt of esp_wifi, and specify the
+  included directory as idf_component_register(...  PRIV_INCLUDE_DIRS <dir
+  relative to component>) in the CMakeLists.txt of component wpa_supplicant.
+Call Stack (most recent call first):
+  ~/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:130 (__component_validation_check_include_dirs)
+  ~/esp/esp-idf-v6.1/CMakeLists.txt:353 (__component_validation_run_checks)
+
+
+CMake Warning at ~/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:106 (message):
+  Private include directory
+  '~/esp/esp-idf-v6.1/components/wpa_supplicant/esp_supplicant/src'
+  belongs to component wpa_supplicant but is being used by component
+  esp_wifi.  It is recommended to define the component dependency for
+  esp_wifi on the component wpa_supplicant, i.e.  'idf_component_register(...
+  PRIV_REQUIRES wpa_supplicant)' in the CMakeLists.txt of esp_wifi, and
+  specify the included directory as idf_component_register(...
+  PRIV_INCLUDE_DIRS <dir relative to component>) in the CMakeLists.txt of
+  component wpa_supplicant.
+Call Stack (most recent call first):
+  ~/esp/esp-idf-v6.1/tools/cmake/component_validation.cmake:130 (__component_validation_check_include_dirs)
+  ~/esp/esp-idf-v6.1/CMakeLists.txt:353 (__component_validation_run_checks)
+
+
+-- Components: app_update bootloader bootloader_support cxx driver edge_mtk edgecore efuse esp-tls esp_app_format esp_blockdev esp_bootloader_format esp_coex esp_common esp_driver_dma esp_driver_gpio esp_driver_uart esp_driver_usb_serial_jtag esp_event esp_hal_ana_conv esp_hal_clock esp_hal_dma esp_hal_gpio esp_hal_gpspi esp_hal_i2c esp_hal_ledc esp_hal_mspi esp_hal_pmu esp_hal_rmt esp_hal_rtc_timer esp_hal_security esp_hal_timg esp_hal_touch_sens esp_hal_twai esp_hal_uart esp_hal_usb esp_hal_wdt esp_hw_support esp_libc esp_mm esp_netif esp_netif_stack esp_partition esp_phy esp_pm esp_psram esp_ringbuf esp_rom esp_security esp_stdio esp_system esp_timer esp_usb_cdc_rom_console esp_wifi espressif__esp-nn espressif__esp-tflite-micro espressif__mqtt esptool_py freertos freertos_shim hal heap http_parser lcd_output log lwip main mbedtls mtkernel nvs_flash nvs_sec_provider partition_table pthread soc spi_flash tcp_transport vfs wpa_supplicant xtensa
+-- Component paths: ~/esp/esp-idf-v6.1/components/app_update ~/esp/esp-idf-v6.1/components/bootloader ~/esp/esp-idf-v6.1/components/bootloader_support ~/esp/esp-idf-v6.1/components/cxx ~/esp/esp-idf-v6.1/components/driver ./esp32s3_mtk/components/edge_mtk ./esp32s3_mtk/components/edgecore ~/esp/esp-idf-v6.1/components/efuse ~/esp/esp-idf-v6.1/components/esp-tls ~/esp/esp-idf-v6.1/components/esp_app_format ~/esp/esp-idf-v6.1/components/esp_blockdev ~/esp/esp-idf-v6.1/components/esp_bootloader_format ~/esp/esp-idf-v6.1/components/esp_coex ~/esp/esp-idf-v6.1/components/esp_common ~/esp/esp-idf-v6.1/components/esp_driver_dma ~/esp/esp-idf-v6.1/components/esp_driver_gpio ~/esp/esp-idf-v6.1/components/esp_driver_uart ~/esp/esp-idf-v6.1/components/esp_driver_usb_serial_jtag ~/esp/esp-idf-v6.1/components/esp_event ~/esp/esp-idf-v6.1/components/esp_hal_ana_conv ~/esp/esp-idf-v6.1/components/esp_hal_clock ~/esp/esp-idf-v6.1/components/esp_hal_dma ~/esp/esp-idf-v6.1/components/esp_hal_gpio ~/esp/esp-idf-v6.1/components/esp_hal_gpspi ~/esp/esp-idf-v6.1/components/esp_hal_i2c ~/esp/esp-idf-v6.1/components/esp_hal_ledc ~/esp/esp-idf-v6.1/components/esp_hal_mspi ~/esp/esp-idf-v6.1/components/esp_hal_pmu ~/esp/esp-idf-v6.1/components/esp_hal_rmt ~/esp/esp-idf-v6.1/components/esp_hal_rtc_timer ~/esp/esp-idf-v6.1/components/esp_hal_security ~/esp/esp-idf-v6.1/components/esp_hal_timg ~/esp/esp-idf-v6.1/components/esp_hal_touch_sens ~/esp/esp-idf-v6.1/components/esp_hal_twai ~/esp/esp-idf-v6.1/components/esp_hal_uart ~/esp/esp-idf-v6.1/components/esp_hal_usb ~/esp/esp-idf-v6.1/components/esp_hal_wdt ~/esp/esp-idf-v6.1/components/esp_hw_support ~/esp/esp-idf-v6.1/components/esp_libc ~/esp/esp-idf-v6.1/components/esp_mm ~/esp/esp-idf-v6.1/components/esp_netif ~/esp/esp-idf-v6.1/components/esp_netif_stack ~/esp/esp-idf-v6.1/components/esp_partition ~/esp/esp-idf-v6.1/components/esp_phy ~/esp/esp-idf-v6.1/components/esp_pm ~/esp/esp-idf-v6.1/components/esp_psram ~/esp/esp-idf-v6.1/components/esp_ringbuf ~/esp/esp-idf-v6.1/components/esp_rom ~/esp/esp-idf-v6.1/components/esp_security ~/esp/esp-idf-v6.1/components/esp_stdio ~/esp/esp-idf-v6.1/components/esp_system ~/esp/esp-idf-v6.1/components/esp_timer ~/esp/esp-idf-v6.1/components/esp_usb_cdc_rom_console ~/esp/esp-idf-v6.1/components/esp_wifi ./esp32s3_mtk/managed_components/espressif__esp-nn ./esp32s3_mtk/managed_components/espressif__esp-tflite-micro ./esp32s3_mtk/managed_components/espressif__mqtt ~/esp/esp-idf-v6.1/components/esptool_py ./esp32s3_mtk/third_party/mtk3smp-esp32s3/components/freertos ./esp32s3_mtk/third_party/mtk3smp-esp32s3/components/freertos_shim ~/esp/esp-idf-v6.1/components/hal ~/esp/esp-idf-v6.1/components/heap ~/esp/esp-idf-v6.1/components/http_parser ./esp32s3_mtk/components/lcd_output ~/esp/esp-idf-v6.1/components/log ~/esp/esp-idf-v6.1/components/lwip ./esp32s3_mtk/main ~/esp/esp-idf-v6.1/components/mbedtls ./esp32s3_mtk/third_party/mtk3smp-esp32s3/components/mtkernel ~/esp/esp-idf-v6.1/components/nvs_flash ~/esp/esp-idf-v6.1/components/nvs_sec_provider ~/esp/esp-idf-v6.1/components/partition_table ~/esp/esp-idf-v6.1/components/pthread ~/esp/esp-idf-v6.1/components/soc ~/esp/esp-idf-v6.1/components/spi_flash ~/esp/esp-idf-v6.1/components/tcp_transport ~/esp/esp-idf-v6.1/components/vfs ~/esp/esp-idf-v6.1/components/wpa_supplicant ~/esp/esp-idf-v6.1/components/xtensa
+-- Configuring done (7.8s)
+-- Generating done (0.4s)
+-- Build files have been written to: ./esp32s3_mtk/build-n16r8
+[0/4] Re-checking globbed directories...
+[1/12] Building C object esp-idf/esp_app_format/CMakeFiles/__idf_esp_app_format.dir/esp_app_desc.c.obj
+[2/12] Performing build step for 'bootloader'
+[1/1] cd ./esp32s3_mtk/build-n16r8/bootloader && ~/.espressif/python_env/idf6.1_py3.14_env/bin/python ~/esp/esp-idf-v6.1/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x0 ./esp32s3_mtk/build-n16r8/bootloader/bootloader.bin
+Bootloader binary size 0x5220 bytes. 0x2de0 bytes (36%) free.
+[3/12] No install step for 'bootloader'
+[4/12] Linking C static library esp-idf/esp_app_format/libesp_app_format.a
+[5/12] Completed 'bootloader'
+[6/12] Generating esp-idf/esp_system/ld/sections.ld
+NOTE: ~/esp/esp-idf-v6.1/components/bootloader/Kconfig.projbuild:386: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: ~/esp/esp-idf-v6.1/components/bootloader/Kconfig.projbuild:426: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: ~/esp/esp-idf-v6.1/components/esp_hw_support/./lowpower/port/esp32p4/Kconfig.p4_rev3_mspi_workaround:6: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: ~/esp/esp-idf-v6.1/components/esp_mm/Kconfig:20: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: ~/esp/esp-idf-v6.1/components/esp_system/./port/soc/esp32s3/Kconfig.memory:21: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+[7/12] Linking CXX executable esp32s3_mtk.elf
+[8/12] Generating binary image from built executable
+esptool v5.6.0
+Creating ESP32-S3 image...
+Merged 2 ELF sections.
+Successfully created ESP32-S3 image.
+Generated ./esp32s3_mtk/build-n16r8/esp32s3_mtk.bin
+[9/12] cd ./esp32s3_mtk/build-n16r8 && ~/.espressif/python_env/idf6.1_py3.14_env/bin/python ~/esp/esp-idf-v6.1/components/partition_table/check_sizes.py --offset 0x8000 partition --type app ./esp32s3_mtk/build-n16r8/partition_table/partition-table.bin ./esp32s3_mtk/build-n16r8/esp32s3_mtk.bin
+esp32s3_mtk.bin binary size 0x14b090 bytes. Smallest app partition is 0x2f0000 bytes. 0x1a4f70 bytes (56%) free.
+
+Project build complete. To flash, run:
+ idf.py flash
+or
+ idf.py -p PORT flash
+or
+ python -m esptool --chip esp32s3 -b 460800 --before default-reset --after hard-reset write-flash --flash-mode dio --flash-size 4MB --flash-freq 80m 0x0 esp32s3_mtk/build-n16r8/bootloader/bootloader.bin 0x8000 esp32s3_mtk/build-n16r8/partition_table/partition-table.bin 0x10000 esp32s3_mtk/build-n16r8/esp32s3_mtk.bin
+or from the "./esp32s3_mtk/build-n16r8" directory
+ python -m esptool --chip esp32s3 -b 460800 --before default-reset --after hard-reset write-flash "@flash_args"

@@ -1,0 +1,9 @@
+[BOOT] esp32s3_mtk node s3-001: micro T-Kernel 3 SMP, 2 processors, reset reason: unknown
+[BOOT] application startup stack: 16384 bytes, kernel processor 1
+[BOOT] esp32s3_mtk node s3-001: micro T-Kernel 3 SMP, 2 processors, reset reason: unknown
+[BOOT] application startup stack: 16384 bytes, kernel processor 1
+[BOOT] durable event identity unavailable: WINDOW disabled; NVS was not erased
+[BOOT] esp32s3_mtk node s3-001: micro T-Kernel 3 SMP, 2 processors, reset reason: unknown
+[BOOT] application startup stack: 16384 bytes, kernel processor 1
+[BOOT] start-up stopped: er=-1
+startup task: PASS (small initial task, 16 KiB pinned FPU worker, identity before runtime, cleanup and failure paths)
