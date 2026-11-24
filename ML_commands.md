@@ -1,99 +1,169 @@
-# Board B ML commands
+# Board B ML model commands
 
-Use these commands from the repository root with the existing merged firmware: Board A is `s3-001`, Board B is `s3-002`, and both are connected to the laptop's MQTT broker. The five bundled models are already in the firmware; changing between them does not require a flash. The runtime setup is volatile, so repeat the startup block after a board reboot. `sine-float` is the default in [usecase_commands.md](usecase_commands.md).
+These commands use the D6 three-board ESP32-S3 N16R8 setup: Board A is `s3-001`, Board B is `s3-002`, and Board C is `s3-003`. Run them from the **D6-Integration** checkout after the broker and boards are online. The five bundled models are already in the firmware; selecting another model does not require another flash. Selections and sensor mappings are volatile and must be loaded after a reboot. [Start the broker, sensor bridges, and default model first](usecase_commands.md#5-run-all-four-ab-sensor-bridges--normal-powershell-window-3).
 
-| Model | Input | Use in this setup |
-| --- | --- | --- |
-| `sine-float` | A's AHT temperature and humidity, and light; averaged into one input | Default live pipeline demonstration; output is unitless |
-| `sine-int8` | Same three live fields | Optional live model switch |
-| `comfort-summer` | A's AHT temperature and humidity | Optional live model switch; result includes `comfort_score` from 0 to 99 |
-| `autoencoder` | 16 model-ready values | Replay demonstration only in this guide |
-| `people-counter` | 31 preprocessed doorway-window values | Replay demonstration only; no live feature-window producer is implemented yet |
+| Model | Actual model input shape | Board B use | Result |
+| --- | --- | --- | --- |
+| `sine-float` | 1 float | Live AHT temperature/humidity and light are combined into one input; default | One unitless sine number |
+| `sine-int8` | 1 INT8 value | Same live source fields, quantized model | One unitless sine number |
+| `comfort-summer` | 2 floats | Live AHT temperature and humidity | Comfort score 0–99 plus class score |
+| `autoencoder` | 16 INT8 values | Synthetic replay in this three-board guide | 16 reconstructed numbers |
+| `people-counter` | 31 INT8 values | One Sonar A binding fills a rolling 31-reading window on B, or synthetic replay | `in`, `none`, or `out` plus confidence |
 
-The live `ml_setup` interface accepts at most 16 input bindings, so sending `people-counter` as a live setup returns `unsupported_live_model`. Its replay proves the model can run; a vector of zeros cannot prove entry, exit, or occupancy. The uploaded-model option also exists, but needs a separately uploaded model and its verified input shape. With the new B and C firmware, a live `comfort-summer` result also reaches C through `d6/board-b/comfort`. C's other cards use a separate snapshot path: B has a mock publisher, and the [temporary laptop relay](docs/d6/LIVE_LCD_TWO_SONARS.md) can publish real AHT, light, and separate Sonar A/B distances. Occupancy in that relay is a placeholder.
+The `people-counter` window is a **model-specific exception**: it has one typed sonar binding that fills 31 time slots. The general live setup remains limited to 16 bindings, and the other four models retain their original shapes. `people-counter` classifications do not update occupancy or the LCD. The current B remote window is an experimental transport check: Board A's normal 2 Hz sonar feed takes roughly 15.5 seconds to fill it, while the model's source training used roughly 50 ms per sample. Validate preprocessing, timing and labelled crossings before treating a class as an actual direction.
 
-## Windows PowerShell: start Board B live ML
+## Common setup and result window — Windows
 
-Use **normal PowerShell** for publishers and subscribers. Start the broker first using the Administrator PowerShell instructions in [usecase_commands.md](usecase_commands.md), then confirm fresh A and B heartbeats. The commands below use the laptop's local broker listener; the boards themselves still require the laptop Wi-Fi IP in their compiled credentials. Run from this checkout, not from a different branch.
+Use **normal PowerShell** for these commands. Start the Mosquitto broker using the Administrator PowerShell instructions in [usecase_commands.md](usecase_commands.md), connect all boards to the saved private 2.4 GHz hotspot, and confirm fresh `s3-001` and `s3-002` heartbeats. The firmware broker address must match the laptop's Wi-Fi IPv4 address. The local Mosquitto commands below connect through `127.0.0.1`.
 
-**Window 1: watch status and results.** Leave this window open. A successful setup prints `"ok":true` with `"reason":"applied"`; subsequent results should say `"model":"sine-float"`, `"input_source":"remote:s3-001"` and `"status":"OK"` when A supplies fresh valid readings.
+**PowerShell window 1 — results.** Keep this command running; press **Ctrl+C** to return to its PowerShell prompt.
 
 ```powershell
-Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
+Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
 $sub = "$env:ProgramFiles\mosquitto\mosquitto_sub.exe"
-& $sub -h 127.0.0.1 -t 'pico/s3-002/ml/status' -t 'pico/s3-002/ml/result' -v
+& $sub -h 127.0.0.1 -t 'pico/s3-002/ml/status' -t 'pico/s3-002/ml/result' -t 'd6/board-b/comfort' -v
 ```
 
-**Window 2: configure A and B, then select the default model.** `CLEAR` replaces each board's volatile sensor configuration. Board B's four aliases use typed `remote_profile` decoders; this is required for ML to read temperature, humidity and light. Keep the subscriber open in Window 1. All commands below are **normal PowerShell**.
+**PowerShell window 2 — commands.** If you have already run the full setup commands, keep its `$pub` variable and skip the first two lines. Otherwise load `config/board_a.cfg` on A and `config/board_b_ml.cfg` on B using the [startup guide](usecase_commands.md#5-run-all-four-ab-sensor-bridges--normal-powershell-window-3) before selecting a live model.
 
 ```powershell
-Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
+Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
 $pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
+```
 
-& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/cmd' -m 'STOP'
-& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/cmd' -m 'CLEAR'
-& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/config' -f '.\config\board_a.cfg'
-Start-Sleep -Seconds 2
-& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/cmd' -m 'RUN'
+A valid `ml_setup` publishes `{"ok":true,"reason":"applied",...}` on B's ML status topic; the next fresh result reports the selected `model`, `input_source`, and `status`. A rejected setup preserves the previous live model. Live model switches below do **not** require `STOP`.
 
+## 1. `sine-float` — default live model
+
+Configuration file: [`config/board_b_sine_float.json`](config/board_b_sine_float.json). It binds AHT temperature, AHT humidity and light from A. Firmware normalizes and combines these readings into the model's **single** input. The result is a unitless demonstration value, not a room count.
+
+```powershell
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_sine_float.json'
+```
+
+Expect `"model":"sine-float"`, `"input_source":"remote:s3-001"`, and `"status":"OK"` when all three source fields are fresh. If you want the separate demonstration cutoff, send `ML THRESHOLD 0.5`; results then include `threshold_exceeded`. Values **greater than** 0.5 exceed the cutoff; 0.5 itself does not. Clear that optional threshold with `ML THRESHOLD OFF`.
+
+```powershell
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'ML THRESHOLD 0.5'
+# Later, remove the optional cutoff:
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'ML THRESHOLD OFF'
+```
+
+Replay file: [`config/ml_replay_sine_float.txt`](config/ml_replay_sine_float.txt). It supplies one model-ready input (`1.5707963`), independent of the sensors. Use the [replay procedure](#replay-a-model-ready-vector) below.
+
+```powershell
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'STOP'
-& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'CLEAR'
-& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/config' -f '.\config\board_b_ml.cfg'
-Start-Sleep -Seconds 2
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\ml_replay_sine_float.txt'
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'RUN'
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_sine_float.json'
 ```
 
-## Switch live models on Board B
+## 2. `sine-int8` — live quantized sine model
 
-Run any one command in **Window 2** while sampling continues. Each accepted switch returns a new `generation` on `pico/s3-002/ml/status`. Watch `pico/s3-002/ml/result` for the selected model. A rejected setup leaves the previous live setup in place.
+Configuration file: [`config/board_b_sine_int8.json`](config/board_b_sine_int8.json). It uses the same three live fields and combines them into one model input. This version is INT8; its result is still a unitless sine demonstration.
 
 ```powershell
-# Switch to the INT8 sine demonstration.
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_sine_int8.json'
-
-# Switch to the live AHT comfort score.
-& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_comfort_summer.json'
-
-# Restore the default sine-float model.
-& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_sine_float.json'
 ```
 
-These switches do not interrupt A's sampling. Only a successful, live `comfort-summer` result is forwarded to C's **LIVE COMFORT** card. The sine models remain visible on B's ML result topic; they are not converted to comfort scores.
-
-## Show dynamic comfort on Board C
-
-Boards B and C must be flashed with the firmware containing the `d6/board-b/comfort` publisher and subscriber. Leave A running its AHT feed and B running the typed sensor bridge above. In **normal PowerShell Window 2**, run:
+Expect `"model":"sine-int8"`, `"input_source":"remote:s3-001"`, and `"status":"OK"`. Its optional `ML THRESHOLD 0.5` follows the same strict `> 0.5` rule as `sine-float`. Replay file: [`config/ml_replay_sine_int8.txt`](config/ml_replay_sine_int8.txt).
 
 ```powershell
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'STOP'
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\ml_replay_sine_int8.txt'
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'RUN'
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_sine_int8.json'
+```
+
+## 3. `comfort-summer` — live AHT comfort score
+
+Configuration file: [`config/board_b_comfort_summer.json`](config/board_b_comfort_summer.json). It binds A's typed AHT temperature and humidity to the model's two inputs.
+
+```powershell
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_comfort_summer.json'
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-003/cmd' -m 'D6VIEW'
+```
+
+Expect `"model":"comfort-summer"`, `"comfort_score":N`, `"class_score":...`, and `"status":"OK"` on B's result topic. B also sends a live, non-replay score on `d6/board-b/comfort`; C's landscape **LIVE COMFORT** card shows it and changes to **STALE** six seconds after updates stop. For the planned full LCD display, scores **80–99** will be labelled COMFORTABLE and scores below 80 UNCOMFORTABLE; those labels are **not yet implemented**. Replay file: [`config/ml_replay_comfort_summer.txt`](config/ml_replay_comfort_summer.txt), containing the synthetic `26.3 °C, 67% RH` example. Replay results do not refresh C's live comfort card.
+
+```powershell
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'STOP'
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\ml_replay_comfort_summer.txt'
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'RUN'
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_comfort_summer.json'
 ```
 
-Check B's `pico/s3-002/ml/result` for `"model":"comfort-summer"`, `"input_source":"remote:s3-001"`, `"status":"OK"`, and `comfort_score`. The same integer appears on `d6/board-b/comfort` and on C's landscape **LIVE COMFORT** card. Stop A's sensor feed to check expiry: B stops producing fresh scores after its inputs become stale; C shows **STALE** six seconds after its last accepted score. `RUN` on A should restore a fresh score. This is a live comfort check, while occupancy and the other LCD fields still require the B snapshot integration.
+## 4. `autoencoder` — 16-value replay
 
-## Replay the other two bundled models
+This model expects **16 model-ready values** and returns **16 reconstructed values**. No three-board live configuration file is supplied: repeating the available sensors into 16 bindings would be a shape check, not the model's training input. Its current D6 test is a synthetic replay, and the 16 values are not yet rendered on C.
 
-These are **model execution checks**, not live doorway tests. Run in **Window 2** while the broker and B are online. `STOP` pauses B's scheduler, so restore its live setup afterward. `ML OUTPUT publish` sends the replay result to the subscriber in Window 1. The console may also show the result.
+Replay file: [`config/ml_replay_autoencoder.txt`](config/ml_replay_autoencoder.txt). Run this complete PowerShell sequence in window 2:
 
 ```powershell
-# Autoencoder: exactly 16 model-ready input values.
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'STOP'
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'ML MODEL autoencoder'
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'ML OUTPUT publish'
-$autoValues = (1..16 | ForEach-Object { '0' }) -join ' '
-& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m "ML REPLAY $autoValues"
-
-# People-counter: exactly 31 preprocessed doorway-window values.
-& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'ML MODEL people-counter'
-$doorwayValues = (1..31 | ForEach-Object { '0' }) -join ' '
-& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m "ML REPLAY $doorwayValues"
-
-# Resume B's scheduler and restore the default live model.
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\ml_replay_autoencoder.txt'
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'RUN'
 & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_sine_float.json'
 ```
 
-If `ML MODEL people-counter` reports `local export required`, that particular build lacks its bundled model data; use `ML LIST` in B's serial console to inspect availability before retrying. A real people-counting test needs Board A's timed crossing and a 31-value feature window, then Board B's validated occupancy update and snapshot publication. These are separate implementation steps.
+Expect `"model":"autoencoder"`, `"input_source":"replay"`, `"outputs":[...]` with 16 numbers, and `"status":"OK"`. Zeroes verify execution only; they are not an anomaly assessment.
 
-To end the session, send `STOP` to A and B, press **Ctrl+C** in the subscriber and broker windows, then unplug boards if finished. See [usecase_commands.md](usecase_commands.md) for the full shutdown sequence.
+## 5. `people-counter` — experimental live window or 31-value replay
+
+Configuration file: [`config/board_b_people_counter.json`](config/board_b_people_counter.json). B follows A's `SONAR_A` through its `A_SONAR_A` alias with `remote_profile=pulse`; **one** binding supplies successive readings to the 31-slot window. The existing [`config/board_b_ml.cfg`](config/board_b_ml.cfg) gives that alias a 500 ms expected interval.
+
+The full setup starts A's two-sonar `DOORWAY` service. That service samples each sonar about every **140 ms**, so its cadence does not match B's current 500 ms window setting. For this isolated ML transport test, pause A's doorway service and return to the ordinary 2 Hz sonar profile before selecting the model:
+
+```powershell
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/cmd' -m 'STOP'
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/cmd' -m 'DOORWAY OFF'
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/cmd' -m 'RUN'
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_people_counter.json'
+```
+
+Watch for accepted ML status, then `"model":"people-counter"`, `"input_source":"remote:s3-001"`, `"direction":"in"|"none"|"out"`, and `class_score` after 31 consecutive valid A Sonar A frames. The class indices are **0=IN, 1=NONE, 2=OUT**. An invalid echo or receive gap clears the window. B currently uses receive time, not A's source timestamp, and does not deduplicate an otherwise valid repeated MQTT frame. Its 2 Hz cadence differs from the model's roughly 50 ms training cadence. This test proves the remote frame and 31-value inference path; it does **not** validate direction, change occupancy, or put the class on C's LCD.
+
+Restore B's default model and A's doorway service after this isolated test:
+
+```powershell
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_sine_float.json'
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/cmd' -m 'STOP'
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/cmd' -m 'DOORWAY SONAR_A SONAR_B 70 85 70 85 70 2000'
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/cmd' -m 'RUN'
+```
+
+Replay file: [`config/ml_replay_people_counter.txt`](config/ml_replay_people_counter.txt). It sends 31 zeroes as a synthetic model-ready window. To test model execution without waiting for sensor frames:
+
+```powershell
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'STOP'
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'ML MODEL people-counter'
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'ML OUTPUT publish'
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\ml_replay_people_counter.txt'
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'RUN'
+& $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_sine_float.json'
+```
+
+The replay result says `"input_source":"replay"`. It cannot establish entry or exit accuracy.
+
+## Replay a model-ready vector
+
+Each model section gives its complete replay commands and the matching live configuration to restore afterward. A replay result is labelled `"input_source":"replay"` and does not count as a live sensor test.
+
+`STOP` pauses B's sensor scheduler but retains the selected ML model. The final live setup restores fresh-input processing. If you previously set `ML THRESHOLD`, note that a new `ml_setup` clears it.
+
+## Mac / Linux command form
+
+Use the same configuration and replay files from the repository root. Start the broker and A/B sensor aliases with the [Mac / Linux setup](usecase_commands.md#mac--linux). For any live JSON file named in sections 1, 2, 3 or 5:
+
+```sh
+mosquitto_pub -h "$BROKER_IP" -q 1 -t pico/s3-002/cmd -f config/board_b_sine_float.json
+# Replace the filename with the selected model's board_b_*.json file.
+```
+
+For replay, `STOP` B, choose `ML MODEL <name>` when needed, set `ML OUTPUT publish`, send the corresponding `config/ml_replay_*.txt` file with `-f`, then `RUN` and reapply the default live JSON. The people-counter live test also requires `STOP`, `DOORWAY OFF`, `RUN` on A as shown above, using `mosquitto_pub -m` for each command.
+
+## End or reset the session
+
+The default live model is restored by sending [`config/board_b_sine_float.json`](config/board_b_sine_float.json). To stop A and B at the end, send `STOP` to each, then press **Ctrl+C** in the subscriber and broker windows. The [full shutdown sequence](usecase_commands.md#7-end-the-session-1) also covers unplugging the boards. A reboot clears the runtime sensor mappings and model selection; repeat the full startup commands before a new model test.

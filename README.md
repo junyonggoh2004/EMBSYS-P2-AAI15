@@ -2,7 +2,7 @@
 
 The Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) ported to the ESP32-S3 Super Mini. Since Tribunal 1 it runs on µT-Kernel 3 SMP through the course port ([MTK_REDESIGN.md](MTK_REDESIGN.md)); the earlier Arduino-ESP32/FreeRTOS port is kept as the measured baseline. Both builds compile the same shared code, so the configuration lines, console commands, MQTT topics, output format and ML models are the same on both. `main` contains D1 to D5 and the merged D6 integration work; the three-board use case remains in progress.
 
-**Current D6 setup:** Board A reads AHT, light, and two sonars without radar. Board B receives their MQTT frames and can run `comfort-summer` on A's real AHT values. Board C shows that live comfort score. The [interim live LCD guide](docs/d6/LIVE_LCD_TWO_SONARS.md) uses a laptop relay to display real AHT, light, and separate Sonar A/B distances on C; occupancy is a placeholder until B's counting path is complete. See [startup commands](usecase_commands.md) and [ML commands](ML_commands.md). The two-sonar LCD layout builds and passes host tests but still needs a visual check after flashing C.
+**Current D6 setup:** Board A reads AHT, light, and two sonars without radar. Board B receives their MQTT frames and can run `comfort-summer` on A's real AHT values. Board C shows that live comfort score. The [interim live LCD guide](docs/d6/LIVE_LCD_TWO_SONARS.md) uses a laptop relay to display real AHT, light, and separate Sonar A/B distances on C; occupancy is a placeholder until B's counting path is complete. See the [current D6 TO-DO list](docs/d6/D6_TODO.md), [startup commands](usecase_commands.md) and [ML commands](ML_commands.md). The two-sonar LCD layout builds and passes host tests but still needs a visual check after flashing C.
 
 ## Deliverables at a glance
 
@@ -333,7 +333,7 @@ D4 has two parts, split on 16 Nov 2026: the ML itself (part 1, Jun Yong) and con
 
 #### How to use it
 
-Five models are bundled. **sine-float** and **sine-int8** take the sine of a scaled reading; they demonstrate the pipeline and, for sine-int8, ESP-NN's S3 vector kernels. The **autoencoder** takes 16 inputs. **comfort-summer** gives a comfort score from AHT temperature and humidity (26.3 °C and 67% RH gives 92/100). **people-counter** is an INT8 doorway classifier with 31 inputs, run with `ML REPLAY`. A sixth choice, **uploaded**, is the model last sent over MQTT (D1 task 31). `ML LIST` shows which are available.
+Five models are bundled. **sine-float** and **sine-int8** take the sine of a scaled reading; they demonstrate the pipeline and, for sine-int8, ESP-NN's S3 vector kernels. The **autoencoder** takes 16 inputs. **comfort-summer** gives a comfort score from AHT temperature and humidity (26.3 °C and 67% RH gives 92/100). **people-counter** is an INT8 doorway classifier with 31 inputs: replay demonstrates model execution, and an experimental Board B path fills the 31 slots from successive remote Sonar A readings. That remote path is not yet validated against labelled crossings or its source training cadence and does not change occupancy. The [D6 ML command guide](ML_commands.md) separates live configuration and replay commands for each model. A sixth choice, **uploaded**, is the model last sent over MQTT (D1 task 31). `ML LIST` shows which are available.
 
 From the console, stop sampling, pick a model and start again. In VS Code run **MTK: build → MTK: flash → MTK: load sensors and ML → MTK: monitor** first.
 

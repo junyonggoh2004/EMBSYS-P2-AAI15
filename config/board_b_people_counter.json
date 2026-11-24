@@ -1,0 +1,1 @@
+{"ml_setup":{"version":1,"model":"people-counter","inputs":[{"index":0,"source":{"kind":"remote","node":"s3-001","name":"SONAR_A"},"field":"distance_cm","min":0,"max":200}],"output":{"kind":"publish"}}}

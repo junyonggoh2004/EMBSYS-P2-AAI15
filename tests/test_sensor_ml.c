@@ -187,6 +187,42 @@ static void test_direction_window(void)
     sensor_ml_invalidate(); // scheduler STOP, CLEAR or source reconfiguration
     direction_echo(3000, 70);
     assert(direction_window.count == 1 && published_results == before_publish + 1);
+
+    /* Board B follows A's pulse frames under a typed MQTT alias. One binding
+       supplies a 31-sample window; the other models keep their native shapes. */
+    app_cfg_t saved = configs[3];
+    memset(&configs[3], 0, sizeof configs[3]);
+    strcpy(configs[3].name, "A_SONAR_A");
+    strcpy(configs[3].remote_node, "board-a");
+    strcpy(configs[3].remote_source, "SONAR_A");
+    configs[3].proto = proto_mqtt;
+    configs[3].remote_profile = SENSOR_PROFILE_PULSE;
+    configs[3].mode = sample_mode_poll;
+    configs[3].timing.mode = TIMING_MODE_PERIODIC;
+    configs[3].timing.enabled = true;
+    configs[3].timing.interval_ms = 500;
+    const char *remote = "{\"ml_setup\":{\"version\":1,\"model\":\"people-counter\",\"inputs\":["
+        "{\"index\":0,\"source\":{\"kind\":\"remote\",\"node\":\"board-a\",\"name\":\"SONAR_A\"},"
+        "\"field\":\"distance_cm\",\"min\":0,\"max\":200}],\"output\":{\"kind\":\"publish\"}}}";
+    assert(sensor_ml_setup_json(remote, true) && status_ok && enabled);
+    app_cfg_t bridge = configs[3];
+    bridge.mode = sample_mode_stream; /* the bridge emits with a temporary config */
+    before_runs = runs;
+    for (unsigned i = 0; i < 31; ++i) {
+        const uint8_t frame[] = {(uint8_t)(3000 + i), (uint8_t)((3000 + i) >> 8), 1};
+        now += 500;
+        sensor_measurement_notify(&bridge, frame, sizeof frame);
+        sensor_ml_poll(true);
+    }
+    assert(runs == before_runs + 1 && direction_window.count == 31);
+    assert(strstr(last_published, "\"input_source\":\"remote:board-a\""));
+    assert(fabsf(seen[0] - 3000 * 0.00001715f) < 1e-6f);
+    now += 1000; /* missing a remote frame invalidates the previous window */
+    sensor_ml_poll(true);
+    assert(direction_window.count == 0 && runs == before_runs + 1);
+    sensor_measurement_notify(&bridge, NULL, HAL_ERR_TIMEOUT);
+    assert(direction_window.count == 0);
+    configs[3] = saved;
 }
 #endif
 

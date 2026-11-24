@@ -37,6 +37,7 @@ enum {
     DIRECTION_MIN_PERIOD_MS = 50,
     DIRECTION_MAX_PERIOD_MS = 75,
     DIRECTION_JITTER_MS = 25,
+    DIRECTION_REMOTE_MAX_PERIOD_MS = 1000,
     DIRECTION_RANGE_CM = 200
 };
 typedef struct {
@@ -90,11 +91,17 @@ void sensor_ml_invalidate(void) {
 }
 
 static bool direction_sensor(const app_cfg_t *cfg) {
-    return cfg && cfg->proto == proto_gpio && cfg->mode == sample_mode_poll &&
-        sensor_measurement_profile(cfg) == SENSOR_PROFILE_PULSE &&
+    return cfg && (cfg->proto == proto_gpio || cfg->proto == proto_mqtt) &&
+        cfg->mode == sample_mode_poll && sensor_measurement_profile(cfg) == SENSOR_PROFILE_PULSE &&
         cfg->timing.mode == TIMING_MODE_PERIODIC && cfg->timing.enabled &&
         cfg->timing.interval_ms >= DIRECTION_MIN_PERIOD_MS &&
-        cfg->timing.interval_ms <= DIRECTION_MAX_PERIOD_MS;
+        cfg->timing.interval_ms <= (cfg->proto == proto_mqtt ?
+            DIRECTION_REMOTE_MAX_PERIOD_MS : DIRECTION_MAX_PERIOD_MS);
+}
+
+static uint32_t direction_jitter_ms(const app_cfg_t *cfg) {
+    uint32_t jitter = cfg->proto == proto_mqtt ? cfg->timing.interval_ms / 4u : 0u;
+    return jitter > DIRECTION_JITTER_MS ? jitter : DIRECTION_JITTER_MS;
 }
 
 static void direction_gap(void) {
@@ -105,18 +112,24 @@ static void direction_gap(void) {
 }
 
 static void direction_sample(const app_cfg_t *cfg, const uint8_t *data, int length) {
-    if (!enabled || !bindings[0].bound || strcmp(bindings[0].source, cfg->name) ||
-        cfg != scheduler_config_by_name(bindings[0].source)) return;
+    if (!enabled || !cfg || !bindings[0].bound || strcmp(bindings[0].source, cfg->name)) return;
+    const app_cfg_t *configured = scheduler_config_by_name(bindings[0].source);
+    /* The MQTT bridge emits with a temporary config carrying the mapped name.
+       Read timing and the decoded profile from the registered config instead. */
+    if (!configured || (cfg != configured &&
+        !(cfg->proto == proto_mqtt && configured->proto == proto_mqtt))) return;
     float cm;
-    if (!direction_sensor(cfg) || !sensor_measurement_value(cfg, data, length, "distance_cm", &cm)) {
+    if (!direction_sensor(configured) ||
+        !sensor_measurement_value(configured, data, length, "distance_cm", &cm)) {
         direction_gap();
         return;
     }
     uint32_t now = hal_time_ms();
     uint32_t elapsed = now - direction_window.at;
-    uint32_t period = cfg->timing.interval_ms;
+    uint32_t period = configured->timing.interval_ms;
+    uint32_t jitter = direction_jitter_ms(configured);
     if (direction_window.count &&
-        (elapsed < period - DIRECTION_JITTER_MS || elapsed > period + DIRECTION_JITTER_MS))
+        (elapsed < period - jitter || elapsed > period + jitter))
         direction_gap();
     /* Source project records distances >=200 cm as -1 and scales the raw
        values by 0.001. A failed acquisition invalidates the live window. */
@@ -452,7 +465,7 @@ bool sensor_ml_setup_json(const char *line, bool sampling) {
        checked once loaded, and the previous model is restored if it does not fit. */
     if (model->kind != UPLOADED && !shape_ok(model, n, candidate)) {
         return setup_error(model->kind == DIRECTION
-            ? "people_counter_requires_one_local_periodic_distance_input_50_to_75ms_range_0_200"
+            ? "people_counter_requires_one_periodic_pulse_input_range_0_200"
             : "input_shape_mismatch");
     }
     int old = active;
@@ -743,7 +756,7 @@ bool sensor_ml_command(const char *line,bool sampling) {
     } else if(!strcmp(line,"ML RUN")) {
         int n=bound_count();
         if (active >= 0 && models[active].kind == DIRECTION && !shape_ok(&models[active], n, bindings)) {
-            puts("ML: ERROR people-counter needs ML BIND 0 <local ultrasonic> distance_cm 0 200 and 50-75 ms periodic polling");
+            puts("ML: ERROR people-counter needs one periodic pulse input bound to distance_cm 0 200");
             return true;
         }
         if (active < 0 || !shape_ok(&models[active], n, bindings) ||
@@ -765,7 +778,7 @@ static void skip(const char *reason,uint32_t now) {
 static void poll_direction(const model_t *model, uint32_t now) {
     const app_cfg_t *cfg = scheduler_config_by_name(bindings[0].source);
     if (direction_window.count && (!direction_sensor(cfg) ||
-        now - direction_window.at > cfg->timing.interval_ms + DIRECTION_JITTER_MS)) direction_gap();
+        now - direction_window.at > cfg->timing.interval_ms + direction_jitter_ms(cfg))) direction_gap();
     if (direction_window.report_fault) {
         direction_window.report_fault = false;
         skip("MISSING_OR_STALE", now);
@@ -779,7 +792,8 @@ static void poll_direction(const model_t *model, uint32_t now) {
     }
     direction_window.updated = false;
     direction_window.faulted = false;
-    class_result(model, inputs, "sensors", now);
+    char label[48];
+    class_result(model, inputs, input_label(1, label, sizeof label), now);
 }
 
 void sensor_ml_poll(bool sampling) {

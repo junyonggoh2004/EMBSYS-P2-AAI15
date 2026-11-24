@@ -1,5 +1,7 @@
 # Run the classroom embedded ML demo
 
+For the current D6 three-board setup, use the [model-by-model Board B commands](../../ML_commands.md). That guide includes live JSON configurations and separate replay command files for all five bundled models. The classroom steps below preserve the earlier one-board demo.
+
 The first ML implementation came from `dev-jy-ml` and was integrated into `main` through `d4-live-ml-sitt`. It uses ESP-IDF and µT-Kernel. The standalone ML presets use the [original breadboard wiring](../../esp32s3_mtk/WIRING.md). The three-board D6 check uses the [D6 hardware setup](../d6/N16R8_BOARD_SETUP.md).
 
 ## Run one of the three classroom models
