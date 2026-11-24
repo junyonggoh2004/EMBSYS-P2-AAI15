@@ -15,7 +15,7 @@ The Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) porte
 | D5 | Benchmarking the D4 models on the S3 | Hasif | Done 20 Nov: ESP-NN's S3 assembly makes INT8 inference 1.36 to 3.35 times faster with the same outputs, and people-counter keeps a 2.55 times gain in the running firmware | [2.5](#25-d5-task-checklist-hasif) |
 | D6 | End-to-end use case and demo | Cody (lead), Brendan | Done 24 Nov: the three boards ran end to end at the demo. A's live sensors reach B over MQTT, B runs live ML on them (`comfort-summer` on A's AHT, `people-counter` on A's sonar) and C shows B's live snapshot and comfort score. GPIO, I2C and SPI sensors, their timing and the ML were also set up live over MQTT on a spare board | [2.6](#26-d6-task-checklist), [5](#5-d6-use-case-demo) |
 
-Owners follow the team split of 28 Sep 2026, with D4 to D6 re-split on 10 Nov and confirmed on 16 Nov. The D1 MQTT tasks (1.1–1.5) and the D4 to D6 tasks (2.1–5.7) are the outline the team agreed on 10 Nov. Each owner updates their row when their work merges.
+Owners follow the team split of 28 Sep 2026, with D4 to D6 re-split on 10 Nov and confirmed on 16 Nov. The D1 MQTT tasks (1.1–1.5) and the D4 and D5 tasks (2.1–4.6) follow the outline the team agreed on 10 Nov; the D6 tasks (5.1–5.11) list the D6 work completed for the demo on 24 Nov. Each owner updates their row when their work merges.
 
 ## Contents
 
@@ -30,7 +30,7 @@ Each numbered section below is collapsed. Click its title to open it.
 | &nbsp;&nbsp;[2.3 D3 task checklist](#23-d3-task-checklist) | The timing modes, tasks D3-1 to D3-12 and the measured timing |
 | &nbsp;&nbsp;[2.4 D4 task checklist](#24-d4-task-checklist) | How to use the ML, the ML itself (2.1–2.6) and switching it live (3.1–3.7) |
 | &nbsp;&nbsp;[2.5 D5 task checklist (Hasif)](#25-d5-task-checklist-hasif) | Benchmarking the D4 models on the S3, tasks 4.1–4.6 |
-| &nbsp;&nbsp;[2.6 D6 task checklist](#26-d6-task-checklist) | Use case and demo, tasks 5.1–5.7 |
+| &nbsp;&nbsp;[2.6 D6 task checklist](#26-d6-task-checklist) | Use case and demo, tasks 5.1–5.11 |
 | [3. Set up and test from scratch](#3-set-up-and-test-from-scratch) | Step by step on a new Mac for the µT-Kernel build, D1 to D5 |
 | &nbsp;&nbsp;[Part A: Install](#part-a-install) | Steps 1–4: tools, project, ESP-IDF and the course port, version check |
 | &nbsp;&nbsp;[Part B: Wi-Fi and broker](#part-b-wi-fi-and-broker) | Steps 5–7: laptop IP, Wi-Fi file, MQTT broker |
@@ -199,7 +199,7 @@ D1 ports configpico2wedge to the ESP32-S3. Tasks 1–23 built the Arduino/FreeRT
 | 7 | Standardise the Arduino environment | Superseded on 21 Nov by task 25 | [SETUP.md](SETUP.md#arduino-environment-baseline-task-7) |
 | 8 | Confirm the hardware and the pin layout | Done (Sitt, Hasif): ESP32-S3FH4R2, 4 MB flash, 2 MB PSRAM | [SETUP.md](SETUP.md#pin-power-and-wiring-task-8) |
 | 9 | Bring up the S3 with Arduino | Done (Sitt) | [Record](parity/logs/9-arduino-bringup.txt) |
-| 10 | Architecture freeze | Submitted as the Week 6 design review (team) | [ARCHITECTURE.md](ARCHITECTURE.md), [feedback](WEEK6_FEEDBACK_RESPONSE.md) |
+| 10 | Architecture freeze | Done: submitted as the Week 6 design review (team) | [ARCHITECTURE.md](ARCHITECTURE.md), [feedback](WEEK6_FEEDBACK_RESPONSE.md) |
 | 11 | Define the HAL and refactor the Pico backend | Done (Hasif) | [hal.h](libraries/EdgeCore/src/hal/hal.h), [logs](parity/logs/task11/) |
 | 12 | Arduino S3 HAL and shared build | Done (Hasif): HAL test 18/18 | [Logs](parity/logs/task12/) |
 | 13 | FreeRTOS runtime, main control and REPL | Done (Hasif) | [Logs](parity/logs/task13/) |
@@ -393,7 +393,7 @@ D5 measures and explains how the D4 models run on the S3 and what its accelerati
 |---|---|---|---|
 | 4.1 | Agree the scope | The models measured, the numbers kept (inference time, model size, memory, speed-up) and the run rule (at least 100 inferences per case, after a warm-up), confirmed with the team | Done 20 Nov: proposed 17 Nov and confirmed by the team ([docs/d5](docs/d5/README.md#1-scope-task-41)) |
 | 4.2 | Acceleration on against off | The same INT8 models (sine-int8, the autoencoder and the people-counter) on the same inputs, built once with ESP-NN's S3 path (`CONFIG_NN_OPTIMIZED=y`, the default) and once with its plain C path (`CONFIG_NN_ANSI_C=y`); the speed-up is the D4 task 2.4 result | Done 20 Nov: `Invoke()` is 1.36 times faster with the S3 assembly for sine-int8, 2.83 times for the autoencoder and 3.35 times for people-counter, with the same outputs; the Float32 models do not change ([docs/d5](docs/d5/README.md#6-results), [logs](parity/logs/mtk/d5/)) |
-| 4.3 | Float against INT8, and does it fit | sine-float against sine-int8 (the same network and task) for inference time, model bytes and tensor arena bytes, plus comfort-summer as a float model; ESP-NN speeds up INT8 operations only, so float models run on plain CPU code. Also whether everything fits: flash, arena and the memory left with Wi-Fi and MQTT running | Build sizes measured 19 Nov with all five models: the S3 assembly costs 35.7 KB of flash and 56 B of internal RAM ([docs/d5](docs/d5/README.md#3-the-models-task-43-static-part)); board run 20 Nov: sine-int8 is 15% smaller than sine-float but not faster (28 against 26 µs), arenas are 716 to 6,204 B of the 64 KB PSRAM arena, and 30,684 B of internal RAM and 8.2 MB of PSRAM stay free with Wi-Fi and MQTT running ([docs/d5](docs/d5/README.md#6-results)) |
+| 4.3 | Float against INT8, and does it fit | sine-float against sine-int8 (the same network and task) for inference time, model bytes and tensor arena bytes, plus comfort-summer as a float model; ESP-NN speeds up INT8 operations only, so float models run on plain CPU code. Also whether everything fits: flash, arena and the memory left with Wi-Fi and MQTT running | Done 19 Nov: build sizes measured with all five models: the S3 assembly costs 35.7 KB of flash and 56 B of internal RAM ([docs/d5](docs/d5/README.md#3-the-models-task-43-static-part)); board run 20 Nov: sine-int8 is 15% smaller than sine-float but not faster (28 against 26 µs), arenas are 716 to 6,204 B of the 64 KB PSRAM arena, and 30,684 B of internal RAM and 8.2 MB of PSRAM stay free with Wi-Fi and MQTT running ([docs/d5](docs/d5/README.md#6-results)) |
 | 4.4 | Where the time goes | The `Invoke()` time inside InferenceTask against the full request time seen by SchedulerTask, which adds the `infer_mbf` round trip; for models this small the round trip can be most of the time and hide the speed-up | Done 20 Nov: outside `Invoke()` each request costs 94 to 118 µs (208 µs for people-counter), so `Invoke()` is 22% of the request for the sine models, 54% for the autoencoder and comfort-summer and 86% for people-counter; sine-int8's whole request is only 1.08 times faster with the S3 assembly, people-counter's 3.00 times ([docs/d5](docs/d5/README.md#6-results)) |
 | 4.5 | In the running system | 4.2's fastest case again with the sensors and MQTT running, with `TASKS` checked for drops and stack use, to show the result holds in the real firmware | Done 20 Nov with one ultrasonic sensor and MQTT: sine-int8 takes 451 µs (median of 100 live results) against 123 µs in `MLBENCH`, because each inference starts with cold caches; every reading OK and no dropped messages. In that condition the S3 assembly still makes people-counter 2.55 times faster but gives sine-int8 nothing ([docs/d5](docs/d5/README.md#6-results)) |
 | 4.6 | Explanation and write-up | How the S3's vector instructions speed up INT8 through ESP-NN, why the chosen models and format, one results table and a conclusion; uses Jun Yong's 2.2 research | Done 20 Nov: the [explanation](docs/d5/README.md#2-how-the-s3-speeds-up-int8-models-task-46-explanation) (drafted 17 Nov), and the results and conclusion, including 4.5, in [docs/d5 sections 6 and 7](docs/d5/README.md#6-results) |
@@ -419,18 +419,23 @@ On the console, `STOP`, `ML MODEL <id>` and `MLBENCH <runs> [RAW]` run one model
 <details>
 <summary><h3>2.6 D6 task checklist</h3></summary>
 
-D6 joins three ESP32-S3 N16R8 boards into one use case: a doorway room monitor (Cody leads, with Brendan; the whole team joins the rehearsal). Board A senses, Board B processes and runs the ML, and Board C displays. The professor's brief was three S3 boards sharing data over MQTT with an LCD board, plus a live multi-bus demo of GPIO, I2C and SPI on one board, configured live. The setup and demo steps are in [section 5](#5-d6-use-case-demo).
+D6 joins three ESP32-S3 N16R8 boards into one use case: a doorway room monitor (Cody leads, with Brendan; the whole team ran the demo). Board A senses, Board B processes and runs the ML, and Board C displays. The professor's brief was three S3 boards sharing data over MQTT with an LCD board, plus a live multi-bus demo of GPIO, I2C and SPI on one board, configured live. The setup and demo steps are in [section 5](#5-d6-use-case-demo).
 
 | # | Task | What it means | Owner | Status |
 |---|---|---|---|---|
-| 5.1 | Confirm the use case | Adopt the three-board setup and decide the doorway counter's role | Team | **Done 21 Nov:** a doorway room monitor with two sonars; the radar was dropped. Board A's doorway counter added 23 Nov (Jun Yong) |
-| 5.2 | Define each board | Its sensors, what it publishes, what it reacts to and what the LCD shows; parts and wiring | Cody | **Done:** roles, wiring and configs for every board ([5.2 Setup](#52-setup)) |
-| 5.3 | Multi-bus demo script | GPIO, I2C and SPI on one board, configured live, the whole setup at once and then piece by piece | Cody | **Done 24 Nov** on spare boards (run by Hasif): GPIO, I2C and SPI sensors added live over MQTT, timing and ML changed live ([5.4](#54-any-sensor-on-the-fly-extra-if-asked)) |
-| 5.5 | LCD board shows live data | Board C displays what the other boards publish | Brendan | **Done 24 Nov:** C showed B's live AHT, light and two-sonar snapshot and the comfort score at the demo |
-| 5.6 | ML inside the use case | One board runs a model on another board's data; the result shows on the LCD or is published | Cody, Brendan, with Sitt | **Done 24 Nov:** B ran `comfort-summer` on A's AHT readings with the score on C, and `people-counter` on A's live sonar with its results published |
-| 5.7 | Full rehearsal on three boards | Run the whole thing end to end, record it and fill section 5 | Team | **Done 24 Nov:** run end to end at the demo |
+| 5.1 | Confirm the use case | Adopt the three-board setup and decide each board's role | Team | **Done 21 Nov:** a room monitor on three N16R8 boards, with two sonars in place of the radar |
+| 5.2 | Define each board | Its sensors, what it publishes, what it reacts to and what the LCD shows; parts and wiring | Cody | **Done 23 Nov:** roles, wiring and configs for every board ([5.2 Setup](#52-setup)) |
+| 5.3 | Board A senses | AHT, light and two sonars, each on its own timing, set up live with no reflash | Cody, Brendan | **Done:** tested 21–23 Nov with [`board_a.cfg`](config/board_a.cfg), shown at the demo on 24 Nov |
+| 5.4 | Board B follows A | B receives A's four sensors over MQTT and decodes them as its own readings | Cody, Brendan | **Done:** tested 23 Nov with [`board_b_ml.cfg`](config/board_b_ml.cfg), shown at the demo on 24 Nov |
+| 5.5 | Live ML on B | B runs `sine-float`, `sine-int8` and `comfort-summer` on A's live readings and switches model live over MQTT | Cody, Brendan, with Sitt | **Done 24 Nov:** models switched live at the demo, each with `status:OK` |
+| 5.6 | Live `people-counter` on B | B fills the model's 31-reading window from A's live sonar over MQTT and publishes the result | Jun Yong, Brendan | **Done 24 Nov:** live result published from A's real sonar, with the MQTT burst-timing fix ([record](docs/d6/PEOPLE_COUNTER_LIVE_TEST_20261124.md)) |
+| 5.7 | Comfort score on C | B's `comfort-summer` score shows on C's LCD and clears when it goes stale | Jun Yong | **Done 23 Nov:** score 95 shown on C, and shown again at the demo on 24 Nov |
+| 5.8 | LCD board shows live data | B publishes a live AHT, light and two-sonar snapshot and C draws it on its LCD | Brendan | **Done 24 Nov:** C's landscape LCD updated live at the demo |
+| 5.9 | Doorway counter on A | Board A counts entries and exits from the order in which the two sonars are blocked (`DOORWAY`) | Jun Yong | **Done 23 Nov:** built and flashed on A, with laptop tests ([5.5](#55-more-commands)) |
+| 5.10 | Multi-bus demo | GPIO, I2C and SPI sensors on one board, configured live, with their timing and the ML changed live | Cody | **Done 24 Nov** on spare boards (run by Hasif) ([5.4](#54-any-sensor-on-the-fly-extra-if-asked)) |
+| 5.11 | Full run on three boards | Run the whole thing end to end from one start-up block | Team | **Done 24 Nov:** run end to end at the demo from Brendan's laptop, with Jun Yong's Windows start-up commands |
 
-**Where the details are.** [Board A wiring](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md), [Board A sensor tests](docs/d6/BOARD_A_SENSOR_TEST.md), the full [Windows MQTT commands](MQTT_commands.md), the [use case notes](docs/d6/SONAR_ONLY_USECASE.md), the [LCD reference](docs/d6/ROOM_MONITOR_REFERENCE.md) and the [classroom ML demo](docs/embedded-ml/RUNNING.md). The earlier radar plans are kept under [docs/d6/reference](docs/d6/reference/).
+**Where the details are.** [Board A wiring](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md), [Board A sensor tests](docs/d6/BOARD_A_SENSOR_TEST.md), the full [Windows MQTT commands](MQTT_commands.md), the [use case notes](docs/d6/SONAR_ONLY_USECASE.md), the [LCD reference](docs/d6/ROOM_MONITOR_REFERENCE.md), the [ML commands](ML_commands.md), the [live people-counter record](docs/d6/PEOPLE_COUNTER_LIVE_TEST_20261124.md) and the [classroom ML demo](docs/embedded-ml/RUNNING.md). The earlier radar plans are kept under [docs/d6/reference](docs/d6/reference/).
 
 </details>
 
@@ -762,7 +767,7 @@ The hardware each board needs, the firmware on it, and the settings that give it
 
 | # | Item | Setting | Why | Status |
 |---|---|---|---|---|
-| 1 | Board A hardware (`s3-001`) | ESP32-S3 N16R8. AHT and TSL2561 share I2C: SDA GPIO1, SCL GPIO2. Sonar A: TRIG GPIO10, ECHO GPIO11. Sonar B: TRIG GPIO6, ECHO GPIO7, with direct power leads ([wiring](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md)) | All inputs on one board; two sensors share one bus; two sonars give the walking direction | **Wired**, each sensor checked 19–21 Nov |
+| 1 | Board A hardware (`s3-001`) | ESP32-S3 N16R8. AHT and TSL2561 share I2C: SDA GPIO1, SCL GPIO2. Sonar A: TRIG GPIO10, ECHO GPIO11. Sonar B: TRIG GPIO6, ECHO GPIO7, with direct power leads ([wiring](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md)) | All inputs on one board; two sensors share one bus; two sonars give the walking direction | **Done:** wired, each sensor checked 19–21 Nov |
 
 > ```text
 > HELP
@@ -776,7 +781,7 @@ The hardware each board needs, the firmware on it, and the settings that give it
 
 | # | Item | Setting | Why | Status |
 |---|---|---|---|---|
-| 2 | Board B hardware (`s3-002`) | ESP32-S3 N16R8 with a W25Q32 flash on SPI: CS GPIO10, CLK GPIO11, DI GPIO12, DO GPIO13 | Event storage sits on the processing board | **Wired**, chip ID `EF4016` and read-only check passed 18 Nov |
+| 2 | Board B hardware (`s3-002`) | ESP32-S3 N16R8 with a W25Q32 flash on SPI: CS GPIO10, CLK GPIO11, DI GPIO12, DO GPIO13 | Event storage sits on the processing board | **Done:** wired, chip ID `EF4016` and read-only check passed 18 Nov |
 
 > ```text
 > SPIID
@@ -791,7 +796,7 @@ The hardware each board needs, the firmware on it, and the settings that give it
 
 | # | Item | Setting | Why | Status |
 |---|---|---|---|---|
-| 3 | Board C hardware (`s3-003`) | ESP32-S3 N16R8 with an ST7789 LCD on SPI: SCK GPIO12, MOSI GPIO11, CS GPIO10, DC GPIO9, RST GPIO8 | Display only, so output is separate from processing | **Wired**, landscape test pattern passed 21 Nov |
+| 3 | Board C hardware (`s3-003`) | ESP32-S3 N16R8 with an ST7789 LCD on SPI: SCK GPIO12, MOSI GPIO11, CS GPIO10, DC GPIO9, RST GPIO8 | Display only, so output is separate from processing | **Done:** wired, landscape test pattern passed 21 Nov |
 
 > ```text
 > LCDTEST 284 76 18 82 60 0
@@ -805,7 +810,7 @@ The hardware each board needs, the firmware on it, and the settings that give it
 
 | # | Item | Setting | Why | Status |
 |---|---|---|---|---|
-| 4 | Laptop broker | Mosquitto listening on the laptop's Wi-Fi with [`tools/mqtt-test.conf`](tools/mqtt-test.conf) | Every board-to-board message and command goes through one hub | **Tested** 18–23 Nov |
+| 4 | Laptop broker | Mosquitto listening on the laptop's Wi-Fi with [`tools/mqtt-test.conf`](tools/mqtt-test.conf) | Every board-to-board message and command goes through one hub | **Done:** tested 18–23 Nov, used at the demo on 24 Nov |
 
 > In PowerShell window 1, follow Windows step 2 in the [demo commands](usecase_commands.md#windows) to start or reuse the broker.
 >
@@ -815,7 +820,7 @@ The hardware each board needs, the firmware on it, and the settings that give it
 
 | # | Item | Setting | Why | Status |
 |---|---|---|---|---|
-| 5 | Build settings | `wifi_credentials.h`: Wi-Fi name, password and the laptop's Wi-Fi IP as `MQTT_HOST` | The broker address is compiled into the firmware | **Needed before each build** |
+| 5 | Build settings | `wifi_credentials.h`: Wi-Fi name, password and the laptop's Wi-Fi IP as `MQTT_HOST` | The broker address is compiled into the firmware | **Done** for the demo; set it again for a new network |
 
 > ```powershell
 > # Normal PowerShell
@@ -833,7 +838,7 @@ The hardware each board needs, the firmware on it, and the settings that give it
 
 | # | Item | Setting | Why | Status |
 |---|---|---|---|---|
-| 6 | Firmware | The same µT-Kernel image on all three boards, built for the N16R8, with node ID `s3-001`, `s3-002` or `s3-003` | FR1: one firmware for every role. Each board needs its own ID for its topics and event identity | **Flashed** 23 Nov for the comfort and LCD runs; reflash after pulling a newer `main` |
+| 6 | Firmware | The same µT-Kernel image on all three boards, built for the N16R8, with node ID `s3-001`, `s3-002` or `s3-003` | FR1: one firmware for every role. Each board needs its own ID for its topics and event identity | **Done:** flashed 23–24 Nov; reflash after pulling a newer `main` |
 
 > ```bash
 > # Git Bash, one board on USB at a time, on its native USB port
@@ -850,7 +855,7 @@ The hardware each board needs, the firmware on it, and the settings that give it
 
 | # | Item | Setting | Why | Status |
 |---|---|---|---|---|
-| 7 | Board A sensors | [`config/board_a.cfg`](config/board_a.cfg): AHT and light every 2 s, both sonars every 0.5 s with a 20 ms echo timeout | Sensors are defined while running, with no reflash (FR1, FR2) | **Tested** 21–23 Nov |
+| 7 | Board A sensors | [`config/board_a.cfg`](config/board_a.cfg): AHT and light every 2 s, both sonars every 0.5 s with a 20 ms echo timeout | Sensors are defined while running, with no reflash (FR1, FR2) | **Done:** tested 21–23 Nov, used at the demo on 24 Nov |
 
 > ```text
 > BEGINCFG|name=AHT|proto=i2c|i2c.sensor=aht|mode=poll|freq_hz=0.5|timing.timeout_ms=600|i2c.sda=1|i2c.scl=2|i2c.addr=0x38|i2c.baud=100000|ENDCFG
@@ -865,7 +870,7 @@ The hardware each board needs, the firmware on it, and the settings that give it
 
 | # | Item | Setting | Why | Status |
 |---|---|---|---|---|
-| 8 | Board B follows A | [`config/board_b_ml.cfg`](config/board_b_ml.cfg): four `proto=mqtt` configs, `A_AHT`, `A_LIGHT`, `A_SONAR_A` and `A_SONAR_B`, each with the `remote_profile` that decodes it | B receives A's data through the broker and can feed it to ML (FR3) | **Tested** 23 Nov |
+| 8 | Board B follows A | [`config/board_b_ml.cfg`](config/board_b_ml.cfg): four `proto=mqtt` configs, `A_AHT`, `A_LIGHT`, `A_SONAR_A` and `A_SONAR_B`, each with the `remote_profile` that decodes it | B receives A's data through the broker and can feed it to ML (FR3) | **Done:** tested 23 Nov, used at the demo on 24 Nov |
 
 > ```text
 > BEGINCFG|name=A_AHT|proto=mqtt|mode=poll|freq_hz=0.5|remote_node=s3-001|remote_source=AHT|remote_profile=aht|ENDCFG
@@ -880,7 +885,7 @@ The hardware each board needs, the firmware on it, and the settings that give it
 
 | # | Item | Setting | Why | Status |
 |---|---|---|---|---|
-| 9 | Board B ML | [`config/board_b_comfort_summer.json`](config/board_b_comfort_summer.json): one `ml_setup` message, comfort-summer on A's temperature and humidity, output published | Live ML on another board's data (FR5, FR6) | **Tested** 23 Nov on the boards |
+| 9 | Board B ML | [`config/board_b_comfort_summer.json`](config/board_b_comfort_summer.json): one `ml_setup` message, comfort-summer on A's temperature and humidity, output published | Live ML on another board's data (FR5, FR6) | **Done:** tested 23 Nov on the boards, shown at the demo on 24 Nov |
 
 > ```json
 > {"ml_setup": {
@@ -920,7 +925,7 @@ The demo starts with one command block. After that the boards keep running by th
 
 | # | Step | What you do | What it shows | Status |
 |---|---|---|---|---|
-| 1 | Open the windows | Start the broker, a watch window, a live-values window and a command window | Everything the boards send, live | **Tested** 21–23 Nov |
+| 1 | Open the windows | Start the broker, a watch window, a live-values window and a command window | Everything the boards send, live | **Done:** tested 21–23 Nov, used at the demo on 24 Nov |
 
 > In PowerShell window 1, follow Windows step 2 in the [demo commands](usecase_commands.md#windows) to start or reuse the broker.
 >
@@ -949,7 +954,7 @@ The demo starts with one command block. After that the boards keep running by th
 
 | # | Step | What you do | What it shows | Status |
 |---|---|---|---|---|
-| 2 | Start the demo | Paste one block into window 4 | A sampling its four sensors, B following A and running a model, C on the room monitor | **Tested** 24 Nov with live A readings, B `sine-float`, and C's live display |
+| 2 | Start the demo | Paste one block into window 4 | A sampling its four sensors, B following A and running a model, C on the room monitor | **Done 24 Nov**, shown at the demo: live A readings, B `sine-float` and C's live display |
 
 > This block sets up A and B, starts the live `sine-float` model on B and puts C on the room monitor:
 >
@@ -1003,7 +1008,7 @@ The demo starts with one command block. After that the boards keep running by th
 
 | # | Step | What you do | What it shows | Status |
 |---|---|---|---|---|
-| D4-1 | Switch to `sine-int8` | Send one command | The model changes live, with sampling still running | **Tested** 24 Nov with Board A's live readings and `status:OK` |
+| D4-1 | Switch to `sine-int8` | Send one command | The model changes live, with sampling still running | **Done 24 Nov**, shown at the demo: Board A's live readings and `status:OK` |
 
 > ```powershell
 > & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_sine_int8.json'
@@ -1015,7 +1020,7 @@ The demo starts with one command block. After that the boards keep running by th
 
 | # | Step | What you do | What it shows | Status |
 |---|---|---|---|---|
-| D4-2 | Switch to `comfort-summer` | Send one command, watch C | A different model with different inputs, and its result on another board's screen | **Tested** 23 Nov (score 95 shown on C) |
+| D4-2 | Switch to `comfort-summer` | Send one command, watch C | A different model with different inputs, and its result on another board's screen | **Done:** tested 23 Nov (score 95 on C), shown at the demo on 24 Nov |
 
 > ```powershell
 > & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_comfort_summer.json'
