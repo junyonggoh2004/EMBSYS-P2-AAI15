@@ -114,7 +114,7 @@ git checkout s3-port
 git submodule update --init
 ```
 
-`s3-port` is the D1 branch. It starts from the supplied `Pico_Sample` code and adds the TFLite Micro submodule reference that was missing from it, plus this document. `git submodule update --init` downloads that library; if you skip it, the build fails with the missing-library error described in section 10.
+These commands record the historical `s3-port` D1 branch used for the Pico baseline. Current ESP32-S3 work is on `main`; use the [µT-Kernel setup](#esp32-s3-on-µt-kernel-3-smp-tasks-2534) for that firmware. `s3-port` starts from the supplied `Pico_Sample` code and adds the TFLite Micro submodule reference that was missing from it. `git submodule update --init` downloads that library; if you skip it, the Pico build fails with the missing-library error described in section 10.
 
 ## 7. Create your WiFi and MQTT credentials file
 
@@ -438,7 +438,7 @@ Shared Configurable Edge code
    Pico SDK   Arduino-ESP32
 ```
 
-Configuration parsing, the common sensor representation, scheduler, rule engine, output formatting, MQTT payload handling and application/ML logic should not call Arduino or Pico SDK functions directly. Platform operations belong in the HAL or platform drivers. If partitions, PSRAM access, a compatible TFLite Micro integration or measured performance require underlying ESP-IDF APIs from Arduino, document each exception and keep it below the shared-code boundary. The MQTT library remains to be selected. For Task 20, Arduino-ESP32 3.3.12 bundles Espressif TFLite Micro 1.4.0; the S3 bridge links and runs the built-in model on the board. Other models and persistent upload still need verification. See the [Task 20 hardware check](parity/task20/README.md).
+Configuration parsing, the common sensor representation, scheduler, rule engine, output formatting, MQTT payload handling and application/ML logic should not call Arduino or Pico SDK functions directly. Platform operations belong in the HAL or platform drivers. If partitions, PSRAM access, a compatible TFLite Micro integration or measured performance require underlying ESP-IDF APIs from Arduino, document each exception and keep it below the shared-code boundary. The Arduino baseline uses MQTT 2.5.3. For Task 20, Arduino-ESP32 3.3.12 bundles Espressif TFLite Micro 1.4.0; the S3 bridge links and runs the built-in model on the board. The current µT-Kernel firmware has five bundled models and CRC-checked MQTT model upload; see the [D4 checklist](README.md#24-d4-task-checklist). The earlier [Task 20 hardware check](parity/task20/README.md) records the baseline milestone.
 
 ## Shared EdgeCore library and ESP32-S3 framework build (Tasks 12–13)
 
