@@ -1,6 +1,6 @@
 Adding "flash"'s dependency "all" to list of commands with default set of options.
 Executing action: all (aliases: build)
-Running make in directory /Users/tanyilin/Downloads/EMBSYS-P2-AAI15/esp32s3_mtk/build
+Running make in directory ~/Downloads/EMBSYS-P2-AAI15/esp32s3_mtk/build
 Executing "make -j 10 all"...
 [  0%] Built target sections_ld_in_preprocess
 [  0%] Built target custom_bundle
@@ -177,7 +177,7 @@ esp32s3_mtk.bin binary size 0x1395f0 bytes. Smallest app partition is 0x2f0000 b
 [100%] Built target app_check_size
 [100%] Built target app
 Executing action: flash
-Running make in directory /Users/tanyilin/Downloads/EMBSYS-P2-AAI15/esp32s3_mtk/build
+Running make in directory ~/Downloads/EMBSYS-P2-AAI15/esp32s3_mtk/build
 Executing "make -j 10 flash"...
 [  0%] Built target custom_bundle
 [  0%] Built target _project_elf_src

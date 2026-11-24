@@ -1,7 +1,7 @@
 Revision: 7e8f6cf526b8a184e069bda3d907cb34dab64d90
 Command: sh tools/mtk.sh build
 Executing action: all (aliases: build)
-Running make in directory /Users/tanyilin/Downloads/EMBSYS-P2-AAI15/esp32s3_mtk/build
+Running make in directory ~/Downloads/EMBSYS-P2-AAI15/esp32s3_mtk/build
 Executing "make -j 10 all"...
 [  0%] Built target custom_bundle
 [  0%] Built target _project_elf_src
@@ -184,7 +184,7 @@ or
  idf.py -p PORT flash
 or
  python -m esptool --chip esp32s3 -b 460800 --before default-reset --after hard-reset write-flash --flash-mode dio --flash-size 4MB --flash-freq 80m 0x0 esp32s3_mtk/build/bootloader/bootloader.bin 0x8000 esp32s3_mtk/build/partition_table/partition-table.bin 0x10000 esp32s3_mtk/build/esp32s3_mtk.bin
-or from the "/Users/tanyilin/Downloads/EMBSYS-P2-AAI15/esp32s3_mtk/build" directory
+or from the "~/Downloads/EMBSYS-P2-AAI15/esp32s3_mtk/build" directory
  python -m esptool --chip esp32s3 -b 460800 --before default-reset --after hard-reset write-flash "@flash_args"
 
 Exit status: 0
