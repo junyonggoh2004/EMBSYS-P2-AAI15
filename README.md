@@ -752,6 +752,10 @@ flowchart LR
 
 The hardware each board needs, the firmware on it, and the settings that give it its role. Each item has its own row, followed by the command to run and what it does. The Windows commands below use `C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration`; change that one path if using another checkout. Full detail and the PowerShell window map are in [usecase_commands.md](docs/commands/usecase_commands.md#windows) and [ML_commands.md](docs/commands/ML_commands.md).
 
+**Labeled hardware setup:** Board B (`s3-002`) runs ML, rules and flash logging; Board C (`s3-003`) displays the results. The photo labels their ESP32-S3 boards, the W25Q32 flash, the LCD and the USB connections to the host laptop.
+
+<img src="docs/d6/images/boards-b-c-setup-labeled.png" alt="Labeled hardware setup of Board B with ESP32-S3 and W25Q32 flash, and Board C with ESP32-S3 and LCD" width="480">
+
 **Board consoles.** A few checks are typed on a board's own console. Open one PowerShell window per board:
 
 > ```powershell
