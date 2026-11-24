@@ -9,7 +9,7 @@ For the combined MQTT run, the easiest PowerShell view of **actual live values**
 Connect **only Board A** to the laptop at the ESP32 socket printed `USB` (native USB). Start a fresh PowerShell:
 
 ```powershell
-cd 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
+cd "$HOME\EMBSYS-P2-AAI15"
 $py = "$env:USERPROFILE\.espressif\python_env\idf6.1_py3.14_env\Scripts\python.exe"
 & $py -m serial.tools.list_ports -v
 ```

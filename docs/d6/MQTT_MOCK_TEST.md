@@ -34,7 +34,7 @@ This test is opt-in and uses synthetic values. It does not establish live Board 
 3. Install [Mosquitto for Windows](https://mosquitto.org/download/) if absent. In PowerShell, start the temporary broker with:
 
    ```powershell
-   & "$env:ProgramFiles\mosquitto\mosquitto.exe" -c "C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration\tools\mqtt-test.conf" -v
+   & "$env:ProgramFiles\mosquitto\mosquitto.exe" -c "$HOME\EMBSYS-P2-AAI15\tools\mqtt-test.conf" -v
    ```
 
    Keep that window open. Allow TCP 1883 on Windows **Private** networks if prompted. This test configuration allows anonymous clients on the private network; close the broker after testing.

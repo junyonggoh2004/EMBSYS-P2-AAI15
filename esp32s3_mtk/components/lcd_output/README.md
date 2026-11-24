@@ -261,12 +261,12 @@ Close any serial monitor before flashing. If the latest LCD firmware is
 already on the board, skip the flash line and open the monitor directly.
 
 ```powershell
-cd C:\Users\brend\EMBSYS-P2-AAI15\esp32s3_mtk
+cd "$HOME\EMBSYS-P2-AAI15\esp32s3_mtk"
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
-$env:MTKERNEL_PATH = 'C:\Users\brend\EMBSYS-P2-AAI15\esp32s3_mtk\third_party\mtk3smp-esp32s3'
-$env:IDF_PATH = 'C:\Users\brend\esp\esp-idf-v6.1'
-$env:IDF_TOOLS_PATH = 'C:\Users\brend\.espressif'
-$env:IDF_PYTHON_ENV_PATH = 'C:\Users\brend\.espressif\python_env\idf6.1_py3.14_env'
+$env:MTKERNEL_PATH = "$HOME\EMBSYS-P2-AAI15\esp32s3_mtk\third_party\mtk3smp-esp32s3"
+$env:IDF_PATH = "$HOME\esp\esp-idf-v6.1"
+$env:IDF_TOOLS_PATH = "$HOME\.espressif"
+$env:IDF_PYTHON_ENV_PATH = "$HOME\.espressif\python_env\idf6.1_py3.14_env"
 .\tools\build.ps1 flash -Port COM5
 & "$env:IDF_PYTHON_ENV_PATH\Scripts\python.exe" "$env:IDF_PATH\tools\idf_monitor.py" -p COM5 -b 115200 --eol CRLF --target esp32s3 .\build\esp32s3_mtk.elf
 ```

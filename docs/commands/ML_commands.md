@@ -18,7 +18,7 @@ Use **normal PowerShell** for these commands. Start the Mosquitto broker using t
 **Administrator PowerShell, window 1 — broker.** Start it using the [Windows startup guide](usecase_commands.md#windows). **Normal PowerShell, window 2 — results.** Keep this command running; press **Ctrl+C** to return to its PowerShell prompt.
 
 ```powershell
-Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
+Set-Location "$HOME\EMBSYS-P2-AAI15"
 $sub = "$env:ProgramFiles\mosquitto\mosquitto_sub.exe"
 & $sub -h 127.0.0.1 -t 'pico/s3-001/status/config' -t 'pico/s3-002/status/config' -t 'pico/s3-002/ml/status' -t 'pico/s3-002/ml/result' -t 'd6/board-b/comfort' -v
 ```
@@ -26,7 +26,7 @@ $sub = "$env:ProgramFiles\mosquitto\mosquitto_sub.exe"
 **Normal PowerShell, window 4 — commands.** If you have already run the full setup commands, keep its `$pub` variable and skip the first two lines. Otherwise load `config/board_a.cfg` on A and `config/board_b_ml.cfg` on B using the [startup guide](usecase_commands.md#5-run-all-four-ab-sensor-bridges--normal-powershell-window-4) before selecting one of the sine or comfort models. People-counter uses its dedicated A/B profiles below. **Normal PowerShell, window 3** runs the decoded live-values viewer from the startup guide.
 
 ```powershell
-Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
+Set-Location "$HOME\EMBSYS-P2-AAI15"
 $pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
 ```
 

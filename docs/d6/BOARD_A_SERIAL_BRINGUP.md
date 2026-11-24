@@ -17,7 +17,7 @@ printed `USB` (native USB-Serial-JTAG), not the CH343 bridge socket printed
 native port with the ESPressif Python environment already installed locally:
 
 ```powershell
-cd 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
+cd "$HOME\EMBSYS-P2-AAI15"
 $py = "$env:USERPROFILE\.espressif\python_env\idf6.1_py3.14_env\Scripts\python.exe"
 & $py -m serial.tools.list_ports -v
 & $py -m serial.tools.miniterm COMx 115200 --dtr 0 --rts 0 --eol CRLF

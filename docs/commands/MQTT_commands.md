@@ -25,7 +25,7 @@ workflow remain separate tests.
 - Use a **normal PowerShell** to check the laptop's current Wi-Fi address:
 
   ```powershell
-  cd 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
+  cd "$HOME\EMBSYS-P2-AAI15"
   $brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
   $brokerIp
   ```
@@ -41,7 +41,7 @@ on port 1883. The normal Windows Mosquitto service may listen on localhost
 only; the temporary D6 listener must accept the ESP32 on the Wi-Fi network.
 
 ```powershell
-cd 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
+cd "$HOME\EMBSYS-P2-AAI15"
 Get-Service mosquitto
 netstat -ano -p tcp | Select-String ':1883'
 ```
@@ -68,7 +68,7 @@ Keep this window open. Once Board A connects, expect
 separate **normal PowerShell** window for actual live values:
 
 ```powershell
-cd 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
+cd "$HOME\EMBSYS-P2-AAI15"
 $py = "$env:USERPROFILE\.espressif\python_env\idf6.1_py3.14_env\Scripts\python.exe"
 & $py .\tools\show_live_values.py --board A
 ```
@@ -86,7 +86,7 @@ prints decoded JSON.
 Wait until Board A is connected. Then run these lines in order:
 
 ```powershell
-cd 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
+cd "$HOME\EMBSYS-P2-AAI15"
 $brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
 $pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
 
@@ -192,7 +192,7 @@ After isolated checks, restore all four Board A profiles before continuing
 the combined A → B test:
 
 ```powershell
-cd 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
+cd "$HOME\EMBSYS-P2-AAI15"
 $brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
 $pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
 & $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'STOP'
@@ -288,7 +288,7 @@ also removes the earlier one-source AHT bridge, so all four B mappings are
 sent again here.
 
 ```powershell
-cd 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
+cd "$HOME\EMBSYS-P2-AAI15"
 $brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
 $pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
 
@@ -452,7 +452,7 @@ The broker IP is compiled into each ESP32 firmware image; `mosquitto_pub`
 cannot change it. Update the ignored local file in a **normal PowerShell**:
 
 ```powershell
-cd 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
+cd "$HOME\EMBSYS-P2-AAI15"
 notepad .\esp32s3_mtk\main\wifi_credentials.h
 ```
 
@@ -473,10 +473,10 @@ was used successfully on 21 November 2026 with the existing N16R8 build
 directory. Replace `COMx` only after identifying Board A:
 
 ```powershell
-cd 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
+cd "$HOME\EMBSYS-P2-AAI15"
 $boardPort = 'COMx'
-$buildDir = 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23\esp32s3_mtk\build-n16r8'
-$env:MTKERNEL_PATH = 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23\esp32s3_mtk\third_party\mtk3smp-esp32s3'
+$buildDir = "$HOME\EMBSYS-P2-AAI15\esp32s3_mtk\build-n16r8"
+$env:MTKERNEL_PATH = "$HOME\EMBSYS-P2-AAI15\esp32s3_mtk\third_party\mtk3smp-esp32s3"
 $env:IDF_PATH = "$env:USERPROFILE\esp\esp-idf-v6.1"
 $env:IDF_TOOLS_PATH = "$env:USERPROFILE\.espressif"
 $env:IDF_PYTHON_ENV_PATH = "$env:USERPROFILE\.espressif\python_env\idf6.1_py3.14_env"

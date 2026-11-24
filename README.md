@@ -43,14 +43,13 @@ Each numbered section below is collapsed. Click its title to open it.
 | &nbsp;&nbsp;[Part H: D4 ML](#part-h-d4-ml) | Laptop tests, the bundled models, ML on a real sensor, switching live over MQTT |
 | &nbsp;&nbsp;[Part I: D5 benchmark](#part-i-d5-benchmark) | Laptop tests and `MLBENCH` |
 | [4. Using any sensor and ML](#4-using-any-sensor-and-ml) | Wiring and the config line for every sensor type, rules, ML and [MQTT](#over-mqtt-how-it-works-and-what-to-send) |
-| [5. D6 use case demo](#5-d6-use-case-demo) | The three-board room monitor |
-| &nbsp;&nbsp;[5.1 From D1 to D5 to the demo](#51-from-d1-to-d5-to-the-demo) | The use case and what each deliverable brings to it |
+| [5. D6 use case](#5-d6-use-case-demo) | The three-board room monitor |
+| &nbsp;&nbsp;[5.1 Overview](#51-overview) | The use case and what each deliverable brings to it |
 | &nbsp;&nbsp;[5.2 Setup](#52-setup) | Each board's hardware, firmware and configuration |
-| &nbsp;&nbsp;[5.3 Demo](#53-demo) | Run the demo, then what each of D1 to D5 explains, with the live model switch |
-| &nbsp;&nbsp;[5.4 Any sensor on the fly](#54-any-sensor-on-the-fly-extra-if-asked) | Extra, if asked: sensors on GPIO, I2C and SPI, timing and ML set live over MQTT on spare boards, with how MQTT works |
+| &nbsp;&nbsp;[5.3 Run the use case](#53-run-the-use-case) | Start all three boards with one command block, then switch the ML model live |
+| &nbsp;&nbsp;[5.4 Any sensor on the fly](#54-any-sensor-on-the-fly) | Sensors on GPIO, I2C and SPI, their timing and ML set live over MQTT on spare boards, with how MQTT works |
 | &nbsp;&nbsp;[5.5 More commands](#55-more-commands) | Sonar pair, doorway count on A, and the mock and live snapshots on C |
-| [6. Completion rule](#6-completion-rule) | When a task counts as done |
-| [7. Arduino/FreeRTOS baseline](#7-arduinofreertos-baseline) | Where the baseline's setup guide is |
+| [6. Arduino/FreeRTOS baseline](#6-arduinofreertos-baseline) | Where the baseline's setup guide is |
 
 Other documents: [TASK_RECORD.md](TASK_RECORD.md) (full D1 to D3 task tables), [MTK_REDESIGN.md](MTK_REDESIGN.md) (µT-Kernel design and compliance), [SETUP.md](SETUP.md) (board and environment details), [parity/PARITY.md](parity/PARITY.md) (requirements and evidence), [PORTABILITY.md](docs/design/PORTABILITY.md) (Pico to S3 changes and defects), [ARCHITECTURE.md](ARCHITECTURE.md) (task design), [SENSOR_BREADBOARD_README.md](docs/hardware/SENSOR_BREADBOARD_README.md) (three-sensor breadboard and Windows workflow), [project_v3/README.md](project_v3/README.md) (full config syntax).
 
@@ -379,7 +378,6 @@ Sitt wrote the `ml_setup` command with local inputs and console and MQTT results
 | 3.6 | User how-to and demo steps | Done 23 Nov: [LIVE_SETUP_PROPOSAL.md](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md) has the command, every option and the two-board demo steps |
 | 3.7 | Board evidence and update | Done: Sitt's [19 Nov board check](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#board-check-19-november-2026), the [22 Nov laptop tests](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#laptop-tests-22-november-2026) and [24 Nov remote-input board record](docs/d6/PEOPLE_COUNTER_LIVE_TEST_20261124.md) are recorded; uploaded-model selection and local rule output were checked with laptop tests |
 
-
 </details>
 
 <a name="25-d5-task-checklist-hasif"></a>
@@ -431,7 +429,7 @@ D6 joins three ESP32-S3 N16R8 boards into one use case: a doorway room monitor (
 | 5.7 | Comfort score on C | B's `comfort-summer` score shows on C's LCD and clears when it goes stale | Jun Yong | **Done 23 Nov:** score 95 shown on C, and shown again at the demo on 24 Nov |
 | 5.8 | LCD board shows live data | B publishes a live AHT, light and two-sonar snapshot and C draws it on its LCD | Brendan | **Done 24 Nov:** C's landscape LCD updated live at the demo |
 | 5.9 | Doorway counter on A | Board A counts entries and exits from the order in which the two sonars are blocked (`DOORWAY`) | Jun Yong | **Done 23 Nov:** built and flashed on A, with laptop tests ([5.5](#55-more-commands)) |
-| 5.10 | Multi-bus demo | GPIO, I2C and SPI sensors on one board, configured live, with their timing and the ML changed live | Hasif | **Done 24 Nov** on spare boards ([5.4](#54-any-sensor-on-the-fly-extra-if-asked)) |
+| 5.10 | Multi-bus demo | GPIO, I2C and SPI sensors on one board, configured live, with their timing and the ML changed live | Hasif | **Done 24 Nov** on spare boards ([5.4](#54-any-sensor-on-the-fly)) |
 | 5.11 | Full run on three boards | Run the whole thing end to end from one start-up block | Team | **Done 24 Nov:** run end to end at the demo from Brendan's laptop, with Jun Yong's Windows start-up commands |
 
 **Where the details are.** [Board A wiring](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md), [Board A sensor tests](docs/d6/BOARD_A_SENSOR_TEST.md), the full [Windows MQTT commands](docs/commands/MQTT_commands.md), the [use case notes](docs/d6/SONAR_ONLY_USECASE.md), the [LCD reference](docs/d6/ROOM_MONITOR_REFERENCE.md), the [ML commands](docs/commands/ML_commands.md), the [live people-counter record](docs/d6/PEOPLE_COUNTER_LIVE_TEST_20261124.md) and the [classroom ML demo](docs/embedded-ml/RUNNING.md).
@@ -444,7 +442,7 @@ D6 joins three ESP32-S3 N16R8 boards into one use case: a doorway room monitor (
 <details>
 <summary><h2>3. Set up and test from scratch</h2></summary>
 
-Follow these steps in order on a Mac (Linux works the same way). They build, flash and test the firmware on `main`: D1 on µT-Kernel 3 SMP, D2's SPI, D3's timing, D4's ML and D5's benchmark. The D6 demo is in [section 5](#5-d6-use-case-demo). Each step says what you should see. On Windows, install ESP-IDF at commit `17a74c925c`, load it with its PowerShell `export.ps1` and give `IDF_PATH` forward slashes, as Brendan did; the Arduino baseline in [section 7](#7-arduinofreertos-baseline) has full Windows steps.
+Follow these steps in order on a Mac (Linux works the same way). They build, flash and test the firmware on `main`: D1 on µT-Kernel 3 SMP, D2's SPI, D3's timing, D4's ML and D5's benchmark. The D6 demo is in [section 5](#5-d6-use-case-demo). Each step says what you should see. On Windows, install ESP-IDF at commit `17a74c925c`, load it with its PowerShell `export.ps1` and give `IDF_PATH` forward slashes, as Brendan did; the Arduino baseline in [section 6](#6-arduinofreertos-baseline) has full Windows steps.
 
 **Earlier three-sensor breadboard.** The three-sensor breadboard (AHT temperature and humidity, HC-SR04+ distance and TSL2561 light, with the LCD wiring kept) and its Windows and VS Code build workflow are in [SENSOR_BREADBOARD_README.md](docs/hardware/SENSOR_BREADBOARD_README.md). The single-sonar, loopback, radar and SPI fixtures in this guide use other pins; do not apply them to that breadboard.
 
@@ -691,13 +689,13 @@ mosquitto_pub -h <laptop-ip> -t pico/s3-001/cmd -m RUN   # board B now prints "A
 
 <a name="5-d6-use-case-demo"></a>
 <details>
-<summary><h2>5. D6 use case demo</h2></summary>
+<summary><h2>5. D6 use case</h2></summary>
 
-Everything in this section runs on the current `main`. The board tests recorded on 18–21 Nov used Brendan's D6 build, which is now merged, so the steps marked tested need one re-run on boards flashed from `main`. Every command below is for Brendan's Windows laptop, his repo folder `C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration` and his temporary broker config [`tools/mqtt-test.conf`](tools/mqtt-test.conf).
+Everything in this section runs on `main`. The Windows commands assume the repository is cloned to `$HOME\EMBSYS-P2-AAI15` (change that path if yours is elsewhere) and use the temporary broker config [`tools/mqtt-test.conf`](tools/mqtt-test.conf).
 
-### 5.1 From D1 to D5 to the demo
+### 5.1 Overview
 
-**The story.** Picture a classroom with one doorway. The demo turns three small boards into a monitor for that room. The first board sits at the door: it notices people walking in or out, and measures how warm, humid and bright the room is. The second board works out how many people are inside and how comfortable the room feels, and keeps a record of every event. The third board is a small screen that shows all of it.
+**The story.** Picture a classroom with one doorway. Three small boards act as a monitor for that room. The first board sits at the door: it measures how warm, humid and bright the room is, and two sonars watch the doorway. The second board takes those readings over the network and runs ML on them, such as how comfortable the room feels. The third board is a small screen that shows the readings and the comfort score.
 
 **Why three boards.** Each board does one job, the way separate devices do in a real building: one senses, one decides, one shows. They never talk to each other directly, only through a message hub on the laptop (the MQTT broker). So any board can be moved, restarted or swapped without rewiring the others.
 
@@ -721,9 +719,8 @@ flowchart LR
     BROKER(("Laptop<br/>MQTT broker"))
     subgraph B["Board B · s3-002 · processes"]
         FOL["Follows A's four sensors"]
-        ML["comfort-summer model"]
-        CNT["Occupancy count<br/>(the only writer)"]
-        LOG["W25Q32 event log<br/>(SPI)"]
+        ML["Live ML<br/>(comfort-summer, sine, people-counter)"]
+        SNAP["Live snapshot"]
     end
     subgraph C["Board C · s3-003 · displays"]
         LCD["ST7789 LCD<br/>room monitor"]
@@ -731,14 +728,13 @@ flowchart LR
     A -- "sensor readings" --> BROKER
     BROKER --> FOL
     FOL --> ML
-    FOL --> CNT
-    CNT --> LOG
+    FOL --> SNAP
     ML -- "comfort score" --> BROKER
-    CNT -- "snapshot" --> BROKER
+    SNAP -- "snapshot" --> BROKER
     BROKER --> LCD
 ```
 
-**What each deliverable brings to the demo.**
+**What each deliverable brings.**
 
 | Deliverable | What it adds | Where it shows in the demo |
 |---|---|---|
@@ -750,7 +746,7 @@ flowchart LR
 
 ### 5.2 Setup
 
-The hardware each board needs, the firmware on it, and the settings that give it its role. Each item has its own row, followed by the command to run and what it does. The Windows commands below use `C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration`; change that one path if using another checkout. Full detail and the PowerShell window map are in [usecase_commands.md](docs/commands/usecase_commands.md#windows) and [ML_commands.md](docs/commands/ML_commands.md).
+The hardware each board needs, the firmware on it, and the settings that give it its role. Each item has its own row, followed by the command to run and what it does. Full detail and the PowerShell window map are in [usecase_commands.md](docs/commands/usecase_commands.md#windows) and [ML_commands.md](docs/commands/ML_commands.md).
 
 **Labeled hardware setup:** Board B (`s3-002`) runs ML, rules and flash logging; Board C (`s3-003`) displays the results. The photo labels their ESP32-S3 boards, the W25Q32 flash, the LCD and the USB connections to the host laptop.
 
@@ -827,7 +823,7 @@ The hardware each board needs, the firmware on it, and the settings that give it
 
 > ```powershell
 > # Normal PowerShell
-> Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
+> Set-Location "$HOME\EMBSYS-P2-AAI15"
 > (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
 > if (-not (Test-Path '.\esp32s3_mtk\main\wifi_credentials.h')) {
 >     Copy-Item '.\esp32s3_mtk\main\wifi_credentials.h.example' '.\esp32s3_mtk\main\wifi_credentials.h'
@@ -845,7 +841,7 @@ The hardware each board needs, the firmware on it, and the settings that give it
 
 > ```bash
 > # Git Bash, one board on USB at a time, on its native USB port
-> cd /c/Users/brend/EMBSYS-P2-AAI15-D6-Integration
+> cd ~/EMBSYS-P2-AAI15
 > git pull
 > BOARD=n16r8 NODE=s3-001 PORT=COMx sh tools/mtk.sh flash
 > BOARD=n16r8 NODE=s3-002 PORT=COMy sh tools/mtk.sh flash
@@ -867,7 +863,7 @@ The hardware each board needs, the firmware on it, and the settings that give it
 > BEGINCFG|name=SONAR_B|proto=gpio|gpio.mode=pulse|gpio.trig=6|gpio.echo=7|gpio.pull=down|gpio.trig_us=10|gpio.pulse_timeout_us=20000|mode=poll|freq_hz=2|timing.timeout_ms=100|ENDCFG
 > ```
 >
-> **Where:** the file `config/board_a.cfg`. Nothing to type now: the start block in [5.3](#53-demo) sends it.
+> **Where:** the file `config/board_a.cfg`. Nothing to type now: the start block in [5.3](#53-run-the-use-case) sends it.
 >
 > **What it does:** tells Board A it has four sensors. The AHT and the light sensor are read over I2C every 2 s; each sonar is triggered over GPIO every 0.5 s and gives up on an echo after 20 ms, so a missing echo is reported as an error, never as a distance.
 
@@ -882,7 +878,7 @@ The hardware each board needs, the firmware on it, and the settings that give it
 > BEGINCFG|name=A_SONAR_B|proto=mqtt|mode=poll|freq_hz=2|remote_node=s3-001|remote_source=SONAR_B|remote_profile=pulse|ENDCFG
 > ```
 >
-> **Where:** the file `config/board_b_ml.cfg`. The start block in [5.3](#53-demo) sends it.
+> **Where:** the file `config/board_b_ml.cfg`. The start block in [5.3](#53-run-the-use-case) sends it.
 >
 > **What it does:** each line makes Board B subscribe to one of Board A's sensors and treat every reading as one of its own. `remote_profile` tells B how to decode it into temperature, humidity, lux or distance, which the ML in item 9 needs.
 
@@ -902,29 +898,29 @@ The hardware each board needs, the firmware on it, and the settings that give it
 > }}
 > ```
 >
-> **Where:** the file `config/board_b_comfort_summer.json`. Jun Yong's second switch in [5.3](#53-demo) sends it. `board_b_sine_float.json` and `board_b_sine_int8.json` switch to the sine models the same way.
+> **Where:** the file `config/board_b_comfort_summer.json`. Step 4 in [5.3](#53-run-the-use-case) sends it. `board_b_sine_float.json` and `board_b_sine_int8.json` switch to the sine models the same way.
 >
 > **What it does:** chooses the comfort-summer model and feeds it Board A's temperature (0 to 60 °C) and humidity (0 to 100%), then publishes each result. The model switches live, without stopping the sensors.
 
 | # | Item | Setting | Why | Status |
 |---|---|---|---|---|
-| 10 | Board C display | `D6VIEW`: draws B's snapshot (`d6/board-b/snapshot`) and the live comfort score (`d6/board-b/comfort`) in landscape | Board C only displays (FR7) | Mock snapshot **tested** 21 Nov; live comfort score **tested** 23 Nov; separate A and B distance lines **built**, awaiting a visual check |
+| 10 | Board C display | `D6VIEW`: draws B's snapshot (`d6/board-b/snapshot`) and the live comfort score (`d6/board-b/comfort`) in landscape | Board C only displays (FR7) | **Done:** mock snapshot 21 Nov, live comfort score 23 Nov, live snapshot with both sonar distances 24 Nov |
 
 > ```powershell
 > & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-003/cmd' -m 'D6VIEW'
 > ```
 >
-> **Where:** window 4 of the demo ([5.3](#53-demo) sets up `$pub`); the start block sends it.
+> **Where:** window 4 of the demo ([5.3](#53-run-the-use-case) sets up `$pub`); the start block sends it.
 >
 > **What it does:** switches Board C's screen to the room monitor. Send it again after resetting C or running `LCDTEST`.
 >
 > **You should see:** `WAIT B MQTT` on the screen until Board B sends something.
 
-### 5.3 Demo
+### 5.3 Run the use case
 
-The demo starts with one command block. After that the boards keep running by themselves while each person explains their deliverable in order, D1 to D4. At D4, the ML model can be switched live. The commands below use `C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration`.
+One command block starts the whole use case. The boards then keep running by themselves, and the ML model can be switched live.
 
-#### Run the demo
+#### Start
 
 | # | Step | What you do | What it shows | Status |
 |---|---|---|---|---|
@@ -940,14 +936,14 @@ The demo starts with one command block. After that the boards keep running by th
 >
 > ```powershell
 > # Window 3: readings in units. Leave it running.
-> Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
+> Set-Location "$HOME\EMBSYS-P2-AAI15"
 > $py = "$env:USERPROFILE\.espressif\python_env\idf6.1_py3.14_env\Scripts\python.exe"
 > & $py .\tools\show_live_values.py --board A
 > ```
 >
 > ```powershell
 > # Window 4: every command below is sent from here
-> Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
+> Set-Location "$HOME\EMBSYS-P2-AAI15"
 > $pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
 > ```
 >
@@ -957,7 +953,7 @@ The demo starts with one command block. After that the boards keep running by th
 
 | # | Step | What you do | What it shows | Status |
 |---|---|---|---|---|
-| 2 | Start the demo | Paste one block into window 4 | A sampling its four sensors, B following A and running a model, C on the room monitor | **Done 24 Nov**, shown at the demo: live A readings, B `sine-float` and C's live display |
+| 2 | Start everything | Paste one block into window 4 | A sampling its four sensors, B following A and running a model, C on the room monitor | **Done 24 Nov**, shown at the demo: live A readings, B `sine-float` and C's live display |
 
 > This block sets up A and B, starts the live `sine-float` model on B and puts C on the room monitor:
 >
@@ -980,38 +976,11 @@ The demo starts with one command block. After that the boards keep running by th
 >
 > **You should see:** A's `AHT`, `LIGHT`, `SONAR_A` and `SONAR_B` topics and B's `A_` copies in window 2; `"ok":true` on `pico/s3-002/ml/status`, then results on `pico/s3-002/ml/result`; readings in window 3; the room monitor on C.
 
-#### D1 · Sitt: one configurable firmware
-
-| Point to | What to say |
-|---|---|
-| The three boards | They use the same application code with different node IDs. Their sensor and ML settings were changed at runtime, without reflashing |
-| Window 2, A's sensor topics | Board A was told its four sensors a moment ago by one config file sent over MQTT. The same lines work over USB |
-| Window 2, B's `A_` topics | Board B uses Board A's sensors through the broker, with no wire between them (`proto=mqtt`, D1 tasks 1.1–1.4) |
-| `TASKS` on any board's console (optional) | The firmware runs on µT-Kernel 3 SMP: seven tasks, the network on core 0, sensing on core 1, and a hardware watchdog |
-
-#### D2 · Brendan: SPI and the flash log
-
-| Point to | What to say |
-|---|---|
-| Board B's flash chip | SPI is the fourth bus, configured the same way as GPIO, I2C and UART. Board B's W25Q32 sits on it |
-| `SPIID` on B's console (optional) | Reads the chip's ID, `EF4016`, without writing to it |
-| Board C's screen | The LCD is an SPI device too, drawn through the same bus code |
-| `LOG STATUS` on B's console (optional) | Every event Board B processes is offered to the flash log and read back to check it (D2-8). |
-
-#### D3 · Cody: timing per sensor
-
-| Point to | What to say |
-|---|---|
-| Window 3 | Each sensor keeps its own timing: the AHT and light every 2 s, each sonar every 0.5 s |
-| The two sonar distances | The sonars are read one after the other so one never hears the other's echo. The echo is timed by an interrupt, so the board never waits on it |
-| A sonar showing `--` or an error | A missing echo is reported as an error, never as a made-up distance |
-| The doorway counter (mention only) | Board A also has a `DOORWAY` mode that counts entries and exits from the order in which the two sonars are blocked ([5.5](#55-more-commands)) |
-
-#### D4 · Jun Yong: change the model, then explain
+#### Switch the ML model live
 
 | # | Step | What you do | What it shows | Status |
 |---|---|---|---|---|
-| D4-1 | Switch to `sine-int8` | Send one command | The model changes live, with sampling still running | **Done 24 Nov**, shown at the demo: Board A's live readings and `status:OK` |
+| 3 | Switch to `sine-int8` | Send one command | The model changes live, with sampling still running | **Done 24 Nov**, shown at the demo: Board A's live readings and `status:OK` |
 
 > ```powershell
 > & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_sine_int8.json'
@@ -1023,7 +992,7 @@ The demo starts with one command block. After that the boards keep running by th
 
 | # | Step | What you do | What it shows | Status |
 |---|---|---|---|---|
-| D4-2 | Switch to `comfort-summer` | Send one command, watch C | A different model with different inputs, and its result on another board's screen | **Done:** tested 23 Nov (score 95 on C), shown at the demo on 24 Nov |
+| 4 | Switch to `comfort-summer` | Send one command, watch C | A different model with different inputs, and its result on another board's screen | **Done:** tested 23 Nov (score 95 on C), shown at the demo on 24 Nov |
 
 > ```powershell
 > & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_comfort_summer.json'
@@ -1037,33 +1006,15 @@ The demo starts with one command block. After that the boards keep running by th
 >
 > **You should see:** results with `"model":"comfort-summer"`, `"input_source":"remote:s3-001"` and a `comfort_score`, and the same score under **LIVE COMFORT** on C. About 6 s after `STOP`, C shows `STALE`; after `RUN`, a fresh score returns.
 
-| Point to | What to say |
-|---|---|
-| The two switches | One JSON message (`ml_setup`) picks the model, its inputs and where the result goes. It applies live, and each change gets a new generation number |
-| `"input_source":"remote:s3-001"` | The model on Board B reads Board A's sensors over MQTT |
-| `sine-int8` against `sine-float` | Five models are bundled. The INT8 ones run on the S3's vector instructions through ESP-NN, which D5 measured |
-| **LIVE COMFORT** on C | comfort-summer turns temperature and humidity into a comfort score from 0 to 99. C marks it `STALE` if updates stop, rather than showing an old score as current |
-| people-counter (separate live test) | B can switch to the bundled 31-input model while A sends a dedicated 70 ms single-sonar stream. Live MQTT results passed on 24 Nov. Follow the [isolated A/B profile commands](docs/commands/ML_commands.md#4-people-counter--experimental-live-31-reading-window), then reload the normal four-sensor profiles. Its prediction is separate from occupancy and awaits labelled doorway validation |
+**people-counter.** Board B can also run the bundled 31-input `people-counter` model on Board A's live sonar, using a dedicated 70 ms single-sonar profile on A; live results were published on 24 Nov ([record](docs/d6/PEOPLE_COUNTER_LIVE_TEST_20261124.md)). Use the [isolated A/B profile commands](docs/commands/ML_commands.md#4-people-counter--experimental-live-31-reading-window), then reload the normal four-sensor profile with the start block in step 2.
 
-#### D5 · Hasif: why the ML fits on the board
+**Speed.** Each model run takes well under a millisecond for the sine models and about 1 ms for comfort-summer (`invoke_us` in B's results), against a reading every 0.5 to 2 s. D5 measured the S3's acceleration ([2.5](#25-d5-task-checklist-hasif)).
 
-The intro gives the D5 numbers. Here they are tied to what is running.
+### 5.4 Any sensor on the fly
 
-| Point to | What to say |
-|---|---|
-| `"invoke_us"` in Board B's ML results | Each model run takes well under a millisecond for the sine models and about 1 ms for comfort-summer, against a reading every 0.5 to 2 s. The ML uses under 0.1% of the time between readings |
-| The `sine-int8` switch at D4 | INT8 models run on the S3's vector instructions through ESP-NN, which made them 1.36 to 3.35 times faster with the same outputs (D5 task 4.2). For a model this small, passing the request between tasks (94 to 118 µs) costs more than the model itself, so the gain only shows on larger models |
-| people-counter (mention) | The largest INT8 model keeps a 2.55 times speed-up in the running firmware, about 2.1 against 5.3 ms per run (D5 task 4.5) |
-| Memory | Each model's working memory is 716 to 6,204 B of a 64 KB area in PSRAM, and about 30 KB of internal RAM stays free with Wi-Fi and MQTT running (D5 task 4.3) |
-| No lost data | With ML running on live readings, no reading or message was dropped (D5 task 4.5) |
+A separate setup on a Mac with two spare ESP32-S3 N16R8 boards (Hasif). One board carries four sensors on three buses; the firmware is the same as on A, B and C. Over MQTT, with nothing reflashed, it shows sensors being added one at a time, a sensor's timing being changed, and an ML model being added and switched. Every step below was run on 24 Nov 2026 in this order, and every output shown is the real one.
 
-Details: [2.5 D5 task checklist](#25-d5-task-checklist-hasif) and [docs/d5/README.md](docs/d5/README.md#6-results).
-
-### 5.4 Any sensor on the fly (extra, if asked)
-
-A separate demo on a Mac with two spare ESP32-S3 N16R8 boards, shown only if asked. One board carries four sensors on three buses; the firmware is the same as on A, B and C. Over MQTT, with nothing reflashed, it shows sensors being added one at a time, a sensor's timing being changed, and an ML model being added and switched. Every step below was run on 24 Nov 2026 in this order, and every output shown is the real one.
-
-**Every command in 5.4 is an MQTT message over Wi-Fi.** The laptop runs the MQTT broker, the CONFIG terminal publishes settings to the board's topics, and the LISTENER terminal subscribes to what the board sends back. The USB cable only powers the board, so it is configured without being touched. How this works, and how to explain it, is in [5.4.8](#548-how-it-works-for-questions).
+**Every command in 5.4 is an MQTT message over Wi-Fi.** The laptop runs the MQTT broker, the CONFIG terminal publishes settings to the board's topics, and the LISTENER terminal subscribes to what the board sends back. The USB cable only powers the board, so it is configured without being touched. How this works is in [5.4.8](#548-how-it-works).
 
 | Board | Node ID | Role |
 |---|---|---|
@@ -1127,7 +1078,7 @@ BOARD=n16r8 NODE=s3-004 PORT=$SECOND sh tools/mtk.sh flash
 
 #### 5.4.3 Open the three terminals
 
-Open three Terminal windows and name them with **Cmd+Shift+I**: BROKER, LISTENER and CONFIG. Leave all three open for the whole demo.
+Open three Terminal windows and name them with **Cmd+Shift+I**: BROKER, LISTENER and CONFIG. Leave all three open throughout.
 
 | Terminal | What it shows |
 |---|---|
@@ -1336,7 +1287,7 @@ Then paste the MH line from 5.4.4 (only the `BEGINCFG|...|ENDCFG` part) and pres
 
 **You should see:** `CFG: ok (added #0: MH)` on the console, then `MH` readings in LISTENER as before. Ctrl+C closes the console.
 
-#### 5.4.8 How it works (for questions)
+#### 5.4.8 How it works
 
 **MQTT in one paragraph.** MQTT is publish and subscribe through a broker. The Mac runs the broker (BROKER). The boards, LISTENER and CONFIG are all clients of it. A client publishes a message on a topic, such as `pico/s3-005/config`, and the broker passes it to every client subscribed to that topic. Boards never talk to each other directly; everything goes through the broker. Each board subscribes to its own topics, which contain its node ID, so a message for `s3-005` only reaches `s3-005`.
 
@@ -1433,7 +1384,7 @@ sequenceDiagram
 | `"inputs":` | `"name":"SONAR","field":"distance_cm","min":2,"max":400` | Which sensor and value feed the model, and how it is scaled |
 | `"output":` | `{"kind":"publish"}` | Where the result goes: published, console only, or back into the board as a sensor called `ML` |
 
-**Likely questions.**
+**Questions and answers.**
 
 | Question | Answer |
 |---|---|
@@ -1513,17 +1464,9 @@ Commands for the rest of the use case that are not part of the main run in 5.3.
 
 </details>
 
-<a name="6-completion-rule"></a>
+<a name="6-arduinofreertos-baseline"></a>
 <details>
-<summary><h2>6. Completion rule</h2></summary>
-
-A task is not complete merely because code compiles or a single happy-path demonstration works. It is complete only when its acceptance evidence is recorded, relevant requirements and assumptions are updated, and any failure or limitation is either fixed or explicitly documented with an owner and disposition.
-
-</details>
-
-<a name="7-arduinofreertos-baseline"></a>
-<details>
-<summary><h2>7. Arduino/FreeRTOS baseline</h2></summary>
+<summary><h2>6. Arduino/FreeRTOS baseline</h2></summary>
 
 The earlier Arduino-ESP32/FreeRTOS build (`esp32s3_edge/`, `tools/s3.sh`) is kept as the measured baseline (D1 task 21, [PARITY.md §3](parity/PARITY.md#3-esp32-s3-results-tasks-13-to-21)). Its step-by-step setup and tests for Mac and Windows are in [ARDUINO_BASELINE.md](docs/arduino/ARDUINO_BASELINE.md). Going from the µT-Kernel build back to it, erase the flash first ([SETUP.md](SETUP.md#testing-on-µt-kernel-tasks-2732)).
 
