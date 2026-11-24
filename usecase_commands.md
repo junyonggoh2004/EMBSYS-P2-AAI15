@@ -145,14 +145,25 @@ BOARD=n16r8 NODE=s3-003 PORT=COMz sh tools/mtk.sh flash
 
 After flashing, connect all three boards.
 
-### 2. Start the temporary broker — Administrator PowerShell, window 1
+### 2. Start or reuse the temporary broker — PowerShell, window 1
 
-Run from the repository root. This command occupies the window. If port 1883 is already used by a different broker, stop that broker first.
+Run from the repository root. This checks who is listening on TCP port 1883 before trying to start Mosquitto. If the port is free, the broker stays in the foreground.
 
 ```powershell
-Stop-Service -Name mosquitto -ErrorAction SilentlyContinue
-& "$env:ProgramFiles\mosquitto\mosquitto.exe" -c (Join-Path (Get-Location) 'tools\mqtt-test.conf') -v
+$listeners = @(Get-NetTCPConnection -State Listen -ErrorAction Stop | Where-Object LocalPort -eq 1883)
+if ($listeners.Count -eq 0) {
+    & "$env:ProgramFiles\mosquitto\mosquitto.exe" -c (Join-Path (Get-Location) 'tools\mqtt-test.conf') -v
+} else {
+    $listeners | Select-Object LocalAddress, LocalPort, OwningProcess, @{Name = 'Process'; Expression = {
+        (Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue).ProcessName
+    }} | Format-Table -AutoSize
+    Write-Host 'Port 1883 already has a listener. Follow the matching case below.'
+}
 ```
+
+* **Mosquitto is already serving the demo.** If it is listening on `0.0.0.0`, or on both the laptop's Wi-Fi IPv4 address and `127.0.0.1`, go to step 3 and check for fresh heartbeats from all three boards. One broker is enough.
+* **An old demo Mosquitto instance needs replacing.** Press **Ctrl+C** in the terminal that started it. If it is a Windows service, run `Get-CimInstance Win32_Service -Filter "Name = 'mosquitto'" | Select-Object Name, State, ProcessId` and confirm `ProcessId` matches the listener's `OwningProcess`. Then run `Stop-Service -Name mosquitto -ErrorAction Stop` in Administrator PowerShell. Rerun the block above to load the demo configuration. Use this path if the old demo broker is listening only on loopback (`127.0.0.1` or `::1`).
+* **Another program owns the port.** Use the displayed process name and PID to identify it before freeing the port. Keep port 1883 for the demo so it matches the boards' MQTT settings.
 
 ### 3. Watch board traffic — normal PowerShell, window 2
 
