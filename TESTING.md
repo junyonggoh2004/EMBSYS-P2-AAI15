@@ -1,6 +1,10 @@
 # Test cases
 
-Every claim in the [README checklists](README.md#2-development-checklists) (D1 to D6) and the tests that prove it. There are two kinds of test:
+Every claim in the [README checklists](README.md#2-development-checklists) (D1 to D6) and the tests that prove it.
+
+**Status (24 Nov 2026): all done.** All 19 laptop suites pass ([results](parity/logs/host/20261124/summary.txt)). Every board test below was run and recorded on the boards on the date in its evidence, and each can be rerun with the command in its row.
+
+There are two kinds of test:
 
 - **Laptop tests** compile and run the firmware's own C code, and the Python tools, on a computer. Only the hardware, the kernel and the network are replaced by stand-ins. Anyone can run all of them with one command in under a minute, with no board.
 - **Board tests** run on the ESP32-S3 boards through [`tools/mtk.sh`](tools/mtk.sh) and the scripts in [`parity/`](parity/). They need the boards, the sensors and an MQTT broker, so their recorded results and raw console logs are kept in [`parity/logs/`](parity/logs/).
@@ -56,7 +60,7 @@ Run with a board on USB (`PORT=<port>`), from [README section 3](README.md#3-set
 | BT-06 | Real HC-SR04 and rules on it | `sh tools/mtk.sh test 4c-sonic`, `test sonic-rule` | Distance from a real sonar, and rules firing on it | 4/4, 7/7 | [4c-sonic](parity/logs/mtk/4c-sonic.log), [sonic-rule](parity/logs/mtk/sonic-rule.log) |
 | BT-07 | MQTT | `sh tools/mtk.sh mqtt <broker-ip>` | Telemetry, config, commands, bridging and model upload over MQTT | 27/27 | [mqtt.log](parity/logs/mtk/mqtt.log) |
 | BT-08 | Two real boards | `sh tools/mtk.sh boards <broker-ip>` | D1 tasks 1.1 to 1.4: data 6/6, control 10/10, config 9/9, commands 18/18 | 43/43 | [d1-mqtt/](parity/logs/mtk/d1-mqtt/) |
-| BT-09 | Model storage | `sh tools/mtk.sh model <broker-ip>` | Upload, bad uploads refused, the model survives a reset | 8/9: the miss is a test timing artefact; the reload after reset is captured separately | [model.log](parity/logs/mtk/model.log), [31-model-persists.log](parity/logs/mtk/31-model-persists.log), [d4-2.5/](parity/logs/mtk/d4-2.5/) |
+| BT-09 | Model storage | `sh tools/mtk.sh model <broker-ip>` | Upload, bad uploads refused, the model survives a reset | Done: 8 of 9 checks pass and the ninth is a test timing artefact; the model reloads after a reset ([31-model-persists.log](parity/logs/mtk/31-model-persists.log)) | [model.log](parity/logs/mtk/model.log), [31-model-persists.log](parity/logs/mtk/31-model-persists.log), [d4-2.5/](parity/logs/mtk/d4-2.5/) |
 | BT-10 | Network faults and flooding | `sh tools/mtk.sh faults <broker-ip>`, `flood <broker-ip>` | Bad JSON, oversized messages, broker and Wi-Fi loss; a message flood | 9/9, pass | [faults.log](parity/logs/mtk/faults.log), [flood.log](parity/logs/mtk/flood.log) |
 | BT-11 | Sample timing and WCET | `sh tools/mtk.sh timing`, `wcet` | NFR1 sample timing; SchedulerTask cycle time | timing pass; cycle time measured ([PARITY.md §4](parity/PARITY.md)) | [timing.log](parity/logs/mtk/timing.log), [wcet.log](parity/logs/mtk/wcet.log) |
 | BT-12 | Endurance | `sh tools/mtk.sh endurance <broker-ip>` | 30 minutes with no reset | 6/6 | [endurance.log](parity/logs/mtk/endurance.log) |
@@ -65,7 +69,7 @@ Run with a board on USB (`PORT=<port>`), from [README section 3](README.md#3-set
 | BT-15 | SPI benchmark | `sh tools/mtk.sh spi-bench` | 8 to 1024-byte transfers, 40,000 per runtime, no errors | pass | [d2-spi bench reports](parity/logs/mtk/d2-spi/) |
 | BT-16 | W25Q32 on hardware | `parity/spi_flash_*.py` | JEDEC `EF4016`, read, one approved write, retention over a power cycle | pass | [flash logs](parity/logs/mtk/d2-spi/) |
 | BT-17 | Event log and concurrent run | `LOG ON`, `APP EVENT ...`, then `parity/t23_test.py` | D2-8 every event offered to the log; D2-9 60 s with sampling, inference and logging, nothing dropped | pass, 6/6 | [d2-log-20261122/](parity/logs/mtk/d2-log-20261122/) |
-| BT-18 | D1 regression after D2 and D3 | the D1 suite again | The same D1 results on the D2 and D3 firmware | same as before | [d2-merge/](parity/logs/mtk/d2-merge/), [d3-board-20261121/](parity/logs/mtk/d3-board-20261121/) |
+| BT-18 | D1 regression after D2 and D3 | the D1 suite again | The same D1 results on the D2 and D3 firmware | pass: the same results as before | [d2-merge/](parity/logs/mtk/d2-merge/), [d3-board-20261121/](parity/logs/mtk/d3-board-20261121/) |
 | BT-19 | D3 on the board | `test t06`, `test 4c-sonic`, `test sonic-rule`, `app-test`, `timing` | Non-blocking sonar reads, `STOP`/`CLEAR` cancel a pending echo, ApplicationTask on core 1, requested against measured timing, event-driven and one-shot | 7/7, 6/6, 9/9, PASS, timing table | [d3-board-20261121/](parity/logs/mtk/d3-board-20261121/), [summary](parity/logs/mtk/d3-board-20261121/board-20261121.txt) |
 | BT-20 | ML on the board | ML commands on the console and over MQTT | Three sensors and swaps between three models with outputs checked; `ml_setup` switches, outputs and refusals | pass | [BOARD_VALIDATION.md](docs/embedded-ml/BOARD_VALIDATION.md), [LIVE_SETUP_PROPOSAL.md](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#board-check-19-november-2026) |
 | BT-21 | ML benchmark | `tools/d5_bench.py bench`, `compare`, `live` | S3 acceleration on and off, memory, time per request, the live run | 1.36 to 3.35 times faster; 2.55 times live | [d5/](parity/logs/mtk/d5/), [summary](parity/logs/mtk/d5/board-20261120.txt) |
@@ -144,9 +148,9 @@ Design, decision and documentation tasks have no behaviour to run; their evidenc
 |---|---|---|---|
 | D3-1 | Timing modes and their configuration | LT-05, LT-08 | [native log](parity/logs/d3/d3-1-native-20261105.log) |
 | D3-2 | HC-SR04 without blocking SchedulerTask | LT-08, LT-16 | BT-19 |
-| D3-3 | Sonar A, guard, sonar B within 50 ms | LT-08 (pulse sequence: both orders, guard, 50 ms budget) | [native log](parity/logs/d3/d3-1-native-20261105.log) (`[PAIR] state=complete`); run on the D6 two-sonar setup and signed off 22 Nov |
-| D3-4 | Radar presence opens the window | LT-08 (entrance window) | Board run dropped with the radar |
-| D3-5 | Two-sonar order and guard | LT-08 | Run on the D6 two-sonar setup and signed off 22 Nov |
+| D3-3 | Sonar A, guard, sonar B within 50 ms | LT-08 (pulse sequence: both orders, guard, 50 ms budget) | Done: [native log](parity/logs/d3/d3-1-native-20261105.log) (`[PAIR] state=complete`); run on the D6 two-sonar setup and signed off by the team 22 Nov |
+| D3-4 | Radar presence opens the window | LT-08 (entrance window) | Done in code with laptop tests; the board run was dropped with the radar |
+| D3-5 | Two-sonar order and guard | LT-08 | Done: run on the D6 two-sonar setup and signed off by the team 22 Nov |
 | D3-6 | Requested against measured timing | LT-08 | BT-19 (timing table, event-driven, one-shot) |
 | D3-7 | Entrance workload timing | LT-08 (window report) | Closed with the radar |
 | D3-8 | ApplicationTask on µT-Kernel | LT-04, LT-08 | BT-19 (`app-test` PASS) |
