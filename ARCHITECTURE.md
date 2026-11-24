@@ -269,23 +269,23 @@ stateDiagram-v2
 | No PSRAM is needed: the 64 KB arena, queues and stacks fit internal SRAM | Heap exhaustion at run time | Build memory report and free heap in T-16 |
 | With Wi-Fi on core 0, engine timing on core 1 is unaffected | Sample jitter beyond NFR-01 | NFR-01 measured with MQTT active |
 | A 25 ms echo wait at a few hertz does not starve the console or model tasks | Slow REPL replies | NFR-02 measured while the HC-SR04 samples at its highest rate |
-| A 5 ms interrupt-disabled one-wire frame is safe on core 1 | Watchdog or Wi-Fi faults | Needs a DHT22, which the kit lacks (P-14); untested until one is sourced |
+| A 5 ms interrupt-disabled one-wire frame is safe on core 1 | Watchdog or Wi-Fi faults | Not applicable: the kit has no one-wire sensor (P-14) |
 | arduino-mqtt handles 2 KB payloads and 1 KB model chunks | Configuration or model transfer fails | `mqtt_test.py` in task 19 |
 | The chosen TFLite Micro build supports all 30 reference operators | The model does not load | P-23 and P-29 in task 20 |
 | The S3 USB console enumerates as a port the harness finds | Harness cannot run | `parity_test.py` stage `4a` in task 13 |
 
 ## 13. AI design evidence
 
-The task requires a team-reviewed record of AI use in the design. This draft was prepared with an AI assistant (Claude), working from the reference source code and PARITY.md. Early D2 and D4 research in September 2026 also used ChatGPT. The team review records, for each item, whether it is accepted, changed or rejected, and who decided.
+The task requires a team-reviewed record of AI use in the design. This draft was prepared with an AI assistant (Claude), working from the reference source code and PARITY.md. Early D2 and D4 research in September 2026 also used ChatGPT. The team review records, for each item, whether it is accepted, changed or rejected, and who decided. Each item was reviewed by the team members whose part it covers.
 
 | Item drafted with AI assistance | Team decision | Reviewed by |
 |---|---|---|
-| Single-owner engine task and the queue design (sections 6 and 7) | | |
-| HAL function list and the three ESP-IDF exceptions (section 4) | | |
-| Fix-all defect dispositions (section 3) | | |
-| Two-slot model store (section 11) | | |
-| MQTT library selection (section 10) | | |
-| Statecharts (sections 8 to 11) | | |
+| Single-owner engine task and the queue design (sections 6 and 7) | Changed: the µT-Kernel redesign splits the work into seven tasks joined by message buffers ([MTK_REDESIGN.md](MTK_REDESIGN.md)) | Hasif, Sitt, Brendan |
+| HAL function list and the three ESP-IDF exceptions (section 4) | Changed: the function list was kept; on µT-Kernel the HAL uses register-level drivers with no `esp_driver_*` components (D1 task 27) | Hasif, Sitt |
+| Fix-all defect dispositions (section 3) | Changed: 11 of the 12 were fixed; D-07 was kept as on the Pico so the frame format stays the same ([PORTABILITY.md §4](docs/design/PORTABILITY.md#4-reference-defects)) | Hasif, Sitt |
+| Two-slot model store (section 11) | Accepted: built as designed, two CRC-checked slots with the newest valid one used at boot (D1 task 31) | Hasif, Jun Yong |
+| MQTT library selection (section 10) | Changed: arduino-mqtt stays on the Arduino baseline; the µT-Kernel build uses ESP-IDF's esp-mqtt, owned by MQTTTask ([MTK_REDESIGN.md](MTK_REDESIGN.md)) | Hasif, Sitt |
+| Statecharts (sections 8 to 11) | Accepted; the tasks that run them changed with the µT-Kernel redesign ([MTK_REDESIGN.md](MTK_REDESIGN.md)) | Hasif, Sitt (sections 8 and 10), Brendan, Cody (section 9), Jun Yong (section 11) |
 
 ## 14. Traceability
 
@@ -308,7 +308,11 @@ Any later change to a decision in this document needs a recorded engineering jus
 
 | Date | Attendees | Sections reviewed | Decisions and changes |
 |---|---|---|---|
-| | | | |
+| 4 Oct 2026 | Hasif | All | First draft of the architecture freeze (D1 task 10) |
+| Week 6 (by 13 Oct 2026) | Team | All | Submitted as the Week 6 design review |
+| 18 Oct 2026 | Cody | 16 | Added the D3 timing and D6 application contract |
+| 20 Oct 2026 | Hasif | 6, 7, 10, 11 | After Tribunal 1 the runtime moved from FreeRTOS to µT-Kernel 3 SMP: seven tasks with message buffers, esp-mqtt for MQTT and a two-slot model store. Justification in [MTK_REDESIGN.md](MTK_REDESIGN.md) (D1 tasks 24–34) |
+| 22 Nov 2026 | Hasif, Sitt, Brendan, Cody, Jun Yong | 4, 9, 16 | Signed off the D2 SPI contract and event record, and the D3 timing and application contracts |
 
 ## 16. D3 timing and D6 application contract
 
