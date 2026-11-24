@@ -3,7 +3,7 @@
 **Final status (22 Nov 2026).** The team signed off the record format as implemented in [d2_event_log.h](../../libraries/EdgeCore/src/flash/d2_event_log.h) and [event_log_map.c](../../libraries/EdgeCore/src/application/event_log_map.c), so the open decisions and TBD entries below are settled by that code. Every processed event is now logged from ApplicationTask (D2-8). The rest of this file is the design history.
 
 
-Status (26 October 2026): the W25Q32 device layer and a **provisional D2-only event-log codec and non-erasing recovery allocator** pass host mocks and build for Pico and µT-Kernel. With Brendan's specific approval, one synthetic, rejected, test-only 80-byte record was programmed at `0x3FF100` on the physical W25Q32. Immediate readback, read-only CRC verification, cold USB power-cycle recovery, and preservation of the previous pattern at `0x3FF000` passed. [Write log](../../parity/logs/mtk/d2-spi/flash-log-write-once-20261026.log) and [cold recovery log](../../parity/logs/mtk/d2-spi/flash-log-cold-verify-20261026.log) retain the evidence. This fixture is not wired into `ApplicationTask` and is not a real processed occupancy event. Brendan chose to log every processed event; D3/D6 must still approve the identity/result mapping before the format is frozen.
+**Final status (22 Nov 2026).** The record format was signed off by the team (D2-7). ApplicationTask offers every processed event to the log, and BenchmarkTask writes each 80-byte record to one of 30 slots on the W25Q32 and reads it back to check it, without erasing (D2-8). The concurrent run with sampling, inference and logging passed (D2-9). Logs: [`parity/logs/mtk/d2-log-20261122/`](../../parity/logs/mtk/d2-log-20261122/).
 
 ## 25 October integration review — decision needed from D3/D6
 
@@ -75,30 +75,4 @@ Capacity 8 is a starting point, not a proven performance limit. Measure producti
 3. Keep scratch-sector address and approval explicit. Do not chip-erase or erase unknown content. Return typed failure, never a synthetic successful record.
 4. Recovery must reject partial/corrupt records and resume without an infinite scan or blocking the sampling task.
 
-## Implementation and evidence checklist
-
-- [x] Brendan selected every processed event as the logging scope, including rejected, duplicate and degraded outcomes (25 October 2026).
-- [x] Brendan and D3/D6 approve queue ownership, record fields/enums/CRC convention, sequence/boot-ID semantics, and MQTT ordering.
-- [ ] Confirm the canonical event-ID schema and occupancy persistence boundary with D6 (feedback F9/F10); update the logical record and golden vectors before writing flash.
-- [ ] Agree event rate, retention, scratch address, physical slot packing, full/wrap policy, and maximum acceptable sampling delay before enabling erase.
-- [x] Add a provisional portable encode/decode codec and CRC golden vector; host tests cover version/CRC rejection, invalid applied input, every processing result, torn slot, readback, reboot scan, failed program and full area.
-- [ ] After D3/D6 approve the field semantics, add adapter tests for reboot identity, log-sequence rollover and agreed reason/publish mappings; freeze the on-flash version.
-- [ ] Add mocked device tests for absent/wrong JEDEC ID, stuck busy, SPI timeout, partial program, bad readback, full log, and queue overflow. Verify no false “stored” or valid occupancy result.
-- [ ] With the physical module: record part marking, 3.3 V check, fixture photo, JEDEC ID, scratch address, write/readback/reboot recovery, and disconnected-device evidence.
-- [ ] During live T-23: capture event rate, queue high-water and drops, publisher queue outcome, flash latency/errors, sampling median/p95/p99/max, SPI mutex wait/hold, stack/heap, resets, and watchdog events.
-
-## Review record (fill in before implementation)
-
-| Decision | Agreed value / rationale | Reviewer and date |
-|---|---|---|
-| Occupancy/class enum and confidence sentinel | TBD | TBD |
-| Events to log | Every processed event, including rejected, duplicate and degraded outcomes; exact enum mapping awaits D3/D6. | Brendan, 25 Oct 2026 |
-| CRC-32 convention and magic bytes | TBD | TBD |
-| Event sequence rollover and boot identifier | TBD | TBD |
-| Maximum event rate and minimum retention | TBD | TBD |
-| Flash part, JEDEC ID, voltage and maximum approved SPI clock | W25QXX breakout; physical JEDEC `EF4016` at 3.3 V; test clock 1 MHz. Exact top marking and production maximum clock still need confirmation. | Brendan, 25 Oct 2026: physical read/program test only |
-| Scratch address, slot layout, erase and full-log policy | Final 4 KiB `0x3FF000–0x3FFFFF` approved as disposable test scratch; 16 bytes at its start programmed once without erase. Event-log slot/retention/erase policy TBD. | Brendan, 25 Oct 2026: one-time test approval only |
-| Queue capacity/drop and publication semantics | Provisional: 8, drop newest, enqueue publish first | TBD |
-| T-23 latency, queue, stack and heap pass thresholds | TBD | TBD |
-
-See [D2_SPI_DESIGN_NOTES.md](D2_SPI_DESIGN_NOTES.md) for the observed transport/fault findings and [D2_SPI_TODO.md](D2_SPI_TODO.md) for the project acceptance gates.
+The full D2 record is in [TASK_RECORD.md](../../TASK_RECORD.md#d2-spi).

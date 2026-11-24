@@ -4,12 +4,11 @@
 
 This page preserves the older Super Mini fixture. The current D6 integration
 uses three bare N16R8 boards with male headers outside their breadboards.
-The [earlier D6 pin-to-hole guide](../docs/d6/PIN_TO_HOLE_WIRING.md)
-records a proposed radar fixture. The old LCD wires on this page are not used on A; Board C owns the display. Do not transfer this page's physical Super Mini pinout image to the N16R8 boards. Earlier successful Super Mini readings are not proof of a complete N16R8 sensor pass.
+The old LCD wires on this page are not used on A; Board C owns the display. Do not transfer this page's physical Super Mini pinout image to the N16R8 boards. Earlier successful Super Mini readings are not proof of a complete N16R8 sensor pass.
 
-AHT, HC-SR04+ and Grove TSL2561 have worked in the team's hardware tests. The ST7789 LCD is not working for now; retain its existing connections while running the current ESP-IDF / µT-Kernel SMP sensor target.
+AHT, HC-SR04+ and Grove TSL2561 have worked in the team's hardware tests. The ST7789 LCD later moved to Board C in D6.
 
-The [additional spacious N16R8 Board A layout](../docs/d6/BOARD_A_SPACED_65_ROW_LAYOUT.md) keeps this page's three-sensor rows 4-9 while allocating the second sonar and radar to rows 28-29 and 50-54 on a 65-row breadboard. The original Super Mini tables and LCD notes below are preserved as historical context.
+The Super Mini tables and LCD notes below are kept as historical context.
 
 ## Complete breadboard connections
 
@@ -74,7 +73,7 @@ The TSL2561 shares the I²C bus with the AHT. The profile validates the part ID 
 
 ### ST7789 TFT LCD → breadboard (retain existing wiring)
 
-**LCD is not working for now:** it has shown a dim/white screen without text. Its existing connections can remain while the other sensors are used. The current µT-Kernel firmware does not initialise or update the LCD and leaves GPIO6–10 unused. Keeping it connected does not enable display output.
+**LCD on this fixture:** the LCD showed a dim/white screen on this Super Mini breadboard and was not used here. In D6 it runs on Board C ([D6 setup](../README.md#52-setup)).
 
 | LCD printed pin | Breadboard hole | Electrical connection | Current firmware |
 |---|---|---|---|
@@ -115,7 +114,7 @@ Bare sensors or different breakout revisions may need different power, pull-up o
 ## Separate LCD-only breadboard test (current `lcd_output` firmware)
 
 Imported from `lcd-output` at `b1c1675` on 11 November 2026. This is the
-reference component's fixture; combined D6 firmware/panel checks remain pending.
+reference component's fixture; the LCD later ran on D6 Board C.
 
 This is a **separate setup** for the DIYUSER 2.25-inch ST7789P3, 76×284 LCD
 and ESP32-S3 Super Mini. Disconnect the sensors and remove the Version 2 LCD

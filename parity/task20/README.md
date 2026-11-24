@@ -99,5 +99,4 @@ place of the Pico parity script's GP22. These commands do not upload a model.
    depends on Task 19 MQTT transport and a reachable broker. Do not assume the
    draft 256 KB A/B partition proposal is already deployed.
 
-Keep Task 20 marked in progress until all Task 20 acceptance criteria and
-parity evidence are complete.
+Task 20 is done; see the D1 checklist in the [README](../../README.md#21-d1-task-checklist).

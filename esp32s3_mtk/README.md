@@ -10,10 +10,8 @@ snapshot itself, and its comfort score reaches C directly. The isolated `LCDTEST
 reissue `D6VIEW` after a reboot or an isolated LCD pattern test. See [MQTT commands](../docs/commands/MQTT_commands.md)
 and the [live LCD guide](../docs/d6/LIVE_LCD_TWO_SONARS.md).
 
-For the earlier proposed D6 three-board N16R8 fixture, see the
-[board identification](../docs/d6/N16R8_BOARD_SETUP.md),
-[pin-to-hole guide](../docs/d6/PIN_TO_HOLE_WIRING.md) and the
-`BOARD=n16r8` preset. Earlier Super Mini evidence below remains historical.
+The D6 boards are ESP32-S3 N16R8s built with the `BOARD=n16r8` preset; see the
+[D6 setup](../README.md#52-setup). Earlier Super Mini evidence below remains historical.
 
 This target uses main's complete configurable framework at upstream commit `49677c62c8738493f4e66667d1fe79afc947600d`, with optional AHT and TSL2561 I²C profiles and the existing asynchronous GPIO pulse driver. See the [breadboard guide](../docs/hardware/SENSOR_BREADBOARD_README.md) for the full wiring tables, Windows build/flash/monitor instructions, preset commands and JSON formats. [WIRING.md](WIRING.md) contains the same complete connection tables.
 
@@ -25,6 +23,6 @@ The default output folder is `build/`, separate from the previous sensor-only `b
 
 The local `tools/local.env.ps1` points to the already installed, pinned ESP-IDF, toolchain and kernel; it is ignored by Git. Other machines must initialise the kernel submodule or configure an external kernel path, install the qualified ESP-IDF revision/Python requirements/tools, and create their own local settings. Exact SDK/kernel commits are in `dependencies.lock.json`; managed MQTT/TFLite dependencies remain pinned by main's `dependencies.lock`. The kernel source is the same revision used by main, and it is not modified by this integration.
 
-Main's memory layout requires 2 MB quad PSRAM and 4 MB flash, including the fixed model partition. µT-Kernel owns the seven framework tasks, two idle tasks, message buffers, mutexes, alarms and supervision; the SDK compatibility shim does not run the FreeRTOS scheduler. SchedulerTask and its GPIO ISR are on physical CPU1, MQTTTask on CPU0. A captured TASKS/boot session is still required on this board.
+Main's memory layout requires 2 MB quad PSRAM and 4 MB flash, including the fixed model partition. µT-Kernel owns the seven framework tasks, two idle tasks, message buffers, mutexes, alarms and supervision; the SDK compatibility shim does not run the FreeRTOS scheduler. SchedulerTask and its GPIO ISR are on physical CPU1, MQTTTask on CPU0.
 
-See [MAIN_COMPONENT_REVIEW.md](../docs/design/MAIN_COMPONENT_REVIEW.md) for the analysis completed before updating the workspace, [MTK_REDESIGN.md](../MTK_REDESIGN.md) for main's runtime/memory design, and [VALIDATION.md](VALIDATION.md) for actual checks and remaining board validation.
+See [MTK_REDESIGN.md](../MTK_REDESIGN.md) for main's runtime/memory design and [VALIDATION.md](VALIDATION.md) for the board checks.

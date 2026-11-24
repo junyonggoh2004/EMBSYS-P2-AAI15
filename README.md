@@ -52,7 +52,7 @@ Each numbered section below is collapsed. Click its title to open it.
 | [6. Completion rule](#6-completion-rule) | When a task counts as done |
 | [7. Arduino/FreeRTOS baseline](#7-arduinofreertos-baseline) | Where the baseline's setup guide is |
 
-Other documents: [TASK_RECORD.md](TASK_RECORD.md) (full D1 to D3 task tables), [MTK_REDESIGN.md](MTK_REDESIGN.md) (µT-Kernel design and compliance), [SETUP.md](SETUP.md) (board and environment details), [parity/PARITY.md](parity/PARITY.md) (requirements and evidence), [PORTABILITY.md](docs/design/PORTABILITY.md) (Pico to S3 changes and defects), [ARCHITECTURE.md](ARCHITECTURE.md) (task design), [D2_SPI_TODO.md](docs/d2/D2_SPI_TODO.md) (D2 tasks), [SENSOR_BREADBOARD_README.md](docs/hardware/SENSOR_BREADBOARD_README.md) (three-sensor breadboard and Windows workflow), [project_v3/README.md](project_v3/README.md) (full config syntax).
+Other documents: [TASK_RECORD.md](TASK_RECORD.md) (full D1 to D3 task tables), [MTK_REDESIGN.md](MTK_REDESIGN.md) (µT-Kernel design and compliance), [SETUP.md](SETUP.md) (board and environment details), [parity/PARITY.md](parity/PARITY.md) (requirements and evidence), [PORTABILITY.md](docs/design/PORTABILITY.md) (Pico to S3 changes and defects), [ARCHITECTURE.md](ARCHITECTURE.md) (task design), [SENSOR_BREADBOARD_README.md](docs/hardware/SENSOR_BREADBOARD_README.md) (three-sensor breadboard and Windows workflow), [project_v3/README.md](project_v3/README.md) (full config syntax).
 
 <a name="1-start-here"></a>
 <details>
@@ -259,11 +259,11 @@ On the N16R8, use the USB-C port wired to the chip's own USB; the other one only
 <details>
 <summary><h3>2.2 D2 task checklist</h3></summary>
 
-D2 adds SPI as a fourth bus (`proto=spi`) behind the same interface as GPIO, I2C and UART, so an SPI device is configured the same way (Brendan). On µT-Kernel it is a register-level SPI2 driver with polled 64-byte FIFO transfers, no DMA and one priority-inheritance mutex for the bus. A W25Q32 flash chip on the bus keeps a log of processed events. The full checklist is [D2_SPI_TODO.md](docs/d2/D2_SPI_TODO.md), the design is in [D2_SPI_DESIGN_NOTES.md](docs/d2/D2_SPI_DESIGN_NOTES.md) and [D2_EVENT_RECORD_DESIGN.md](docs/d2/D2_EVENT_RECORD_DESIGN.md), and the full rows are in [TASK_RECORD.md](TASK_RECORD.md#d2-spi).
+D2 adds SPI as a fourth bus (`proto=spi`) behind the same interface as GPIO, I2C and UART, so an SPI device is configured the same way (Brendan). On µT-Kernel it is a register-level SPI2 driver with polled 64-byte FIFO transfers, no DMA and one priority-inheritance mutex for the bus. A W25Q32 flash chip on the bus keeps a log of processed events. The record format is in [D2_EVENT_RECORD_DESIGN.md](docs/d2/D2_EVENT_RECORD_DESIGN.md), and the full rows are in [TASK_RECORD.md](TASK_RECORD.md#d2-spi).
 
 | # | Task | Status | Owner |
 |---:|---|---|---|
-| D2-1 | Freeze the SPI contract | Done; signed off by the team 22 Nov ([Phase 1](docs/d2/D2_SPI_TODO.md#phase-1--freeze-the-minimum-contract)) | Brendan |
+| D2-1 | Freeze the SPI contract | Done; signed off by the team 22 Nov | Brendan |
 | D2-2 | Add SPI to the shared code | Done ([spi.c](libraries/EdgeCore/src/bus/spi.c)) | Brendan |
 | D2-3 | ESP32-S3 SPI backend | Done: register-level SPI2 on µT-Kernel; the 78.1 kHz minimum clock and polled transfers without DMA signed off by the team 22 Nov ([hal_mtk.c](esp32s3_mtk/components/edge_mtk/hal_mtk.c)) | Brendan |
 | D2-4 | Functional, fault and lifecycle tests | Done 25 Oct: `spi` 22/22, `spi-fault` 6/6 ([logs](parity/logs/mtk/d2-spi/)) | Brendan |
@@ -379,7 +379,6 @@ Sitt wrote the `ml_setup` command with local inputs and console and MQTT results
 | 3.6 | User how-to and demo steps | Done 23 Nov: [LIVE_SETUP_PROPOSAL.md](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md) has the command, every option and the two-board demo steps |
 | 3.7 | Board evidence and update | Done: Sitt's [19 Nov board check](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#board-check-19-november-2026), the [22 Nov laptop tests](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#laptop-tests-22-november-2026) and [24 Nov remote-input board record](docs/d6/PEOPLE_COUNTER_LIVE_TEST_20261124.md) are recorded; uploaded-model selection and local rule output were checked with laptop tests |
 
-Earlier research is in [D4_EMBEDDED_ML_RESEARCH.md](docs/d4/D4_EMBEDDED_ML_RESEARCH.md) and [D2_D4_RESEARCH_CONTEXT.md](docs/d4/D2_D4_RESEARCH_CONTEXT.md).
 
 </details>
 
@@ -435,7 +434,7 @@ D6 joins three ESP32-S3 N16R8 boards into one use case: a doorway room monitor (
 | 5.10 | Multi-bus demo | GPIO, I2C and SPI sensors on one board, configured live, with their timing and the ML changed live | Hasif | **Done 24 Nov** on spare boards ([5.4](#54-any-sensor-on-the-fly-extra-if-asked)) |
 | 5.11 | Full run on three boards | Run the whole thing end to end from one start-up block | Team | **Done 24 Nov:** run end to end at the demo from Brendan's laptop, with Jun Yong's Windows start-up commands |
 
-**Where the details are.** [Board A wiring](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md), [Board A sensor tests](docs/d6/BOARD_A_SENSOR_TEST.md), the full [Windows MQTT commands](docs/commands/MQTT_commands.md), the [use case notes](docs/d6/SONAR_ONLY_USECASE.md), the [LCD reference](docs/d6/ROOM_MONITOR_REFERENCE.md), the [ML commands](docs/commands/ML_commands.md), the [live people-counter record](docs/d6/PEOPLE_COUNTER_LIVE_TEST_20261124.md) and the [classroom ML demo](docs/embedded-ml/RUNNING.md). The earlier radar plans are kept under [docs/d6/reference](docs/d6/reference/).
+**Where the details are.** [Board A wiring](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md), [Board A sensor tests](docs/d6/BOARD_A_SENSOR_TEST.md), the full [Windows MQTT commands](docs/commands/MQTT_commands.md), the [use case notes](docs/d6/SONAR_ONLY_USECASE.md), the [LCD reference](docs/d6/ROOM_MONITOR_REFERENCE.md), the [ML commands](docs/commands/ML_commands.md), the [live people-counter record](docs/d6/PEOPLE_COUNTER_LIVE_TEST_20261124.md) and the [classroom ML demo](docs/embedded-ml/RUNNING.md).
 
 </details>
 
@@ -445,7 +444,7 @@ D6 joins three ESP32-S3 N16R8 boards into one use case: a doorway room monitor (
 <details>
 <summary><h2>3. Set up and test from scratch</h2></summary>
 
-Follow these steps in order on a Mac (Linux works the same way). They build, flash and test the firmware on `main`: D1 on µT-Kernel 3 SMP, D2's SPI, D3's timing, D4's ML and D5's benchmark. The D6 demo is in [section 5](#5-d6-use-case-demo). Each step says what you should see. On Windows, install ESP-IDF at commit `17a74c925c`, load it with its PowerShell `export.ps1` and give `IDF_PATH` forward slashes, as Brendan did ([D2_SPI_TODO.md](docs/d2/D2_SPI_TODO.md)); the Arduino baseline in [section 7](#7-arduinofreertos-baseline) has full Windows steps.
+Follow these steps in order on a Mac (Linux works the same way). They build, flash and test the firmware on `main`: D1 on µT-Kernel 3 SMP, D2's SPI, D3's timing, D4's ML and D5's benchmark. The D6 demo is in [section 5](#5-d6-use-case-demo). Each step says what you should see. On Windows, install ESP-IDF at commit `17a74c925c`, load it with its PowerShell `export.ps1` and give `IDF_PATH` forward slashes, as Brendan did; the Arduino baseline in [section 7](#7-arduinofreertos-baseline) has full Windows steps.
 
 **Earlier three-sensor breadboard.** The three-sensor breadboard (AHT temperature and humidity, HC-SR04+ distance and TSL2561 light, with the LCD wiring kept) and its Windows and VS Code build workflow are in [SENSOR_BREADBOARD_README.md](docs/hardware/SENSOR_BREADBOARD_README.md). The single-sonar, loopback, radar and SPI fixtures in this guide use other pins; do not apply them to that breadboard.
 

@@ -35,7 +35,7 @@ These checks establish build configuration and linked-image contents. They do no
 
 ## Isolation
 
-The new workspace selects only `esp32s3_mtk`. The previous `esp32s3` directory, root Pico project, Arduino sketch and their build configurations are not imported. All 18 existing `esp32s3` files were checked by SHA-256, and the tracked Git diff was compared before and after adding this target. The original firmware sources remain unchanged. The branch README was subsequently updated, with the original Pico README preserved at `../docs/README-PICO-LEGACY.md`. No commit, push or device flash was performed by the migration work.
+The new workspace selects only `esp32s3_mtk`. The previous `esp32s3` directory, root Pico project, Arduino sketch and their build configurations are not imported. All 18 existing `esp32s3` files were checked by SHA-256, and the tracked Git diff was compared before and after adding this target. The original firmware sources remain unchanged. The branch README was subsequently updated. No commit, push or device flash was performed by the migration work.
 
 ## User-reported hardware status
 

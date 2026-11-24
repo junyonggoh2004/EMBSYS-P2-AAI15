@@ -1,7 +1,7 @@
 # Board C N16R8 LCD bring-up: 18 November 2026
 
 - Hardware: bare ESP32-S3 N16R8, DIYUSER 76 x 284 ST7789P3 LCD,
-  [Board C pin-to-hole wiring](PIN_TO_HOLE_WIRING.md#board-c-tested-lcd-fixture).
+  Board C pin-to-hole wiring.
 - Backed up the board's 16 MB factory flash image locally as
   `tmp/board_c_factory_flash_20261118.bin` in the lcd-output worktree.
   This local backup is not committed.

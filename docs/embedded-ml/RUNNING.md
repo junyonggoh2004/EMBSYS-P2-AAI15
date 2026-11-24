@@ -2,7 +2,7 @@
 
 For the current D6 three-board setup, use the [model-by-model Board B commands](../commands/ML_commands.md). That guide includes live JSON configurations and separate replay command files for all five bundled models. The classroom steps below preserve the earlier one-board demo.
 
-The first ML implementation came from `dev-jy-ml` and was integrated into `main` through `d4-live-ml-sitt`. It uses ESP-IDF and µT-Kernel. The standalone ML presets use the [original breadboard wiring](../../esp32s3_mtk/WIRING.md). The three-board D6 check uses the [D6 hardware setup](../d6/N16R8_BOARD_SETUP.md).
+The first ML implementation came from `dev-jy-ml` and was integrated into `main` through `d4-live-ml-sitt`. It uses ESP-IDF and µT-Kernel. The standalone ML presets use the [original breadboard wiring](../../esp32s3_mtk/WIRING.md). The three-board D6 check uses the [D6 setup](../../README.md#52-setup).
 
 ## Run one of the three classroom models
 
@@ -18,7 +18,6 @@ For either live model, open **MTK: monitor** after the task finishes. The task r
 
 `people-counter` uses the ESP32-S3 INT8 vector kernels. `sine-float` and `comfort-summer` use Float32 CPU inference. The classroom task uses a one-shot replay for `people-counter`. To use a live ultrasonic stream, follow the [rolling-window steps below](#live-people-counter-with-one-ultrasonic).
 
-See the [classroom failure-response analysis](FAILURE_RESPONSE.md) for how missing readings, ambiguous crossings and interrupted MQTT should affect the demo.
 
 The same task is available from PowerShell in the `esp32s3_mtk` folder. Replace `COM5` with the board's port.
 

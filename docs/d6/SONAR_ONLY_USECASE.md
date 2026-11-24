@@ -26,7 +26,7 @@ unchanged.
 
 ### Run the doorway counter on Board A
 
-Build and flash Board A with its [N16R8 board setup](N16R8_BOARD_SETUP.md),
+Build and flash Board A with its [D6 setup](../../README.md#52-setup),
 then open **MTK: monitor** in VS Code. Enter
 `STOP` and `CLEAR`, paste the four lines from
 [`config/board_a.cfg`](../../config/board_a.cfg), and enter these commands:

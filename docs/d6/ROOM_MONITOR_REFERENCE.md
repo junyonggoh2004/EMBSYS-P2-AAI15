@@ -1,6 +1,6 @@
 # Room monitor display reference
 
-![User-supplied room monitor mockup](images/room-monitor-mock-reference.png)
+![Room monitor mockup](images/room-monitor-mock-reference.png)
 
 The team supplied this landscape mockup as the visual reference on
 18 November 2026. Board C's 76 x 284 panel can be rotated in firmware to

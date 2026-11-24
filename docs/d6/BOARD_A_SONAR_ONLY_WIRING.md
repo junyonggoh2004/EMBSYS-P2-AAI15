@@ -6,10 +6,7 @@
 the [19 November physical bring-up](BOARD_A_BRINGUP_20261119.md) and
 [`config/board_a.cfg`](../../config/board_a.cfg). The ESP32-S3 N16R8 and
 modules sit outside the breadboard. The radar and its 5V lead are omitted.
-Older [compact](PIN_TO_HOLE_WIRING.md) and
-[65-row spaced](BOARD_A_SPACED_65_ROW_LAYOUT.md) diagrams are retained as
-historical proposals; their sonar signal GPIOs and breadboard rows do **not**
-match this config.
+
 
 ## ESP32 to breadboard
 

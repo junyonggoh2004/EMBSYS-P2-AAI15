@@ -1,7 +1,7 @@
 # Board B N16R8 physical bring-up — 18 November 2026
 
 This records the first Board B trial. It is not a storage acceptance result.
-The [Board B pin-to-hole map](PIN_TO_HOLE_WIRING.md#board-b-external-spi-flash)
+The Board B pin-to-hole map
 is the wiring reference; the SPI flash is a separate external device from
 the ESP32-S3's own 16 MB boot flash.
 

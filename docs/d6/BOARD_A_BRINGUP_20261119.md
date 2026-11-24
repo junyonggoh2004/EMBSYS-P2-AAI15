@@ -1,6 +1,6 @@
 # Board A bring-up: 19 November 2026
 
-Board A tested by Hasif on the N16R8 with Brendan's [spaced 65-row layout](BOARD_A_SPACED_65_ROW_LAYOUT.md), firmware `D6-Integration` at `09820c5` plus the sonar change below, built with `BOARD=n16r8` as node `s3-001`. Brendan to review and amend.
+Board A tested by Hasif on the N16R8 with Brendan's spaced 65-row layout, firmware `D6-Integration` at `09820c5` plus the sonar change below, built with `BOARD=n16r8` as node `s3-001`. Brendan to review and amend.
 
 ## Result
 

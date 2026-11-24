@@ -1,19 +1,17 @@
 # Three-sensor breadboard guide (AHT, HC-SR04+, TSL2561)
 
-This records Jun Yong's earlier Super Mini fixture. For the bare N16R8 D6 Board A with a second sonar and LD2450 radar, use the [active pin-to-hole guide](../d6/PIN_TO_HOLE_WIRING.md). It retains these three sensors' GPIOs and rows 4-9, but Board A no longer carries the old LCD wires. The earlier working result does not prove the current N16R8 setup passes.
-
-For an additional spacious 65-row N16R8 Board A option, see the [new diagram and connection list](../d6/BOARD_A_SPACED_65_ROW_LAYOUT.md). This preserves Jun Yong's three-sensor rows 4-9 and places the added Sonar B and radar at rows 28-29 and 50-54. The historical tables below remain intact.
+This records Jun Yong's earlier Super Mini fixture. The D6 Board A wiring is in [BOARD_A_SONAR_ONLY_WIRING.md](../d6/BOARD_A_SONAR_ONLY_WIRING.md).
 
 The main project guide, with the D1 to D6 task checklists, setup and tests, is the [root README](../../README.md). This page covers the current breadboard and its Windows and VS Code workflow, written by Jun Yong when the sensors were integrated.
 
-This workspace now uses the configurable components from **main commit `49677c62c8738493f4e66667d1fe79afc947600d`**, adapted for the current breadboard. Firmware runs on **ESP-IDF with µT-Kernel 3 SMP**. The analysis completed before updating the workspace is in [MAIN_COMPONENT_REVIEW.md](../design/MAIN_COMPONENT_REVIEW.md).
+This workspace now uses the configurable components from **main commit `49677c62c8738493f4e66667d1fe79afc947600d`**, adapted for the current breadboard. Firmware runs on **ESP-IDF with µT-Kernel 3 SMP**.
 
 ## Current status
 
 | Item | Status |
 |---|---|
 | AHT temperature/humidity, HC-SR04+ distance, Grove TSL2561 light | Confirmed reading together on the corrected ESP-IDF / µT-Kernel firmware in the 3 November runtime capture |
-| ST7789 LCD | **Not working for now**: dim/white screen, no text; keep existing wiring, display remains disabled |
+| ST7789 LCD | Not used on this fixture; the LCD runs on D6 Board C |
 | Active firmware | Main's shared EdgeCore + complete µT-Kernel runtime, with optional I²C sensor profiles |
 | Current integrated firmware validation | See [VALIDATION.md](../../esp32s3_mtk/VALIDATION.md); historical sensor tests are separate from new firmware execution |
 
@@ -65,9 +63,9 @@ These are illustrative formats, not captured board measurements. A failed or mis
 
 ## D3 task checklist and regression evidence
 
-The [D3 task checklist and timing contract](../../README.md#23-d3-task-checklist), [D3 test procedures](../../README.md#part-g-d3-timing-and-application) and [interrupt wiring review](../d3/D3_INTERRUPT_WIRING_REVIEW.md) are retained alongside this fixture guide. D3-1 native validation and window timing-report tooling are preserved; the two-sonar pair and crosstalk were run on the D6 setup and signed off on 22 Nov 2026, and the radar workload timing was closed with the radar. [D3-1 raw native evidence](../../parity/logs/d3/d3-1-native-20261105.log) predates this merge and is not a board result.
+The [D3 task checklist and timing contract](../../README.md#23-d3-task-checklist), [D3 test procedures](../../README.md#part-g-d3-timing-and-application) are retained alongside this fixture guide. D3-1 native validation and window timing-report tooling are preserved; the two-sonar pair and crosstalk were run on the D6 setup and signed off on 22 Nov 2026, and the radar workload timing was closed with the radar. [D3-1 raw native evidence](../../parity/logs/d3/d3-1-native-20261105.log) predates this merge and is not a board result.
 
-For D3-2 on this breadboard, use the [V2 sonar test procedure](../d3/D3_CAPTURE_V2_TEST.md). Its explicit `--fixture v2-sonar` option maps the real-sonar parity stages to Trig GPIO4/Echo GPIO5, stops/clears the volatile preset first and rejects unrelated stages. The default test commands retain their original fixture mappings. The [one-shot capture probe](../../config/d3_sonar_v2_once.cfg) supports manual timeout and cancellation trials; physical acceptance is still pending.
+D3-2 was run on the board on 21 Nov 2026; see the [D3 checklist](../../README.md#23-d3-task-checklist).
 
 Use this page and [WIRING.md](../../esp32s3_mtk/WIRING.md) for the current breadboard. The [root README](../../README.md)'s GPIO1/2 sonar, GPIO5/6 loopback and GPIO10–13 SPI layouts require their separate fixtures; they conflict with connections retained here. The three-sensor preset's 30 ms sonar timeout is for individual acquisition; two such timeouts cannot fit a 50 ms PAIR. No dual-sonar preset or acoustic guard is selected by this merge.
 
@@ -78,9 +76,7 @@ Use this page and [WIRING.md](../../esp32s3_mtk/WIRING.md) for the current bread
 | `esp32s3_mtk/` | Active configurable ESP-IDF/µT-Kernel target |
 | `libraries/EdgeCore/src/` | Main's shared scheduler, buses, rules, events and inference interfaces, plus optional sensor profiles |
 | `config/three_sensors.cfg` | Current hardware preset; pins can be changed without rebuilding |
-| [MAIN_COMPONENT_REVIEW.md](../design/MAIN_COMPONENT_REVIEW.md) | Component-by-component review, decisions and scope |
 | [README.md](../../README.md) | Main project guide: D1 to D6 task checklists, setup from scratch and every test |
-| [docs/SENSOR_BRINGUP_README.md](SENSOR_BRINGUP_README.md) | Previous branch guide, kept as historical documentation |
 | `legacy/esp32s3_sensor_bringup/` | Previous small sensor-only firmware; excluded from the active workspace/build |
 | `legacy/esp32s3_idf_initial/` | Earlier untracked ESP32 experiment, preserved separately |
 | `tools/`, `tests/`, `parity/` | Upstream tooling, host tests and historical target evidence, plus sensor tests |
@@ -150,7 +146,7 @@ The TSL2561 shares the I²C bus with the AHT. The profile validates the part ID 
 
 ### ST7789 TFT LCD → breadboard (retain existing wiring)
 
-**LCD is not working for now:** it has shown a dim/white screen without text. Its existing connections can remain while the other sensors are used. The current µT-Kernel firmware does not initialise or update the LCD and leaves GPIO6–10 unused. Keeping it connected does not enable display output.
+**LCD on this fixture:** the LCD showed a dim/white screen on this Super Mini breadboard and was not used here. In D6 it runs on Board C ([D6 setup](../../README.md#52-setup)).
 
 | LCD printed pin | Breadboard hole | Electrical connection | Current firmware |
 |---|---|---|---|

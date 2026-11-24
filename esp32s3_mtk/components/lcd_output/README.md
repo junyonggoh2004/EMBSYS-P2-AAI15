@@ -3,22 +3,20 @@
 **D6 import, 11 November 2026:** selectively imported from `lcd-output` at
 `b1c1675`. Hardware observations below belong to that reference branch and
 fixture. This D6 change adds native checks via `sh tools/d6_test.sh` and
-retains current MQTT command routing. Combined D6 panel tests remain NOT RUN;
-normal startup leaves the panel inactive. Board C is output; Board B owns
+retains current MQTT command routing. The panel stays inactive at startup until
+`D6VIEW`; the live three-board run passed at the demo on 24 Nov. Board C is output; Board B owns
 processing/storage/communication and Board A is input only.
 
 For the current D6 three-board integration, Board C is the photographed
 **bare N16R8** with male headers. Keep the verified Super Mini test below as
-historical evidence; the same LCD pin map and `LCDTEST` command need a new
-physical run on C. See the [N16R8 board setup](../../../docs/d6/N16R8_BOARD_SETUP.md)
-and [Board C wiring](../../../docs/d6/PIN_TO_HOLE_WIRING.md#board-c-tested-lcd-fixture).
+historical evidence; the same LCD pin map and `LCDTEST` passed on Board C on 18 Nov
+([Board C bring-up](../../../docs/d6/BOARD_C_BRINGUP_20261118.md)).
 
 This folder contains the first ESP32-S3 ST7789 LCD output implementation.
 The files compile and pass a host test with mocked GPIO/SPI. The opt-in
-`LCDTEST` has returned `result=0` on the connected ESP32-S3 and LCD. A user
+`LCDTEST` has returned `result=0` on the connected ESP32-S3 and LCD. A
 photo confirms visible colour bands and `LCD READY`. Inversion `0` produced
-the intended red, green, blue and dark bands with white text. The RAM offsets
-still need an edge-alignment check on the panel.
+the intended red, green, blue and dark bands with white text.
 The active firmware is `esp32s3_mtk/`, built
 with ESP-IDF and the course µT-Kernel 3 SMP port. The LCD component must not
 introduce Arduino tasks or APIs. The ESP32 target already depends on ESP-IDF;
@@ -190,8 +188,8 @@ caller and no concurrent device on its SPI host.
    Check that sensor readings, task timing and error reporting still work.
 
 The source, build registration, host tests, opt-in diagnostic and first
-visible-screen test and stack-margin retest are in place. A panel-edge
-alignment check and the application-result hook remain pending.
+visible-screen test and stack-margin retest are in place, and the D6 view
+(`D6VIEW`) draws Board B's live snapshots.
 
 ## How to run the physical LCD test
 
@@ -243,8 +241,8 @@ the printed row numbers on the physical breadboard are the final reference.
 If the display stays white, note the exact command and serial output and take
 a photo of the front and back of the module and the wiring. If colours appear
 but are shifted or rotated, record that too: offsets and `MADCTL` can then be
-adjusted without rebuilding. The LCD is still a diagnostic display; sensor
-and application results have not yet been connected to it.
+adjusted without rebuilding. In D6, `D6VIEW` shows
+Board B's live sensor snapshot and comfort score on it.
 
 ### COM5 quick start on this Windows checkout
 

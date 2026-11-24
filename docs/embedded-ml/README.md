@@ -40,9 +40,8 @@ Let a user select a supported sensor/driver, configure its bus, map its decoded 
 
 The first two deliverables are **configurable sensor-to-ML inputs** and **replaceable ML models**. Small-model research is their first implementation step. MQTT integration follows their offline acceptance tests. Accuracy and prediction usefulness are not acceptance criteria for this initial integration; correctness of execution, configuration validation and resource fit are.
 
-This supplements [D4_EMBEDDED_ML_RESEARCH.md](../d4/D4_EMBEDDED_ML_RESEARCH.md). That earlier research describes a broader baseline/optimized-model study with accuracy, latency and memory measurements. This functional milestone does not establish that those course requirements have been waived or completed. Retain basic memory/latency evidence now; handle task-specific training and optimization as a separate milestone if required.
 
-LCD remains disabled and non-functional (white/dim screen). Keep the established [wiring](../../esp32s3_mtk/WIRING.md); no display dependency is introduced.
+The ML has no display dependency; in D6, Board C's LCD shows the comfort score.
 
 ## Baseline at branch start and planned changes
 

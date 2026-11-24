@@ -108,7 +108,7 @@ The contract, with units, return values, blocking limits and ISR rules, is [libr
 
 Platform drivers sit beside the HAL rather than inside it: I2C (`hardware/i2c.h`) becomes `Wire`, UART (`hardware/uart.h`) becomes `HardwareSerial` on UART1, D2 SPI uses a `SPIClass` adapter behind `bus_spi`, the network (`cyw43_arch`, lwIP MQTT) becomes Arduino `WiFi` plus the MQTT library in section 10, flash (`hardware/flash.h`) becomes the model store in section 11, and the TFLite Micro port becomes an Arduino build of the library.
 
-D2 extended `bus_t` with a `deinit` lifecycle callback and added typed SPI errors. SPI bus ownership, locking, device handles and platform error translation stay in the ESP32-S3 backend. The current `SPIClass` implementation uses synchronous byte transfers, not DMA; its timeout is checked after a transfer, while mutex acquisition has a bounded wait. Shared application code sees validated configuration, the common registry, and explicit success/error results. Device-response verification must be added by the W25Q32 layer: generic SPI cannot detect an absent slave from a completed clocking operation. The detailed gates are [D2_SPI_TODO.md](docs/d2/D2_SPI_TODO.md) and [D2_SPI_DESIGN_NOTES.md](docs/d2/D2_SPI_DESIGN_NOTES.md).
+D2 extended `bus_t` with a `deinit` lifecycle callback and added typed SPI errors. SPI bus ownership, locking, device handles and platform error translation stay in the ESP32-S3 backend. The current `SPIClass` implementation uses synchronous byte transfers, not DMA; its timeout is checked after a transfer, while mutex acquisition has a bounded wait. Shared application code sees validated configuration, the common registry, and explicit success/error results. Device-response verification must be added by the W25Q32 layer: generic SPI cannot detect an absent slave from a completed clocking operation. The D2 record is in [TASK_RECORD.md](TASK_RECORD.md#d2-spi).
 
 The D1 design currently has three documented ESP-IDF exceptions, as the README requires. `esp_timer_get_time` is used because Arduino `micros()` is 32-bit and wraps after about 71 minutes, while the reference relies on 64-bit time. `esp_task_wdt` is used because Arduino offers no per-task watchdog. `esp_partition` is used because Arduino has no raw partition interface (section 11). Each stays below the boundary and is tested in its task. D2 retained Arduino `SPIClass`; it introduced no `spi_master` exception. The accepted limitation is that a synchronous SPI transaction cannot be preempted by the configured timeout.
 
@@ -276,7 +276,7 @@ stateDiagram-v2
 
 ## 13. AI design evidence
 
-The task requires a team-reviewed record of AI use in the design. This draft was prepared with an AI assistant (Claude), working from the reference source code and PARITY.md. The team review records, for each item, whether it is accepted, changed or rejected, and who decided.
+The task requires a team-reviewed record of AI use in the design. This draft was prepared with an AI assistant (Claude), working from the reference source code and PARITY.md. Early D2 and D4 research in September 2026 also used ChatGPT. The team review records, for each item, whether it is accepted, changed or rejected, and who decided.
 
 | Item drafted with AI assistance | Team decision | Reviewed by |
 |---|---|---|
