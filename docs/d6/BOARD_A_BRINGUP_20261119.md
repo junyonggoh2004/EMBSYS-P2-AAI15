@@ -23,7 +23,7 @@ Board A tested by Hasif on the N16R8 with Brendan's [spaced 65-row layout](BOARD
 
 ## Wiring as tested
 
-AHT and light stay on JY's rows 4 to 7 (3V3 at A4, SDA GPIO1 at A5, SCL GPIO2 at A6, GND at A7).
+AHT and light stay on Jun Yong's rows 4 to 7 (3V3 at A4, SDA GPIO1 at A5, SCL GPIO2 at A6, GND at A7).
 
 | Device | VCC | GND | TRIG / TX | ECHO / RX |
 |---|---|---|---|---|

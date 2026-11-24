@@ -17,7 +17,7 @@ the ESP32-S3's own 16 MB boot flash.
 | ESP SPI loopback | With flash DI/DO removed and B12 bridged to B13, the configured SPI poll returned `A5 5A` on 11 consecutive samples; the temporary configuration was stopped and cleared |
 | After loopback | Bridge removed and flash DI/DO restored; read-only `SPIID` still returned `INVALID raw=000000` |
 | Slower read | A separate read-only 100 kHz, SPI mode 0 JEDEC transfer returned `00 00 00 00` on seven consecutive polls; temporary config stopped and cleared |
-| Corrected wiring | After the user applied the updated Board B pin connections, read-only `SPIID` returned `raw=EF4016` |
+| Corrected wiring | After the team applied the updated Board B pin connections, read-only `SPIID` returned `raw=EF4016` |
 | Repeated read | `SPICHECK EF4016` passed: 16 bytes at address `000000`, all `FF` |
 | Last-sector scan | `SPISCAN EF4016` reported `NONBLANK sector=3FF000 bytes=4096 non_ff=94 first=3FF000`; no write |
 

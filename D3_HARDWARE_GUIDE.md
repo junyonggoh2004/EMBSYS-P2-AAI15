@@ -11,7 +11,7 @@ The tests clear volatile sensor/rule configuration and may reset occupancy. Keep
 Open Terminal and run:
 
 ```sh
-cd /Users/tanyilin/Downloads/EMBSYS-P2-AAI15
+cd EMBSYS-P2-AAI15
 git status --short --branch
 git branch --show-current
 ```

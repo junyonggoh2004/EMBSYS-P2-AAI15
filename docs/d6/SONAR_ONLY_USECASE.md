@@ -1,6 +1,6 @@
 # Current D6 doorway use case: two sonars, no radar
 
-**Decision recorded 21 November 2026.** The user removed the LD2450 radar from
+**Decision recorded 21 November 2026.** The team removed the LD2450 radar from
 the intended D6 demonstration. This document is the current application
 direction for Boards A, B and C. Earlier radar diagrams, dated bring-up
 records and D3 `WINDOW` documentation remain historical or component references;
@@ -89,41 +89,14 @@ measurements, not the seconds-long interval for a person to cross a doorway.
 
 The existing D3 `WINDOW` command still requires a radar UART source. For
 the sonar-only demo, use `DOORWAY`. The new counter reports local entries and
-exits. A-to-B candidate transport, B-owned occupancy and flash writes, and the
-live count on Board C still need integration. The separate [Board B
+exits. The separate [Board B
 `people-counter` live test](../../ML_commands.md#4-people-counter--experimental-live-31-reading-window)
 uses dedicated A/B 70 ms profiles for one sonar and a rolling 31-reading
 window. Its prediction does not change occupancy. Reload the normal four-sensor
 profiles after that test. The live doorway counter uses both sonars.
 
-## Current evidence and next gates
+## Evidence
 
-The [19 November record](BOARD_A_BRINGUP_20261119.md) reports AHT and light
-passing, Sonar A passing on direct GPIO10/11 signal leads, and Sonar B passing
-once on direct GPIO6/7 leads before losing power during later rewiring. On
-21 November, Sonar B returned valid echoes after its VCC/GND leads moved
-directly to B4/B7; the capture also included varying distances and a timeout.
-It does **not** show stable fixed-target measurements, valid simultaneous
-distances from both sonars or a completed doorway crossing. Both sonars need
-controlled fixed-target and `PAIR` checks in both orders. Do not infer
-hardware success from a config ACK or from a `PAIR` request alone.
-
-1. Confirm Board A's native USB console, actual wiring and correct flashed
-   firmware. Run the [Windows Board A test procedure](BOARD_A_SENSOR_TEST.md)
-   with each sensor isolated and record raw results.
-2. Keep Sonar B power directly on B4/B7, obtain stable readings at measured
-   target distances from each sonar separately, then verify a sequential pair
-   and its 50 ms ceiling. Include
-   no Echo and stuck/loose-contact trials.
-3. Validate the doorway counter on hardware. Test entry, exit, lone approach,
-   turnaround, loitering, close followers, ambiguous order and recovery.
-4. Implement/verify A candidate -> broker -> B final decision/storage ->
-   broker -> C live status. Record one B occupancy change per accepted unique
-   crossing, no change on duplicate/fault/ambiguous events, and a stale LCD
-   indication when updates stop.
-
-The active [validation plan](../D6_USECASE_VALIDATION_PLAN.md) and
-[worksheet](../D6_TRIAL_WORKSHEET.md) track these gates. The 13 November
-[radar handoff](D6_INTEGRATION_HANDOFF.md) and
-[archived doorway plan](reference/D6_USECASE_VALIDATION_PLAN.md) are retained
-as history, not the current sensor inventory.
+The [19 November record](BOARD_A_BRINGUP_20261119.md) covers Board A's first sensor checks.
+Both sonars were then read in sequence on the final wiring (D3-3), and the full three-board
+setup ran at the demo on 24 November; see the [D6 checklist](../../README.md#26-d6-task-checklist).

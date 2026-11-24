@@ -2,7 +2,7 @@ Task 9 — Arduino ESP32-S3 local bring-up observation
 Date: 2026-10-13 (Asia/Singapore)
 Tester: Sitt
 Source commit tested: fe082bd (esp32s3/esp32s3.ino last changed in 2ded606)
-Hardware: ESP32-S3 Super Mini matching the user-supplied HW-747 pinout
+Hardware: ESP32-S3 Super Mini matching the supplied HW-747 pinout
 SoC revision: v0.2, reported by esptool v5.3.1 on COM6
 Flash / PSRAM: 4 MB embedded flash / 2 MB embedded PSRAM, reported by esptool
 IDE: Arduino IDE 2.3.10

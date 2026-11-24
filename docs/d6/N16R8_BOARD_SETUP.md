@@ -3,7 +3,7 @@
 **Current Board A (21 November 2026):** [sonar-only wiring](BOARD_A_SONAR_ONLY_WIRING.md), [`board_a.cfg`](../../config/board_a.cfg), [test commands](BOARD_A_SENSOR_TEST.md). No radar or 5V feed is used on A. The later radar pin and power paragraphs below are earlier proposals retained for history.
 
 **Current Board C (21 November 2026):** the original portrait
-`LCDTEST 76 284 82 18 00 0` remains available. The user also confirmed the
+`LCDTEST 76 284 82 18 00 0` remains available. The team also confirmed the
 full landscape pattern with `LCDTEST 284 76 18 82 60 0` and the Board B → C
 MQTT mock dashboard in that orientation. Every mock field was visible; a
 second snapshot changed occupancy from 2 to 3 on the LCD. See the
@@ -11,7 +11,7 @@ second snapshot changed occupancy from 2 to 3 on the LCD. See the
 and [display reference](ROOM_MONITOR_REFERENCE.md). Live sensor-derived
 snapshots are still pending.
 
-Updated 17 November 2026 after the user removed the expansion boards. Boards
+Updated 17 November 2026 after the team removed the expansion boards. Boards
 **A, B and C** are bare ESP32-S3 N16R8 development boards with accessible male
 headers. Each ESP32 and its modules sit outside a separate breadboard. Use a
 male-to-female jumper from each ESP32 header pin to its named breadboard hole.
@@ -76,7 +76,7 @@ timed out, and GPIO4-to-GPIO5 loopback passed. See
 [Stage 1 bring-up](BOARD_A_STAGE1_BRINGUP_20261118.md). Inspect Sonar A
 before a combined doorway trial.
 
-The [earlier Board A pin-to-hole map](PIN_TO_HOLE_WIRING.md#historical-board-a-proposal-aht-light-two-sonars-and-radar) retained JY's V2 three-sensor rows 4-9, with Sonar B on rows 10-11 and radar UART on rows 12-13. It is not the current D6 wiring. The [current Board A map](BOARD_A_SONAR_ONLY_WIRING.md) uses direct sonar GPIO10/11 and GPIO6/7 with no radar; Board C owns the LCD. Older Super Mini wiring and tests remain historical fixtures.
+The [earlier Board A pin-to-hole map](PIN_TO_HOLE_WIRING.md#historical-board-a-proposal-aht-light-two-sonars-and-radar) retained Jun Yong's V2 three-sensor rows 4-9, with Sonar B on rows 10-11 and radar UART on rows 12-13. It is not the current D6 wiring. The [current Board A map](BOARD_A_SONAR_ONLY_WIRING.md) uses direct sonar GPIO10/11 and GPIO6/7 with no radar; Board C owns the LCD. Older Super Mini wiring and tests remain historical fixtures.
 
 On 18 November, Board B was flashed as node `s3-002` and reached the native
 USB console on COM11. GPIO12-to-GPIO13 SPI loopback passed 11/11 samples,
@@ -89,10 +89,10 @@ and no external flash write was made during this trial.
 
 On 18 November, Board C was backed up and flashed as `s3-003` over CH343
 COM12. The native USB console was COM13 after reset. `LCDTEST` returned
-`result=0`, the user confirmed the expected visible pattern, and `TASKS`
+`result=0`, the team confirmed the expected visible pattern, and `TASKS`
 reported `BenchmarkTask stack_free=1756 B`. See
 [Board C bring-up](BOARD_C_BRINGUP_20261118.md).
 
 ## Optional spacious Board A layout
 
-The original compact Board A pin-to-hole map above remains documented. On the user's 65-row board, the [spacious alternative](BOARD_A_SPACED_65_ROW_LAYOUT.md) retains JY's AHT/light/Sonar A rows 4-9 and the same ESP GPIO map while moving only Sonar B to rows 28/29 and radar to 50/51/54. It has not yet been wired or tested as a complete fixture.
+The original compact Board A pin-to-hole map above remains documented. On the team's 65-row board, the [spacious alternative](BOARD_A_SPACED_65_ROW_LAYOUT.md) retains Jun Yong's AHT/light/Sonar A rows 4-9 and the same ESP GPIO map while moving only Sonar B to rows 28/29 and radar to 50/51/54. It has not yet been wired or tested as a complete fixture.

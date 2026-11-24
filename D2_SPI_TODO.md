@@ -5,7 +5,7 @@
 
 - Branch: D2 checkpoint merged into `main`; `s3-port-d2` remains the D2 work branch.
 - Updated baseline: D1 `s3-port` at `ba81f18`, merged into D2 by `9a421ef`; D1 µT-Kernel redesign `main` at `1f41dac` fast-forwarded into D2 on 25 October 2026. The D2 checkpoints through `f535a45` were pushed to `origin/s3-port-d2` on 26 October 2026.
-- Team: Brendan and Jy
+- Owner: Brendan
 - Status (25 October 2026): the **µT-Kernel** SPI HAL passed 22/22 REPL/configuration/loopback/lifecycle checks, 6/6 connected fault checks, and five 8–1024-byte benchmark configurations (40,000 measured transfers, zero HAL errors or byte mismatches) on COM5. The physical W25QXX breakout returned JEDEC `EF4016`, passed the W25Q32 device-layer probe/read, and its initially blank final 4 KiB sector was approved as disposable scratch. A single 16-byte page-program at `0x3FF000` passed blank check, status polling, readback, ESP-reset and full USB power-cycle retention without erase. With all flash wires removed, the device layer returned `HAL_ERR_ABSENT (-9)`. The earlier Arduino/FreeRTOS results are retained as comparison baselines. Event logging, D3/D6 schema agreement, concurrent T-23 performance, and final integration remain open.
 
 ## Merge to main — 27 October 2026
@@ -110,9 +110,9 @@ Steps 1–2 below preserve the pre-change baseline. The 25 October µT-Kernel re
 1. [x] Run the dedicated SPI benchmark on COM5 with the TFT disconnected and GPIO12 MOSI jumpered to GPIO13 MISO. All 8,000 measured transfers passed at 10 MHz, mode 0; evidence is in `parity/logs/d2-spi/bench-20261017-140138/`.
 2. [x] Exercise module-free faults: invalid/boundary clocks and transfer timeout on the loopback fixture; a separate HAL lock-contention test passed with the jumper removed. The disconnected-wire test exposed an open verification gap documented below.
    - [x] Extend the benchmark to modes 1 and 2 at 10 MHz and modes 0 and 3 at 20 MHz; all 32,000 additional transfers passed with zero HAL errors and zero byte mismatches. Production firmware was restored and the connected fault suite passed again.
-3. [x] Obtain the 3.3 V W25QXX breakout and photograph both sides and the completed ESP fixture. The printed chip marking remains too dark to read, but the physical JEDEC ID is `EF4016`; the [read-only](parity/logs/mtk/d2-spi/flash-readonly-20261025.log), [one-time program](parity/logs/mtk/d2-spi/flash-program-once-20261025.log), [cold retention](parity/logs/mtk/d2-spi/flash-cold-verify-20261025.log) and [absent-device](parity/logs/mtk/d2-spi/flash-absent-20261025.log) logs are retained. Review the [design checkpoint](D2_SPI_DESIGN_NOTES.md) with Jy.
+3. [x] Obtain the 3.3 V W25QXX breakout and photograph both sides and the completed ESP fixture. The printed chip marking remains too dark to read, but the physical JEDEC ID is `EF4016`; the [read-only](parity/logs/mtk/d2-spi/flash-readonly-20261025.log), [one-time program](parity/logs/mtk/d2-spi/flash-program-once-20261025.log), [cold retention](parity/logs/mtk/d2-spi/flash-cold-verify-20261025.log) and [absent-device](parity/logs/mtk/d2-spi/flash-absent-20261025.log) logs are retained. Review the [design checkpoint](D2_SPI_DESIGN_NOTES.md) with the team.
    - [x] Draft the [event-record design template](D2_EVENT_RECORD_DESIGN.md), recording the retired 32-byte draft, every-processed-event scope, dedicated typed queue proposal (capacity 8, 0 ms enqueue, drop newest), publication ordering, failure diagnostics, and validation checklist. The provisional codec has host proof and a physical synthetic-record write/recovery proof; real application event logging remains open.
-   - [ ] Review the template with Jy and freeze field mappings, queue ownership, CRC convention, event rate/retention, scratch address, erase/full-log policy, and T-23 thresholds. No erase is approved yet.
+   - [ ] Review the template with the team and freeze field mappings, queue ownership, CRC convention, event rate/retention, scratch address, erase/full-log policy, and T-23 thresholds. No erase is approved yet.
    - [ ] Coordinate with D6 on the canonical sensor-node event ID (node ID, boot ID, sequence), observation-window ownership, and occupancy-after-reset decision (feedback F9/F10). Confirm that the D2 flash record can carry or unambiguously reference that ID before freezing its format. D6 owns event formation, de-duplication, and occupancy persistence; D2 owns durable SPI logging of the agreed event.
 4. [x] Add the W25Q32 device layer and prove JEDEC-ID/read/one-time program/readback/retention through the generic SPI transport **on the migrated µT-Kernel build**. With the flash removed, it returned `HAL_ERR_ABSENT`; host mocks also cover wrong ID, timeout, stuck busy, partial program and bad readback. This proves device-level storage, not an event-log record or concurrent application behavior.
 5. [ ] Add event logging in the migrated `ApplicationTask`: attempt to queue publication first, then offer a log request through a bounded µT-Kernel-compatible mechanism without blocking sampling; write and read back from the consumer. Report a write failure and continue monitoring. Publisher enqueue is not broker delivery.
@@ -249,7 +249,7 @@ Keep one owner per active file to reduce conflicts.
 - [x] Add `bus_spi` to the common registry and update Pico/S3 build manifests.
 - [ ] Extend parity tests and keep README, architecture, configuration, and requirements synchronized.
 
-### Jy — ESP32-S3 transport, fixtures, and evidence
+### ESP32-S3 transport, fixtures, and evidence
 
 - [x] Implement the EdgeS3 SPI host/device manager, locking, transactions, timeout/error translation, and cleanup.
 - [x] Build and verify the GPIO12 MOSI-to-GPIO13 MISO loopback fixture.
@@ -381,4 +381,4 @@ The completed checks below predate the RTOS change. Re-run affected D1 and D2 st
 - [ ] Obtain team sign-off for normal scheduled TX/RX limits and the separate 1024-byte benchmark path.
 - [ ] Approve maximum SPI clock and numerical performance thresholds.
 - [ ] Confirm that queued/streaming SPI is deferred from D2.
-- [ ] Reconcile ownership: the earlier D2 allocation names Brendan/Jy, while the Week 6 review assigns SPI drivers to Sitt and configuration/timing to Brendan.
+- [x] Reconcile ownership: D2 is Brendan's.

@@ -5,8 +5,7 @@
 Updated 18 November 2026 for three separate bare ESP32-S3 N16R8
 development boards with accessible male headers. These are **proposed integration fixtures**, not
 evidence that all D6 devices have been powered or tested together. See the
-[integration handoff](D6_INTEGRATION_HANDOFF.md) for implementation status and
-test gates, and the [jumper-wire count](JUMPER_WIRE_COUNT.md) for the
+[D6 checklist](../../README.md#26-d6-task-checklist) for what was completed, and the [jumper-wire count](JUMPER_WIRE_COUNT.md) for the
 proposed fixture materials.
 
 The modules and all three ESP32 boards sit outside their breadboards.
@@ -24,11 +23,11 @@ section. Check continuity with USB unplugged.
 
 ![Board A pin-to-hole wiring](images/board-a-detailed.png)
 
-This N16R8 translation **retains JY's Version 2 Super Mini three-sensor
+This N16R8 translation **retains Jun Yong's Version 2 Super Mini three-sensor
 rows**: 3V3 at A4, I2C at A5/A6, GND at A7 and Sonar A at A8/A9.
 Only the ESP32 board changes for those pins. Remove **all** old A-board
 LCD wires (rows 10-14, LCD power/GND and BL) before using rows 10-13
-for Sonar B and radar. The LCD belongs on Board C. [JY's original fixture](../../esp32s3_mtk/WIRING.md) is preserved
+for Sonar B and radar. The LCD belongs on Board C. [Jun Yong's original fixture](../../esp32s3_mtk/WIRING.md) is preserved
 separately; its successful readings do not establish a pass on this N16R8.
 
 Use the **printed pin labels**, not physical pin order or jumper colours.
@@ -41,12 +40,12 @@ that 5V rail; 3V3 is supplied by row 4 only.
 
 | ESP32 N16R8 pin | Breadboard hole | Module pin in the same row / rail | Status |
 |---|---|---|---|
-| 3V3 | A4 | Sonar B VCC B4; Sonar A VCC C4; TSL2561 VCC D4; AHT VCC E4 | JY V2 row retained; Sonar B added |
-| GPIO1 (I2C SDA) | A5 | TSL2561 SDA D5; AHT SDA E5 | JY V2 row retained |
-| GPIO2 (I2C SCL) | A6 | TSL2561 SCL D6; AHT SCL E6 | JY V2 row retained |
-| GND | A7 | Sonar A GND C7; TSL2561 GND D7; AHT GND E7; B7 bridges to blue GND rail N1 | JY V2 row retained |
-| GPIO4 | A8 | Sonar A TRIG E8 | JY V2 row retained |
-| GPIO5 | A9 | Sonar A ECHO E9 | JY V2 row retained |
+| 3V3 | A4 | Sonar B VCC B4; Sonar A VCC C4; TSL2561 VCC D4; AHT VCC E4 | Jun Yong V2 row retained; Sonar B added |
+| GPIO1 (I2C SDA) | A5 | TSL2561 SDA D5; AHT SDA E5 | Jun Yong V2 row retained |
+| GPIO2 (I2C SCL) | A6 | TSL2561 SCL D6; AHT SCL E6 | Jun Yong V2 row retained |
+| GND | A7 | Sonar A GND C7; TSL2561 GND D7; AHT GND E7; B7 bridges to blue GND rail N1 | Jun Yong V2 row retained |
+| GPIO4 | A8 | Sonar A TRIG E8 | Jun Yong V2 row retained |
+| GPIO5 | A9 | Sonar A ECHO E9 | Jun Yong V2 row retained |
 | GPIO6 | A10 | Sonar B TRIG E10 | Added; GPIO proposed for D6 |
 | GPIO7 | A11 | Sonar B ECHO E11 | Added; GPIO proposed for D6 |
 | GPIO17 (UART RX) | A12 | LD2450 TX E12 | Added; GPIO proposed for D6 |
@@ -62,7 +61,7 @@ middle, use one continuous section or bridge only matching-voltage sections.
 Do not bridge 5V to 3V3 or GND.
 
 This is a **conflict-free proposed fixture**, not a verified five-sensor
-physical pass. The two sonars were reported as 3.3V-compatible by the user;
+physical pass. The two sonars were reported as 3.3V-compatible by the team;
 confirm the actual ECHO level before connection to a GPIO. The radar's 5V
 feed is from the USB-powered N16R8 header only if the board and USB supply
 remain stable. Disconnect USB while moving wires. Radar TX crosses to ESP
@@ -73,7 +72,7 @@ routing must use GPIO17/18 and the LD2450's actual baud rate.
 **Observed on 17 November:** with the prior N16R8 wiring, TSL2561 returned
 valid lux readings; AHT returned an I2C error; Sonar A timed out. Sonar B
 returned pulse readings with uncertain distance, and LD2450 raw UART returned
-no bytes. On 18 November, the corrected JY V2 rows 4-9 were tested
+no bytes. On 18 November, the corrected Jun Yong V2 rows 4-9 were tested
 with AHT, light and Sonar A. AHT and light passed; Sonar A still timed out,
 although GPIO4-to-GPIO5 loopback passed. Sonar B and radar have not been
 retested on the corrected map. See [Stage 1 bring-up](BOARD_A_STAGE1_BRINGUP_20261118.md).
@@ -85,7 +84,7 @@ uses GPIO11/12 for its second sonar and is a different fixture, not this map.
 
 ## Board A spacious 65-row extension
 
-The earlier Board A table and image above remain as the compact proposal. For the user's 65-row breadboard, the **additional spacious layout** keeps JY's rows 4-9 unchanged, then places Sonar B at 28/29 and radar at 50/51 with radar 5V on isolated row 54. See the [spacious diagram and complete connection list](BOARD_A_SPACED_65_ROW_LAYOUT.md). GPIOs and `three_sensors.cfg` do not change. The spacious layout is proposed and has not been physically validated.
+The earlier Board A table and image above remain as the compact proposal. For the team's 65-row breadboard, the **additional spacious layout** keeps Jun Yong's rows 4-9 unchanged, then places Sonar B at 28/29 and radar at 50/51 with radar 5V on isolated row 54. See the [spacious diagram and complete connection list](BOARD_A_SPACED_65_ROW_LAYOUT.md). GPIOs and `three_sensors.cfg` do not change. The spacious layout is proposed and has not been physically validated.
 
 ## Board B: external SPI flash
 
@@ -122,7 +121,7 @@ This reuses the isolated pin map previously verified with a Super Mini.
 On 18 November 2026 the photographed bare N16R8 Board C also passed the
 physical LCD test: `LCDTEST 76 284 82 18 00 0` returned `result=0`, and the
 user confirmed the colour bands and `LCD READY` on the screen.
-The module is the user's DIYUSER 76x284 ST7789P3 display. `SCL` and `SDA` on this LCD mean **SPI SCK and MOSI**, not
+The module is the team's DIYUSER 76x284 ST7789P3 display. `SCL` and `SDA` on this LCD mean **SPI SCK and MOSI**, not
 the I2C signals on Board A. Its BL-to-GND arrangement is specific to this
 tested active-low breakout.
 

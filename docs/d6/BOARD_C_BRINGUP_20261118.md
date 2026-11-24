@@ -12,7 +12,7 @@
   reported `[BOOT] esp32s3_mtk node s3-003` and started the runtime.
 - Sent `LCDTEST 76 284 82 18 00 0` on COM13. Console reported test queued,
   starting with `76x284 offset=82,18 madctl=00 invert=0`, and
-  `[LCD] test complete result=0`. The user confirmed red, green, blue and
+  `[LCD] test complete result=0`. The team confirmed red, green, blue and
   black bands plus `LCD READY` on the screen.
 - `TASKS` reported `BenchmarkTask stack_free=1756 B`,
   `bench_mbf free=704 B dropped=0`, and `console_rx_dropped=0`.

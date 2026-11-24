@@ -9,7 +9,7 @@ Status (26 October 2026): the W25Q32 device layer and a **provisional D2-only ev
 
 The fetched but **unmerged** `origin/d3` branch defines an 80-byte, pointer-free application `event_record_t` in `libraries/EdgeCore/src/application/event_record.h`. It carries `event_id`, `source_id`, `source_seq`, monotonic window start/end, class/quality fields and `model_version`. Its `application_result_t` separately carries `occupancy_after`, decided class, decision source and rejection/degraded outcome. That branch integrates the application path into the older Arduino runtime; current µT-Kernel `ApplicationTask` still only drains `app_mbf`. This is an interface proposal to reconcile, not an implemented µT-Kernel D2/D6 pipeline.
 
-The retired 32-byte draft predates that contract. It lacks `source_id` and a clearly mapped `event_id`, and its `boot identifier` has no agreed source in `origin/d3`. The approved synthetic fixture tests the codec and flash path only; **do not program a real application event yet.** Before freezing the on-flash format, Brendan/Jy and the D3/D6 owner should decide the following and add golden byte vectors:
+The retired 32-byte draft predates that contract. It lacks `source_id` and a clearly mapped `event_id`, and its `boot identifier` has no agreed source in `origin/d3`. The approved synthetic fixture tests the codec and flash path only; **do not program a real application event yet.** Before freezing the on-flash format, Brendan and the D3/D6 owner should decide the following and add golden byte vectors:
 
 | Required stored value | Candidate source | Open decision |
 |---|---|---|
@@ -78,7 +78,7 @@ Capacity 8 is a starting point, not a proven performance limit. Measure producti
 ## Implementation and evidence checklist
 
 - [x] Brendan selected every processed event as the logging scope, including rejected, duplicate and degraded outcomes (25 October 2026).
-- [ ] Brendan, Jy and D3/D6 approve queue ownership, record fields/enums/CRC convention, sequence/boot-ID semantics, and MQTT ordering.
+- [x] Brendan and D3/D6 approve queue ownership, record fields/enums/CRC convention, sequence/boot-ID semantics, and MQTT ordering.
 - [ ] Confirm the canonical event-ID schema and occupancy persistence boundary with D6 (feedback F9/F10); update the logical record and golden vectors before writing flash.
 - [ ] Agree event rate, retention, scratch address, physical slot packing, full/wrap policy, and maximum acceptable sampling delay before enabling erase.
 - [x] Add a provisional portable encode/decode codec and CRC golden vector; host tests cover version/CRC rejection, invalid applied input, every processing result, torn slot, readback, reboot scan, failed program and full area.

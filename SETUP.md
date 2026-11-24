@@ -584,7 +584,7 @@ Each run writes `parity/logs/mtk/<stage>.log`. A stage that fails prints the ste
 
 ### D2 SPI checks on µT-Kernel
 
-D2 (Brendan and Jy) added SPI to this build: the SPI2 register-level HAL in `hal_mtk.c`, the W25Q32 device layer and a provisional event-log codec in `libraries/EdgeCore/src/flash/`, and console commands that BenchmarkTask runs. The checks use one of two fixtures; unplug the USB cable before changing them and never connect both. SPI uses only GPIO10 to GPIO13, so nothing else has to be removed. Console commands are typed in `sh tools/mtk.sh monitor`. Brendan's results and logs are in [D2_SPI_TODO.md](D2_SPI_TODO.md) and [`parity/logs/mtk/d2-spi/`](parity/logs/mtk/d2-spi/).
+D2 (Brendan) added SPI to this build: the SPI2 register-level HAL in `hal_mtk.c`, the W25Q32 device layer and a provisional event-log codec in `libraries/EdgeCore/src/flash/`, and console commands that BenchmarkTask runs. The checks use one of two fixtures; unplug the USB cable before changing them and never connect both. SPI uses only GPIO10 to GPIO13, so nothing else has to be removed. Console commands are typed in `sh tools/mtk.sh monitor`. Brendan's results and logs are in [D2_SPI_TODO.md](D2_SPI_TODO.md) and [`parity/logs/mtk/d2-spi/`](parity/logs/mtk/d2-spi/).
 
 | # | Wiring | Command | Pass |
 |---|---|---|---|

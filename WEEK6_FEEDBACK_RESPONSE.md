@@ -14,16 +14,16 @@ This file is the single record of the professor's feedback on the Week 6 design 
 
 ## 1. Context
 
-**Deliverables and owners** (team workload split of 2026-09-28):
+**Deliverables and owners** (final, 24 Nov 2026; the first split was agreed on 28 Sep 2026):
 
 | Deliverable | Scope | Owners |
 |---|---|---|
-| D1 | Port configpico2wedge to the ESP32-S3 (23 tasks; task 10 is the Week 6 design review) | Hasif, Cody, Sitt |
-| D2 | SPI support on the ESP32-S3 | Brendan, Jun Yong |
+| D1 | Port configpico2wedge to the ESP32-S3 (23 tasks; task 10 is the Week 6 design review) | Hasif, Sitt |
+| D2 | SPI support on the ESP32-S3 | Brendan |
 | D3 | Configurable timing: periodic, one-shot, event-driven, logical sequence | Cody |
-| D4 | Embedded ML efficiency | Brendan, Jun Yong |
-| D5 | Benchmarking programme (B1–B6) | Hasif, Sitt |
-| D6 | End-to-end use case: people-flow and occupancy monitoring at an entrance | Whole team |
+| D4 | Embedded ML efficiency | Jun Yong (part 1); Sitt, Hasif (part 2) |
+| D5 | Benchmarking programme (B1–B6) | Hasif |
+| D6 | End-to-end use case: people-flow and occupancy monitoring at an entrance | Everyone: Hasif, Sitt, Brendan, Cody, Jun Yong |
 
 **Sub-module owners in the Week 6 review**, which the Tribunal asks each member to speak for: Hasif, ESP32-S3 platform, HAL, ControlTask, MQTTTask and the rule engine; Sitt, sensor drivers (GPIO, I²C, UART, SPI) and the bus mutexes; Brendan, SchedulerTask configuration, validation and timing, and MonitorTask; Jun Yong, InferenceTask, model storage and inference; Cody, ApplicationTask, BenchmarkTask, integration and validation.
 
@@ -65,7 +65,7 @@ This file is the single record of the professor's feedback on the Week 6 design 
 
 ### D6 LCD/parser integration and board roles (11 November 2026)
 
-The user clarified **A input only; B ML, storage, data handling and
+The team clarified **A input only; B ML, storage, data handling and
 communication; C output**. The current D6 plan/worksheet use A→B→C, with B's
 remote ML bindings, output transport and storage contract still open.
 The working change selectively imports the LCD diagnostic from `b1c1675`
@@ -74,14 +74,14 @@ sensor-frame parsing rejects malformed envelopes before bridge publication;
 native coverage includes a reproduced truncated-frame defect, typed AHT
 values and modeled LCD command/task/queue behavior. Physical D6 trials and
 feedback acceptance remain open; historical LCD reference evidence is kept
-separate. See [integration evidence](docs/d6/INTEGRATION_STATUS.md).
+separate.
 
 ### D6 planning refinement (11 November 2026)
 
 The `d6` branch integrated main checkpoint `b389714` in merge `3e029d0`.
-The [next three integration steps](docs/d6/NEXT_STEPS.md) now define fixture
+The next three integration steps now define fixture
 decisions, selective LCD integration and validated remote sensor display.
-The [session worksheet](docs/D6_TRIAL_WORKSHEET.md) adds decision ownership and
+The session worksheet adds decision ownership and
 per-attempt source/subscriber/screen evidence. These are planning changes;
 no feedback status or hardware acceptance gate is closed. The three-board
 proposal and optional doorway extension retain their separate scope decisions.
@@ -102,7 +102,7 @@ proposal and optional doorway extension retain their separate scope decisions.
 | F8 | LD2450 UART drain, buffer, presence | D6 | Team | ❌ | [F8](#f8-ld2450-uart-handling) |
 | F9 | One observation-window owner; event record with ID | D6 | Team | ❌ | [F9](#f9-observation-window-owner-and-event-record) |
 | F10 | Event IDs, de-duplication, occupancy after reset | D6 | Team | ❌ | [F10](#f10-event-ids-de-duplication-and-occupancy-persistence) |
-| F11 | Separate model upload from inference; chunk protocol | D4 | Brendan, Jun Yong | 🟡 | [F11](#f11-model-upload-separation-and-chunk-protocol) |
+| F11 | Separate model upload from inference; chunk protocol | D4 | Jun Yong, Sitt, Hasif | 🟡 | [F11](#f11-model-upload-separation-and-chunk-protocol) |
 | F12 | MQTT topics, payloads, commands, validation | D1 | Hasif | ✅ | [F12](#f12-mqtt-interface-and-validation) |
 | F13 | Queue sizes, drop policy, offline pub_q | D1 | Hasif | ✅ | [F13](#f13-queue-sizes-and-drop-policy) |
 | F14 | Diagrams: placeholder hardware, old task names | D1 | Hasif | ✅ | [F14](#f14-diagrams) |
@@ -111,8 +111,8 @@ proposal and optional doorway extension retain their separate scope decisions.
 | F17 | Fault table: critical vs DEGRADED | D1 | Hasif | ✅ | [F17](#f17-fault-table) |
 | R1 | Risk: SchedulerTask timing at 50 ms with all sensors | D3, D5 | Cody, Hasif | ❌ | [R1](#r1-schedulertask-timing-at-50-ms) |
 | R2 | Risk: entry/exit order over MQTT | D6 | Team | ❌ | [R2](#r2-entryexit-order-over-mqtt) |
-| R3 | Risk: labelled events for NFR10 | D4, D6 | Brendan, Jun Yong | ❌ | [R3](#r3-labelled-events-for-nfr10) |
-| R4 | Risk: model upload and flash writes during sampling | D4, D2 | Brendan, Jun Yong | 🟡 | [R4](#r4-model-upload-and-flash-writes-during-sampling) |
+| R3 | Risk: labelled events for NFR10 | D4, D6 | Jun Yong, Sitt, Hasif, team | ❌ | [R3](#r3-labelled-events-for-nfr10) |
+| R4 | Risk: model upload and flash writes during sampling | D4, D2 | Jun Yong, Sitt, Hasif, Brendan | 🟡 | [R4](#r4-model-upload-and-flash-writes-during-sampling) |
 | R5 | Risk: occupancy integrity under duplicates and resets | D6 | Team | ❌ | [R5](#r5-occupancy-integrity) |
 | C1 | Resolve inconsistencies, then prove sampling before ML | D3, D6 | Cody, team | 🟡 | [C1](#c1-sampling-path-before-ml) |
 | C2 | The project must be in C | D1 | Hasif, team | 🟡 | [C2](#c2-use-of-c) |
@@ -369,7 +369,7 @@ Cody directly owns timing/window contracts, EventRecord and application/occupanc
 | F9: sensor-node EventRecord | The implemented `WINDOW` assembler, a 96-byte schema-v2 EventRecord, typed 104-byte `app_mbf` messages, schema-v2 result publication and laptop tests | Prove real crossings, window quality and result publication on the board; qualify the cross-node receive path and time basis |
 | F10/R2/R5: event identity and occupancy | Factory-MAC node ID, NVS boot counter and sequence, bounded duplicate/reorder handling and a native-tested occupancy state machine | Prove boot-counter and replay behaviour on the target; agree cross-node time and occupancy reset/persistence policy, including identity reuse after NVS erase |
 | F8/F15: radar and auxiliary sensors | LD2450 draining, incremental decoding and presence/expiry in the entrance window (D3, laptop-tested) | Qualify the radar zone and decoder on the board; Cody agrees the remaining sensor roles with Jun Yong and Sitt |
-| D2 logging handoff | D2's provisional codec and physical synthetic-record recovery evidence are retained | Cody and Brendan/JY agree event/result mappings, publication-enqueue status and the bounded ApplicationTask log handoff; run T-23 |
+| D2 logging handoff | D2's provisional codec and physical synthetic-record recovery evidence are retained | Cody and Brendan/Jun Yong agree event/result mappings, publication-enqueue status and the bounded ApplicationTask log handoff; run T-23 |
 
 None of this closes F9, F10, R2, R5, the D3 board checklist or D2 T-23. ApplicationTask keeps core 1, priority 23 and its 4 KB stack; its eight typed 104-byte application messages stay in internal RAM and its state lives in EdgeCore memory mapped to PSRAM. Actual memory placement, stack/heap margin and core residency still need target evidence. The window producer and node/boot/sequence identity are implemented; physical window quality, NVS reset/power-cycle behaviour, cross-node time, occupancy persistence/replay and the D2 log handoff remain open. Remote-clock events are rejected; no remote-event decoder or clock synchronisation is implemented. D2's 80-byte flash record is unchanged and still needs an agreed schema-v2 mapping.
 

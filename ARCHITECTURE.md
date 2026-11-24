@@ -51,7 +51,7 @@ stack margin and service timing still require the pinned build and hardware.
 
 ## 1. Team roles and subsystem ownership
 
-The port keeps the reference's application logic and replaces only what touches the platform. The table divides the code that way and maps each part to its implementation task. Owners for tasks 11 to 23 are assigned at the review; the D1 team is Hasif, Cody and Sitt.
+The port keeps the reference's application logic and replaces only what touches the platform. The table divides the code that way and maps each part to its implementation task. Owners for tasks 11 to 23 are assigned at the review; the D1 team is Hasif and Sitt.
 
 | Subsystem | Shared code (logic kept) | Platform code (rewritten for the S3) | Tasks | Owner |
 |---|---|---|---|---|
@@ -60,7 +60,7 @@ The port keeps the reference's application logic and replaces only what touches 
 | Scheduler and GPIO modes | `scheduler.c`, `config_parser.c` | GPIO driver behind `bus_gpio` | 14, 15 | |
 | I2C | None | I2C driver behind `bus_i2c`, on `Wire` | 16 | |
 | UART | None | UART driver behind `bus_uart`, on `HardwareSerial` | 17 | |
-| SPI (D2) | Shared configuration, registry and transaction/error contract | SPI bus manager and device driver behind `bus_spi`; Arduino `SPIClass` or documented ESP-IDF exception | D2 | Brendan and Jy |
+| SPI (D2) | Shared configuration, registry and transaction/error contract | SPI bus manager and device driver behind `bus_spi`; Arduino `SPIClass` or documented ESP-IDF exception | D2 | Brendan |
 | Rule engine | `rules.c`, `rule_expr.c`, `rule_action.c` | GPIO and PWM actions through the HAL | 18 | |
 | Wi-Fi, MQTT, bridging | `mqtt_config_parser.c`, `mqtt_json_parser.c`, `sensor_bridge.c` | Network driver in the `net` task | 19 | |
 | Model transfer, inference | `inference_manager.c`, transfer state machine | Model store, TFLite Micro wrapper | 20 | |

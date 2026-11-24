@@ -1,6 +1,6 @@
 1791923959: Info: running mosquitto as user: hasif.
 1791923959: mosquitto version 2.1.2 starting
-1791923959: Config loaded from /private/tmp/claude-501/-Users-hasif-Y2S1/515513da-26e2-4a09-ab40-e727a758e301/scratchpad/mosq.conf.
+1791923959: Config loaded from mosq.conf.
 1791923959: Bridge support available.
 1791923959: Persistence support available.
 1791923959: TLS support available.

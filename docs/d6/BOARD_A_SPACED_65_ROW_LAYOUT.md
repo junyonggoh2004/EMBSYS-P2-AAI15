@@ -1,12 +1,12 @@
-# Board A: spacious 65-row extension of JY V2
+# Board A: spacious 65-row extension of Jun Yong V2
 
 **Historical radar proposal.** The [current sonar-only Board A wiring](BOARD_A_SONAR_ONLY_WIRING.md) uses direct GPIO10/11 for Sonar A and GPIO6/7 for Sonar B, with no radar. The older rows and GPIOs below are retained for context; do not use them with [`board_a.cfg`](../../config/board_a.cfg).
 
 ![Spacious Board A pin-to-hole diagram](images/board-a-spaced.png)
 
-This is an **additional proposed physical layout** for the user's 65-row breadboard. It does not replace [JY's original Super Mini wiring](../../esp32s3_mtk/WIRING.md) or the [earlier compact N16R8 proposal](PIN_TO_HOLE_WIRING.md#board-a-aht-light-two-sonars-and-radar). The original AHT, TSL2561 and Sonar A connections on rows 4-9 remain exactly where JY placed them. Only the new Sonar B and radar connections are spread out. Firmware GPIO assignments remain GPIO1/2/4/5 for JY's sensors, GPIO6/7 for Sonar B and GPIO17/18 for radar. `config/three_sensors.cfg` remains the three-sensor firmware profile; breadboard row numbers are not firmware settings.
+This is an **additional proposed physical layout** for the team's 65-row breadboard. It does not replace [Jun Yong's original Super Mini wiring](../../esp32s3_mtk/WIRING.md) or the [earlier compact N16R8 proposal](PIN_TO_HOLE_WIRING.md#board-a-aht-light-two-sonars-and-radar). The original AHT, TSL2561 and Sonar A connections on rows 4-9 remain exactly where Jun Yong placed them. Only the new Sonar B and radar connections are spread out. Firmware GPIO assignments remain GPIO1/2/4/5 for Jun Yong's sensors, GPIO6/7 for Sonar B and GPIO17/18 for radar. `config/three_sensors.cfg` remains the three-sensor firmware profile; breadboard row numbers are not firmware settings.
 
-## Keep JY V2 rows 4-9
+## Keep Jun Yong V2 rows 4-9
 
 | ESP32-S3 N16R8 pin | Hole | Sensor or jumper on the same A-E row |
 |---|---|---|
@@ -17,7 +17,7 @@ This is an **additional proposed physical layout** for the user's 65-row breadbo
 | GPIO4 | A8 | Sonar A TRIG E8 |
 | GPIO5 | A9 | Sonar A ECHO E9 |
 
-B4 and B7 were unused holes in JY's rows; adding rail feeds there does not move any of the original sensor wires. Before using B4 for the new rail feed, move Sonar A VCC from its temporary test hole B4 back to JY's C4 with USB unplugged. Do not put Sonar B VCC in B4 as in the earlier compact D6 proposal, and do not combine the compact and spacious add-on rows. The current physical test passed AHT and light but Sonar A repeatedly timed out, including after a replacement module and jumper leads. The GPIO4/5 loopback passed. See the [Stage 1 record](BOARD_A_STAGE1_BRINGUP_20261118.md). This new spacing does not claim to repair Sonar A.
+B4 and B7 were unused holes in Jun Yong's rows; adding rail feeds there does not move any of the original sensor wires. Before using B4 for the new rail feed, move Sonar A VCC from its temporary test hole B4 back to Jun Yong's C4 with USB unplugged. Do not put Sonar B VCC in B4 as in the earlier compact D6 proposal, and do not combine the compact and spacious add-on rows. The current physical test passed AHT and light but Sonar A repeatedly timed out, including after a replacement module and jumper leads. The GPIO4/5 loopback passed. See the [Stage 1 record](BOARD_A_STAGE1_BRINGUP_20261118.md). This new spacing does not claim to repair Sonar A.
 
 ## Add Sonar B at rows 28-29
 
@@ -48,13 +48,13 @@ Row 54 is a **5V-only A-E junction**, isolated from row 4 and every GPIO. Bridge
 
 ## Wiring sequence and checks
 
-1. Disconnect USB. Restore Sonar A VCC from temporary B4 to original C4; keep its GND C7, TRIG E8 and ECHO E9. Keep AHT and light on JY's rows 4-7.
+1. Disconnect USB. Restore Sonar A VCC from temporary B4 to original C4; keep its GND C7, TRIG E8 and ECHO E9. Keep AHT and light on Jun Yong's rows 4-7.
 2. Add B4->P1 and B7->N1; label the upper rails `3V3` and `GND`. Use the same continuous top rail section for Sonar B power.
 3. Add Sonar B at 28/29 and test it separately on GPIO6/7. Do not treat an old uncertain pulse as a pass on these holes.
 4. Bridge only the blue GND sections across any center break. Add radar signal rows 50/51, dedicated 5V row 54 and radar GND at N5. Test the radar separately before a combined run.
 5. Re-run AHT, light and each sonar after physical changes. Leave rows 10-27, 30-49 and 55-65 available for later labelled expansion.
 
-This is a **pin-hole proposal**, not evidence that all sensors function together. The two sonar modules were reported as 3.3V-compatible by the user; verify actual ECHO voltage before any change to their power scheme. USB-backed radar 5V requires a stable board and USB supply.
+This is a **pin-hole proposal**, not evidence that all sensors function together. The two sonar modules were reported as 3.3V-compatible by the team; verify actual ECHO voltage before any change to their power scheme. USB-backed radar 5V requires a stable board and USB supply.
 
 
 ## Physical test update: 18 November 2026

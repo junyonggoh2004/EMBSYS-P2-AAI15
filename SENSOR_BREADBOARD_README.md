@@ -1,8 +1,8 @@
 # Three-sensor breadboard guide (AHT, HC-SR04+, TSL2561)
 
-This records JY's earlier Super Mini fixture. For the bare N16R8 D6 Board A with a second sonar and LD2450 radar, use the [active pin-to-hole guide](docs/d6/PIN_TO_HOLE_WIRING.md). It retains these three sensors' GPIOs and rows 4-9, but Board A no longer carries the old LCD wires. The earlier working result does not prove the current N16R8 setup passes.
+This records Jun Yong's earlier Super Mini fixture. For the bare N16R8 D6 Board A with a second sonar and LD2450 radar, use the [active pin-to-hole guide](docs/d6/PIN_TO_HOLE_WIRING.md). It retains these three sensors' GPIOs and rows 4-9, but Board A no longer carries the old LCD wires. The earlier working result does not prove the current N16R8 setup passes.
 
-For an additional spacious 65-row N16R8 Board A option, see the [new diagram and connection list](docs/d6/BOARD_A_SPACED_65_ROW_LAYOUT.md). This preserves JY's three-sensor rows 4-9 and places the added Sonar B and radar at rows 28-29 and 50-54. The historical tables below remain intact.
+For an additional spacious 65-row N16R8 Board A option, see the [new diagram and connection list](docs/d6/BOARD_A_SPACED_65_ROW_LAYOUT.md). This preserves Jun Yong's three-sensor rows 4-9 and places the added Sonar B and radar at rows 28-29 and 50-54. The historical tables below remain intact.
 
 The main project guide, with the D1 to D6 task checklists, setup and tests, is the [root README](README.md). This page covers the current breadboard and its Windows and VS Code workflow, written by Jun Yong when the sensors were integrated.
 

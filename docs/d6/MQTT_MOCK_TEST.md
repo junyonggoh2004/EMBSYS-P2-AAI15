@@ -9,13 +9,13 @@ its portrait v1 fixture and USB diagnosis are historical, not the current
 Board C status.
 
 Board C's native USB port enumerated, the `s3-003` firmware was flashed and
-verified, and the user saw the isolated `LCDTEST` RGB bands and `LCD READY`.
-The user also confirmed a full landscape pattern with
+verified, and the team saw the isolated `LCDTEST` RGB bands and `LCD READY`.
+The team also confirmed a full landscape pattern with
 `LCDTEST 284 76 18 82 60 0`. Board B's `D6MOCKPUB` now publishes a v2
 snapshot with distance 123.4 cm, temperature 27.5 C, humidity 65.2%, light
 420 lux, ML score 0.953, model `sine-float`, and `source:"mock"`. Board C
 accepted and drew it in the 284 x 76 landscape ROOM MONITOR dashboard.
-The user confirmed all fields visible, then confirmed the LCD changed from
+The team confirmed all fields visible, then confirmed the LCD changed from
 `OCC 2` to `OCC 3` on a second snapshot. The console reported
 `C snapshot seq=5 occupancy=2 display=0 active=1` and
 `C snapshot seq=6 occupancy=3 display=0 active=1`. The mock values are not
@@ -77,4 +77,4 @@ The fixture contract is exactly `d6/board-b/snapshot` with keys `v`, `seq`, `occ
 
 ## Retry on 19 November 2026
 
-With B unplugged, C again produced no Windows USB/COM device through the proven data cable on its COM socket. Windows also listed no newly failed USB device. Removing only the ESP32 3V3 feed from breadboard hole A4 while USB was unplugged, then reconnecting USB, did not restore enumeration. The user restored 3V3 to A4 and left C unplugged. No C firmware flash or B-to-C display claim was made. The next hardware isolation is a bare-ESP USB test or socket inspection; changing a Windows COM number cannot help until USB enumerates.
+With B unplugged, C again produced no Windows USB/COM device through the proven data cable on its COM socket. Windows also listed no newly failed USB device. Removing only the ESP32 3V3 feed from breadboard hole A4 while USB was unplugged, then reconnecting USB, did not restore enumeration. The team restored 3V3 to A4 and left C unplugged. No C firmware flash or B-to-C display claim was made. The next hardware isolation is a bare-ESP USB test or socket inspection; changing a Windows COM number cannot help until USB enumerates.

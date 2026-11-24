@@ -1,6 +1,6 @@
 # Board A Stage 1 bring-up: 18 November 2026
 
-The bare N16R8 Board A used the [JY V2-derived rows 4-9](PIN_TO_HOLE_WIRING.md#board-a-aht-light-two-sonars-and-radar): 3V3 A4, SDA GPIO1/A5, SCL GPIO2/A6, GND A7, Sonar A TRIG GPIO4/A8, ECHO GPIO5/A9. Sonar B and radar were disconnected. All tests used the native USB console at COM4, with volatile configurations and sampling stopped after each run.
+The bare N16R8 Board A used the [Jun Yong V2-derived rows 4-9](PIN_TO_HOLE_WIRING.md#board-a-aht-light-two-sonars-and-radar): 3V3 A4, SDA GPIO1/A5, SCL GPIO2/A6, GND A7, Sonar A TRIG GPIO4/A8, ECHO GPIO5/A9. Sonar B and radar were disconnected. All tests used the native USB console at COM4, with volatile configurations and sampling stopped after each run.
 
 | Check | Observation |
 |---|---|
@@ -24,7 +24,7 @@ Moving only the replacement sonar GND from the blue rail back to C7 (same row as
 
 These are later tests of the [spacious 65-row proposal](BOARD_A_SPACED_65_ROW_LAYOUT.md),
 with the AHT and light temporarily removed. They do not supersede the earlier
-JY V2 three-sensor record above. All console tests used COM4; each volatile
+Jun Yong V2 three-sensor record above. All console tests used COM4; each volatile
 profile was stopped and cleared afterward.
 
 | Test | Observed result |

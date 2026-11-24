@@ -398,11 +398,11 @@ LCDTEST 76 284 82 18 00 0
 Expect `[LCD] test complete result=0` and visibly red, green, blue and black
 bands with `LCD READY`. The screen is the decisive check because this LCD
 has no connected readback line. The 21 November test passed in both console
-output and the user's visual check. `LCDTEST` ends the D6 view mode, so send
+output and the team's visual check. `LCDTEST` ends the D6 view mode, so send
 `D6VIEW` again before every mock snapshot test that follows a pattern test.
 
 For a separate orientation check, `LCDTEST 284 76 18 82 60 0` shows the same
-pattern across the full screen when held horizontally. The user confirmed
+pattern across the full screen when held horizontally. The team confirmed
 this on 21 November. It does not replace the original portrait `LCDTEST`.
 
 ### Send a mock snapshot from B to C

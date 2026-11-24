@@ -98,23 +98,23 @@ passed. The full ESP-IDF / µT-Kernel build and its post-build audit passed
 after adding `LCDTEST`, using the locally installed, revision-pinned
 dependencies. The generated binary was flashed and
 `LCDTEST 76 284 82 18 00 1` completed with `result=0` on 7 November 2026.
-The user photo confirms a lit panel, four bands and readable text. With
+The team's photo confirms a lit panel, four bands and readable text. With
 inversion `1`, the expected red/green/blue/black bands appeared as
 cyan/magenta/yellow/white. A second `LCDTEST 76 284 82 18 00 0` run returned
-`result=0`, and the user photo shows the intended colours and readable white
+`result=0`, and the team's photo shows the intended colours and readable white
 text. That first run also reported `BenchmarkTask stack low:
 892 B free`. After moving the glyph buffer off the task stack, the revised
 firmware passed the host test and full build audit, was flashed, and a
 `TASKS` capture after another LCD test showed `BenchmarkTask stack_free=1740 B`.
 A further run on the revised firmware showed `[LCD] test queued`,
 `[LCD] starting test 76x284 offset=82,18 madctl=00 invert=0`, and
-`[LCD] test complete result=0`. The user also confirmed the screen still
+`[LCD] test complete result=0`. The team also confirmed the screen still
 showed the correct bands and `LCD READY`.
 
 ## Hardware and test images
 
 The [image index](images/README.md) identifies each source and what it proves.
-The empty breadboard photo shows the user's board; use the
+The empty breadboard photo shows the team's board; use the
 [breadboard schematic](LCD_BREADBOARD.svg) and the
 [LCD-only wiring table](../../WIRING.md#separate-lcd-only-breadboard-test-current-lcd_output-firmware)
 for the connections. The pinout image is a reference; check labels on the
@@ -143,7 +143,7 @@ The owner's photos identify the breakout as **DIYUSER
 `M35-2.25TFT-lanban`**, PCB marking `VER:tft 2.25 2.0`, driver
 **ST7789P3**, **76×284 pixels**. A
 [first-hand implementation for a 76×284 module](https://github.com/Bodmer/TFT_eSPI/pull/3769/files)
-uses X/Y offsets **82/18** in portrait orientation. The user's working test
+uses X/Y offsets **82/18** in portrait orientation. The team's working test
 used those offsets, `MADCTL=00` and inversion `0`. The image looks correctly
 oriented and the colours are right; full edge-pixel alignment, maximum SPI
 speed and power/gamma behaviour remain unverified.
@@ -196,7 +196,7 @@ alignment check and the application-result hook remain pending.
 ## How to run the physical LCD test
 
 See the [beginner breadboard diagram](LCD_BREADBOARD.svg) for the hole
-positions used in the table below. It is a schematic of the user's board;
+positions used in the table below. It is a schematic of the team's board;
 the printed row numbers on the physical breadboard are the final reference.
 
 1. With USB power disconnected, follow the

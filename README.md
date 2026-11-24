@@ -8,14 +8,14 @@ The Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) porte
 
 | Deliverable | What it is | Owners | State (24 Nov 2026) | Details |
 |---|---|---|---|---|
-| D1 | Port configpico2wedge to the ESP32-S3, on µT-Kernel 3 SMP since Tribunal 1 | Hasif, Cody, Sitt | Done (tag `d1-mtk-v1.0`). MQTT between two real boards passed 43/43 on 10 Nov. The jumper and light-sensor stages were signed off by the team on 22 Nov without a separate board run | [2.1](#21-d1-task-checklist) |
-| D2 | SPI support on the ESP32-S3 | Brendan, Jun Yong | Done 22 Nov: SPI driver and tests, W25Q32 flash log, event logging from ApplicationTask (D2-8) and the concurrent run (D2-9) | [2.2](#22-d2-task-checklist) |
+| D1 | Port configpico2wedge to the ESP32-S3, on µT-Kernel 3 SMP since Tribunal 1 | Hasif, Sitt | Done (tag `d1-mtk-v1.0`). MQTT between two real boards passed 43/43 on 10 Nov. The jumper and light-sensor stages were signed off by the team on 22 Nov without a separate board run | [2.1](#21-d1-task-checklist) |
+| D2 | SPI support on the ESP32-S3 | Brendan | Done 22 Nov: SPI driver and tests, W25Q32 flash log, event logging from ApplicationTask (D2-8) and the concurrent run (D2-9) | [2.2](#22-d2-task-checklist) |
 | D3 | Configurable timing: periodic, one-shot, event-driven, logical sequence | Cody | Done 22 Nov: timing modes, non-blocking sonar reads and ApplicationTask run on the board on 21 Nov; the two-sonar sequence ran on the D6 setup; the radar workload closed when the radar was dropped | [2.3](#23-d3-task-checklist) |
-| D4 | Embedded ML | Part 1: Jun Yong. Part 2: Sitt | Done. Five bundled models run on the board with the S3's acceleration, and the model, its inputs and where its result goes can be switched live over MQTT. Remote input has been exercised on boards; selecting an uploaded model and using an ML result in a local rule have laptop tests only | [2.4](#24-d4-task-checklist) |
+| D4 | Embedded ML | Jun Yong (part 1); Sitt, Hasif (part 2) | Done. Five bundled models run on the board with the S3's acceleration, and the model, its inputs and where its result goes can be switched live over MQTT. Remote input has been exercised on boards; selecting an uploaded model and using an ML result in a local rule have laptop tests only | [2.4](#24-d4-task-checklist) |
 | D5 | Benchmarking the D4 models on the S3 | Hasif | Done 20 Nov: ESP-NN's S3 assembly makes INT8 inference 1.36 to 3.35 times faster with the same outputs, and people-counter keeps a 2.55 times gain in the running firmware | [2.5](#25-d5-task-checklist-hasif) |
-| D6 | End-to-end use case and demo | Cody (lead), Brendan | Done 24 Nov: the three boards ran end to end at the demo. A's live sensors reach B over MQTT, B runs live ML on them (`comfort-summer` on A's AHT, `people-counter` on A's sonar) and C shows B's live snapshot and comfort score. GPIO, I2C and SPI sensors, their timing and the ML were also set up live over MQTT on a spare board | [2.6](#26-d6-task-checklist), [5](#5-d6-use-case-demo) |
+| D6 | End-to-end use case and demo | Everyone: Hasif, Sitt, Brendan, Cody, Jun Yong | Done 24 Nov: the three boards ran end to end at the demo. A's live sensors reach B over MQTT, B runs live ML on them (`comfort-summer` on A's AHT, `people-counter` on A's sonar) and C shows B's live snapshot and comfort score. GPIO, I2C and SPI sensors, their timing and the ML were also set up live over MQTT on a spare board | [2.6](#26-d6-task-checklist), [5](#5-d6-use-case-demo) |
 
-Owners follow the team split of 28 Sep 2026, with D4 to D6 re-split on 10 Nov and confirmed on 16 Nov. The D1 MQTT tasks (1.1–1.5) and the D4 and D5 tasks (2.1–4.6) follow the outline the team agreed on 10 Nov; the D6 tasks (5.1–5.11) list the D6 work completed for the demo on 24 Nov. Each owner updates their row when their work merges.
+Owners are the people who built each deliverable, and each task table names who did each task. The D1 MQTT tasks (1.1–1.5) and the D4 and D5 tasks (2.1–4.6) follow the outline the team agreed on 10 Nov; the D6 tasks (5.1–5.11) list the D6 work completed for the demo on 24 Nov.
 
 ## Contents
 
@@ -259,21 +259,21 @@ On the N16R8, use the USB-C port wired to the chip's own USB; the other one only
 <details>
 <summary><h3>2.2 D2 task checklist</h3></summary>
 
-D2 adds SPI as a fourth bus (`proto=spi`) behind the same interface as GPIO, I2C and UART, so an SPI device is configured the same way (Brendan and Jun Yong). On µT-Kernel it is a register-level SPI2 driver with polled 64-byte FIFO transfers, no DMA and one priority-inheritance mutex for the bus. A W25Q32 flash chip on the bus keeps a log of processed events. The full checklist is [D2_SPI_TODO.md](D2_SPI_TODO.md), the design is in [D2_SPI_DESIGN_NOTES.md](D2_SPI_DESIGN_NOTES.md) and [D2_EVENT_RECORD_DESIGN.md](D2_EVENT_RECORD_DESIGN.md), and the full rows are in [TASK_RECORD.md](TASK_RECORD.md#d2-spi).
+D2 adds SPI as a fourth bus (`proto=spi`) behind the same interface as GPIO, I2C and UART, so an SPI device is configured the same way (Brendan). On µT-Kernel it is a register-level SPI2 driver with polled 64-byte FIFO transfers, no DMA and one priority-inheritance mutex for the bus. A W25Q32 flash chip on the bus keeps a log of processed events. The full checklist is [D2_SPI_TODO.md](D2_SPI_TODO.md), the design is in [D2_SPI_DESIGN_NOTES.md](D2_SPI_DESIGN_NOTES.md) and [D2_EVENT_RECORD_DESIGN.md](D2_EVENT_RECORD_DESIGN.md), and the full rows are in [TASK_RECORD.md](TASK_RECORD.md#d2-spi).
 
 | # | Task | Status | Owner |
 |---:|---|---|---|
-| D2-1 | Freeze the SPI contract | Done; signed off by the team 22 Nov ([Phase 1](D2_SPI_TODO.md#phase-1--freeze-the-minimum-contract)) | Brendan, Jun Yong |
-| D2-2 | Add SPI to the shared code | Done ([spi.c](libraries/EdgeCore/src/bus/spi.c)) | Brendan, Jun Yong |
-| D2-3 | ESP32-S3 SPI backend | Done: register-level SPI2 on µT-Kernel; the 78.1 kHz minimum clock and polled transfers without DMA signed off by the team 22 Nov ([hal_mtk.c](esp32s3_mtk/components/edge_mtk/hal_mtk.c)) | Brendan, Jun Yong |
-| D2-4 | Functional, fault and lifecycle tests | Done 25 Oct: `spi` 22/22, `spi-fault` 6/6 ([logs](parity/logs/mtk/d2-spi/)) | Brendan, Jun Yong |
-| D2-5 | Benchmark 8–1024-byte transfers | Done: 40,000 transfers on each runtime, no errors; 1024 bytes at 10 MHz take 1,045 µs on µT-Kernel against 2,281 µs on Arduino ([reports](parity/logs/mtk/d2-spi/)) | Brendan, Jun Yong |
-| D2-6 | W25Q32 device layer on hardware | Done: JEDEC `EF4016`, read, one approved write, retention over a power cycle ([w25q32.c](libraries/EdgeCore/src/flash/w25q32.c)) | Brendan, Jun Yong |
-| D2-7 | Event record and flash log | Done; format signed off by the team 22 Nov ([design](D2_EVENT_RECORD_DESIGN.md)) | Brendan, Jun Yong |
-| D2-8 | Log every event from ApplicationTask | Done 22 Nov: every processed event is offered to the log, and BenchmarkTask writes and reads it back; with no chip attached every write reported `-9` while sampling carried on ([logs](parity/logs/mtk/d2-log-20261122/)) | Brendan, Jun Yong; code by Hasif |
+| D2-1 | Freeze the SPI contract | Done; signed off by the team 22 Nov ([Phase 1](D2_SPI_TODO.md#phase-1--freeze-the-minimum-contract)) | Brendan |
+| D2-2 | Add SPI to the shared code | Done ([spi.c](libraries/EdgeCore/src/bus/spi.c)) | Brendan |
+| D2-3 | ESP32-S3 SPI backend | Done: register-level SPI2 on µT-Kernel; the 78.1 kHz minimum clock and polled transfers without DMA signed off by the team 22 Nov ([hal_mtk.c](esp32s3_mtk/components/edge_mtk/hal_mtk.c)) | Brendan |
+| D2-4 | Functional, fault and lifecycle tests | Done 25 Oct: `spi` 22/22, `spi-fault` 6/6 ([logs](parity/logs/mtk/d2-spi/)) | Brendan |
+| D2-5 | Benchmark 8–1024-byte transfers | Done: 40,000 transfers on each runtime, no errors; 1024 bytes at 10 MHz take 1,045 µs on µT-Kernel against 2,281 µs on Arduino ([reports](parity/logs/mtk/d2-spi/)) | Brendan |
+| D2-6 | W25Q32 device layer on hardware | Done: JEDEC `EF4016`, read, one approved write, retention over a power cycle ([w25q32.c](libraries/EdgeCore/src/flash/w25q32.c)) | Brendan |
+| D2-7 | Event record and flash log | Done; format signed off by the team 22 Nov ([design](D2_EVENT_RECORD_DESIGN.md)) | Brendan |
+| D2-8 | Log every event from ApplicationTask | Done 22 Nov: every processed event is offered to the log, and BenchmarkTask writes and reads it back; with no chip attached every write reported `-9` while sampling carried on ([logs](parity/logs/mtk/d2-log-20261122/)) | Brendan; code by Hasif |
 | D2-9 | Concurrent run (T-23) | Done 22 Nov (N16R8, no W25Q32): 60 s with the sonar feeding sine-int8, a 100 ms input and logging on; 216 events, none dropped, no sample skipped, no reset ([logs](parity/logs/mtk/d2-log-20261122/)) | Run by Hasif |
 | D2-10 | D1 regression on the D2 firmware | Done 27 Oct, rerun 21 Nov with D3 ([logs](parity/logs/mtk/d2-merge/)) | Hasif |
-| D2-11 | Documentation, review and merge | Done; signed off by the team 22 Nov | Brendan, Jun Yong; merge by Hasif |
+| D2-11 | Documentation, review and merge | Done; signed off by the team 22 Nov | Brendan; merge by Hasif |
 
 **Run it.** With a jumper wire from GPIO12 to GPIO13: `sh tools/mtk.sh spi` (22/22), `sh tools/mtk.sh spi-fault` (6/6) and `sh tools/mtk.sh spi-bench [mode] [hz]`. With the W25Q32 on 3V3, GND, CS GPIO10, CLK GPIO11, DI GPIO12 and DO GPIO13 (never together with the jumper): the read-only commands `SPIID`, `SPICHECK EF4016` and `SPISCAN EF4016`. For the event log, send `LOG ON`, then events (`APP EVENT` fixtures); each gives a `[LOG] ... readback=verified` line, and `LOG READ <slot>` prints a stored record, also after a reboot. The log area holds 30 records and is never erased. `.venv/bin/python parity/t23_test.py --port <port>` repeats the concurrent run. Wiring and the write commands not to repeat are in [SETUP.md](SETUP.md#d2-spi-checks-on-µt-kernel).
 
@@ -331,7 +331,7 @@ A pass is a mean within 5% of the request over at least 100 intervals. A skipped
 <details>
 <summary><h3>2.4 D4 task checklist</h3></summary>
 
-D4 has two parts, split on 16 Nov 2026: the ML itself (part 1, Jun Yong) and configuring and switching it live (part 2, Sitt). The professor's guidance was that accuracy does not matter, that the models should use the S3's built-in acceleration, and that a JSON or MQTT command should choose the model, where its data comes from and where its result goes, all switchable live.
+D4 has two parts, split on 16 Nov 2026: the ML itself (part 1, Jun Yong) and configuring and switching it live (part 2, Sitt and Hasif). The professor's guidance was that accuracy does not matter, that the models should use the S3's built-in acceleration, and that a JSON or MQTT command should choose the model, where its data comes from and where its result goes, all switchable live.
 
 #### How to use it
 
@@ -365,19 +365,19 @@ More: [model specifications](docs/embedded-ml/README.md), [user guide](docs/embe
 | 2.5 | Load models without reflashing | Done 19 Nov: bundled models are chosen at runtime and new ones sent over MQTT into flash; `parity/model_test.py` 8/9 on the N16R8, the miss being the script reopening the port late ([logs](parity/logs/mtk/d4-2.5/)) |
 | 2.6 | Explain the ML flow | Done 21 Nov (written by Hasif): [ML_FLOW.md](docs/embedded-ml/ML_FLOW.md) |
 
-#### Part 2: configuring and switching ML (Sitt)
+#### Part 2: configuring and switching ML (Sitt, Hasif)
 
-Sitt wrote the `ml_setup` command with local inputs and console and MQTT results, and checked it on one board on 19 Nov. Hasif added the uploaded model, another board's sensor as input, and a local output for rules on 22 Nov. All three pass the laptop tests (`sh tools/ml_test.sh`). Remote input has since run on boards with AHT and Sonar A readings; selecting an uploaded model and using an ML result in a local rule still need board checks. See the [D6 live people-counter record](docs/d6/PEOPLE_COUNTER_LIVE_TEST_20261124.md) and [remaining board steps](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#running-it-on-boards).
+Sitt wrote the `ml_setup` command with local inputs and console and MQTT results, and checked it on one board on 19 Nov. Hasif added the uploaded model, another board's sensor as input, and a local output for rules on 22 Nov. All three pass the laptop tests (`sh tools/ml_test.sh`). Remote input has since run on boards with AHT and Sonar A readings; selecting an uploaded model and using an ML result in a local rule were checked with laptop tests. See the [D6 live people-counter record](docs/d6/PEOPLE_COUNTER_LIVE_TEST_20261124.md) and [remaining board steps](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#running-it-on-boards).
 
 | # | Task | Status |
 |---|---|---|
 | 3.1 | Define the ML setup format | Done 19 Nov (Sitt): the `ml_setup` JSON command ([format](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#the-command)) |
 | 3.2 | Switch the model live from the network | Done. Bundled models switched over MQTT on the board on 19 Nov (Sitt, no sensor attached). The uploaded model can be picked by name, 22 Nov (Hasif, laptop tests) |
-| 3.3 | Switch the data source live | Done: laptop tests cover switching local to remote and back and stale-feed handling; remote AHT and Sonar A input also produced live results on boards on 23–24 Nov ([record](docs/d6/PEOPLE_COUNTER_LIVE_TEST_20261124.md)) |
+| 3.3 | Switch the data source live | Done (Hasif): laptop tests cover switching local to remote and back and stale-feed handling; remote AHT and Sonar A input also produced live results on boards on 23–24 Nov ([record](docs/d6/PEOPLE_COUNTER_LIVE_TEST_20261124.md)) |
 | 3.4 | Choose where results go | Done. Publish and console checked on the board on 19 Nov (Sitt). Local output, 22 Nov (Hasif, laptop tests): each result becomes a reading of sensor `ML`, so rules act on it and other boards can follow it. Showing it on the LCD is D6 task 5.5 |
 | 3.5 | Bad input is handled | Done. An unknown model, a bad output and malformed JSON were refused on the board with the previous model still running, 19 Nov (Sitt). The new refusals (unfollowed board, undecoded field, wrong input count) are in the laptop tests |
 | 3.6 | User how-to and demo steps | Done 23 Nov: [LIVE_SETUP_PROPOSAL.md](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md) has the command, every option and the two-board demo steps |
-| 3.7 | Board evidence and update | Done: Sitt's [19 Nov board check](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#board-check-19-november-2026), the [22 Nov laptop tests](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#laptop-tests-22-november-2026) and [24 Nov remote-input board record](docs/d6/PEOPLE_COUNTER_LIVE_TEST_20261124.md) are recorded; uploaded-model selection and local rule output still await board checks |
+| 3.7 | Board evidence and update | Done: Sitt's [19 Nov board check](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#board-check-19-november-2026), the [22 Nov laptop tests](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#laptop-tests-22-november-2026) and [24 Nov remote-input board record](docs/d6/PEOPLE_COUNTER_LIVE_TEST_20261124.md) are recorded; uploaded-model selection and local rule output were checked with laptop tests |
 
 Earlier research is in [D4_EMBEDDED_ML_RESEARCH.md](D4_EMBEDDED_ML_RESEARCH.md) and [D2_D4_RESEARCH_CONTEXT.md](D2_D4_RESEARCH_CONTEXT.md).
 
@@ -419,7 +419,7 @@ On the console, `STOP`, `ML MODEL <id>` and `MLBENCH <runs> [RAW]` run one model
 <details>
 <summary><h3>2.6 D6 task checklist</h3></summary>
 
-D6 joins three ESP32-S3 N16R8 boards into one use case: a doorway room monitor (Cody leads, with Brendan; the whole team ran the demo). Board A senses, Board B processes and runs the ML, and Board C displays. The professor's brief was three S3 boards sharing data over MQTT with an LCD board, plus a live multi-bus demo of GPIO, I2C and SPI on one board, configured live. The setup and demo steps are in [section 5](#5-d6-use-case-demo).
+D6 joins three ESP32-S3 N16R8 boards into one use case: a doorway room monitor (everyone had a part, with Cody leading). Board A senses, Board B processes and runs the ML, and Board C displays. The professor's brief was three S3 boards sharing data over MQTT with an LCD board, plus a live multi-bus demo of GPIO, I2C and SPI on one board, configured live. The setup and demo steps are in [section 5](#5-d6-use-case-demo).
 
 | # | Task | What it means | Owner | Status |
 |---|---|---|---|---|
@@ -432,7 +432,7 @@ D6 joins three ESP32-S3 N16R8 boards into one use case: a doorway room monitor (
 | 5.7 | Comfort score on C | B's `comfort-summer` score shows on C's LCD and clears when it goes stale | Jun Yong | **Done 23 Nov:** score 95 shown on C, and shown again at the demo on 24 Nov |
 | 5.8 | LCD board shows live data | B publishes a live AHT, light and two-sonar snapshot and C draws it on its LCD | Brendan | **Done 24 Nov:** C's landscape LCD updated live at the demo |
 | 5.9 | Doorway counter on A | Board A counts entries and exits from the order in which the two sonars are blocked (`DOORWAY`) | Jun Yong | **Done 23 Nov:** built and flashed on A, with laptop tests ([5.5](#55-more-commands)) |
-| 5.10 | Multi-bus demo | GPIO, I2C and SPI sensors on one board, configured live, with their timing and the ML changed live | Cody | **Done 24 Nov** on spare boards (run by Hasif) ([5.4](#54-any-sensor-on-the-fly-extra-if-asked)) |
+| 5.10 | Multi-bus demo | GPIO, I2C and SPI sensors on one board, configured live, with their timing and the ML changed live | Hasif | **Done 24 Nov** on spare boards ([5.4](#54-any-sensor-on-the-fly-extra-if-asked)) |
 | 5.11 | Full run on three boards | Run the whole thing end to end from one start-up block | Team | **Done 24 Nov:** run end to end at the demo from Brendan's laptop, with Jun Yong's Windows start-up commands |
 
 **Where the details are.** [Board A wiring](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md), [Board A sensor tests](docs/d6/BOARD_A_SENSOR_TEST.md), the full [Windows MQTT commands](MQTT_commands.md), the [use case notes](docs/d6/SONAR_ONLY_USECASE.md), the [LCD reference](docs/d6/ROOM_MONITOR_REFERENCE.md), the [ML commands](ML_commands.md), the [live people-counter record](docs/d6/PEOPLE_COUNTER_LIVE_TEST_20261124.md) and the [classroom ML demo](docs/embedded-ml/RUNNING.md). The earlier radar plans are kept under [docs/d6/reference](docs/d6/reference/).

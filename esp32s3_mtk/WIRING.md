@@ -139,7 +139,7 @@ printed coordinates. If the rail is split, use one side of the split or bridge
 it with a jumper. On the terminal strip, A–E of the same numbered row are
 connected; different numbered rows are separate.
 The [LCD-only breadboard diagram](components/lcd_output/LCD_BREADBOARD.svg)
-shows these holes on a simplified version of the user's board.
+shows these holes on a simplified version of the team's board.
 
 | Device pin | Breadboard hole | Electrical connection |
 |---|---|---|
