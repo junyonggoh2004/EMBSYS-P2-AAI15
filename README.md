@@ -1201,7 +1201,7 @@ mosquitto_pub -h localhost -t pico/s3-005/cmd -m RUN
 pico/s3-005/sensor/ACC/line proto=i2c src=ACC len=6 ts=472422 : 40 23 80 36 00 00
 ```
 
-**How to read it:** three pairs, X, Y then Z, each low byte first. Divide by 16384 for g: X `40 23` = 0x2340 = 9024 = 0.55 g, Y `80 36` = 0x3680 = 13,952 = 0.85 g, Z `00 00` = 0 g. Together that is about 1 g, which is gravity, so the reading is right; the module was standing on its edge. Laid flat, Z is about 1 g (`00 40`). Tilt it and the numbers change. `i2c.pre` wakes the chip up before each read.
+**How to read it:** three pairs, X, Y then Z, each low byte first. Divide by 16384 for g: X `40 23` = 0x2340 = 9024 = 0.55 g, Y `80 36` = 0x3680 = 13,952 = 0.85 g, Z `00 00` = 0 g. Together that is about 1 g, which is gravity, so the reading is right; the module was standing on its edge. Laid flat, Z is about 1 g (`00 40`). Tilt it and the numbers change. `i2c.pre` (`0x20 0x57`) is written once, when the sensor is added, to turn the accelerometer on.
 
 **3. Sonar (GPIO, pulse)**
 
@@ -1356,6 +1356,58 @@ flowchart LR
 ```
 
 Inside the board, MQTTTask on core 0 owns the Wi-Fi and the broker connection. It copies each incoming message into a message buffer for SchedulerTask on core 1, which owns the sensors: it checks the config, sets the sensor up, reads it on its timing and hands each reading back to MQTTTask to publish. ML results come from InferenceTask the same way. Because each task owns its own data and messages are copied between them, a network delay never holds up a reading.
+
+**Who runs each bus.** SchedulerTask on core 1 runs every bus transaction; there is no separate task per bus. Each bus has its own driver in the shared library (`gpio.c`, `i2c.c`, `spi.c`, `uart.c`), all implementing the same interface (`bus_t`: `init_cfg`, `poll_once`, `cancel`). `proto=` in the config line picks the driver, and the other keys become its settings. When the sensor's timing is due, SchedulerTask calls that driver's `poll_once()`, which performs the bus's own transaction through the HAL (`hal_mtk.c`). The config gives the parameters; the behaviour is the driver's code.
+
+| Bus | What the driver does on each read | HAL calls |
+|---|---|---|
+| I2C (GY-511) | Once when added: writes `i2c.pre` (`0x20 0x57`, accelerometer on). Each read: writes register `0xA8`, repeated start, reads 6 bytes | `hal_i2c_write`, `hal_i2c_read` |
+| SPI (flash) | One full-duplex transfer with CS low: clocks out `spi.tx` (`0x9F`) and reads `spi.read_len` (4) bytes, under the SPI bus lock | `hal_spi_transfer` |
+| GPIO digital (MH) | Reads the pin level and how long it has held it | `hal_gpio_read` |
+| GPIO pulse (sonar) | Sends a 10 µs trigger and returns "pending"; an interrupt timestamps the echo and the scheduler collects the width about 1 ms later, so nothing waits | `hal_gpio_capture_start`, `hal_gpio_capture_poll` |
+| UART | Writes the setup bytes, then reads up to `uart.read_len` bytes with a timeout | `hal_uart_write`, `hal_uart_read_byte` |
+
+Sensors with several steps, such as the AHT (command, 80 ms wait, read), have a built-in profile: a small state machine that returns "pending" between steps instead of blocking.
+
+```mermaid
+flowchart TB
+    CFG["Config line over MQTT or USB<br/>proto=i2c, i2c.addr=0x19, i2c.reg=0xA8, i2c.read_len=6"]
+    TABLE["SchedulerTask, core 1<br/>driver chosen by proto=, settings from the other keys"]
+    DUE["The sensor's timing is due"]
+    POLL["driver.poll_once()"]
+    GPIO["gpio.c<br/>read pin, or trigger pulse plus echo interrupt"]
+    I2C["i2c.c<br/>write register, repeated start, read N bytes"]
+    SPI["spi.c<br/>CS low, send tx bytes, read N bytes"]
+    UART["uart.c<br/>write setup bytes, read with timeout"]
+    HAL["HAL, hal_mtk.c<br/>ESP32-S3 registers"]
+    HW["Sensor"]
+    OUT["Bytes to rules, ML and MQTTTask"]
+    CFG --> TABLE --> DUE --> POLL
+    POLL --> GPIO & I2C & SPI & UART
+    GPIO & I2C & SPI & UART --> HAL --> HW
+    HW --> HAL
+    POLL --> OUT
+```
+
+```mermaid
+sequenceDiagram
+    participant S as SchedulerTask (core 1)
+    participant D as I2C driver (i2c.c)
+    participant H as HAL (hal_mtk.c)
+    participant G as GY-511
+    Note over S,G: Once, when the sensor is added
+    S->>D: init_cfg(addr 0x19, pre 0x20 0x57, reg 0xA8, read 6)
+    D->>H: hal_i2c_write(0x19, 20 57)
+    H->>G: power on, 100 Hz, X Y Z enabled
+    Note over S,G: Every period (0.5 s)
+    S->>D: poll_once()
+    D->>H: hal_i2c_write(0x19, A8, repeated start)
+    H->>G: point at register 0xA8
+    D->>H: hal_i2c_read(0x19, 6 bytes)
+    G-->>H: X, Y, Z (6 bytes)
+    H-->>D: 6 bytes
+    D-->>S: 6 bytes to publish, rules and ML
+```
 
 **The topics.**
 
