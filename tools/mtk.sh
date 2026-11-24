@@ -175,7 +175,7 @@ case "$1" in
            sh tools/check_hal_boundary.sh >/dev/null 2>&1 || { echo "FAIL  shared code calls an SDK: run sh tools/check_hal_boundary.sh"; exit 1; }
            echo "ok    shared code: no SDK calls (check_hal_boundary.sh)"
            if [ -f $PROJ/build/$PROJ.elf ]; then idf_env; sh tools/check_mtk_image.sh; else echo "note  build first to check the firmware image too"; fi ;;
-  image)   idf_env; sh tools/check_mtk_image.sh ;;
+  image)   idf_env; sh tools/check_mtk_image.sh ${2:-} ;;
   app-test) need_port; $PY parity/application_test.py --port "$PORT" ;;
   window-report) need_port; shift; $PY parity/window_report.py --port "$PORT" "$@" ;;
   test)    need_port; mkdir -p parity/logs/mtk

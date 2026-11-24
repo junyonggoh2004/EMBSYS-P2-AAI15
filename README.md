@@ -51,7 +51,7 @@ Each numbered section below is collapsed. Click its title to open it.
 | &nbsp;&nbsp;[5.5 More commands](#55-more-commands) | Sonar pair, doorway count on A, and the mock and live snapshots on C |
 | [6. Arduino/FreeRTOS baseline](#6-arduinofreertos-baseline) | Where the baseline's setup guide is |
 
-Other documents: [TASK_RECORD.md](TASK_RECORD.md) (full D1 to D3 task tables), [MTK_REDESIGN.md](MTK_REDESIGN.md) (µT-Kernel design and compliance), [SETUP.md](SETUP.md) (board and environment details), [parity/PARITY.md](parity/PARITY.md) (requirements and evidence), [PORTABILITY.md](docs/design/PORTABILITY.md) (Pico to S3 changes and defects), [ARCHITECTURE.md](ARCHITECTURE.md) (task design), [SENSOR_BREADBOARD_README.md](docs/hardware/SENSOR_BREADBOARD_README.md) (three-sensor breadboard and Windows workflow), [project_v3/README.md](project_v3/README.md) (full config syntax).
+Other documents: [TESTING.md](TESTING.md) (every test case, what it proves and how to run it: `sh tools/run_all_tests.sh`), [TASK_RECORD.md](TASK_RECORD.md) (full D1 to D3 task tables), [MTK_REDESIGN.md](MTK_REDESIGN.md) (µT-Kernel design and compliance), [SETUP.md](SETUP.md) (board and environment details), [parity/PARITY.md](parity/PARITY.md) (requirements and evidence), [PORTABILITY.md](docs/design/PORTABILITY.md) (Pico to S3 changes and defects), [ARCHITECTURE.md](ARCHITECTURE.md) (task design), [SENSOR_BREADBOARD_README.md](docs/hardware/SENSOR_BREADBOARD_README.md) (three-sensor breadboard and Windows workflow), [project_v3/README.md](project_v3/README.md) (full config syntax).
 
 <a name="1-start-here"></a>
 <details>

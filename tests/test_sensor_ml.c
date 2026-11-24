@@ -257,6 +257,93 @@ static void test_direction_window(void)
 }
 #endif
 
+/* D6 tasks 5.5, 5.6 and 5.10: the ml_setup files the D6 run sends to Board B,
+ * and README 5.4's setup on a local sonar, are accepted by the same code the
+ * board runs, each as a new generation of the named model. A setup naming a
+ * sensor the board does not have is refused and the running model stays. */
+static const char *read_setup(const char *path)
+{
+    static char buf[2048];
+    FILE *f = fopen(path, "rb");
+    assert(f && "run from the repository root");
+    size_t n = fread(buf, 1, sizeof buf - 1, f);
+    fclose(f);
+    buf[n] = 0;
+    /* runtime_mtk.c trims a command payload the same way before ml_setup. */
+    char *p = buf;
+    while (*p == ' ' || *p == '\t' || *p == '\r' || *p == '\n') p++;
+    n = strlen(p);
+    while (n && (p[n - 1] == ' ' || p[n - 1] == '\t' || p[n - 1] == '\r' || p[n - 1] == '\n')) p[--n] = 0;
+    return p;
+}
+
+static void follow_board_a(void)
+{
+    static const struct { const char *name, *source; sensor_profile_t profile; } follow[] = {
+        {"A_AHT", "AHT", SENSOR_PROFILE_AHT}, {"A_LIGHT", "LIGHT", SENSOR_PROFILE_TSL2561},
+        {"A_SONAR_A", "SONAR_A", SENSOR_PROFILE_PULSE}, {"A_SONAR_B", "SONAR_B", SENSOR_PROFILE_PULSE},
+    };
+    for (int i = 0; i < 4; ++i) {
+        memset(&configs[i], 0, sizeof configs[i]);
+        strcpy(configs[i].name, follow[i].name);
+        strcpy(configs[i].remote_node, "s3-001");
+        strcpy(configs[i].remote_source, follow[i].source);
+        configs[i].proto = proto_mqtt;
+        configs[i].remote_profile = follow[i].profile;
+        configs[i].mode = sample_mode_poll;
+        configs[i].timing.mode = TIMING_MODE_PERIODIC;
+        configs[i].timing.enabled = true;
+        configs[i].timing.interval_ms = 500;
+    }
+}
+
+static void test_d6_setup_files(void)
+{
+    static const char *files[][2] = {
+        {"config/board_b_sine_float.json", "sine-float"},
+        {"config/board_b_sine_int8.json", "sine-int8"},
+        {"config/board_b_comfort_summer.json", "comfort-summer"},
+#ifdef HAVE_PEOPLE_COUNTER_MODEL
+        {"config/board_b_people_counter.json", "people-counter"},
+#endif
+    };
+    follow_board_a();
+    for (size_t i = 0; i < sizeof files / sizeof files[0]; ++i) {
+        uint32_t g = generation;
+        status_ok = false;
+        assert(sensor_ml_setup_json(read_setup(files[i][0]), true));
+        assert(status_ok && enabled && active >= 0 && !strcmp(models[active].id, files[i][1]) && generation == g + 1);
+        printf("%s: OK model=%s generation=%lu\n", files[i][0], files[i][1], (unsigned long)generation);
+    }
+
+    /* README 5.4.6: sine models on the multi-bus board's own sonar. */
+    memset(&configs[0], 0, sizeof configs[0]);
+    strcpy(configs[0].name, "SONAR");
+    configs[0].proto = proto_gpio;
+    configs[0].gpio_mode = "pulse";
+    configs[0].mode = sample_mode_poll;
+    configs[0].timing.mode = TIMING_MODE_PERIODIC;
+    configs[0].timing.enabled = true;
+    configs[0].timing.interval_ms = 500;
+    static const char *local[] = {
+        "{\"ml_setup\":{\"version\":1,\"model\":\"sine-int8\",\"inputs\":[{\"index\":0,\"source\":{\"kind\":\"local\",\"name\":\"SONAR\"},\"field\":\"distance_cm\",\"min\":2,\"max\":400}],\"output\":{\"kind\":\"publish\"}}}",
+        "{\"ml_setup\":{\"version\":1,\"model\":\"sine-float\",\"inputs\":[{\"index\":0,\"source\":{\"kind\":\"local\",\"name\":\"SONAR\"},\"field\":\"distance_cm\",\"min\":2,\"max\":400}],\"output\":{\"kind\":\"publish\"}}}",
+    };
+    for (size_t i = 0; i < 2; ++i) {
+        uint32_t g = generation;
+        status_ok = false;
+        assert(sensor_ml_setup_json(local[i], true) && status_ok && generation == g + 1);
+        assert(!strcmp(models[active].id, i ? "sine-float" : "sine-int8"));
+    }
+    /* Without a sensor named SONAR the setup is refused and sine-float keeps running. */
+    strcpy(configs[0].name, "NOT_SONAR");
+    uint32_t g = generation;
+    status_ok = true;
+    assert(sensor_ml_setup_json(local[0], true));
+    assert(!status_ok && generation == g && enabled && !strcmp(models[active].id, "sine-float"));
+    puts("README 5.4 local sonar setups: OK sine-int8, OK sine-float; refused without SONAR, previous model kept");
+}
+
 int main(void) {
     strcpy(configs[0].name,"AHT"); configs[0].proto=proto_i2c; configs[0].i2c_sensor=I2C_SENSOR_AHT;
     strcpy(configs[1].name,"LIGHT"); configs[1].proto=proto_i2c; configs[1].i2c_sensor=I2C_SENSOR_TSL2561;
@@ -459,5 +546,6 @@ int main(void) {
     assert(status_ok && active == uploaded && generation == g_up + 1);
     r_up = runs; samples(); tick();
     assert(runs == r_up + 1 && fabsf(seen[0] - 35.0f/60) < 0.0001f);      /* no sine scaling */
+    test_d6_setup_files();
     puts("sensor ML integration tests PASS (interpreter boundary simulated)");
 }
