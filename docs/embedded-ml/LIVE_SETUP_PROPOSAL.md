@@ -1,6 +1,6 @@
 # D4 part 2: live ML setup
 
-Sitt wrote the `ml_setup` command with local sensor inputs and console and MQTT results, and checked it on one board on 19 November 2026. Hasif added the uploaded model (task 3.2), another board's sensor as input (task 3.3) and a local output that feeds this board's rules (task 3.4) on 22 November 2026. Those three are covered by the laptop tests in `tests/test_sensor_ml.c` (`sh tools/ml_test.sh`) and have not been run on a board. The task list is in [README section 2.4](../../README.md#24-d4-task-checklist).
+Sitt wrote the `ml_setup` command with local sensor inputs and console and MQTT results, and checked it on one board on 19 November 2026. Hasif added the uploaded model (task 3.2), another board's sensor as input (task 3.3) and a local output that feeds this board's rules (task 3.4) on 22 November 2026. All three have laptop tests in `tests/test_sensor_ml.c` (`sh tools/ml_test.sh`). Remote input has since produced live results from another board's AHT and Sonar A readings; see the [24 November people-counter board record](../d6/PEOPLE_COUNTER_LIVE_TEST_20261124.md). Selecting an uploaded model through `ml_setup` and using an ML result in a local rule still need board checks. The task list is in [README section 2.4](../../README.md#24-d4-task-checklist).
 
 ## The command
 
