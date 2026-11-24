@@ -46,7 +46,9 @@ Each numbered section below is collapsed. Click its title to open it.
 | [5. D6 use case demo](#5-d6-use-case-demo) | The three-board room monitor |
 | &nbsp;&nbsp;[5.1 From D1 to D5 to the demo](#51-from-d1-to-d5-to-the-demo) | The use case and what each deliverable brings to it |
 | &nbsp;&nbsp;[5.2 Setup](#52-setup) | Each board's hardware, firmware and configuration |
-| &nbsp;&nbsp;[5.3 Demo](#53-demo) | Each demo step, what it shows and its status |
+| &nbsp;&nbsp;[5.3 Demo](#53-demo) | Run the demo, then what each of D1 to D4 explains, with the live model switch |
+| &nbsp;&nbsp;[5.4 Any sensor on the fly](#54-any-sensor-on-the-fly-extra-if-asked) | Extra, if asked: scenarios that add, change and refuse sensors live on a spare board |
+| &nbsp;&nbsp;[5.5 Other demo steps](#55-other-demo-steps-and-their-status) | Sonar pair, doorway count, event log, the C snapshots and fault handling, with their status |
 | [6. Completion rule](#6-completion-rule) | When a task counts as done |
 | [7. Arduino/FreeRTOS baseline](#7-arduinofreertos-baseline) | Where the baseline's setup guide is |
 
@@ -60,7 +62,7 @@ Other documents: [TASK_RECORD.md](TASK_RECORD.md) (full D1 to D3 task tables), [
 
 This is team AAI15's configurable edge platform for INF2004. One firmware turns an ESP32-S3 into a sensor node that is set up while it runs, never reprogrammed for a new job. You send it text lines or JSON, over the USB console or MQTT, and it:
 
-1. Reads any sensor on GPIO, I2C, UART or SPI, each at its own timing.
+1. Reads configured sensors supported by its GPIO, I2C, UART or SPI drivers, each at its own timing.
 2. Runs rules on the readings, which switch pins, send messages or reconfigure other boards.
 3. Runs small ML models on the readings, with the model, its inputs and its output chosen live.
 4. Sends everything over Wi-Fi and MQTT, so boards can use each other's sensors.
@@ -423,7 +425,7 @@ D6 joins three ESP32-S3 N16R8 boards into one use case: a doorway room monitor (
 |---|---|---|---|---|
 | 5.1 | Confirm the use case | Adopt the three-board setup and decide the doorway counter's role | Team | **Done 21 Nov:** a doorway room monitor with two sonars; the radar was dropped. Board A's doorway counter added 23 Nov (Jun Yong, laptop tests); its distance thresholds still need doorway trials |
 | 5.2 | Define each board | Its sensors, what it publishes, what it reacts to and what the LCD shows; parts and wiring | Cody | **Done:** roles, wiring and configs for every board ([5.2 Setup](#52-setup)) |
-| 5.3 | Multi-bus demo script | GPIO, I2C and SPI on one board, configured live, the whole setup at once and then piece by piece | Cody | **Pending** ([demo step 11](#53-demo)) |
+| 5.3 | Multi-bus demo script | GPIO, I2C and SPI on one board, configured live, the whole setup at once and then piece by piece | Cody | **Pending** ([5.4](#54-any-sensor-on-the-fly-extra-if-asked)) |
 | 5.4 | SPI write and read by config | Write one byte, read it back, swap the device and reconfigure | Brendan | **Pending:** a config cannot write over SPI yet. The D2 event log writes are separate |
 | 5.5 | LCD board shows live data | Board C displays what the other boards publish | Brendan | **In progress:** B and C were flashed on 24 Nov; C displayed B's live AHT/light/two-sonar snapshots beyond ten seconds. Physical stale clearing and cold-start recovery remain untested. Occupancy is not live |
 | 5.6 | ML inside the use case | One board runs a model on another board's data; the result shows on the LCD or is published | Cody, Brendan, with Sitt | **In progress:** real AHT→B `comfort-summer` inference→C score 95 was observed on the boards. Live people-counter windows are in code; the complete doorway/occupancy trial remains open |
@@ -696,16 +698,16 @@ Everything in this section runs on the current `main`. The board tests recorded 
 
 **Why three boards.** Each board does one job, the way separate devices do in a real building: one senses, one decides, one shows. They never talk to each other directly, only through a message hub on the laptop (the MQTT broker). So any board can be moved, restarted or swapped without rewiring the others.
 
-**What the demo proves.** All three boards run exactly the same firmware. Nothing in it says "door sensor" or "screen". Each board is told its job by settings sent to it while it runs. The demo shows this by setting the boards up live, switching what the ML model reads without reprogramming anything, and showing what the system does when a part stops working.
+**What the current run shows.** All three boards use the same application code, built with a different node ID for each. Sensor and ML settings give A and B their roles while they run. The current demo shows A's readings reaching B and a live comfort score reaching C; the optional laptop relay can also put A's environmental and sonar readings on C. The complete doorway-to-occupancy path is still being integrated.
 
 **What you see, in order.**
 
 1. The three boards come online, and the laptop shows their messages.
 2. Board A is told which sensors it has, and its readings start to appear.
 3. Board B starts using Board A's readings, with no wire between them.
-4. Board B runs the comfort model on Board A's temperature and humidity, and the score appears on Board C's screen.
-5. Someone walks through the door, and Board A counts the entry or exit (showing the count on the screen is still to be built).
-6. A sensor is unplugged, and the screen marks the comfort score as stale instead of showing an old number as if it were current.
+4. Board B switches models live, then runs the comfort model on Board A's temperature and humidity; the score appears on Board C's screen.
+5. Optionally stop A's feed: C marks the comfort score `STALE` when fresh results stop, then recovers when A runs again.
+6. The doorway count, B's flash log of those crossings and a native B-to-C occupancy snapshot are follow-up steps, with their current status in [section 5.5](#55-other-demo-steps-and-their-status).
 
 ```mermaid
 flowchart LR
@@ -738,53 +740,46 @@ flowchart LR
 
 | Deliverable | What it adds | Where it shows in the demo |
 |---|---|---|
-| D1 | One configurable firmware on µT-Kernel 3 SMP; configs, rules and commands over USB or MQTT; boards following each other's sensors | All three boards run the same image, and A and B are set up over MQTT |
-| D2 | SPI as a fourth bus and the W25Q32 event log | B's flash chip and C's LCD are both SPI devices; B logs each processed event and reads it back |
-| D3 | Timing per sensor, sonars read one after the other without blocking, ApplicationTask with duplicate rejection | A's two sonars; B's count |
+| D1 | One configurable application on µT-Kernel 3 SMP; configs, rules and commands over USB or MQTT; boards following each other's sensors | All three boards use the same code with different node IDs, and A and B are set up over MQTT |
+| D2 | SPI as a fourth bus and the W25Q32 event log | B's flash chip and C's LCD are SPI devices; logging A's doorway crossings on B still needs the A-to-B event path |
+| D3 | Timing per sensor, sonars read one after the other without blocking, ApplicationTask with duplicate rejection | A's two sonars; a full doorway-to-B count remains to be tested |
 | D4 | ML models chosen and rewired live, with another board's sensor as input | comfort-summer on B using A's AHT, shown on C |
-| D5 | Measured S3 acceleration: people-counter runs in about 2 ms | Shows ML fits on B alongside sensing and MQTT |
+| D5 | Measured S3 acceleration: people-counter runs in about 2 ms | Benchmark evidence that the model fits the S3; a live D6 doorway run remains separate |
 
 ### 5.2 Setup
 
-The hardware each board needs, the firmware on it, and the settings that give it its role. The table is the summary; each item's command follows below it.
+The hardware each board needs, the firmware on it, and the settings that give it its role. Each item has its own row, followed by the command to run and what it does. Every command is for Brendan's Windows laptop, run from his checkout of `main` at `C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23`. Full detail is in [usecase_commands.md](usecase_commands.md) and [ML_commands.md](ML_commands.md).
 
-| # | Item | Setting | Why | Status |
-|---|---|---|---|---|
-| 1 | Board A hardware (`s3-001`) | ESP32-S3 N16R8. AHT and TSL2561 share I2C: SDA GPIO1, SCL GPIO2. Sonar A: TRIG GPIO10, ECHO GPIO11. Sonar B: TRIG GPIO6, ECHO GPIO7, with direct power leads ([wiring](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md)) | All inputs on one board; two sensors share one bus; two sonars give the walking direction | **Wired**, each sensor checked 19–21 Nov |
-| 2 | Board B hardware (`s3-002`) | ESP32-S3 N16R8 with a W25Q32 flash on SPI: CS GPIO10, CLK GPIO11, DI GPIO12, DO GPIO13 | Event storage sits on the processing board | **Wired**, chip ID `EF4016` and read-only check passed 18 Nov |
-| 3 | Board C hardware (`s3-003`) | ESP32-S3 N16R8 with an ST7789 LCD on SPI: SCK GPIO12, MOSI GPIO11, CS GPIO10, DC GPIO9, RST GPIO8 | Display only, so output is separate from processing | **Wired**, landscape test pattern passed 21 Nov |
-| 4 | Laptop broker | Mosquitto listening on the laptop's Wi-Fi address with [`tools/mqtt-test.conf`](tools/mqtt-test.conf) | Every board-to-board message and command goes through one hub | **Tested** 18–21 Nov |
-| 5 | Build settings | `wifi_credentials.h`: Wi-Fi name, password and the laptop's IP as `MQTT_HOST` | The broker address is compiled into the firmware | **Needed before each build** |
-| 6 | Firmware | The same µT-Kernel image on all three boards, built for the N16R8, with node ID `s3-001`, `s3-002` or `s3-003` | FR1: one firmware for every role. Each board needs its own ID for its topics and event identity | **Rebuild from `main`** (last flashed from the D6 build) |
-| 7 | Board A sensors | [`config/board_a.cfg`](config/board_a.cfg): AHT and light every 2 s, both sonars every 0.5 s with a 20 ms echo timeout | Sensors are defined while running, with no reflash (FR1, FR2) | **Tested** 21 Nov |
-| 8 | Board B follows A | Four `proto=mqtt` configs, `A_AHT`, `A_LIGHT`, `A_SONAR_A` and `A_SONAR_B`, each with the `remote_profile` that decodes it | B receives A's data through the broker (FR3) | **Tested** 21 Nov without `remote_profile`; with it, not yet run |
-| 9 | Board B ML | One `ml_setup` message: comfort-summer on A's temperature and humidity, output published | Live ML on another board's data (FR5, FR6) | **Built** 23 Nov, laptop tests only |
-| 10 | Board C display | `D6VIEW`: draws B's snapshot (`d6/board-b/snapshot`) and live comfort score (`d6/board-b/comfort`) in landscape | Board C only displays (FR7) | Snapshot **tested** 21 Nov with mock values; live comfort **built**, laptop tests only |
+**Board consoles.** A few checks are typed on a board's own console. Open one PowerShell window per board:
 
-> **Board consoles** (used by items 1, 2, 3 and 10, and demo steps 4, 6 and 8)
->
 > ```powershell
 > $py = "$env:USERPROFILE\.espressif\python_env\idf6.1_py3.14_env\Scripts\python.exe"
 > & $py -m serial.tools.list_ports -v
 > & $py -m serial.tools.miniterm COMx 115200 --dtr 0 --rts 0 --eol CRLF
 > ```
 >
-> **What it does:** the second line lists the serial ports; the board's console is the one named **USB JTAG/serial debug unit** with VID `303A`, not the CH343 port. The third line opens that console; replace `COMx` with its port. Use one PowerShell window per board.
+> **What it does:** the second line lists the serial ports; the board's console is the one named **USB JTAG/serial debug unit** with VID `303A`, not the CH343 port. The third line opens it; replace `COMx` with its port.
 >
 > **You should see:** nothing at first, because typing is not echoed. Type `HELP` and press Enter; the board answers `Commands:`. `Ctrl+T` then `Ctrl+E` shows what you type, and `Ctrl+]` closes the console.
 
-> **1 · Board A hardware** (wired, checked 19–21 Nov)
->
+| # | Item | Setting | Why | Status |
+|---|---|---|---|---|
+| 1 | Board A hardware (`s3-001`) | ESP32-S3 N16R8. AHT and TSL2561 share I2C: SDA GPIO1, SCL GPIO2. Sonar A: TRIG GPIO10, ECHO GPIO11. Sonar B: TRIG GPIO6, ECHO GPIO7, with direct power leads ([wiring](docs/d6/BOARD_A_SONAR_ONLY_WIRING.md)) | All inputs on one board; two sensors share one bus; two sonars give the walking direction | **Wired**, each sensor checked 19–21 Nov |
+
 > ```text
 > HELP
 > ```
 >
 > **Where:** Board A's console.
 >
-> **What it does:** checks that Board A is running and answering. It should reply `Commands:`. To check each sensor on its own before the demo, follow the [Board A sensor test](docs/d6/BOARD_A_SENSOR_TEST.md#2-test-each-sensor-separately).
-
-> **2 · Board B hardware** (wired, passed 18 Nov)
+> **What it does:** checks that Board A is running and answering. To check each sensor on its own, use Brendan's `Send-BoardASensor` commands in [usecase_commands.md](usecase_commands.md#4-test-board-a-sensors-one-at-a-time--normal-powershell-window-3).
 >
+> **You should see:** `Commands:` followed by the command list.
+
+| # | Item | Setting | Why | Status |
+|---|---|---|---|---|
+| 2 | Board B hardware (`s3-002`) | ESP32-S3 N16R8 with a W25Q32 flash on SPI: CS GPIO10, CLK GPIO11, DI GPIO12, DO GPIO13 | Event storage sits on the processing board | **Wired**, chip ID `EF4016` and read-only check passed 18 Nov |
+
 > ```text
 > SPIID
 > SPICHECK EF4016
@@ -796,8 +791,10 @@ The hardware each board needs, the firmware on it, and the settings that give it
 >
 > **You should see:** `[SPIID] raw=EF4016`, then `[SPICHECK] PASS read-only`.
 
-> **3 · Board C hardware** (wired, passed 21 Nov)
->
+| # | Item | Setting | Why | Status |
+|---|---|---|---|---|
+| 3 | Board C hardware (`s3-003`) | ESP32-S3 N16R8 with an ST7789 LCD on SPI: SCK GPIO12, MOSI GPIO11, CS GPIO10, DC GPIO9, RST GPIO8 | Display only, so output is separate from processing | **Wired**, landscape test pattern passed 21 Nov |
+
 > ```text
 > LCDTEST 284 76 18 82 60 0
 > ```
@@ -806,67 +803,62 @@ The hardware each board needs, the firmware on it, and the settings that give it
 >
 > **What it does:** draws a colour test pattern over the whole screen in landscape, to check the LCD wiring and orientation.
 >
-> **You should see:** colour bands reaching every edge of the screen, and `LCD READY`. Type `D6VIEW` afterwards to return to the room monitor (item 10).
+> **You should see:** colour bands reaching every edge of the screen, and `LCD READY`. Send `D6VIEW` afterwards to return to the room monitor (item 10).
 
-> **4 · Laptop broker** (tested 18–21 Nov)
->
+| # | Item | Setting | Why | Status |
+|---|---|---|---|---|
+| 4 | Laptop broker | Mosquitto listening on the laptop's Wi-Fi with [`tools/mqtt-test.conf`](tools/mqtt-test.conf) | Every board-to-board message and command goes through one hub | **Tested** 18–23 Nov |
+
 > ```powershell
-> # Administrator PowerShell. Leave this window running.
-> cd 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
+> # Administrator PowerShell, window 1. Leave it running.
+> Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
 > Stop-Service -Name mosquitto -ErrorAction SilentlyContinue
-> & "$env:ProgramFiles\mosquitto\mosquitto.exe" -c '.\tools\mqtt-test.conf' -v
+> & "$env:ProgramFiles\mosquitto\mosquitto.exe" -c (Join-Path (Get-Location) 'tools\mqtt-test.conf') -v
 > ```
 >
 > **What it does:** stops the Windows Mosquitto service, which only listens to the laptop itself, and starts a broker the boards can reach over Wi-Fi. If Windows asks, allow port 1883 on private networks.
 >
 > **You should see:** `mosquitto version ... running`. Do not start a second copy if one is already running on port 1883.
 
-> **5 · Build settings** (needed before each build)
->
+| # | Item | Setting | Why | Status |
+|---|---|---|---|---|
+| 5 | Build settings | `wifi_credentials.h`: Wi-Fi name, password and the laptop's Wi-Fi IP as `MQTT_HOST` | The broker address is compiled into the firmware | **Needed before each build** |
+
 > ```powershell
-> cd 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
+> # Normal PowerShell
+> Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
 > (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
-> notepad .\esp32s3_mtk\main\wifi_credentials.h
+> if (-not (Test-Path '.\esp32s3_mtk\main\wifi_credentials.h')) {
+>     Copy-Item '.\esp32s3_mtk\main\wifi_credentials.h.example' '.\esp32s3_mtk\main\wifi_credentials.h'
+> }
+> notepad '.\esp32s3_mtk\main\wifi_credentials.h'
 > ```
 >
-> **What it does:** the first line prints the laptop's Wi-Fi address; the second opens the private settings file, which is never committed. Set `WIFI_SSID` and `WIFI_PASS` to a 2.4 GHz network, and `MQTT_HOST` to that address. Leave `NODE_ID` as `s3-001`; B and C get their IDs from their build directories (item 6). The address was `192.168.1.126` on 21 Nov; if it changes, edit the file and flash all three boards again.
-
-> **6 · Firmware** (rebuild from `main`)
+> **What it does:** prints the laptop's Wi-Fi address and opens the private settings file, which is never committed. Set `WIFI_SSID` and `WIFI_PASS` to a 2.4 GHz network, and `MQTT_HOST` to that address.
 >
-> ```powershell
-> # Normal PowerShell. One board on USB at a time, on its native USB port.
-> $repo = 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
-> cd $repo
-> git branch --show-current     # must print main
+> **You should see:** the address printed (`192.168.1.126` on 21 Nov). If it changes later, edit the file and flash all three boards again.
+
+| # | Item | Setting | Why | Status |
+|---|---|---|---|---|
+| 6 | Firmware | The same µT-Kernel image on all three boards, built for the N16R8, with node ID `s3-001`, `s3-002` or `s3-003` | FR1: one firmware for every role. Each board needs its own ID for its topics and event identity | **Flashed** 23 Nov for the comfort and LCD runs; reflash after pulling a newer `main` |
+
+> ```bash
+> # Git Bash, one board on USB at a time, on its native USB port
+> cd /c/Users/brend/EMBSYS-P2-AAI15-merge-work-2026-11-23
 > git pull
-> $env:MTKERNEL_PATH = "$repo\esp32s3_mtk\third_party\mtk3smp-esp32s3"
-> $env:IDF_PATH = "$env:USERPROFILE\esp\esp-idf-v6.1"
-> $env:IDF_TOOLS_PATH = "$env:USERPROFILE\.espressif"
-> $env:IDF_PYTHON_ENV_PATH = "$env:USERPROFILE\.espressif\python_env\idf6.1_py3.14_env"
-> $MtkCmakeBin = "$env:USERPROFILE\.espressif\tools\cmake\4.0.3\bin"
-> $MtkNinjaBin = "$env:USERPROFILE\.espressif\tools\ninja\1.12.1"
->
-> # Board A (s3-001): replace COMx with its port
-> & .\esp32s3_mtk\tools\build.ps1 -Action build -BuildDirectory "$repo\esp32s3_mtk\build-n16r8"
-> & .\esp32s3_mtk\tools\build.ps1 -Action flash -Port COMx -BuildDirectory "$repo\esp32s3_mtk\build-n16r8"
->
-> # Board B (s3-002)
-> & .\esp32s3_mtk\tools\build.ps1 -Action build -BuildDirectory "$repo\esp32s3_mtk\build-s3-002-n16r8"
-> & .\esp32s3_mtk\tools\build.ps1 -Action flash -Port COMx -BuildDirectory "$repo\esp32s3_mtk\build-s3-002-n16r8"
->
-> # Board C (s3-003)
-> & .\esp32s3_mtk\tools\build.ps1 -Action build -BuildDirectory "$repo\esp32s3_mtk\build-s3-003-n16r8"
-> & .\esp32s3_mtk\tools\build.ps1 -Action flash -Port COMx -BuildDirectory "$repo\esp32s3_mtk\build-s3-003-n16r8"
+> BOARD=n16r8 NODE=s3-001 PORT=COMx sh tools/mtk.sh flash
+> BOARD=n16r8 NODE=s3-002 PORT=COMy sh tools/mtk.sh flash
+> BOARD=n16r8 NODE=s3-003 PORT=COMz sh tools/mtk.sh flash
 > ```
 >
-> **What it does:** updates the folder to the latest `main`, loads ESP-IDF and the course port for this PowerShell window, then builds and flashes each board. Each board has its own build directory, which keeps the node ID and the N16R8 settings it was first set up with, so the three images differ only in their node ID. This is the route Brendan used on 21 Nov, after the Git Bash `mtk.sh` helper failed on this laptop.
+> **What it does:** pulls the latest `main`, then builds the firmware for the N16R8 and flashes it, giving each board its own node ID. Replace `COMx`, `COMy` and `COMz` with each board's port. Skip this if all three already run the current firmware.
 >
-> **You should see:** a successful build and audit, then verified flash hashes. After a reset, the board's console prints `[BOOT] esp32s3_mtk node s3-001` (or `s3-002`, `s3-003`).
->
-> **Placeholder:** if `build-s3-002-n16r8` or `build-s3-003-n16r8` is missing from this folder (Board C was first built in the `lcd-output` worktree), it has to be set up once with its node ID and the N16R8 settings. That one-time command is still to be added.
+> **You should see:** `Hash of data verified` for each board. After a reset, its console prints `[BOOT] esp32s3_mtk node s3-001` (or `s3-002`, `s3-003`).
 
-> **7 · Board A sensors** (tested 21 Nov)
->
+| # | Item | Setting | Why | Status |
+|---|---|---|---|---|
+| 7 | Board A sensors | [`config/board_a.cfg`](config/board_a.cfg): AHT and light every 2 s, both sonars every 0.5 s with a 20 ms echo timeout | Sensors are defined while running, with no reflash (FR1, FR2) | **Tested** 21–23 Nov |
+
 > ```text
 > BEGINCFG|name=AHT|proto=i2c|i2c.sensor=aht|mode=poll|freq_hz=0.5|timing.timeout_ms=600|i2c.sda=1|i2c.scl=2|i2c.addr=0x38|i2c.baud=100000|ENDCFG
 > BEGINCFG|name=LIGHT|proto=i2c|i2c.sensor=tsl2561|mode=poll|freq_hz=0.5|timing.timeout_ms=600|i2c.sda=1|i2c.scl=2|i2c.addr=0x29|i2c.baud=100000|ENDCFG
@@ -874,12 +866,14 @@ The hardware each board needs, the firmware on it, and the settings that give it
 > BEGINCFG|name=SONAR_B|proto=gpio|gpio.mode=pulse|gpio.trig=6|gpio.echo=7|gpio.pull=down|gpio.trig_us=10|gpio.pulse_timeout_us=20000|mode=poll|freq_hz=2|timing.timeout_ms=100|ENDCFG
 > ```
 >
-> **Where:** the file [`config/board_a.cfg`](config/board_a.cfg). Nothing to type now: demo step 2 sends it.
+> **Where:** the file `config/board_a.cfg`. Nothing to type now: the start block in [5.3](#53-demo) sends it.
 >
 > **What it does:** tells Board A it has four sensors. The AHT and the light sensor are read over I2C every 2 s; each sonar is triggered over GPIO every 0.5 s and gives up on an echo after 20 ms, so a missing echo is reported as an error, never as a distance.
 
-> **8 · Board B follows A** (tested 21 Nov without `remote_profile`)
->
+| # | Item | Setting | Why | Status |
+|---|---|---|---|---|
+| 8 | Board B follows A | [`config/board_b_ml.cfg`](config/board_b_ml.cfg): four `proto=mqtt` configs, `A_AHT`, `A_LIGHT`, `A_SONAR_A` and `A_SONAR_B`, each with the `remote_profile` that decodes it | B receives A's data through the broker and can feed it to ML (FR3) | **Tested** 23 Nov |
+
 > ```text
 > BEGINCFG|name=A_AHT|proto=mqtt|mode=poll|freq_hz=0.5|remote_node=s3-001|remote_source=AHT|remote_profile=aht|ENDCFG
 > BEGINCFG|name=A_LIGHT|proto=mqtt|mode=poll|freq_hz=0.5|remote_node=s3-001|remote_source=LIGHT|remote_profile=tsl2561|ENDCFG
@@ -887,12 +881,14 @@ The hardware each board needs, the firmware on it, and the settings that give it
 > BEGINCFG|name=A_SONAR_B|proto=mqtt|mode=poll|freq_hz=2|remote_node=s3-001|remote_source=SONAR_B|remote_profile=pulse|ENDCFG
 > ```
 >
-> **Where:** sent to Board B in demo step 3.
+> **Where:** the file `config/board_b_ml.cfg`. The start block in [5.3](#53-demo) sends it.
 >
 > **What it does:** each line makes Board B subscribe to one of Board A's sensors and treat every reading as one of its own. `remote_profile` tells B how to decode it into temperature, humidity, lux or distance, which the ML in item 9 needs.
 
-> **9 · Board B ML** (built 23 Nov, laptop tests only)
->
+| # | Item | Setting | Why | Status |
+|---|---|---|---|---|
+| 9 | Board B ML | [`config/board_b_comfort_summer.json`](config/board_b_comfort_summer.json): one `ml_setup` message, comfort-summer on A's temperature and humidity, output published | Live ML on another board's data (FR5, FR6) | **Tested** 23 Nov on the boards |
+
 > ```json
 > {"ml_setup": {
 >   "version": 1,
@@ -905,92 +901,297 @@ The hardware each board needs, the firmware on it, and the settings that give it
 > }}
 > ```
 >
-> **Where:** sent to Board B in demo step 5.
+> **Where:** the file `config/board_b_comfort_summer.json`. Jun Yong's second switch in [5.3](#53-demo) sends it. `board_b_sine_float.json` and `board_b_sine_int8.json` switch to the sine models the same way.
 >
-> **What it does:** chooses the comfort-summer model and feeds it Board A's temperature (0 to 60 °C) and humidity (0 to 100%), then publishes each result. The model switches live, without stopping the sensors. B answers `{"ok":true,"reason":"applied",...}` on `pico/s3-002/ml/status`.
+> **What it does:** chooses the comfort-summer model and feeds it Board A's temperature (0 to 60 °C) and humidity (0 to 100%), then publishes each result. The model switches live, without stopping the sensors.
 
-> **10 · Board C display** (snapshot tested 21 Nov with mock values)
->
-> ```text
-> D6VIEW
+| # | Item | Setting | Why | Status |
+|---|---|---|---|---|
+| 10 | Board C display | `D6VIEW`: draws B's snapshot (`d6/board-b/snapshot`) and the live comfort score (`d6/board-b/comfort`) in landscape | Board C only displays (FR7) | Mock snapshot **tested** 21 Nov; live comfort score **tested** 23 Nov; separate A and B distance lines **built**, awaiting a visual check |
+
+> ```powershell
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-003/cmd' -m 'D6VIEW'
 > ```
 >
-> **Where:** Board C's console.
+> **Where:** window 4 of the demo ([5.3](#53-demo) sets up `$pub`); the start block sends it.
 >
-> **What it does:** switches the screen to the room monitor. It draws Board B's snapshot and the live comfort score, and shows `WAIT B MQTT` until B sends something. Used in demo steps 5 and 8.
+> **What it does:** switches Board C's screen to the room monitor. Send it again after resetting C or running `LCDTEST`.
+>
+> **You should see:** `WAIT B MQTT` on the screen until Board B sends something.
 
 ### 5.3 Demo
 
-What the demo runs, what each step shows, and how far each step is on `main`. The table is the summary; each step's commands follow below it.
+The demo starts with one command block. After that the boards keep running by themselves while each person explains their deliverable in order, D1 to D4. At D4, Jun Yong switches the ML model live and explains the ML. Everything is sent from Brendan's laptop, from his checkout of `main` at `C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23`.
 
-| # | Step | What you do | What it shows | Requirement | Status |
-|---|---|---|---|---|---|
-| 1 | Start the hub | Start the broker and a watch window | All board traffic goes through the laptop | — | **Tested** 21 Nov, re-run on `main` |
-| 2 | Configure A live | Send `board_a.cfg` over MQTT, then `RUN` | Sensors set up without reflashing; I2C and GPIO on one board; the sonars read one after the other | FR1, FR2, FR3 | **Tested** 21 Nov, re-run on `main`. The sonars still time out at times |
-| 3 | B follows A | Send B's four follow configs, then `RUN` | Data passing between boards, within the follow limit | FR3, FR11 | **Tested** 21 Nov (6, 6, 24 and 24 frames in 12 s), re-run on `main` |
-| 4 | Sonar pair | `PAIR` in both orders on A's console | Both sonars read in a fixed order within 50 ms | NFR2 | **Not passed:** needs valid readings from both sonars in both orders |
-| 5 | Comfort on C | Send the `ml_setup`, watch C, then stop A | ML on B from A's sensor, shown live on C; `STALE` 6 s after the updates stop | FR5, FR6, FR7 | **Built** 23 Nov, laptop tests only |
-| 6 | Doorway count | Start `DOORWAY` on A, then walk in and out | A counts each entry and exit once; standing still, turning back or a missed echo count nothing | FR4 | **Built on A** 23 Nov (Jun Yong), laptop tests only. Sending each crossing to B's count is not built |
-| 7 | Event log | Count a crossing | B writes each event to the W25Q32 and reads it back | FR8 | **Not built** (waits for crossings to reach B) |
-| 8 | Snapshot on C | `D6MOCKPUB 2`, then `D6MOCKPUB 3` on B's console | B to C over MQTT; C redraws the count from 2 to 3 | FR7 | **Tested** 21 Nov, with mock values only |
-| 9 | Live snapshot | B sends its real AHT, light and two-sonar readings; count is still a placeholder | C shows live data, marks it stale, and accepts B after a reboot | FR7, FR12 | **Partially tested** 24 Nov: B and C flashed; C displayed continuing live snapshots beyond ten seconds. Physical stale and reboot recovery, and B-owned count, remain open |
-| 10 | Fault handling | Unplug the AHT, drop the Wi-Fi, send a broken config | A safe, predictable response to each failure | NFR2, NFR4 | **Not tested.** The responses are proposals only |
-| 11 | Any sensor on the fly | Add, change and refuse sensors and rules live on one board | That the platform takes any supported sensor without reflashing (task 5.3) | FR1, FR2 | **Not set up** |
+#### Run the demo
 
-Before step 1, the broker from setup item 4 must be running, and all three boards flashed and on USB power. Full Windows instructions with troubleshooting are in [MQTT_commands.md](MQTT_commands.md).
+| # | Step | What you do | What it shows | Status |
+|---|---|---|---|---|
+| 1 | Open the windows | Start the broker, a watch window, a live-values window and a command window | Everything the boards send, live | **Tested** 21–23 Nov |
 
-> **Step 1 · Start the hub** (tested 21 Nov, re-run on `main`)
+> ```powershell
+> # Window 1, Administrator PowerShell: the broker. Leave it running.
+> Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
+> Stop-Service -Name mosquitto -ErrorAction SilentlyContinue
+> & "$env:ProgramFiles\mosquitto\mosquitto.exe" -c (Join-Path (Get-Location) 'tools\mqtt-test.conf') -v
+> ```
 >
 > ```powershell
 > # Window 2: watch every board. Leave it running.
-> $brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
-> & "$env:ProgramFiles\mosquitto\mosquitto_sub.exe" -h $brokerIp -t 'pico/#' -t 'd6/#' -v
+> $sub = "$env:ProgramFiles\mosquitto\mosquitto_sub.exe"
+> & $sub -h 127.0.0.1 -t 'pico/+/heartbeat' -t 'pico/+/sensor/+/line' -t 'pico/s3-002/ml/status' -t 'pico/s3-002/ml/result' -t 'd6/#' -v
 > ```
 >
 > ```powershell
-> # Window 3: the command window for every step below
-> cd 'C:\Users\brend\EMBSYS-P2-AAI15-D6-Integration'
-> $brokerIp = (Get-NetIPConfiguration -InterfaceAlias 'Wi-Fi').IPv4Address.IPAddress
+> # Window 3: readings in units. Leave it running.
+> Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
+> $py = "$env:USERPROFILE\.espressif\python_env\idf6.1_py3.14_env\Scripts\python.exe"
+> & $py .\tools\show_live_values.py --board A
+> ```
+>
+> ```powershell
+> # Window 4: every command below is sent from here
+> Set-Location 'C:\Users\brend\EMBSYS-P2-AAI15-merge-work-2026-11-23'
 > $pub = "$env:ProgramFiles\mosquitto\mosquitto_pub.exe"
 > ```
 >
-> **What it does:** window 2 prints every message any board sends or receives, which is what the audience watches. Window 3 holds the broker address and the publish tool for the next steps.
+> **What it does:** window 1 is the message hub. Window 2 shows the raw messages between the boards, window 3 shows Board A's readings in °C, %RH, lux and cm, and window 4 sends the commands.
 >
-> **You should see:** in window 2, `pico/s3-001/presence`, `pico/s3-002/presence` and `pico/s3-003/presence`, then a `heartbeat` from each board every 10 s.
+> **You should see:** `mosquitto version ... running` in window 1, then a `heartbeat` from `s3-001`, `s3-002` and `s3-003` in window 2 every 10 s.
 
-> **Step 2 · Configure Board A live** (tested 21 Nov, re-run on `main`)
+| # | Step | What you do | What it shows | Status |
+|---|---|---|---|---|
+| 2 | Start the demo | Paste one block into window 4 | A sampling its four sensors, B following A and running a model, C on the room monitor | **Tested** 24 Nov with live A readings, B `sine-float`, and C's persistent display; Sonar A timeouts remain |
+
+> This block sets up A and B, starts the live `sine-float` model on B and puts C on the room monitor:
 >
 > ```powershell
-> & $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'STOP'
-> & $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'CLEAR'
-> & $pub -h $brokerIp -q 1 -t 'pico/s3-001/config' -f '.\config\board_a.cfg'
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/cmd' -m 'STOP'
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/cmd' -m 'CLEAR'
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/config' -f '.\config\board_a.cfg'
 > Start-Sleep -Seconds 2
-> & $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'RUN'
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/cmd' -m 'RUN'
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'STOP'
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'CLEAR'
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/config' -f '.\config\board_b_ml.cfg'
+> Start-Sleep -Seconds 2
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'RUN'
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_sine_float.json'
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-003/cmd' -m 'D6VIEW'
 > ```
 >
-> **What it does:** stops Board A, clears any old setup, sends the four sensor settings from setup item 7 and starts sampling. Nothing is reflashed.
+> **What it does:** gives each board its job without reflashing. A gets its four sensors (setup item 7), B follows A's sensors (item 8) and starts the model, and C switches to the room monitor (item 10).
 >
-> **You should see:** in window 2, `pico/s3-001/sensor/AHT/line`, `LIGHT/line`, `SONAR_A/line` and `SONAR_B/line`. The lines are raw bytes; A's console shows the same readings in units.
+> **You should see:** A's `AHT`, `LIGHT`, `SONAR_A` and `SONAR_B` topics and B's `A_` copies in window 2; `"ok":true` on `pico/s3-002/ml/status`, then results on `pico/s3-002/ml/result`; readings in window 3; the room monitor on C.
 
-> **Step 3 · Board B follows Board A** (tested 21 Nov, re-run on `main`)
+#### D1 · Sitt: one configurable firmware
+
+| Point to | What to say |
+|---|---|
+| The three boards | They use the same application code with different node IDs. Their sensor and ML settings were changed at runtime, without reflashing |
+| Window 2, A's sensor topics | Board A was told its four sensors a moment ago by one config file sent over MQTT. The same lines work over USB |
+| Window 2, B's `A_` topics | Board B uses Board A's sensors through the broker, with no wire between them (`proto=mqtt`, D1 tasks 1.1–1.4) |
+| `TASKS` on any board's console (optional) | The firmware runs on µT-Kernel 3 SMP: seven tasks, the network on core 0, sensing on core 1, and a hardware watchdog |
+
+#### D2 · Brendan: SPI and the flash log
+
+| Point to | What to say |
+|---|---|
+| Board B's flash chip | SPI is the fourth bus, configured the same way as GPIO, I2C and UART. Board B's W25Q32 sits on it |
+| `SPIID` on B's console (optional) | Reads the chip's ID, `EF4016`, without writing to it |
+| Board C's screen | The LCD is an SPI device too, drawn through the same bus code |
+| `LOG STATUS` on B's console (optional) | Every event Board B processes is offered to the flash log and read back to check it (D2-8). In this demo it fills once doorway crossings reach B ([5.5](#55-other-demo-steps-and-their-status)) |
+
+#### D3 · Cody: timing per sensor
+
+| Point to | What to say |
+|---|---|
+| Window 3 | Each sensor keeps its own timing: the AHT and light every 2 s, each sonar every 0.5 s |
+| The two sonar distances | The sonars are read one after the other so one never hears the other's echo. The echo is timed by an interrupt, so the board never waits on it |
+| A sonar showing `--` or an error | A missing echo is reported as an error, never as a made-up distance |
+| The doorway counter (mention only) | Board A has the `DOORWAY` logic flashed and sampling on the desk; real entry and exit at a doorway remain unvalidated because of intermittent sonar timeouts ([5.5](#55-other-demo-steps-and-their-status)) |
+
+#### D4 · Jun Yong: change the model, then explain
+
+| # | Step | What you do | What it shows | Status |
+|---|---|---|---|---|
+| D4-1 | Switch to `sine-int8` | Send one command | The model changes live, with sampling still running | **Tested** 24 Nov with Board A's live readings and `status:OK` |
+
+> ```powershell
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_sine_int8.json'
+> ```
+>
+> **What it does:** replaces `sine-float` with its INT8 version on Board B, using the same inputs. No `STOP`, no reflash.
+>
+> **You should see:** `"ok":true` with a higher `generation` on `pico/s3-002/ml/status`, then results with `"model":"sine-int8"` on `pico/s3-002/ml/result`. These results show on B's topic, not on C's screen.
+
+| # | Step | What you do | What it shows | Status |
+|---|---|---|---|---|
+| D4-2 | Switch to `comfort-summer` | Send one command, watch C | A different model with different inputs, and its result on another board's screen | **Tested** 23 Nov (score 95 shown on C) |
+
+> ```powershell
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -f '.\config\board_b_comfort_summer.json'
+>
+> # Optional: show the stale label, then the recovery
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/cmd' -m 'STOP'
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-001/cmd' -m 'RUN'
+> ```
+>
+> **What it does:** switches Board B to the comfort model on Board A's temperature and humidity (setup item 9). Each score is sent to Board C. Stopping A starves the model of fresh readings; running it again brings them back.
+>
+> **You should see:** results with `"model":"comfort-summer"`, `"input_source":"remote:s3-001"` and a `comfort_score`, and the same score under **LIVE COMFORT** on C. About 6 s after `STOP`, C shows `STALE`; after `RUN`, a fresh score returns.
+
+| Point to | What to say |
+|---|---|
+| The two switches | One JSON message (`ml_setup`) picks the model, its inputs and where the result goes. It applies live, and each change gets a new generation number |
+| `"input_source":"remote:s3-001"` | The model on Board B reads Board A's sensors over MQTT |
+| `sine-int8` against `sine-float` | Five models are bundled. The INT8 ones run on the S3's vector instructions through ESP-NN, which D5 measured |
+| **LIVE COMFORT** on C | comfort-summer turns temperature and humidity into a comfort score from 0 to 99. C marks it `STALE` if updates stop, rather than showing an old score as current |
+| people-counter (mention only) | It classifies a doorway window as in, out or none. It runs from recorded data, or live on one sonar from Board A's console, not as a switch on Board B |
+
+### 5.4 Any sensor on the fly (extra, if asked)
+
+A separate ESP32-S3, shown only if asked: any supported sensor added, changed or refused while the board runs, with no reflash. It shows the platform itself rather than the room monitor. Each scenario is one row followed by its commands. All of them are **drafts, not yet run**; run them once before the demo.
+
+**Wiring on the spare board.** Unplug USB before changing wires; everything runs at 3.3 V.
+
+| Part | Pins |
+|---|---|
+| AHT temperature and humidity (I2C) | SDA GPIO1, SCL GPIO2, VCC 3V3, GND |
+| Push button | GPIO4 to GND (the board's internal pull-up holds it high) |
+| LED module with its own resistor | GPIO5, GND |
+| W25Q32 flash (SPI) | CS GPIO10, CLK GPIO11, DI GPIO12, DO GPIO13, VCC 3V3, GND |
+
+| # | Scenario | What you do | What it shows | Requirement | Status |
+|---|---|---|---|---|---|
+| 0 | Prepare the spare board | Flash it as `s3-004` and watch its topics | A fourth node on the same broker | FR1 | **Draft** |
+
+> ```bash
+> # Git Bash, spare board on its native USB port
+> cd /c/Users/brend/EMBSYS-P2-AAI15-merge-work-2026-11-23
+> BOARD=n16r8 NODE=s3-004 PORT=COMx sh tools/mtk.sh flash
+> ```
 >
 > ```powershell
-> & $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -m 'STOP'
-> & $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -m 'CLEAR'
-> & $pub -h $brokerIp -q 1 -t 'pico/s3-002/config' -m 'BEGINCFG|name=A_AHT|proto=mqtt|mode=poll|freq_hz=0.5|remote_node=s3-001|remote_source=AHT|remote_profile=aht|ENDCFG'
-> & $pub -h $brokerIp -q 1 -t 'pico/s3-002/config' -m 'BEGINCFG|name=A_LIGHT|proto=mqtt|mode=poll|freq_hz=0.5|remote_node=s3-001|remote_source=LIGHT|remote_profile=tsl2561|ENDCFG'
-> & $pub -h $brokerIp -q 1 -t 'pico/s3-002/config' -m 'BEGINCFG|name=A_SONAR_A|proto=mqtt|mode=poll|freq_hz=2|remote_node=s3-001|remote_source=SONAR_A|remote_profile=pulse|ENDCFG'
-> & $pub -h $brokerIp -q 1 -t 'pico/s3-002/config' -m 'BEGINCFG|name=A_SONAR_B|proto=mqtt|mode=poll|freq_hz=2|remote_node=s3-001|remote_source=SONAR_B|remote_profile=pulse|ENDCFG'
-> Start-Sleep -Seconds 2
-> & $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -m 'RUN'
+> # A new watch window for the spare board
+> $sub = "$env:ProgramFiles\mosquitto\mosquitto_sub.exe"
+> & $sub -h 127.0.0.1 -t 'pico/s3-004/#' -v
 > ```
 >
-> **What it does:** stops Board B, clears its old setup and sends the four follow settings from setup item 8, so every reading Board A publishes also becomes a reading on Board B.
+> **What it does:** flashes the same firmware with node ID `s3-004` (drop `BOARD=n16r8` for a Super Mini), then shows everything that board sends and receives. Send the scenarios from window 4 of the demo.
 >
-> **You should see:** in window 2, `pico/s3-002/sensor/A_AHT/line`, `A_LIGHT/line`, `A_SONAR_A/line` and `A_SONAR_B/line`, arriving as A's readings do.
+> **You should see:** `pico/s3-004/presence`, then a `heartbeat` every 10 s.
 
-> **Step 4 · Sonar pair** (not passed yet)
+| # | Scenario | What you do | What it shows | Requirement | Status |
+|---|---|---|---|---|---|
+| 1 | Start empty | Clear the board and start it with nothing configured | A running node with no sensors, waiting for settings | FR1 | **Draft** |
+
+> ```powershell
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/cmd' -m 'STOP'
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/cmd' -m 'CLEAR'
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/cmd' -m 'RUN'
+> ```
 >
+> **What it does:** removes every sensor and rule, then starts sampling. With nothing configured, only heartbeats appear.
+>
+> **You should see:** heartbeats only, no `sensor` topics.
+
+| # | Scenario | What you do | What it shows | Requirement | Status |
+|---|---|---|---|---|---|
+| 2 | Add a GPIO sensor | Send the button's config | A sensor added on GPIO while the board runs | FR1, FR2 | **Draft** |
+
+> ```powershell
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/config' -m 'BEGINCFG|name=BTN|proto=gpio|gpio.mode=digital|gpio.pin=4|gpio.pull=up|mode=poll|freq_hz=5|ENDCFG'
+> ```
+>
+> **What it does:** adds a button on GPIO4, read five times a second.
+>
+> **You should see:** `OK:BTN` on `pico/s3-004/status/config`, then `pico/s3-004/sensor/BTN/line`. Its first byte is `01` when released and `00` when pressed.
+
+| # | Scenario | What you do | What it shows | Requirement | Status |
+|---|---|---|---|---|---|
+| 3 | Add an I2C sensor | Send the AHT's config | A second bus added live, beside the first | FR1, FR2 | **Draft** |
+
+> ```powershell
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/config' -m 'BEGINCFG|name=AHT|proto=i2c|i2c.sensor=aht|mode=poll|freq_hz=0.5|timing.timeout_ms=600|i2c.sda=1|i2c.scl=2|i2c.addr=0x38|i2c.baud=100000|ENDCFG'
+> ```
+>
+> **What it does:** adds the AHT on I2C, read every 2 s, while the button keeps being read.
+>
+> **You should see:** `OK:AHT`, then `pico/s3-004/sensor/AHT/line` alongside `BTN`.
+
+| # | Scenario | What you do | What it shows | Requirement | Status |
+|---|---|---|---|---|---|
+| 4 | Add an SPI device | Send a config that reads the flash chip's ID | A third bus added live: GPIO, I2C and SPI on one board | FR1, FR2 | **Draft** |
+
+> ```powershell
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/config' -m 'BEGINCFG|name=FLASH_ID|proto=spi|mode=poll|freq_hz=1|spi.host=fspi|spi.sclk=11|spi.mosi=12|spi.miso=13|spi.cs=10|spi.hz=1000000|spi.mode=0|spi.tx=0x9F|spi.read_len=4|spi.timeout_ms=100|ENDCFG'
+> ```
+>
+> **What it does:** once a second, sends the flash chip's read-ID command (`0x9F`) and reads back four bytes. It only reads, never writes.
+>
+> **You should see:** `OK:FLASH_ID`, then `pico/s3-004/sensor/FLASH_ID/line` ending in `EF 40 16`, the W25Q32's ID. The first byte is clocked in while the command goes out, so ignore it.
+
+| # | Scenario | What you do | What it shows | Requirement | Status |
+|---|---|---|---|---|---|
+| 5 | Add a rule | Send two rules that tie the button to the LED | The board acting on a reading, set up live | FR1 | **Draft** |
+
+> ```powershell
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/config' -m 'BEGINRULE|name=BTN_ON|source=BTN|calc=s=u8(0)|when=s==0|action=gpio:5=HIGH|ENDRULE'
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/config' -m 'BEGINRULE|name=BTN_OFF|source=BTN|calc=s=u8(0)|when=s==1|action=gpio:5=LOW|ENDRULE'
+> ```
+>
+> **What it does:** the first rule switches the LED on while the button is pressed; the second switches it off when released.
+>
+> **You should see:** `OK:BTN_ON` and `OK:BTN_OFF` on `pico/s3-004/status/rule`, the LED following the button, and events on `pico/rule/BTN_ON/event` while it is held.
+
+| # | Scenario | What you do | What it shows | Requirement | Status |
+|---|---|---|---|---|---|
+| 6 | Put ML on the new sensor | Send one `ml_setup` that reads the AHT just added | ML attached to a sensor that did not exist a minute ago | FR5 | **Draft** |
+
+> ```powershell
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/cmd' -m '{"ml_setup":{"version":1,"model":"comfort-summer","inputs":[{"index":0,"source":{"kind":"local","name":"AHT"},"field":"temperature_c","min":0,"max":60},{"index":1,"source":{"kind":"local","name":"AHT"},"field":"humidity_pct","min":0,"max":100}],"output":{"kind":"publish"}}}'
+> ```
+>
+> **What it does:** runs comfort-summer on this board's own AHT and publishes each result.
+>
+> **You should see:** `"ok":true` on `pico/s3-004/ml/status`, then results with `"input_source":"sensors"` on `pico/s3-004/ml/result`. Board C's screen only shows Board B's score, so this one appears in the watch window only.
+
+| # | Scenario | What you do | What it shows | Requirement | Status |
+|---|---|---|---|---|---|
+| 7 | Refuse a broken config | Send a config with a pin the board does not have | Bad input refused while everything else keeps running | FR10 | **Draft** |
+
+> ```powershell
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/config' -m 'BEGINCFG|name=BAD|proto=gpio|gpio.mode=digital|gpio.pin=99|gpio.pull=up|mode=poll|freq_hz=2|ENDCFG'
+> ```
+>
+> **What it does:** asks for a sensor on GPIO99, which does not exist.
+>
+> **You should see:** `FAIL:BAD` on `pico/s3-004/status/config`, and the button, AHT, flash ID, rules and ML all carrying on.
+
+| # | Scenario | What you do | What it shows | Requirement | Status |
+|---|---|---|---|---|---|
+| 8 | Replace the whole setup at once | Clear the board, then send a sensor and a rule in one JSON message | The whole setup in one message, against piece by piece above | FR1 | **Draft** |
+
+> ```powershell
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/cmd' -m 'STOP'
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/cmd' -m 'CLEAR'
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/config' -m '{"configs":[{"type":"config","name":"BTN","proto":"gpio","mode":"poll","freq_hz":5,"gpio":{"pin":4,"pull":"up","mode":"digital"}}],"rules":[{"type":"rule","name":"BTN_ON","source":"BTN","calc":["s=u8(0)"],"when":"s==0","action":"gpio:5=HIGH"}]}'
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-004/cmd' -m 'RUN'
+> ```
+>
+> **What it does:** removes everything, then sends the button and its rule together in one message instead of one line at a time.
+>
+> **You should see:** `OK:BTN` and `OK:BTN_ON` together, then the button's readings and the LED lighting on a press.
+
+### 5.5 Other demo steps and their status
+
+The rest of the use case, each with its status on `main`. These are not part of the main demo run in 5.3.
+
+| # | Step | What you do | What it shows | Requirement | Status |
+|---|---|---|---|---|---|
+| 1 | Sonar pair | `PAIR` in both orders on A's console | Both sonars read in a fixed order within 50 ms | NFR2 | **Not passed:** needs valid readings from both sonars in both orders |
+
 > ```text
 > STOP
 > PAIR SONAR_A SONAR_B A 5000
@@ -1004,24 +1205,10 @@ Before step 1, the broker from setup item 4 must be running, and all three board
 >
 > **You should see:** `[PAIR] state=complete outcome=0` with a valid width for both sonars, for each order.
 
-> **Step 5 · Comfort score on Board C** (built 23 Nov, laptop tests only)
->
-> ```powershell
-> # With D6VIEW already typed on Board C's console
-> '{"ml_setup":{"version":1,"model":"comfort-summer","inputs":[{"index":0,"source":{"kind":"remote","node":"s3-001","name":"AHT"},"field":"temperature_c","min":0,"max":60},{"index":1,"source":{"kind":"remote","node":"s3-001","name":"AHT"},"field":"humidity_pct","min":0,"max":100}],"output":{"kind":"publish"}}}' |
->   & $pub -h $brokerIp -q 1 -t 'pico/s3-002/cmd' -s
->
-> # Then show what happens when Board A goes quiet, and when it comes back
-> & $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'STOP'
-> & $pub -h $brokerIp -q 1 -t 'pico/s3-001/cmd' -m 'RUN'
-> ```
->
-> **What it does:** starts the comfort model on Board B with Board A's temperature and humidity (setup item 9). Each new score goes to Board C. Stopping Board A starves the model of fresh readings, and running it again brings them back.
->
-> **You should see:** `{"ok":true,"reason":"applied",...}` on `pico/s3-002/ml/status`; B's results marked `remote:s3-001`; the score under **LIVE COMFORT** on C. About 6 s after `STOP`, C shows `STALE`; after `RUN`, a fresh score returns.
+| # | Step | What you do | What it shows | Requirement | Status |
+|---|---|---|---|---|---|
+| 2 | Doorway count | Start `DOORWAY` on A, then walk in and out | A counts each entry and exit once; standing still, turning back or a missed echo count nothing | FR4 | **Flashed on A** and desk sampled 24 Nov; doorway crossings remain unvalidated. Sending each crossing to B's count is not built |
 
-> **Step 6 · Doorway count** (built on Board A 23 Nov, laptop tests only)
->
 > ```text
 > STOP
 > DOORWAY SONAR_A SONAR_B 70 85 70 85 70 2000
@@ -1029,50 +1216,55 @@ Before step 1, the broker from setup item 4 must be running, and all three board
 > DOORWAY STATUS
 > ```
 >
-> **Where:** Board A's console, after step 2 has loaded its four sensors.
+> **Where:** Board A's console, after the demo has loaded its four sensors.
 >
-> **What it does:** turns Board A into a doorway counter. The sonars ping in turn, 70 ms apart. A reading of 70 cm or closer marks that sonar's zone occupied, and 85 cm or more marks it clear, each after two readings in a row. Outside then inside (A, both, B, clear) counts one entry; the reverse counts one exit. Standing still, turning back, an ambiguous order or a crossing longer than 2 s counts nothing, and a missed echo drops that crossing. Measure the empty and occupied distances in the real doorway and adjust the four distances. Details: [sonar-only use case](docs/d6/SONAR_ONLY_USECASE.md#run-the-doorway-counter-on-board-a).
+> **What it does:** turns Board A into a doorway counter. The sonars ping in turn, 70 ms apart. A reading of 70 cm or closer marks that sonar's zone occupied, and 85 cm or more marks it clear, each after two readings in a row. Outside then inside counts one entry; the reverse counts one exit. Standing still, turning back, an ambiguous order or a crossing longer than 2 s counts nothing, and a missed echo drops that crossing. Measure the empty and occupied distances in the real doorway and adjust the four distances ([details](docs/d6/SONAR_ONLY_USECASE.md#run-the-doorway-counter-on-board-a)).
 >
 > **You should see:** `[DOORWAY] READY`, then one `[DOORWAY] ENTRY entries=1 exits=0` or `EXIT` line per crossing. `DOORWAY STATUS` prints the totals. `STOP` then `DOORWAY OFF` returns to normal sampling.
 >
-> **Still to build (placeholder):** sending each crossing to Board B, so B keeps the only count, logs it (step 7) and shows it on C (step 9). Commands to be added once that exists.
+> **Still to build (placeholder):** sending each crossing to Board B, so B keeps the only count, logs it (step 3) and shows it on C (step 5). Commands to be added once that exists.
 
-> **Step 7 · Event log** (placeholder: waits for crossings to reach B)
->
+| # | Step | What you do | What it shows | Requirement | Status |
+|---|---|---|---|---|---|
+| 3 | Event log | Count a crossing | B writes each event to the W25Q32 and reads it back | FR8 | **Not built** (waits for crossings to reach B) |
+
 > **Commands:** to be added with step 6. The existing D2 commands, `LOG ON` before the crossings and `LOG READ <slot>` after, are expected to be used.
 >
-> **What it will do:** Board B writes every event it processes to its W25Q32 flash chip and reads each one back to check it. This already works for events made on B (D2-8); it starts working in the demo once A's crossings from step 6 reach B.
+> **What it will do:** Board B writes every event it processes to its W25Q32 flash chip and reads each one back to check it. This already works for events made on B (D2-8); it starts working in the demo once A's crossings from step 2 reach B.
 
-> **Step 8 · Snapshot on Board C** (tested 21 Nov, mock values only)
->
-> ```text
-> D6MOCKPUB 2
-> D6MOCKPUB 3
+| # | Step | What you do | What it shows | Requirement | Status |
+|---|---|---|---|---|---|
+| 4 | Snapshot on C (mock) | Send `D6MOCKPUB 2`, then `D6MOCKPUB 3` to B | B to C over MQTT; C redraws the count from 2 to 3 | FR7 | **Tested** 21 Nov, with mock values only |
+
+> ```powershell
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-003/cmd' -m 'D6VIEW'
+> Start-Sleep -Seconds 2
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'D6MOCKPUB 2'
+> Start-Sleep -Seconds 2
+> & $pub -h 127.0.0.1 -q 1 -t 'pico/s3-002/cmd' -m 'D6MOCKPUB 3'
 > ```
 >
-> **Where:** Board B's console, with `D6VIEW` already typed on Board C's console.
+> **What it does:** Board B sends Board C a test snapshot with made-up readings and an occupancy of 2, then 3. It shows the B-to-C path and the screen layout.
 >
-> **What it does:** Board B sends Board C a test snapshot with made-up readings and an occupancy of 2, then 3. It shows the B-to-C path and the screen layout before the live snapshot exists.
->
-> **You should see:** C showing `MOCK`, the mock readings, and the count changing from 2 to 3.
+> **You should see:** `MOCK` on C, the mock readings, and the count changing from 2 to 3.
 
-> **Step 9 · Live snapshot** (displayed on 24 Nov; occupancy still pending)
->
+| # | Step | What you do | What it shows | Requirement | Status |
+|---|---|---|---|---|---|
+| 5 | Live snapshot | Show A's real readings on C through B | C shows continuing live data | FR7, FR12 | **Partially tested** 24 Nov: B and C flashed; C displayed live values beyond ten seconds. Physical stale and reboot recovery and B-owned occupancy remain open |
+
 > **Commands:** start A's sensor profile and B's four MQTT bridges with [the D6 startup guide](usecase_commands.md), then send `D6VIEW` to C. Watch `d6/board-b/snapshot` for continuing `source:"live"` v3 messages; see [the LCD guide](docs/d6/LIVE_LCD_TWO_SONARS.md).
 >
-> **What it does:** Board B sends recent AHT, light, and separate Sonar A/B distances about every two seconds. A missing sonar echo displays as `--`. `OCC --` remains a placeholder until B owns the doorway count. C's six-second stale clearing is implemented but still needs a physical disconnect check.
-
-> **Step 10 · Fault handling** (placeholder: not tested)
+> **What it does:** B sends recent AHT, light, and separate Sonar A/B distances about every two seconds. A missing sonar echo displays as `--`. `OCC --` remains a placeholder until B owns the doorway count. C's six-second stale clearing is implemented but still needs a physical disconnect check.
 >
+> **You should see:** C showing `LIVE` with the real readings, and separate `A` and `B` distances (`--` when a sonar has no recent valid echo).
+
+| # | Step | What you do | What it shows | Requirement | Status |
+|---|---|---|---|---|---|
+| 6 | Fault handling | Unplug the AHT, drop the Wi-Fi, send a broken config | A safe, predictable response to each failure | NFR2, NFR4 | **Not tested.** The responses are proposals only |
+
 > **Commands:** to be added once the fault responses are built.
 >
-> **What it will do:** show a safe, predictable response to each failure: unplugging the AHT stops only the comfort score, dropping the Wi-Fi makes the screen go stale and then recover, and a broken config is refused while everything else keeps running. The responses are the ones the team agreed in its fault-handling review.
-
-> **Step 11 · Any sensor on the fly** (placeholder: not set up)
->
-> **Commands:** to be added (task 5.3).
->
-> **What it will do:** start one board with nothing configured. While it runs, add a button on GPIO, the AHT on I2C and the flash ID read on SPI over MQTT, add a rule, bind a model, then send a broken config and show it refused, all without reflashing. Task 5.4's SPI write by config still needs new code.
+> **What it will do:** show a safe, predictable response to each failure: unplugging the AHT stops only the comfort score, dropping the Wi-Fi makes the screen go stale and then recover, and a broken config is refused while everything else keeps running.
 
 </details>
 
