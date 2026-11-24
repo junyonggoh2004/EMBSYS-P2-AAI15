@@ -11,7 +11,7 @@ The Pico 2 W edge firmware (configpico2wedge / FlexiEdgePico `project_v3`) porte
 | D1 | Port configpico2wedge to the ESP32-S3, on µT-Kernel 3 SMP since Tribunal 1 | Hasif, Cody, Sitt | Done (tag `d1-mtk-v1.0`). MQTT between two real boards passed 43/43 on 10 Nov. The jumper and light-sensor stages were signed off by the team on 22 Nov without a separate board run | [2.1](#21-d1-task-checklist) |
 | D2 | SPI support on the ESP32-S3 | Brendan, Jun Yong | Done 22 Nov: SPI driver and tests, W25Q32 flash log, event logging from ApplicationTask (D2-8) and the concurrent run (D2-9) | [2.2](#22-d2-task-checklist) |
 | D3 | Configurable timing: periodic, one-shot, event-driven, logical sequence | Cody | Done 22 Nov: timing modes, non-blocking sonar reads and ApplicationTask run on the board on 21 Nov; the two-sonar sequence ran on the D6 setup; the radar workload closed when the radar was dropped | [2.3](#23-d3-task-checklist) |
-| D4 | Embedded ML | Part 1: Jun Yong. Part 2: Sitt | Done 23 Nov. Five bundled models run on the board with the S3's acceleration, and the model, its inputs and where its result goes can be switched live over MQTT. The uploaded model, remote input and local output added on 22 Nov have laptop tests only | [2.4](#24-d4-task-checklist) |
+| D4 | Embedded ML | Part 1: Jun Yong. Part 2: Sitt | Done. Five bundled models run on the board with the S3's acceleration, and the model, its inputs and where its result goes can be switched live over MQTT. Remote input has been exercised on boards; selecting an uploaded model and using an ML result in a local rule have laptop tests only | [2.4](#24-d4-task-checklist) |
 | D5 | Benchmarking the D4 models on the S3 | Hasif | Done 20 Nov: ESP-NN's S3 assembly makes INT8 inference 1.36 to 3.35 times faster with the same outputs, and people-counter keeps a 2.55 times gain in the running firmware | [2.5](#25-d5-task-checklist-hasif) |
 | D6 | End-to-end use case and demo | Cody (lead), Brendan | Done 24 Nov: the three boards ran end to end at the demo. A's live sensors reach B over MQTT, B runs live ML on them (`comfort-summer` on A's AHT, `people-counter` on A's sonar) and C shows B's live snapshot and comfort score. GPIO, I2C and SPI sensors, their timing and the ML were also set up live over MQTT on a spare board | [2.6](#26-d6-task-checklist), [5](#5-d6-use-case-demo) |
 
@@ -367,17 +367,17 @@ More: [model specifications](docs/embedded-ml/README.md), [user guide](docs/embe
 
 #### Part 2: configuring and switching ML (Sitt)
 
-Sitt wrote the `ml_setup` command with local inputs and console and MQTT results, and checked it on one board on 19 Nov. Hasif finished the rest on 22 Nov: the uploaded model, another board's sensor as input, and a local output for rules. Those three pass the laptop tests (`sh tools/ml_test.sh`) but have not been run on a board; the steps for that run are in [LIVE_SETUP_PROPOSAL.md](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#running-it-on-boards). D6 task 5.6 builds on them.
+Sitt wrote the `ml_setup` command with local inputs and console and MQTT results, and checked it on one board on 19 Nov. Hasif added the uploaded model, another board's sensor as input, and a local output for rules on 22 Nov. All three pass the laptop tests (`sh tools/ml_test.sh`). Remote input has since run on boards with AHT and Sonar A readings; selecting an uploaded model and using an ML result in a local rule still need board checks. See the [D6 live people-counter record](docs/d6/PEOPLE_COUNTER_LIVE_TEST_20261124.md) and [remaining board steps](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#running-it-on-boards).
 
 | # | Task | Status |
 |---|---|---|
 | 3.1 | Define the ML setup format | Done 19 Nov (Sitt): the `ml_setup` JSON command ([format](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#the-command)) |
 | 3.2 | Switch the model live from the network | Done. Bundled models switched over MQTT on the board on 19 Nov (Sitt, no sensor attached). The uploaded model can be picked by name, 22 Nov (Hasif, laptop tests) |
-| 3.3 | Switch the data source live | Done 22 Nov (Hasif, laptop tests): an input can name another board's sensor; switching from local to remote and back is one message each way, and a stopped feed gives `MISSING_OR_STALE` |
+| 3.3 | Switch the data source live | Done: laptop tests cover switching local to remote and back and stale-feed handling; remote AHT and Sonar A input also produced live results on boards on 23–24 Nov ([record](docs/d6/PEOPLE_COUNTER_LIVE_TEST_20261124.md)) |
 | 3.4 | Choose where results go | Done. Publish and console checked on the board on 19 Nov (Sitt). Local output, 22 Nov (Hasif, laptop tests): each result becomes a reading of sensor `ML`, so rules act on it and other boards can follow it. Showing it on the LCD is D6 task 5.5 |
 | 3.5 | Bad input is handled | Done. An unknown model, a bad output and malformed JSON were refused on the board with the previous model still running, 19 Nov (Sitt). The new refusals (unfollowed board, undecoded field, wrong input count) are in the laptop tests |
 | 3.6 | User how-to and demo steps | Done 23 Nov: [LIVE_SETUP_PROPOSAL.md](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md) has the command, every option and the two-board demo steps |
-| 3.7 | Board evidence and update | Done 23 Nov: Sitt's [board check](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#board-check-19-november-2026) and the [laptop tests](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#laptop-tests-22-november-2026) are recorded; the 22 Nov additions were not run on a board |
+| 3.7 | Board evidence and update | Done: Sitt's [19 Nov board check](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#board-check-19-november-2026), the [22 Nov laptop tests](docs/embedded-ml/LIVE_SETUP_PROPOSAL.md#laptop-tests-22-november-2026) and [24 Nov remote-input board record](docs/d6/PEOPLE_COUNTER_LIVE_TEST_20261124.md) are recorded; uploaded-model selection and local rule output still await board checks |
 
 Earlier research is in [D4_EMBEDDED_ML_RESEARCH.md](D4_EMBEDDED_ML_RESEARCH.md) and [D2_D4_RESEARCH_CONTEXT.md](D2_D4_RESEARCH_CONTEXT.md).
 
@@ -702,7 +702,7 @@ Everything in this section runs on the current `main`. The board tests recorded 
 
 **Why three boards.** Each board does one job, the way separate devices do in a real building: one senses, one decides, one shows. They never talk to each other directly, only through a message hub on the laptop (the MQTT broker). So any board can be moved, restarted or swapped without rewiring the others.
 
-**What the current run shows.** All three boards use the same application code, built with a different node ID for each. Sensor and ML settings give A and B their roles while they run. The current demo shows A's readings reaching B and a live comfort score reaching C; the optional laptop relay can also put A's environmental and sonar readings on C. The complete doorway-to-occupancy path is still being integrated.
+**What the 24 Nov demo showed.** All three boards use the same application code, built with a different node ID for each. Sensor and ML settings give A and B their roles while they run. A's readings reached B; B ran live ML on them and sent a comfort score and an environmental and sonar snapshot to C's display.
 
 **What you see, in order.**
 
