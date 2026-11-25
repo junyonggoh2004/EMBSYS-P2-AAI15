@@ -748,9 +748,11 @@ flowchart LR
 
 The hardware each board needs, the firmware on it, and the settings that give it its role. Each item has its own row, followed by the command to run and what it does. Full detail and the PowerShell window map are in [usecase_commands.md](docs/commands/usecase_commands.md#windows) and [ML_commands.md](docs/commands/ML_commands.md).
 
-**Labeled hardware setup:** Board B (`s3-002`) runs ML, rules and flash logging; Board C (`s3-003`) displays the results. The photo labels their ESP32-S3 boards, the W25Q32 flash, the LCD and the USB connections to the host laptop.
+**Labeled hardware setup:** Board A (`s3-001`) collects AHT, light and two-sonar readings. Board B (`s3-002`) runs ML, rules and flash logging; Board C (`s3-003`) displays the results.
 
-<img src="docs/d6/images/boards-b-c-setup-labeled.png" alt="Labeled hardware setup of Board B with ESP32-S3 and W25Q32 flash, and Board C with ESP32-S3 and LCD" width="480">
+| Board A: sensors | Boards B and C: processing, flash and display |
+|---|---|
+| <img src="docs/d6/images/board-a-setup-labeled.png" alt="Labeled Board A ESP32-S3 setup with AHT, light and two ultrasonic sensors" width="360"> | <img src="docs/d6/images/boards-b-c-setup-labeled.png" alt="Labeled Board B ESP32-S3 and W25Q32 flash setup beside Board C ESP32-S3 and LCD setup" width="360"> |
 
 **Board consoles.** A few checks are typed on a board's own console. Open one PowerShell window per board:
 
